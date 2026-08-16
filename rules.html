@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Гуменчат — Правила ресурсу</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    #hoomenchat-rules {
+      all: initial;
+      display: block;
+      width: 100%;
+      max-width: 780px;
+      margin: 20px auto;
+      padding: 12px;
+      box-sizing: border-box;
+
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 12px;
+      line-height: 14px;
+      color: #222;
+      background: #fff;
+
+      border: 1px solid #777;
+    }
+
+    #hoomenchat-rules *,
+    #hoomenchat-rules *:before,
+    #hoomenchat-rules *:after {
+      box-sizing: border-box;
+    }
+
+    /* =========================
+       ШАПКА
+       ========================= */
+
+    #hoomenchat-rules .rules-header {
+      display: block;
+
+      margin: 0 0 10px 0;
+      padding: 5px 8px;
+
+      background: linear-gradient(
+        to bottom,
+        #626262,
+        #3b3b3b
+      );
+
+      border: 1px solid #222;
+
+      color: #fff;
+
+      font-size: 12px;
+      line-height: 14px;
+
+      font-weight: bold;
+      letter-spacing: 1px;
+
+      text-transform: uppercase;
+    }
+
+    /* =========================
+       ЗАГОЛОВОК
+       ========================= */
+
+    #hoomenchat-rules .rules-title {
+      margin: 0 0 8px 0;
+      padding: 5px 8px;
+
+      background: #f0f0f0;
+      border: 1px solid #999;
+
+      color: #111;
+
+      font-size: 12px;
+      line-height: 14px;
+
+      font-weight: bold;
+    }
+
+    /* =========================
+       ТЕКСТ ПРАВИЛ
+       ========================= */
+
+    #hoomenchat-rules .rules-box {
+      margin: 0;
+      padding: 7px 8px;
+
+      background: #fff;
+      border: 1px solid #aaa;
+    }
+
+    #hoomenchat-rules .rule-item {
+      margin: 0;
+      padding: 7px 0;
+
+      border-bottom: 1px solid #ddd;
+
+      color: #222;
+
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    #hoomenchat-rules .rule-item:first-child {
+      padding-top: 2px;
+    }
+
+    #hoomenchat-rules .rule-item:last-child {
+      padding-bottom: 2px;
+      border-bottom: 0;
+    }
+
+    /* =========================
+       ПОСИЛАННЯ "ТУТ"
+       ========================= */
+
+    #hoomenchat-rules .here-link {
+      color: #333;
+
+      font-weight: bold;
+
+      text-decoration: underline;
+
+      cursor: pointer;
+    }
+
+    #hoomenchat-rules .here-link:hover {
+      color: #000;
+
+      text-decoration: none;
+    }
+
+    /* =========================
+       ВІКНО
+       ========================= */
+
+    #hoomenchat-rules .rules-overlay {
+      display: none;
+
+      position: fixed;
+
+      left: 0;
+      top: 0;
+
+      width: 100%;
+      height: 100%;
+
+      background: rgba(0, 0, 0, 0.35);
+
+      z-index: 999999;
+    }
+
+    #hoomenchat-rules .rules-dialog {
+      position: absolute;
+
+      left: 50%;
+      top: 50%;
+
+      width: 90%;
+      max-width: 390px;
+
+      transform: translate(-50%, -50%);
+
+      padding: 0;
+
+      background: #fff;
+
+      border: 1px solid #555;
+
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    }
+
+    #hoomenchat-rules .dialog-header {
+      padding: 5px 7px;
+
+      background: linear-gradient(
+        to bottom,
+        #626262,
+        #3b3b3b
+      );
+
+      border-bottom: 1px solid #222;
+
+      color: #fff;
+
+      font-size: 11px;
+      line-height: 13px;
+
+      font-weight: bold;
+    }
+
+    #hoomenchat-rules .dialog-body {
+      padding: 9px;
+
+      color: #222;
+
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    #hoomenchat-rules .dialog-close {
+      float: right;
+
+      color: #fff;
+
+      font-size: 12px;
+      font-weight: bold;
+
+      cursor: pointer;
+    }
+
+    #hoomenchat-rules .dialog-close:hover {
+      color: #ffdddd;
+    }
+
+    #hoomenchat-rules .dialog-button {
+      display: block;
+
+      width: 60px;
+
+      margin: 8px auto 0 auto;
+      padding: 3px 5px;
+
+      background: #e6e6e6;
+
+      border: 1px solid #999;
+
+      color: #222;
+
+      font-size: 10px;
+      line-height: 12px;
+
+      font-weight: bold;
+
+      text-align: center;
+
+      cursor: pointer;
+    }
+
+    #hoomenchat-rules .dialog-button:hover {
+      background: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="hoomenchat-rules">
+
+    <!-- ШАПКА -->
+    <div class="rules-header">
+      ГУМЕНЧАТ
+    </div>
+
+    <!-- ЗАГОЛОВОК -->
+    <div class="rules-title">
+      ПРАВИЛА НАШОГО РЕСУРСУ
+    </div>
+
+    <!-- ПРАВИЛА -->
+    <div class="rules-box">
+
+      <div class="rule-item">
+        Правила нашої спільноти ідентичні
+        <strong>Правовому Кодексу</strong>.
+        Детальніше ви можете ознайомитися з ними
+        <span class="here-link" onclick="hoomenShowRulesMessage()">
+          ТУТ
+        </span>.
+      </div>
+
+      <div class="rule-item">
+        Якщо ви належите до чужої галактики,
+        цивілізації, квадранта, ви можете переглядати
+        наш ресурс, але взаємодія, реєстрація та інше
+        недоступні. Ми не шукаємо друзів чи ворогів за межами нашого дому.
+      </div>
+
+      <div class="rule-item">
+        Ви не можете вступати у перший контакт з гуменами. Будь ласка, поважайте нашу приватність.
+      </div>
+
+      <div class="rule-item">
+        ¤ Гумени — повністю вигадана інопланетна гуманоїдна раса. Сторінки та події — художня вигадка або ж інтерактивна книга з подіями, створена однією людиною. Частина з них відтворена по снам. Будь-які події та збіги з реальністю — випадкові.
+      </div>
+
+      <div class="rule-item">
+        ♡ Гумени — це гуманоїдна цивілізація. Наш квадрант та фізична адреса не для представників інших планет.
+      </div>
+
+      <div class="rule-item">
+        ♡ Арчат — обмін приватними повідомленнями. Єдиний доступний публічний шерінг на сторінках належить @copy_pasta
+      </div>
+
+      <div class="rule-item">
+        ♡ Гумгайл — список доступних для перегляду користувачів нашої платформи.
+      </div>
+
+      <div class="rule-item">
+        ♡ Друмени — список близьких користувачів конкретного гумена. Можна побачити лише шерінг від @copy_pasta
+      </div>
+
+      <div class="rule-item">
+        ♡ Стрічерчат — активність гуменів зі списку друменів. Можна побачити лише шерінг від @copy_pasta
+      </div>
+
+      <div class="rule-item">
+        ♡ Острови — створені гуменами по інтересах острівці.
+      </div>
+
+      <div class="rule-item">
+        ♡ Гумгайл — це ще й також особиста сторінка гумена.
+      </div>
+
+      <div class="rule-item">
+        ♡ Шерінг — публічний контент, видимий всім.
+      </div>
+
+    </div>
+
+    <!-- СПЛИВАЮЧЕ ВІКНО -->
+    <div class="rules-overlay" id="hoomen-rules-overlay" onclick="hoomenCloseRulesMessage(event)">
+      <div class="rules-dialog" onclick="event.stopPropagation()">
+        <div class="dialog-header">
+          <span class="dialog-close" onclick="hoomenCloseRulesMessage()">✕</span>
+          ГУМЕНЧАТ
+        </div>
+
+        <div class="dialog-body">
+          Нажаль, ми не змогли розпізнати ваше місце проживання.
+          <br /><br />
+          Схоже, ви знаходитеся за межами нашої планети.
+          <br /><br />
+          Прибульці не можуть переглядати правила нашого ресурсу. Ви маєте бути корінними гуменами. Якщо ви представники інших планет, будь ласка, припиніть шукати будь-яку можливість контакту з нашою цивілізацією. Ми не хочемо обмінюватись технологіями, знаннями і не шукаємо союзників за межею нашого дому.
+
+          <div class="dialog-button" onclick="hoomenCloseRulesMessage()">
+            ЗАКРИТИ
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function hoomenShowRulesMessage() {
+      document.getElementById('hoomen-rules-overlay').style.display = 'block';
+    }
+
+    function hoomenCloseRulesMessage(event) {
+      if (event && event.target !== event.currentTarget) {
+        return;
+      }
+      document.getElementById('hoomen-rules-overlay').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
