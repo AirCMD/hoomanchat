@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Активність друменів</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #hoomenchat-activity {
+      all: initial;
+      display: block;
+      width: 100%;
+      max-width: 500px;
+      margin: 10px auto;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid #777;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 11px;
+      line-height: 14px;
+      color: #222;
+      box-sizing: border-box;
+    }
+
+    #hoomenchat-activity *,
+    #hoomenchat-activity *:before,
+    #hoomenchat-activity *:after {
+      box-sizing: border-box;
+    }
+
+    #hoomenchat-activity .activity-header {
+      margin: 0 0 8px 0;
+      padding: 5px 8px;
+      background: linear-gradient(to bottom, #626262, #3b3b3b);
+      border: 1px solid #222;
+      color: #fff;
+      font-size: 11px;
+      line-height: 13px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    #hoomenchat-activity .activity-list {
+      display: block;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      border: 1px solid #aaa;
+    }
+
+    #hoomenchat-activity .activity-item {
+      display: table;
+      width: 100%;
+      padding: 6px 8px;
+      border-bottom: 1px solid #e0e0e0;
+      background: #fff;
+    }
+
+    #hoomenchat-activity .activity-item:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    #hoomenchat-activity .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    #hoomenchat-activity .activity-footer {
+      text-align: center;
+      background: #f0f0f0;
+    }
+
+    #hoomenchat-activity .activity-icon {
+      display: table-cell;
+      width: 20px;
+      vertical-align: middle;
+      text-align: center;
+      font-size: 11px;
+    }
+
+    #hoomenchat-activity .activity-text {
+      display: table-cell;
+      vertical-align: middle;
+      padding-left: 6px;
+      word-break: break-word;
+    }
+
+    #hoomenchat-activity .hoomen-user,
+    #hoomenchat-activity .hoomen-target {
+      color: #111;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    #hoomenchat-activity .hoomen-user:hover,
+    #hoomenchat-activity .hoomen-target:hover {
+      color: #000;
+      text-decoration: none;
+    }
+
+    #hoomenchat-activity .activity-time {
+      display: inline-block;
+      margin-left: 5px;
+      color: #888;
+      font-size: 9px;
+    }
+
+    #hoomenchat-activity .heart-icon { color: #e91e63; }
+    #hoomenchat-activity .add-icon { color: #1976d2; }
+    #hoomenchat-activity .comment-icon { color: #388e3c; }
+  </style>
+</head>
+<body>
+
+  <div id="hoomenchat-activity">
+
+    <div class="activity-header">
+      🔔 Активність друменів
+    </div>
+
+    <div class="activity-list">
+
+      <!-- ДОПИС 1 -->
+      <div class="activity-item">
+        <div class="activity-icon heart-icon">💗</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/dreaming_romance.html">dreaming_romance</a> поставив 💗 <a class="hoomen-target" href="profiles/sruiki_stikki.html">sruiki_stikki</a>
+          <span class="activity-time">5 хв тому</span>
+        </div>
+      </div>
+
+      <!-- ДОПИС 2 -->
+      <div class="activity-item">
+        <div class="activity-icon add-icon">👤</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/alter_core.html">alter_core</a> хоче додати вас до списку друменів
+          <span class="activity-time">12 хв тому</span>
+        </div>
+      </div>
+
+      <!-- ДОПИС 3 -->
+      <div class="activity-item">
+        <div class="activity-icon heart-icon">💗</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/yurii_ichigo.html">yurii_ichigo</a> поставив 💗 вашому допису
+          <span class="activity-time">18 хв тому</span>
+        </div>
+      </div>
+
+      <!-- ДОПИС 4 -->
+      <div class="activity-item">
+        <div class="activity-icon comment-icon">💬</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/yurii_ichigo.html">yurii_ichigo</a> прокоментував ваш допис
+          <span class="activity-time">25 хв тому</span>
+        </div>
+      </div>
+
+      <!-- ДОПИС 5 -->
+      <div class="activity-item">
+        <div class="activity-icon heart-icon">💗</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/sakurai_agatsuma.html">sakurai_agatsuma</a> поставила 💗 вашому допису
+          <span class="activity-time">40 хв тому</span>
+        </div>
+      </div>
+
+      <!-- ДОПИС 6 -->
+      <div class="activity-item">
+        <div class="activity-icon heart-icon">💗</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/alter_core.html">alter_core</a> поставив 💗 <a class="hoomen-target" href="profiles/sruiki_stikki.html">sruiki_stikki</a>
+          <span class="activity-time">1 год тому</span>
+        </div>
+      </div>
+
+      <!-- ДОПИС 7 -->
+      <div class="activity-item">
+        <div class="activity-icon comment-icon">💬</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/dreaming_romance.html">dreaming_romance</a> прокоментував ваш допис
+          <span class="activity-time">1 год тому</span>
+        </div>
+      </div>
+
+      <!-- ДОПИС 8 -->
+      <div class="activity-item">
+        <div class="activity-icon add-icon">👤</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/dmytro_pinchuk.html">dmytro_pinchuk</a> хоче додати вас до списку друменів
+          <span class="activity-time">2 год тому</span>
+        </div>
+      </div>
+
+      <!-- ДОПИС 9 -->
+      <div class="activity-item">
+        <div class="activity-icon heart-icon">💗</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/sakurai_agatsuma.html">sakurai_agatsuma</a> поставила 💗 <a class="hoomen-target" href="profiles/alter_core.html">alter_core</a>
+          <span class="activity-time">2 год тому</span>
+        </div>
+      </div>
+
+      <!-- ДОПИС 10 -->
+      <div class="activity-item">
+        <div class="activity-icon comment-icon">💬</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/dreaming_romance.html">dreaming_romance</a> прокоментував ваш допис
+          <span class="activity-time">3 год тому</span>
+        </div>
+      </div>
+
+      <!-- ДОПИС 11 -->
+      <div class="activity-item">
+        <div class="activity-icon heart-icon">💗</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/sakurai_agatsuma.html">sakurai_agatsuma</a> поставив 💗 вашому допису
+          <span class="activity-time">4 год тому</span>
+        </div>
+      </div>
+
+      <!-- ДОПИС 12 -->
+      <div class="activity-item">
+        <div class="activity-icon comment-icon">💬</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/sakurai_agatsuma.html">sakurai_agatsuma</a> прокоментувала ваш допис
+          <span class="activity-time">5 год тому</span>
+        </div>
+      </div>
+
+      <!-- ДОПИС 13 -->
+      <div class="activity-item">
+        <div class="activity-icon heart-icon">💗</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/yurii_ichigo.html">yurii_ichigo</a> поставив 💗 <a class="hoomen-target" href="profiles/dreaming_romance.html">dreaming_romance</a>
+          <span class="activity-time">6 год тому</span>
+        </div>
+      </div>
+
+      <!-- ДОПИС 14 -->
+      <div class="activity-item">
+        <div class="activity-icon add-icon">👤</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/yurii_ichigo.html">yurii_ichigo</a> хоче додати вас до списку друменів
+          <span class="activity-time">7 год тому</span>
+        </div>
+      </div>
+
+      <!-- ДОПИС 15 -->
+      <div class="activity-item">
+        <div class="activity-icon heart-icon">💗</div>
+        <div class="activity-text">
+          <a class="hoomen-user" href="profiles/sakurai_agatsuma.html">sakurai_agatsuma</a> поставил 💗 вашому допису
+          <span class="activity-time">8 год тому</span>
+        </div>
+      </div>
+
+      <!-- КНОПКА ПОВЕРНЕННЯ -->
+      <div class="activity-item activity-footer">
+        <div class="activity-text">
+          Повернутись в <a class="hoomen-target" href="profiles/copy-pasta.html">мій гумгайл</a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
