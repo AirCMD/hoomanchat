@@ -1,0 +1,2711 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>ГУМЕНЧАТ — Гумгайли</title>
+
+
+<style>
+
+/* =========================================================
+   ОСНОВА
+   ========================================================= */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+
+  background: #fff;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 12px;
+  line-height: 14px;
+
+  color: #222;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   ОСНОВНИЙ КОНТЕЙНЕР
+   ========================================================= */
+
+#hoomenchat-site {
+
+  display: block;
+
+  width: 100%;
+  min-height: 100vh;
+
+  margin: 0;
+  padding: 12px;
+
+  background: #fff;
+
+  border: 1px solid #777;
+}
+
+#hoomenchat-site a {
+  color: #444;
+}
+
+
+/* =========================================================
+   ШАПКА
+   ========================================================= */
+
+#hoomenchat-site .hoomenchat-header {
+
+  display: block;
+
+  margin: 0 0 10px 0;
+  padding: 5px 8px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #626262,
+      #3b3b3b
+    );
+
+  border: 1px solid #222;
+
+  color: #fff;
+
+  font-size: 12px;
+  line-height: 14px;
+
+  font-weight: bold;
+
+  letter-spacing: 1px;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   КОЛОНКИ
+   ========================================================= */
+
+#hoomenchat-site .site-layout {
+
+  display: table;
+
+  width: 100%;
+
+  border-collapse: separate;
+
+  border-spacing: 10px 0;
+}
+
+#hoomenchat-site .site-left {
+
+  display: table-cell;
+
+  width: 165px;
+
+  vertical-align: top;
+}
+
+#hoomenchat-site .site-right {
+
+  display: table-cell;
+
+  vertical-align: top;
+}
+
+
+/* =========================================================
+   ЛІВА КОЛОНКА
+   ========================================================= */
+
+#hoomenchat-site .left-box {
+
+  padding: 3px 7px;
+
+  background: #f0f0f0;
+
+  border: 1px solid #999;
+}
+
+#hoomenchat-site .site-name {
+
+  margin: 1px 0 6px 0;
+
+  padding: 0 0 4px 0;
+
+  border-bottom: 1px solid #bcbcbc;
+
+  color: #111;
+
+  font-size: 15px;
+
+  line-height: 17px;
+
+  font-weight: bold;
+
+  text-align: center;
+
+  word-break: break-word;
+}
+
+#hoomenchat-site .main-avatar {
+
+  display: block;
+
+  width: 100%;
+
+  height: 228px;
+
+  margin: 0 0 6px 0;
+
+  object-fit: cover;
+
+  object-position: center center;
+
+  background: #ddd;
+
+  border: 1px solid #888;
+}
+
+
+/* =========================================================
+   АРЧАТ
+   ========================================================= */
+
+#hoomenchat-site .archat-button {
+
+  display: block;
+
+  width: 100%;
+
+  margin: 0 0 5px 0;
+
+  padding: 4px 0;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #fff176,
+      #fbc02d
+    );
+
+  border: 1px solid #a78119;
+
+  color: #000 !important;
+
+  font-size: 10px;
+
+  line-height: 13px;
+
+  font-weight: bold;
+
+  text-align: center;
+
+  text-decoration: none;
+
+  text-transform: uppercase;
+}
+
+#hoomenchat-site .archat-button:hover {
+
+  background:
+    linear-gradient(
+      to bottom,
+      #fff59d,
+      #fdd835
+    );
+}
+
+
+/* =========================================================
+   МЕНЮ
+   ========================================================= */
+
+#hoomenchat-site .nav-menu {
+
+  display: block;
+
+  margin: 0;
+  padding: 0;
+
+  border-top: 1px solid #999;
+}
+
+#hoomenchat-site .nav-item {
+
+  display: block;
+
+  width: 100%;
+
+  margin: 0;
+
+  padding: 3px 2px;
+
+  border-bottom: 1px solid #c7c7c7;
+
+  color: #444 !important;
+
+  font-size: 11px;
+
+  line-height: 13px;
+
+  text-decoration: underline;
+
+  cursor: pointer;
+}
+
+#hoomenchat-site .nav-item:hover {
+
+  background: #e2e2e2;
+
+  color: #000 !important;
+
+  text-decoration: none;
+}
+
+#hoomenchat-site .nav-item.active {
+
+  background: #e2e2e2;
+
+  color: #000 !important;
+
+  font-weight: bold;
+
+  text-decoration: none;
+}
+
+
+/* =========================================================
+   АКАУНТ
+   ========================================================= */
+
+#hoomenchat-site .account-box {
+
+  margin: 8px 0 0 0;
+
+  padding: 5px 4px;
+
+  border-top: 1px solid #999;
+
+  text-align: center;
+}
+
+#hoomenchat-site .account-text {
+
+  margin: 0 0 5px 0;
+
+  color: #555;
+
+  font-size: 9px;
+
+  line-height: 12px;
+}
+
+#hoomenchat-site .account-link {
+
+  display: block;
+
+  margin: 2px 0;
+
+  color: #444 !important;
+
+  font-size: 10px;
+
+  line-height: 12px;
+
+  font-weight: bold;
+
+  text-decoration: underline;
+}
+
+#hoomenchat-site .account-link:hover {
+
+  color: #000 !important;
+
+  text-decoration: none;
+}
+
+
+/* =========================================================
+   ЗАГОЛОВОК
+   ========================================================= */
+
+#hoomenchat-site .friends-header {
+
+  margin: 0 0 7px 0;
+
+  padding: 5px 7px;
+
+  background: #f0f0f0;
+
+  border: 1px solid #999;
+
+  color: #222;
+
+  font-size: 12px;
+
+  line-height: 15px;
+
+  font-weight: bold;
+}
+
+
+/* =========================================================
+   СТАН
+   ========================================================= */
+
+#hoomenchat-site .loading-box,
+#hoomenchat-site .error-box,
+#hoomenchat-site .empty-box {
+
+  padding: 7px;
+
+  background: #f9f9f9;
+
+  border: 1px solid #aaa;
+
+  color: #555;
+
+  font-size: 11px;
+
+  line-height: 15px;
+}
+
+#hoomenchat-site .error-box {
+
+  color: #8b0000;
+}
+
+
+/* =========================================================
+   КАРТКА
+   ========================================================= */
+
+#hoomenchat-site .friend-card {
+
+  display: table;
+
+  width: 100%;
+
+  margin: 0 0 6px 0;
+
+  padding: 6px;
+
+  background: #fff;
+
+  border: 1px solid #aaa;
+}
+
+#hoomenchat-site .friend-card:hover {
+
+  background: #fafafa;
+}
+
+
+/* =========================================================
+   АВАТАР
+   ========================================================= */
+
+#hoomenchat-site .friend-avatar-cell {
+
+  display: table-cell;
+
+  width: 50px;
+
+  vertical-align: top;
+}
+
+#hoomenchat-site .friend-avatar {
+
+  display: block;
+
+  width: 48px;
+
+  height: 48px;
+
+  object-fit: cover;
+
+  object-position: center center;
+
+  background: #ddd;
+
+  border: 1px solid #888;
+}
+
+
+/* =========================================================
+   ІНФОРМАЦІЯ
+   ========================================================= */
+
+#hoomenchat-site .friend-info-cell {
+
+  display: table-cell;
+
+  padding-left: 8px;
+
+  vertical-align: top;
+}
+
+#hoomenchat-site .friend-nickname {
+
+  display: inline-block;
+
+  margin: 0 0 3px 0;
+
+  color: #111 !important;
+
+  font-size: 12px;
+
+  line-height: 14px;
+
+  font-weight: bold;
+
+  text-decoration: underline;
+}
+
+#hoomenchat-site .friend-nickname:hover {
+
+  color: #000 !important;
+
+  text-decoration: none;
+}
+
+#hoomenchat-site .friend-online {
+
+  display: inline-block;
+
+  margin-left: 5px;
+
+  color: #2e7d32;
+
+  font-size: 9px;
+
+  line-height: 12px;
+
+  font-weight: bold;
+}
+
+#hoomenchat-site .friend-status {
+
+  color: #555;
+
+  font-size: 10px;
+
+  line-height: 13px;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   ПАГІНАЦІЯ
+   ========================================================= */
+
+#hoomenchat-site .pagination-box {
+
+  margin: 10px 0;
+
+  padding: 6px 4px;
+
+  background: #f9f9f9;
+
+  border: 1px solid #ccc;
+
+  text-align: center;
+
+  font-size: 10px;
+}
+
+#hoomenchat-site .pagination-info {
+
+  margin-bottom: 5px;
+
+  color: #444;
+
+  font-weight: bold;
+}
+
+#hoomenchat-site .pagination-controls {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 3px;
+}
+
+#hoomenchat-site .page-btn {
+
+  display: inline-block;
+
+  min-width: 20px;
+
+  padding: 2px 4px;
+
+  background: #fff;
+
+  border: 1px solid #999;
+
+  color: #333;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 10px;
+
+  line-height: 12px;
+
+  cursor: pointer;
+}
+
+#hoomenchat-site .page-btn:hover {
+
+  background: #e2e2e2;
+
+  color: #000;
+}
+
+#hoomenchat-site .page-btn.active {
+
+  background:
+    linear-gradient(
+      to bottom,
+      #626262,
+      #3b3b3b
+    );
+
+  border-color: #222;
+
+  color: #fff;
+
+  font-weight: bold;
+}
+
+#hoomenchat-site .page-dots {
+
+  padding: 0 2px;
+
+  color: #777;
+}
+
+
+/* =========================================================
+   ПРАВИЛА
+   ========================================================= */
+
+#hoomenchat-site .rules-box {
+
+  margin: 8px 0 0 0;
+
+  padding: 5px 8px;
+
+  background: #fff;
+
+  border: 1px solid #aaa;
+
+  color: #444;
+
+  font-size: 11px;
+
+  line-height: 14px;
+}
+
+#hoomenchat-site .rules-box a {
+
+  color: #333 !important;
+
+  font-weight: bold;
+
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   СТАТИСТИКА
+   ========================================================= */
+
+#hoomenchat-site .statistics-box {
+
+  margin: 8px 0 0 0;
+
+  padding: 5px 8px;
+
+  background: #fff;
+
+  border: 1px solid #aaa;
+
+  color: #555;
+
+  font-family:
+    "Courier New",
+    Courier,
+    monospace;
+
+  font-size: 10px;
+
+  line-height: 13px;
+}
+
+#hoomenchat-site .statistics-title {
+
+  margin: 0 0 3px 0;
+
+  color: #333;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 10px;
+
+  line-height: 12px;
+
+  font-weight: bold;
+}
+
+#hoomenchat-site .statistics-number {
+
+  color: #222;
+
+  font-weight: bold;
+}
+
+#hoomenchat-site .statistics-online {
+
+  color: #2e7d32;
+
+  font-weight: bold;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+#hoomenchat-site .footer-line {
+
+  margin: 7px 0 0 0;
+
+  padding-top: 4px;
+
+  border-top: 1px solid #ccc;
+
+  color: #888;
+
+  font-size: 9px;
+
+  line-height: 11px;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   МОБІЛЬНА ВЕРСІЯ
+   ========================================================= */
+
+@media screen and (max-width: 600px) {
+
+  #hoomenchat-site {
+
+    margin: 5px auto;
+
+    padding: 7px;
+  }
+
+  #hoomenchat-site .site-layout {
+
+    display: block;
+
+    border-spacing: 0;
+  }
+
+  #hoomenchat-site .site-left,
+  #hoomenchat-site .site-right {
+
+    display: block;
+
+    width: 100%;
+  }
+
+  #hoomenchat-site .site-left {
+
+    margin-bottom: 8px;
+  }
+
+}
+</style>
+
+</head>
+
+
+<body>
+
+
+<div id="hoomenchat-site">
+
+
+<div class="hoomenchat-header">
+  ГУМЕНЧАТ
+</div>
+
+
+<div class="site-layout">
+
+
+<!-- =====================================================
+     ЛІВА КОЛОНКА
+     ===================================================== -->
+
+<div class="site-left">
+
+<div class="left-box">
+
+
+<div class="site-name">
+  ГУМЕНЧАТ
+</div>
+
+
+<img
+  class="main-avatar"
+  src="https://blogger.googleusercontent.com/img/a/AVvXsEikl2AwyMPO-fdHfH3XugR0z28OlNR7sGHxQFaYw1KHQ_3YNbbm0aGwmKo8X21RqBa-2RSi1sQmdGYFEs7XIaYylW3_6ivt1yixDE1RAhEOLPqMwEImTEd-0nUeCbb_9EUGLjjwa1OJK9njExaag52-LAN8p7YCRWAcKOdSpBgxJ62aQL7Ju2pjLLNhAWM"
+  alt="ГУМЕНЧАТ"
+/>
+
+
+<a
+  class="archat-button"
+  href="https://hoomenchat.blogspot.com/2026/08/copypasta-chat-history.html"
+>
+  📩 АРЧАТ
+</a>
+
+
+<div class="nav-menu">
+
+
+<a
+  class="nav-item"
+  href="index.html"
+>
+  Мій гумгайл
+</a>
+
+
+<a
+  class="nav-item active"
+  href="profiles.html"
+>
+  Гумгайли
+</a>
+
+
+<a
+  class="nav-item"
+  href="https://hoomenchat.blogspot.com/2026/08/droomens-list-copypastas.html"
+>
+  Друмени
+</a>
+
+
+<a
+  class="nav-item"
+  href="https://hoomenchat.blogspot.com/2026/08/droomens-activity-copypastas.html"
+>
+  Стрічерчат
+</a>
+
+
+<a
+  class="nav-item"
+  href="https://hoomenchat.blogspot.com/2026/08/4.html"
+>
+  Острови
+</a>
+
+
+<a
+  class="nav-item"
+  href="rules.html"
+>
+  Правила
+</a>
+
+
+</div>
+
+
+<div class="account-box">
+
+<div class="account-text">
+  Немає гумгайла?
+</div>
+
+
+<a
+  class="account-link"
+  href="#"
+>
+  ЗАРЕЄСТРУВАТИСЯ
+</a>
+
+
+<a
+  class="account-link"
+  href="#"
+>
+  ВХІД
+</a>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ПРАВА КОЛОНКА
+     ===================================================== -->
+
+<div class="site-right">
+
+
+<div class="friends-header">
+  Гумени ГУМЕНЧАТ
+</div>
+
+
+<div id="friends-wrapper">
+
+  <div class="loading-box">
+    Завантаження гуменів...
+  </div>
+
+</div>
+
+
+<div class="pagination-box">
+
+<div
+  class="pagination-info"
+  id="page-indicator"
+>
+  Завантаження...
+</div>
+
+
+<div
+  class="pagination-controls"
+  id="pagination-buttons"
+>
+</div>
+
+</div>
+
+
+<div class="rules-box">
+
+Пам'ятай та дотримуйся
+
+<a href="rules.html">
+  ПРАВИЛ
+</a>
+
+нашого ресурсу для приємного
+та друмнього часу разом з нами.
+
+</div>
+
+
+<div class="statistics-box">
+
+<div class="statistics-title">
+  Статистика Гуменчату
+</div>
+
+
+<div>
+  Зареєстровано гуменів:
+
+  <span
+    class="statistics-number"
+    id="registered-hoomen"
+  >
+    8 000 000
+  </span>
+
+</div>
+
+
+<div>
+
+  Зараз онлайн:
+
+  <span
+    class="statistics-online"
+    id="online-hoomen"
+  >
+    1 000 000
+  </span>
+
+</div>
+
+
+<div>
+
+  Гуменів сьогодні завітало:
+
+  <span
+    class="statistics-number"
+    id="today-hoomen"
+  >
+    2 400 000
+  </span>
+
+</div>
+
+
+</div>
+
+
+<div class="footer-line">
+  Гуменчат — місце для гуменів.
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+(function(){
+
+
+/* =========================================================
+   АВТОМАТИЧНО ВИЗНАЧАЄМО GITHUB OWNER + REPO
+
+   ПРИКЛАД:
+
+   https://username.github.io/repository/profiles.html
+
+   OWNER = username
+   REPO  = repository
+
+   НІЧОГО ВПИСУВАТИ НЕ ТРЕБА.
+   ========================================================= */
+
+
+var hostname =
+  window.location.hostname;
+
+
+var pathname =
+  window.location.pathname;
+
+
+var GITHUB_OWNER = "";
+
+
+var GITHUB_REPO = "";
+
+
+/* =========================================================
+   ВИПАДОК 1
+   username.github.io
+   ========================================================= */
+
+if (
+  hostname.endsWith(".github.io")
+) {
+
+  GITHUB_OWNER =
+    hostname.substring(
+      0,
+      hostname.length -
+      ".github.io".length
+    );
+
+
+  var pathParts =
+    pathname
+      .split("/")
+      .filter(
+        function(part){
+          return part.length > 0;
+        }
+      );
+
+
+  /*
+   * GitHub Pages project site:
+   *
+   * username.github.io/repository/
+   */
+
+  if (
+    pathParts.length > 0
+  ) {
+
+    GITHUB_REPO =
+      pathParts[0];
+
+  }
+
+
+  /*
+   * User site:
+   *
+   * username.github.io
+   */
+
+  if (
+    !GITHUB_REPO
+  ) {
+
+    GITHUB_REPO =
+      GITHUB_OWNER +
+      ".github.io";
+
+  }
+
+}
+
+
+/* =========================================================
+   ВИПАДОК 2
+   github.io/project/... або custom domain
+
+   Для custom domain автоматично визначити
+   repository неможливо.
+
+   Тому використовуємо поточну GitHub Pages
+   адресу при звичайній схемі username.github.io/repo.
+   ========================================================= */
+
+
+if (
+  !GITHUB_OWNER ||
+  !GITHUB_REPO
+) {
+
+  console.error(
+    "Не вдалося автоматично визначити GitHub OWNER/REPO."
+  );
+
+}
+
+
+/* =========================================================
+   НАЛАШТУВАННЯ
+   ========================================================= */
+
+var GITHUB_BRANCH =
+  "main";
+
+
+var PROFILES_FOLDER =
+  "profiles";
+
+
+var PER_PAGE =
+  5;
+
+
+/* =========================================================
+   ЕЛЕМЕНТИ
+   ========================================================= */
+
+var wrapper =
+  document.getElementById(
+    "friends-wrapper"
+  );
+
+
+var paginationInfo =
+  document.getElementById(
+    "page-indicator"
+  );
+
+
+var paginationButtons =
+  document.getElementById(
+    "pagination-buttons"
+  );
+
+
+/* =========================================================
+   ДАНІ
+   ========================================================= */
+
+var profiles = [];
+
+
+var currentPage =
+  1;
+
+
+/* =========================================================
+   GITHUB API URL
+   ========================================================= */
+
+var apiUrl =
+
+  "https://api.github.com/repos/" +
+
+  encodeURIComponent(
+    GITHUB_OWNER
+  ) +
+
+  "/" +
+
+  encodeURIComponent(
+    GITHUB_REPO
+  ) +
+
+  "/contents/" +
+
+  PROFILES_FOLDER +
+
+  "?ref=" +
+
+  GITHUB_BRANCH;
+
+
+/* =========================================================
+   ЗАВАНТАЖЕННЯ СПИСКУ ПРОФІЛІВ
+   ========================================================= */
+
+function loadProfiles(){
+
+
+  wrapper.innerHTML =
+
+    '<div class="loading-box">' +
+
+    'Завантаження гуменів...' +
+
+    '</div>';
+
+
+  fetch(
+    apiUrl
+  )
+
+
+  .then(
+    function(response){
+
+
+      if (
+        !response.ok
+      ) {
+
+        throw new Error(
+
+          "GitHub API HTTP " +
+
+          response.status
+
+        );
+
+      }
+
+
+      return response.json();
+
+    }
+  )
+
+
+  .then(
+    function(files){
+
+
+      if (
+        !Array.isArray(
+          files
+        )
+      ) {
+
+        throw new Error(
+          "GitHub не повернув список файлів."
+        );
+
+      }
+
+
+      /*
+       * Беремо тільки .html
+       */
+
+      var htmlFiles =
+
+        files.filter(
+          function(file){
+
+            return (
+
+              file.type ===
+              "file"
+
+              &&
+
+              /\.html$/i.test(
+                file.name
+              )
+
+            );
+
+          }
+        );
+
+
+      /*
+       * Немає профілів
+       */
+
+      if (
+        htmlFiles.length === 0
+      ) {
+
+        wrapper.innerHTML =
+
+          '<div class="empty-box">' +
+
+          'У папці profiles немає HTML-профілів.' +
+
+          '</div>';
+
+
+        paginationInfo.textContent =
+          "0 профілів";
+
+
+        paginationButtons.innerHTML =
+          "";
+
+
+        return [];
+
+      }
+
+
+      /*
+       * Завантажуємо всі профілі
+       */
+
+      return Promise.all(
+
+        htmlFiles.map(
+          function(file){
+
+            return loadProfile(
+              file
+            );
+
+          }
+        )
+
+      );
+
+    }
+  )
+
+
+  .then(
+    function(result){
+
+
+      if (
+        !result
+      ) {
+
+        return;
+
+      }
+
+
+      /*
+       * Прибираємо null
+       */
+
+      profiles =
+
+        result.filter(
+          function(profile){
+
+            return (
+              profile !==
+              null
+            );
+
+          }
+        );
+
+
+      /*
+       * Сортування за ніком
+       */
+
+      profiles.sort(
+        function(a,b){
+
+          return (
+
+            a.name.localeCompare(
+              b.name,
+              "uk"
+            )
+
+          );
+
+        }
+      );
+
+
+      currentPage =
+        1;
+
+
+      renderPage();
+
+    }
+  )
+
+
+  .catch(
+    function(error){
+
+
+      console.error(
+        error
+      );
+
+
+      wrapper.innerHTML =
+
+        '<div class="error-box">' +
+
+        '<strong>' +
+
+        'Не вдалося завантажити профілі.' +
+
+        '</strong>' +
+
+        '<br><br>' +
+
+        'Автоматично визначено:' +
+
+        '<br>' +
+
+        'GitHub: ' +
+
+        escapeHtml(
+          GITHUB_OWNER
+        ) +
+
+        ' / ' +
+
+        escapeHtml(
+          GITHUB_REPO
+        ) +
+
+        '<br>' +
+
+        'Папка: profiles/' +
+
+        '<br><br>' +
+
+        'Помилка: ' +
+
+        escapeHtml(
+          error.message
+        ) +
+
+        '</div>';
+
+
+      paginationInfo.textContent =
+        "Помилка";
+
+
+      paginationButtons.innerHTML =
+        "";
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   ЗАВАНТАЖЕННЯ ОКРЕМОГО ПРОФІЛЮ
+   ========================================================= */
+
+function loadProfile(
+  file
+){
+
+
+  return fetch(
+    file.download_url
+  )
+
+
+  .then(
+    function(response){
+
+
+      if (
+        !response.ok
+      ) {
+
+        throw new Error(
+
+          "Не вдалося відкрити " +
+
+          file.name
+
+        );
+
+      }
+
+
+      return response.text();
+
+    }
+  )
+
+
+  .then(
+    function(html){
+
+
+      /*
+       * Парсимо HTML
+       */
+
+      var parser =
+        new DOMParser();
+
+
+      var doc =
+
+        parser.parseFromString(
+          html,
+          "text/html"
+        );
+
+
+      /*
+       * Нік
+       */
+
+      var nameElement =
+
+        doc.querySelector(
+          ".site-name"
+        );
+
+
+      /*
+       * Аватар
+       */
+
+      var avatarElement =
+
+        doc.querySelector(
+          ".main-avatar"
+        );
+
+
+      /*
+       * Статус
+       */
+
+      var statusElement =
+
+        doc.querySelector(
+          ".profile-status"
+        );
+
+
+      /*
+       * Інформація
+       */
+
+      var infoElement =
+
+        doc.querySelector(
+          ".profile-info"
+        );
+
+
+      /*
+       * Якщо це не профіль —
+       * пропускаємо.
+       */
+
+      if (
+
+        !nameElement
+
+        ||
+
+        !avatarElement
+
+      ) {
+
+        console.warn(
+
+          "Файл пропущено: " +
+
+          file.name
+
+        );
+
+
+        return null;
+
+      }
+
+
+      /*
+       * НІК
+       */
+
+      var name =
+
+        nameElement
+          .textContent
+          .trim();
+
+
+      /*
+       * АВАТАР
+       */
+
+      var avatar =
+
+        avatarElement
+          .getAttribute(
+            "src"
+          );
+
+
+      /*
+       * СТАТУС
+       */
+
+      var status =
+
+        statusElement
+
+        ?
+
+        statusElement
+          .textContent
+          .trim()
+
+        :
+
+        "";
+
+
+      /*
+       * ОПИС
+       */
+
+      var description =
+        "";
+
+
+      if (
+        infoElement
+      ) {
+
+
+        /*
+         * Беремо div першого рівня
+         * всередині .profile-info.
+         */
+
+        var blocks =
+
+          infoElement
+            .children;
+
+
+        var parts = [];
+
+
+        for (
+          var i = 0;
+          i < blocks.length;
+          i++
+        ) {
+
+
+          var block =
+            blocks[i];
+
+
+          /*
+           * Не беремо статус
+           */
+
+          if (
+            block.classList.contains(
+              "profile-status"
+            )
+          ) {
+
+            continue;
+
+          }
+
+
+          var text =
+
+            block
+              .textContent
+              .trim();
+
+
+          if (
+            text
+          ) {
+
+            parts.push(
+              text
+            );
+
+          }
+
+        }
+
+
+        description =
+
+          parts.join(
+            " "
+          );
+
+      }
+
+
+      return {
+
+        name:
+          name,
+
+        avatar:
+          avatar,
+
+        status:
+          status,
+
+        description:
+          description,
+
+        file:
+          file.name
+
+      };
+
+    }
+  )
+
+
+  .catch(
+    function(error){
+
+
+      console.error(
+
+        "Помилка профілю:",
+
+        file.name,
+
+        error
+
+      );
+
+
+      return null;
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   ВИВЕДЕННЯ ПОТОЧНОЇ СТОРІНКИ
+   ========================================================= */
+
+function renderPage(){
+
+
+  wrapper.innerHTML =
+    "";
+
+
+  /*
+   * Профілів немає
+   */
+
+  if (
+    profiles.length === 0
+  ) {
+
+    wrapper.innerHTML =
+
+      '<div class="empty-box">' +
+
+      'Профілів поки немає.' +
+
+      '</div>';
+
+
+    paginationInfo.textContent =
+      "0 профілів";
+
+
+    paginationButtons.innerHTML =
+      "";
+
+
+    return;
+
+  }
+
+
+  /*
+   * Загальна кількість сторінок
+   */
+
+  var totalPages =
+
+    Math.ceil(
+
+      profiles.length /
+      PER_PAGE
+
+    );
+
+
+  /*
+   * Перевірка сторінки
+   */
+
+  if (
+    currentPage >
+    totalPages
+  ) {
+
+    currentPage =
+      totalPages;
+
+  }
+
+
+  /*
+   * Початок
+   */
+
+  var start =
+
+    (
+      currentPage -
+      1
+    ) *
+
+    PER_PAGE;
+
+
+  /*
+   * Кінець
+   */
+
+  var end =
+
+    Math.min(
+
+      start +
+      PER_PAGE,
+
+      profiles.length
+
+    );
+
+
+  /*
+   * Створюємо картки
+   */
+
+  for (
+
+    var i =
+      start;
+
+    i <
+      end;
+
+    i++
+
+  ) {
+
+    createProfileCard(
+      profiles[i]
+    );
+
+  }
+
+
+  /*
+   * Інформація
+   */
+
+  paginationInfo.textContent =
+
+    "Сторінка " +
+
+    currentPage +
+
+    " з " +
+
+    totalPages +
+
+    " • " +
+
+    profiles.length +
+
+    " гуменів";
+
+
+  /*
+   * Пагінація
+   */
+
+  renderPagination(
+    totalPages
+  );
+
+}
+
+
+/* =========================================================
+   КАРТКА ПРОФІЛЮ
+   ========================================================= */
+
+function createProfileCard(
+  profile
+){
+
+
+  var card =
+
+    document.createElement(
+      "div"
+    );
+
+
+  card.className =
+    "friend-card";
+
+
+  /*
+   * Аватар
+   */
+
+  var avatarCell =
+
+    document.createElement(
+      "div"
+    );
+
+
+  avatarCell.className =
+
+    "friend-avatar-cell";
+
+
+  var avatar =
+
+    document.createElement(
+      "img"
+    );
+
+
+  avatar.className =
+    "friend-avatar";
+
+
+  avatar.src =
+    profile.avatar;
+
+
+  avatar.alt =
+    profile.name;
+
+
+  avatar.loading =
+    "lazy";
+
+
+  avatarCell.appendChild(
+    avatar
+  );
+
+
+  /*
+   * Інформація
+   */
+
+  var infoCell =
+
+    document.createElement(
+      "div"
+    );
+
+
+  infoCell.className =
+
+    "friend-info-cell";
+
+
+  /*
+   * Нік
+   */
+
+  var link =
+
+    document.createElement(
+      "a"
+    );
+
+
+  link.className =
+    "friend-nickname";
+
+
+  /*
+   * Переходимо в конкретний
+   * HTML-файл профілю
+   */
+
+  link.href =
+
+    PROFILES_FOLDER +
+
+    "/" +
+
+    encodeURIComponent(
+      profile.file
+    );
+
+
+  link.textContent =
+    profile.name;
+
+
+  infoCell.appendChild(
+    link
+  );
+
+
+  /*
+   * ONLINE
+   */
+
+  if (
+
+    profile.status &&
+
+    profile.status
+      .toLowerCase()
+      .indexOf(
+        "онлайн"
+      ) !== -1
+
+  ) {
+
+
+    var online =
+
+      document.createElement(
+        "span"
+      );
+
+
+    online.className =
+      "friend-online";
+
+
+    online.textContent =
+      "● online";
+
+
+    infoCell.appendChild(
+      online
+    );
+
+  }
+
+
+  /*
+   * ОПИС
+   */
+
+  if (
+    profile.description
+  ) {
+
+
+    var description =
+
+      document.createElement(
+        "div"
+      );
+
+
+    description.className =
+      "friend-status";
+
+
+    description.textContent =
+
+      profile.description;
+
+
+    infoCell.appendChild(
+      description
+    );
+
+  }
+
+
+  /*
+   * Додаємо картку
+   */
+
+  card.appendChild(
+    avatarCell
+  );
+
+
+  card.appendChild(
+    infoCell
+  );
+
+
+  wrapper.appendChild(
+    card
+  );
+
+}
+
+
+/* =========================================================
+   ПАГІНАЦІЯ
+   ========================================================= */
+
+function renderPagination(
+  totalPages
+){
+
+
+  paginationButtons.innerHTML =
+    "";
+
+
+  /*
+   * Створення кнопки
+   */
+
+  function createButton(
+    label,
+    page,
+    active
+  ){
+
+
+    var button =
+
+      document.createElement(
+        "button"
+      );
+
+
+    button.type =
+      "button";
+
+
+    button.className =
+
+      "page-btn" +
+
+      (
+
+        active
+
+        ?
+
+        " active"
+
+        :
+
+        ""
+
+      );
+
+
+    button.textContent =
+      label;
+
+
+    button.onclick =
+      function(){
+
+
+        currentPage =
+          page;
+
+
+        renderPage();
+
+
+        window.scrollTo({
+
+          top: 0,
+
+          behavior: "smooth"
+
+        });
+
+      };
+
+
+    return button;
+
+  }
+
+
+  /*
+   * ПЕРША + НАЗАД
+   */
+
+  if (
+    currentPage >
+    1
+  ) {
+
+
+    paginationButtons.appendChild(
+
+      createButton(
+        "«",
+        1,
+        false
+      )
+
+    );
+
+
+    paginationButtons.appendChild(
+
+      createButton(
+        "<",
+        currentPage - 1,
+        false
+      )
+
+    );
+
+  }
+
+
+  /*
+   * Діапазон
+   */
+
+  var start =
+
+    Math.max(
+
+      1,
+
+      currentPage - 2
+
+    );
+
+
+  var end =
+
+    Math.min(
+
+      totalPages,
+
+      currentPage + 2
+
+    );
+
+
+  /*
+   * ПЕРША
+   */
+
+  if (
+    start >
+    1
+  ) {
+
+
+    paginationButtons.appendChild(
+
+      createButton(
+        "1",
+        1,
+        currentPage === 1
+      )
+
+    );
+
+
+    if (
+      start >
+      2
+    ) {
+
+
+      var dots =
+
+        document.createElement(
+          "span"
+        );
+
+
+      dots.className =
+        "page-dots";
+
+
+      dots.textContent =
+        "...";
+
+
+      paginationButtons.appendChild(
+        dots
+      );
+
+    }
+
+  }
+
+
+  /*
+   * НОМЕРИ
+   */
+
+  for (
+
+    var page =
+      start;
+
+    page <=
+      end;
+
+    page++
+
+  ) {
+
+
+    paginationButtons.appendChild(
+
+      createButton(
+
+        String(
+          page
+        ),
+
+        page,
+
+        page ===
+        currentPage
+
+      )
+
+    );
+
+  }
+
+
+  /*
+   * ОСТАННЯ
+   */
+
+  if (
+    end <
+    totalPages
+  ) {
+
+
+    if (
+      end <
+      totalPages - 1
+    ) {
+
+
+      var dots2 =
+
+        document.createElement(
+          "span"
+        );
+
+
+      dots2.className =
+        "page-dots";
+
+
+      dots2.textContent =
+        "...";
+
+
+      paginationButtons.appendChild(
+        dots2
+      );
+
+    }
+
+
+    paginationButtons.appendChild(
+
+      createButton(
+
+        String(
+          totalPages
+        ),
+
+        totalPages,
+
+        currentPage ===
+        totalPages
+
+      )
+
+    );
+
+  }
+
+
+  /*
+   * ВПЕРЕД + ОСТАННЯ
+   */
+
+  if (
+    currentPage <
+    totalPages
+  ) {
+
+
+    paginationButtons.appendChild(
+
+      createButton(
+
+        ">",
+
+        currentPage + 1,
+
+        false
+
+      )
+
+    );
+
+
+    paginationButtons.appendChild(
+
+      createButton(
+
+        "»",
+
+        totalPages,
+
+        false
+
+      )
+
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   ESCAPE
+   ========================================================= */
+
+function escapeHtml(
+  text
+){
+
+
+  return String(
+    text
+  )
+
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+
+  .replace(
+    /</g,
+    "&lt;"
+  )
+
+  .replace(
+    />/g,
+    "&gt;"
+  )
+
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+
+}
+
+
+/* =========================================================
+   СТАТИСТИКА
+   ========================================================= */
+
+function containsForbiddenSequence(
+  number
+){
+
+
+  var text =
+    String(
+      number
+    );
+
+
+  return (
+
+    text.indexOf(
+      "63"
+    ) !== -1
+
+    ||
+
+    text.indexOf(
+      "68"
+    ) !== -1
+
+    ||
+
+    text.indexOf(
+      "13"
+    ) !== -1
+
+    ||
+
+    text.indexOf(
+      "666"
+    ) !== -1
+
+  );
+
+}
+
+
+function safeNumber(
+  base,
+  variation
+){
+
+
+  var number;
+
+  var attempts =
+    0;
+
+
+  do {
+
+
+    number =
+
+      base +
+
+      Math.floor(
+
+        Math.random() *
+
+        (
+          variation * 2 +
+          1
+        )
+
+      ) -
+
+      variation;
+
+
+    attempts++;
+
+
+    if (
+      attempts >
+      1000
+    ) {
+
+
+      number =
+        base;
+
+
+      while (
+
+        containsForbiddenSequence(
+          number
+        )
+
+      ) {
+
+        number++;
+
+      }
+
+
+      break;
+
+    }
+
+
+  }
+
+  while (
+
+    containsForbiddenSequence(
+      number
+    )
+
+  );
+
+
+  return number;
+
+}
+
+
+function updateStatistics(){
+
+
+  document.getElementById(
+    "registered-hoomen"
+  ).textContent =
+
+    safeNumber(
+      8000000,
+      23000
+    )
+
+    .toLocaleString(
+      "uk-UA"
+    );
+
+
+  document.getElementById(
+    "online-hoomen"
+  ).textContent =
+
+    safeNumber(
+      1000000,
+      38000
+    )
+
+    .toLocaleString(
+      "uk-UA"
+    );
+
+
+  document.getElementById(
+    "today-hoomen"
+  ).textContent =
+
+    safeNumber(
+      2400000,
+      90000
+    )
+
+    .toLocaleString(
+      "uk-UA"
+    );
+
+}
+
+
+/* =========================================================
+   ЗАПУСК
+   ========================================================= */
+
+updateStatistics();
+
+
+setInterval(
+
+  updateStatistics,
+
+  30000
+
+);
+
+
+loadProfiles();
+
+
+})();
+</script>
+
+
+</body>
+</html>
