@@ -6,105 +6,431 @@
 <title>ГУМЕНЧАТ</title>
 
 <style>
-html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:14px;color:#222}
-*{box-sizing:border-box}
-#hoomenchat-site{display:block;width:100%;min-height:100vh;margin:0;padding:12px;background:#fff;border:1px solid #777}
-#hoomenchat-site *,#hoomenchat-site *:before,#hoomenchat-site *:after{box-sizing:border-box}
-#hoomenchat-site .hoomenchat-header{display:block;margin:0 0 10px;padding:5px 8px;background:linear-gradient(to bottom,#626262,#3b3b3b);border:1px solid #222;color:#fff;font-size:12px;line-height:14px;font-weight:bold;letter-spacing:1px;text-transform:uppercase}
-#hoomenchat-site .site-layout{display:table;width:100%;border-collapse:separate;border-spacing:10px 0}
-#hoomenchat-site .site-left{display:table-cell;width:165px;vertical-align:top}
-#hoomenchat-site .site-right{display:table-cell;vertical-align:top}
-#hoomenchat-site .left-box{padding:3px 7px;background:#f0f0f0;border:1px solid #999}
-#hoomenchat-site .site-name{margin:1px 0 6px;padding:0 0 4px;border-bottom:1px solid #bcbcbc;color:#111;font-size:15px;line-height:17px;font-weight:bold;text-align:center}
-#hoomenchat-site .main-avatar{display:block;width:100%;height:125px;margin:0 0 6px;object-fit:cover;object-position:center 35%;background:#ddd;border:1px solid #888}
-#hoomenchat-site .archat-button{display:block;width:100%;margin:0 0 5px;padding:4px 0;background:linear-gradient(to bottom,#fff176,#fbc02d);border:1px solid #a78119;color:#000;font-size:10px;line-height:13px;font-weight:bold;text-align:center;text-decoration:none;text-transform:uppercase}
-#hoomenchat-site .archat-button:hover{background:linear-gradient(to bottom,#fff59d,#fdd835);color:#000}
-#hoomenchat-site .nav-menu{display:block;margin:0;padding:0;border-top:1px solid #999}
-#hoomenchat-site .nav-item{display:block;width:100%;margin:0;padding:3px 2px;border-bottom:1px solid #c7c7c7;color:#444;font-size:11px;line-height:13px;text-decoration:underline;cursor:pointer}
-#hoomenchat-site .nav-item:hover{background:#e2e2e2;color:#000;text-decoration:none}
-#hoomenchat-site .account-box{margin:8px 0 0;padding:5px 4px;border-top:1px solid #999;text-align:center}
-#hoomenchat-site .account-text{margin:0 0 5px;color:#555;font-size:9px;line-height:12px}
-#hoomenchat-site .account-link{display:block;margin:2px 0;color:#444;font-size:10px;line-height:12px;font-weight:bold;text-decoration:underline;cursor:pointer}
-#hoomenchat-site .account-link:hover{color:#000;text-decoration:none}
-#hoomenchat-site .welcome-box{margin:0 0 8px;padding:7px 8px;background:#f9f9f9;border:1px solid #999;color:#222;font-size:12px;line-height:15px}
-#hoomenchat-site .welcome-box strong{font-weight:bold}
-#hoomenchat-site .profiles-box{margin:0;padding:7px;background:#fff;border:1px solid #aaa}
-#hoomenchat-site .profiles-header{margin:0 0 7px;padding:4px 7px;background:#f0f0f0;border:1px solid #999;color:#333;font-size:11px;line-height:13px;font-weight:bold}
-#hoomenchat-site .random-profiles{display:table;width:100%;border-collapse:separate;border-spacing:7px 0}
-#hoomenchat-site .random-profile-cell{display:table-cell;width:33.333%;vertical-align:top}
-#hoomenchat-site .random-profile{display:block;padding:5px;background:#f0f0f0;border:1px solid #999;color:#222;text-decoration:none}
-#hoomenchat-site .random-profile:hover{background:#e2e2e2;border-color:#666}
-#hoomenchat-site .random-{display:block;width:100%;height:165px;margin:0 0 5px;object-fit:cover;object-position:center 35%;background:#ddd;border:1px solid #888}
-#hoomenchat-site .random-name{margin:0;padding:0 2px;color:#111;font-size:12px;line-height:14px;font-weight:bold;text-align:center;word-wrap:break-word}
-#hoomenchat-site .random-status{margin:2px 0 0;color:#2e7d32;font-size:10px;line-height:12px;font-style:italic;text-align:center}
-#hoomenchat-site .rules-box{margin:8px 0 0;padding:5px 8px;background:#fff;border:1px solid #aaa;color:#444;font-size:11px;line-height:14px}
-#hoomenchat-site .rules-box a{color:#333;font-weight:bold;text-decoration:underline}
-#hoomenchat-site .statistics-box{margin:8px 0 0;padding:5px 8px;background:#fff;border:1px solid #aaa;color:#555;font-family:"Courier New",Courier,monospace;font-size:10px;line-height:13px}
-#hoomenchat-site .statistics-title{margin:0 0 3px;color:#333;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:12px;font-weight:bold}
-#hoomenchat-site .statistics-number{color:#222;font-weight:bold}
-#hoomenchat-site .statistics-online{color:#2e7d32;font-weight:bold}
-#hoomenchat-site .footer-line{margin:7px 0 0;padding-top:4px;border-top:1px solid #ccc;color:#888;font-size:9px;line-height:11px;text-align:center}
-@media screen and (max-width:600px){#hoomenchat-site{margin:0;padding:7px}#hoomenchat-site .site-layout{display:block;border-spacing:0}#hoomenchat-site .site-left,#hoomenchat-site .site-right{display:block;width:100%}#hoomenchat-site .site-left{margin-bottom:8px}#hoomenchat-site .random-profiles{border-spacing:4px 0}#hoomenchat-site .random-avatar{height:130px}}
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  color: #222;
+}
+* {
+  box-sizing: border-box;
+}
+#hoomenchat-site {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #777;
+}
+#hoomenchat-site *, #hoomenchat-site *:before, #hoomenchat-site *:after {
+  box-sizing: border-box;
+}
+#hoomenchat-site .hoomenchat-header {
+  display: block;
+  margin: 0 0 10px;
+  padding: 5px 8px;
+  background: linear-gradient(to bottom, #626262, #3b3b3b);
+  border: 1px solid #222;
+  color: #fff;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+#hoomenchat-site .site-layout {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 10px 0;
+}
+#hoomenchat-site .site-left {
+  display: table-cell;
+  width: 165px;
+  vertical-align: top;
+}
+#hoomenchat-site .site-right {
+  display: table-cell;
+  vertical-align: top;
+}
+#hoomenchat-site .left-box {
+  padding: 3px 7px;
+  background: #f0f0f0;
+  border: 1px solid #999;
+}
+#hoomenchat-site .site-name {
+  margin: 1px 0 6px;
+  padding: 0 0 4px;
+  border-bottom: 1px solid #bcbcbc;
+  color: #111;
+  font-size: 15px;
+  line-height: 17px;
+  font-weight: bold;
+  text-align: center;
+}
+#hoomenchat-site .main-avatar {
+  display: block;
+  width: 100%;
+  height: 125px;
+  margin: 0 0 6px;
+  object-fit: cover;
+  object-position: center 35%;
+  background: #ddd;
+  border: 1px solid #888;
+}
+#hoomenchat-site .archat-button {
+  display: block;
+  width: 100%;
+  margin: 0 0 5px;
+  padding: 4px 0;
+  background: linear-gradient(to bottom, #fff176, #fbc02d);
+  border: 1px solid #a78119;
+  color: #000;
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+#hoomenchat-site .archat-button:hover {
+  background: linear-gradient(to bottom, #fff59d, #fdd835);
+  color: #000;
+}
+#hoomenchat-site .nav-menu {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #999;
+}
+#hoomenchat-site .nav-item {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 3px 2px;
+  border-bottom: 1px solid #c7c7c7;
+  color: #444;
+  font-size: 11px;
+  line-height: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+#hoomenchat-site .nav-item:hover {
+  background: #e2e2e2;
+  color: #000;
+  text-decoration: none;
+}
+#hoomenchat-site .account-box {
+  margin: 8px 0 0;
+  padding: 5px 4px;
+  border-top: 1px solid #999;
+  text-align: center;
+}
+#hoomenchat-site .account-text {
+  margin: 0 0 5px;
+  color: #555;
+  font-size: 9px;
+  line-height: 12px;
+}
+#hoomenchat-site .account-link {
+  display: block;
+  margin: 2px 0;
+  color: #444;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+}
+#hoomenchat-site .account-link:hover {
+  color: #000;
+  text-decoration: none;
+}
+#hoomenchat-site .welcome-box {
+  margin: 0 0 8px;
+  padding: 7px 8px;
+  background: #f9f9f9;
+  border: 1px solid #999;
+  color: #222;
+  font-size: 12px;
+  line-height: 15px;
+}
+#hoomenchat-site .welcome-box strong {
+  font-weight: bold;
+}
+#hoomenchat-site .profiles-box {
+  margin: 0;
+  padding: 7px;
+  background: #fff;
+  border: 1px solid #aaa;
+}
+#hoomenchat-site .profiles-header {
+  margin: 0 0 7px;
+  padding: 4px 7px;
+  background: #f0f0f0;
+  border: 1px solid #999;
+  color: #333;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+}
+#hoomenchat-site .random-profiles {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 7px 0;
+}
+#hoomenchat-site .random-profile-cell {
+  display: table-cell;
+  width: 33.333%;
+  vertical-align: top;
+}
+#hoomenchat-site .random-profile {
+  display: block;
+  padding: 5px;
+  background: #f0f0f0;
+  border: 1px solid #999;
+  color: #222;
+  text-decoration: none;
+}
+#hoomenchat-site .random-profile:hover {
+  background: #e2e2e2;
+  border-color: #666;
+}
+/* ВИПРАВЛЕНО: Було .random-, стало .random-avatar */
+#hoomenchat-site .random-avatar {
+  display: block;
+  width: 100%;
+  height: 165px;
+  margin: 0 0 5px;
+  object-fit: cover;
+  object-position: center 35%;
+  background: #ddd;
+  border: 1px solid #888;
+}
+#hoomenchat-site .random-name {
+  margin: 0;
+  padding: 0 2px;
+  color: #111;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: bold;
+  text-align: center;
+  word-wrap: break-word;
+}
+#hoomenchat-site .random-status {
+  margin: 2px 0 0;
+  color: #2e7d32;
+  font-size: 10px;
+  line-height: 12px;
+  font-style: italic;
+  text-align: center;
+}
+#hoomenchat-site .rules-box {
+  margin: 8px 0 0;
+  padding: 5px 8px;
+  background: #fff;
+  border: 1px solid #aaa;
+  color: #444;
+  font-size: 11px;
+  line-height: 14px;
+}
+#hoomenchat-site .rules-box a {
+  color: #333;
+  font-weight: bold;
+  text-decoration: underline;
+}
+#hoomenchat-site .statistics-box {
+  margin: 8px 0 0;
+  padding: 5px 8px;
+  background: #fff;
+  border: 1px solid #aaa;
+  color: #555;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 10px;
+  line-height: 13px;
+}
+#hoomenchat-site .statistics-title {
+  margin: 0 0 3px;
+  color: #333;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: bold;
+}
+#hoomenchat-site .statistics-number {
+  color: #222;
+  font-weight: bold;
+}
+#hoomenchat-site .statistics-online {
+  color: #2e7d32;
+  font-weight: bold;
+}
+#hoomenchat-site .footer-line {
+  margin: 7px 0 0;
+  padding-top: 4px;
+  border-top: 1px solid #ccc;
+  color: #888;
+  font-size: 9px;
+  line-height: 11px;
+  text-align: center;
+}
+@media screen and (max-width: 600px) {
+  #hoomenchat-site {
+    margin: 0;
+    padding: 7px;
+  }
+  #hoomenchat-site .site-layout {
+    display: block;
+    border-spacing: 0;
+  }
+  #hoomenchat-site .site-left,
+  #hoomenchat-site .site-right {
+    display: block;
+    width: 100%;
+  }
+  #hoomenchat-site .site-left {
+    margin-bottom: 8px;
+  }
+  #hoomenchat-site .random-profiles {
+    border-spacing: 4px 0;
+  }
+  #hoomenchat-site .random-avatar {
+    height: 130px;
+  }
+}
 </style>
 </head>
 <body>
 <div id="hoomenchat-site">
-<div class="hoomenchat-header">ГУМЕНЧАТ</div>
-<div class="site-layout">
-<div class="site-left">
-<div class="left-box">
-<div class="site-name">ГУМЕНЧАТ</div>
-<img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEikl2AwyMPO-fdHfH3XugR0z28OlNR7sGHxQFaYw1KHQ_3YNbbm0aGwmKo8X21RqBa-2RSi1sQmdGYFEs7XIaYylW3_6ivt1yixDE1RAhEOLPqMwEImTEd-0nUeCbb_9EUGLjjwa1OJK9njExaag52-LAN8p7YCRWAcKOdSpBgxJ62aQL7Ju2pjLLNhAWM" alt="ГУМЕНЧАТ">
-<a class="archat-button" href="archive.html">📩 АРЧАТ</a>
-<div class="nav-menu">
-<a class="nav-item" href="profile.html">Мій гумгайл</a>
-<a class="nav-item" href="profiles.html">Гумгайли</a>
-<a class="nav-item" href="droomens.html">Друмени</a>
-<a class="nav-item" href="activity.html">Стрічерчат</a>
-<a class="nav-item" href="islands.html">Острови</a>
-<a class="nav-item" href="rules.html">Правила</a>
+  <div class="hoomenchat-header">ГУМЕНЧАТ</div>
+  <div class="site-layout">
+    <div class="site-left">
+      <div class="left-box">
+        <div class="site-name">ГУМЕНЧАТ</div>
+        <img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEikl2AwyMPO-fdHfH3XugR0z28OlNR7sGHxQFaYw1KHQ_3YNbbm0aGwmKo8X21RqBa-2RSi1sQmdGYFEs7XIaYylW3_6ivt1yixDE1RAhEOLPqMwEImTEd-0nUeCbb_9EUGLjjwa1OJK9njExaag52-LAN8p7YCRWAcKOdSpBgxJ62aQL7Ju2pjLLNhAWM" alt="ГУМЕНЧАТ">
+        <a class="archat-button" href="archive.html">📩 АРЧАТ</a>
+        <div class="nav-menu">
+          <a class="nav-item" href="profile.html">Мій гумгайл</a>
+          <a class="nav-item" href="profiles.html">Гумгайли</a>
+          <a class="nav-item" href="droomens.html">Друмени</a>
+          <a class="nav-item" href="activity.html">Стрічерчат</a>
+          <a class="nav-item" href="islands.html">Острови</a>
+          <a class="nav-item" href="rules.html">Правила</a>
+        </div>
+        <div class="account-box">
+          <div class="account-text">Немає гумгайла?</div>
+          <a class="account-link" href="register.html">ЗАРЕЄСТРУВАТИСЯ</a>
+          <a class="account-link" href="login.html">ВХІД</a>
+        </div>
+      </div>
+    </div>
+    <div class="site-right">
+      <div class="welcome-box">Вітаємо! Безліч гуменів чекають на тебе вже <strong>ЗАРАЗ</strong>: Спілкуйся, обмінюйся думками, знаходь друменів, кохання свого життя, рідних та близьких разом з нами!</div>
+      <div class="profiles-box">
+        <div class="profiles-header">Гумени чекають на тебе:</div>
+        <div class="random-profiles" id="random-hoomen-list"></div>
+      </div>
+      <div class="rules-box">Пам'ятай та дотримуйся <a href="rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
+      <div class="statistics-box">
+        <div class="statistics-title">Статистика Гуменчату</div>
+        <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
+        <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
+        <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
+      </div>
+      <div class="footer-line">Гуменчат — місце для гуменів.</div>
+    </div>
+  </div>
 </div>
-<div class="account-box">
-<div class="account-text">Немає гумгайла?</div>
-<a class="account-link" href="register.html">ЗАРЕЄСТРУВАТИСЯ</a>
-<a class="account-link" href="login.html">ВХІД</a>
-</div>
-</div>
-</div>
-<div class="site-right">
-<div class="welcome-box">Вітаємо! Безліч гуменів чекають на тебе вже <strong>ЗАРАЗ</strong>: Спілкуйся, обмінюйся думками, знаходь друменів, кохання свого життя, рідних та близьких разом з нами!</div>
-<div class="profiles-box">
-<div class="profiles-header">Гумени чекають на тебе:</div>
-<div class="random-profiles" id="random-hoomen-list"></div>
-</div>
-<div class="rules-box">Пам'ятай та дотримуйся <a href="rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
-<div class="statistics-box">
-<div class="statistics-title">Статистика Гуменчату</div>
-<div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
-<div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
-<div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
-</div>
-<div class="footer-line">Гуменчат — місце для гуменів.</div>
-</div>
-</div>
-</div>
+
 <script>
 (function(){
-var hoomenProfiles=[
-{name:"dreaming_romance",avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA",link:"profiles/dreaming-romance.html",status:"онлайн"},
-{name:"copy_pasta",avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiNU5aLNwKBZvNgLsvxfKYA0hduyABhvfQrHryVIrw1Q2WVFne8Aop849IRmthJlGuRphRDtjX_d-pvH8gcUtCoAL-zkhXAP0utpiVidiXL57SIMaMBjeaXnGhTZ_j2wQj1RZxI-V5TsjxtARZSpoxZ8UGuDX_9t9hmiL6k1OyP6ilE8WmYwfKmHTQFvFg",link:"profiles/copy-pasta.html",status:"онлайн"},
-{name:"sakurai_agatsuma",avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEg6F3ycnXu5A2gS5zM4p0-qELjeNz4oXvfJAwkLxSJnL4kELcGviUtPwYe-Oa8lV_ThO7h6iq0dwSnx2FeaHbkzG6HEC8S0HILQKiHh49eWl65LSGoj7RgeAYb7V5MV7b7Mu7Sxexq9LYM_7XPF6SkSjStcQO32x02IKUWdFlUck9z30GmMEJgH2OLM3YA",link:"profiles/sakurai-agatsuma.html",status:"онлайн"},
-{name:"sruiki_stikki",avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEhvP2ab1Fl3tJVD7N4ZinordTPbip3E8SpYB6yk93kDOeak-4B17vuUQTl_j4mggTJ9cMwD7chp48zMEjl6yiHQVRM0VpXDC_EsUkx6H894DwLM7g4cRTxiy4GXYV2kiAkTZmqJwflc0UeDzuWd_t8Bp_zB6sjBFB81qxtUCYGCyLEpueRRi9CMnqfuXnA",link:"profiles/sruiki-stikki.html",status:"недавно був(ла)"},
-{name:"yurii_ichigo",avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiMGES7-O1UP0GNtOe_tYLUJ1-xHmX0DIUGn78v1Mi8sT9_WmVXm1-mw2Nh5uKfKksgKrdapry46R4R5kPIIQi0XWexejQq2fPwS2TjpVqeF0xHdtJfDgDgHOgEyUSiuXQ2q-L2X_PqmD0m8KWf5QdIOdQAx2xuN0F6HGE0V32-BECRndeELmjUeEGtCq0",link:"profiles/yurii-ichigo.html",status:"онлайн"},
-{name:"dmytro_pinchuk",avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEhavXxH1olKd8QKInl2XEJOuzumK7FJHJGDIW3rZQxAHDytMrTjbjMU2GALc3fK_05KQvX0tDudgHT6_sKkRjmD2D5VN4MnuDZKMmuaQi5CYWrwERP3oqNyBz5TPRytotDlvP-FoDns0Ky3oHEVFLWGwnZ6KvJyVJqVV9oTV-XzLu-qj--InjBO4QFEn60",link:"profiles/dmytro-pinchuk.html",status:"недавно був(ла)"},
-{name:"alter_core",avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiZ7hOITEG-aCscLuMNEBml1v2zidsEixQymUsU5UukZN4Jb-AAbqwdGj3CJ8gSTbOvXMgyPp3T4xAQzq3TRYhFjOYbF0TkE6lWGESsA-K31pEcpcOV2Cr061lkzABNZRKN5CPAr9WmD38DWNYbebjw8CuqHGWvgBCumZebUra3Kjf6sjUDTZDpVZQehD0",link:"profiles/alter-core.html",status:"онлайн"}
-];
-function shuffle(a){var c=a.slice();for(var i=c.length-1;i>0;i--){var r=Math.floor(Math.random()*(i+1)),t=c[i];c[i]=c[r];c[r]=t}return c}
-function showProfiles(){var c=document.getElementById("random-hoomen-list");if(!c)return;c.innerHTML="";shuffle(hoomenProfiles).slice(0,3).forEach(function(p){var cell=document.createElement("div");cell.className="random-profile-cell";var a=document.createElement("a");a.className="random-profile";a.href=p.link;var img=document.createElement("img");img.className="random-avatar";img.src=p.avatar;img.alt=p.name;var n=document.createElement("div");n.className="random-name";n.textContent=p.name;var s=document.createElement("div");s.className="random-status";s.textContent="● "+p.status;a.appendChild(img);a.appendChild(n);a.appendChild(s);cell.appendChild(a);c.appendChild(cell)})}
-function forbidden(n){var t=String(n);return t.indexOf("63")!==-1||t.indexOf("68")!==-1||t.indexOf("13")!==-1||t.indexOf("666")!==-1}
-function safeNumber(base,variation){var n,tries=0;do{n=base+Math.floor(Math.random()*(variation*2+1))-variation;tries++;if(tries>1000){n=base+variation+1;while(forbidden(n))n++;break}}while(forbidden(n));return n}
-function updateStatistics(){document.getElementById("registered-hoomen").textContent=safeNumber(8000000,23000).toLocaleString("uk-UA");document.getElementById("online-hoomen").textContent=safeNumber(1000000,38000).toLocaleString("uk-UA");document.getElementById("today-hoomen").textContent=safeNumber(2400000,90000).toLocaleString("uk-UA")}
-showProfiles();updateStatistics();setInterval(updateStatistics,30000);
+  var hoomenProfiles = [
+    {name:"dreaming_romance", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA", link:"profiles/dreaming-romance.html", status:"онлайн"},
+    {name:"copy_pasta", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiNU5aLNwKBZvNgLsvxfKYA0hduyABhvfQrHryVIrw1Q2WVFne8Aop849IRmthJlGuRphRDtjX_d-pvH8gcUtCoAL-zkhXAP0utpiVidiXL57SIMaMBjeaXnGhTZ_j2wQj1RZxI-V5TsjxtARZSpoxZ8UGuDX_9t9hmiL6k1OyP6ilE8WmYwfKmHTQFvFg", link:"profiles/copy-pasta.html", status:"онлайн"},
+    {name:"sakurai_agatsuma", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEg6F3ycnXu5A2gS5zM4p0-qELjeNz4oXvfJAwkLxSJnL4kELcGviUtPwYe-Oa8lV_ThO7h6iq0dwSnx2FeaHbkzG6HEC8S0HILQKiHh49eWl65LSGoj7RgeAYb7V5MV7b7Mu7Sxexq9LYM_7XPF6SkSjStcQO32x02IKUWdFlUck9z30GmMEJgH2OLM3YA", link:"profiles/sakurai-agatsuma.html", status:"онлайн"},
+    {name:"sruiki_stikki", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEhvP2ab1Fl3tJVD7N4ZinordTPbip3E8SpYB6yk93kDOeak-4B17vuUQTl_j4mggTJ9cMwD7chp48zMEjl6yiHQVRM0VpXDC_EsUkx6H894DwLM7g4cRTxiy4GXYV2kiAkTZmqJwflc0UeDzuWd_t8Bp_zB6sjBFB81qxtUCYGCyLEpueRRi9CMnqfuXnA", link:"profiles/sruiki-stikki.html", status:"недавно був(ла)"},
+    {name:"yurii_ichigo", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiMGES7-O1UP0GNtOe_tYLUJ1-xHmX0DIUGn78v1Mi8sT9_WmVXm1-mw2Nh5uKfKksgKrdapry46R4R5kPIIQi0XWexejQq2fPwS2TjpVqeF0xHdtJfDgDgHOgEyUSiuXQ2q-L2X_PqmD0m8KWf5QdIOdQAx2xuN0F6HGE0V32-BECRndeELmjUeEGtCq0", link:"profiles/yurii-ichigo.html", status:"онлайн"},
+    {name:"dmytro_pinchuk", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEhavXxH1olKd8QKInl2XEJOuzumK7FJHJGDIW3rZQxAHDytMrTjbjMU2GALc3fK_05KQvX0tDudgHT6_sKkRjmD2D5VN4MnuDZKMmuaQi5CYWrwERP3oqNyBz5TPRytotDlvP-FoDns0Ky3oHEVFLWGwnZ6KvJyVJqVV9oTV-XzLu-qj--InjBO4QFEn60", link:"profiles/dmytro-pinchuk.html", status:"недавно був(ла)"},
+    {name:"alter_core", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiZ7hOITEG-aCscLuMNEBml1v2zidsEixQymUsU5UukZN4Jb-AAbqwdGj3CJ8gSTbOvXMgyPp3T4xAQzq3TRYhFjOYbF0TkE6lWGESsA-K31pEcpcOV2Cr061lkzABNZRKN5CPAr9WmD38DWNYbebjw8CuqHGWvgBCumZebUra3Kjf6sjUDTZDpVZQehD0", link:"profiles/alter-core.html", status:"онлайн"}
+  ];
+
+  function shuffle(a){
+    var c = a.slice();
+    for (var i = c.length - 1; i > 0; i--) {
+      var r = Math.floor(Math.random() * (i + 1)), t = c[i];
+      c[i] = c[r];
+      c[r] = t;
+    }
+    return c;
+  }
+
+  function showProfiles(){
+    var c = document.getElementById("random-hoomen-list");
+    if(!c) return;
+    c.innerHTML = "";
+    shuffle(hoomenProfiles).slice(0, 3).forEach(function(p){
+      var cell = document.createElement("div");
+      cell.className = "random-profile-cell";
+      
+      var a = document.createElement("a");
+      a.className = "random-profile";
+      a.href = p.link;
+      
+      var img = document.createElement("img");
+      img.className = "random-avatar";
+      img.src = p.avatar;
+      img.alt = p.name;
+      
+      var n = document.createElement("div");
+      n.className = "random-name";
+      n.textContent = p.name;
+      
+      var s = document.createElement("div");
+      s.className = "random-status";
+      s.textContent = "● " + p.status;
+      
+      a.appendChild(img);
+      a.appendChild(n);
+      a.appendChild(s);
+      cell.appendChild(a);
+      c.appendChild(cell);
+    });
+  }
+
+  function forbidden(n){
+    var t = String(n);
+    return t.indexOf("63") !== -1 || t.indexOf("68") !== -1 || t.indexOf("13") !== -1 || t.indexOf("666") !== -1;
+  }
+
+  function safeNumber(base, variation){
+    var n, tries = 0;
+    do {
+      n = base + Math.floor(Math.random() * (variation * 2 + 1)) - variation;
+      tries++;
+      if (tries > 100) {
+        n = base + variation + 1;
+        while(forbidden(n)) n++;
+        break;
+      }
+    } while (forbidden(n));
+    return n;
+  }
+
+  function updateStatistics(){
+    document.getElementById("registered-hoomen").textContent = safeNumber(8000000, 23000).toLocaleString("uk-UA");
+    document.getElementById("online-hoomen").textContent = safeNumber(1000000, 38000).toLocaleString("uk-UA");
+    document.getElementById("today-hoomen").textContent = safeNumber(2400000, 90000).toLocaleString("uk-UA");
+  }
+
+  showProfiles();
+  updateStatistics();
+  setInterval(updateStatistics, 30000);
 })();
 </script>
 </body>
