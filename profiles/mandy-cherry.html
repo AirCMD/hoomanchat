@@ -1,82 +1,1424 @@
-<!doctype html>
-<html lang="uk">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Гуменчат — mandy_cherry</title>
-<style>
-html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:14px;color:#222}*{box-sizing:border-box}
-#hoomenchat-site{width:100%;min-height:100vh;margin:0;padding:12px;background:#fff;border:1px solid #777}
-#hoomenchat-site a{color:#444}.hoomenchat-header{margin:0 0 10px;padding:5px 8px;background:linear-gradient(to bottom,#626262,#3b3b3b);border:1px solid #222;color:#fff;font-size:12px;line-height:14px;font-weight:bold;letter-spacing:1px;text-transform:uppercase}
-.site-layout{display:table;width:100%;border-collapse:separate;border-spacing:10px 0}.site-left{display:table-cell;width:165px;vertical-align:top}.site-right{display:table-cell;vertical-align:top}.left-box{padding:3px 7px;background:#f0f0f0;border:1px solid #999}.site-name{margin:1px 0 6px;padding:0 0 4px;border-bottom:1px solid #bcbcbc;color:#111;font-size:15px;line-height:17px;font-weight:bold;text-align:center;word-break:break-word}.main-avatar{display:block;width:100%;height:228px;margin:0 0 6px;object-fit:cover;background:#ddd;border:1px solid #888}
-.archat-button{display:block;width:100%;margin:0 0 5px;padding:4px 0;background:linear-gradient(to bottom,#fff176,#fbc02d);border:1px solid #a78119;color:#000;font-size:10px;line-height:13px;font-weight:bold;text-align:center;text-decoration:none;text-transform:uppercase}.archat-button:hover{background:linear-gradient(to bottom,#fff59d,#fdd835)}
-.nav-menu{border-top:1px solid #999}.nav-item{display:block;width:100%;padding:3px 2px;border-bottom:1px solid #c7c7c7;color:#444;font-size:11px;line-height:13px;text-decoration:underline}.nav-item:hover{background:#e2e2e2;color:#000;text-decoration:none}.account-box{margin:8px 0 0;padding:5px 4px;border-top:1px solid #999;text-align:center}.account-text{margin:0 0 5px;color:#555;font-size:9px;line-height:12px}.account-link{display:block;margin:2px 0;color:#444;font-size:10px;line-height:12px;font-weight:bold;text-decoration:underline}
-.profile-box{margin:0 0 8px;padding:7px;background:#fff;border:1px solid #aaa}.profile-header{margin:0 0 7px;padding:5px 7px;background:#f0f0f0;border:1px solid #999;color:#222;font-size:12px;line-height:15px;font-weight:bold}.profile-info{padding:6px 7px;background:#f9f9f9;border:1px solid #aaa;color:#444;font-size:11px;line-height:15px}.profile-status{margin-top:4px;color:#2e7d32;font-size:10px;font-style:italic}.posts-header{margin:8px 0 5px;padding:4px 7px;background:#f0f0f0;border:1px solid #999;color:#333;font-size:11px;line-height:13px;font-weight:bold}
-.profile-post{margin:0 0 7px;background:#fff;border:1px solid #aaa}.profile-post-title{padding:4px 7px;background:#f5f5f5;border-bottom:1px solid #aaa;color:#222;font-size:11px;line-height:14px;font-weight:bold}.profile-post-body{padding:6px 7px;color:#333;font-size:11px;line-height:15px;white-space:pre-wrap}.post-actions{padding:4px 7px;border-top:1px solid #ddd;background:#fafafa}.like-button,.comment-button{display:inline-block;margin:0 8px 0 0;padding:1px 3px;border:0;background:transparent;color:#555;font:10px/13px Arial,sans-serif;cursor:pointer}.like-button:hover,.comment-button:hover{color:#000;text-decoration:underline}.like-button.liked{color:#c62828;font-weight:bold}.comments-area{display:none;padding:6px 7px;background:#f8f8f8;border-top:1px solid #ddd}.comments-area.open{display:block}.fake-comment,.user-comment{margin:0 0 5px;padding:4px 5px;background:#fff;border:1px solid #ccc;font-size:10px;line-height:13px}.fake-comment-name{margin-bottom:2px;color:#222;font-weight:bold}.comment-form{margin-top:6px}.comment-input{display:block;width:100%;min-height:45px;padding:4px 5px;resize:vertical;background:#fff;border:1px solid #aaa;color:#222;font:10px/13px Arial,sans-serif}.comment-send{margin-top:4px;padding:3px 8px;background:#eee;border:1px solid #999;color:#444;font-size:10px;line-height:12px;cursor:pointer}.comment-send:hover{background:#ddd;color:#000}.profile-post-date{padding:3px 7px;border-top:1px solid #ddd;color:#888;font-size:9px;line-height:11px}
-.show-more{display:block;width:100%;margin:2px 0 0;padding:5px 7px;background:#f0f0f0;border:1px solid #999;color:#444;font:10px/13px Arial,sans-serif;font-weight:bold;text-align:center;text-decoration:underline;cursor:pointer}.show-more:hover{background:#e1e1e1;color:#000}.show-more.hidden{display:none}.rules-box{margin:8px 0 0;padding:5px 8px;background:#fff;border:1px solid #aaa;color:#444;font-size:11px;line-height:14px}.rules-box a{font-weight:bold;text-decoration:underline}.statistics-box{margin:8px 0 0;padding:5px 8px;background:#fff;border:1px solid #aaa;color:#555;font:10px/13px "Courier New",monospace}.statistics-title{margin:0 0 3px;color:#333;font:bold 10px/12px Arial,sans-serif}.statistics-number{color:#222;font-weight:bold}.statistics-online{color:#2e7d32;font-weight:bold}.footer-line{margin:7px 0 0;padding-top:4px;border-top:1px solid #ccc;color:#888;font-size:9px;line-height:11px;text-align:center}
-@media(max-width:800px){#hoomenchat-site{padding:7px}.site-layout{display:block}.site-left,.site-right{display:block;width:100%}.site-left{margin-bottom:8px}}
-</style>
-</head>
-<body>
 <div id="hoomenchat-site">
-<div class="hoomenchat-header">ГУМЕНЧАТ</div>
-<div class="site-layout">
-<aside class="site-left"><div class="left-box">
-<div class="site-name">mandy_cherry</div>
-<img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEhqLSpC1vXqC0wYg1EPlCg3gD94l0e9N5_H59T0Y1wK8n_1P8sO0p_gQ8xV00s_7z-Xk9L9f1L0m1z2y3x4w5v6u7t8s9r0q1p2o3n4m5l6k7j8i9h0" alt="mandy_cherry">
-<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
-<div class="nav-menu">
-<a class="nav-item" href="../index.html">Головна</a>
-<a class="nav-item" href="../profiles.html">Гумени</a>
-<a class="nav-item" href="../droomens.html">Друмени</a>
-<a class="nav-item" href="../activity.html">Стрічерчат</a>
-<a class="nav-item" href="../islands.html">Острови</a>
-<a class="nav-item" href="../rules.html">Правила</a>
-</div>
-<div class="account-box"><div class="account-text">Немає гумгайла?</div><a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a><a class="account-link" href="../login.html">ВХІД</a></div>
-</div></aside>
-<main class="site-right">
-<div class="profile-box"><div class="profile-header">Профіль гумена: mandy_cherry</div><div class="profile-info"><strong>mandy_cherry</strong><div>Сімейка: у шлюбі</div><div>Статус: вишневий настрій 🍒</div><div class="profile-status">● онлайн</div></div></div>
-<div class="posts-header">Дописи mandy_cherry — 12</div>
-<div id="mandy-posts"></div>
-<button id="show-more-posts" class="show-more">показати ще...</button>
-<div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
-<div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div></div>
-<div class="footer-line">Гуменчат — місце для гуменів.</div>
-</main></div></div>
-<script>
-(function(){
-const posts=[
-["Новий день — нові враження","Всім гарного дня! 🍒","16 серпня",3,[["dreaming_romance","Привіт!"],["mandy_cherry","Гарного дня!"]]],
-["Вишневий чай це найкраще","Хто згоден?","15 серпня",2,[["copy_pasta","А як же кава?"]]],
-["Літо понемногу минає...","Але це не привід сумувати!","14 серпня",5,[]],
-["Затишний вечір","Іноді просто хочеться посидіти в тиші.","12 серпня",1,[]],
-["Цікаво, що новенького?","Заходьте в гості)","10 серпня",4,[]]
-];
-const root=document.getElementById('mandy-posts');
-function render(){
- posts.forEach((p)=>{
-  const el=document.createElement('article');el.className='profile-post';
-  el.innerHTML='<div class="profile-post-title"></div><div class="profile-post-body"></div><div class="post-actions"><button class="like-button" type="button">♡ Подобається <span class="like-count"></span></button><button class="comment-button" type="button">💬 Коментарі <span class="comment-count"></span></button></div><div class="comments-area"></div><div class="profile-post-date"></div>';
-  el.querySelector('.profile-post-title').textContent=p[0];el.querySelector('.profile-post-body').textContent=p[1];el.querySelector('.like-count').textContent=p[3];el.querySelector('.comment-count').textContent=p[4].length;el.querySelector('.profile-post-date').textContent=p[2];
-  const ca=el.querySelector('.comments-area');
-  p[4].forEach(c=>{const d=document.createElement('div');d.className='fake-comment';d.innerHTML='<div class="fake-comment-name"></div>';d.querySelector('.fake-comment-name').textContent=c[0];d.appendChild(document.createTextNode(c[1]));ca.appendChild(d)});
-  ca.insertAdjacentHTML('beforeend','<div class="comment-form"><textarea class="comment-input" placeholder="Написати коментар..."></textarea><button class="comment-send" type="button">Відправити</button></div>');
-  root.appendChild(el);
- });
-}
-render();
-const postEls=[...root.children],more=document.getElementById('show-more-posts');let visible=3;
-function refresh(){postEls.forEach((e,i)=>e.style.display=i<visible?'block':'none');more.className=visible>=postEls.length?'show-more hidden':'show-more'}
-more.onclick=()=>{visible=Math.min(visible+5,postEls.length);refresh()};
 
-document.querySelectorAll('.like-button').forEach(b=>b.onclick=()=>{const c=b.querySelector('.like-count'),n=Number(c.textContent),liked=b.classList.toggle('liked');c.textContent=liked?n+1:n-1;b.firstChild.nodeValue=liked?'♥ Подобається ':'♡ Подобається '});
-document.querySelectorAll('.comment-button').forEach(b=>b.onclick=()=>b.closest('.profile-post').querySelector('.comments-area').classList.toggle('open'));
-document.querySelectorAll('.comment-send').forEach(b=>b.onclick=()=>{const f=b.closest('.comment-form'),i=f.querySelector('.comment-input'),t=i.value.trim();if(!t)return;const d=document.createElement('div');d.className='user-comment';d.innerHTML='<strong>ти: </strong>';d.appendChild(document.createTextNode(t));f.parentNode.insertBefore(d,f);i.value='';const c=b.closest('.profile-post').querySelector('.comment-count');c.textContent=Number(c.textContent)+1});
-function safe(base,range){let n;do{n=base+Math.floor(Math.random()*range)}while(/63|68|13|666/.test(String(n)));return n}
-function stats(){document.getElementById('registered-hoomen').textContent=safe(8000000,47001).toLocaleString('uk-UA');document.getElementById('online-hoomen').textContent=safe(1000000,76001).toLocaleString('uk-UA');document.getElementById('today-hoomen').textContent=safe(2400000,180001).toLocaleString('uk-UA')}
-refresh();stats();setInterval(stats,30000);
+<style>
+#hoomenchat-site {
+  all: initial;
+  display: block;
+  width: 100%;
+  max-width: 780px;
+  margin: 10px auto;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #777;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  color: #222;
+}
+
+#hoomenchat-site *,
+#hoomenchat-site *:before,
+#hoomenchat-site *:after {
+  box-sizing: border-box;
+}
+
+#hoomenchat-site a {
+  color: #444;
+}
+
+#hoomenchat-site .hoomenchat-header {
+  display: block;
+  margin: 0 0 10px 0;
+  padding: 5px 8px;
+  background: linear-gradient(to bottom,#626262,#3b3b3b);
+  border: 1px solid #222;
+  color: #fff;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+#hoomenchat-site .site-layout {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 10px 0;
+}
+
+#hoomenchat-site .site-left {
+  display: table-cell;
+  width: 165px;
+  vertical-align: top;
+}
+
+#hoomenchat-site .site-right {
+  display: table-cell;
+  vertical-align: top;
+}
+
+#hoomenchat-site .left-box {
+  padding: 3px 7px;
+  background: #f0f0f0;
+  border: 1px solid #999;
+}
+
+#hoomenchat-site .site-name {
+  margin: 1px 0 6px 0;
+  padding: 0 0 4px 0;
+  border-bottom: 1px solid #bcbcbc;
+  color: #111;
+  font-size: 15px;
+  line-height: 17px;
+  font-weight: bold;
+  text-align: center;
+  word-break: break-word;
+}
+
+#hoomenchat-site .main-avatar {
+  display: block;
+  width: 100%;
+  height: 228px;
+  margin: 0 0 6px 0;
+  object-fit: cover;
+  object-position: center center;
+  background: #ddd;
+  border: 1px solid #888;
+}
+
+#hoomenchat-site .archat-button {
+  display: block;
+  width: 100%;
+  margin: 0 0 5px 0;
+  padding: 4px 0;
+  background: linear-gradient(to bottom,#fff176,#fbc02d);
+  border: 1px solid #a78119;
+  color: #000;
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+#hoomenchat-site .archat-button:hover {
+  background: linear-gradient(to bottom,#fff59d,#fdd835);
+}
+
+#hoomenchat-site .nav-menu {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #999;
+}
+
+#hoomenchat-site .nav-item {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 3px 2px;
+  border-bottom: 1px solid #c7c7c7;
+  color: #444;
+  font-size: 11px;
+  line-height: 13px;
+  text-decoration: underline;
+}
+
+#hoomenchat-site .nav-item:hover {
+  background: #e2e2e2;
+  color: #000;
+  text-decoration: none;
+}
+
+#hoomenchat-site .account-box {
+  margin: 8px 0 0 0;
+  padding: 5px 4px;
+  border-top: 1px solid #999;
+  text-align: center;
+}
+
+#hoomenchat-site .account-text {
+  margin: 0 0 5px 0;
+  color: #555;
+  font-size: 9px;
+  line-height: 12px;
+}
+
+#hoomenchat-site .account-link {
+  display: block;
+  margin: 2px 0;
+  color: #444;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+#hoomenchat-site .account-link:hover {
+  color: #000;
+  text-decoration: none;
+}
+
+
+/* =========================================================
+   ПРОФІЛЬ
+   ========================================================= */
+
+#hoomenchat-site .profile-box {
+  margin: 0 0 8px 0;
+  padding: 7px;
+  background: #fff;
+  border: 1px solid #aaa;
+}
+
+#hoomenchat-site .profile-header {
+  margin: 0 0 7px 0;
+  padding: 5px 7px;
+  background: #f0f0f0;
+  border: 1px solid #999;
+  color: #222;
+  font-size: 12px;
+  line-height: 15px;
+  font-weight: bold;
+}
+
+#hoomenchat-site .profile-info {
+  padding: 6px 7px;
+  background: #f9f9f9;
+  border: 1px solid #aaa;
+  color: #444;
+  font-size: 11px;
+  line-height: 15px;
+}
+
+#hoomenchat-site .profile-info strong {
+  color: #222;
+}
+
+#hoomenchat-site .profile-status {
+  margin-top: 4px;
+  color: #2e7d32;
+  font-size: 10px;
+  line-height: 12px;
+  font-style: italic;
+}
+
+
+/* =========================================================
+   ДОПИСИ
+   ========================================================= */
+
+#hoomenchat-site .posts-header {
+  margin: 8px 0 5px 0;
+  padding: 4px 7px;
+  background: #f0f0f0;
+  border: 1px solid #999;
+  color: #333;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+}
+
+#hoomenchat-site .profile-post {
+  margin: 0 0 7px 0;
+  background: #fff;
+  border: 1px solid #aaa;
+}
+
+#hoomenchat-site .profile-post-title {
+  margin: 0;
+  padding: 4px 7px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #aaa;
+  color: #222;
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: bold;
+}
+
+#hoomenchat-site .profile-post-body {
+  padding: 6px 7px;
+  color: #333;
+  font-size: 11px;
+  line-height: 15px;
+}
+
+#hoomenchat-site .profile-post-date {
+  padding: 3px 7px;
+  border-top: 1px solid #ddd;
+  color: #888;
+  font-size: 9px;
+  line-height: 11px;
+}
+
+
+/* =========================================================
+   ЛАЙКИ / КОМЕНТАРІ
+   ========================================================= */
+
+#hoomenchat-site .post-actions {
+  display: block;
+  padding: 4px 7px;
+  border-top: 1px solid #ddd;
+  background: #fafafa;
+}
+
+#hoomenchat-site .like-button,
+#hoomenchat-site .comment-button {
+  display: inline-block;
+  margin: 0 8px 0 0;
+  padding: 1px 3px;
+  border: 0;
+  background: transparent;
+  color: #555;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 13px;
+  cursor: pointer;
+}
+
+#hoomenchat-site .like-button:hover,
+#hoomenchat-site .comment-button:hover {
+  color: #000;
+  text-decoration: underline;
+}
+
+#hoomenchat-site .like-button.liked {
+  color: #c62828;
+  font-weight: bold;
+}
+
+#hoomenchat-site .comments-area {
+  display: none;
+  margin: 0;
+  padding: 6px 7px;
+  background: #f8f8f8;
+  border-top: 1px solid #ddd;
+}
+
+#hoomenchat-site .comments-area.open {
+  display: block;
+}
+
+#hoomenchat-site .fake-comment {
+  margin: 0 0 5px 0;
+  padding: 4px 5px;
+  background: #fff;
+  border: 1px solid #ccc;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+#hoomenchat-site .fake-comment-name {
+  margin-bottom: 2px;
+  color: #222;
+  font-weight: bold;
+}
+
+#hoomenchat-site .comment-form {
+  margin-top: 6px;
+}
+
+#hoomenchat-site .comment-input {
+  display: block;
+  width: 100%;
+  min-height: 45px;
+  padding: 4px 5px;
+  resize: vertical;
+  background: #fff;
+  border: 1px solid #aaa;
+  color: #222;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+#hoomenchat-site .comment-send {
+  margin-top: 4px;
+  padding: 3px 8px;
+  background: #eeeeee;
+  border: 1px solid #999;
+  color: #444;
+  font-size: 10px;
+  line-height: 12px;
+  cursor: pointer;
+}
+
+#hoomenchat-site .comment-send:hover {
+  background: #ddd;
+  color: #000;
+}
+
+#hoomenchat-site .user-comment {
+  margin: 0 0 5px 0;
+  padding: 4px 5px;
+  background: #fff;
+  border: 1px solid #aaa;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+#hoomenchat-site .user-comment strong {
+  font-weight: bold;
+}
+
+
+/* =========================================================
+   ПОКАЗАТИ ЩЕ
+   ========================================================= */
+
+#hoomenchat-site .show-more {
+  display: block;
+  width: 100%;
+  margin: 2px 0 0 0;
+  padding: 5px 7px;
+  background: #f0f0f0;
+  border: 1px solid #999;
+  color: #444;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#hoomenchat-site .show-more:hover {
+  background: #e1e1e1;
+  color: #000;
+}
+
+#hoomenchat-site .show-more.hidden {
+  display: none;
+}
+
+
+/* =========================================================
+   ПРАВИЛА
+   ========================================================= */
+
+#hoomenchat-site .rules-box {
+  margin: 8px 0 0 0;
+  padding: 5px 8px;
+  background: #fff;
+  border: 1px solid #aaa;
+  color: #444;
+  font-size: 11px;
+  line-height: 14px;
+}
+
+#hoomenchat-site .rules-box a {
+  color: #333;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   СТАТИСТИКА
+   ========================================================= */
+
+#hoomenchat-site .statistics-box {
+  margin: 8px 0 0 0;
+  padding: 5px 8px;
+  background: #fff;
+  border: 1px solid #aaa;
+  color: #555;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+#hoomenchat-site .statistics-title {
+  margin: 0 0 3px 0;
+  color: #333;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: bold;
+}
+
+#hoomenchat-site .statistics-number {
+  color: #222;
+  font-weight: bold;
+}
+
+#hoomenchat-site .statistics-online {
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+#hoomenchat-site .footer-line {
+  margin: 7px 0 0 0;
+  padding-top: 4px;
+  border-top: 1px solid #ccc;
+  color: #888;
+  font-size: 9px;
+  line-height: 11px;
+  text-align: center;
+}
+
+
+/* =========================================================
+   МОБІЛЬНА ВЕРСІЯ
+   ========================================================= */
+
+@media screen and (max-width: 600px) {
+
+  #hoomenchat-site {
+    margin: 5px auto;
+    padding: 7px;
+  }
+
+  #hoomenchat-site .site-layout {
+    display: block;
+    border-spacing: 0;
+  }
+
+  #hoomenchat-site .site-left,
+  #hoomenchat-site .site-right {
+    display: block;
+    width: 100%;
+  }
+
+  #hoomenchat-site .site-left {
+    margin-bottom: 8px;
+  }
+
+}
+</style>
+
+
+<div class="hoomenchat-header">
+  ГУМЕНЧАТ
+</div>
+
+
+<div class="site-layout">
+
+
+<!-- =====================================================
+     ЛІВА КОЛОНКА
+     ===================================================== -->
+
+<div class="site-left">
+
+<div class="left-box">
+
+<div class="site-name">
+  mandy_cherry
+</div>
+
+<img
+  class="main-avatar"
+  src="https://blogger.googleusercontent.com/img/a/AVvXsEhSBLEJ-KTDRSXnAHsyVXw8s37cv9VDalnfpPWSYXcX62zAkyKqtUCKJQGvo_OvoUCK_1HZ50_56MxN6L9JHU7g2R3Tuiy31qffIXEUt7AN_cYoMciserBwQZNNr8UE21fWCPbckz_2bmuXdAKvkaGrtxtVOUfnfs3oH4jHaa3_jB2OdaB_W_roEaO0Pb0"
+  alt="mandy_cherry"
+/>
+
+<a
+  class="archat-button"
+  href="../copypasta-chat-history.html"
+>
+  📩 АРЧАТ
+</a>
+
+
+<div class="nav-menu">
+
+<a class="nav-item" href="../copypasta.html">
+  Мій гумгайл
+</a>
+
+<a class="nav-item" href="../hoomenchat-droomens-list.html">
+  Гумгайли
+</a>
+
+<a class="nav-item" href="../droomens-list-copypastas.html">
+  Друмени
+</a>
+
+<a class="nav-item" href="../droomens-activity-copypastas.html">
+  Стрічерчат
+</a>
+
+<a class="nav-item" 
+   href="../4.html">
+  Острови
+</a>
+
+<a
+  class="nav-item"
+  href="../blog-post.html"
+>
+  Правила
+</a>
+
+</div>
+
+
+<div class="account-box">
+
+<div class="account-text">
+  Немає гумгайла?
+</div>
+
+<a class="account-link" href="#">
+  ЗАРЕЄСТРУВАТИСЯ
+</a>
+
+<a class="account-link" href="#">
+  ВХІД
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ПРАВА КОЛОНКА
+     ===================================================== -->
+
+<div class="site-right">
+
+
+<div class="profile-box">
+
+<div class="profile-header">
+  Профіль гумена: mandy_cherry
+</div>
+
+<div class="profile-info">
+
+<strong>mandy_cherry</strong>
+
+<div>
+  Сімейка: у стуснах
+</div>
+
+<div>
+  Статус: Дизайнерка гуменчат.
+</div>
+
+<div class="profile-status">
+  ● онлайн
+</div>
+
+</div>
+
+</div>
+
+
+<div class="posts-header">
+  Дописи mandy_cherry — 10
+</div>
+
+
+<div id="mandy-posts">
+
+
+<!-- 1 -->
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Будьте чемними та вихованими
+</div>
+
+<div class="profile-post-body">
+  Залишайтесь чесними із самими собою, а також з вашими друзями, близькими та рідними. Рідні й близькі бувають досить різними.
+</div>
+
+<div class="post-actions">
+  <button class="like-button" type="button">
+    ♡ Подобається <span class="like-count">977</span>
+  </button>
+
+  <button class="comment-button" type="button">
+    💬 Коментарі <span class="comment-count">2</span>
+  </button>
+</div>
+
+<div class="comments-area">
+
+  <div class="fake-comment">
+    <div class="fake-comment-name">alter_core</div>
+    Я завжди чесна сама з собою.
+  </div>
+
+  <div class="fake-comment">
+    <div class="fake-comment-name">mandy_cherry</div>
+    Хто б сумнівався 😂🤣
+  </div>
+
+  <div class="comment-form">
+    <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+    <button class="comment-send" type="button">Відправити</button>
+  </div>
+
+</div>
+
+<div class="profile-post-date">
+  2 квітня
+</div>
+
+</div>
+
+
+<!-- 2 -->
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Мій дизайн сайту не потребує критики.
+</div>
+
+<div class="profile-post-body">
+  Якщо вам не подобається його зовнішній вигляд, ви завжди можете видалитись.
+</div>
+
+<div class="post-actions">
+  <button class="like-button" type="button">
+    ♡ Подобається <span class="like-count">55</span>
+  </button>
+  <button class="comment-button" type="button">
+    💬 Коментарі <span class="comment-count">0</span>
+  </button>
+</div>
+
+<div class="comments-area">
+
+  <div class="comment-form">
+    <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+    <button class="comment-send" type="button">Відправити</button>
+  </div>
+
+</div>
+
+<div class="profile-post-date">
+  29 березня
+</div>
+
+</div>
+
+
+<!-- 3 -->
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Якщо вас щось не влаштовує
+</div>
+
+<div class="profile-post-body">
+  Ви завжди можете створити те, що влаштовуватиме саме вас.
+</div>
+
+<div class="post-actions">
+  <button class="like-button" type="button">
+    ♡ Подобається <span class="like-count">557</span>
+  </button>
+  <button class="comment-button" type="button">
+    💬 Коментарі <span class="comment-count">0</span>
+  </button>
+</div>
+
+<div class="comments-area">
+
+  <div class="comment-form">
+    <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+    <button class="comment-send" type="button">Відправити</button>
+  </div>
+
+</div>
+
+<div class="profile-post-date">
+  25 березня
+</div>
+
+</div>
+
+
+<!-- 4 -->
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Рожевий мій улюблений колір
+</div>
+
+<div class="profile-post-body">
+  Він такий чері, ммм.
+</div>
+
+<div class="post-actions">
+  <button class="like-button" type="button">
+    ♡ Подобається <span class="like-count">28 597</span>
+  </button>
+  <button class="comment-button" type="button">
+    💬 Коментарі <span class="comment-count">0</span>
+  </button>
+</div>
+
+<div class="comments-area">
+
+  <div class="comment-form">
+    <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+    <button class="comment-send" type="button">Відправити</button>
+  </div>
+
+</div>
+
+<div class="profile-post-date">
+  22 березня
+</div>
+
+</div>
+
+
+<!-- 5 -->
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Жовта кнопка найкраща
+</div>
+
+<div class="profile-post-body">
+  Жодний інший колір так не пасуватиме як жовтий для арчату.
+</div>
+
+<div class="post-actions">
+  <button class="like-button" type="button">
+    ♡ Подобається <span class="like-count">771</span>
+  </button>
+  <button class="comment-button" type="button">
+    💬 Коментарі <span class="comment-count">0</span>
+  </button>
+</div>
+
+<div class="comments-area">
+
+  <div class="comment-form">
+    <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+    <button class="comment-send" type="button">Відправити</button>
+  </div>
+
+</div>
+
+<div class="profile-post-date">
+  19 березня
+</div>
+
+</div>
+
+
+<!-- 6 -->
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Сірі панелі неймовірні
+</div>
+
+<div class="profile-post-body">
+  Сірі панелі сайту завжди змушуватимуть вас знову та й знову повертатися на цей ресурс як тільки виникне ностальгія. Почуття між двома закоханими, зв'язок з рідними, безліч друменів, котрі чекають вас.
+</div>
+
+<div class="post-actions">
+  <button class="like-button" type="button">
+    ♡ Подобається <span class="like-count">11 231</span>
+  </button>
+  <button class="comment-button" type="button">
+    💬 Коментарі <span class="comment-count">0</span>
+  </button>
+</div>
+
+<div class="comments-area">
+
+  <div class="comment-form">
+    <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+    <button class="comment-send" type="button">Відправити</button>
+  </div>
+
+</div>
+
+<div class="profile-post-date">
+  18 березня
+</div>
+
+</div>
+
+
+<!-- 7 -->
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Я б могла зробити його рожевим
+</div>
+
+<div class="profile-post-body">
+  Так, могла. Але рожевий колір існує лише для мене.
+</div>
+
+<div class="post-actions">
+  <button class="like-button" type="button">
+    ♡ Подобається <span class="like-count">451</span>
+  </button>
+  <button class="comment-button" type="button">
+    💬 Коментарі <span class="comment-count">0</span>
+  </button>
+</div>
+
+<div class="comments-area">
+
+  <div class="comment-form">
+    <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+    <button class="comment-send" type="button">Відправити</button>
+  </div>
+
+</div>
+
+<div class="profile-post-date">
+  12 березня
+</div>
+
+</div>
+
+
+<!-- 8 -->
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Чому саме Я?
+</div>
+
+<div class="profile-post-body">
+  На моє місце претендувало безліч дизайнерів. Але жоден із них не вклав у гуменчат душу. Їхні пропозиції були досить обмеженими та ніякими. Саме тому ніхто окрім мене просто не зміг би впоратися із завданням створити таку красиву та неповторну тему для Гуменчат.
+</div>
+
+<div class="post-actions">
+  <button class="like-button" type="button">
+    ♡ Подобається <span class="like-count">47 921</span>
+  </button>
+  <button class="comment-button" type="button">
+    💬 Коментарі <span class="comment-count">0</span>
+  </button>
+</div>
+
+<div class="comments-area">
+
+  <div class="comment-form">
+    <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+    <button class="comment-send" type="button">Відправити</button>
+  </div>
+
+</div>
+
+<div class="profile-post-date">
+  10 березня
+</div>
+
+</div>
+
+
+<!-- 9 -->
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Мене звати Аня
+</div>
+
+<div class="profile-post-body">
+  Для вас я Ганна.
+</div>
+
+<div class="post-actions">
+  <button class="like-button" type="button">
+    ♡ Подобається <span class="like-count">72 344</span>
+  </button>
+  <button class="comment-button" type="button">
+    💬 Коментарі <span class="comment-count">0</span>
+  </button>
+</div>
+
+<div class="comments-area">
+
+  <div class="comment-form">
+    <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+    <button class="comment-send" type="button">Відправити</button>
+  </div>
+
+</div>
+
+<div class="profile-post-date">
+  8 березня
+</div>
+
+</div>
+
+
+<!-- 10 -->
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Дякую за запрошення!
+</div>
+
+<div class="profile-post-body">
+  Я вам дуже вдячна за пропозицію роботи у такій чудовій команді. Мені дуже приємно з вами всіма познайомитися. Буду рада допомогти всім чим тільки зможу і проходити з вами цей шлях, долати всі труднощі та розділяти приємні моменти, які траплятимуться на нашому шляху!
+</div>
+
+<div class="post-actions">
+  <button class="like-button" type="button">
+    ♡ Подобається <span class="like-count">871 245</span>
+  </button>
+  <button class="comment-button" type="button">
+    💬 Коментарі <span class="comment-count">0</span>
+  </button>
+</div>
+
+<div class="comments-area">
+
+  <div class="comment-form">
+    <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+    <button class="comment-send" type="button">Відправити</button>
+  </div>
+
+</div>
+
+<div class="profile-post-date">
+  5 березня
+</div>
+
+</div>
+
+
+<div
+  id="show-more-posts"
+  class="show-more"
+>
+  показати ще...
+</div>
+
+
+<div class="rules-box">
+
+Пам'ятай та дотримуйся
+<a href="../blog-post.html">
+  ПРАВИЛ
+</a>
+нашого ресурсу для приємного та друмнього часу
+разом з нами.
+
+</div>
+
+
+<div class="statistics-box">
+
+<div class="statistics-title">
+  Статистика Гуменчату
+</div>
+
+<div>
+  Зареєстровано гуменів:
+  <span
+    class="statistics-number"
+    id="registered-hoomen">
+  </span>
+</div>
+
+<div>
+  Зараз онлайн:
+  <span
+    class="statistics-online"
+    id="online-hoomen">
+  </span>
+</div>
+
+<div>
+  Гуменів сьогодні завітало:
+  <span
+    class="statistics-number"
+    id="today-hoomen">
+  </span>
+</div>
+
+</div>
+
+
+<div class="footer-line">
+  Гуменчат — місце для гуменів.
+</div>
+
+
+</div>
+
+</div>
+
+
+<script>
+(function() {
+
+var posts =
+  document.querySelectorAll(
+    "#mandy-posts .profile-post"
+  );
+
+var showMore =
+  document.getElementById(
+    "show-more-posts"
+  );
+
+var visiblePosts = 3;
+
+var postsPerClick = 5;
+
+
+/* =========================================================
+   ПОКАЗ / ПРИХОВУВАННЯ ДОПИСІВ
+   ========================================================= */
+
+function updatePostVisibility() {
+
+  for (
+    var i = 0;
+    i < posts.length;
+    i++
+  ) {
+
+    if (i < visiblePosts) {
+      posts[i].style.display = "block";
+    } else {
+      posts[i].style.display = "none";
+    }
+
+  }
+
+  if (visiblePosts >= posts.length) {
+    showMore.className = "show-more hidden";
+  } else {
+    showMore.className = "show-more";
+  }
+
+}
+
+
+showMore.addEventListener(
+  "click",
+  function() {
+
+    visiblePosts += postsPerClick;
+
+    if (visiblePosts > posts.length) {
+      visiblePosts = posts.length;
+    }
+
+    updatePostVisibility();
+
+  }
+);
+
+
+/* =========================================================
+   ЛАЙКИ
+   ========================================================= */
+
+var likeButtons =
+  document.querySelectorAll(
+    "#hoomenchat-site .like-button"
+  );
+
+
+likeButtons.forEach(
+  function(button) {
+
+    button.addEventListener(
+      "click",
+      function() {
+
+        var count =
+          button.querySelector(
+            ".like-count"
+          );
+
+        var number =
+          parseInt(
+            count.textContent,
+            10
+          );
+
+        if (
+          button.classList.contains(
+            "liked"
+          )
+        ) {
+
+          number--;
+
+          button.classList.remove(
+            "liked"
+          );
+
+          button.innerHTML =
+            "♡ Подобається " +
+            '<span class="like-count">' +
+            number +
+            "</span>";
+
+        } else {
+
+          number++;
+
+          button.classList.add(
+            "liked"
+          );
+
+          button.innerHTML =
+            "♥ Подобається " +
+            '<span class="like-count">' +
+            number +
+            "</span>";
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   КОМЕНТАРІ
+   ========================================================= */
+
+var commentButtons =
+  document.querySelectorAll(
+    "#hoomenchat-site .comment-button"
+  );
+
+
+commentButtons.forEach(
+  function(button) {
+
+    button.addEventListener(
+      "click",
+      function() {
+
+        var post =
+          button.closest(
+            ".profile-post"
+          );
+
+        var comments =
+          post.querySelector(
+            ".comments-area"
+          );
+
+        comments.classList.toggle(
+          "open"
+        );
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   ВІДПРАВКА ВЛАСНИХ КОМЕНТАРІВ
+   ========================================================= */
+
+var sendButtons =
+  document.querySelectorAll(
+    "#hoomenchat-site .comment-send"
+  );
+
+
+sendButtons.forEach(
+  function(button) {
+
+    button.addEventListener(
+      "click",
+      function() {
+
+        var form =
+          button.closest(
+            ".comment-form"
+          );
+
+        var input =
+          form.querySelector(
+            ".comment-input"
+          );
+
+        var text =
+          input.value.trim();
+
+        if (!text) {
+          return;
+        }
+
+
+        var comment =
+          document.createElement(
+            "div"
+          );
+
+        comment.className =
+          "user-comment";
+
+
+        var name =
+          document.createElement(
+            "strong"
+          );
+
+        name.textContent =
+          "ти: ";
+
+
+        var message =
+          document.createTextNode(
+            text
+          );
+
+
+        comment.appendChild(name);
+        comment.appendChild(message);
+
+
+        form.parentNode.insertBefore(
+          comment,
+          form
+        );
+
+
+        input.value = "";
+
+
+        var post =
+          form.closest(
+            ".profile-post"
+          );
+
+        var count =
+          post.querySelector(
+            ".comment-count"
+          );
+
+        var number =
+          parseInt(
+            count.textContent,
+            10
+          );
+
+        count.textContent =
+          number + 1;
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   СТАТИСТИКА
+   Заборонені послідовності:
+   63 / 68 / 13 / 666
+   ========================================================= */
+
+function safeNumber(base, range) {
+
+  var value;
+
+  do {
+
+    value =
+      base +
+      Math.floor(
+        Math.random() * range
+      );
+
+  } while (
+    String(value).indexOf("63") !== -1 ||
+    String(value).indexOf("68") !== -1 ||
+    String(value).indexOf("13") !== -1 ||
+    String(value).indexOf("666") !== -1
+  );
+
+  return value;
+}
+
+
+function updateStatistics() {
+
+  var registered =
+    safeNumber(
+      8000000,
+      47001
+    );
+
+  var online =
+    safeNumber(
+      1000000,
+      76001
+    );
+
+  var today =
+    safeNumber(
+      2400000,
+      180001
+    );
+
+
+  document.getElementById(
+    "registered-hoomen"
+  ).textContent =
+    registered.toLocaleString(
+      "uk-UA"
+    );
+
+
+  document.getElementById(
+    "online-hoomen"
+  ).textContent =
+    online.toLocaleString(
+      "uk-UA"
+    );
+
+
+  document.getElementById(
+    "today-hoomen"
+  ).textContent =
+    today.toLocaleString(
+      "uk-UA"
+    );
+
+}
+
+
+/* =========================================================
+   ЗАПУСК
+   ========================================================= */
+
+updatePostVisibility();
+
+updateStatistics();
+
+setInterval(
+  updateStatistics,
+  30000
+);
+
 })();
 </script>
-</body>
-</html>
+
+</div>
