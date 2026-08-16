@@ -5,12 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>starry_hoomen — ГУМЕНЧАТ</title>
 <style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  color: #222;
+}
+
+* { box-sizing: border-box; }
+
 #hoomenchat-site {
   all: initial;
   display: block;
   width: 100%;
-  max-width: 780px;
-  margin: 10px auto;
+  min-height: 100vh;
+  margin: 0;
   padding: 12px;
   background: #fff;
   border: 1px solid #777;
@@ -19,8 +31,10 @@
   line-height: 14px;
   color: #222;
 }
+
 #hoomenchat-site *, #hoomenchat-site *:before, #hoomenchat-site *:after { box-sizing: border-box; }
 #hoomenchat-site a { color: #444; }
+
 #hoomenchat-site .hoomenchat-header {
   display: block;
   margin: 0 0 10px 0;
@@ -34,10 +48,12 @@
   letter-spacing: 1px;
   text-transform: uppercase;
 }
+
 #hoomenchat-site .site-layout { display: table; width: 100%; border-collapse: separate; border-spacing: 10px 0; }
 #hoomenchat-site .site-left { display: table-cell; width: 165px; vertical-align: top; }
 #hoomenchat-site .site-right { display: table-cell; vertical-align: top; }
 #hoomenchat-site .left-box { padding: 3px 7px; background: #f0f0f0; border: 1px solid #999; }
+
 #hoomenchat-site .site-name {
   margin: 1px 0 6px 0;
   padding: 0 0 4px 0;
@@ -49,6 +65,7 @@
   text-align: center;
   word-break: break-word;
 }
+
 #hoomenchat-site .main-avatar {
   display: block;
   width: 100%;
@@ -59,6 +76,7 @@
   background: #ddd;
   border: 1px solid #888;
 }
+
 #hoomenchat-site .archat-button {
   display: block;
   width: 100%;
@@ -74,8 +92,10 @@
   text-decoration: none;
   text-transform: uppercase;
 }
+
 #hoomenchat-site .archat-button:hover { background: linear-gradient(to bottom, #fff59d, #fdd835); }
 #hoomenchat-site .nav-menu { display: block; margin: 0; padding: 0; border-top: 1px solid #999; }
+
 #hoomenchat-site .nav-item {
   display: block;
   width: 100%;
@@ -87,9 +107,11 @@
   line-height: 13px;
   text-decoration: underline;
 }
+
 #hoomenchat-site .nav-item:hover { background: #e2e2e2; color: #000; text-decoration: none; }
 #hoomenchat-site .account-box { margin: 8px 0 0 0; padding: 5px 4px; border-top: 1px solid #999; text-align: center; }
 #hoomenchat-site .account-text { margin: 0 0 5px 0; color: #555; font-size: 9px; line-height: 12px; }
+
 #hoomenchat-site .account-link {
   display: block;
   margin: 2px 0;
@@ -99,8 +121,10 @@
   font-weight: bold;
   text-decoration: underline;
 }
+
 #hoomenchat-site .account-link:hover { color: #000; text-decoration: none; }
 #hoomenchat-site .profile-box { margin: 0 0 8px 0; padding: 7px; background: #fff; border: 1px solid #aaa; }
+
 #hoomenchat-site .profile-header {
   margin: 0 0 7px 0;
   padding: 5px 7px;
@@ -111,9 +135,11 @@
   line-height: 15px;
   font-weight: bold;
 }
+
 #hoomenchat-site .profile-info { padding: 6px 7px; background: #f9f9f9; border: 1px solid #aaa; color: #444; font-size: 11px; line-height: 15px; }
 #hoomenchat-site .profile-info strong { color: #222; }
 #hoomenchat-site .profile-status { margin-top: 4px; color: #2e7d32; font-size: 10px; line-height: 12px; font-style: italic; }
+
 #hoomenchat-site .posts-header {
   margin: 8px 0 5px 0;
   padding: 4px 7px;
@@ -124,7 +150,9 @@
   line-height: 13px;
   font-weight: bold;
 }
+
 #hoomenchat-site .profile-post { margin: 0 0 7px 0; background: #fff; border: 1px solid #aaa; }
+
 #hoomenchat-site .profile-post-title {
   margin: 0;
   padding: 4px 7px;
@@ -135,9 +163,11 @@
   line-height: 14px;
   font-weight: bold;
 }
+
 #hoomenchat-site .profile-post-body { padding: 6px 7px; color: #333; font-size: 11px; line-height: 15px; }
 #hoomenchat-site .profile-post-date { padding: 3px 7px; border-top: 1px solid #ddd; color: #888; font-size: 9px; line-height: 11px; }
 #hoomenchat-site .post-actions { display: block; padding: 4px 7px; border-top: 1px solid #ddd; background: #fafafa; }
+
 #hoomenchat-site .like-button, #hoomenchat-site .comment-button {
   display: inline-block;
   margin: 0 8px 0 0;
@@ -150,11 +180,13 @@
   line-height: 13px;
   cursor: pointer;
 }
+
 #hoomenchat-site .like-button:hover, #hoomenchat-site .comment-button:hover { color: #000; text-decoration: underline; }
 #hoomenchat-site .like-button.liked { color: #c62828; font-weight: bold; }
 #hoomenchat-site .comments-area { display: none; margin: 0; padding: 6px 7px; background: #f8f8f8; border-top: 1px solid #ddd; }
 #hoomenchat-site .comments-area.open { display: block; }
 #hoomenchat-site .comment-form { margin-top: 6px; }
+
 #hoomenchat-site .comment-input {
   display: block;
   width: 100%;
@@ -168,6 +200,7 @@
   font-size: 10px;
   line-height: 13px;
 }
+
 #hoomenchat-site .comment-send {
   margin-top: 4px;
   padding: 3px 8px;
@@ -178,9 +211,11 @@
   line-height: 12px;
   cursor: pointer;
 }
+
 #hoomenchat-site .comment-send:hover { background: #ddd; color: #000; }
 #hoomenchat-site .user-comment { margin: 0 0 5px 0; padding: 4px 5px; background: #fff; border: 1px solid #aaa; font-size: 10px; line-height: 13px; }
 #hoomenchat-site .user-comment strong { font-weight: bold; }
+
 #hoomenchat-site .show-more {
   display: block;
   width: 100%;
@@ -197,10 +232,12 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
 #hoomenchat-site .show-more:hover { background: #e1e1e1; color: #000; }
 #hoomenchat-site .show-more.hidden { display: none; }
 #hoomenchat-site .rules-box { margin: 8px 0 0 0; padding: 5px 8px; background: #fff; border: 1px solid #aaa; color: #444; font-size: 11px; line-height: 14px; }
 #hoomenchat-site .rules-box a { color: #333; font-weight: bold; text-decoration: underline; }
+
 #hoomenchat-site .statistics-box {
   margin: 8px 0 0 0;
   padding: 5px 8px;
@@ -211,13 +248,14 @@
   font-size: 10px;
   line-height: 13px;
 }
+
 #hoomenchat-site .statistics-title { margin: 0 0 3px 0; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 10px; line-height: 12px; font-weight: bold; }
 #hoomenchat-site .statistics-number { color: #222; font-weight: bold; }
 #hoomenchat-site .statistics-online { color: #2e7d32; font-weight: bold; }
 #hoomenchat-site .footer-line { margin: 7px 0 0 0; padding-top: 4px; border-top: 1px solid #ccc; color: #888; font-size: 9px; line-height: 11px; text-align: center; }
 
 @media screen and (max-width: 600px) {
-  #hoomenchat-site { margin: 5px auto; padding: 7px; }
+  #hoomenchat-site { padding: 7px; }
   #hoomenchat-site .site-layout { display: block; border-spacing: 0; }
   #hoomenchat-site .site-left, #hoomenchat-site .site-right { display: block; width: 100%; }
   #hoomenchat-site .site-left { margin-bottom: 8px; }
@@ -298,22 +336,22 @@
           </div>
           <div class="profile-post-date">3 квітня</div>
         </div>
-
-        <div id="show-more-posts" class="show-more">показати ще...</div>
-
-        <div class="rules-box">
-          Пам'ятай та дотримуйся <a href="/hoomanchat/rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.
-        </div>
-
-        <div class="statistics-box">
-          <div class="statistics-title">Статистика Гуменчату</div>
-          <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
-          <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
-          <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
-        </div>
-
-        <div class="footer-line">Гуменчат — місце для гуменів.</div>
       </div>
+
+      <div id="show-more-posts" class="show-more hidden">показати ще...</div>
+
+      <div class="rules-box">
+        Пам'ятай та дотримуйся <a href="/hoomanchat/rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.
+      </div>
+
+      <div class="statistics-box">
+        <div class="statistics-title">Статистика Гуменчату</div>
+        <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
+        <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
+        <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
+      </div>
+
+      <div class="footer-line">Гуменчат — місце для гуменів.</div>
     </div>
   </div>
 </div>
