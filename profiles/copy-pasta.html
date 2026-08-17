@@ -494,6 +494,113 @@ html,body{
   }
 
 }
+
+
+/* =========================================================
+   СТВОРЕННЯ ДОПИСУ
+   ========================================================= */
+
+.create-post-box{
+  margin:0 0 8px;
+  padding:7px;
+  background:#fff;
+  border:1px solid #aaa
+}
+
+.create-post-title{
+  margin:0 0 7px;
+  padding:5px 7px;
+  background:#f0f0f0;
+  border:1px solid #999;
+  font-weight:bold
+}
+
+.create-post-input{
+  display:block;
+  width:100%;
+  margin:0 0 5px;
+  padding:4px 5px;
+  background:#fff;
+  border:1px solid #aaa;
+  color:#222;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:10px;
+  line-height:13px
+}
+
+.create-post-text{
+  min-height:70px;
+  resize:vertical
+}
+
+.create-post-file{
+  display:block;
+  width:100%;
+  margin:0 0 5px;
+  padding:3px;
+  background:#fafafa;
+  border:1px solid #aaa;
+  color:#444;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:10px;
+  line-height:13px
+}
+
+.create-post-preview{
+  display:none;
+  width:100%;
+  max-height:400px;
+  margin:5px 0;
+  object-fit:contain;
+  background:#ddd;
+  border:1px solid #aaa
+}
+
+.create-post-preview.open{
+  display:block
+}
+
+.create-post-actions{
+  padding-top:2px
+}
+
+.create-post-button{
+  padding:3px 8px;
+  background:#eee;
+  border:1px solid #999;
+  color:#444;
+  font-size:10px;
+  line-height:12px;
+  cursor:pointer
+}
+
+.create-post-button:hover{
+  background:#ddd;
+  color:#000
+}
+
+.create-post-error{
+  display:none;
+  margin:4px 0 0;
+  color:#a00;
+  font-size:10px;
+  line-height:13px
+}
+
+.create-post-error.open{
+  display:block
+}
+
+.profile-post-image{
+  display:block;
+  width:100%;
+  max-height:500px;
+  margin:6px 0 0;
+  object-fit:contain;
+  background:#ddd;
+  border:1px solid #aaa
+}
+
 </style>
 </head>
 
@@ -645,6 +752,47 @@ href="#"
 
 <div class="posts-header">
 Дописи copy_pasta — 25
+</div>
+
+<div class="create-post-box">
+
+<div class="create-post-title">
+Створити допис
+</div>
+
+<input
+class="create-post-input"
+id="new-post-title"
+type="text"
+maxlength="200"
+placeholder="Заголовок допису..."
+>
+
+<textarea
+class="create-post-input create-post-text"
+id="new-post-text"
+placeholder="Текст допису..."
+></textarea>
+
+<input
+class="create-post-file"
+id="new-post-image"
+type="file"
+accept="image/*"
+>
+
+<img
+class="create-post-preview"
+id="new-post-preview"
+alt="Попередній перегляд"
+>
+
+<div class="create-post-actions">
+<button class="create-post-button" id="publish-post" type="button">Опублікувати</button>
+</div>
+
+<div class="create-post-error" id="create-post-error"></div>
+
 </div>
 
 
@@ -1659,6 +1807,176 @@ sendButtons.forEach(function(button){
 
 });
 
+
+/* =====================================================
+   СТВОРЕННЯ ТИМЧАСОВОГО ДОПИСУ
+   ===================================================== */
+
+var newPostTitle=document.getElementById("new-post-title");
+var newPostText=document.getElementById("new-post-text");
+var newPostImage=document.getElementById("new-post-image");
+var newPostPreview=document.getElementById("new-post-preview");
+var publishPost=document.getElementById("publish-post");
+var createPostError=document.getElementById("create-post-error");
+var copyPosts=document.getElementById("copy-posts");
+
+newPostImage.addEventListener("change",function(){
+  var file=newPostImage.files[0];
+
+  if(!file){
+    newPostPreview.removeAttribute("src");
+    newPostPreview.className="create-post-preview";
+    return;
+  }
+
+  if(!file.type.match(/^image\//)){
+    newPostImage.value="";
+    newPostPreview.removeAttribute("src");
+    newPostPreview.className="create-post-preview";
+    createPostError.textContent="Можна прикріпити лише зображення.";
+    createPostError.className="create-post-error open";
+    return;
+  }
+
+  var reader=new FileReader();
+
+  reader.onload=function(event){
+    newPostPreview.src=event.target.result;
+    newPostPreview.className="create-post-preview open";
+    createPostError.className="create-post-error";
+  };
+
+  reader.readAsDataURL(file);
+});
+
+publishPost.addEventListener("click",function(){
+  var title=newPostTitle.value.trim();
+  var text=newPostText.value.trim();
+  var file=newPostImage.files[0];
+
+  createPostError.className="create-post-error";
+
+  if(!title || !text){
+    createPostError.textContent="Заповни заголовок та текст допису.";
+    createPostError.className="create-post-error open";
+    return;
+  }
+
+  function publish(imageData){
+    var post=document.createElement("div");
+    post.className="profile-post";
+    post.style.display="block";
+
+    var titleDiv=document.createElement("div");
+    titleDiv.className="profile-post-title";
+    titleDiv.textContent=title;
+
+    var bodyDiv=document.createElement("div");
+    bodyDiv.className="profile-post-body";
+    bodyDiv.textContent=text;
+
+    if(imageData){
+      var image=document.createElement("img");
+      image.className="profile-post-image";
+      image.src=imageData;
+      image.alt="Зображення до допису";
+      bodyDiv.appendChild(image);
+    }
+
+    var actionsDiv=document.createElement("div");
+    actionsDiv.className="post-actions";
+    actionsDiv.innerHTML='<button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button><button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>';
+
+    var commentsArea=document.createElement("div");
+    commentsArea.className="comments-area";
+    commentsArea.innerHTML='<div class="comment-form"><textarea class="comment-input" placeholder="Написати коментар..."></textarea><button class="comment-send" type="button">Відправити</button></div>';
+
+    var dateDiv=document.createElement("div");
+    dateDiv.className="profile-post-date";
+    dateDiv.textContent="щойно";
+
+    post.appendChild(titleDiv);
+    post.appendChild(bodyDiv);
+    post.appendChild(actionsDiv);
+    post.appendChild(commentsArea);
+    post.appendChild(dateDiv);
+
+    copyPosts.insertBefore(post,copyPosts.firstChild);
+
+    bindTemporaryPostEvents(post);
+
+    newPostTitle.value="";
+    newPostText.value="";
+    newPostImage.value="";
+    newPostPreview.removeAttribute("src");
+    newPostPreview.className="create-post-preview";
+  }
+
+  if(file){
+    if(file.size>10*1024*1024){
+      createPostError.textContent="Зображення завелике. Максимальний розмір — 10 МБ.";
+      createPostError.className="create-post-error open";
+      return;
+    }
+
+    var reader=new FileReader();
+    reader.onload=function(event){
+      publish(event.target.result);
+    };
+    reader.readAsDataURL(file);
+  }else{
+    publish("");
+  }
+});
+
+function bindTemporaryPostEvents(post){
+  var likeButton=post.querySelector(".like-button");
+  var commentButton=post.querySelector(".comment-button");
+  var sendButton=post.querySelector(".comment-send");
+
+  likeButton.addEventListener("click",function(){
+    var count=likeButton.querySelector(".like-count");
+    var number=parseInt(count.textContent.replace(/\s/g,""),10);
+
+    if(likeButton.classList.contains("liked")){
+      number--;
+      likeButton.classList.remove("liked");
+      likeButton.innerHTML="♡ Подобається <span class=\"like-count\">"+number.toLocaleString("uk-UA")+"</span>";
+    }else{
+      number++;
+      likeButton.classList.add("liked");
+      likeButton.innerHTML="♥ Подобається <span class=\"like-count\">"+number.toLocaleString("uk-UA")+"</span>";
+    }
+  });
+
+  commentButton.addEventListener("click",function(){
+    post.querySelector(".comments-area").classList.toggle("open");
+  });
+
+  sendButton.addEventListener("click",function(){
+    var form=sendButton.closest(".comment-form");
+    var input=form.querySelector(".comment-input");
+    var text=input.value.trim();
+
+    if(!text){
+      return;
+    }
+
+    var comment=document.createElement("div");
+    comment.className="user-comment";
+
+    var name=document.createElement("strong");
+    name.textContent="ти: ";
+
+    comment.appendChild(name);
+    comment.appendChild(document.createTextNode(text));
+    form.parentNode.insertBefore(comment,form);
+    input.value="";
+
+    var count=post.querySelector(".comment-count");
+    count.textContent=parseInt(count.textContent,10)+1;
+  });
+}
 
 /* =====================================================
    СТАТИСТИКА
