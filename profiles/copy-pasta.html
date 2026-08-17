@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>copy_pasta — Профіль користувача</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --like-active: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Profile Header */
+        .profile-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--bg-color);
+            flex-shrink: 0;
+        }
+
+        .profile-info h1 {
+            font-size: 1.5rem;
+            margin-bottom: 4px;
+        }
+
+        .profile-info p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Stats & Rules Sidebar / Section */
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .meta-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .meta-box h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--accent-color);
+        }
+
+        .meta-box ul {
+            list-style: none;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .meta-box li {
+            margin-bottom: 4px;
+        }
+
+        /* Feed Posts */
+        .posts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .post-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .post-author {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .post-content {
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .post-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 12px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .action-btn:hover {
+            color: var(--text-main);
+        }
+
+        .action-btn.liked {
+            color: var(--like-active);
+        }
+
+        /* Comments Section */
+        .comments-container {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border-color);
+            display: none;
+        }
+
+        .comments-container.active {
+            display: block;
+        }
+
+        .comment-item {
+            background-color: rgba(15, 23, 42, 0.5);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-right: 6px;
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .comment-input {
+            flex: 1;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 6px 10px;
+            color: var(--text-main);
+            font-size: 0.85rem;
+        }
+
+        .comment-submit {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 600px) {
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <header class="profile-card">
+        <div class="avatar">CP</div>
+        <div class="profile-info">
+            <h1>copy_pasta</h1>
+            <p>Учасник спільноти • Активний дописувач</p>
+        </div>
+    </header>
+
+    <!-- Metadata Section -->
+    <div class="meta-grid">
+        <div class="meta-box">
+            <h3>Правила та статуси</h3>
+            <ul>
+                <li>• Дотримання загальних правил ресурсу</li>
+                <li>• Конструктивне обговорення</li>
+                <li>• Без спаму та прямої реклами</li>
+            </ul>
+        </div>
+        <div class="meta-box">
+            <h3>Статистика профілю</h3>
+            <ul>
+                <li>Всього відповідей: 22</li>
+                <li>Статус: Онлайн</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Feed / Posts -->
+    <main class="posts-list" id="postsContainer">
+
+        <!-- 22 Допис (Залишено без змін) -->
+        <article class="post-card" data-post-id="22">
+            <div class="post-header">
+                <span class="post-author">copy_pasta</span>
+                <span class="post-date">Відповідь #22</span>
+            </div>
+            <div class="post-content">Ось оаис за 1400 Файна майстрова гуцульська дримба з гарним звучанням.
+Розмір: 4.5см на 3.5 см.
+Рама зі сталевого прута (мідник) з пружинної сталі.
+Виготовлена з душею в ручну.
+Від себе можу сказати, це маленький шедевр від майстра,поспішайте лімітована серія.
+Також за окрему пл[...]</div>
+            <div class="post-actions">
+                <button class="action-btn like-btn" onclick="toggleLike(this)">
+                    <span class="heart">♥</span> <span class="like-count">0</span>
+                </button>
+                <button class="action-btn comment-btn" onclick="toggleComments(this)">
+                    💬 Коментарі (<span class="comment-count">0</span>)
+                </button>
+            </div>
+            <div class="comments-container">
+                <div class="comments-list"></div>
+                <form class="comment-form" onsubmit="addComment(event, this)">
+                    <input type="text" class="comment-input" placeholder="Залишити коментар..." required>
+                    <button type="submit" class="comment-submit">Надіслати</button>
+                </form>
+            </div>
+        </article>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Профіль copy_pasta. Усі права захищено.</p>
+    </footer>
+</div>
+
+<script>
+    function toggleLike(btn) {
+        btn.classList.toggle('liked');
+        const countSpan = btn.querySelector('.like-count');
+        let currentCount = parseInt(countSpan.textContent, 10);
+        if (btn.classList.contains('liked')) {
+            countSpan.textContent = currentCount + 1;
+        } else {
+            countSpan.textContent = currentCount - 1;
+        }
+    }
+
+    function toggleComments(btn) {
+        const postCard = btn.closest('.post-card');
+        const commentsContainer = postCard.querySelector('.comments-container');
+        commentsContainer.classList.toggle('active');
+    }
+
+    function addComment(event, form) {
+        event.preventDefault();
+        const input = form.querySelector('.comment-input');
+        const text = input.value.trim();
+        if (!text) return;
+
+        const postCard = form.closest('.post-card');
+        const commentsList = postCard.querySelector('.comments-list');
+        const commentCountSpan = postCard.querySelector('.comment-count');
+
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'comment-item';
+        commentDiv.innerHTML = `<span class="comment-author">Ви:</span> ${escapeHtml(text)}`;
+
+        commentsList.appendChild(commentDiv);
+        input.value = '';
+
+        let currentCount = parseInt(commentCountSpan.textContent, 10);
+        commentCountSpan.textContent = currentCount + 1;
+    }
+
+    function escapeHtml(string) {
+        return String(string).replace(/[&<>"']/g, function (s) {
+            return {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[s];
+        });
+    }
+</script>
+
+</body>
+</html>
