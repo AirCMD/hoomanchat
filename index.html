@@ -43,21 +43,23 @@ html, body {
   letter-spacing: 1px;
   text-transform: uppercase;
 }
+
+/* Макет із двома колонками */
 #hoomenchat-site .site-layout {
-  display: table;
+  display: flex;
+  gap: 10px;
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 10px 0;
+  align-items: flex-start;
 }
 #hoomenchat-site .site-left {
-  display: table-cell;
   width: 165px;
-  vertical-align: top;
+  flex-shrink: 0;
 }
 #hoomenchat-site .site-right {
-  display: table-cell;
-  vertical-align: top;
+  flex-grow: 1;
+  min-width: 0;
 }
+
 #hoomenchat-site .left-box {
   padding: 3px 7px;
   background: #f0f0f0;
@@ -151,6 +153,8 @@ html, body {
   color: #000;
   text-decoration: none;
 }
+
+/* Элементы правой колонки */
 #hoomenchat-site .welcome-box {
   margin: 0 0 8px;
   padding: 7px 8px;
@@ -180,15 +184,13 @@ html, body {
   font-weight: bold;
 }
 #hoomenchat-site .random-profiles {
-  display: table;
+  display: flex;
+  gap: 7px;
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 7px 0;
 }
 #hoomenchat-site .random-profile-cell {
-  display: table-cell;
-  width: 33.333%;
-  vertical-align: top;
+  flex: 1;
+  min-width: 0;
 }
 #hoomenchat-site .random-profile {
   display: block;
@@ -279,25 +281,18 @@ html, body {
   line-height: 11px;
   text-align: center;
 }
+
 @media screen and (max-width: 600px) {
   #hoomenchat-site {
     margin: 0;
     padding: 7px;
   }
   #hoomenchat-site .site-layout {
-    display: block;
-    border-spacing: 0;
+    flex-direction: column;
   }
   #hoomenchat-site .site-left,
   #hoomenchat-site .site-right {
-    display: block;
     width: 100%;
-  }
-  #hoomenchat-site .site-left {
-    margin-bottom: 8px;
-  }
-  #hoomenchat-site .random-profiles {
-    border-spacing: 4px 0;
   }
   #hoomenchat-site .random-avatar {
     height: 130px;
@@ -309,6 +304,8 @@ html, body {
 <div id="hoomenchat-site">
   <div class="hoomenchat-header">ГУМЕНЧАТ</div>
   <div class="site-layout">
+    
+    <!-- ЛІВА КОЛОНКА -->
     <div class="site-left">
       <div class="left-box">
         <div class="site-name">ГУМЕНЧАТ</div>
@@ -329,6 +326,8 @@ html, body {
         </div>
       </div>
     </div>
+    
+    <!-- ПРАВА КОЛОНКА -->
     <div class="site-right">
       <div class="welcome-box">Вітаємо! Безліч гуменів чекають на тебе вже <strong>ЗАРАЗ</strong>: Спілкуйся, обмінюйся думками, знаходь друменів, кохання свого життя, рідних та близьких разом з нами!</div>
       <div class="profiles-box">
@@ -344,6 +343,7 @@ html, body {
       </div>
       <div class="footer-line">Гуменчат — місце для гуменів.</div>
     </div>
+
   </div>
 </div>
 
