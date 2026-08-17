@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Гуменчат</title>
+
+<style>
+/* =====================================================
+   ОСНОВНІ СТИЛІ СТОРІНКИ
+   ===================================================== */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #e9e9e9;
+  font-family: Tahoma, Verdana, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #222;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#hoomenchat-site {
+  display: block;
+  max-width: 960px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #777;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#hoomenchat-site a {
+  color: #333;
+}
+
+/* =====================================================
+   ШАПКА САЙТУ
+   ===================================================== */
+.hoomenchat-header {
+  display: block;
+  margin: 0 0 12px;
+  padding: 6px 10px;
+  background: linear-gradient(to bottom, #525252, #2b2b2b);
+  border: 1px solid #111;
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* =====================================================
+   МАКЕТ (ТАБЛИЧНА СТРУКТУРА)
+   ===================================================== */
+.site-layout {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 12px 0;
+}
+
+.site-left {
+  display: table-cell;
+  width: 180px; /* Оновлена ширина */
+  vertical-align: top;
+}
+
+.site-right {
+  display: table-cell;
+  vertical-align: top;
+}
+
+/* =====================================================
+   ОНОВЛЕНА ЛІВА КОЛОНКА
+   ===================================================== */
+.left-box {
+  padding: 8px;
+  background: #f4f4f4;
+  border: 1px solid #b2b2b2;
+  border-radius: 2px;
+}
+
+.site-name {
+  margin: 0 0 8px;
+  padding: 0 0 6px;
+  border-bottom: 1px solid #ccc;
+  color: #111;
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: bold;
+  text-align: center;
+  word-break: break-word;
+}
+
+.main-avatar {
+  display: block;
+  width: 100%;
+  height: 164px; /* Квадратне співвідношення під ширину блоку */
+  margin: 0 0 8px;
+  object-fit: cover;
+  object-position: center;
+  background: #ddd;
+  border: 1px solid #999;
+  border-radius: 2px;
+}
+
+.archat-button {
+  display: block;
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 6px 0;
+  background: linear-gradient(to bottom, #ffee58, #fbc02d);
+  border: 1px solid #9e7d0a;
+  border-radius: 2px;
+  color: #1a1a1a;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.archat-button:hover {
+  background: linear-gradient(to bottom, #fff59d, #fdd835);
+  color: #000;
+}
+
+.nav-menu {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+.nav-item {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 5px 6px;
+  border-bottom: 1px dashed #e0e0e0;
+  color: #2c3e50;
+  font-size: 11px;
+  text-decoration: none;
+  transition: background 0.1s ease;
+}
+
+.nav-item:last-child {
+  border-bottom: none;
+}
+
+.nav-item:hover {
+  background: #e2e8f0;
+  color: #000;
+  font-weight: bold;
+}
+
+.account-box {
+  margin: 8px 0 0;
+  padding: 6px 4px 2px;
+  text-align: center;
+}
+
+.account-text {
+  margin: 0 0 6px;
+  color: #666;
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.account-link {
+  display: block;
+  margin: 3px 0;
+  padding: 4px 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  color: #333;
+  font-size: 10px;
+  font-weight: bold;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.account-link:hover {
+  background: #e9e9e9;
+  border-color: #aaa;
+  color: #000;
+}
+
+/* =====================================================
+   ПРАВА КОЛОНКА ТА ІНШІ ЕЛЕМЕНТИ
+   ===================================================== */
+.welcome-box {
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  background: #f9f9f9;
+  border: 1px solid #b2b2b2;
+  color: #222;
+  font-size: 12px;
+}
+
+.profiles-box {
+  margin: 0;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #b2b2b2;
+}
+
+.profiles-header {
+  margin: 0 0 8px;
+  padding: 5px 8px;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  color: #333;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.random-profiles {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 8px 0;
+}
+
+.random-profile-cell {
+  display: table-cell;
+  width: 33.333%;
+  vertical-align: top;
+}
+
+.random-profile {
+  display: block;
+  padding: 5px;
+  background: #f8f8f8;
+  border: 1px solid #ccc;
+  color: #222;
+  text-decoration: none;
+}
+
+.random-profile:hover {
+  background: #eee;
+  border-color: #888;
+}
+
+.random-avatar {
+  display: block;
+  width: 100%;
+  height: 150px;
+  margin: 0 0 5px;
+  object-fit: cover;
+  object-position: center 35%;
+  background: #ddd;
+  border: 1px solid #aaa;
+}
+
+.random-name {
+  margin: 0;
+  padding: 0 2px;
+  color: #111;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+.random-status {
+  margin: 2px 0 0;
+  color: #2e7d32;
+  font-size: 10px;
+  font-style: italic;
+  text-align: center;
+}
+
+.rules-box {
+  margin: 8px 0 0;
+  padding: 6px 8px;
+  background: #fff;
+  border: 1px solid #b2b2b2;
+  color: #444;
+  font-size: 11px;
+}
+
+.rules-box a {
+  color: #222;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.statistics-box {
+  margin: 8px 0 0;
+  padding: 6px 8px;
+  background: #fafafa;
+  border: 1px solid #b2b2b2;
+  color: #555;
+  font: 10px/14px "Courier New", Courier, monospace;
+}
+
+.statistics-title {
+  margin: 0 0 4px;
+  color: #333;
+  font: bold 11px/13px Tahoma, Arial, sans-serif;
+}
+
+.statistics-number {
+  color: #111;
+  font-weight: bold;
+}
+
+.statistics-online {
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+.footer-line {
+  margin: 10px 0 0;
+  padding-top: 6px;
+  border-top: 1px solid #ccc;
+  color: #888;
+  font-size: 10px;
+  text-align: center;
+}
+
+/* =====================================================
+   АДАПТИВНІСТЬ
+   ===================================================== */
+@media screen and (max-width: 600px) {
+  #hoomenchat-site {
+    padding: 6px;
+  }
+
+  .site-layout {
+    display: block;
+    border-spacing: 0;
+  }
+
+  .site-left,
+  .site-right {
+    display: block;
+    width: 100%;
+  }
+
+  .site-left {
+    margin-bottom: 10px;
+  }
+
+  .main-avatar {
+    height: 220px;
+  }
+
+  .random-profiles {
+    border-spacing: 4px 0;
+  }
+
+  .random-avatar {
+    height: 120px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="hoomenchat-site">
+
+<div class="hoomenchat-header">
+ГУМЕНЧАТ
+</div>
+
+<div class="site-layout">
+
+<!-- =====================================================
+     ЛІВА КОЛОНКА
+     ===================================================== -->
+<div class="site-left">
+  <div class="left-box">
+    <div class="site-name">ГУМЕНЧАТ</div>
+
+    <img
+      class="main-avatar"
+      alt="ГУМЕНЧАТ"
+      src="https://blogger.googleusercontent.com/img/a/AVvXsEikl2AwyMPO-fdHfH3XugR0z28OlNR7sGHxQFaYw1KHQ_3YNbbm0aGwmKo8X21RqBa-2RSi1sQmdGYFEs7XIaYylW3_6ivt1yixDE1RAhEOLPqMwEImTEd-0nUeCbb_9EUGLjjwa1OJK9njExaag52-LAN8p7YCRWAcKOdSpBgxJ62aQL7Ju2pjLLNhAWM"
+    />
+
+    <a
+      class="archat-button"
+      href="https://aircmd.github.io/hoomanchat/archive.html"
+    >
+      📩 АРЧАТ
+    </a>
+
+    <div class="nav-menu">
+      <a class="nav-item" href="https://aircmd.github.io/hoomanchat/index.html">Головна</a>
+      <a class="nav-item" href="https://aircmd.github.io/hoomanchat/profiles.html">Гумени</a>
+      <a class="nav-item" href="https://aircmd.github.io/hoomanchat/droomens.html">Друмени</a>
+      <a class="nav-item" href="https://aircmd.github.io/hoomanchat/activity.html">Стрічерчат</a>
+      <a class="nav-item" href="https://aircmd.github.io/hoomanchat/islands.html">Острови</a>
+      <a class="nav-item" href="https://aircmd.github.io/hoomanchat/rules.html">Правила</a>
+    </div>
+
+    <div class="account-box">
+      <div class="account-text">Немає гумгайла?</div>
+      <a class="account-link" href="#">Реєстрація</a>
+      <a class="account-link" href="#">Вхід</a>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================
+     ПРАВА КОЛОНКА
+     ===================================================== -->
+<div class="site-right">
+  <div class="welcome-box">
+    Вітаємо! Безліч гуменів чекають на тебе вже <strong>ЗАРАЗ</strong>: Спілкуйся, обмінюйся думками, знаходь друменів, кохання свого життя, рідних та близьких разом з нами!
+  </div>
+
+  <div class="profiles-box">
+    <div class="profiles-header">
+      Гумени чекають на тебе:
+    </div>
+    <div class="random-profiles" id="random-hoomen-list"></div>
+  </div>
+
+  <div class="rules-box">
+    Пам'ятай та дотримуйся
+    <a href="https://aircmd.github.io/hoomanchat/rules.html">ПРАВИЛ</a>
+    нашого ресурсу для приємного та друмнього часу разом з нами.
+  </div>
+
+  <div class="statistics-box">
+    <div class="statistics-title">
+      Статистика Гуменчату
+    </div>
+    <div>
+      Зареєстровано гуменів:
+      <span class="statistics-number" id="registered-hoomen"></span>
+    </div>
+    <div>
+      Зараз онлайн:
+      <span class="statistics-online" id="online-hoomen"></span>
+    </div>
+    <div>
+      Гуменів сьогодні завітало:
+      <span class="statistics-number" id="today-hoomen"></span>
+    </div>
+  </div>
+
+  <div class="footer-line">
+    Гуменчат — місце для гуменів.
+  </div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+(function(){
+
+var hoomenProfiles = [
+  {name:"dreaming_romance", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA", link:"profiles/dreaming-romance.html", status:"онлайн"},
+  {name:"copy_pasta", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiNU5aLNwKBZvNgLsvxfKYA0hduyABhvfQrHryVIrw1Q2WVFne8Aop849IRmthJlGuRphRDtjX_d-pvH8gcUtCoAL-zkhXAP0utpiVidiXL57SIMaMBjeaXnGhTZ_j2wQj1RZxI-V5TsjxtARZSpoxZ8UGuDX_9t9hmiL6k1OyP6ilE8WmYwfKmHTQFvFg", link:"profiles/copy-pasta.html", status:"онлайн"},
+  {name:"sakurai_agatsuma", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEg6F3ycnXu5A2gS5zM4p0-qELjeNz4oXvfJAwkLxSJnL4kELcGviUtPwYe-Oa8lV_ThO7h6iq0dwSnx2FeaHbkzG6HEC8S0HILQKiHh49eWl65LSGoj7RgeAYb7V5MV7b7Mu7Sxexq9LYM_7XPF6SkSjStcQO32x02IKUWdFlUck9z30GmMEJgH2OLM3YA", link:"profiles/sakurai-agatsuma.html", status:"онлайн"},
+  {name:"sruiki_stikki", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEhvP2ab1Fl3tJVD7N4ZinordTPbip3E8SpYB6yk93kDOeak-4B17vuUQTl_j4mggTJ9cMwD7chp48zMEjl6yiHQVRM0VpXDC_EsUkx6H894DwLM7g4cRTxiy4GXYV2kiAkTZmqJwflc0UeDzuWd_t8Bp_zB6sjBFB81qxtUCYGCyLEpueRRi9CMnqfuXnA", link:"profiles/sruiki-stikki.html", status:"недавно був(ла)"},
+  {name:"yurii_ichigo", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiMGES7-O1UP0GNtOe_tYLUJ1-xHmX0DIUGn78v1Mi8sT9_WmVXm1-mw2Nh5uKfKksgKrdapry46R4R5kPIIQi0XWexejQq2fPwS2TjpVqeF0xHdtJfDgDgHOgEyUSiuXQ2q-L2X_PqmD0m8KWf5QdIOdQAx2xuN0F6HGE0V32-BECRndeELmjUeEGtCq0", link:"profiles/yurii-ichigo.html", status:"онлайн"},
+  {name:"dmytro_pinchuk", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEhavXxH1olKd8QKInl2XEJOuzumK7FJHJGDIW3rZQxAHDytMrTjbjMU2GALc3fK_05KQvX0tDudgHT6_sKkRjmD2D5VN4MnuDZKMmuaQi5CYWrwERP3oqNyBz5TPRytotDlvP-FoDns0Ky3oHEVFLWGwnZ6KvJyVJqVV9oTV-XzLu-qj--InjBO4QFEn60", link:"profiles/dmytro-pinchuk.html", status:"недавно був(ла)"},
+  {name:"alter_core", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiZ7hOITEG-aCscLuMNEBml1v2zidsEixQymUsU5UukZN4Jb-AAbqwdGj3CJ8gSTbOvXMgyPp3T4xAQzq3TRYhFjOYbF0TkE6lWGESsA-K31pEcpcOV2Cr061lkzABNZRKN5CPAr9WmD38DWNYbebjw8CuqHGWvgBCumZebUra3Kjf6sjUDTZDpVZQehD0", link:"profiles/alter-core.html", status:"онлайн"}
+];
+
+function shuffle(a){
+  var c = a.slice();
+  for (var i = c.length - 1; i > 0; i--) {
+    var r = Math.floor(Math.random() * (i + 1)), t = c[i];
+    c[i] = c[r];
+    c[r] = t;
+  }
+  return c;
+}
+
+function showProfiles(){
+  var c = document.getElementById("random-hoomen-list");
+  if(!c) return;
+  c.innerHTML = "";
+  shuffle(hoomenProfiles).slice(0, 3).forEach(function(p){
+    var cell = document.createElement("div");
+    cell.className = "random-profile-cell";
+    
+    var a = document.createElement("a");
+    a.className = "random-profile";
+    a.href = p.link;
+    
+    var img = document.createElement("img");
+    img.className = "random-avatar";
+    img.src = p.avatar;
+    img.alt = p.name;
+    
+    var n = document.createElement("div");
+    n.className = "random-name";
+    n.textContent = p.name;
+    
+    var s = document.createElement("div");
+    s.className = "random-status";
+    s.textContent = "● " + p.status;
+    
+    a.appendChild(img);
+    a.appendChild(n);
+    a.appendChild(s);
+    cell.appendChild(a);
+    c.appendChild(cell);
+  });
+}
+
+function forbidden(n){
+  var t = String(n);
+  return t.indexOf("63") !== -1 || t.indexOf("68") !== -1 || t.indexOf("13") !== -1 || t.indexOf("666") !== -1;
+}
+
+function safeNumber(base, variation){
+  var n, tries = 0;
+  do {
+    n = base + Math.floor(Math.random() * (variation * 2 + 1)) - variation;
+    tries++;
+    if (tries > 100) {
+      n = base + variation + 1;
+      while(forbidden(n)) n++;
+      break;
+    }
+  } while (forbidden(n));
+  return n;
+}
+
+function updateStatistics(){
+  document.getElementById("registered-hoomen").textContent = safeNumber(8000000, 23000).toLocaleString("uk-UA");
+  document.getElementById("online-hoomen").textContent = safeNumber(1000000, 38000).toLocaleString("uk-UA");
+  document.getElementById("today-hoomen").textContent = safeNumber(2400000, 90000).toLocaleString("uk-UA");
+}
+
+showProfiles();
+updateStatistics();
+setInterval(updateStatistics, 30000);
+
+})();
+</script>
+
+</body>
+</html>
