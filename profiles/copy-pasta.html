@@ -12,24 +12,20 @@ body {
   color: #222;
 }
 
+#hoomenchat-site,
+#hoomenchat-site *,
+#hoomenchat-site *:before,
+#hoomenchat-site *:after {
+  box-sizing: border-box;
+}
+
 #hoomenchat-site {
-  all: initial;
-  display: block;
   width: 100%;
   min-height: 100vh;
   margin: 0;
   padding: 12px;
   background: #fff;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
-  line-height: 14px;
-  color: #222;
-}
-
-#hoomenchat-site *,
-#hoomenchat-site *:before,
-#hoomenchat-site *:after {
-  box-sizing: border-box;
+  border: 0;
 }
 
 #hoomenchat-site a {
@@ -44,11 +40,9 @@ body {
 #hoomenchat-site .hoomenchat-header {
   margin: 0 0 10px;
   padding: 5px 8px;
-  background: linear-gradient(#626262, #3b3b3b);
+  background: linear-gradient(#626262,#3b3b3b);
   border: 1px solid #222;
   color: #fff;
-  font-size: 12px;
-  line-height: 14px;
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -56,7 +50,7 @@ body {
 
 
 /* =========================================================
-   ОСНОВНИЙ КАРКАС
+   ОСНОВНИЙ КАРКАС — 1 В 1 ЯК YURII_ICHIGO
    ========================================================= */
 
 #hoomenchat-site .site-layout {
@@ -74,7 +68,6 @@ body {
 
 #hoomenchat-site .site-right {
   display: table-cell;
-  width: auto;
   vertical-align: top;
 }
 
@@ -117,7 +110,7 @@ body {
   width: 100%;
   margin: 0 0 5px;
   padding: 4px 0;
-  background: linear-gradient(#fff176, #fbc02d);
+  background: linear-gradient(#fff176,#fbc02d);
   border: 1px solid #a78119;
   color: #000;
   font-size: 10px;
@@ -129,7 +122,7 @@ body {
 }
 
 #hoomenchat-site .archat-button:hover {
-  background: linear-gradient(#fff59d, #fdd835);
+  background: linear-gradient(#fff59d,#fdd835);
 }
 
 #hoomenchat-site .nav-menu {
@@ -200,8 +193,6 @@ body {
   background: #f0f0f0;
   border: 1px solid #999;
   color: #222;
-  font-size: 12px;
-  line-height: 15px;
   font-weight: bold;
 }
 
@@ -237,8 +228,6 @@ body {
   background: #f0f0f0;
   border: 1px solid #999;
   color: #333;
-  font-size: 11px;
-  line-height: 13px;
   font-weight: bold;
 }
 
@@ -249,12 +238,11 @@ body {
 }
 
 #hoomenchat-site .profile-post-title {
+  margin: 0;
   padding: 4px 7px;
   background: #f5f5f5;
   border-bottom: 1px solid #aaa;
   color: #222;
-  font-size: 11px;
-  line-height: 14px;
   font-weight: bold;
 }
 
@@ -270,7 +258,6 @@ body {
   border-top: 1px solid #ddd;
   color: #888;
   font-size: 9px;
-  line-height: 11px;
 }
 
 
@@ -287,7 +274,7 @@ body {
 #hoomenchat-site .like-button,
 #hoomenchat-site .comment-button {
   display: inline-block;
-  margin: 0 8px 0 0;
+  margin-right: 8px;
   padding: 1px 3px;
   border: 0;
   background: transparent;
@@ -311,6 +298,7 @@ body {
 
 #hoomenchat-site .comments-area {
   display: none;
+  margin: 0;
   padding: 6px 7px;
   background: #f8f8f8;
   border-top: 1px solid #ddd;
@@ -360,7 +348,6 @@ body {
   border: 1px solid #999;
   color: #444;
   font-size: 10px;
-  line-height: 12px;
   cursor: pointer;
 }
 
@@ -375,11 +362,6 @@ body {
   background: #fff;
   border: 1px solid #aaa;
   font-size: 10px;
-  line-height: 13px;
-}
-
-#hoomenchat-site .user-comment strong {
-  font-weight: bold;
 }
 
 
@@ -460,7 +442,6 @@ body {
 }
 
 #hoomenchat-site .statistics-number {
-  color: #222;
   font-weight: bold;
 }
 
@@ -486,15 +467,10 @@ body {
 
 
 /* =========================================================
-   МОБІЛЬНА ВЕРСІЯ
+   МОБІЛЬНА ВЕРСІЯ — ЯК У YURII_ICHIGO
    ========================================================= */
 
 @media screen and (max-width: 600px) {
-
-  #hoomenchat-site {
-    margin: 0;
-    padding: 7px;
-  }
 
   #hoomenchat-site .site-layout {
     display: block;
@@ -511,6 +487,10 @@ body {
     margin-bottom: 8px;
   }
 
+  #hoomenchat-site {
+    padding: 7px;
+  }
+
 }
 </style>
 
@@ -523,10 +503,6 @@ body {
 <div class="site-layout">
 
 
-<!-- =====================================================
-     ЛІВА КОЛОНКА
-     ===================================================== -->
-
 <div class="site-left">
 
 <div class="left-box">
@@ -536,11 +512,10 @@ body {
 </div>
 
 <img
-  class="main-avatar"
   alt="copy_pasta"
+  class="main-avatar"
   src="https://blogger.googleusercontent.com/img/a/AVvXsEiNU5aLNwKBZvNgLsvxfKYA0hduyABhvfQrHryVIrw1Q2WVFne8Aop849IRmthJlGuRphRDtjX_d-pvH8gcUtCoAL-zkhXAP0utpiVidiXL57SIMaMBjeaXnGhTZ_j2wQj1RZxI-V5TsjxtARZSpoxZ8UGuDX_9t9hmiL6k1OyP6ilE8WmYwfKmHTQFvFg"
->
-
+/>
 
 <a
   class="archat-button"
@@ -624,10 +599,6 @@ body {
 </div>
 
 
-<!-- =====================================================
-     ПРАВА КОЛОНКА
-     ===================================================== -->
-
 <div class="site-right">
 
 
@@ -700,16 +671,12 @@ body {
 <div class="comments-area">
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    sakurai_agatsuma
-  </div>
+  <div class="fake-comment-name">sakurai_agatsuma</div>
   Шкода собачку(
 </div>
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    copy_pasta
-  </div>
+  <div class="fake-comment-name">copy_pasta</div>
   Шкода не те слово. Але ж собачка не винна що її власник гівнюк.
 </div>
 
@@ -767,23 +734,17 @@ body {
 <div class="comments-area">
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    sakurai_agatsuma
-  </div>
+  <div class="fake-comment-name">sakurai_agatsuma</div>
   Створюй те все для себе :3
 </div>
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    copy_pasta
-  </div>
+  <div class="fake-comment-name">copy_pasta</div>
   Та не так вже й цікаво....
 </div>
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    sakurai_agatsuma
-  </div>
+  <div class="fake-comment-name">sakurai_agatsuma</div>
   А заради учасників твого островка?
 </div>
 
@@ -841,23 +802,17 @@ body {
 <div class="comments-area">
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    sakurai_agatsuma
-  </div>
+  <div class="fake-comment-name">sakurai_agatsuma</div>
   Хаха, ну ти й даєш.
 </div>
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    copy_pasta
-  </div>
+  <div class="fake-comment-name">copy_pasta</div>
   Та та воно й таа. А якщо б пакет в пику прилетів?
 </div>
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    sakurai_agatsuma
-  </div>
+  <div class="fake-comment-name">sakurai_agatsuma</div>
   Якщо тільки пакет з грошима)
 </div>
 
@@ -915,16 +870,12 @@ body {
 <div class="comments-area">
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    alter_core
-  </div>
+  <div class="fake-comment-name">alter_core</div>
   А яка саме субкультура? Бо всі вони різні.
 </div>
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    copy_pasta
-  </div>
+  <div class="fake-comment-name">copy_pasta</div>
   Якщо субкультура передбачатиме комфорт, смачну їжу та теплу атмосферу, то саме таку.
 </div>
 
@@ -982,23 +933,17 @@ body {
 <div class="comments-area">
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    sakurai_agatsuma
-  </div>
+  <div class="fake-comment-name">sakurai_agatsuma</div>
   А чому не зробила? Я собі приклеїла.
 </div>
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    copy_pasta
-  </div>
+  <div class="fake-comment-name">copy_pasta</div>
   Щоб що? Всеодно цього ніхто не бачить.
 </div>
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    sakurai_agatsuma
-  </div>
+  <div class="fake-comment-name">sakurai_agatsuma</div>
   То я даремно з нею весь день проходила??
 </div>
 
@@ -1056,16 +1001,12 @@ body {
 <div class="comments-area">
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    copy_pasta
-  </div>
+  <div class="fake-comment-name">copy_pasta</div>
   Напевно приберу.
 </div>
 
 <div class="fake-comment">
-  <div class="fake-comment-name">
-    sakurai_agatsuma
-  </div>
+  <div class="fake-comment-name">sakurai_agatsuma</div>
   Прибирай :3
 </div>
 
@@ -1123,13 +1064,8 @@ body {
 <div class="comments-area">
 
 <div class="fake-comment">
-
-<div class="fake-comment-name">
-  copy_pasta
-</div>
-
-Мізкологи безкорисна витрата коштів.
-
+  <div class="fake-comment-name">copy_pasta</div>
+  Мізкологи безкорисна витрата коштів.
 </div>
 
 <div class="comment-form">
@@ -1168,14 +1104,12 @@ body {
 </div>
 
 <div class="profile-post-body">
-
-Що між нами? Поясни ж ти мені,
-<b>
-<a href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">
-  @dream_romance
-</a>
-</b>
-
+  Що між нами? Поясни ж ти мені,
+  <b>
+    <a href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">
+      @dream_romance
+    </a>
+  </b>
 </div>
 
 <div class="post-actions">
@@ -1193,23 +1127,13 @@ body {
 <div class="comments-area">
 
 <div class="fake-comment">
-
-<div class="fake-comment-name">
-  dreaming_romance
-</div>
-
-Стосунки звісно ж.
-
+  <div class="fake-comment-name">dreaming_romance</div>
+  Стосунки звісно ж.
 </div>
 
 <div class="fake-comment">
-
-<div class="fake-comment-name">
-  copy_pasta
-</div>
-
-Тоді нащо ти пишеш дивні речі?
-
+  <div class="fake-comment-name">copy_pasta</div>
+  Тоді нащо ти пишеш дивні речі?
 </div>
 
 <div class="comment-form">
@@ -1266,23 +1190,13 @@ body {
 <div class="comments-area">
 
 <div class="fake-comment">
-
-<div class="fake-comment-name">
-  copy_pasta
-</div>
-
-Маячню назнімали.
-
+  <div class="fake-comment-name">copy_pasta</div>
+  Маячню назнімали.
 </div>
 
 <div class="fake-comment">
-
-<div class="fake-comment-name">
-  copy_pasta
-</div>
-
-Бісить.
-
+  <div class="fake-comment-name">copy_pasta</div>
+  Бісить.
 </div>
 
 <div class="comment-form">
@@ -1392,23 +1306,13 @@ body {
 <div class="comments-area">
 
 <div class="fake-comment">
-
-<div class="fake-comment-name">
-  copy_pasta
-</div>
-
-Я що, даремно про це написала!?
-
+  <div class="fake-comment-name">copy_pasta</div>
+  Я що, даремно про це написала!?
 </div>
 
 <div class="fake-comment">
-
-<div class="fake-comment-name">
-  sakurai_agatsuma
-</div>
-
-Так.
-
+  <div class="fake-comment-name">sakurai_agatsuma</div>
+  Так.
 </div>
 
 <div class="comment-form">
@@ -2163,6 +2067,7 @@ body {
 
 </div>
 
+
 <div class="fake-comment">
 
 <div class="fake-comment-name">
@@ -2173,6 +2078,7 @@ body {
 
 </div>
 
+
 <div class="fake-comment">
 
 <div class="fake-comment-name">
@@ -2182,6 +2088,7 @@ body {
 Звісно шукатиму 😙.
 
 </div>
+
 
 <div class="comment-form">
 
@@ -2211,10 +2118,6 @@ body {
 </div>
 
 
-<!-- =====================================================
-     ПОКАЗАТИ ЩЕ
-     ===================================================== -->
-
 <div
   class="show-more"
   id="show-more-posts"
@@ -2222,10 +2125,6 @@ body {
   показати ще...
 </div>
 
-
-<!-- =====================================================
-     ПРАВИЛА
-     ===================================================== -->
 
 <div class="rules-box">
 
@@ -2239,10 +2138,6 @@ body {
 
 </div>
 
-
-<!-- =====================================================
-     СТАТИСТИКА
-     ===================================================== -->
 
 <div class="statistics-box">
 
@@ -2277,16 +2172,13 @@ body {
 </div>
 
 
-<!-- =====================================================
-     FOOTER
-     ===================================================== -->
-
 <div class="footer-line">
   Гуменчат — місце для гуменів.
 </div>
 
 
 </div>
+
 </div>
 
 
@@ -2307,7 +2199,6 @@ var showMore = document.getElementById(
 );
 
 var visiblePosts = 3;
-
 var postsPerClick = 5;
 
 
@@ -2316,25 +2207,22 @@ function updatePostVisibility() {
   for (var i = 0; i < posts.length; i++) {
 
     if (i < visiblePosts) {
-
       posts[i].style.display = "block";
-
     } else {
-
       posts[i].style.display = "none";
-
     }
 
   }
 
-
   if (visiblePosts >= posts.length) {
 
-    showMore.className = "show-more hidden";
+    showMore.className =
+      "show-more hidden";
 
   } else {
 
-    showMore.className = "show-more";
+    showMore.className =
+      "show-more";
 
   }
 
@@ -2382,31 +2270,29 @@ likeButtons.forEach(function(button) {
       );
 
 
-      if (button.classList.contains("liked")) {
+      if (
+        button.classList.contains("liked")
+      ) {
 
         number--;
 
-        button.classList.remove("liked");
-
-        button.innerHTML =
-          "♡ Подобається " +
-          '<span class="like-count">' +
-          number.toLocaleString("uk-UA") +
-          "</span>";
+        button.classList.remove(
+          "liked"
+        );
 
       } else {
 
         number++;
 
-        button.classList.add("liked");
-
-        button.innerHTML =
-          "♥ Подобається " +
-          '<span class="like-count">' +
-          number.toLocaleString("uk-UA") +
-          "</span>";
+        button.classList.add(
+          "liked"
+        );
 
       }
+
+
+      count.textContent =
+        number.toLocaleString("uk-UA");
 
     }
   );
@@ -2418,9 +2304,10 @@ likeButtons.forEach(function(button) {
    КОМЕНТАРІ
    ========================================================= */
 
-var commentButtons = document.querySelectorAll(
-  "#hoomenchat-site .comment-button"
-);
+var commentButtons =
+  document.querySelectorAll(
+    "#hoomenchat-site .comment-button"
+  );
 
 
 commentButtons.forEach(function(button) {
@@ -2437,7 +2324,9 @@ commentButtons.forEach(function(button) {
         ".comments-area"
       );
 
-      comments.classList.toggle("open");
+      comments.classList.toggle(
+        "open"
+      );
 
     }
   );
@@ -2446,12 +2335,13 @@ commentButtons.forEach(function(button) {
 
 
 /* =========================================================
-   ВІДПРАВКА КОМЕНТАРІВ
+   ВЛАСНІ КОМЕНТАРІ
    ========================================================= */
 
-var sendButtons = document.querySelectorAll(
-  "#hoomenchat-site .comment-send"
-);
+var sendButtons =
+  document.querySelectorAll(
+    "#hoomenchat-site .comment-send"
+  );
 
 
 sendButtons.forEach(function(button) {
@@ -2476,27 +2366,37 @@ sendButtons.forEach(function(button) {
       }
 
 
-      var comment = document.createElement(
-        "div"
+      var comment =
+        document.createElement(
+          "div"
+        );
+
+      comment.className =
+        "user-comment";
+
+
+      var name =
+        document.createElement(
+          "strong"
+        );
+
+      name.textContent =
+        "ти: ";
+
+
+      var message =
+        document.createTextNode(
+          text
+        );
+
+
+      comment.appendChild(
+        name
       );
 
-      comment.className = "user-comment";
-
-
-      var name = document.createElement(
-        "strong"
+      comment.appendChild(
+        message
       );
-
-      name.textContent = "ти: ";
-
-
-      var message = document.createTextNode(
-        text
-      );
-
-
-      comment.appendChild(name);
-      comment.appendChild(message);
 
 
       form.parentNode.insertBefore(
@@ -2513,15 +2413,17 @@ sendButtons.forEach(function(button) {
       );
 
 
-      var count = post.querySelector(
-        ".comment-count"
-      );
+      var count =
+        post.querySelector(
+          ".comment-count"
+        );
 
 
-      var number = parseInt(
-        count.textContent.replace(/\s/g, ""),
-        10
-      );
+      var number =
+        parseInt(
+          count.textContent,
+          10
+        );
 
 
       count.textContent =
@@ -2537,7 +2439,10 @@ sendButtons.forEach(function(button) {
    СТАТИСТИКА
    ========================================================= */
 
-function safeNumber(base, range) {
+function safeNumber(
+  base,
+  range
+) {
 
   var value;
 
@@ -2551,53 +2456,66 @@ function safeNumber(base, range) {
       );
 
   } while (
+
     String(value).indexOf("63") !== -1 ||
     String(value).indexOf("68") !== -1 ||
     String(value).indexOf("13") !== -1 ||
     String(value).indexOf("666") !== -1
+
   );
 
 
   return value;
+
 }
 
 
 function updateStatistics() {
 
-  var registered = safeNumber(
-    8000000,
-    47001
-  );
+
+  var registered =
+    safeNumber(
+      8000000,
+      47001
+    );
 
 
-  var online = safeNumber(
-    1000000,
-    76001
-  );
+  var online =
+    safeNumber(
+      1000000,
+      76001
+    );
 
 
-  var today = safeNumber(
-    2400000,
-    180001
-  );
+  var today =
+    safeNumber(
+      2400000,
+      180001
+    );
 
 
   document.getElementById(
     "registered-hoomen"
   ).textContent =
-    registered.toLocaleString("uk-UA");
+    registered.toLocaleString(
+      "uk-UA"
+    );
 
 
   document.getElementById(
     "online-hoomen"
   ).textContent =
-    online.toLocaleString("uk-UA");
+    online.toLocaleString(
+      "uk-UA"
+    );
 
 
   document.getElementById(
     "today-hoomen"
   ).textContent =
-    today.toLocaleString("uk-UA");
+    today.toLocaleString(
+      "uk-UA"
+    );
 
 }
 
@@ -2610,10 +2528,12 @@ updatePostVisibility();
 
 updateStatistics();
 
+
 setInterval(
   updateStatistics,
   30000
 );
+
 
 })();
 </script>
