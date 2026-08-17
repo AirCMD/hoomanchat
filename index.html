@@ -66,7 +66,7 @@ html, body {
 
 .site-left {
   display: table-cell;
-  width: 180px;
+  width: 180px; /* Оновлена ширина */
   vertical-align: top;
 }
 
@@ -76,7 +76,7 @@ html, body {
 }
 
 /* =====================================================
-   ЛІВА КОЛОНКА
+   ОНОВЛЕНА ЛІВА КОЛОНКА
    ===================================================== */
 .left-box {
   padding: 8px;
@@ -100,7 +100,7 @@ html, body {
 .main-avatar {
   display: block;
   width: 100%;
-  height: 164px;
+  height: 164px; /* Квадратне співвідношення під ширину блоку */
   margin: 0 0 8px;
   object-fit: cover;
   object-position: center;
@@ -195,7 +195,7 @@ html, body {
 }
 
 /* =====================================================
-   ПРАВА КОЛОНКА
+   ПРАВА КОЛОНКА ТА ІНШІ ЕЛЕМЕНТИ
    ===================================================== */
 .welcome-box {
   margin: 0 0 8px;
@@ -250,14 +250,13 @@ html, body {
   border-color: #888;
 }
 
-/* Оновлено покази довжини аватарок */
 .random-avatar {
   display: block;
   width: 100%;
-  height: 210px; /* Збільшена висота */
+  height: 150px;
   margin: 0 0 5px;
   object-fit: cover;
-  object-position: center top; /* Центрування з акцентом на верхню частину */
+  object-position: center 35%;
   background: #ddd;
   border: 1px solid #aaa;
 }
@@ -361,7 +360,7 @@ html, body {
   }
 
   .random-avatar {
-    height: 150px; /* Збільшено висоту для мобільної адаптації */
+    height: 120px;
   }
 }
 </style>
