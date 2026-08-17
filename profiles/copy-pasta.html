@@ -26,12 +26,17 @@ html,body{
   margin:0;
   padding:12px;
   background:#fff;
-  border:none
+  border:1px solid #777
 }
 
 #hoomenchat-site a{
   color:#444
 }
+
+
+/* =========================================================
+   ВЕРХНЯ ПАНЕЛЬ
+   ========================================================= */
 
 .hoomenchat-header{
   margin:0 0 10px;
@@ -43,6 +48,11 @@ html,body{
   letter-spacing:1px;
   text-transform:uppercase
 }
+
+
+/* =========================================================
+   ОСНОВНИЙ КАРКАС — ЯК У YURII_ICHIGO
+   ========================================================= */
 
 .site-layout{
   display:table;
@@ -61,6 +71,11 @@ html,body{
   display:table-cell;
   vertical-align:top
 }
+
+
+/* =========================================================
+   ЛІВА ПАНЕЛЬ
+   ========================================================= */
 
 .left-box{
   padding:3px 7px;
@@ -161,6 +176,11 @@ html,body{
   text-decoration:none
 }
 
+
+/* =========================================================
+   ПРОФІЛЬ
+   ========================================================= */
+
 .profile-box{
   margin:0 0 8px;
   padding:7px;
@@ -173,9 +193,6 @@ html,body{
   padding:5px 7px;
   background:#f0f0f0;
   border:1px solid #999;
-  color:#222;
-  font-size:12px;
-  line-height:15px;
   font-weight:bold
 }
 
@@ -183,7 +200,6 @@ html,body{
   padding:6px 7px;
   background:#f9f9f9;
   border:1px solid #aaa;
-  color:#444;
   font-size:11px;
   line-height:15px
 }
@@ -200,14 +216,16 @@ html,body{
   font-style:italic
 }
 
+
+/* =========================================================
+   ДОПИСИ
+   ========================================================= */
+
 .posts-header{
   margin:8px 0 5px;
   padding:4px 7px;
   background:#f0f0f0;
   border:1px solid #999;
-  color:#333;
-  font-size:11px;
-  line-height:13px;
   font-weight:bold
 }
 
@@ -218,13 +236,9 @@ html,body{
 }
 
 .profile-post-title{
-  margin:0;
   padding:4px 7px;
   background:#f5f5f5;
   border-bottom:1px solid #aaa;
-  color:#222;
-  font-size:11px;
-  line-height:14px;
   font-weight:bold
 }
 
@@ -242,6 +256,11 @@ html,body{
   font-size:9px;
   line-height:11px
 }
+
+
+/* =========================================================
+   ЛАЙКИ / КОМЕНТАРІ
+   ========================================================= */
 
 .post-actions{
   padding:4px 7px;
@@ -347,6 +366,11 @@ html,body{
   font-weight:bold
 }
 
+
+/* =========================================================
+   ПОКАЗАТИ ЩЕ
+   ========================================================= */
+
 .show-more{
   display:block;
   width:100%;
@@ -373,6 +397,11 @@ html,body{
   display:none
 }
 
+
+/* =========================================================
+   ПРАВИЛА
+   ========================================================= */
+
 .rules-box{
   margin:8px 0 0;
   padding:5px 8px;
@@ -388,6 +417,11 @@ html,body{
   font-weight:bold;
   text-decoration:underline
 }
+
+
+/* =========================================================
+   СТАТИСТИКА
+   ========================================================= */
 
 .statistics-box{
   margin:8px 0 0;
@@ -419,6 +453,11 @@ html,body{
   font-weight:bold
 }
 
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
 .footer-line{
   margin-top:7px;
   padding-top:4px;
@@ -429,15 +468,15 @@ html,body{
   text-align:center
 }
 
+
+/* =========================================================
+   МОБІЛЬНИЙ КАРКАС — ЯК У YURII_ICHIGO
+   ========================================================= */
+
 @media(max-width:600px){
 
-  #hoomenchat-site{
-    padding:7px
-  }
-
   .site-layout{
-    display:block;
-    border-spacing:0
+    display:block
   }
 
   .site-left,
@@ -448,6 +487,10 @@ html,body{
 
   .site-left{
     margin-bottom:8px
+  }
+
+  #hoomenchat-site{
+    padding:7px
   }
 
 }
@@ -463,6 +506,10 @@ html,body{
 </div>
 
 <div class="site-layout">
+
+<!-- =====================================================
+     ЛІВА КОЛОНКА
+     ===================================================== -->
 
 <div class="site-left">
 
@@ -558,6 +605,10 @@ href="#"
 </div>
 
 
+<!-- =====================================================
+     ПРАВА КОЛОНКА
+     ===================================================== -->
+
 <div class="site-right">
 
 <div class="profile-box">
@@ -599,6 +650,10 @@ href="#"
 
 <div id="copy-posts">
 
+
+<!-- =====================================================
+     ДОПИС 1
+     ===================================================== -->
 
 <div class="profile-post">
 
@@ -647,6 +702,10 @@ href="#"
 
 </div>
 
+
+<!-- =====================================================
+     ДОПИС 2
+     ===================================================== -->
 
 <div class="profile-post">
 
@@ -701,6 +760,10 @@ href="#"
 </div>
 
 
+<!-- =====================================================
+     ДОПИС 3
+     ===================================================== -->
+
 <div class="profile-post">
 
 <div class="profile-post-title">
@@ -754,6 +817,10 @@ href="#"
 </div>
 
 
+<!-- =====================================================
+     ДОПИС 4
+     ===================================================== -->
+
 <div class="profile-post">
 
 <div class="profile-post-title">
@@ -801,6 +868,10 @@ href="#"
 
 </div>
 
+
+<!-- =====================================================
+     ДОПИС 5
+     ===================================================== -->
 
 <div class="profile-post">
 
@@ -855,103 +926,57 @@ href="#"
 </div>
 
 
+<!-- =====================================================
+     ДОПИС 6
+     ===================================================== -->
+
 <div class="profile-post">
-
-<div class="profile-post-title">
-Мо прибрати сімейку?
-</div>
-
-<div class="profile-post-body">
-Бо те що відбувається між нами точно стосунками не назвеш.
-</div>
-
+<div class="profile-post-title">Мо прибрати сімейку?</div>
+<div class="profile-post-body">Бо те що відбувається між нами точно стосунками не назвеш.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">2</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">2</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">2</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
 </div>
-
 <div class="comments-area">
-
-<div class="fake-comment">
-<div class="fake-comment-name">copy_pasta</div>
-Напевно приберу.
-</div>
-
-<div class="fake-comment">
-<div class="fake-comment-name">sakurai_agatsuma</div>
-Прибирай :3
-</div>
-
+<div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>Напевно приберу.</div>
+<div class="fake-comment"><div class="fake-comment-name">sakurai_agatsuma</div>Прибирай :3</div>
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">10 серпня</div>
 </div>
 
-<div class="profile-post-date">
-10 серпня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 7
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Прочитала 5 книжок
-</div>
-
-<div class="profile-post-body">
-Я не розумію навіщо люди лізуть в мізкологію. Всі книжки та й їхній зміст однаковий. Різниці ніякої.
-</div>
-
+<div class="profile-post-title">Прочитала 5 книжок</div>
+<div class="profile-post-body">Я не розумію навіщо люди лізуть в мізкологію. Всі книжки та й їхній зміст однаковий. Різниці ніякої.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">1</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">1</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">1</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
 </div>
-
 <div class="comments-area">
-
-<div class="fake-comment">
-<div class="fake-comment-name">copy_pasta</div>
-Мізкологи безкорисна витрата коштів.
-</div>
-
+<div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>Мізкологи безкорисна витрата коштів.</div>
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">8 серпня</div>
 </div>
 
-<div class="profile-post-date">
-8 серпня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 8
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Чи ти мій хлопець, чи ні?
-</div>
-
+<div class="profile-post-title">Чи ти мій хлопець, чи ні?</div>
 <div class="profile-post-body">
 Що між нами? Поясни ж ти мені,
 <b>
@@ -960,682 +985,369 @@ href="#"
 </a>
 </b>
 </div>
-
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">0</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">2</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
 </div>
-
 <div class="comments-area">
-
-<div class="fake-comment">
-<div class="fake-comment-name">dreaming_romance</div>
-Стосунки звісно ж.
-</div>
-
-<div class="fake-comment">
-<div class="fake-comment-name">copy_pasta</div>
-Тоді нащо ти пишеш дивні речі?
-</div>
-
+<div class="fake-comment"><div class="fake-comment-name">dreaming_romance</div>Стосунки звісно ж.</div>
+<div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>Тоді нащо ти пишеш дивні речі?</div>
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">8 серпня</div>
 </div>
 
-<div class="profile-post-date">
-8 серпня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 9
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Не розумію...
-</div>
-
-<div class="profile-post-body">
-Гарно починалося ж аніме. Але коли припиняється різко комедія та починається чорнуха, сумна частина та інше серйозне мушкалове, то й дивитися не хочу.
-</div>
-
+<div class="profile-post-title">Не розумію...</div>
+<div class="profile-post-body">Гарно починалося ж аніме. Але коли припиняється різко комедія та починається чорнуха, сумна частина та інше серйозне мушкалове, то й дивитися не хочу.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">5</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">2</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">5</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
 </div>
-
 <div class="comments-area">
-
-<div class="fake-comment">
-<div class="fake-comment-name">copy_pasta</div>
-Маячню назнімали.
-</div>
-
-<div class="fake-comment">
-<div class="fake-comment-name">copy_pasta</div>
-Бісить.
-</div>
-
+<div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>Маячню назнімали.</div>
+<div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>Бісить.</div>
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">7 серпня</div>
 </div>
 
-<div class="profile-post-date">
-7 серпня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 10
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Хочу булькочай
-</div>
-
-<div class="profile-post-body">
-Картопельку прикут, смакобулочки та курячі шматочки з салатним листям.
-</div>
-
+<div class="profile-post-title">Хочу булькочай</div>
+<div class="profile-post-body">Картопельку прикут, смакобулочки та курячі шматочки з салатним листям.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">2</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">0</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">2</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">6 серпня</div>
 </div>
 
-<div class="profile-post-date">
-6 серпня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 11
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Зіграла в одну гру
-</div>
-
-<div class="profile-post-body">
-Питайте
-</div>
-
+<div class="profile-post-title">Зіграла в одну гру</div>
+<div class="profile-post-body">Питайте</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">2</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">2</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">2</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
 </div>
-
 <div class="comments-area">
-
-<div class="fake-comment">
-<div class="fake-comment-name">copy_pasta</div>
-Я що, даремно про це написала!?
-</div>
-
-<div class="fake-comment">
-<div class="fake-comment-name">sakurai_agatsuma</div>
-Так.
-</div>
-
+<div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>Я що, даремно про це написала!?</div>
+<div class="fake-comment"><div class="fake-comment-name">sakurai_agatsuma</div>Так.</div>
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">2 грудня</div>
 </div>
 
-<div class="profile-post-date">
-2 грудня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 12
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Знаєте як зрозуміти що те що ти пишеш не читають?
-</div>
-
-<div class="profile-post-body">
-Проте всі інші за подібне завжди отримують 💖, але ж не я. Ні.
-</div>
-
+<div class="profile-post-title">Знаєте як зрозуміти що те що ти пишеш не читають?</div>
+<div class="profile-post-body">Проте всі інші за подібне завжди отримують 💖, але ж не я. Ні.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">0</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">0</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">1 грудня</div>
 </div>
 
-<div class="profile-post-date">
-1 грудня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 13
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Сьогодні побачила на вулиці гарну кицьку.
-</div>
-
-<div class="profile-post-body">
-Купила їй корм, накидала у миску та навіть погладила. Вона така малесенька та ручна, напевно чиясь домашня.
-</div>
-
+<div class="profile-post-title">Сьогодні побачила на вулиці гарну кицьку.</div>
+<div class="profile-post-body">Купила їй корм, накидала у миску та навіть погладила. Вона така малесенька та ручна, напевно чиясь домашня.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">0</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">0</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">1 грудня</div>
 </div>
 
-<div class="profile-post-date">
-1 грудня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 14
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Творчість
-</div>
-
-<div class="profile-post-body">
-Сьогодні я протягом години намалювала красивий пейзаж. Моє бачення іншої планети, екзотичного світу з прибульцями. Там блакитні, фіолетові та рожеві рослини з фіолетово-сірим піском. Позаду незвичні будівлі, а також фіолетове небо з двома супутниками.
-</div>
-
+<div class="profile-post-title">Творчість</div>
+<div class="profile-post-body">Сьогодні я протягом години намалювала красивий пейзаж. Моє бачення іншої планети, екзотичного світу з прибульцями. Там блакитні, фіолетові та рожеві рослини з фіолетово-сірим піском. Позаду незвичні будівлі, а також фіолетове небо з двома супутниками.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">0</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">0</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">29 листопада</div>
 </div>
 
-<div class="profile-post-date">
-29 листопада
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 15
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Святі кицюні
-</div>
-
-<div class="profile-post-body">
-Як все це задовбало...
-</div>
-
+<div class="profile-post-title">Святі кицюні</div>
+<div class="profile-post-body">Як все це задовбало...</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">0</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">0</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">1 серпня</div>
 </div>
 
-<div class="profile-post-date">
-1 серпня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 16
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Почистила список друменів
-</div>
-
-<div class="profile-post-body">
-Чати також підчистила.
-</div>
-
+<div class="profile-post-title">Почистила список друменів</div>
+<div class="profile-post-body">Чати також підчистила.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">3</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">0</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">3</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">31 липня</div>
 </div>
 
-<div class="profile-post-date">
-31 липня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 17
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Я не буду змагатися за кохання
-</div>
-
-<div class="profile-post-body">
-Якщо людина мене кохає, то не буде заводити безліч подружок та писати якою має бути довжина мого волосся, колір, одяг. Бо це не кохання. Та й світогляд змінювати на той, котрий у твоєї знайомої я також не буду.
-</div>
-
+<div class="profile-post-title">Я не буду змагатися за кохання</div>
+<div class="profile-post-body">Якщо людина мене кохає, то не буде заводити безліч подружок та писати якою має бути довжина мого волосся, колір, одяг. Бо це не кохання. Та й світогляд змінювати на той, котрий у твоєї знайомої я також не буду.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">98</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">0</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">98</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">30 липня</div>
 </div>
 
-<div class="profile-post-date">
-30 липня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 18
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Блиск для губ створює магію
-</div>
-
-<div class="profile-post-body">
-Одразу стаєш значно красивішою.
-</div>
-
+<div class="profile-post-title">Блиск для губ створює магію</div>
+<div class="profile-post-body">Одразу стаєш значно красивішою.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">0</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">0</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">29 липня</div>
 </div>
 
-<div class="profile-post-date">
-29 липня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 19
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Помила волосся шампунем з ароматом вишеньки
-</div>
-
-<div class="profile-post-body">
-Приємно пахне, не смердить. Зазвичай шампуні мають різкий та не приємний запах, а цей ніжний та парфумований. Мені подобається.
-</div>
-
+<div class="profile-post-title">Помила волосся шампунем з ароматом вишеньки</div>
+<div class="profile-post-body">Приємно пахне, не смердить. Зазвичай шампуні мають різкий та не приємний запах, а цей ніжний та парфумований. Мені подобається.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">2</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">0</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">2</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">28 липня</div>
 </div>
 
-<div class="profile-post-date">
-28 липня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 20
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-У мене гикавка
-</div>
-
-<div class="profile-post-body">
-І вода не допомагає як і затримка дихання 😨
-</div>
-
+<div class="profile-post-title">У мене гикавка</div>
+<div class="profile-post-body">І вода не допомагає як і затримка дихання 😨</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">0</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">0</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">27 липня</div>
 </div>
 
-<div class="profile-post-date">
-27 липня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 21
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Поставте 💕
-</div>
-
-<div class="profile-post-body">
-Якщо любите мене.
-</div>
-
+<div class="profile-post-title">Поставте 💕</div>
+<div class="profile-post-body">Якщо любите мене.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">5</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">0</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">5</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">26 липня</div>
 </div>
 
-<div class="profile-post-date">
-26 липня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 22
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Сьогодні подумала про вплив емоцій на моє тіло
-</div>
-
-<div class="profile-post-body">
-Коли я лютую, це відчувається майже всім тілом.
-</div>
-
+<div class="profile-post-title">Сьогодні подумала про вплив емоцій на моє тіло</div>
+<div class="profile-post-body">Коли я лютую, це відчувається майже всім тілом.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">0</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">0</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">25 липня</div>
 </div>
 
-<div class="profile-post-date">
-25 липня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 23
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Якщо я чогось не зрозуміла, завжди можна це пояснити.
-</div>
-
-<div class="profile-post-body">
-Але тікати, матюкатися та біситися, кажучи що ви в мені розчаровані... як мінімум, це боляче.
-</div>
-
+<div class="profile-post-title">Якщо я чогось не зрозуміла, завжди можна це пояснити.</div>
+<div class="profile-post-body">Але тікати, матюкатися та біситися, кажучи що ви в мені розчаровані... як мінімум, це боляче.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">0</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">0</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">24 липня</div>
 </div>
 
-<div class="profile-post-date">
-24 липня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 24
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Кому цікаво?
-</div>
-
-<div class="profile-post-body">
-Мені просто захотілося сьогодні зліпити фігурку.
-</div>
-
+<div class="profile-post-title">Кому цікаво?</div>
+<div class="profile-post-body">Мені просто захотілося сьогодні зліпити фігурку.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-♡ Подобається <span class="like-count">0</span>
-</button>
-
-<button class="comment-button" type="button">
-💬 Коментарі <span class="comment-count">0</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
-
+</div>
+<div class="profile-post-date">23 липня</div>
 </div>
 
-<div class="profile-post-date">
-23 липня
-</div>
 
-</div>
-
+<!-- =====================================================
+     ДОПИС 25
+     ===================================================== -->
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-Якщо я зникну
-</div>
-
-<div class="profile-post-body">
-Ви мене шукатимете?
-</div>
+<div class="profile-post-title">Якщо я зникну</div>
+<div class="profile-post-body">Ви мене шукатимете?</div>
 
 <div class="post-actions">
 
@@ -1652,49 +1364,23 @@ href="#"
 <div class="comments-area">
 
 <div class="fake-comment">
-
-<div class="fake-comment-name">
-copy_pasta
-</div>
-
+<div class="fake-comment-name">copy_pasta</div>
 Оце вже складне питання.
-
 </div>
 
 <div class="fake-comment">
-
-<div class="fake-comment-name">
-sakurai_agatsuma
-</div>
-
+<div class="fake-comment-name">sakurai_agatsuma</div>
 Не зникай 😰😭.
-
 </div>
 
 <div class="fake-comment">
-
-<div class="fake-comment-name">
-dreaming_romance
-</div>
-
+<div class="fake-comment-name">dreaming_romance</div>
 Звісно шукатиму 😙.
-
 </div>
 
 <div class="comment-form">
-
-<textarea
-class="comment-input"
-placeholder="Написати коментар..."
-></textarea>
-
-<button
-class="comment-send"
-type="button"
->
-Відправити
-</button>
-
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
 </div>
 
 </div>
@@ -1709,10 +1395,7 @@ type="button"
 </div>
 
 
-<div
-class="show-more hidden"
-id="show-more-posts"
->
+<div class="show-more hidden" id="show-more-posts">
 показати ще...
 </div>
 
@@ -1720,11 +1403,9 @@ id="show-more-posts"
 <div class="rules-box">
 
 Пам'ятай та дотримуйся
-
 <a href="https://aircmd.github.io/hoomanchat/rules.html">
 ПРАВИЛ
 </a>
-
 нашого ресурсу для приємного та друмнього часу разом з нами.
 
 </div>
@@ -1738,26 +1419,17 @@ id="show-more-posts"
 
 <div>
 Зареєстровано гуменів:
-<span
-class="statistics-number"
-id="registered-hoomen"
-></span>
+<span class="statistics-number" id="registered-hoomen"></span>
 </div>
 
 <div>
 Зараз онлайн:
-<span
-class="statistics-online"
-id="online-hoomen"
-></span>
+<span class="statistics-online" id="online-hoomen"></span>
 </div>
 
 <div>
 Гуменів сьогодні завітало:
-<span
-class="statistics-number"
-id="today-hoomen"
-></span>
+<span class="statistics-number" id="today-hoomen"></span>
 </div>
 
 </div>
@@ -1766,7 +1438,6 @@ id="today-hoomen"
 <div class="footer-line">
 Гуменчат — місце для гуменів.
 </div>
-
 
 </div>
 
@@ -1805,16 +1476,13 @@ function updatePostVisibility(){
   }
 
   if(visiblePosts>=posts.length){
-
     showMore.className="show-more hidden";
-
   }else{
-
     showMore.className="show-more";
-
   }
 
 }
+
 
 showMore.addEventListener(
   "click",
@@ -1836,9 +1504,11 @@ showMore.addEventListener(
    ЛАЙКИ
    ===================================================== */
 
-document.querySelectorAll(
+var likeButtons=document.querySelectorAll(
   "#hoomenchat-site .like-button"
-).forEach(function(button){
+);
+
+likeButtons.forEach(function(button){
 
   button.addEventListener(
     "click",
@@ -1860,9 +1530,9 @@ document.querySelectorAll(
         button.classList.remove("liked");
 
         button.innerHTML=
-          "♡ Подобається " +
-          '<span class="like-count">' +
-          number.toLocaleString("uk-UA") +
+          "♡ Подобається "+
+          '<span class="like-count">'+
+          number.toLocaleString("uk-UA")+
           "</span>";
 
       }else{
@@ -1872,9 +1542,9 @@ document.querySelectorAll(
         button.classList.add("liked");
 
         button.innerHTML=
-          "♥ Подобається " +
-          '<span class="like-count">' +
-          number.toLocaleString("uk-UA") +
+          "♥ Подобається "+
+          '<span class="like-count">'+
+          number.toLocaleString("uk-UA")+
           "</span>";
 
       }
@@ -1889,9 +1559,11 @@ document.querySelectorAll(
    КОМЕНТАРІ
    ===================================================== */
 
-document.querySelectorAll(
+var commentButtons=document.querySelectorAll(
   "#hoomenchat-site .comment-button"
-).forEach(function(button){
+);
+
+commentButtons.forEach(function(button){
 
   button.addEventListener(
     "click",
@@ -1917,9 +1589,11 @@ document.querySelectorAll(
    ВЛАСНІ КОМЕНТАРІ
    ===================================================== */
 
-document.querySelectorAll(
+var sendButtons=document.querySelectorAll(
   "#hoomenchat-site .comment-send"
-).forEach(function(button){
+);
+
+sendButtons.forEach(function(button){
 
   button.addEventListener(
     "click",
@@ -2030,15 +1704,18 @@ function updateStatistics(){
     180001
   );
 
+
   document.getElementById(
     "registered-hoomen"
   ).textContent=
     registered.toLocaleString("uk-UA");
 
+
   document.getElementById(
     "online-hoomen"
   ).textContent=
     online.toLocaleString("uk-UA");
+
 
   document.getElementById(
     "today-hoomen"
@@ -2068,5 +1745,3 @@ setInterval(
 
 </body>
 </html>
-
-</div>
