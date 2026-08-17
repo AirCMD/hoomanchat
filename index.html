@@ -55,26 +55,28 @@ html, body {
 }
 
 /* =====================================================
-   МАКЕТ НА FLEXBOX (ДЕСКТОП ТА МОБІЛЬНА ВЕРСІЇ)
+   МАКЕТ (ТАБЛИЧНА СТРУКТУРА)
    ===================================================== */
 .site-layout {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 12px 0;
 }
 
 .site-left {
-  width: 180px;
-  flex-shrink: 0;
+  display: table-cell;
+  width: 180px; /* Оновлена ширина */
+  vertical-align: top;
 }
 
 .site-right {
-  flex: 1;
-  min-width: 0;
+  display: table-cell;
+  vertical-align: top;
 }
 
 /* =====================================================
-   ЛІВА КОЛОНКА
+   ОНОВЛЕНА ЛІВА КОЛОНКА
    ===================================================== */
 .left-box {
   padding: 8px;
@@ -98,10 +100,10 @@ html, body {
 .main-avatar {
   display: block;
   width: 100%;
-  height: 210px;
+  height: 164px; /* Квадратне співвідношення під ширину блоку */
   margin: 0 0 8px;
   object-fit: cover;
-  object-position: center 35%;
+  object-position: center;
   background: #ddd;
   border: 1px solid #999;
   border-radius: 2px;
@@ -130,8 +132,7 @@ html, body {
 }
 
 .nav-menu {
-  display: flex;
-  flex-direction: column;
+  display: block;
   margin: 0;
   padding: 0;
   border-top: 1px solid #ccc;
@@ -194,7 +195,7 @@ html, body {
 }
 
 /* =====================================================
-   ПРАВА КОЛОНКА
+   ПРАВА КОЛОНКА ТА ІНШІ ЕЛЕМЕНТИ
    ===================================================== */
 .welcome-box {
   margin: 0 0 8px;
@@ -223,13 +224,16 @@ html, body {
 }
 
 .random-profiles {
-  display: flex;
-  gap: 8px;
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 8px 0;
 }
 
 .random-profile-cell {
-  flex: 1;
-  min-width: 0;
+  display: table-cell;
+  width: 33.333%;
+  vertical-align: top;
 }
 
 .random-profile {
@@ -239,7 +243,6 @@ html, body {
   border: 1px solid #ccc;
   color: #222;
   text-decoration: none;
-  height: 100%;
 }
 
 .random-profile:hover {
@@ -250,7 +253,7 @@ html, body {
 .random-avatar {
   display: block;
   width: 100%;
-  height: 120px;
+  height: 150px;
   margin: 0 0 5px;
   object-fit: cover;
   object-position: center 35%;
@@ -326,7 +329,7 @@ html, body {
 }
 
 /* =====================================================
-   АДАПТИВНІСТЬ ДЛЯ МОБІЛЬНИХ
+   АДАПТИВНІСТЬ
    ===================================================== */
 @media screen and (max-width: 600px) {
   #hoomenchat-site {
@@ -334,21 +337,26 @@ html, body {
   }
 
   .site-layout {
-    flex-direction: column;
-    gap: 10px;
+    display: block;
+    border-spacing: 0;
   }
 
   .site-left,
   .site-right {
+    display: block;
     width: 100%;
   }
 
+  .site-left {
+    margin-bottom: 10px;
+  }
+
   .main-avatar {
-    height: 120px;
+    height: 220px;
   }
 
   .random-profiles {
-    gap: 4px;
+    border-spacing: 4px 0;
   }
 
   .random-avatar {
@@ -368,7 +376,9 @@ html, body {
 
 <div class="site-layout">
 
-<!-- ЛІВА КОЛОНКА -->
+<!-- =====================================================
+     ЛІВА КОЛОНКА
+     ===================================================== -->
 <div class="site-left">
   <div class="left-box">
     <div class="site-name">ГУМЕНЧАТ</div>
@@ -403,7 +413,9 @@ html, body {
   </div>
 </div>
 
-<!-- ПРАВА КОЛОНКА -->
+<!-- =====================================================
+     ПРАВА КОЛОНКА
+     ===================================================== -->
 <div class="site-right">
   <div class="welcome-box">
     Вітаємо! Безліч гуменів чекають на тебе вже <strong>ЗАРАЗ</strong>: Спілкуйся, обмінюйся думками, знаходь друменів, кохання свого життя, рідних та близьких разом з нами!
@@ -536,9 +548,6 @@ setInterval(updateStatistics, 30000);
 
 })();
 </script>
-
-</body>
-</html>
 
 </body>
 </html>
