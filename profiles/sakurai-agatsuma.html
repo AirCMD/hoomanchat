@@ -26,16 +26,15 @@ html,body{
     margin:0;
     padding:12px;
     background:#fff;
+    border:0
 }
 
-a{
+#hoomenchat-site a{
     color:#444
 }
 
-/* ВЕРХНЯ СІРО-ЧОРНА СМУГА — НЕ ПРИБИРАТИ */
+/* ВЕРХНЯ СІРА/ЧОРНА СМУГА */
 .hoomenchat-header{
-    width:100%;
-    height:auto;
     margin:0 0 10px;
     padding:5px 8px;
     background:linear-gradient(#626262,#3b3b3b);
@@ -43,40 +42,40 @@ a{
     color:#fff;
     font-weight:bold;
     letter-spacing:1px;
-    text-transform:uppercase;
+    text-transform:uppercase
 }
 
 /* ОСНОВНИЙ КАРКАС */
 .site-layout{
-    display:grid;
-    grid-template-columns:165px minmax(0,1fr);
-    column-gap:10px;
+    display:table;
     width:100%;
-    margin:0;
-    padding:0;
-    align-items:start;
+    table-layout:fixed;
+    border-collapse:separate;
+    border-spacing:10px 0
 }
 
+/* ЛІВИЙ БЛОК — ФІКСОВАНА ШИРИНА */
 .site-left{
+    display:table-cell;
     width:165px;
     min-width:165px;
     max-width:165px;
-    vertical-align:top;
+    vertical-align:top
 }
 
+/* ПРАВИЙ БЛОК */
 .site-right{
-    min-width:0;
-    width:100%;
+    display:table-cell;
+    width:auto;
+    vertical-align:top
 }
 
 /* ЛІВА ПАНЕЛЬ */
 .left-box{
     width:165px;
-    min-width:165px;
-    max-width:165px;
     padding:3px 7px;
     background:#f0f0f0;
-    border:1px solid #999;
+    border:1px solid #999
 }
 
 .site-name{
@@ -88,7 +87,7 @@ a{
     line-height:17px;
     font-weight:bold;
     text-align:center;
-    word-break:break-word;
+    word-break:break-word
 }
 
 .main-avatar{
@@ -98,7 +97,7 @@ a{
     margin:0 0 6px;
     object-fit:cover;
     background:#ddd;
-    border:1px solid #888;
+    border:1px solid #888
 }
 
 .archat-button{
@@ -114,12 +113,11 @@ a{
     font-weight:bold;
     text-align:center;
     text-decoration:none;
-    text-transform:uppercase;
+    text-transform:uppercase
 }
 
 .nav-menu{
-    width:100%;
-    border-top:1px solid #999;
+    border-top:1px solid #999
 }
 
 .nav-item{
@@ -130,27 +128,27 @@ a{
     color:#444;
     font-size:11px;
     line-height:13px;
-    text-decoration:underline;
+    text-decoration:underline
 }
 
 .nav-item:hover{
     background:#e2e2e2;
     color:#000;
-    text-decoration:none;
+    text-decoration:none
 }
 
 .account-box{
     margin:8px 0 0;
     padding:5px 4px;
     border-top:1px solid #999;
-    text-align:center;
+    text-align:center
 }
 
 .account-text{
     margin:0 0 5px;
     color:#555;
     font-size:9px;
-    line-height:12px;
+    line-height:12px
 }
 
 .account-link{
@@ -160,16 +158,15 @@ a{
     font-size:10px;
     line-height:12px;
     font-weight:bold;
-    text-decoration:underline;
+    text-decoration:underline
 }
 
 /* ПРАВА ПАНЕЛЬ */
 .profile-box{
-    width:100%;
     margin:0 0 8px;
     padding:7px;
     background:#fff;
-    border:1px solid #aaa;
+    border:1px solid #aaa
 }
 
 .profile-header{
@@ -177,7 +174,7 @@ a{
     padding:5px 7px;
     background:#f0f0f0;
     border:1px solid #999;
-    font-weight:bold;
+    font-weight:bold
 }
 
 .profile-info{
@@ -185,32 +182,30 @@ a{
     background:#f9f9f9;
     border:1px solid #aaa;
     font-size:11px;
-    line-height:15px;
+    line-height:15px
 }
 
 .profile-status{
     margin-top:4px;
     color:#2e7d32;
     font-size:10px;
-    font-style:italic;
+    font-style:italic
 }
 
 .posts-header{
-    width:100%;
     margin:8px 0 5px;
-    padding:5px 7px;
+    padding:4px 7px;
     background:#f0f0f0;
     border:1px solid #999;
     color:#333;
     font-size:11px;
-    font-weight:bold;
+    font-weight:bold
 }
 
 .profile-post{
-    width:100%;
     margin:0 0 7px;
     background:#fff;
-    border:1px solid #aaa;
+    border:1px solid #aaa
 }
 
 .profile-post-title{
@@ -218,8 +213,7 @@ a{
     background:#f5f5f5;
     border-bottom:1px solid #aaa;
     font-size:11px;
-    line-height:14px;
-    font-weight:bold;
+    font-weight:bold
 }
 
 .profile-post-body{
@@ -227,48 +221,48 @@ a{
     color:#333;
     font-size:11px;
     line-height:15px;
-    white-space:pre-wrap;
+    white-space:pre-wrap
 }
 
 .profile-post-date{
     padding:3px 7px;
     border-top:1px solid #ddd;
     color:#888;
-    font-size:9px;
-    line-height:12px;
+    font-size:9px
 }
 
 .post-actions{
     padding:4px 7px;
     border-top:1px solid #ddd;
-    background:#fafafa;
+    background:#fafafa
 }
 
 .like-button,
 .comment-button{
+    display:inline-block;
     margin-right:8px;
     padding:1px 3px;
     border:0;
     background:transparent;
     color:#555;
     font:10px Arial,sans-serif;
-    cursor:pointer;
+    cursor:pointer
 }
 
 .like-button.liked{
     color:#c62828;
-    font-weight:bold;
+    font-weight:bold
 }
 
 .comments-area{
     display:none;
     padding:6px 7px;
     background:#f8f8f8;
-    border-top:1px solid #ddd;
+    border-top:1px solid #ddd
 }
 
 .comments-area.open{
-    display:block;
+    display:block
 }
 
 .fake-comment,
@@ -278,16 +272,16 @@ a{
     background:#fff;
     border:1px solid #ccc;
     font-size:10px;
-    line-height:13px;
+    line-height:13px
 }
 
 .fake-comment-name{
     margin-bottom:2px;
-    font-weight:bold;
+    font-weight:bold
 }
 
 .comment-form{
-    margin-top:6px;
+    margin-top:6px
 }
 
 .comment-input{
@@ -298,7 +292,7 @@ a{
     resize:vertical;
     background:#fff;
     border:1px solid #aaa;
-    font:10px/13px Arial,sans-serif;
+    font:10px/13px Arial,sans-serif
 }
 
 .comment-send{
@@ -308,7 +302,7 @@ a{
     border:1px solid #999;
     color:#444;
     font-size:10px;
-    cursor:pointer;
+    cursor:pointer
 }
 
 .show-more{
@@ -319,48 +313,48 @@ a{
     background:#f0f0f0;
     border:1px solid #999;
     color:#444;
-    font-size:10px;
-    line-height:13px;
-    font-weight:bold;
+    font:bold 10px/13px Arial,sans-serif;
     text-align:center;
     text-decoration:underline;
-    cursor:pointer;
+    cursor:pointer
 }
 
 .show-more.hidden{
-    display:none;
+    display:none
 }
 
 .rules-box{
-    width:100%;
-    margin-top:8px;
+    margin:8px 0 0;
     padding:5px 8px;
     background:#fff;
     border:1px solid #aaa;
     color:#444;
     font-size:11px;
-    line-height:14px;
+    line-height:14px
 }
 
 .statistics-box{
-    width:100%;
-    margin-top:8px;
+    margin:8px 0 0;
     padding:5px 8px;
     background:#fff;
     border:1px solid #aaa;
     color:#555;
-    font:10px/13px "Courier New",monospace;
+    font:10px/13px "Courier New",monospace
 }
 
 .statistics-title{
     margin-bottom:3px;
     color:#333;
-    font:bold 10px/12px Arial,sans-serif;
+    font:bold 10px/12px Arial,sans-serif
 }
 
 .statistics-online{
     color:#2e7d32;
-    font-weight:bold;
+    font-weight:bold
+}
+
+.statistics-number{
+    font-weight:bold
 }
 
 .footer-line{
@@ -369,40 +363,40 @@ a{
     border-top:1px solid #ccc;
     color:#888;
     font-size:9px;
-    line-height:12px;
-    text-align:center;
+    text-align:center
 }
 
-/* МОБІЛЬНА ВЕРСІЯ */
+/* МОБІЛЬНИЙ ВИГЛЯД */
 @media(max-width:700px){
 
     #hoomenchat-site{
-        padding:7px;
+        padding:7px
     }
 
     .site-layout{
         display:block;
         width:100%;
+        table-layout:auto
     }
 
-    .site-left{
-        display:block;
-        width:100%;
-        min-width:0;
-        max-width:none;
-        margin-bottom:8px;
-    }
-
-    .left-box{
-        width:100%;
-        min-width:0;
-        max-width:none;
-    }
-
+    .site-left,
     .site-right{
         display:block;
         width:100%;
-        min-width:0;
+        max-width:none;
+        min-width:0
+    }
+
+    .site-left{
+        margin-bottom:8px
+    }
+
+    .left-box{
+        width:100%
+    }
+
+    .main-avatar{
+        width:100%
     }
 }
 </style>
@@ -412,12 +406,10 @@ a{
 
 <div id="hoomenchat-site">
 
-<!-- ВЕРХНЯ ЧОРНО-СІРА СМУГА -->
 <div class="hoomenchat-header">ГУМЕНЧАТ</div>
 
 <div class="site-layout">
 
-<!-- ЛІВИЙ БЛОК -->
 <div class="site-left">
 <div class="left-box">
 
@@ -449,7 +441,6 @@ alt="sakurai_agatsuma"
 </div>
 </div>
 
-<!-- ПРАВИЙ БЛОК -->
 <div class="site-right">
 
 <div class="profile-box">
@@ -473,7 +464,6 @@ alt="sakurai_agatsuma"
 
 <div id="sakurai-posts">
 
-<!-- 1 -->
 <article class="profile-post">
 <div class="profile-post-title">У що ви зараз граєте?</div>
 <div class="profile-post-body">Я останнім часом знову повернулася до старих ігор. Іноді вони чомусь набагато цікавіші за нові.</div>
@@ -492,7 +482,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">15 серпня</div>
 </article>
 
-<!-- 2 -->
 <article class="profile-post">
 <div class="profile-post-title">Найулюбленіші персонажі</div>
 <div class="profile-post-body">Є персонажі, яких можна зустріти через багато років і все одно памʼятати майже всі їхні репліки.</div>
@@ -510,7 +499,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">14 серпня</div>
 </article>
 
-<!-- 3 -->
 <article class="profile-post">
 <div class="profile-post-title">Гра, яку хочеться пройти вдруге</div>
 <div class="profile-post-body">Я люблю ігри, де після першого проходження знаходиш купу речей, які взагалі не помітив спочатку.</div>
@@ -528,7 +516,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">13 серпня</div>
 </article>
 
-<!-- 4 -->
 <article class="profile-post">
 <div class="profile-post-title">А як ви ставитеся до ремейків?</div>
 <div class="profile-post-body">Деякі ремейки справді покращують оригінал, але іноді старий варіант має набагато більше атмосфери.</div>
@@ -547,7 +534,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">12 серпня</div>
 </article>
 
-<!-- 5 -->
 <article class="profile-post">
 <div class="profile-post-title">Найкраща музика у грі</div>
 <div class="profile-post-body">Музика може зробити половину атмосфери. Особливо коли вона змінюється залежно від ситуації.</div>
@@ -565,7 +551,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">11 серпня</div>
 </article>
 
-<!-- 6 -->
 <article class="profile-post">
 <div class="profile-post-title">Ігри з відкритим світом</div>
 <div class="profile-post-body">Люблю просто ходити картою і знаходити випадкові місця, які розробники заховали десь далеко.</div>
@@ -583,7 +568,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">10 серпня</div>
 </article>
 
-<!-- 7 -->
 <article class="profile-post">
 <div class="profile-post-title">Чи важливий вам сюжет?</div>
 <div class="profile-post-body">Для мене залежить від жанру. У деяких іграх мені достатньо хорошого геймплею.</div>
@@ -602,7 +586,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">9 серпня</div>
 </article>
 
-<!-- 8 -->
 <article class="profile-post">
 <div class="profile-post-title">Старі консолі</div>
 <div class="profile-post-body">Є щось особливе в старих меню, звуках запуску та дивній графіці минулих поколінь.</div>
@@ -620,7 +603,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">8 серпня</div>
 </article>
 
-<!-- 9 -->
 <article class="profile-post">
 <div class="profile-post-title">Гра, яка здивувала мене</div>
 <div class="profile-post-body">Іноді запускаєш щось абсолютно випадкове, а потім проводиш там декілька вечорів поспіль.</div>
@@ -638,7 +620,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">7 серпня</div>
 </article>
 
-<!-- 10 -->
 <article class="profile-post">
 <div class="profile-post-title">Які жанри вам набридли?</div>
 <div class="profile-post-body">Думаю, кожному гравцю рано чи пізно хочеться зробити перерву від звичного жанру.</div>
@@ -657,7 +638,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">6 серпня</div>
 </article>
 
-<!-- 11 -->
 <article class="profile-post">
 <div class="profile-post-title">Коли гра занадто довга</div>
 <div class="profile-post-body">Мені подобаються великі ігри, але іноді хочеться, щоб сюжет закінчувався трохи раніше.</div>
@@ -675,7 +655,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">5 серпня</div>
 </article>
 
-<!-- 12 -->
 <article class="profile-post">
 <div class="profile-post-title">Найкращі побічні завдання</div>
 <div class="profile-post-body">Найцікавіші квести часто взагалі не повʼязані з основною історією.</div>
@@ -693,7 +672,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">4 серпня</div>
 </article>
 
-<!-- 13 -->
 <article class="profile-post">
 <div class="profile-post-title">Чи читаєте ви ігрові енциклопедії?</div>
 <div class="profile-post-body">Якщо світ гри цікавий, я можу годинами читати описи персонажів, предметів і локацій.</div>
@@ -712,7 +690,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">3 серпня</div>
 </article>
 
-<!-- 14 -->
 <article class="profile-post">
 <div class="profile-post-title">Ностальгія за старими іграми</div>
 <div class="profile-post-body">Іноді хочеться повернутися саме до тієї версії, яку памʼятаєш з дитинства.</div>
@@ -730,7 +707,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">2 серпня</div>
 </article>
 
-<!-- 15 -->
 <article class="profile-post">
 <div class="profile-post-title">Найдивніша механіка</div>
 <div class="profile-post-body">Обожнюю, коли розробники додають якусь абсолютно дивну механіку, яка більше ніде не повторюється.</div>
@@ -748,7 +724,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">1 серпня</div>
 </article>
 
-<!-- 16 -->
 <article class="profile-post">
 <div class="profile-post-title">Ігри без швидкого переміщення</div>
 <div class="profile-post-body">Спочатку це дратує, а потім починаєш помічати, наскільки цікаво зроблений сам світ.</div>
@@ -767,7 +742,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">30 липня</div>
 </article>
 
-<!-- 17 -->
 <article class="profile-post">
 <div class="profile-post-title">Який фінал вам запамʼятався?</div>
 <div class="profile-post-body">Найкраще запамʼятовуються фінали, після яких ще декілька годин думаєш про те, що сталося.</div>
@@ -785,7 +759,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">29 липня</div>
 </article>
 
-<!-- 18 -->
 <article class="profile-post">
 <div class="profile-post-title">Коли DLC краще за основну гру</div>
 <div class="profile-post-body">Таке трапляється рідко, але коли трапляється — це дуже приємний сюрприз.</div>
@@ -803,7 +776,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">28 липня</div>
 </article>
 
-<!-- 19 -->
 <article class="profile-post">
 <div class="profile-post-title">Гра на один вечір</div>
 <div class="profile-post-body">Іноді саме маленькі ігри залишають після себе найбільше вражень.</div>
@@ -822,7 +794,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">27 липня</div>
 </article>
 
-<!-- 20 -->
 <article class="profile-post">
 <div class="profile-post-title">Чи потрібні іграм складні системи?</div>
 <div class="profile-post-body">Не завжди. Хороша проста механіка може бути цікавішою за десятки незрозумілих меню.</div>
@@ -840,7 +811,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">26 липня</div>
 </article>
 
-<!-- 21 -->
 <article class="profile-post">
 <div class="profile-post-title">Найкраща локація</div>
 <div class="profile-post-body">Я люблю локації, які мають власну атмосферу і не виглядають просто декорацією.</div>
@@ -858,7 +828,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">25 липня</div>
 </article>
 
-<!-- 22 -->
 <article class="profile-post">
 <div class="profile-post-title">Коли NPC запамʼятовується</div>
 <div class="profile-post-body">Навіть другорядний NPC може стати улюбленим, якщо йому дали нормальний характер.</div>
@@ -877,7 +846,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">24 липня</div>
 </article>
 
-<!-- 23 -->
 <article class="profile-post">
 <div class="profile-post-title">Гра, яку я недооцінила</div>
 <div class="profile-post-body">Іноді перше враження зовсім неправильне. Друга спроба може повністю змінити думку.</div>
@@ -895,7 +863,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">23 липня</div>
 </article>
 
-<!-- 24 -->
 <article class="profile-post">
 <div class="profile-post-title">Чи граєте ви після проходження?</div>
 <div class="profile-post-body">Якщо світ добре зроблений, мені іноді цікавіше просто повернутися і досліджувати його без сюжету.</div>
@@ -913,7 +880,6 @@ alt="sakurai_agatsuma"
 <div class="profile-post-date">22 липня</div>
 </article>
 
-<!-- 25 -->
 <article class="profile-post">
 <div class="profile-post-title">Яку гру ви могли б проходити безкінечно?</div>
 <div class="profile-post-body">Є ігри, які можна запускати знову через роки і вони все одно не набридають.</div>
@@ -939,16 +905,14 @@ alt="sakurai_agatsuma"
 </div>
 
 <div class="rules-box">
-Памʼятай та дотримуйся
-<a href="../rules.html">ПРАВИЛ</a>
-нашого ресурсу для приємного та друмнього часу разом з нами.
+Памʼятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.
 </div>
 
 <div class="statistics-box">
 <div class="statistics-title">Статистика Гуменчату</div>
-<div>Зареєстровано гуменів: <span id="registered-hoomen"></span></div>
+<div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
 <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
-<div>Гуменів сьогодні завітало: <span id="today-hoomen"></span></div>
+<div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
 </div>
 
 <div class="footer-line">
@@ -962,19 +926,18 @@ alt="sakurai_agatsuma"
 <script>
 (function(){
 
-var posts=document.querySelectorAll("#sakurai-posts .profile-post");
-var more=document.getElementById("show-more-posts");
+var posts=document.querySelectorAll('#sakurai-posts .profile-post');
+var more=document.getElementById('show-more-posts');
 var visible=3;
 
 function refresh(){
     for(var i=0;i<posts.length;i++){
-        posts[i].style.display=i<visible?"block":"none";
+        posts[i].style.display=i<visible?'block':'none';
     }
 
-    more.className=
-        visible>=posts.length
-        ?"show-more hidden"
-        :"show-more";
+    more.className=visible>=posts.length
+        ?'show-more hidden'
+        :'show-more';
 }
 
 more.onclick=function(){
@@ -982,107 +945,92 @@ more.onclick=function(){
     refresh();
 };
 
-document.querySelectorAll(".like-button").forEach(function(button){
+document.querySelectorAll('.like-button').forEach(function(b){
 
-    button.onclick=function(){
+    b.onclick=function(){
 
-        var count=button.querySelector(".like-count");
-        var number=parseInt(count.textContent,10);
+        var s=b.querySelector('.like-count');
+        var n=+s.textContent;
+        var l=b.classList.toggle('liked');
 
-        var liked=button.classList.toggle("liked");
+        s.textContent=l?n+1:n-1;
 
-        if(liked){
-            number++;
-            button.firstChild.nodeValue="♥ Подобається ";
-        }else{
-            number--;
-            button.firstChild.nodeValue="♡ Подобається ";
-        }
-
-        count.textContent=number;
+        b.firstChild.nodeValue=l
+            ?'♥ Подобається '
+            :'♡ Подобається ';
     };
 
 });
 
-document.querySelectorAll(".comment-button").forEach(function(button){
+document.querySelectorAll('.comment-button').forEach(function(b){
 
-    button.onclick=function(){
+    b.onclick=function(){
 
-        var post=button.closest(".profile-post");
-        var comments=post.querySelector(".comments-area");
+        b.closest('.profile-post')
+         .querySelector('.comments-area')
+         .classList.toggle('open');
 
-        comments.classList.toggle("open");
     };
 
 });
 
-document.querySelectorAll(".comment-send").forEach(function(button){
+document.querySelectorAll('.comment-send').forEach(function(b){
 
-    button.onclick=function(){
+    b.onclick=function(){
 
-        var form=button.closest(".comment-form");
-        var input=form.querySelector(".comment-input");
-        var text=input.value.trim();
+        var f=b.closest('.comment-form');
+        var i=f.querySelector('.comment-input');
+        var t=i.value.trim();
 
-        if(!text)return;
+        if(!t)return;
 
-        var comment=document.createElement("div");
+        var c=document.createElement('div');
 
-        comment.className="user-comment";
+        c.className='user-comment';
 
-        var name=document.createElement("strong");
-        name.textContent="ти: ";
+        c.innerHTML='<strong>ти: </strong>';
 
-        comment.appendChild(name);
-        comment.appendChild(document.createTextNode(text));
+        c.appendChild(document.createTextNode(t));
 
-        form.parentNode.insertBefore(comment,form);
+        f.parentNode.insertBefore(c,f);
 
-        input.value="";
+        i.value='';
 
-        var count=
-            form.closest(".profile-post")
-            .querySelector(".comment-count");
+        var s=f.closest('.profile-post')
+               .querySelector('.comment-count');
 
-        count.textContent=
-            parseInt(count.textContent,10)+1;
+        s.textContent=+s.textContent+1;
     };
 
 });
 
-function safeNumber(base,range){
+function z(a,r){
 
-    var number;
+    var n;
 
     do{
-        number=
-            base+
-            Math.floor(Math.random()*range);
-    }
-    while(/63|68|13|666/.test(String(number)));
+        n=a+Math.floor(Math.random()*r);
+    }while(/63|68|13|666/.test(String(n)));
 
-    return number;
+    return n;
 }
 
-function statistics(){
+function st(){
 
-    document.getElementById("registered-hoomen").textContent=
-        safeNumber(8000000,47001)
-        .toLocaleString("uk-UA");
+    document.getElementById('registered-hoomen').textContent=
+        z(8000000,47001).toLocaleString('uk-UA');
 
-    document.getElementById("online-hoomen").textContent=
-        safeNumber(1000000,76001)
-        .toLocaleString("uk-UA");
+    document.getElementById('online-hoomen').textContent=
+        z(1000000,76001).toLocaleString('uk-UA');
 
-    document.getElementById("today-hoomen").textContent=
-        safeNumber(2400000,180001)
-        .toLocaleString("uk-UA");
+    document.getElementById('today-hoomen').textContent=
+        z(2400000,180001).toLocaleString('uk-UA');
 }
 
 refresh();
-statistics();
+st();
 
-setInterval(statistics,30000);
+setInterval(st,30000);
 
 })();
 </script>
