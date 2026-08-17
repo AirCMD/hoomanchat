@@ -16,6 +16,7 @@
   color: #222;
 }
 
+#hoomenchat-site,
 #hoomenchat-site *,
 #hoomenchat-site *:before,
 #hoomenchat-site *:after {
@@ -52,25 +53,29 @@
    ========================================================= */
 
 #hoomenchat-site .site-layout {
-  display: table;
+  display: flex;
   width: 100%;
   max-width: 100%;
-  table-layout: fixed;
-  border-collapse: separate;
-  border-spacing: 10px 0;
+  margin: 0;
+  padding: 0;
+  gap: 10px;
+  align-items: flex-start;
 }
 
 #hoomenchat-site .site-left {
-  display: table-cell;
+  flex: 0 0 165px;
   width: 165px;
+  min-width: 165px;
+  max-width: 165px;
   vertical-align: top;
 }
 
 #hoomenchat-site .site-right {
-  display: table-cell;
+  flex: 1 1 auto;
   width: auto;
-  vertical-align: top;
   min-width: 0;
+  max-width: none;
+  vertical-align: top;
 }
 
 
@@ -80,6 +85,7 @@
 
 #hoomenchat-site .left-box {
   width: 100%;
+  margin: 0;
   padding: 3px 7px;
   background: #f0f0f0;
   border: 1px solid #999;
@@ -214,8 +220,6 @@
   color: #444;
   font-size: 11px;
   line-height: 15px;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
 }
 
 #hoomenchat-site .profile-info strong {
@@ -252,7 +256,6 @@
   margin: 0 0 7px 0;
   background: #fff;
   border: 1px solid #aaa;
-  overflow: hidden;
 }
 
 #hoomenchat-site .profile-post-title {
@@ -264,8 +267,6 @@
   font-size: 11px;
   line-height: 14px;
   font-weight: bold;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
 }
 
 #hoomenchat-site .profile-post-body {
@@ -273,8 +274,6 @@
   color: #333;
   font-size: 11px;
   line-height: 15px;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
 }
 
 #hoomenchat-site .profile-post-date {
@@ -341,8 +340,6 @@
   border: 1px solid #ccc;
   font-size: 10px;
   line-height: 13px;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
 }
 
 #hoomenchat-site .fake-comment-name {
@@ -358,7 +355,6 @@
 #hoomenchat-site .comment-input {
   display: block;
   width: 100%;
-  min-width: 0;
   min-height: 45px;
   padding: 4px 5px;
   resize: vertical;
@@ -393,8 +389,6 @@
   border: 1px solid #aaa;
   font-size: 10px;
   line-height: 13px;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
 }
 
 #hoomenchat-site .user-comment strong {
@@ -517,21 +511,21 @@
     max-width: 100%;
     margin: 0;
     padding: 7px;
-    border: 0;
   }
 
   #hoomenchat-site .site-layout {
     display: block;
     width: 100%;
-    max-width: 100%;
-    border-spacing: 0;
+    margin: 0;
+    padding: 0;
   }
 
   #hoomenchat-site .site-left,
   #hoomenchat-site .site-right {
     display: block;
     width: 100%;
-    max-width: 100%;
+    min-width: 0;
+    max-width: none;
   }
 
   #hoomenchat-site .site-left {
@@ -684,257 +678,149 @@
 
 
 <div class="profile-post">
-
 <div class="profile-post-title">
   Дивилась сьогодні кіно про покинутого собаку, його власник вже кайфує від нового життя, а собака все ще чекає його повернення
 </div>
-
 <div class="profile-post-body">
   Навряд чи я хочу бути як та собачка. Мені дуже сумно що таке трапляється( До неї підходили люди, які хотіли її забрати до себе. Але вона не йшла до них. Вона чекала свого зрадливого власника, який вже мав сім'ю та нову собаку в іншій країні.
 </div>
-
 <div class="post-actions">
-
-<button class="like-button" type="button">
-  ♡ Подобається <span class="like-count">29</span>
-</button>
-
-<button class="comment-button" type="button">
-  💬 Коментарі <span class="comment-count">2</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">29</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="fake-comment">
-  <div class="fake-comment-name">sakurai_agatsuma</div>
-  Шкода собачку(
+<div class="fake-comment-name">sakurai_agatsuma</div>
+Шкода собачку(
 </div>
-
 <div class="fake-comment">
-  <div class="fake-comment-name">copy_pasta</div>
-  Шкода не те слово. Але ж собачка не винна що її власник гівнюк.
+<div class="fake-comment-name">copy_pasta</div>
+Шкода не те слово. Але ж собачка не винна що її власник гівнюк.
 </div>
-
 <div class="comment-form">
-  <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-  <button class="comment-send" type="button">Відправити</button>
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
 </div>
-
 </div>
-
-<div class="profile-post-date">
-  15 серпня
-</div>
-
+<div class="profile-post-date">15 серпня</div>
 </div>
 
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-  Щоб я не робила
-</div>
-
+<div class="profile-post-title">Щоб я не робила</div>
 <div class="profile-post-body">
-  Не важливо що я могла б зробити. Він ніколи цього не цінує, він бачить всіх та кожну, підтримує їх. Але ніколи й доброго слова щодо моїх досягнень я не отримую. Навіть якщо зірку з неба впіймаю. Не знаю чи варто воно все того(
+Не важливо що я могла б зробити. Він ніколи цього не цінує, він бачить всіх та кожну, підтримує їх. Але ніколи й доброго слова щодо моїх досягнень я не отримую. Навіть якщо зірку з неба впіймаю. Не знаю чи варто воно все того(
 </div>
-
 <div class="post-actions">
-
-<button class="like-button" type="button">
-  ♡ Подобається <span class="like-count">31</span>
-</button>
-
-<button class="comment-button" type="button">
-  💬 Коментарі <span class="comment-count">3</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">31</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">3</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="fake-comment">
-  <div class="fake-comment-name">sakurai_agatsuma</div>
-  Створюй те все для себе :3
+<div class="fake-comment-name">sakurai_agatsuma</div>
+Створюй те все для себе :3
 </div>
-
 <div class="fake-comment">
-  <div class="fake-comment-name">copy_pasta</div>
-  Та не так вже й цікаво....
+<div class="fake-comment-name">copy_pasta</div>
+Та не так вже й цікаво....
 </div>
-
 <div class="fake-comment">
-  <div class="fake-comment-name">sakurai_agatsuma</div>
-  А заради учасників твого островка?
+<div class="fake-comment-name">sakurai_agatsuma</div>
+А заради учасників твого островка?
 </div>
-
 <div class="comment-form">
-  <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-  <button class="comment-send" type="button">Відправити</button>
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
 </div>
-
 </div>
-
-<div class="profile-post-date">
-  13 серпня
-</div>
-
+<div class="profile-post-date">13 серпня</div>
 </div>
 
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-  Мені подобається тепла весна
-</div>
-
+<div class="profile-post-title">Мені подобається тепла весна</div>
 <div class="profile-post-body">
-  Я ліниво звісила руки, сидячи на стільці балкончика. Вітерець так ніжно і приємно колихає їх туди-сюди. Але не довго колихав, не люблю коли разом з вітром летить пакет та сміття. Ледве встигла прибрати руки. Фу, бридко!
+Я ліниво звісила руки, сидячи на стільці балкончика. Вітерець так ніжно і приємно колихає їх туди-сюди. Але не довго колихав, не люблю коли разом з вітром летить пакет та сміття. Ледве встигла прибрати руки. Фу, бридко!
 </div>
-
 <div class="post-actions">
-
-<button class="like-button" type="button">
-  ♡ Подобається <span class="like-count">2</span>
-</button>
-
-<button class="comment-button" type="button">
-  💬 Коментарі <span class="comment-count">4</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">2</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">4</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="fake-comment">
-  <div class="fake-comment-name">sakurai_agatsuma</div>
-  Хаха, ну ти й даєш.
+<div class="fake-comment-name">sakurai_agatsuma</div>
+Хаха, ну ти й даєш.
 </div>
-
 <div class="fake-comment">
-  <div class="fake-comment-name">copy_pasta</div>
-  Та та воно й таа. А якщо б пакет в пику прилетів?
+<div class="fake-comment-name">copy_pasta</div>
+Та та воно й таа. А якщо б пакет в пику прилетів?
 </div>
-
 <div class="fake-comment">
-  <div class="fake-comment-name">sakurai_agatsuma</div>
-  Якщо тільки пакет з грошима)
+<div class="fake-comment-name">sakurai_agatsuma</div>
+Якщо тільки пакет з грошима)
 </div>
-
 <div class="comment-form">
-  <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-  <button class="comment-send" type="button">Відправити</button>
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
 </div>
-
 </div>
-
-<div class="profile-post-date">
-  5 квітня
-</div>
-
+<div class="profile-post-date">5 квітня</div>
 </div>
 
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-  Як ви відноситесь до субкультури?
-</div>
-
-<div class="profile-post-body">
-  Мені подобається субкультура.
-</div>
-
+<div class="profile-post-title">Як ви відноситесь до субкультури?</div>
+<div class="profile-post-body">Мені подобається субкультура.</div>
 <div class="post-actions">
-
-<button class="like-button" type="button">
-  ♡ Подобається <span class="like-count">5</span>
-</button>
-
-<button class="comment-button" type="button">
-  💬 Коментарі <span class="comment-count">2</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">5</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="fake-comment">
-  <div class="fake-comment-name">alter_core</div>
-  А яка саме субкультура? Бо всі вони різні.
+<div class="fake-comment-name">alter_core</div>
+А яка саме субкультура? Бо всі вони різні.
 </div>
-
 <div class="fake-comment">
-  <div class="fake-comment-name">copy_pasta</div>
-  Якщо субкультура передбачатиме комфорт, смачну їжу та теплу атмосферу, то саме таку.
+<div class="fake-comment-name">copy_pasta</div>
+Якщо субкультура передбачатиме комфорт, смачну їжу та теплу атмосферу, то саме таку.
 </div>
-
 <div class="comment-form">
-  <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-  <button class="comment-send" type="button">Відправити</button>
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
 </div>
-
 </div>
-
-<div class="profile-post-date">
-  17 серпня
-</div>
-
+<div class="profile-post-date">17 серпня</div>
 </div>
 
 
 <div class="profile-post">
-
-<div class="profile-post-title">
-  Мене попустило
-</div>
-
+<div class="profile-post-title">Мене попустило</div>
 <div class="profile-post-body">
-  Я пів дня думала про те щоб наліпку собі на лоба приліпити. Але не зробила цього. Ці думки лише зараз припинили мене чіпати.
+Я пів дня думала про те щоб наліпку собі на лоба приліпити. Але не зробила цього. Ці думки лише зараз припинили мене чіпати.
 </div>
-
 <div class="post-actions">
-
-<button class="like-button" type="button">
-  ♡ Подобається <span class="like-count">11</span>
-</button>
-
-<button class="comment-button" type="button">
-  💬 Коментарі <span class="comment-count">5</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">11</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">5</span></button>
 </div>
-
 <div class="comments-area">
-
 <div class="fake-comment">
-  <div class="fake-comment-name">sakurai_agatsuma</div>
-  А чому не зробила? Я собі приклеїла.
+<div class="fake-comment-name">sakurai_agatsuma</div>
+А чому не зробила? Я собі приклеїла.
 </div>
-
 <div class="fake-comment">
-  <div class="fake-comment-name">copy_pasta</div>
-  Щоб що? Всеодно цього ніхто не бачить.
+<div class="fake-comment-name">copy_pasta</div>
+Щоб що? Всеодно цього ніхто не бачить.
 </div>
-
 <div class="fake-comment">
-  <div class="fake-comment-name">sakurai_agatsuma</div>
-  То я даремно з нею весь день проходила??
+<div class="fake-comment-name">sakurai_agatsuma</div>
+То я даремно з нею весь день проходила??
 </div>
-
 <div class="comment-form">
-  <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-  <button class="comment-send" type="button">Відправити</button>
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
 </div>
-
 </div>
-
-<div class="profile-post-date">
-  6 серпня
-</div>
-
+<div class="profile-post-date">6 серпня</div>
 </div>
 
 
@@ -946,8 +832,14 @@
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
 </div>
 <div class="comments-area">
-<div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>Напевно приберу.</div>
-<div class="fake-comment"><div class="fake-comment-name">sakurai_agatsuma</div>Прибирай :3</div>
+<div class="fake-comment">
+<div class="fake-comment-name">copy_pasta</div>
+Напевно приберу.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name">sakurai_agatsuma</div>
+Прибирай :3
+</div>
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
@@ -959,13 +851,18 @@
 
 <div class="profile-post">
 <div class="profile-post-title">Прочитала 5 книжок</div>
-<div class="profile-post-body">Я не розумію навіщо люди лізуть в мізкологію. Всі книжки та й їхній зміст однаковий. Різниці ніякої.</div>
+<div class="profile-post-body">
+Я не розумію навіщо люди лізуть в мізкологію. Всі книжки та й їхній зміст однаковий. Різниці ніякої.
+</div>
 <div class="post-actions">
 <button class="like-button" type="button">♡ Подобається <span class="like-count">1</span></button>
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
 </div>
 <div class="comments-area">
-<div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>Мізкологи безкорисна витрата коштів.</div>
+<div class="fake-comment">
+<div class="fake-comment-name">copy_pasta</div>
+Мізкологи безкорисна витрата коштів.
+</div>
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
@@ -978,15 +875,22 @@
 <div class="profile-post">
 <div class="profile-post-title">Чи ти мій хлопець, чи ні?</div>
 <div class="profile-post-body">
-Що між нами? Поясни ж ти мені, <b><a href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">@dream_romance</a></b>
+Що між нами? Поясни ж ти мені,
+<b><a href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">@dream_romance</a></b>
 </div>
 <div class="post-actions">
 <button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
 </div>
 <div class="comments-area">
-<div class="fake-comment"><div class="fake-comment-name">dreaming_romance</div>Стосунки звісно ж.</div>
-<div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>Тоді нащо ти пишеш дивні речі?</div>
+<div class="fake-comment">
+<div class="fake-comment-name">dreaming_romance</div>
+Стосунки звісно ж.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name">copy_pasta</div>
+Тоді нащо ти пишеш дивні речі?
+</div>
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
@@ -998,14 +902,22 @@
 
 <div class="profile-post">
 <div class="profile-post-title">Не розумію...</div>
-<div class="profile-post-body">Гарно починалося ж аніме. Але коли припиняється різко комедія та починається чорнуха, сумна частина та інше серйозне мушкалове, то й дивитися не хочу.</div>
+<div class="profile-post-body">
+Гарно починалося ж аніме. Але коли припиняється різко комедія та починається чорнуха, сумна частина та інше серйозне мушкалове, то й дивитися не хочу.
+</div>
 <div class="post-actions">
 <button class="like-button" type="button">♡ Подобається <span class="like-count">5</span></button>
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
 </div>
 <div class="comments-area">
-<div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>Маячню назнімали.</div>
-<div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>Бісить.</div>
+<div class="fake-comment">
+<div class="fake-comment-name">copy_pasta</div>
+Маячню назнімали.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name">copy_pasta</div>
+Бісить.
+</div>
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
@@ -1017,7 +929,9 @@
 
 <div class="profile-post">
 <div class="profile-post-title">Хочу булькочай</div>
-<div class="profile-post-body">Картопельку прикут, смакобулочки та курячі шматочки з салатним листям.</div>
+<div class="profile-post-body">
+Картопельку прикут, смакобулочки та курячі шматочки з салатним листям.
+</div>
 <div class="post-actions">
 <button class="like-button" type="button">♡ Подобається <span class="like-count">2</span></button>
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
@@ -1040,8 +954,14 @@
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
 </div>
 <div class="comments-area">
-<div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>Я що, даремно про це написала!?</div>
-<div class="fake-comment"><div class="fake-comment-name">sakurai_agatsuma</div>Так.</div>
+<div class="fake-comment">
+<div class="fake-comment-name">copy_pasta</div>
+Я що, даремно про це написала!?
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name">sakurai_agatsuma</div>
+Так.
+</div>
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
@@ -1053,7 +973,9 @@
 
 <div class="profile-post">
 <div class="profile-post-title">Знаєте як зрозуміти що те що ти пишеш не читають?</div>
-<div class="profile-post-body">Проте всі інші за подібне завжди отримують 💖, але ж не я. Ні.</div>
+<div class="profile-post-body">
+Проте всі інші за подібне завжди отримують 💖, але ж не я. Ні.
+</div>
 <div class="post-actions">
 <button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
@@ -1070,7 +992,9 @@
 
 <div class="profile-post">
 <div class="profile-post-title">Сьогодні побачила на вулиці гарну кицьку.</div>
-<div class="profile-post-body">Купила їй корм, накидала у миску та навіть погладила. Вона така малесенька та ручна, напевно чиясь домашня.</div>
+<div class="profile-post-body">
+Купила їй корм, накидала у миску та навіть погладила. Вона така малесенька та ручна, напевно чиясь домашня.
+</div>
 <div class="post-actions">
 <button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
@@ -1087,7 +1011,9 @@
 
 <div class="profile-post">
 <div class="profile-post-title">Творчість</div>
-<div class="profile-post-body">Сьогодні я протягом години намалювала красивий пейзаж. Моє бачення іншої планети, екзотичного світу з прибульцями. Там блакитні, фіолетові та рожеві рослини з фіолетово-сірим піском. Позаду незвичні будівлі, а також фіолетове небо з двома супутниками.</div>
+<div class="profile-post-body">
+Сьогодні я протягом години намалювала красивий пейзаж. Моє бачення іншої планети, екзотичного світу з прибульцями. Там блакитні, фіолетові та рожеві рослини з фіолетово-сірим піском. Позаду незвичні будівлі, а також фіолетове небо з двома супутниками.
+</div>
 <div class="post-actions">
 <button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
@@ -1138,7 +1064,9 @@
 
 <div class="profile-post">
 <div class="profile-post-title">Я не буду змагатися за кохання</div>
-<div class="profile-post-body">Якщо людина мене кохає, то не буде заводити безліч подружок та писати якою має бути довжина мого волосся, колір, одяг. Бо це не кохання. Та й світогляд змінювати на той, котрий у твоєї знайомої я також не буду.</div>
+<div class="profile-post-body">
+Якщо людина мене кохає, то не буде заводити безліч подружок та писати якою має бути довжина мого волосся, колір, одяг. Бо це не кохання. Та й світогляд змінювати на той, котрий у твоєї знайомої я також не буду.
+</div>
 <div class="post-actions">
 <button class="like-button" type="button">♡ Подобається <span class="like-count">98</span></button>
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
@@ -1172,7 +1100,9 @@
 
 <div class="profile-post">
 <div class="profile-post-title">Помила волосся шампунем з ароматом вишеньки</div>
-<div class="profile-post-body">Приємно пахне, не смердить. Зазвичай шампуні мають різкий та не приємний запах, а цей ніжний та парфумований. Мені подобається.</div>
+<div class="profile-post-body">
+Приємно пахне, не смердить. Зазвичай шампуні мають різкий та не приємний запах, а цей ніжний та парфумований. Мені подобається.
+</div>
 <div class="post-actions">
 <button class="like-button" type="button">♡ Подобається <span class="like-count">2</span></button>
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
@@ -1240,7 +1170,9 @@
 
 <div class="profile-post">
 <div class="profile-post-title">Якщо я чогось не зрозуміла, завжди можна це пояснити.</div>
-<div class="profile-post-body">Але тікати, матюкатися та біситися, кажучи що ви в мені розчаровані... як мінімум, це боляче.</div>
+<div class="profile-post-body">
+Але тікати, матюкатися та біситися, кажучи що ви в мені розчаровані... як мінімум, це боляче.
+</div>
 <div class="post-actions">
 <button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
@@ -1257,7 +1189,9 @@
 
 <div class="profile-post">
 <div class="profile-post-title">Кому цікаво?</div>
-<div class="profile-post-body">Мені просто захотілося сьогодні зліпити фігурку.</div>
+<div class="profile-post-body">
+Мені просто захотілося сьогодні зліпити фігурку.
+</div>
 <div class="post-actions">
 <button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button>
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
@@ -1310,13 +1244,11 @@
 
 
 <div class="rules-box">
-
 Пам'ятай та дотримуйся
 <a href="https://aircmd.github.io/hoomanchat/rules.html">
   ПРАВИЛ
 </a>
 нашого ресурсу для приємного та друмнього часу разом з нами.
-
 </div>
 
 
