@@ -1,3 +1,17 @@
+<div id="hoomenchat-site">
+
+<style>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  color: #222;
+}
+
 #hoomenchat-site {
   all: initial;
   display: block;
@@ -6,7 +20,6 @@
   margin: 0;
   padding: 12px;
   background: #fff;
-  border: 0;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 12px;
   line-height: 14px;
@@ -24,16 +37,14 @@
 }
 
 
-/* =========================
+/* =========================================================
    ШАПКА
-   ========================= */
+   ========================================================= */
 
 #hoomenchat-site .hoomenchat-header {
-  display: block;
-  width: 100%;
-  margin: 0 0 10px 0;
+  margin: 0 0 10px;
   padding: 5px 8px;
-  background: linear-gradient(#626262,#3b3b3b);
+  background: linear-gradient(#626262, #3b3b3b);
   border: 1px solid #222;
   color: #fff;
   font-size: 12px;
@@ -44,14 +55,13 @@
 }
 
 
-/* =========================
-   КАРКАС
-   ========================= */
+/* =========================================================
+   ОСНОВНИЙ КАРКАС
+   ========================================================= */
 
 #hoomenchat-site .site-layout {
   display: table;
   width: 100%;
-  table-layout: fixed;
   border-collapse: separate;
   border-spacing: 10px 0;
 }
@@ -69,20 +79,19 @@
 }
 
 
-/* =========================
+/* =========================================================
    ЛІВА ПАНЕЛЬ
-   ========================= */
+   ========================================================= */
 
 #hoomenchat-site .left-box {
-  width: 100%;
   padding: 3px 7px;
   background: #f0f0f0;
   border: 1px solid #999;
 }
 
 #hoomenchat-site .site-name {
-  margin: 1px 0 6px 0;
-  padding: 0 0 4px 0;
+  margin: 1px 0 6px;
+  padding: 0 0 4px;
   border-bottom: 1px solid #bcbcbc;
   color: #111;
   font-size: 15px;
@@ -96,7 +105,7 @@
   display: block;
   width: 100%;
   height: 228px;
-  margin: 0 0 6px 0;
+  margin: 0 0 6px;
   object-fit: cover;
   object-position: center center;
   background: #ddd;
@@ -106,9 +115,9 @@
 #hoomenchat-site .archat-button {
   display: block;
   width: 100%;
-  margin: 0 0 5px 0;
+  margin: 0 0 5px;
   padding: 4px 0;
-  background: linear-gradient(#fff176,#fbc02d);
+  background: linear-gradient(#fff176, #fbc02d);
   border: 1px solid #a78119;
   color: #000;
   font-size: 10px;
@@ -119,9 +128,11 @@
   text-transform: uppercase;
 }
 
+#hoomenchat-site .archat-button:hover {
+  background: linear-gradient(#fff59d, #fdd835);
+}
+
 #hoomenchat-site .nav-menu {
-  display: block;
-  width: 100%;
   border-top: 1px solid #999;
 }
 
@@ -134,6 +145,12 @@
   font-size: 11px;
   line-height: 13px;
   text-decoration: underline;
+}
+
+#hoomenchat-site .nav-item:hover {
+  background: #e2e2e2;
+  color: #000;
+  text-decoration: none;
 }
 
 #hoomenchat-site .account-box {
@@ -160,24 +177,31 @@
   text-decoration: underline;
 }
 
+#hoomenchat-site .account-link:hover {
+  color: #000;
+  text-decoration: none;
+}
 
-/* =========================
-   ПРАВА ЧАСТИНА
-   ========================= */
+
+/* =========================================================
+   ПРОФІЛЬ
+   ========================================================= */
 
 #hoomenchat-site .profile-box {
-  width: 100%;
-  margin: 0 0 8px 0;
+  margin: 0 0 8px;
   padding: 7px;
   background: #fff;
   border: 1px solid #aaa;
 }
 
 #hoomenchat-site .profile-header {
-  margin: 0 0 7px 0;
+  margin: 0 0 7px;
   padding: 5px 7px;
   background: #f0f0f0;
   border: 1px solid #999;
+  color: #222;
+  font-size: 12px;
+  line-height: 15px;
   font-weight: bold;
 }
 
@@ -185,21 +209,41 @@
   padding: 6px 7px;
   background: #f9f9f9;
   border: 1px solid #aaa;
+  color: #444;
   font-size: 11px;
   line-height: 15px;
 }
 
+#hoomenchat-site .profile-info strong {
+  color: #222;
+}
+
+#hoomenchat-site .profile-status {
+  margin-top: 4px;
+  color: #2e7d32;
+  font-size: 10px;
+  line-height: 12px;
+  font-style: italic;
+}
+
+
+/* =========================================================
+   ДОПИСИ
+   ========================================================= */
+
 #hoomenchat-site .posts-header {
-  margin: 8px 0 5px 0;
+  margin: 8px 0 5px;
   padding: 4px 7px;
   background: #f0f0f0;
   border: 1px solid #999;
+  color: #333;
+  font-size: 11px;
+  line-height: 13px;
   font-weight: bold;
 }
 
 #hoomenchat-site .profile-post {
-  width: 100%;
-  margin: 0 0 7px 0;
+  margin: 0 0 7px;
   background: #fff;
   border: 1px solid #aaa;
 }
@@ -208,6 +252,9 @@
   padding: 4px 7px;
   background: #f5f5f5;
   border-bottom: 1px solid #aaa;
+  color: #222;
+  font-size: 11px;
+  line-height: 14px;
   font-weight: bold;
 }
 
@@ -223,12 +270,122 @@
   border-top: 1px solid #ddd;
   color: #888;
   font-size: 9px;
+  line-height: 11px;
 }
 
 
-/* =========================
-   ІНШІ ПАНЕЛІ
-   ========================= */
+/* =========================================================
+   ЛАЙКИ / КОМЕНТАРІ
+   ========================================================= */
+
+#hoomenchat-site .post-actions {
+  padding: 4px 7px;
+  border-top: 1px solid #ddd;
+  background: #fafafa;
+}
+
+#hoomenchat-site .like-button,
+#hoomenchat-site .comment-button {
+  display: inline-block;
+  margin: 0 8px 0 0;
+  padding: 1px 3px;
+  border: 0;
+  background: transparent;
+  color: #555;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 13px;
+  cursor: pointer;
+}
+
+#hoomenchat-site .like-button:hover,
+#hoomenchat-site .comment-button:hover {
+  color: #000;
+  text-decoration: underline;
+}
+
+#hoomenchat-site .like-button.liked {
+  color: #c62828;
+  font-weight: bold;
+}
+
+#hoomenchat-site .comments-area {
+  display: none;
+  padding: 6px 7px;
+  background: #f8f8f8;
+  border-top: 1px solid #ddd;
+}
+
+#hoomenchat-site .comments-area.open {
+  display: block;
+}
+
+#hoomenchat-site .fake-comment {
+  margin: 0 0 5px;
+  padding: 4px 5px;
+  background: #fff;
+  border: 1px solid #ccc;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+#hoomenchat-site .fake-comment-name {
+  margin-bottom: 2px;
+  color: #222;
+  font-weight: bold;
+}
+
+#hoomenchat-site .comment-form {
+  margin-top: 6px;
+}
+
+#hoomenchat-site .comment-input {
+  display: block;
+  width: 100%;
+  min-height: 45px;
+  padding: 4px 5px;
+  resize: vertical;
+  background: #fff;
+  border: 1px solid #aaa;
+  color: #222;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+#hoomenchat-site .comment-send {
+  margin-top: 4px;
+  padding: 3px 8px;
+  background: #eee;
+  border: 1px solid #999;
+  color: #444;
+  font-size: 10px;
+  line-height: 12px;
+  cursor: pointer;
+}
+
+#hoomenchat-site .comment-send:hover {
+  background: #ddd;
+  color: #000;
+}
+
+#hoomenchat-site .user-comment {
+  margin: 0 0 5px;
+  padding: 4px 5px;
+  background: #fff;
+  border: 1px solid #aaa;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+#hoomenchat-site .user-comment strong {
+  font-weight: bold;
+}
+
+
+/* =========================================================
+   ПОКАЗАТИ ЩЕ
+   ========================================================= */
 
 #hoomenchat-site .show-more {
   display: block;
@@ -238,55 +395,109 @@
   background: #f0f0f0;
   border: 1px solid #999;
   color: #444;
-  font: bold 10px/13px Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: bold;
   text-align: center;
   text-decoration: underline;
+  cursor: pointer;
 }
 
+#hoomenchat-site .show-more:hover {
+  background: #e1e1e1;
+  color: #000;
+}
+
+#hoomenchat-site .show-more.hidden {
+  display: none;
+}
+
+
+/* =========================================================
+   ПРАВИЛА
+   ========================================================= */
+
 #hoomenchat-site .rules-box {
-  width: 100%;
   margin: 8px 0 0;
   padding: 5px 8px;
   background: #fff;
   border: 1px solid #aaa;
+  color: #444;
   font-size: 11px;
   line-height: 14px;
 }
 
+#hoomenchat-site .rules-box a {
+  color: #333;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   СТАТИСТИКА
+   ========================================================= */
+
 #hoomenchat-site .statistics-box {
-  width: 100%;
   margin: 8px 0 0;
   padding: 5px 8px;
   background: #fff;
   border: 1px solid #aaa;
   color: #555;
-  font: 10px/13px "Courier New", monospace;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 10px;
+  line-height: 13px;
 }
 
+#hoomenchat-site .statistics-title {
+  margin: 0 0 3px;
+  color: #333;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: bold;
+}
+
+#hoomenchat-site .statistics-number {
+  color: #222;
+  font-weight: bold;
+}
+
+#hoomenchat-site .statistics-online {
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
 #hoomenchat-site .footer-line {
-  width: 100%;
   margin-top: 7px;
   padding-top: 4px;
   border-top: 1px solid #ccc;
   color: #888;
   font-size: 9px;
+  line-height: 11px;
   text-align: center;
 }
 
 
-/* =========================
-   МОБІЛЬНИЙ
-   ========================= */
+/* =========================================================
+   МОБІЛЬНА ВЕРСІЯ
+   ========================================================= */
 
 @media screen and (max-width: 600px) {
 
   #hoomenchat-site {
+    margin: 0;
     padding: 7px;
   }
 
   #hoomenchat-site .site-layout {
     display: block;
-    width: 100%;
     border-spacing: 0;
   }
 
@@ -301,3 +512,2110 @@
   }
 
 }
+</style>
+
+
+<div class="hoomenchat-header">
+  ГУМЕНЧАТ
+</div>
+
+
+<div class="site-layout">
+
+
+<!-- =====================================================
+     ЛІВА КОЛОНКА
+     ===================================================== -->
+
+<div class="site-left">
+
+<div class="left-box">
+
+<div class="site-name">
+  copy_pasta
+</div>
+
+<img
+  class="main-avatar"
+  alt="copy_pasta"
+  src="https://blogger.googleusercontent.com/img/a/AVvXsEiNU5aLNwKBZvNgLsvxfKYA0hduyABhvfQrHryVIrw1Q2WVFne8Aop849IRmthJlGuRphRDtjX_d-pvH8gcUtCoAL-zkhXAP0utpiVidiXL57SIMaMBjeaXnGhTZ_j2wQj1RZxI-V5TsjxtARZSpoxZ8UGuDX_9t9hmiL6k1OyP6ilE8WmYwfKmHTQFvFg"
+>
+
+
+<a
+  class="archat-button"
+  href="https://aircmd.github.io/hoomanchat/archive.html"
+>
+  📩 АРЧАТ
+</a>
+
+
+<div class="nav-menu">
+
+<a
+  class="nav-item"
+  href="https://aircmd.github.io/hoomanchat/index.html"
+>
+  Головна
+</a>
+
+<a
+  class="nav-item"
+  href="https://aircmd.github.io/hoomanchat/profiles.html"
+>
+  Гумгайли
+</a>
+
+<a
+  class="nav-item"
+  href="https://aircmd.github.io/hoomanchat/droomens.html"
+>
+  Друмени
+</a>
+
+<a
+  class="nav-item"
+  href="https://aircmd.github.io/hoomanchat/activity.html"
+>
+  Стрічерчат
+</a>
+
+<a
+  class="nav-item"
+  href="https://aircmd.github.io/hoomanchat/islands.html"
+>
+  Острови
+</a>
+
+<a
+  class="nav-item"
+  href="https://aircmd.github.io/hoomanchat/rules.html"
+>
+  Правила
+</a>
+
+</div>
+
+
+<div class="account-box">
+
+<div class="account-text">
+  Немає гумгайла?
+</div>
+
+<a
+  class="account-link"
+  href="#"
+>
+  ЗАРЕЄСТРУВАТИСЯ
+</a>
+
+<a
+  class="account-link"
+  href="#"
+>
+  ВХІД
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ПРАВА КОЛОНКА
+     ===================================================== -->
+
+<div class="site-right">
+
+
+<div class="profile-box">
+
+<div class="profile-header">
+  Мій гумгайл: copy_pasta
+</div>
+
+<div class="profile-info">
+
+<strong>copy_pasta</strong>
+
+<div>
+  Сімейка:
+  <b>
+    <a href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">
+      стусни з dreaming_romance
+    </a>
+  </b>
+</div>
+
+<div>
+  Статус: ліньки розписувати
+</div>
+
+<div class="profile-status">
+  ● онлайн
+</div>
+
+</div>
+
+</div>
+
+
+<div class="posts-header">
+  Дописи copy_pasta — 25
+</div>
+
+
+<div id="copy-posts">
+
+
+<!-- =====================================================
+     ДОПИС 1
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Дивилась сьогодні кіно про покинутого собаку, його власник вже кайфує від нового життя, а собака все ще чекає його повернення
+</div>
+
+<div class="profile-post-body">
+  Навряд чи я хочу бути як та собачка. Мені дуже сумно що таке трапляється( До неї підходили люди, які хотіли її забрати до себе. Але вона не йшла до них. Вона чекала свого зрадливого власника, який вже мав сім'ю та нову собаку в іншій країні.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">29</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">2</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    sakurai_agatsuma
+  </div>
+  Шкода собачку(
+</div>
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    copy_pasta
+  </div>
+  Шкода не те слово. Але ж собачка не винна що її власник гівнюк.
+</div>
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  15 серпня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 2
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Щоб я не робила
+</div>
+
+<div class="profile-post-body">
+  Не важливо що я могла б зробити. Він ніколи цього не цінує, він бачить всіх та кожну, підтримує їх. Але ніколи й доброго слова щодо моїх досягнень я не отримую. Навіть якщо зірку з неба впіймаю. Не знаю чи варто воно все того(
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">31</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">3</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    sakurai_agatsuma
+  </div>
+  Створюй те все для себе :3
+</div>
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    copy_pasta
+  </div>
+  Та не так вже й цікаво....
+</div>
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    sakurai_agatsuma
+  </div>
+  А заради учасників твого островка?
+</div>
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  13 серпня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 3
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Мені подобається тепла весна
+</div>
+
+<div class="profile-post-body">
+  Я ліниво звісила руки, сидячи на стільці балкончика. Вітерець так ніжно і приємно колихає їх туди-сюди. Але не довго колихав, не люблю коли разом з вітром летить пакет та сміття. Ледве встигла прибрати руки. Фу, бридко!
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">2</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">4</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    sakurai_agatsuma
+  </div>
+  Хаха, ну ти й даєш.
+</div>
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    copy_pasta
+  </div>
+  Та та воно й таа. А якщо б пакет в пику прилетів?
+</div>
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    sakurai_agatsuma
+  </div>
+  Якщо тільки пакет з грошима)
+</div>
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  5 квітня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 4
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Як ви відноситесь до субкультури?
+</div>
+
+<div class="profile-post-body">
+  Мені подобається субкультура.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">5</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">2</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    alter_core
+  </div>
+  А яка саме субкультура? Бо всі вони різні.
+</div>
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    copy_pasta
+  </div>
+  Якщо субкультура передбачатиме комфорт, смачну їжу та теплу атмосферу, то саме таку.
+</div>
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  17 серпня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 5
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Мене попустило
+</div>
+
+<div class="profile-post-body">
+  Я пів дня думала про те щоб наліпку собі на лоба приліпити. Але не зробила цього. Ці думки лише зараз припинили мене чіпати.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">11</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">5</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    sakurai_agatsuma
+  </div>
+  А чому не зробила? Я собі приклеїла.
+</div>
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    copy_pasta
+  </div>
+  Щоб що? Всеодно цього ніхто не бачить.
+</div>
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    sakurai_agatsuma
+  </div>
+  То я даремно з нею весь день проходила??
+</div>
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  6 серпня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 6
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Мо прибрати сімейку?
+</div>
+
+<div class="profile-post-body">
+  Бо те що відбувається між нами точно стосунками не назвеш.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">2</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">2</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    copy_pasta
+  </div>
+  Напевно приберу.
+</div>
+
+<div class="fake-comment">
+  <div class="fake-comment-name">
+    sakurai_agatsuma
+  </div>
+  Прибирай :3
+</div>
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  10 серпня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 7
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Прочитала 5 книжок
+</div>
+
+<div class="profile-post-body">
+  Я не розумію навіщо люди лізуть в мізкологію. Всі книжки та й їхній зміст однаковий. Різниці ніякої.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">1</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">1</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="fake-comment">
+
+<div class="fake-comment-name">
+  copy_pasta
+</div>
+
+Мізкологи безкорисна витрата коштів.
+
+</div>
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  8 серпня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 8
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Чи ти мій хлопець, чи ні?
+</div>
+
+<div class="profile-post-body">
+
+Що між нами? Поясни ж ти мені,
+<b>
+<a href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">
+  @dream_romance
+</a>
+</b>
+
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">0</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">2</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="fake-comment">
+
+<div class="fake-comment-name">
+  dreaming_romance
+</div>
+
+Стосунки звісно ж.
+
+</div>
+
+<div class="fake-comment">
+
+<div class="fake-comment-name">
+  copy_pasta
+</div>
+
+Тоді нащо ти пишеш дивні речі?
+
+</div>
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  8 серпня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 9
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Не розумію...
+</div>
+
+<div class="profile-post-body">
+  Гарно починалося ж аніме. Але коли припиняється різко комедія та починається чорнуха, сумна частина та інше серйозне мушкалове, то й дивитися не хочу.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">5</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">2</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="fake-comment">
+
+<div class="fake-comment-name">
+  copy_pasta
+</div>
+
+Маячню назнімали.
+
+</div>
+
+<div class="fake-comment">
+
+<div class="fake-comment-name">
+  copy_pasta
+</div>
+
+Бісить.
+
+</div>
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  7 серпня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 10
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Хочу булькочай
+</div>
+
+<div class="profile-post-body">
+  Картопельку прикут, смакобулочки та курячі шматочки з салатним листям.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">2</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">0</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  6 серпня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 11
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Зіграла в одну гру
+</div>
+
+<div class="profile-post-body">
+  Питайте
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">2</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">2</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="fake-comment">
+
+<div class="fake-comment-name">
+  copy_pasta
+</div>
+
+Я що, даремно про це написала!?
+
+</div>
+
+<div class="fake-comment">
+
+<div class="fake-comment-name">
+  sakurai_agatsuma
+</div>
+
+Так.
+
+</div>
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  2 грудня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 12
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Знаєте як зрозуміти що те що ти пишеш не читають?
+</div>
+
+<div class="profile-post-body">
+  Проте всі інші за подібне завжди отримують 💖, але ж не я. Ні.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">0</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">0</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  1 грудня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 13
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Сьогодні побачила на вулиці гарну кицьку.
+</div>
+
+<div class="profile-post-body">
+  Купила їй корм, накидала у миску та навіть погладила. Вона така малесенька та ручна, напевно чиясь домашня.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">0</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">0</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  1 грудня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 14
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Творчість
+</div>
+
+<div class="profile-post-body">
+  Сьогодні я протягом години намалювала красивий пейзаж. Моє бачення іншої планети, екзотичного світу з прибульцями. Там блакитні, фіолетові та рожеві рослини з фіолетово-сірим піском. Позаду незвичні будівлі, а також фіолетове небо з двома супутниками.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">0</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">0</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  29 листопада
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 15
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Святі кицюні
+</div>
+
+<div class="profile-post-body">
+  Як все це задовбало...
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">0</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">0</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  1 серпня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 16
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Почистила список друменів
+</div>
+
+<div class="profile-post-body">
+  Чати також підчистила.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">3</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">0</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  31 липня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 17
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Я не буду змагатися за кохання
+</div>
+
+<div class="profile-post-body">
+  Якщо людина мене кохає, то не буде заводити безліч подружок та писати якою має бути довжина мого волосся, колір, одяг. Бо це не кохання. Та й світогляд змінювати на той, котрий у твоєї знайомої я також не буду.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">98</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">0</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  30 липня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 18
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Блиск для губ створює магію
+</div>
+
+<div class="profile-post-body">
+  Одразу стаєш значно красивішою.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">0</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">0</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  29 липня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 19
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Помила волосся шампунем з ароматом вишеньки
+</div>
+
+<div class="profile-post-body">
+  Приємно пахне, не смердить. Зазвичай шампуні мають різкий та не приємний запах, а цей ніжний та парфумований. Мені подобається.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">2</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">0</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  28 липня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 20
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  У мене гикавка
+</div>
+
+<div class="profile-post-body">
+  І вода не допомагає як і затримка дихання 😨
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">0</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">0</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  27 липня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 21
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Поставте 💕
+</div>
+
+<div class="profile-post-body">
+  Якщо любите мене.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">5</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">0</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  26 липня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 22
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Сьогодні подумала про вплив емоцій на моє тіло
+</div>
+
+<div class="profile-post-body">
+  Коли я лютую, це відчувається майже всім тілом.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">0</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">0</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  25 липня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 23
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Якщо я чогось не зрозуміла, завжди можна це пояснити.
+</div>
+
+<div class="profile-post-body">
+  Але тікати, матюкатися та біситися, кажучи що ви в мені розчаровані... як мінімум, це боляче.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">0</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">0</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  24 липня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 24
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Кому цікаво?
+</div>
+
+<div class="profile-post-body">
+  Мені просто захотілося сьогодні зліпити фігурку.
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">0</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">0</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  23 липня
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ДОПИС 25
+     ===================================================== -->
+
+<div class="profile-post">
+
+<div class="profile-post-title">
+  Якщо я зникну
+</div>
+
+<div class="profile-post-body">
+  Ви мене шукатимете?
+</div>
+
+<div class="post-actions">
+
+<button class="like-button" type="button">
+  ♡ Подобається <span class="like-count">57</span>
+</button>
+
+<button class="comment-button" type="button">
+  💬 Коментарі <span class="comment-count">4</span>
+</button>
+
+</div>
+
+<div class="comments-area">
+
+<div class="fake-comment">
+
+<div class="fake-comment-name">
+  copy_pasta
+</div>
+
+Оце вже складне питання.
+
+</div>
+
+<div class="fake-comment">
+
+<div class="fake-comment-name">
+  sakurai_agatsuma
+</div>
+
+Не зникай 😰😭.
+
+</div>
+
+<div class="fake-comment">
+
+<div class="fake-comment-name">
+  dreaming_romance
+</div>
+
+Звісно шукатиму 😙.
+
+</div>
+
+<div class="comment-form">
+
+<textarea
+  class="comment-input"
+  placeholder="Написати коментар..."
+></textarea>
+
+<button
+  class="comment-send"
+  type="button"
+>
+  Відправити
+</button>
+
+</div>
+
+</div>
+
+<div class="profile-post-date">
+  22 липня
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- =====================================================
+     ПОКАЗАТИ ЩЕ
+     ===================================================== -->
+
+<div
+  class="show-more"
+  id="show-more-posts"
+>
+  показати ще...
+</div>
+
+
+<!-- =====================================================
+     ПРАВИЛА
+     ===================================================== -->
+
+<div class="rules-box">
+
+Пам'ятай та дотримуйся
+
+<a href="https://aircmd.github.io/hoomanchat/rules.html">
+  ПРАВИЛ
+</a>
+
+нашого ресурсу для приємного та друмнього часу разом з нами.
+
+</div>
+
+
+<!-- =====================================================
+     СТАТИСТИКА
+     ===================================================== -->
+
+<div class="statistics-box">
+
+<div class="statistics-title">
+  Статистика Гуменчату
+</div>
+
+<div>
+  Зареєстровано гуменів:
+  <span
+    class="statistics-number"
+    id="registered-hoomen"
+  ></span>
+</div>
+
+<div>
+  Зараз онлайн:
+  <span
+    class="statistics-online"
+    id="online-hoomen"
+  ></span>
+</div>
+
+<div>
+  Гуменів сьогодні завітало:
+  <span
+    class="statistics-number"
+    id="today-hoomen"
+  ></span>
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<div class="footer-line">
+  Гуменчат — місце для гуменів.
+</div>
+
+
+</div>
+</div>
+
+
+<script>
+(function() {
+
+
+/* =========================================================
+   ДОПИСИ
+   ========================================================= */
+
+var posts = document.querySelectorAll(
+  "#copy-posts .profile-post"
+);
+
+var showMore = document.getElementById(
+  "show-more-posts"
+);
+
+var visiblePosts = 3;
+
+var postsPerClick = 5;
+
+
+function updatePostVisibility() {
+
+  for (var i = 0; i < posts.length; i++) {
+
+    if (i < visiblePosts) {
+
+      posts[i].style.display = "block";
+
+    } else {
+
+      posts[i].style.display = "none";
+
+    }
+
+  }
+
+
+  if (visiblePosts >= posts.length) {
+
+    showMore.className = "show-more hidden";
+
+  } else {
+
+    showMore.className = "show-more";
+
+  }
+
+}
+
+
+showMore.addEventListener(
+  "click",
+  function() {
+
+    visiblePosts += postsPerClick;
+
+    if (visiblePosts > posts.length) {
+      visiblePosts = posts.length;
+    }
+
+    updatePostVisibility();
+
+  }
+);
+
+
+/* =========================================================
+   ЛАЙКИ
+   ========================================================= */
+
+var likeButtons = document.querySelectorAll(
+  "#hoomenchat-site .like-button"
+);
+
+
+likeButtons.forEach(function(button) {
+
+  button.addEventListener(
+    "click",
+    function() {
+
+      var count = button.querySelector(
+        ".like-count"
+      );
+
+      var number = parseInt(
+        count.textContent.replace(/\s/g, ""),
+        10
+      );
+
+
+      if (button.classList.contains("liked")) {
+
+        number--;
+
+        button.classList.remove("liked");
+
+        button.innerHTML =
+          "♡ Подобається " +
+          '<span class="like-count">' +
+          number.toLocaleString("uk-UA") +
+          "</span>";
+
+      } else {
+
+        number++;
+
+        button.classList.add("liked");
+
+        button.innerHTML =
+          "♥ Подобається " +
+          '<span class="like-count">' +
+          number.toLocaleString("uk-UA") +
+          "</span>";
+
+      }
+
+    }
+  );
+
+});
+
+
+/* =========================================================
+   КОМЕНТАРІ
+   ========================================================= */
+
+var commentButtons = document.querySelectorAll(
+  "#hoomenchat-site .comment-button"
+);
+
+
+commentButtons.forEach(function(button) {
+
+  button.addEventListener(
+    "click",
+    function() {
+
+      var post = button.closest(
+        ".profile-post"
+      );
+
+      var comments = post.querySelector(
+        ".comments-area"
+      );
+
+      comments.classList.toggle("open");
+
+    }
+  );
+
+});
+
+
+/* =========================================================
+   ВІДПРАВКА КОМЕНТАРІВ
+   ========================================================= */
+
+var sendButtons = document.querySelectorAll(
+  "#hoomenchat-site .comment-send"
+);
+
+
+sendButtons.forEach(function(button) {
+
+  button.addEventListener(
+    "click",
+    function() {
+
+      var form = button.closest(
+        ".comment-form"
+      );
+
+      var input = form.querySelector(
+        ".comment-input"
+      );
+
+      var text = input.value.trim();
+
+
+      if (!text) {
+        return;
+      }
+
+
+      var comment = document.createElement(
+        "div"
+      );
+
+      comment.className = "user-comment";
+
+
+      var name = document.createElement(
+        "strong"
+      );
+
+      name.textContent = "ти: ";
+
+
+      var message = document.createTextNode(
+        text
+      );
+
+
+      comment.appendChild(name);
+      comment.appendChild(message);
+
+
+      form.parentNode.insertBefore(
+        comment,
+        form
+      );
+
+
+      input.value = "";
+
+
+      var post = form.closest(
+        ".profile-post"
+      );
+
+
+      var count = post.querySelector(
+        ".comment-count"
+      );
+
+
+      var number = parseInt(
+        count.textContent.replace(/\s/g, ""),
+        10
+      );
+
+
+      count.textContent =
+        number + 1;
+
+    }
+  );
+
+});
+
+
+/* =========================================================
+   СТАТИСТИКА
+   ========================================================= */
+
+function safeNumber(base, range) {
+
+  var value;
+
+
+  do {
+
+    value =
+      base +
+      Math.floor(
+        Math.random() * range
+      );
+
+  } while (
+    String(value).indexOf("63") !== -1 ||
+    String(value).indexOf("68") !== -1 ||
+    String(value).indexOf("13") !== -1 ||
+    String(value).indexOf("666") !== -1
+  );
+
+
+  return value;
+}
+
+
+function updateStatistics() {
+
+  var registered = safeNumber(
+    8000000,
+    47001
+  );
+
+
+  var online = safeNumber(
+    1000000,
+    76001
+  );
+
+
+  var today = safeNumber(
+    2400000,
+    180001
+  );
+
+
+  document.getElementById(
+    "registered-hoomen"
+  ).textContent =
+    registered.toLocaleString("uk-UA");
+
+
+  document.getElementById(
+    "online-hoomen"
+  ).textContent =
+    online.toLocaleString("uk-UA");
+
+
+  document.getElementById(
+    "today-hoomen"
+  ).textContent =
+    today.toLocaleString("uk-UA");
+
+}
+
+
+/* =========================================================
+   ЗАПУСК
+   ========================================================= */
+
+updatePostVisibility();
+
+updateStatistics();
+
+setInterval(
+  updateStatistics,
+  30000
+);
+
+})();
+</script>
+
+</div>
