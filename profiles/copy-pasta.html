@@ -1,15 +1,23 @@
 <div id="hoomenchat-site">
 
 <style>
+/* =========================================================
+   БАЗОВИЙ КАРКАС
+   ========================================================= */
+
 #hoomenchat-site {
   all: initial;
   display: block;
   width: 100%;
-  max-width: none;
+  max-width: 100%;
+  min-width: 0;
   margin: 0;
-  padding: 15px;
+  padding: 12px;
   background: #fff;
   border: 1px solid #777;
+  box-sizing: border-box;
+  overflow-x: hidden;
+
   font-family: Arial, Helvetica, sans-serif;
   font-size: 12px;
   line-height: 14px;
@@ -34,10 +42,15 @@
 #hoomenchat-site .hoomenchat-header {
   display: block;
   width: 100%;
-  margin: 0 0 12px 0;
-  padding: 6px 10px;
+  max-width: 100%;
+  min-width: 0;
+
+  margin: 0 0 10px 0;
+  padding: 5px 8px;
+
   background: linear-gradient(to bottom,#626262,#3b3b3b);
   border: 1px solid #222;
+
   color: #fff;
   font-size: 12px;
   line-height: 14px;
@@ -48,25 +61,41 @@
 
 
 /* =========================================================
-   ОСНОВНА РОЗМІТКА
+   ОСНОВНИЙ КАРКАС
    ========================================================= */
 
 #hoomenchat-site .site-layout {
-  display: table;
+  display: grid;
+
+  /*
+     Ліва колонка завжди 165px.
+     Права займає весь доступний залишок.
+  */
+  grid-template-columns: 165px minmax(0, 1fr);
+
+  column-gap: 10px;
+
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 12px 0;
+  max-width: 100%;
+  min-width: 0;
+
+  margin: 0;
+  padding: 0;
 }
 
 #hoomenchat-site .site-left {
-  display: table-cell;
-  width: 180px;
+  display: block;
+  width: 165px;
+  min-width: 0;
+  max-width: 165px;
   vertical-align: top;
 }
 
 #hoomenchat-site .site-right {
-  display: table-cell;
-  width: auto;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   vertical-align: top;
 }
 
@@ -76,41 +105,64 @@
    ========================================================= */
 
 #hoomenchat-site .left-box {
-  padding: 4px 7px;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+
+  padding: 3px 7px;
+
   background: #f0f0f0;
   border: 1px solid #999;
 }
 
 #hoomenchat-site .site-name {
+  width: 100%;
+  min-width: 0;
+
   margin: 1px 0 6px 0;
   padding: 0 0 4px 0;
+
   border-bottom: 1px solid #bcbcbc;
+
   color: #111;
   font-size: 15px;
   line-height: 17px;
   font-weight: bold;
   text-align: center;
+
   word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 #hoomenchat-site .main-avatar {
   display: block;
+
   width: 100%;
-  height: 250px;
+  max-width: 100%;
+  height: 228px;
+
   margin: 0 0 6px 0;
+
   object-fit: cover;
   object-position: center center;
+
   background: #ddd;
   border: 1px solid #888;
 }
 
 #hoomenchat-site .archat-button {
   display: block;
+
   width: 100%;
+  max-width: 100%;
+
   margin: 0 0 5px 0;
   padding: 4px 0;
+
   background: linear-gradient(to bottom,#fff176,#fbc02d);
   border: 1px solid #a78119;
+
   color: #000;
   font-size: 10px;
   line-height: 13px;
@@ -126,21 +178,34 @@
 
 #hoomenchat-site .nav-menu {
   display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   margin: 0;
   padding: 0;
+
   border-top: 1px solid #999;
 }
 
 #hoomenchat-site .nav-item {
   display: block;
+
   width: 100%;
+  max-width: 100%;
+
   margin: 0;
-  padding: 4px 2px;
+  padding: 3px 2px;
+
   border-bottom: 1px solid #c7c7c7;
+
   color: #444;
   font-size: 11px;
   line-height: 13px;
   text-decoration: underline;
+
+  overflow-wrap: anywhere;
 }
 
 #hoomenchat-site .nav-item:hover {
@@ -150,14 +215,20 @@
 }
 
 #hoomenchat-site .account-box {
+  width: 100%;
+  min-width: 0;
+
   margin: 8px 0 0 0;
   padding: 5px 4px;
+
   border-top: 1px solid #999;
+
   text-align: center;
 }
 
 #hoomenchat-site .account-text {
   margin: 0 0 5px 0;
+
   color: #555;
   font-size: 9px;
   line-height: 12px;
@@ -165,7 +236,12 @@
 
 #hoomenchat-site .account-link {
   display: block;
+
+  width: 100%;
+  max-width: 100%;
+
   margin: 2px 0;
+
   color: #444;
   font-size: 10px;
   line-height: 12px;
@@ -184,30 +260,55 @@
    ========================================================= */
 
 #hoomenchat-site .profile-box {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   margin: 0 0 8px 0;
   padding: 7px;
+
   background: #fff;
   border: 1px solid #aaa;
 }
 
 #hoomenchat-site .profile-header {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   margin: 0 0 7px 0;
   padding: 5px 7px;
+
   background: #f0f0f0;
   border: 1px solid #999;
+
   color: #222;
   font-size: 12px;
   line-height: 15px;
   font-weight: bold;
+
+  overflow-wrap: anywhere;
 }
 
 #hoomenchat-site .profile-info {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   padding: 6px 7px;
+
   background: #f9f9f9;
   border: 1px solid #aaa;
+
   color: #444;
   font-size: 11px;
   line-height: 15px;
+
+  overflow-wrap: anywhere;
 }
 
 #hoomenchat-site .profile-info strong {
@@ -216,6 +317,7 @@
 
 #hoomenchat-site .profile-status {
   margin-top: 4px;
+
   color: #2e7d32;
   font-size: 10px;
   line-height: 12px;
@@ -228,43 +330,91 @@
    ========================================================= */
 
 #hoomenchat-site .posts-header {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   margin: 8px 0 5px 0;
   padding: 4px 7px;
+
   background: #f0f0f0;
   border: 1px solid #999;
+
   color: #333;
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
+
+  overflow-wrap: anywhere;
 }
 
 #hoomenchat-site .profile-post {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   margin: 0 0 7px 0;
+
   background: #fff;
   border: 1px solid #aaa;
+
+  overflow: hidden;
 }
 
 #hoomenchat-site .profile-post-title {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   margin: 0;
   padding: 5px 7px;
+
   background: #f5f5f5;
   border-bottom: 1px solid #aaa;
+
   color: #222;
   font-size: 11px;
   line-height: 14px;
   font-weight: bold;
+
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 #hoomenchat-site .profile-post-body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   padding: 7px;
+
   color: #333;
   font-size: 11px;
   line-height: 15px;
+
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+#hoomenchat-site .profile-post-body a {
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 #hoomenchat-site .profile-post-date {
+  width: 100%;
+  max-width: 100%;
+
   padding: 3px 7px;
+
   border-top: 1px solid #ddd;
+
   color: #888;
   font-size: 9px;
   line-height: 11px;
@@ -277,22 +427,35 @@
 
 #hoomenchat-site .post-actions {
   display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   padding: 4px 7px;
+
   border-top: 1px solid #ddd;
   background: #fafafa;
+
+  white-space: normal;
 }
 
 #hoomenchat-site .like-button,
 #hoomenchat-site .comment-button {
   display: inline-block;
+
   margin: 0 8px 0 0;
   padding: 1px 3px;
+
   border: 0;
   background: transparent;
+
   color: #555;
+
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
   line-height: 13px;
+
   cursor: pointer;
 }
 
@@ -309,8 +472,14 @@
 
 #hoomenchat-site .comments-area {
   display: none;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   margin: 0;
   padding: 6px 7px;
+
   background: #f8f8f8;
   border-top: 1px solid #ddd;
 }
@@ -320,33 +489,55 @@
 }
 
 #hoomenchat-site .fake-comment {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   margin: 0 0 5px 0;
   padding: 4px 5px;
+
   background: #fff;
   border: 1px solid #ccc;
+
   font-size: 10px;
   line-height: 13px;
+
+  overflow-wrap: anywhere;
 }
 
 #hoomenchat-site .fake-comment-name {
   margin-bottom: 2px;
+
   color: #222;
   font-weight: bold;
+
+  overflow-wrap: anywhere;
 }
 
 #hoomenchat-site .comment-form {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   margin-top: 6px;
 }
 
 #hoomenchat-site .comment-input {
   display: block;
+
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 45px;
+
   padding: 4px 5px;
   resize: vertical;
+
   background: #fff;
   border: 1px solid #aaa;
+
   color: #222;
+
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
   line-height: 13px;
@@ -355,11 +546,15 @@
 #hoomenchat-site .comment-send {
   margin-top: 4px;
   padding: 3px 8px;
+
   background: #eeeeee;
   border: 1px solid #999;
+
   color: #444;
+
   font-size: 10px;
   line-height: 12px;
+
   cursor: pointer;
 }
 
@@ -369,12 +564,20 @@
 }
 
 #hoomenchat-site .user-comment {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   margin: 0 0 5px 0;
   padding: 4px 5px;
+
   background: #fff;
   border: 1px solid #aaa;
+
   font-size: 10px;
   line-height: 13px;
+
+  overflow-wrap: anywhere;
 }
 
 #hoomenchat-site .user-comment strong {
@@ -388,18 +591,27 @@
 
 #hoomenchat-site .show-more {
   display: block;
+
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   margin: 2px 0 0 0;
   padding: 5px 7px;
+
   background: #f0f0f0;
   border: 1px solid #999;
+
   color: #444;
+
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
   line-height: 13px;
   font-weight: bold;
+
   text-align: center;
   text-decoration: underline;
+
   cursor: pointer;
 }
 
@@ -418,13 +630,23 @@
    ========================================================= */
 
 #hoomenchat-site .rules-box {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   margin: 8px 0 0 0;
   padding: 5px 8px;
+
   background: #fff;
   border: 1px solid #aaa;
+
   color: #444;
   font-size: 11px;
   line-height: 14px;
+
+  overflow-wrap: anywhere;
 }
 
 #hoomenchat-site .rules-box a {
@@ -439,19 +661,32 @@
    ========================================================= */
 
 #hoomenchat-site .statistics-box {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+
   margin: 8px 0 0 0;
   padding: 5px 8px;
+
   background: #fff;
   border: 1px solid #aaa;
+
   color: #555;
+
   font-family: "Courier New", Courier, monospace;
   font-size: 10px;
   line-height: 13px;
+
+  overflow-wrap: anywhere;
 }
 
 #hoomenchat-site .statistics-title {
   margin: 0 0 3px 0;
+
   color: #333;
+
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
   line-height: 12px;
@@ -474,12 +709,18 @@
    ========================================================= */
 
 #hoomenchat-site .footer-line {
+  width: 100%;
+  max-width: 100%;
+
   margin: 7px 0 0 0;
   padding-top: 4px;
+
   border-top: 1px solid #ccc;
+
   color: #888;
   font-size: 9px;
   line-height: 11px;
+
   text-align: center;
 }
 
@@ -491,23 +732,64 @@
 @media screen and (max-width: 600px) {
 
   #hoomenchat-site {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
     margin: 0;
     padding: 7px;
+
+    overflow-x: hidden;
   }
 
   #hoomenchat-site .site-layout {
     display: block;
-    border-spacing: 0;
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    margin: 0;
+    padding: 0;
   }
 
   #hoomenchat-site .site-left,
   #hoomenchat-site .site-right {
     display: block;
+
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   #hoomenchat-site .site-left {
     margin-bottom: 8px;
+  }
+
+  #hoomenchat-site .left-box {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #hoomenchat-site .main-avatar {
+    height: 228px;
+  }
+
+}
+
+
+/* =========================================================
+   ДУЖЕ ВУЗЬКІ ЕКРАНИ
+   ========================================================= */
+
+@media screen and (max-width: 350px) {
+
+  #hoomenchat-site {
+    padding: 5px;
+  }
+
+  #hoomenchat-site .main-avatar {
+    height: 210px;
   }
 
 }
@@ -655,284 +937,165 @@
 <div id="copy-posts">
 
 
-<!-- =====================================================
-     ДОПИС 1
-     ===================================================== -->
-
 <div class="profile-post">
-
 <div class="profile-post-title">
   Дивилась сьогодні кіно про покинутого собаку, його власник вже кайфує від нового життя, а собака все ще чекає його повернення
 </div>
-
 <div class="profile-post-body">
   Навряд чи я хочу бути як та собачка. Мені дуже сумно що таке трапляється( До неї підходили люди, які хотіли її забрати до себе. Але вона не йшла до них. Вона чекала свого зрадливого власника, який вже мав сім'ю та нову собаку в іншій країні.
 </div>
-
 <div class="post-actions">
-
 <button class="like-button" type="button">
   ♡ Подобається <span class="like-count">29</span>
 </button>
-
 <button class="comment-button" type="button">
   💬 Коментарі <span class="comment-count">2</span>
 </button>
-
 </div>
-
 <div class="comments-area">
-
 <div class="fake-comment">
   <div class="fake-comment-name">sakurai_agatsuma</div>
   Шкода собачку(
 </div>
-
 <div class="fake-comment">
   <div class="fake-comment-name">copy_pasta</div>
   Шкода не те слово. Але ж собачка не винна що її власник гівнюк.
 </div>
-
 <div class="comment-form">
-  <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-  <button class="comment-send" type="button">Відправити</button>
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
 </div>
-
 </div>
-
 <div class="profile-post-date">
   15 серпня
 </div>
-
 </div>
 
 
-<!-- =====================================================
-     ДОПИС 2
-     ===================================================== -->
-
 <div class="profile-post">
-
 <div class="profile-post-title">
   Щоб я не робила
 </div>
-
 <div class="profile-post-body">
   Не важливо що я могла б зробити. Він ніколи цього не цінує, він бачить всіх та кожну, підтримує їх. Але ніколи й доброго слова щодо моїх досягнень я не отримую. Навіть якщо зірку з неба впіймаю. Не знаю чи варто воно все того(
 </div>
-
 <div class="post-actions">
-
 <button class="like-button" type="button">
   ♡ Подобається <span class="like-count">31</span>
 </button>
-
 <button class="comment-button" type="button">
   💬 Коментарі <span class="comment-count">3</span>
 </button>
-
 </div>
-
 <div class="comments-area">
-
 <div class="fake-comment">
   <div class="fake-comment-name">sakurai_agatsuma</div>
   Створюй те все для себе :3
 </div>
-
 <div class="fake-comment">
   <div class="fake-comment-name">copy_pasta</div>
   Та не так вже й цікаво....
 </div>
-
 <div class="fake-comment">
   <div class="fake-comment-name">sakurai_agatsuma</div>
   А заради учасників твого островка?
 </div>
-
 <div class="comment-form">
-  <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-  <button class="comment-send" type="button">Відправити</button>
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
 </div>
-
 </div>
-
 <div class="profile-post-date">
   13 серпня
 </div>
-
 </div>
 
 
-<!-- =====================================================
-     ДОПИС 3
-     ===================================================== -->
-
 <div class="profile-post">
-
 <div class="profile-post-title">
   Мені подобається тепла весна
 </div>
-
 <div class="profile-post-body">
   Я ліниво звісила руки, сидячи на стільці балкончика. Вітерець так ніжно і приємно колихає їх туди-сюди. Але не довго колихав, не люблю коли разом з вітром летить пакет та сміття. Ледве встигла прибрати руки. Фу, бридко!
 </div>
-
 <div class="post-actions">
-
 <button class="like-button" type="button">
   ♡ Подобається <span class="like-count">2</span>
 </button>
-
 <button class="comment-button" type="button">
   💬 Коментарі <span class="comment-count">4</span>
 </button>
-
 </div>
-
 <div class="comments-area">
-
 <div class="fake-comment">
   <div class="fake-comment-name">sakurai_agatsuma</div>
   Хаха, ну ти й даєш.
 </div>
-
 <div class="fake-comment">
   <div class="fake-comment-name">copy_pasta</div>
   Та та воно й таа. А якщо б пакет в пику прилетів?
 </div>
-
 <div class="fake-comment">
   <div class="fake-comment-name">sakurai_agatsuma</div>
   Якщо тільки пакет з грошима)
 </div>
-
 <div class="comment-form">
-  <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-  <button class="comment-send" type="button">Відправити</button>
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
 </div>
-
 </div>
-
 <div class="profile-post-date">
   5 квітня
 </div>
-
 </div>
 
 
-<!-- =====================================================
-     ДОПИС 4
-     ===================================================== -->
-
 <div class="profile-post">
-
 <div class="profile-post-title">
   Як ви відноситесь до субкультури?
 </div>
-
 <div class="profile-post-body">
   Мені подобається субкультура.
 </div>
-
 <div class="post-actions">
-
-<button class="like-button" type="button">
-  ♡ Подобається <span class="like-count">5</span>
-</button>
-
-<button class="comment-button" type="button">
-  💬 Коментарі <span class="comment-count">2</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">5</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
 </div>
-
 <div class="comments-area">
-
-<div class="fake-comment">
-  <div class="fake-comment-name">alter_core</div>
-  А яка саме субкультура? Бо всі вони різні.
-</div>
-
-<div class="fake-comment">
-  <div class="fake-comment-name">copy_pasta</div>
-  Якщо субкультура передбачатиме комфорт, смачну їжу та теплу атмосферу, то саме таку.
-</div>
-
+<div class="fake-comment"><div class="fake-comment-name">alter_core</div>А яка саме субкультура? Бо всі вони різні.</div>
+<div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>Якщо субкультура передбачатиме комфорт, смачну їжу та теплу атмосферу, то саме таку.</div>
 <div class="comment-form">
-  <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-  <button class="comment-send" type="button">Відправити</button>
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">17 серпня</div>
 </div>
 
-</div>
-
-<div class="profile-post-date">
-  17 серпня
-</div>
-
-</div>
-
-
-<!-- =====================================================
-     ДОПИС 5
-     ===================================================== -->
 
 <div class="profile-post">
-
 <div class="profile-post-title">
   Мене попустило
 </div>
-
 <div class="profile-post-body">
   Я пів дня думала про те щоб наліпку собі на лоба приліпити. Але не зробила цього. Ці думки лише зараз припинили мене чіпати.
 </div>
-
 <div class="post-actions">
-
-<button class="like-button" type="button">
-  ♡ Подобається <span class="like-count">11</span>
-</button>
-
-<button class="comment-button" type="button">
-  💬 Коментарі <span class="comment-count">5</span>
-</button>
-
+<button class="like-button" type="button">♡ Подобається <span class="like-count">11</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">5</span></button>
 </div>
-
 <div class="comments-area">
-
-<div class="fake-comment">
-  <div class="fake-comment-name">sakurai_agatsuma</div>
-  А чому не зробила? Я собі приклеїла.
-</div>
-
-<div class="fake-comment">
-  <div class="fake-comment-name">copy_pasta</div>
-  Щоб що? Всеодно цього ніхто не бачить.
-</div>
-
-<div class="fake-comment">
-  <div class="fake-comment-name">sakurai_agatsuma</div>
-  То я даремно з нею весь день проходила??
-</div>
-
+<div class="fake-comment"><div class="fake-comment-name">sakurai_agatsuma</div>А чому не зробила? Я собі приклеїла.</div>
+<div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>Щоб що? Всеодно цього ніхто не бачить.</div>
+<div class="fake-comment"><div class="fake-comment-name">sakurai_agatsuma</div>То я даремно з нею весь день проходила??</div>
 <div class="comment-form">
-  <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-  <button class="comment-send" type="button">Відправити</button>
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">6 серпня</div>
 </div>
 
-</div>
-
-<div class="profile-post-date">
-  6 серпня
-</div>
-
-</div>
-
-
-<!-- =====================================================
-     ДОПИСИ 6–25
-     ===================================================== -->
 
 <div class="profile-post">
 <div class="profile-post-title">Мо прибрати сімейку?</div>
@@ -1306,13 +1469,11 @@
 
 
 <div class="rules-box">
-
 Пам'ятай та дотримуйся
 <a href="https://aircmd.github.io/hoomanchat/rules.html">
   ПРАВИЛ
 </a>
 нашого ресурсу для приємного та друмнього часу разом з нами.
-
 </div>
 
 
