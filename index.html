@@ -7,7 +7,6 @@
 
 <style>
 html, body {
-  height: 100%;
   margin: 0;
   padding: 0;
   background: #fff;
@@ -20,8 +19,7 @@ html, body {
   box-sizing: border-box;
 }
 #hoomenchat-site {
-  display: flex;
-  flex-direction: column;
+  display: block;
   width: 100%;
   min-height: 100vh;
   margin: 0;
@@ -34,7 +32,6 @@ html, body {
 }
 #hoomenchat-site .hoomenchat-header {
   display: block;
-  flex-shrink: 0;
   margin: 0 0 10px;
   padding: 5px 8px;
   background: linear-gradient(to bottom, #626262, #3b3b3b);
@@ -47,26 +44,21 @@ html, body {
   text-transform: uppercase;
 }
 #hoomenchat-site .site-layout {
-  display: flex;
-  flex: 1 0 auto;
-  gap: 10px;
+  display: table;
   width: 100%;
+  border-collapse: separate;
+  border-spacing: 10px 0;
 }
 #hoomenchat-site .site-left {
-  display: flex;
-  flex-direction: column;
+  display: table-cell;
   width: 165px;
-  flex-shrink: 0;
+  vertical-align: top;
 }
 #hoomenchat-site .site-right {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+  display: table-cell;
+  vertical-align: top;
 }
 #hoomenchat-site .left-box {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
   padding: 3px 7px;
   background: #f0f0f0;
   border: 1px solid #999;
@@ -84,7 +76,7 @@ html, body {
 #hoomenchat-site .main-avatar {
   display: block;
   width: 100%;
-  height: 125px;
+  height: 165px;
   margin: 0 0 6px;
   object-fit: cover;
   object-position: center 35%;
@@ -134,7 +126,7 @@ html, body {
   text-decoration: none;
 }
 #hoomenchat-site .account-box {
-  margin-top: auto;
+  margin: 8px 0 0;
   padding: 5px 4px;
   border-top: 1px solid #999;
   text-align: center;
@@ -188,12 +180,15 @@ html, body {
   font-weight: bold;
 }
 #hoomenchat-site .random-profiles {
-  display: flex;
-  gap: 7px;
+  display: table;
   width: 100%;
+  border-collapse: separate;
+  border-spacing: 7px 0;
 }
 #hoomenchat-site .random-profile-cell {
-  flex: 1;
+  display: table-cell;
+  width: 33.333%;
+  vertical-align: top;
 }
 #hoomenchat-site .random-profile {
   display: block;
@@ -276,8 +271,8 @@ html, body {
   font-weight: bold;
 }
 #hoomenchat-site .footer-line {
-  margin-top: auto;
-  padding-top: 10px;
+  margin: 7px 0 0;
+  padding-top: 4px;
   border-top: 1px solid #ccc;
   color: #888;
   font-size: 9px;
@@ -290,18 +285,19 @@ html, body {
     padding: 7px;
   }
   #hoomenchat-site .site-layout {
-    flex-direction: column;
-    gap: 0;
+    display: block;
+    border-spacing: 0;
   }
   #hoomenchat-site .site-left,
   #hoomenchat-site .site-right {
+    display: block;
     width: 100%;
   }
   #hoomenchat-site .site-left {
     margin-bottom: 8px;
   }
   #hoomenchat-site .random-profiles {
-    gap: 4px;
+    border-spacing: 4px 0;
   }
   #hoomenchat-site .random-avatar {
     height: 130px;
