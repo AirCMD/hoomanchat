@@ -1,1 +1,355 @@
-reserved
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Hoomanchat</title>
+  <style>
+    /* Збережений дизайн та стилі */
+    body {
+      font-family: sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    .layout-container {
+      display: flex;
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .main-content {
+      flex: 1;
+    }
+    .sidebar {
+      width: 280px;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      height: fit-content;
+    }
+    /* Стилі для правої колонки */
+    .rules-title {
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-bottom: 8px;
+    }
+    .rules-reserved {
+      font-weight: normal;
+      color: #555;
+      margin-bottom: 12px;
+    }
+    .status-open {
+      color: green;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .community-posts-title {
+      font-size: 1.1em;
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 10px;
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+    }
+    .btn-create-post {
+      width: 100%;
+      padding: 8px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .btn-create-post:hover {
+      background-color: #218838;
+    }
+    /* Форма створення допису */
+    .create-post-form {
+      display: none;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .create-post-form textarea {
+      width: 100%;
+      height: 70px;
+      margin-bottom: 8px;
+      box-sizing: border-box;
+    }
+    .create-post-form input {
+      width: 100%;
+      margin-bottom: 8px;
+      padding: 6px;
+      box-sizing: border-box;
+    }
+    /* Стилі дописів */
+    .profile-post {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: none; /* За замовчуванням приховано для пагінації */
+    }
+    .profile-post.visible {
+      display: block;
+    }
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .profile-post-title {
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    .post-author {
+      font-size: 0.9em;
+    }
+    .post-author a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .post-author a:hover {
+      text-decoration: underline;
+    }
+    .profile-post-body {
+      margin-bottom: 10px;
+    }
+    .post-actions button {
+      background: none;
+      border: 1px solid #ccc;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+    .comments-area {
+      margin-top: 10px;
+      display: none;
+    }
+    .comment-form {
+      margin-top: 10px;
+    }
+    .comment-input {
+      width: 100%;
+      height: 40px;
+      box-sizing: border-box;
+    }
+    .profile-post-date {
+      font-size: 0.8em;
+      color: #888;
+      margin-top: 8px;
+    }
+    /* Кнопки Навігації/Показати ще */
+    .pagination-btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 1em;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout-container">
+  
+  <!-- Ліва/Центральна колонка з дописами -->
+  <div class="main-content">
+    
+    <!-- Прихована форма створення публікації -->
+    <div id="createPostForm" class="create-post-form">
+      <h3>Нова публікація</h3>
+      <input type="text" id="newPostTitle" placeholder="Заголовок публікації">
+      <textarea id="newPostBody" placeholder="Текст публікації..."></textarea>
+      <input type="text" id="newPostAuthor" placeholder="Автор (наприклад: fray_dog)">
+      <input type="text" id="newPostLink" placeholder="Посилання (наприклад: fray-dog.html)">
+      <button class="btn-create-post" onclick="submitPost()">Опублікувати</button>
+    </div>
+
+    <!-- Контейнер для дописів -->
+    <div id="postsContainer"></div>
+
+    <!-- Кнопка розгортання/згортання -->
+    <button id="togglePostsBtn" class="pagination-btn" onclick="togglePosts()">Показати ще</button>
+  </div>
+
+  <!-- Права колонка з новими вимогами -->
+  <div class="sidebar">
+    <div class="rules-title">Правила острова</div>
+    <div class="rules-reserved">зарезервовано</div>
+    <div class="status-open">Статус: відкритий острів</div>
+    
+    <div class="community-posts-title">Дописи спільноти</div>
+    <button class="btn-create-post" onclick="toggleCreateForm()">Створити публікацію</button>
+  </div>
+
+</div>
+
+<script>
+  let visibleCount = 3;
+  const totalPosts = 50;
+  const postsContainer = document.getElementById('postsContainer');
+
+  // Генерація 50 дописів
+  function generatePosts() {
+    for (let i = 1; i <= totalPosts; i++) {
+      const post = document.createElement('div');
+      post.className = `profile-post ${i <= visibleCount ? 'visible' : ''}`;
+      post.id = `post-${i}`;
+      
+      post.innerHTML = `
+        <div class="post-header">
+          <div class="profile-post-title">Публікація спільноти #${i}</div>
+          <div class="post-author">автор: <a href="fray-dog.html">fray_dog</a></div>
+        </div>
+        <div class="profile-post-body">Це текст допису #${i}. Тут ви можете читати та залишати свої коментарі.</div>
+        <div class="post-actions">
+          <button class="like-button" onclick="toggleLike(this)">♡ Подобається <span class="like-count">0</span></button>
+          <button class="comment-button" onclick="toggleComments(this)">💬 Коментарі <span class="comment-count">0</span></button>
+        </div>
+        <div class="comments-area">
+          <div class="comments-list"></div>
+          <div class="comment-form">
+            <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+            <button class="comment-send" onclick="addComment(this)">Відправити</button>
+          </div>
+        </div>
+        <div class="profile-post-date">20 вересня</div>
+      `;
+      postsContainer.appendChild(post);
+    }
+  }
+
+  // Перемикач форми "Створити публікацію"
+  function toggleCreateForm() {
+    const form = document.getElementById('createPostForm');
+    form.style.display = form.style.display === 'block' ? 'none' : 'block';
+  }
+
+  // Створення нового допису (тільки в пам'яті браузера, зникає після F5)
+  function submitPost() {
+    const title = document.getElementById('newPostTitle').value || 'Без назви';
+    const body = document.getElementById('newPostBody').value || 'Порожній допис';
+    const author = document.getElementById('newPostAuthor').value || 'fray_dog';
+    const link = document.getElementById('newPostLink').value || 'fray-dog.html';
+
+    const newPost = document.createElement('div');
+    newPost.className = 'profile-post visible';
+    newPost.innerHTML = `
+      <div class="post-header">
+        <div class="profile-post-title">${title}</div>
+        <div class="post-author">автор: <a href="${link}">${author}</a></div>
+      </div>
+      <div class="profile-post-body">${body}</div>
+      <div class="post-actions">
+        <button class="like-button" onclick="toggleLike(this)">♡ Подобається <span class="like-count">0</span></button>
+        <button class="comment-button" onclick="toggleComments(this)">💬 Коментарі <span class="comment-count">0</span></button>
+      </div>
+      <div class="comments-area">
+        <div class="comments-list"></div>
+        <div class="comment-form">
+          <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+          <button class="comment-send" onclick="addComment(this)">Відправити</button>
+        </div>
+      </div>
+      <div class="profile-post-date">Щойно</div>
+    `;
+
+    postsContainer.insertBefore(newPost, postsContainer.firstChild);
+    toggleCreateForm();
+    
+    // Очищення полів
+    document.getElementById('newPostTitle').value = '';
+    document.getElementById('newPostBody').value = '';
+  }
+
+  // Управління кнопкою "Показати ще" / "Показати менше"
+  function togglePosts() {
+    const allPosts = document.querySelectorAll('.profile-post');
+    const btn = document.getElementById('togglePostsBtn');
+
+    if (visibleCount < totalPosts) {
+      visibleCount += 10;
+      if (visibleCount >= totalPosts) {
+        visibleCount = totalPosts;
+        btn.innerText = 'Показати менше';
+      } else {
+        btn.innerText = 'Показати ще';
+      }
+    } else {
+      visibleCount = 3;
+      btn.innerText = 'Показати ще';
+    }
+
+    allPosts.forEach((post, index) => {
+      if (index < visibleCount) {
+        post.classList.add('visible');
+      } else {
+        post.classList.remove('visible');
+      }
+    });
+  }
+
+  // Скрипти лайків та коментарів
+  function toggleLike(btn) {
+    const countSpan = btn.querySelector('.like-count');
+    let count = parseInt(countSpan.innerText);
+    if (btn.classList.contains('liked')) {
+      count--;
+      btn.innerHTML = `♡ Подобається <span class="like-count">${count}</span>`;
+      btn.classList.remove('liked');
+    } else {
+      count++;
+      btn.innerHTML = `❤️ Подобається <span class="like-count">${count}</span>`;
+      btn.classList.add('liked');
+    }
+  }
+
+  function toggleComments(btn) {
+    const post = btn.closest('.profile-post');
+    const area = post.querySelector('.comments-area');
+    area.style.display = area.style.display === 'block' ? 'none' : 'block';
+  }
+
+  function addComment(btn) {
+    const post = btn.closest('.profile-post');
+    const input = post.querySelector('.comment-input');
+    const list = post.querySelector('.comments-list');
+    const countSpan = post.querySelector('.comment-count');
+
+    if (input.value.trim() !== '') {
+      const comment = document.createElement('div');
+      comment.style.margin = '5px 0';
+      comment.style.padding = '5px';
+      comment.style.background = '#f0f0f0';
+      comment.style.borderRadius = '4px';
+      comment.innerText = input.value;
+      
+      list.appendChild(comment);
+      input.value = '';
+      
+      let count = parseInt(countSpan.innerText);
+      countSpan.innerText = count + 1;
+    }
+  }
+
+  // Ініціалізація при завантаженні
+  generatePosts();
+</script>
+
+</body>
+</html>
