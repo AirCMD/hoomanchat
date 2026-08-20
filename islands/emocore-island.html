@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Hoomanchat</title>
   <style>
-    /* Оригінальні стилі вашого шаблону збережено повністю */
+    /* Оригінальні стилі збережено повністю */
     body {
       font-family: sans-serif;
       background-color: #f4f4f4;
@@ -29,14 +29,14 @@
       height: fit-content;
     }
     
-    /* Допис */
+    /* Блок допису */
     .profile-post {
       background: #fff;
       padding: 15px;
       border-radius: 8px;
       margin-bottom: 15px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      display: none; /* Для логіки показати ще */
+      display: none;
     }
     .profile-post.visible {
       display: block;
@@ -125,10 +125,10 @@
 
 <div class="layout-container">
   
-  <!-- Основна стрічка -->
+  <!-- Центральна стрічка -->
   <div class="main-content">
     
-    <!-- Форма створення публікації (розгортається за кнопкою) -->
+    <!-- Форма створення публікації -->
     <div id="createPostForm" class="create-post-form">
       <textarea id="newPostBody" placeholder="Напишіть текст публікації..."></textarea>
       <button onclick="submitPost()">Опублікувати</button>
@@ -141,7 +141,7 @@
     <button id="togglePostsBtn" class="pagination-btn" onclick="togglePosts()">показати ще</button>
   </div>
 
-  <!-- Права колонка з оновленим текстом -->
+  <!-- Права колонка -->
   <div class="sidebar">
     <div style="font-weight: bold; font-size: 1.1em; margin-bottom: 5px;">Правила острова</div>
     <div style="font-weight: normal; margin-bottom: 10px;">зарезервовано</div>
@@ -160,7 +160,7 @@
   const totalPosts = 50;
   const postsContainer = document.getElementById('postsContainer');
 
-  // Генерація 50 дописів під ваш вихідний шаблон
+  // Генерація 50 дописів
   function generatePosts() {
     for (let i = 1; i <= totalPosts; i++) {
       const post = document.createElement('div');
@@ -189,13 +189,13 @@
     }
   }
 
-  // Перемикання видимості форми створення публікації
+  // Перемикання відображення форми
   function toggleCreateForm() {
     const form = document.getElementById('createPostForm');
     form.style.display = form.style.display === 'block' ? 'none' : 'block';
   }
 
-  // Додавання допису без збереження в пам'ять браузера (зникає при F5)
+  // Створення публікації (зникає при F5)
   function submitPost() {
     const bodyText = document.getElementById('newPostBody').value.trim();
     if (!bodyText) return;
@@ -227,7 +227,7 @@
     toggleCreateForm();
   }
 
-  // Логіка пагінації "показати ще" / "показати менше"
+  // Пагінація
   function togglePosts() {
     const allPosts = postsContainer.querySelectorAll('.profile-post');
     const btn = document.getElementById('togglePostsBtn');
@@ -254,7 +254,7 @@
     });
   }
 
-  // Оригінальні функції лайків та коментарів
+  // Лайки та коментарі
   function toggleLike(btn) {
     const countSpan = btn.querySelector('.like-count');
     let count = parseInt(countSpan.innerText);
@@ -297,7 +297,7 @@
     }
   }
 
-  // Старт генерації
+  // Ініціалізація
   generatePosts();
 </script>
 
