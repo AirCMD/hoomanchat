@@ -14,7 +14,7 @@ html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-se
 <div class="site-layout">
 <div class="site-left"><div class="left-box">
 <div class="site-name">ОСТРІВ: EMOCORE</div>
-<img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEiuabvbaBGsGrJJ19QSN16e0aNBAomJuxsmt18bQb9bQdy02xcQc1JhhrVHHNrUPC7UjvAPKjNsNjBimVcj2BPI8K54rV3qDu3AYMsTWE1BTwz79hkE7p4I11Ovf1S3xQq-S0LYSmu_0xgwVrmnp6xE8IZCtSiG33out7Vc_Am_7JBTL5qzSsiKgSgNk-w" alt="fray_dog">
+<img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEiuabvbaBGsGrJJ19QSN16e0aNBAomJuxsmt18bQb9bQdy02xcQc1JhhrVHHNrUPC7UjvAPKjNsNjBimVcj2BPI8K54rV3qDu3AYMsTWE1BTwz79hkE7p4I11Ovf1S3xQq-S0LYSmu_0xgwVrmnp6xE8IZCtSiG33out7Vc_Am_7JBTL5qzSsiKgSgNk-w" alt="emocore_island">
 <a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
 <div class="nav-menu">
 <a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
@@ -45,7 +45,7 @@ html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-se
   <button id="submit-post-btn" class="comment-send" style="margin-top:5px;">Опублікувати</button>
 </div>
 
-<div id="fray-posts"></div>
+<div id="emocore-posts"></div>
 
 <div id="show-more-posts" class="show-more">показати ще...</div>
 <div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
@@ -56,16 +56,16 @@ html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-se
 <script>
 (function(){
 const initialPostsData = [
-  {title: "Сьогодні мені захотілося погратися з трекером.", body: "Мені вдалося зняти нашийник щоб краще погратися з ним.", likes: 521, date: "22 червня", comments: [{name: "fray_dog", text: "Нажаль, дописів з трекера більше не буде."}, {name: "fray_dog", text: "Фрая знищила нашийник та трекер."}]},
-  {title: "Схоже, сьогодні гумени не хочуть проводити зі мною час.", body: "Вони зачинилися на кухні і щось обговорюють.", likes: 2, date: "20 червня", comments: [{name: "fray_dog", text: "Ніхто собаку віддавати не збирається. Не пишіть в арчат."}, {name: "fray_dog", text: "Гумени дали мені їжі."}, {name: "fray_dog", text: "Це все прикольно. Але це не те."}]},
-  {title: "Сьогодні я помстилась гуменам!", body: "Залишила смердючий подарунок під ковдрою, де вони сплять та надзюрила на подушку.", likes: 1982, date: "17 червня", comments: [{name: "fray_dog", text: "Мені не подобається ваша реакція, це не гарно."}]},
-  {title: "Я знайшла нову улюблену іграшку.", body: "Але гумени мене впіймали та повезли до вета. Я не люблю ветів, бо вони роблять уколи.", likes: 79, date: "15 червня", comments: [{name: "fray_dog", text: "Я дуже довго дзявкала на вета та не давалась йому! Але він мене відволік."}, {name: "fray_dog", text: "Мене забрали додому, але я вже не захотіла їжі. Мене образили мої гумени."}]},
-  {title: "Сьогодні я гуляю в парку з іншими собаками.", body: "Ми інформативно обмінялися повідомленнями з дотриманням собачого етикету. Але мені не сподобався запах долматинця і тому я почала дзявкати, долматинець втік.", likes: 44, date: "13 червня", comments: [{name: "fray_dog", text: "Малінуа дуже поважна собака, з нею ми дружньо провели час."}, {name: "fray_dog", text: "Але після малінуа я обрала вівчарика. Вівчар мій найліпший друг."}, {name: "fray_dog", text: "Увагу вівчарика забрала кокер спаніель, тому я пішла досліджувати їжу гуменів, яка сиділа на лавочці. Там була досить смачна сосиска, але довелося бігти."}]},
-  {title: "Мені не подобається сміх гуменів.", body: "Вони дзявкають! Але я не дзявкаю, я дзявкаю!", likes: 77, date: "12 червня", comments: [{name: "yurii_ichigo", text: "Це реально смішно) Як це собака вас ще там не покусала?)"}, {name: "fray_dog", text: "Фрая спочатку дзявкала люто та сердито, розізлилася та й пішла."}]},
-  {title: "Мені придбали нову іграшку.", body: "Але вона мені не подобається. Я хочу стару! Я дзявкатиму допоки мені її не повернуть назад!", likes: 57, date: "9 червня", comments: [{name: "fray_dog", text: "Дзяв!"}]},
-  {title: "Розірвала подушку на ліжку, покарали :(", body: "Гумени забрали мою улюблену їжу.", likes: 3, date: "8 червня", comments: [{name: "yurii_ichigo", text: "Собака сама навчилась писати? Я чогось не розумію, що тут відбувається?"}, {name: "fray_dog", text: "Трекер з камерою. Він має вбудовану функцію відслідковувати місцерозташування та на основі дій робити дописи."}]},
-  {title: "Чекаю їжі...", body: "Маніпулюю своїми великими чарівними очима. Гумени обов'язково дадуть мені смаківничка.", likes: 4, date: "5 червня", comments: [{name: "fray_dog", text: "Дзявкнула на гумена."}, {name: "fray_dog", text: "Тільки хотіла дзявкнути, нарешті погодували."}]},
-  {title: "Гуляю біля річки.", body: "Тут стільки цікавих нових запахів, але я не змогла встояти перед можливістю пострибати у річці. Полювала та дзявкала на мушлю? Власники на мене накричали через те що я трішки водичкою їх зачепила.", likes: 87, date: "3 червня", comments: [{name: "fray_dog", text: "Подзявкала на сусідів трішки."}, {name: "fray_dog", text: "Та на дітей дзявкнула."}]},
+  {title: "Сьогодні мені захотілося погратися з трекером.", body: "Мені вдалося зняти нашийник щоб краще погратися з ним.", likes: 521, date: "22 червня", comments: [{name: "emocore_island", text: "Нажаль, дописів з трекера більше не буде."}, {name: "emocore_island", text: "Фрая знищила нашийник та трекер."}]},
+  {title: "Схоже, сьогодні гумени не хочуть проводити зі мною час.", body: "Вони зачинилися на кухні і щось обговорюють.", likes: 2, date: "20 червня", comments: [{name: "emocore_island", text: "Ніхто собаку віддавати не збирається. Не пишіть в арчат."}, {name: "emocore_island", text: "Гумени дали мені їжі."}, {name: "emocore_island", text: "Це все прикольно. Але це не те."}]},
+  {title: "Сьогодні я помстилась гуменам!", body: "Залишила смердючий подарунок під ковдрою, де вони сплять та надзюрила на подушку.", likes: 1982, date: "17 червня", comments: [{name: "emocore_island", text: "Мені не подобається ваша реакція, це не гарно."}]},
+  {title: "Я знайшла нову улюблену іграшку.", body: "Але гумени мене впіймали та повезли до вета. Я не люблю ветів, бо вони роблять уколи.", likes: 79, date: "15 червня", comments: [{name: "emocore_island", text: "Я дуже довго дзявкала на вета та не давалась йому! Але він мене відволік."}, {name: "emocore_island", text: "Мене забрали додому, але я вже не захотіла їжі. Мене образили мої гумени."}]},
+  {title: "Сьогодні я гуляю в парку з іншими собаками.", body: "Ми інформативно обмінялися повідомленнями з дотриманням собачого етикету. Але мені не сподобався запах долматинця і тому я почала дзявкати, долматинець втік.", likes: 44, date: "13 червня", comments: [{name: "emocore_island", text: "Малінуа дуже поважна собака, з нею ми дружньо провели час."}, {name: "emocore_island", text: "Але після малінуа я обрала вівчарика. Вівчар мій найліпший друг."}, {name: "emocore_island", text: "Увагу вівчарика забрала кокер спаніель, тому я пішла досліджувати їжу гуменів, яка сиділа на лавочці. Там була досить смачна сосиска, але довелося бігти."}]},
+  {title: "Мені не подобається сміх гуменів.", body: "Вони дзявкають! Але я не дзявкаю, я дзявкаю!", likes: 77, date: "12 червня", comments: [{name: "yurii_ichigo", text: "Це реально смішно) Як це собака вас ще там не покусала?)"}, {name: "emocore_island", text: "Фрая спочатку дзявкала люто та сердито, розізлилася та й пішла."}]},
+  {title: "Мені придбали нову іграшку.", body: "Але вона мені не подобається. Я хочу стару! Я дзявкатиму допоки мені її не повернуть назад!", likes: 57, date: "9 червня", comments: [{name: "emocore_island", text: "Дзяв!"}]},
+  {title: "Розірвала подушку на ліжку, покарали :(", body: "Гумени забрали мою улюблену їжу.", likes: 3, date: "8 червня", comments: [{name: "yurii_ichigo", text: "Собака сама навчилась писати? Я чогось не розумію, що тут відбувається?"}, {name: "emocore_island", text: "Трекер з камерою. Він має вбудовану функцію відслідковувати місцерозташування та на основі дій робити дописи."}]},
+  {title: "Чекаю їжі...", body: "Маніпулюю своїми великими чарівними очима. Гумени обов'язково дадуть мені смаківничка.", likes: 4, date: "5 червня", comments: [{name: "emocore_island", text: "Дзявкнула на гумена."}, {name: "emocore_island", text: "Тільки хотіла дзявкнути, нарешті погодували."}]},
+  {title: "Гуляю біля річки.", body: "Тут стільки цікавих нових запахів, але я не змогла встояти перед можливістю пострибати у річці. Полювала та дзявкала на мушлю? Власники на мене накричали через те що я трішки водичкою їх зачепила.", likes: 87, date: "3 червня", comments: [{name: "emocore_island", text: "Подзявкала на сусідів трішки."}, {name: "emocore_island", text: "Та на дітей дзявкнула."}]},
   {title: "Заголовок допису #11", body: "Текст допису #11", likes: 10, date: "1 червня", comments: []},
   {title: "Заголовок допису #12", body: "Текст допису #12", likes: 15, date: "30 травня", comments: []},
   {title: "Заголовок допису #13", body: "Текст допису #13", likes: 8, date: "29 травня", comments: []},
@@ -105,10 +105,10 @@ const initialPostsData = [
   {title: "Заголовок допису #47", body: "Текст допису #47", likes: 38, date: "6 квітня", comments: []},
   {title: "Заголовок допису #48", body: "Текст допису #48", likes: 5, date: "5 квітня", comments: []},
   {title: "Заголовок допису #49", body: "Текст допису #49", likes: 16, date: "3 квітня", comments: []},
-  {title: "Заголовок допису #50", body: "Текст допису #50", likes: 27, date: "1 квітня", comments: []}
+  {title: "Створила острів emocore.", body: "Починайте писати про себе. Мене звати Настя <a href="https://aircmd.github.io/hoomanchat/profiles/nasty-emogirl.html"> чекаю на вас тут.", likes: 521, date: "22 червня", comments: [{name: "terry_rex", text: "Настя, давай стусни мутити?"}, {name: "nasty_emogirl", text: "Обома руками ЗА!"}]}
 ];
 
-const container = document.getElementById('fray-posts');
+const container = document.getElementById('emocore-posts');
 
 function createPostElement(title, body, likes, date, comments = []) {
   const post = document.createElement('div');
@@ -122,7 +122,7 @@ function createPostElement(title, body, likes, date, comments = []) {
   post.innerHTML = `
     <div class="profile-post-title">
       <span>${title}</span>
-      <span class="post-author-link">автор: <a href="fray-dog.html">fray_dog</a></span>
+      <span class="post-author-link">автор: <a href="emocore-island.html">emocore_island</a></span>
     </div>
     <div class="profile-post-body">${body}</div>
     <div class="post-actions">
