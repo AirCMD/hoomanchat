@@ -804,68 +804,90 @@ body {
 
 
 /* =========================================================
-   IMAGE VIEWER
+   IMAGE VIEWER — СПРАВЖНЄ ОКРЕМЕ ВІКНО ПОВЕРХ СТОРІНКИ
    ========================================================= */
 
-#hoomenchat-messages-page .image-viewer {
-  display: none;
+#hoomenchat-messages-page .image-viewer,
+body > .image-viewer {
+  display: none !important;
 
-  position: fixed;
+  position: fixed !important;
 
-  left: 0;
-  top: 0;
+  left: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
 
-  width: 100%;
-  height: 100%;
+  width: 100vw !important;
+  height: 100vh !important;
 
-  z-index: 999999;
+  margin: 0 !important;
+  padding: 20px !important;
 
-  background:
-    rgba(0,0,0,0.75);
+  background: rgba(0,0,0,0.80) !important;
 
-  align-items: center;
+  z-index: 2147483647 !important;
 
-  justify-content: center;
-
-  padding: 20px;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-#hoomenchat-messages-page .image-viewer.open {
-  display: flex;
+#hoomenchat-messages-page .image-viewer.open,
+body > .image-viewer.open {
+  display: flex !important;
 }
 
-#hoomenchat-messages-page .image-viewer img {
-  display: block;
+#hoomenchat-messages-page .image-viewer img,
+body > .image-viewer img {
+  display: block !important;
 
-  max-width: 95vw;
+  max-width: 92vw !important;
+  max-height: 88vh !important;
 
-  max-height: 90vh;
+  width: auto !important;
+  height: auto !important;
 
-  width: auto;
+  object-fit: contain !important;
 
-  height: auto;
+  background: #fff !important;
 
-  background: #fff;
+  border: 1px solid #fff !important;
 
-  border: 1px solid #fff;
+  box-shadow:
+    0 4px 20px rgba(0,0,0,0.50) !important;
 }
 
-#hoomenchat-messages-page .image-viewer-close {
-  position: fixed;
+#hoomenchat-messages-page .image-viewer-close,
+body > .image-viewer .image-viewer-close {
+  position: fixed !important;
 
-  top: 10px;
+  top: 12px !important;
+  right: 15px !important;
 
-  right: 15px;
+  width: 32px !important;
+  height: 32px !important;
 
-  color: #fff;
+  color: #fff !important;
 
-  font-size: 24px;
+  background: rgba(0,0,0,0.35) !important;
 
-  line-height: 24px;
+  border: 1px solid rgba(255,255,255,0.8) !important;
 
-  font-weight: bold;
+  font-size: 22px !important;
+  line-height: 30px !important;
 
-  cursor: pointer;
+  font-weight: bold !important;
+
+  text-align: center !important;
+
+  cursor: pointer !important;
+
+  z-index: 2147483647 !important;
+}
+
+#hoomenchat-messages-page .image-viewer-close:hover,
+body > .image-viewer .image-viewer-close:hover {
+  background: rgba(0,0,0,0.65) !important;
 }
 
 
@@ -5672,7 +5694,6 @@ function openImageViewer(
       "image-viewer"
     );
 
-
   var image =
     get(
       "image-viewer-image"
@@ -5681,7 +5702,8 @@ function openImageViewer(
 
   if (
     !viewer ||
-    !image
+    !image ||
+    !url
   ) {
 
     return;
@@ -5689,18 +5711,68 @@ function openImageViewer(
   }
 
 
+  /*
+   * Виносимо viewer безпосередньо
+   * в body, щоб він гарантовано
+   * був поверх усієї сторінки.
+   */
+
+  if (
+    viewer.parentNode !==
+    document.body
+  ) {
+
+    document.body.appendChild(
+      viewer
+    );
+
+  }
+
+
+  viewer.style.position =
+    "fixed";
+
+  viewer.style.left =
+    "0";
+
+  viewer.style.top =
+    "0";
+
+  viewer.style.right =
+    "0";
+
+  viewer.style.bottom =
+    "0";
+
+  viewer.style.width =
+    "100vw";
+
+  viewer.style.height =
+    "100vh";
+
+  viewer.style.zIndex =
+    "2147483647";
+
+
   image.src =
     url;
 
-
   image.alt =
-    alt ||
-    "";
+    alt || "";
 
 
   viewer.classList.add(
     "open"
   );
+
+
+  /*
+   * Забороняємо прокрутку
+   * основної сторінки.
+   */
+
+  document.body.style.overflow =
+    "hidden";
 
 }
 
@@ -5711,7 +5783,6 @@ function closeImageViewer() {
     get(
       "image-viewer"
     );
-
 
   var image =
     get(
@@ -5736,7 +5807,18 @@ function closeImageViewer() {
     image.src =
       "";
 
+    image.alt =
+      "";
+
   }
+
+
+  /*
+   * Повертаємо прокрутку сторінки.
+   */
+
+  document.body.style.overflow =
+    "";
 
 }
 
@@ -5755,31 +5837,39 @@ function setupImageViewer() {
     );
 
 
-  if (close) {
+  if (!viewer) {
 
-    close.addEventListener(
-      "click",
-      closeImageViewer
+    return;
+
+  }
+
+
+  /*
+   * Виносимо viewer у body
+   * одразу після завантаження.
+   */
+
+  if (
+    viewer.parentNode !==
+    document.body
+  ) {
+
+    document.body.appendChild(
+      viewer
     );
 
   }
 
 
-  if (viewer) {
+  if (close) {
 
-    viewer.addEventListener(
+    close.addEventListener(
       "click",
       function(event) {
 
+        event.stopPropagation();
 
-        if (
-          event.target ===
-          viewer
-        ) {
-
-          closeImageViewer();
-
-        }
+        closeImageViewer();
 
       }
     );
@@ -5787,10 +5877,35 @@ function setupImageViewer() {
   }
 
 
+  /*
+   * Клік по темному фону
+   * закриває переглядач.
+   */
+
+  viewer.addEventListener(
+    "click",
+    function(event) {
+
+      if (
+        event.target ===
+        viewer
+      ) {
+
+        closeImageViewer();
+
+      }
+
+    }
+  );
+
+
+  /*
+   * Esc — закрити.
+   */
+
   document.addEventListener(
     "keydown",
     function(event) {
-
 
       if (
         event.key ===
@@ -5805,7 +5920,6 @@ function setupImageViewer() {
   );
 
 }
-
 
 /* =========================================================
    ЗАПУСК
