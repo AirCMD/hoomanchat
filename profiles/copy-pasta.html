@@ -600,6 +600,238 @@ html,body{
   background:#ddd;
   border:1px solid #aaa
 }
+ .profile-post-image{
+  display:block;
+  width:100%;
+  max-height:500px;
+  margin:6px 0 0;
+  object-fit:contain;
+  background:#ddd;
+  border:1px solid #aaa;
+  cursor:pointer
+}
+
+/* =========================================================
+   НОВИЙ ДОПИС — КНОПКА ТА ФОРМА
+   ========================================================= */
+
+.create-post-launcher{
+  display:block;
+  width:100%;
+  margin:0 0 8px;
+  padding:5px 7px;
+  background:#f0f0f0;
+  border:1px solid #999;
+  color:#444;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:10px;
+  line-height:13px;
+  font-weight:bold;
+  text-align:center;
+  text-decoration:underline;
+  cursor:pointer
+}
+
+.create-post-launcher:hover{
+  background:#e1e1e1;
+  color:#000
+}
+
+.create-post-box.collapsed{
+  display:none
+}
+
+.create-post-file-note{
+  margin:2px 0 5px;
+  color:#777;
+  font-size:9px;
+  line-height:12px
+}
+
+.create-post-previews{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:5px;
+  margin:5px 0
+}
+
+.create-post-preview-frame{
+  position:relative;
+  min-width:0;
+  padding:4px;
+  background:#f5f5f5;
+  border:1px solid #aaa
+}
+
+.create-post-preview-image{
+  display:block;
+  width:100%;
+  height:110px;
+  object-fit:cover;
+  background:#ddd;
+  border:1px solid #999;
+  cursor:pointer
+}
+
+.create-post-preview-remove{
+  position:absolute;
+  top:7px;
+  right:7px;
+  width:20px;
+  height:20px;
+  padding:0;
+  background:rgba(255,255,255,.92);
+  border:1px solid #888;
+  color:#222;
+  font-size:12px;
+  line-height:18px;
+  font-weight:bold;
+  text-align:center;
+  cursor:pointer
+}
+
+.create-post-preview-remove:hover{
+  background:#ddd;
+  color:#000
+}
+
+.create-post-preview-name{
+  margin-top:3px;
+  color:#555;
+  font-size:8px;
+  line-height:10px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap
+}
+
+.post-images-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:5px;
+  margin-top:6px
+}
+
+.post-image-frame{
+  min-width:0;
+  padding:4px;
+  background:#f5f5f5;
+  border:1px solid #aaa
+}
+
+.post-image-frame .profile-post-image{
+  width:100%;
+  height:180px;
+  max-height:none;
+  margin:0;
+  object-fit:cover;
+  background:#ddd;
+  border:1px solid #999
+}
+
+.image-viewer{
+  display:none;
+  position:fixed;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.78);
+  z-index:999999;
+  align-items:center;
+  justify-content:center;
+  padding:40px 70px
+}
+
+.image-viewer.open{
+  display:flex
+}
+
+.image-viewer-image{
+  display:block;
+  max-width:92vw;
+  max-height:88vh;
+  width:auto;
+  height:auto;
+  object-fit:contain;
+  background:#fff;
+  border:1px solid #fff;
+  box-shadow:0 2px 10px rgba(0,0,0,.45)
+}
+
+.image-viewer-close,
+.image-viewer-prev,
+.image-viewer-next{
+  position:fixed;
+  z-index:2;
+  color:#fff;
+  background:rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.75);
+  cursor:pointer;
+  user-select:none
+}
+
+.image-viewer-close{
+  top:12px;
+  right:15px;
+  width:30px;
+  height:30px;
+  font-size:20px;
+  line-height:28px;
+  text-align:center
+}
+
+.image-viewer-prev,
+.image-viewer-next{
+  top:50%;
+  transform:translateY(-50%);
+  width:38px;
+  height:46px;
+  font-size:24px;
+  line-height:42px;
+  text-align:center
+}
+
+.image-viewer-prev{
+  left:18px
+}
+
+.image-viewer-next{
+  right:18px
+}
+
+.image-viewer-close:hover,
+.image-viewer-prev:hover,
+.image-viewer-next:hover{
+  background:rgba(0,0,0,.60)
+}
+
+@media(max-width:600px){
+  .create-post-previews,
+  .post-images-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))
+  }
+
+  .create-post-preview-image{
+    height:95px
+  }
+
+  .post-image-frame .profile-post-image{
+    height:150px
+  }
+
+  .image-viewer{
+    padding:40px 48px
+  }
+
+  .image-viewer-prev{
+    left:8px
+  }
+
+  .image-viewer-next{
+    right:8px
+  }
+}
 
 </style>
 </head>
@@ -754,46 +986,61 @@ href="#"
 Дописи copy_pasta — 25
 </div>
 
-<div class="create-post-box">
+<button
+  class="create-post-launcher"
+  id="new-post-launcher"
+  type="button"
+>
+  ＋ Новий допис
+</button>
+
+
+<div class="create-post-box collapsed" id="create-post-box">
 
 <div class="create-post-title">
-Створити допис
+  Створити допис
 </div>
 
 <input
-class="create-post-input"
-id="new-post-title"
-type="text"
-maxlength="200"
-placeholder="Заголовок допису..."
+  class="create-post-input"
+  id="new-post-title"
+  type="text"
+  maxlength="200"
+  placeholder="Заголовок допису..."
 >
 
 <textarea
-class="create-post-input create-post-text"
-id="new-post-text"
-placeholder="Текст допису..."
+  class="create-post-input create-post-text"
+  id="new-post-text"
+  placeholder="Текст допису..."
 ></textarea>
 
 <input
-class="create-post-file"
-id="new-post-image"
-type="file"
-accept="image/*"
+  class="create-post-file"
+  id="new-post-images"
+  type="file"
+  accept="image/jpeg,image/png,image/gif,image/webp"
+  multiple
 >
 
-<img
-class="create-post-preview"
-id="new-post-preview"
-alt="Попередній перегляд"
->
+<div class="create-post-file-note">
+  Можна додати кілька зображень. Максимальний розмір одного зображення — 10 МБ.
+</div>
+
+<div
+  class="create-post-previews"
+  id="new-post-previews"
+></div>
 
 <div class="create-post-actions">
-<button class="create-post-button" id="publish-post" type="button">Опублікувати</button>
+  <button class="create-post-button" id="publish-post" type="button">Опублікувати</button>
+  <button class="create-post-button" id="cancel-new-post" type="button">Скасувати</button>
 </div>
 
 <div class="create-post-error" id="create-post-error"></div>
 
 </div>
+
 
 
 <div id="copy-posts">
@@ -1583,6 +1830,48 @@ alt="Попередній перегляд"
 </div>
 
 
+<div
+  class="image-viewer"
+  id="post-image-viewer"
+>
+
+<button
+  class="image-viewer-close"
+  id="post-image-viewer-close"
+  type="button"
+  aria-label="Закрити"
+>
+  ✕
+</button>
+
+<button
+  class="image-viewer-prev"
+  id="post-image-viewer-prev"
+  type="button"
+  aria-label="Попереднє зображення"
+>
+  ‹
+</button>
+
+<img
+  class="image-viewer-image"
+  id="post-image-viewer-image"
+  src=""
+  alt="Зображення допису"
+>
+
+<button
+  class="image-viewer-next"
+  id="post-image-viewer-next"
+  type="button"
+  aria-label="Наступне зображення"
+>
+  ›
+</button>
+
+</div>
+
+
 <div class="footer-line">
 Гуменчат — місце для гуменів.
 </div>
@@ -1812,57 +2101,165 @@ sendButtons.forEach(function(button){
    СТВОРЕННЯ ТИМЧАСОВОГО ДОПИСУ
    ===================================================== */
 
+var newPostLauncher=document.getElementById("new-post-launcher");
+var createPostBox=document.getElementById("create-post-box");
 var newPostTitle=document.getElementById("new-post-title");
 var newPostText=document.getElementById("new-post-text");
-var newPostImage=document.getElementById("new-post-image");
-var newPostPreview=document.getElementById("new-post-preview");
+var newPostImages=document.getElementById("new-post-images");
+var newPostPreviews=document.getElementById("new-post-previews");
 var publishPost=document.getElementById("publish-post");
+var cancelNewPost=document.getElementById("cancel-new-post");
 var createPostError=document.getElementById("create-post-error");
 var copyPosts=document.getElementById("copy-posts");
 
-newPostImage.addEventListener("change",function(){
-  var file=newPostImage.files[0];
+var selectedPostImages=[];
+var MAX_POST_IMAGE_SIZE=10*1024*1024;
+var ALLOWED_POST_IMAGE_TYPES={
+  "image/jpeg":true,
+  "image/png":true,
+  "image/gif":true,
+  "image/webp":true
+};
 
-  if(!file){
-    newPostPreview.removeAttribute("src");
-    newPostPreview.className="create-post-preview";
-    return;
-  }
-
-  if(!file.type.match(/^image\//)){
-    newPostImage.value="";
-    newPostPreview.removeAttribute("src");
-    newPostPreview.className="create-post-preview";
-    createPostError.textContent="Можна прикріпити лише зображення.";
+function showCreatePostError(text){
+  createPostError.textContent=text||"";
+  if(text){
     createPostError.className="create-post-error open";
-    return;
-  }
-
-  var reader=new FileReader();
-
-  reader.onload=function(event){
-    newPostPreview.src=event.target.result;
-    newPostPreview.className="create-post-preview open";
+  }else{
     createPostError.className="create-post-error";
-  };
+  }
+}
 
-  reader.readAsDataURL(file);
-});
+function resetCreatePostForm(){
+  selectedPostImages.forEach(function(item){
+    if(item.url && item.url.indexOf("blob:")===0){
+      try{ URL.revokeObjectURL(item.url); }catch(error){}
+    }
+  });
 
-publishPost.addEventListener("click",function(){
-  var title=newPostTitle.value.trim();
-  var text=newPostText.value.trim();
-  var file=newPostImage.files[0];
+  selectedPostImages=[];
+  newPostTitle.value="";
+  newPostText.value="";
+  newPostImages.value="";
+  newPostPreviews.innerHTML="";
+  showCreatePostError("");
+}
 
-  createPostError.className="create-post-error";
+function renderCreatePostPreviews(){
+  newPostPreviews.innerHTML="";
 
-  if(!title || !text){
-    createPostError.textContent="Заповни заголовок та текст допису.";
-    createPostError.className="create-post-error open";
+  selectedPostImages.forEach(function(item,index){
+    var frame=document.createElement("div");
+    frame.className="create-post-preview-frame";
+
+    var image=document.createElement("img");
+    image.className="create-post-preview-image";
+    image.src=item.url;
+    image.alt=item.name;
+    image.title="Натисни, щоб переглянути";
+
+    image.addEventListener("click",function(){
+      openPostImageViewer(selectedPostImages.map(function(x){return x.url;}),index);
+    });
+
+    var remove=document.createElement("button");
+    remove.type="button";
+    remove.className="create-post-preview-remove";
+    remove.textContent="✕";
+    remove.title="Прибрати зображення";
+
+    remove.addEventListener("click",function(){
+      var removed=selectedPostImages[index];
+      if(removed && removed.url.indexOf("blob:")===0){
+        try{ URL.revokeObjectURL(removed.url); }catch(error){}
+      }
+      selectedPostImages.splice(index,1);
+      renderCreatePostPreviews();
+    });
+
+    var name=document.createElement("div");
+    name.className="create-post-preview-name";
+    name.textContent=item.name;
+
+    frame.appendChild(image);
+    frame.appendChild(remove);
+    frame.appendChild(name);
+    newPostPreviews.appendChild(frame);
+  });
+}
+
+function addPostImages(fileList){
+  showCreatePostError("");
+
+  if(!fileList){
     return;
   }
 
-  function publish(imageData){
+  Array.prototype.forEach.call(fileList,function(file){
+    if(!file){
+      return;
+    }
+
+    if(!ALLOWED_POST_IMAGE_TYPES[file.type]){
+      showCreatePostError("Дозволені лише JPG, PNG, GIF та WebP.");
+      return;
+    }
+
+    if(file.size>MAX_POST_IMAGE_SIZE){
+      showCreatePostError("Зображення «"+file.name+"» завелике. Максимальний розмір одного зображення — 10 МБ.");
+      return;
+    }
+
+    var url=URL.createObjectURL(file);
+
+    selectedPostImages.push({
+      name:file.name,
+      url:url,
+      type:file.type,
+      size:file.size
+    });
+  });
+
+  renderCreatePostPreviews();
+}
+
+if(newPostLauncher){
+  newPostLauncher.addEventListener("click",function(){
+    createPostBox.classList.toggle("collapsed");
+
+    if(!createPostBox.classList.contains("collapsed")){
+      newPostTitle.focus();
+    }
+  });
+}
+
+if(cancelNewPost){
+  cancelNewPost.addEventListener("click",function(){
+    resetCreatePostForm();
+    createPostBox.classList.add("collapsed");
+  });
+}
+
+if(newPostImages){
+  newPostImages.addEventListener("change",function(){
+    addPostImages(newPostImages.files);
+    newPostImages.value="";
+  });
+}
+
+if(publishPost){
+  publishPost.addEventListener("click",function(){
+
+    var title=newPostTitle.value.trim();
+    var text=newPostText.value.trim();
+
+    showCreatePostError("");
+
+    if(!title || !text){
+      showCreatePostError("Заповни заголовок та текст допису.");
+      return;
+    }
+
     var post=document.createElement("div");
     post.className="profile-post";
     post.style.display="block";
@@ -1875,12 +2272,33 @@ publishPost.addEventListener("click",function(){
     bodyDiv.className="profile-post-body";
     bodyDiv.textContent=text;
 
-    if(imageData){
-      var image=document.createElement("img");
-      image.className="profile-post-image";
-      image.src=imageData;
-      image.alt="Зображення до допису";
-      bodyDiv.appendChild(image);
+    if(selectedPostImages.length){
+      var gallery=document.createElement("div");
+      gallery.className="post-images-grid";
+
+      selectedPostImages.forEach(function(item,imageIndex){
+        var frame=document.createElement("div");
+        frame.className="post-image-frame";
+
+        var image=document.createElement("img");
+        image.className="profile-post-image";
+        image.src=item.url;
+        image.alt=item.name;
+        image.title="Натисни, щоб переглянути";
+
+        image.addEventListener("click",function(){
+          var urls=Array.prototype.map.call(
+            gallery.querySelectorAll(".profile-post-image"),
+            function(img){return img.src;}
+          );
+          openPostImageViewer(urls,imageIndex);
+        });
+
+        frame.appendChild(image);
+        gallery.appendChild(frame);
+      });
+
+      bodyDiv.appendChild(gallery);
     }
 
     var actionsDiv=document.createElement("div");
@@ -1905,29 +2323,10 @@ publishPost.addEventListener("click",function(){
 
     bindTemporaryPostEvents(post);
 
-    newPostTitle.value="";
-    newPostText.value="";
-    newPostImage.value="";
-    newPostPreview.removeAttribute("src");
-    newPostPreview.className="create-post-preview";
-  }
-
-  if(file){
-    if(file.size>10*1024*1024){
-      createPostError.textContent="Зображення завелике. Максимальний розмір — 10 МБ.";
-      createPostError.className="create-post-error open";
-      return;
-    }
-
-    var reader=new FileReader();
-    reader.onload=function(event){
-      publish(event.target.result);
-    };
-    reader.readAsDataURL(file);
-  }else{
-    publish("");
-  }
-});
+    resetCreatePostForm();
+    createPostBox.classList.add("collapsed");
+  });
+}
 
 function bindTemporaryPostEvents(post){
   var likeButton=post.querySelector(".like-button");
@@ -1977,6 +2376,145 @@ function bindTemporaryPostEvents(post){
     count.textContent=parseInt(count.textContent,10)+1;
   });
 }
+
+/* =====================================================
+   ПЕРЕГЛЯД ЗОБРАЖЕНЬ ДОПИСІВ
+   ===================================================== */
+
+var postImageViewer=document.getElementById("post-image-viewer");
+var postImageViewerImage=document.getElementById("post-image-viewer-image");
+var postImageViewerClose=document.getElementById("post-image-viewer-close");
+var postImageViewerPrev=document.getElementById("post-image-viewer-prev");
+var postImageViewerNext=document.getElementById("post-image-viewer-next");
+
+var viewerImages=[];
+var viewerIndex=0;
+
+function openPostImageViewer(images,index){
+  if(!postImageViewer || !postImageViewerImage || !images || !images.length){
+    return;
+  }
+
+  viewerImages=images.slice();
+  viewerIndex=Math.max(0,Math.min(index||0,viewerImages.length-1));
+
+  renderPostImageViewer();
+  postImageViewer.className="image-viewer open";
+}
+
+function renderPostImageViewer(){
+  if(!viewerImages.length){
+    return;
+  }
+
+  postImageViewerImage.src=viewerImages[viewerIndex];
+  postImageViewerImage.alt="Зображення допису";
+
+  postImageViewerPrev.style.display=viewerImages.length>1?"block":"none";
+  postImageViewerNext.style.display=viewerImages.length>1?"block":"none";
+}
+
+function closePostImageViewer(){
+  if(!postImageViewer){
+    return;
+  }
+
+  postImageViewer.className="image-viewer";
+  postImageViewerImage.removeAttribute("src");
+  viewerImages=[];
+  viewerIndex=0;
+}
+
+function showPreviousPostImage(){
+  if(viewerImages.length<2){
+    return;
+  }
+
+  viewerIndex=(viewerIndex-1+viewerImages.length)%viewerImages.length;
+  renderPostImageViewer();
+}
+
+function showNextPostImage(){
+  if(viewerImages.length<2){
+    return;
+  }
+
+  viewerIndex=(viewerIndex+1)%viewerImages.length;
+  renderPostImageViewer();
+}
+
+if(postImageViewerClose){
+  postImageViewerClose.addEventListener("click",closePostImageViewer);
+}
+
+if(postImageViewerPrev){
+  postImageViewerPrev.addEventListener("click",showPreviousPostImage);
+}
+
+if(postImageViewerNext){
+  postImageViewerNext.addEventListener("click",showNextPostImage);
+}
+
+if(postImageViewer){
+  postImageViewer.addEventListener("click",function(event){
+    if(event.target===postImageViewer){
+      closePostImageViewer();
+    }
+  });
+}
+
+document.addEventListener("keydown",function(event){
+  if(!postImageViewer || postImageViewer.className.indexOf("open")===-1){
+    return;
+  }
+
+  if(event.key==="Escape"){
+    closePostImageViewer();
+  }else if(event.key==="ArrowLeft"){
+    showPreviousPostImage();
+  }else if(event.key==="ArrowRight"){
+    showNextPostImage();
+  }
+});
+
+/* =====================================================
+   КЛІКИ ПО ВЖЕ ІСНУЮЧИХ ЗОБРАЖЕННЯХ
+   ===================================================== */
+
+function bindExistingPostImageViewers(){
+  var images=document.querySelectorAll(
+    "#copy-posts .profile-post-image"
+  );
+
+  images.forEach(function(image){
+    if(image.getAttribute("data-viewer-bound")==="1"){
+      return;
+    }
+
+    image.setAttribute("data-viewer-bound","1");
+
+    image.addEventListener("click",function(){
+      var gallery=image.closest(".post-images-grid");
+      var urls;
+
+      if(gallery){
+        urls=Array.prototype.map.call(
+          gallery.querySelectorAll(".profile-post-image"),
+          function(img){return img.src;}
+        );
+      }else{
+        urls=[image.src];
+      }
+
+      openPostImageViewer(
+        urls,
+        Math.max(0,urls.indexOf(image.src))
+      );
+    });
+  });
+}
+
+bindExistingPostImageViewers();
 
 /* =====================================================
    СТАТИСТИКА
