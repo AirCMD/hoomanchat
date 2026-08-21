@@ -6,10 +6,32 @@
 <title>Гуменчат — petro_ivanchuk</title>
 
 <style>
-html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:14px;color:#222}
-*{box-sizing:border-box}
-#hoomenchat-site{width:100%;min-height:100vh;margin:0;padding:12px;background:#fff;border:1px solid #777}
-#hoomenchat-site a{color:#444}
+html,body{
+  margin:0;
+  padding:0;
+  background:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:12px;
+  line-height:14px;
+  color:#222
+}
+
+*{
+  box-sizing:border-box
+}
+
+#hoomenchat-site{
+  width:100%;
+  min-height:100vh;
+  margin:0;
+  padding:12px;
+  background:#fff;
+  border:1px solid #777
+}
+
+#hoomenchat-site a{
+  color:#444
+}
 
 .hoomenchat-header{
   margin:0 0 10px;
@@ -82,7 +104,9 @@ html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-se
   text-transform:uppercase
 }
 
-.nav-menu{border-top:1px solid #999}
+.nav-menu{
+  border-top:1px solid #999
+}
 
 .nav-item{
   display:block;
@@ -197,7 +221,8 @@ html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-se
   background:#fafafa
 }
 
-.like-button,.comment-button{
+.like-button,
+.comment-button{
   margin:0 8px 0 0;
   padding:1px 3px;
   border:0;
@@ -219,9 +244,12 @@ html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-se
   border-top:1px solid #ddd
 }
 
-.comments-area.open{display:block}
+.comments-area.open{
+  display:block
+}
 
-.fake-comment,.user-comment{
+.fake-comment,
+.user-comment{
   margin:0 0 5px;
   padding:4px 5px;
   background:#fff;
@@ -235,7 +263,9 @@ html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-se
   font-weight:bold
 }
 
-.comment-form{margin-top:6px}
+.comment-form{
+  margin-top:6px
+}
 
 .comment-input{
   display:block;
@@ -247,7 +277,8 @@ html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-se
   font:10px/13px Arial
 }
 
-.comment-send,.show-more{
+.comment-send,
+.show-more{
   padding:3px 8px;
   background:#eee;
   border:1px solid #999;
@@ -266,9 +297,12 @@ html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-se
   text-decoration:underline
 }
 
-.show-more.hidden{display:none}
+.show-more.hidden{
+  display:none
+}
 
-.rules-box,.statistics-box{
+.rules-box,
+.statistics-box{
   margin-top:8px;
   padding:5px 8px;
   background:#fff;
@@ -307,11 +341,28 @@ html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-se
 }
 
 @media(max-width:600px){
-  #hoomenchat-site{padding:7px}
-  .site-layout{display:block}
-  .site-left,.site-right{display:block;width:100%}
-  .site-left{margin-bottom:8px}
-  .main-avatar{height:228px}
+
+  #hoomenchat-site{
+    padding:7px
+  }
+
+  .site-layout{
+    display:block
+  }
+
+  .site-left,
+  .site-right{
+    display:block;
+    width:100%
+  }
+
+  .site-left{
+    margin-bottom:8px
+  }
+
+  .main-avatar{
+    height:228px
+  }
 }
 </style>
 </head>
@@ -320,541 +371,879 @@ html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-se
 
 <div id="hoomenchat-site">
 
-<div class="hoomenchat-header">ГУМЕНЧАТ</div>
+  <div class="hoomenchat-header">
+    ГУМЕНЧАТ
+  </div>
 
-<div class="site-layout">
+  <div class="site-layout">
 
-<div class="site-left">
-<div class="left-box">
+    <!-- ЛІВА КОЛОНКА -->
+    <div class="site-left">
 
-<div class="site-name">petro_ivanchuk</div>
+      <div class="left-box">
 
-<img
-class="main-avatar"
-src="https://blogger.googleusercontent.com/img/a/AVvXsEiQE07RgtIJYMSP9hCCgXCkugQ_fj7phcge88Rx1xRGPoDGTGuLxp3cIDc8y2KYiBaIPk5SXVbSGZe2JyxM_S8XNHzMu9F5sqBvZLFusI_tqOMitTzrlSh6js_bLqdIK5vO_4eKplLRo1owwTmCHdr_m6H_ibmtJuMXTRM-rRoFz9P-6iDAgOtx_pbK0oU"
-alt="petro_ivanchuk">
+        <div class="site-name">
+          petro_ivanchuk
+        </div>
 
-<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+        <img
+          class="main-avatar"
+          src="https://blogger.googleusercontent.com/img/a/AVvXsEiQE07RgtIJYMSP9hCCgXCkugQ_fj7phcge88Rx1xRGPoDGTGuLxp3cIDc8y2KYiBaIPk5SXVbSGZe2JyxM_S8XNHzMu9F5sqBvZLFusI_tqOMitTzrlSh6js_bLqdIK5vO_4eKplLRo1owwTmCHdr_m6H_ibmtJuMXTRM-rRoFz9P-6iDAgOtx_pbK0oU"
+          alt="petro_ivanchuk"
+        >
 
-<div class="nav-menu">
-<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
-<a class="nav-item" href="../profiles.html">Гумени</a>
-<a class="nav-item" href="../droomens.html">Друмени</a>
-<a class="nav-item" href="../activity.html">Стрічерчат</a>
-<a class="nav-item" href="../islands.html">Острови</a>
-<a class="nav-item" href="../rules.html">Правила</a>
-</div>
+        <a class="archat-button" href="../archive.html">
+          📩 АРЧАТ
+        </a>
 
-<div class="account-box">
-<div class="account-text">Немає гумгайла?</div>
-<a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
-<a class="account-link" href="../login.html">ВХІД</a>
-</div>
+        <div class="nav-menu">
 
-</div>
-</div>
+          <a class="nav-item" href="../profiles/copy-pasta.html">
+            Мій гумгайл
+          </a>
 
+          <a class="nav-item" href="../profiles.html">
+            Гумени
+          </a>
 
-<div class="site-right">
+          <a class="nav-item" href="../droomens.html">
+            Друмени
+          </a>
 
-<div class="profile-box">
+          <a class="nav-item" href="../activity.html">
+            Стрічерчат
+          </a>
 
-<div class="profile-header">
-Профіль гумена: petro_ivanchuk
-</div>
+          <a class="nav-item" href="../islands.html">
+            Острови
+          </a>
 
-<div class="profile-info">
-<strong>petro_ivanchuk</strong>
-<div>
-Сімейка:шлюбний з
-<a href="https://aircmd.github.io/hoomanchat/profiles/galya_ivanivna.html">
-galya_ivanivna
-</a>
-</div>
-</div>
+          <a class="nav-item" href="../rules.html">
+            Правила
+          </a>
 
-<div>Статус: 🌹🌹😘😘😘.</div>
+        </div>
 
-<div class="profile-status">
-● недавно був(ла)
-</div>
+        <div class="account-box">
 
-</div>
+          <div class="account-text">
+            Немає гумгайла?
+          </div>
 
+          <a class="account-link" href="../register.html">
+            ЗАРЕЄСТРУВАТИСЯ
+          </a>
 
-<div class="posts-header">
-Дописи petro_ivanchuk — 8
-</div>
+          <a class="account-link" href="../login.html">
+            ВХІД
+          </a>
 
-<div id="petro-posts">
+        </div>
 
+      </div>
 
-<div class="profile-post">
-<div class="profile-post-title">У наш час</div>
-<div class="profile-post-body">
-Дручком по сраці ганяли. І росла молодь шовкова.
-</div>
+    </div>
 
-<div class="post-actions">
-<button class="like-button">
-♡ Подобається <span class="like-count">11</span>
-</button>
-<button class="comment-button">
-💬 Коментарі <span class="comment-count">2</span>
-</button>
-</div>
 
-<div class="comments-area">
-<div class="fake-comment">
-<div class="fake-comment-name">galya_ivanivna</div>
-Ой, шо його говорити. Настя оно татфу набубила.
-</div>
+    <!-- ПРАВА / ДРУГА КОЛОНКА -->
+    <div class="site-right">
 
-<div class="fake-comment">
-<div class="fake-comment-name">petro_ivanchuk</div>
-То дручком треба по сраці!
-</div>
+      <!-- ПРОФІЛЬ -->
+      <div class="profile-box">
 
-<div class="comment-form">
-<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-<button class="comment-send">Відправити</button>
-</div>
-</div>
+        <div class="profile-header">
+          Профіль гумена: petro_ivanchuk
+        </div>
 
-<div class="profile-post-date">12 листопада</div>
-</div>
+        <!-- ВСЯ ІНФОРМАЦІЯ ПРОФІЛЮ В ОДНОМУ profile-info -->
+        <div class="profile-info">
 
+          <strong>petro_ivanchuk</strong>
 
-<div class="profile-post">
-<div class="profile-post-title">А скільки лайки воно знає</div>
-<div class="profile-post-body">
-Був би я її батьком, бо отримала вона б від мене паском.
-</div>
+          <div>
+            Сімейка:шлюбний з
+            <a href="https://aircmd.github.io/hoomanchat/profiles/galya_ivanivna.html">
+              galya_ivanivna
+            </a>
+          </div>
 
-<div class="post-actions">
-<button class="like-button">
-♡ Подобається <span class="like-count">3</span>
-</button>
-<button class="comment-button">
-💬 Коментарі <span class="comment-count">3</span>
-</button>
-</div>
+          <div>
+            Статус: 🌹🌹😘😘😘.
+          </div>
 
-<div class="comments-area">
-<div class="fake-comment">
-<div class="fake-comment-name">galya_ivanivna</div>
-Та воно ж всеодно не слухає нікого.
-</div>
+          <div class="profile-status">
+            ● недавно був(ла)
+          </div>
 
-<div class="fake-comment">
-<div class="fake-comment-name">petro_ivanchuk</div>
-Отож.
-</div>
+        </div>
 
-<div class="fake-comment">
-<div class="fake-comment-name">galya_ivanivna</div>
-Дручки не допоможуть.
-</div>
+      </div>
 
-<div class="comment-form">
-<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-<button class="comment-send">Відправити</button>
-</div>
-</div>
 
-<div class="profile-post-date">2 жовтня</div>
-</div>
+      <!-- ЗАГОЛОВОК ДОПИСІВ -->
+      <div class="posts-header">
+        Дописи petro_ivanchuk — 8
+      </div>
 
 
-<div class="profile-post">
-<div class="profile-post-title">Що за хлопчуки пішли.</div>
-<div class="profile-post-body">
-Раніше мужні були. А тепер що? Шмаркля на ніжках.
-</div>
+      <!-- ПОСТИ -->
+      <div id="petro-posts">
 
-<div class="post-actions">
-<button class="like-button">
-♡ Подобається <span class="like-count">2</span>
-</button>
-<button class="comment-button">
-💬 Коментарі <span class="comment-count">3</span>
-</button>
-</div>
 
-<div class="comments-area">
-<div class="fake-comment">
-<div class="fake-comment-name">galya_ivanivna</div>
-Та ти сам шмарклею був....
-</div>
+        <!-- 1 -->
+        <div class="profile-post">
 
-<div class="fake-comment">
-<div class="fake-comment-name">petro_ivanchuk</div>
-Ні, не був!
-</div>
+          <div class="profile-post-title">
+            У наш час
+          </div>
 
-<div class="fake-comment">
-<div class="fake-comment-name">galya_ivanivna</div>
-Був.
-</div>
+          <div class="profile-post-body">
+            Дручком по сраці ганяли. І росла молодь шовкова.
+          </div>
 
-<div class="comment-form">
-<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-<button class="comment-send">Відправити</button>
-</div>
-</div>
+          <div class="post-actions">
 
-<div class="profile-post-date">27 вересня</div>
-</div>
+            <button class="like-button">
+              ♡ Подобається
+              <span class="like-count">11</span>
+            </button>
 
+            <button class="comment-button">
+              💬 Коментарі
+              <span class="comment-count">2</span>
+            </button>
 
-<div class="profile-post">
-<div class="profile-post-title">Пейси на пиці.</div>
-<div class="profile-post-body">
-Нащо ото пейси наліпила Настя? Дідька лисого як чорт на гоні.
-</div>
+          </div>
 
-<div class="post-actions">
-<button class="like-button">
-♡ Подобається <span class="like-count">16</span>
-</button>
-<button class="comment-button">
-💬 Коментарі <span class="comment-count">2</span>
-</button>
-</div>
+          <div class="comments-area">
 
-<div class="comments-area">
-<div class="fake-comment">
-<div class="fake-comment-name">galya_ivanivna</div>
-Настя сама не своя.
-</div>
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                galya_ivanivna
+              </div>
+              Ой, шо його говорити. Настя оно татфу набубила.
+            </div>
 
-<div class="fake-comment">
-<div class="fake-comment-name">petro_ivanchuk</div>
-Отож!
-</div>
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                petro_ivanchuk
+              </div>
+              То дручком треба по сраці!
+            </div>
 
-<div class="comment-form">
-<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-<button class="comment-send">Відправити</button>
-</div>
-</div>
+            <div class="comment-form">
 
-<div class="profile-post-date">25 вересня</div>
-</div>
+              <textarea
+                class="comment-input"
+                placeholder="Написати коментар..."
+              ></textarea>
 
+              <button class="comment-send">
+                Відправити
+              </button>
 
-<div class="profile-post">
-<div class="profile-post-title">Що то за молодь?</div>
-<div class="profile-post-body">
-Я он той дрова нарубав, води набрав та картоплю зростив.
-</div>
+            </div>
 
-<div class="post-actions">
-<button class="like-button">
-♡ Подобається <span class="like-count">57</span>
-</button>
-<button class="comment-button">
-💬 Коментарі <span class="comment-count">1</span>
-</button>
-</div>
+          </div>
 
-<div class="comments-area">
-<div class="fake-comment">
-<div class="fake-comment-name">petro_ivanchuk</div>
-Беріть ото з діда приклад.
-</div>
+          <div class="profile-post-date">
+            12 листопада
+          </div>
 
-<div class="comment-form">
-<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-<button class="comment-send">Відправити</button>
-</div>
-</div>
+        </div>
 
-<div class="profile-post-date">24 вересня</div>
-</div>
 
+        <!-- 2 -->
+        <div class="profile-post">
 
-<div class="profile-post">
-<div class="profile-post-title">Дурні молодички й молодики</div>
-<div class="profile-post-body">
-Туалет прибрати воно не може, а що тоді взагалі може? Тьфу.
-</div>
+          <div class="profile-post-title">
+            А скільки лайки воно знає
+          </div>
 
-<div class="post-actions">
-<button class="like-button">
-♡ Подобається <span class="like-count">3</span>
-</button>
-<button class="comment-button">
-💬 Коментарі <span class="comment-count">2</span>
-</button>
-</div>
+          <div class="profile-post-body">
+            Був би я її батьком, бо отримала вона б від мене паском.
+          </div>
 
-<div class="comments-area">
-<div class="fake-comment">
-<div class="fake-comment-name">galya_ivanivna</div>
-Зовсім не годні молодки..
-</div>
+          <div class="post-actions">
 
-<div class="fake-comment">
-<div class="fake-comment-name">petro_ivanchuk</div>
-Того й дурне воно.
-</div>
+            <button class="like-button">
+              ♡ Подобається
+              <span class="like-count">3</span>
+            </button>
 
-<div class="comment-form">
-<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-<button class="comment-send">Відправити</button>
-</div>
-</div>
+            <button class="comment-button">
+              💬 Коментарі
+              <span class="comment-count">3</span>
+            </button>
 
-<div class="profile-post-date">22 вересня</div>
-</div>
+          </div>
 
+          <div class="comments-area">
 
-<div class="profile-post">
-<div class="profile-post-title">ІВАНІВНА</div>
-<div class="profile-post-body">
-ПРИГОТУЙ ВАРЕНЧИКІВ.
-</div>
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                galya_ivanivna
+              </div>
+              Та воно ж всеодно не слухає нікого.
+            </div>
 
-<div class="post-actions">
-<button class="like-button">
-♡ Подобається <span class="like-count">4</span>
-</button>
-<button class="comment-button">
-💬 Коментарі <span class="comment-count">2</span>
-</button>
-</div>
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                petro_ivanchuk
+              </div>
+              Отож.
+            </div>
 
-<div class="comments-area">
-<div class="fake-comment">
-<div class="fake-comment-name">galya_ivanivna</div>
-Варенчики самі себе не приготують. А ось бірщ приготувався!
-</div>
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                galya_ivanivna
+              </div>
+              Дручки не допоможуть.
+            </div>
 
-<div class="fake-comment">
-<div class="fake-comment-name">petro_ivanchuk</div>
-😘😘😘
-</div>
+            <div class="comment-form">
 
-<div class="comment-form">
-<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-<button class="comment-send">Відправити</button>
-</div>
-</div>
+              <textarea
+                class="comment-input"
+                placeholder="Написати коментар..."
+              ></textarea>
 
-<div class="profile-post-date">16 вересня</div>
-</div>
+              <button class="comment-send">
+                Відправити
+              </button>
 
+            </div>
 
-<div class="profile-post">
-<div class="profile-post-title">Дідо на городі сіно копав.</div>
-<div class="profile-post-body">
-Дідо молодець.
-</div>
+          </div>
 
-<div class="post-actions">
-<button class="like-button">
-♡ Подобається <span class="like-count">87</span>
-</button>
-<button class="comment-button">
-💬 Коментарі <span class="comment-count">2</span>
-</button>
-</div>
+          <div class="profile-post-date">
+            2 жовтня
+          </div>
 
-<div class="comments-area">
-<div class="fake-comment">
-<div class="fake-comment-name">galya_ivanivna</div>
-Молодець! Написав в арчат.
-</div>
+        </div>
 
-<div class="fake-comment">
-<div class="fake-comment-name">petro_ivanchuk</div>
-🌹🌹😘😘😘
-</div>
 
-<div class="comment-form">
-<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
-<button class="comment-send">Відправити</button>
-</div>
-</div>
+        <!-- 3 -->
+        <div class="profile-post">
 
-<div class="profile-post-date">5 вересня</div>
-</div>
+          <div class="profile-post-title">
+            Що за хлопчуки пішли.
+          </div>
 
+          <div class="profile-post-body">
+            Раніше мужні були. А тепер що? Шмаркля на ніжках.
+          </div>
 
-</div>
+          <div class="post-actions">
 
+            <button class="like-button">
+              ♡ Подобається
+              <span class="like-count">2</span>
+            </button>
 
-<div id="show-more-posts" class="show-more">
-показати ще...
-</div>
+            <button class="comment-button">
+              💬 Коментарі
+              <span class="comment-count">3</span>
+            </button>
 
-<div class="rules-box">
-Пам'ятай та дотримуйся
-<a href="../rules.html">ПРАВИЛ</a>
-нашого ресурсу для приємного та друмнього часу разом з нами.
-</div>
+          </div>
 
-<div class="statistics-box">
+          <div class="comments-area">
 
-<div class="statistics-title">
-Статистика Гуменчату
-</div>
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                galya_ivanivna
+              </div>
+              Та ти сам шмарклею був....
+            </div>
 
-<div>
-Зареєстровано гуменів:
-<span id="registered-hoomen"></span>
-</div>
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                petro_ivanchuk
+              </div>
+              Ні, не був!
+            </div>
 
-<div>
-Зараз онлайн:
-<span class="statistics-online" id="online-hoomen"></span>
-</div>
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                galya_ivanivna
+              </div>
+              Був.
+            </div>
 
-<div>
-Гуменів сьогодні завітало:
-<span id="today-hoomen"></span>
-</div>
+            <div class="comment-form">
 
-</div>
+              <textarea
+                class="comment-input"
+                placeholder="Написати коментар..."
+              ></textarea>
 
-<div class="footer-line">
-Гуменчат — місце для гуменів.
-</div>
+              <button class="comment-send">
+                Відправити
+              </button>
 
-</div>
-</div>
+            </div>
+
+          </div>
+
+          <div class="profile-post-date">
+            27 вересня
+          </div>
+
+        </div>
+
+
+        <!-- 4 -->
+        <div class="profile-post">
+
+          <div class="profile-post-title">
+            Пейси на пиці.
+          </div>
+
+          <div class="profile-post-body">
+            Нащо ото пейси наліпила Настя? Дідька лисого як чорт на гоні.
+          </div>
+
+          <div class="post-actions">
+
+            <button class="like-button">
+              ♡ Подобається
+              <span class="like-count">16</span>
+            </button>
+
+            <button class="comment-button">
+              💬 Коментарі
+              <span class="comment-count">2</span>
+            </button>
+
+          </div>
+
+          <div class="comments-area">
+
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                galya_ivanivna
+              </div>
+              Настя сама не своя.
+            </div>
+
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                petro_ivanchuk
+              </div>
+              Отож!
+            </div>
+
+            <div class="comment-form">
+
+              <textarea
+                class="comment-input"
+                placeholder="Написати коментар..."
+              ></textarea>
+
+              <button class="comment-send">
+                Відправити
+              </button>
+
+            </div>
+
+          </div>
+
+          <div class="profile-post-date">
+            25 вересня
+          </div>
+
+        </div>
+
+
+        <!-- 5 -->
+        <div class="profile-post">
+
+          <div class="profile-post-title">
+            Що то за молодь?
+          </div>
+
+          <div class="profile-post-body">
+            Я он той дрова нарубав, води набрав та картоплю зростив.
+          </div>
+
+          <div class="post-actions">
+
+            <button class="like-button">
+              ♡ Подобається
+              <span class="like-count">57</span>
+            </button>
+
+            <button class="comment-button">
+              💬 Коментарі
+              <span class="comment-count">1</span>
+            </button>
+
+          </div>
+
+          <div class="comments-area">
+
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                petro_ivanchuk
+              </div>
+              Беріть ото з діда приклад.
+            </div>
+
+            <div class="comment-form">
+
+              <textarea
+                class="comment-input"
+                placeholder="Написати коментар..."
+              ></textarea>
+
+              <button class="comment-send">
+                Відправити
+              </button>
+
+            </div>
+
+          </div>
+
+          <div class="profile-post-date">
+            24 вересня
+          </div>
+
+        </div>
+
+
+        <!-- 6 -->
+        <div class="profile-post">
+
+          <div class="profile-post-title">
+            Дурні молодички й молодики
+          </div>
+
+          <div class="profile-post-body">
+            Туалет прибрати воно не може, а що тоді взагалі може? Тьфу.
+          </div>
+
+          <div class="post-actions">
+
+            <button class="like-button">
+              ♡ Подобається
+              <span class="like-count">3</span>
+            </button>
+
+            <button class="comment-button">
+              💬 Коментарі
+              <span class="comment-count">2</span>
+            </button>
+
+          </div>
+
+          <div class="comments-area">
+
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                galya_ivanivna
+              </div>
+              Зовсім не годні молодки..
+            </div>
+
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                petro_ivanchuk
+              </div>
+              Того й дурне воно.
+            </div>
+
+            <div class="comment-form">
+
+              <textarea
+                class="comment-input"
+                placeholder="Написати коментар..."
+              ></textarea>
+
+              <button class="comment-send">
+                Відправити
+              </button>
+
+            </div>
+
+          </div>
+
+          <div class="profile-post-date">
+            22 вересня
+          </div>
+
+        </div>
+
+
+        <!-- 7 -->
+        <div class="profile-post">
+
+          <div class="profile-post-title">
+            ІВАНІВНА
+          </div>
+
+          <div class="profile-post-body">
+            ПРИГОТУЙ ВАРЕНЧИКІВ.
+          </div>
+
+          <div class="post-actions">
+
+            <button class="like-button">
+              ♡ Подобається
+              <span class="like-count">4</span>
+            </button>
+
+            <button class="comment-button">
+              💬 Коментарі
+              <span class="comment-count">2</span>
+            </button>
+
+          </div>
+
+          <div class="comments-area">
+
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                galya_ivanivna
+              </div>
+              Варенчики самі себе не приготують. А ось бірщ приготувався!
+            </div>
+
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                petro_ivanchuk
+              </div>
+              😘😘😘
+            </div>
+
+            <div class="comment-form">
+
+              <textarea
+                class="comment-input"
+                placeholder="Написати коментар..."
+              ></textarea>
+
+              <button class="comment-send">
+                Відправити
+              </button>
+
+            </div>
+
+          </div>
+
+          <div class="profile-post-date">
+            16 вересня
+          </div>
+
+        </div>
+
+
+        <!-- 8 -->
+        <div class="profile-post">
+
+          <div class="profile-post-title">
+            Дідо на городі сіно копав.
+          </div>
+
+          <div class="profile-post-body">
+            Дідо молодець.
+          </div>
+
+          <div class="post-actions">
+
+            <button class="like-button">
+              ♡ Подобається
+              <span class="like-count">87</span>
+            </button>
+
+            <button class="comment-button">
+              💬 Коментарі
+              <span class="comment-count">2</span>
+            </button>
+
+          </div>
+
+          <div class="comments-area">
+
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                galya_ivanivna
+              </div>
+              Молодець! Написав в арчат.
+            </div>
+
+            <div class="fake-comment">
+              <div class="fake-comment-name">
+                petro_ivanchuk
+              </div>
+              🌹🌹😘😘😘
+            </div>
+
+            <div class="comment-form">
+
+              <textarea
+                class="comment-input"
+                placeholder="Написати коментар..."
+              ></textarea>
+
+              <button class="comment-send">
+                Відправити
+              </button>
+
+            </div>
+
+          </div>
+
+          <div class="profile-post-date">
+            5 вересня
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+      <div id="show-more-posts" class="show-more">
+        показати ще...
+      </div>
+
+
+      <div class="rules-box">
+        Пам'ятай та дотримуйся
+        <a href="../rules.html">ПРАВИЛ</a>
+        нашого ресурсу для приємного та друмнього часу разом з нами.
+      </div>
+
+
+      <div class="statistics-box">
+
+        <div class="statistics-title">
+          Статистика Гуменчату
+        </div>
+
+        <div>
+          Зареєстровано гуменів:
+          <span id="registered-hoomen"></span>
+        </div>
+
+        <div>
+          Зараз онлайн:
+          <span class="statistics-online" id="online-hoomen"></span>
+        </div>
+
+        <div>
+          Гуменів сьогодні завітало:
+          <span id="today-hoomen"></span>
+        </div>
+
+      </div>
+
+
+      <div class="footer-line">
+        Гуменчат — місце для гуменів.
+      </div>
+
+
+    </div>
+    <!-- КІНЕЦЬ site-right -->
+
+  </div>
+  <!-- КІНЕЦЬ site-layout -->
+
 </div>
+<!-- КІНЕЦЬ hoomenchat-site -->
 
 
 <script>
 (function(){
 
-const posts=[...document.querySelectorAll('#petro-posts .profile-post')];
+  const posts=[
+    ...document.querySelectorAll('#petro-posts .profile-post')
+  ];
 
-let visible=3;
+  let visible=3;
 
-function update(){
 
-  posts.forEach((p,i)=>{
-    p.style.display=i<visible?'block':'none';
+  function update(){
+
+    posts.forEach((p,i)=>{
+      p.style.display=i<visible?'block':'none';
+    });
+
+    const showMore=document.getElementById('show-more-posts');
+
+    showMore.className=
+      visible>=posts.length
+        ?'show-more hidden'
+        :'show-more';
+  }
+
+
+  document.getElementById('show-more-posts').onclick=()=>{
+
+    visible=Math.min(
+      visible+5,
+      posts.length
+    );
+
+    update();
+
+  };
+
+
+  document.querySelectorAll('.like-button').forEach(btn=>{
+
+    btn.onclick=()=>{
+
+      const c=btn.querySelector('.like-count');
+
+      let n=parseInt(
+        c.textContent,
+        10
+      );
+
+      n+=btn.classList.toggle('liked')
+        ?1
+        :-1;
+
+      c.textContent=n;
+
+      btn.firstChild.textContent=
+        btn.classList.contains('liked')
+          ?'♥ Подобається '
+          :'♡ Подобається ';
+
+    };
+
   });
 
-  document.getElementById('show-more-posts').className=
-    visible>=posts.length
-      ?'show-more hidden'
-      :'show-more';
-}
 
-document.getElementById('show-more-posts').onclick=()=>{
+  document.querySelectorAll('.comment-button').forEach(btn=>{
 
-  visible=Math.min(visible+5,posts.length);
+    btn.onclick=()=>{
+
+      btn
+        .closest('.profile-post')
+        .querySelector('.comments-area')
+        .classList.toggle('open');
+
+    };
+
+  });
+
+
+  document.querySelectorAll('.comment-send').forEach(btn=>{
+
+    btn.onclick=()=>{
+
+      const form=btn.closest('.comment-form');
+
+      const input=
+        form.querySelector('.comment-input');
+
+      const text=
+        input.value.trim();
+
+      if(!text)return;
+
+
+      const c=
+        document.createElement('div');
+
+      c.className='user-comment';
+
+      c.innerHTML=
+        '<strong>ти: </strong>'+
+        text.replace(/</g,'&lt;');
+
+
+      form.before(c);
+
+      input.value='';
+
+
+      const post=
+        form.closest('.profile-post');
+
+      const count=
+        post.querySelector('.comment-count');
+
+      count.textContent=
+        parseInt(
+          count.textContent,
+          10
+        )+1;
+
+    };
+
+  });
+
+
+  function safe(base,range){
+
+    let v;
+
+    do{
+
+      v=
+        base+
+        Math.floor(
+          Math.random()*range
+        );
+
+    }while(
+      /63|68|13|666/.test(
+        String(v)
+      )
+    );
+
+    return v;
+  }
+
+
+  function stats(){
+
+    document.getElementById(
+      'registered-hoomen'
+    ).textContent=
+      safe(
+        8000000,
+        47001
+      ).toLocaleString('uk-UA');
+
+
+    document.getElementById(
+      'online-hoomen'
+    ).textContent=
+      safe(
+        1000000,
+        76001
+      ).toLocaleString('uk-UA');
+
+
+    document.getElementById(
+      'today-hoomen'
+    ).textContent=
+      safe(
+        2400000,
+        180001
+      ).toLocaleString('uk-UA');
+
+  }
+
 
   update();
 
-};
+  stats();
 
-document.querySelectorAll('.like-button').forEach(btn=>{
-
-  btn.onclick=()=>{
-
-    const c=btn.querySelector('.like-count');
-
-    let n=parseInt(c.textContent,10);
-
-    n+=btn.classList.toggle('liked')?1:-1;
-
-    c.textContent=n;
-
-    btn.firstChild.textContent=
-      btn.classList.contains('liked')
-        ?'♥ Подобається '
-        :'♡ Подобається ';
-
-  };
-
-});
-
-document.querySelectorAll('.comment-button').forEach(btn=>{
-
-  btn.onclick=()=>{
-
-    btn
-      .closest('.profile-post')
-      .querySelector('.comments-area')
-      .classList.toggle('open');
-
-  };
-
-});
-
-document.querySelectorAll('.comment-send').forEach(btn=>{
-
-  btn.onclick=()=>{
-
-    const form=btn.closest('.comment-form');
-    const input=form.querySelector('.comment-input');
-    const text=input.value.trim();
-
-    if(!text)return;
-
-    const c=document.createElement('div');
-
-    c.className='user-comment';
-
-    c.innerHTML=
-      '<strong>ти: </strong>'+
-      text.replace(/</g,'&lt;');
-
-    form.before(c);
-
-    input.value='';
-
-    const post=form.closest('.profile-post');
-    const count=post.querySelector('.comment-count');
-
-    count.textContent=
-      parseInt(count.textContent,10)+1;
-
-  };
-
-});
-
-function safe(base,range){
-
-  let v;
-
-  do{
-
-    v=base+Math.floor(Math.random()*range);
-
-  }while(/63|68|13|666/.test(String(v)));
-
-  return v;
-}
-
-function stats(){
-
-  document.getElementById('registered-hoomen').textContent=
-    safe(8000000,47001).toLocaleString('uk-UA');
-
-  document.getElementById('online-hoomen').textContent=
-    safe(1000000,76001).toLocaleString('uk-UA');
-
-  document.getElementById('today-hoomen').textContent=
-    safe(2400000,180001).toLocaleString('uk-UA');
-}
-
-update();
-stats();
-setInterval(stats,30000);
+  setInterval(
+    stats,
+    30000
+  );
 
 })();
 </script>
 
 </body>
 </html>
-    Гуменчат — місце для гуменів.
-  </div>
-
-</div>
