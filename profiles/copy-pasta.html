@@ -51,7 +51,7 @@ html,body{
 
 
 /* =========================================================
-   ОСНОВНИЙ КАРКАС — ЯК У YURII_ICHIGO
+   ОСНОВНИЙ КАРКАС
    ========================================================= */
 
 .site-layout{
@@ -470,33 +470,6 @@ html,body{
 
 
 /* =========================================================
-   МОБІЛЬНИЙ КАРКАС — ЯК У YURII_ICHIGO
-   ========================================================= */
-
-@media(max-width:600px){
-
-  .site-layout{
-    display:block
-  }
-
-  .site-left,
-  .site-right{
-    display:block;
-    width:100%
-  }
-
-  .site-left{
-    margin-bottom:8px
-  }
-
-  #hoomenchat-site{
-    padding:7px
-  }
-
-}
-
-
-/* =========================================================
    СТВОРЕННЯ ДОПИСУ
    ========================================================= */
 
@@ -598,22 +571,9 @@ html,body{
   margin:6px 0 0;
   object-fit:contain;
   background:#ddd;
-  border:1px solid #aaa
-}
- .profile-post-image{
-  display:block;
-  width:100%;
-  max-height:500px;
-  margin:6px 0 0;
-  object-fit:contain;
-  background:#ddd;
   border:1px solid #aaa;
   cursor:pointer
 }
-
-/* =========================================================
-   НОВИЙ ДОПИС — КНОПКА ТА ФОРМА
-   ========================================================= */
 
 .create-post-launcher{
   display:block;
@@ -806,30 +766,155 @@ html,body{
   background:rgba(0,0,0,.60)
 }
 
-@media(max-width:600px){
+
+/* =========================================================
+   МОБІЛЬНА ВЕРСІЯ (ПОКРАЩЕНА)
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  #hoomenchat-site {
+    padding: 6px;
+    border: none;
+  }
+
+  .site-layout {
+    display: block;
+    border-spacing: 0;
+  }
+
+  .site-left,
+  .site-right {
+    display: block;
+    width: 100%;
+  }
+
+  .site-left {
+    margin-bottom: 10px;
+  }
+
+  .left-box {
+    padding: 6px 8px;
+  }
+
+  .site-name {
+    font-size: 16px;
+    line-height: 19px;
+    margin-bottom: 8px;
+  }
+
+  .main-avatar {
+    height: 200px;
+    margin-bottom: 8px;
+  }
+
+  .archat-button {
+    padding: 8px 0;
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .nav-item {
+    padding: 7px 4px;
+    font-size: 13px;
+  }
+
+  .account-box {
+    margin-top: 10px;
+    padding-top: 8px;
+  }
+
+  .account-link {
+    padding: 4px 0;
+    font-size: 12px;
+  }
+
+  .profile-box {
+    margin-bottom: 10px;
+  }
+
+  .profile-header {
+    font-size: 13px;
+    padding: 7px 8px;
+  }
+
+  .profile-info {
+    font-size: 12px;
+    line-height: 16px;
+    padding: 8px;
+  }
+
+  .posts-header {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+
+  .create-post-launcher {
+    padding: 9px 8px;
+    font-size: 12px;
+  }
+
+  .profile-post-title {
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+
+  .profile-post-body {
+    font-size: 12px;
+    line-height: 16px;
+    padding: 8px;
+  }
+
+  .post-actions {
+    padding: 6px 8px;
+  }
+
+  .like-button,
+  .comment-button {
+    font-size: 12px;
+    padding: 3px 4px;
+  }
+
   .create-post-previews,
-  .post-images-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr))
+  .post-images-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
   }
 
-  .create-post-preview-image{
-    height:95px
+  .create-post-preview-image {
+    height: 100px;
   }
 
-  .post-image-frame .profile-post-image{
-    height:150px
+  .post-image-frame .profile-post-image {
+    height: 140px;
   }
 
-  .image-viewer{
-    padding:40px 48px
+  .image-viewer {
+    padding: 30px 40px;
   }
 
-  .image-viewer-prev{
-    left:8px
+  .image-viewer-prev {
+    left: 6px;
   }
 
-  .image-viewer-next{
-    right:8px
+  .image-viewer-next {
+    right: 6px;
+  }
+
+  .image-viewer-close {
+    top: 10px;
+    right: 10px;
+  }
+
+  .rules-box,
+  .statistics-box {
+    font-size: 11px;
+    padding: 7px 8px;
+  }
+
+  .footer-line {
+    font-size: 10px;
+    margin-top: 10px;
   }
 }
 
