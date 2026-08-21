@@ -1062,7 +1062,7 @@ body > .image-viewer .image-viewer-close:hover {
   class="hidden-file-input"
   id="image-input"
   type="file"
-  accept="image/jpeg,image/png,image/gif,image/webp"
+   accept="image/*"
   multiple
 >
 
@@ -1223,7 +1223,9 @@ var allowedImageTypes = {
   "image/jpeg": true,
   "image/png": true,
   "image/gif": true,
-  "image/webp": true
+  "image/webp": true,
+  "image/heic": true,
+  "image/heif": true
 
 };
 
@@ -5033,6 +5035,217 @@ function handleFiles(
   fileList,
   kind
 ) {
+
+  if (!fileList) {
+    return;
+  }
+
+
+  Array.prototype.forEach.call(
+
+    fileList,
+
+    function(file) {
+
+      if (!file) {
+        return;
+      }
+
+
+      /* =====================================================
+         ЗОБРАЖЕННЯ
+         ===================================================== */
+
+      if (
+        kind ===
+        "image"
+      ) {
+
+        var imageCheck =
+          isAllowedImage(file);
+
+
+        if (
+          !imageCheck.allowed
+        ) {
+
+          showStatus(
+            imageCheck.reason
+          );
+
+          return;
+        }
+
+
+        /*
+         * HEIC / HEIF
+         *
+         * Браузер може не вміти показувати
+         * такий формат через <img>.
+         *
+         * Поки що приймаємо його,
+         * але нижче визначаємо формат.
+         */
+
+        var isHeic =
+          file.type === "image/heic" ||
+          file.type === "image/heif" ||
+          getExtension(file.name) === ".heic" ||
+          getExtension(file.name) === ".heif";
+
+
+        /*
+         * Для звичайних форматів залишаємо
+         * звичайний blob URL.
+         */
+
+        if (!isHeic) {
+
+          var url =
+            URL.createObjectURL(
+              file
+            );
+
+
+          pendingAttachments.push({
+
+            kind:
+              kind,
+
+            name:
+              file.name,
+
+            url:
+              url,
+
+            size:
+              file.size,
+
+            type:
+              file.type
+
+          });
+
+
+          return;
+        }
+
+
+        /*
+         * HEIC / HEIF:
+         *
+         * Без зовнішньої бібліотеки браузер
+         * не завжди може їх декодувати.
+         *
+         * Пробуємо прочитати через браузер.
+         *
+         * Якщо браузер це підтримує —
+         * отримаємо data URL.
+         */
+
+        var reader =
+          new FileReader();
+
+
+        reader.onload =
+          function(event) {
+
+            pendingAttachments.push({
+
+              kind:
+                "image",
+
+              name:
+                file.name,
+
+              url:
+                event.target.result,
+
+              size:
+                file.size,
+
+              type:
+                "image/jpeg"
+
+            });
+
+
+            renderSelectedFiles();
+
+          };
+
+
+        reader.onerror =
+          function() {
+
+            showStatus(
+              "Телефонне HEIC/HEIF-зображення не вдалося прочитати цим браузером."
+            );
+
+          };
+
+
+        reader.readAsDataURL(
+          file
+        );
+
+
+        return;
+      }
+
+
+      /* =====================================================
+         ІНШІ ФАЙЛИ
+         ===================================================== */
+
+      var fileCheck =
+        isAllowedFile(file);
+
+
+      if (
+        !fileCheck.allowed
+      ) {
+
+        showStatus(
+          fileCheck.reason
+        );
+
+        return;
+      }
+
+
+      var fileUrl =
+        URL.createObjectURL(
+          file
+        );
+
+
+      pendingAttachments.push({
+
+        kind:
+          "file",
+
+        name:
+          file.name,
+
+        url:
+          fileUrl,
+
+        size:
+          file.size,
+
+        type:
+          file.type
+
+      });
+
+    }
+  );
+
+
+  renderSelectedFiles();
+
+}
 
   if (!fileList) {
 
