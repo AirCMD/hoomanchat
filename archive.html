@@ -963,6 +963,11 @@ body > .image-viewer .image-viewer-close:hover {
     height: 300px;
   }
 
+  /* Краще відображення зображень на телефоні */
+  #hoomenchat-messages-page .chat-image {
+    max-height: 260px;
+  }
+
 }
 
 </style>
@@ -5036,6 +5041,9 @@ function handleFiles(
   kind
 ) {
 
+  if (!fileList) {
+    return;
+  }
 
   Array.prototype.forEach.call(
 
@@ -5236,132 +5244,6 @@ function handleFiles(
       });
 
     }
-  );
-
-
-  renderSelectedFiles();
-
-}
-
-  if (!fileList) {
-
-    return;
-
-  }
-
-
-  Array.prototype.forEach.call(
-
-    fileList,
-
-    function(file) {
-
-
-      if (!file) {
-
-        return;
-
-      }
-
-
-      /*
-       * ЗОБРАЖЕННЯ
-       */
-
-      if (
-        kind ===
-        "image"
-      ) {
-
-
-        var imageCheck =
-          isAllowedImage(
-            file
-          );
-
-
-        if (
-          !imageCheck.allowed
-        ) {
-
-
-          showStatus(
-            imageCheck.reason
-          );
-
-
-          return;
-
-        }
-
-      }
-
-
-      /*
-       * ЗВИЧАЙНИЙ ФАЙЛ
-       */
-
-      else {
-
-
-        var fileCheck =
-          isAllowedFile(
-            file
-          );
-
-
-        if (
-          !fileCheck.allowed
-        ) {
-
-
-          showStatus(
-            fileCheck.reason
-          );
-
-
-          return;
-
-        }
-
-      }
-
-
-      /*
-       * Створюємо локальний
-       * blob URL.
-       *
-       * НІКУДИ НА СЕРВЕР
-       * ВІН НЕ ЗАВАНТАЖУЄТЬСЯ.
-       */
-
-      var url =
-        URL.createObjectURL(
-          file
-        );
-
-
-      pendingAttachments.push({
-
-        kind:
-          kind,
-
-        name:
-          file.name,
-
-        url:
-          url,
-
-        size:
-          file.size,
-
-        type:
-          file.type
-
-      });
-
-    }
-
   );
 
 
