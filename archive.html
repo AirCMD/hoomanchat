@@ -966,7 +966,7 @@ body > .image-viewer .image-viewer-close:hover {
     var status = get("compose-status");
     if (status) status.textContent = "Завантаження...";
 
-    fetch("chats/" + chatId + ".json")
+    fetch("/hoomanchat/chats/" + chatId + ".json")
       .then(function(response) {
         if (!response.ok) throw new Error("Файл не знайдено");
         return response.json();
