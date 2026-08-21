@@ -2,23 +2,16 @@
   "user": "sakurai_agatsuma",
   "messages": [
     {
-      "from": "me",
+      "from": "them",
       "type": "text",
       "text": "Привіт. Ти бачила останнє оновлення?",
       "time": "10:41"
     },
     {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, ні. Я закинула гру.",
-
-        time:
-          "10:43"
+     "from": "me",
+      "type": "text",
+      "text":  "Привіт, ні. Я закинула гру.",
+      "time": "10:43"
     },
     {
         from:
