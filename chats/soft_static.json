@@ -1,0 +1,17 @@
+{
+  "user": "soft_static",
+  "messages": [
+    {
+      "from": "me",
+      "type": "text",
+      "text": "Test 1",
+      "time": "Невертайм"
+    },
+    {
+      "from": "them",
+      "type": "text",
+      "text": "Test 1",
+      "time": "Невертайм"
+    }
+  ]
+}
