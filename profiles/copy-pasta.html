@@ -2130,12 +2130,14 @@ function showCreatePostError(text){
   }
 }
 
-function resetCreatePostForm(){
-  selectedPostImages.forEach(function(item){
-    if(item.url && item.url.indexOf("blob:")===0){
-      try{ URL.revokeObjectURL(item.url); }catch(error){}
-    }
-  });
+function resetCreatePostForm(revokeImages){
+  if(revokeImages){
+    selectedPostImages.forEach(function(item){
+      if(item.url && item.url.indexOf("blob:")===0){
+        try{ URL.revokeObjectURL(item.url); }catch(error){}
+      }
+    });
+  }
 
   selectedPostImages=[];
   newPostTitle.value="";
@@ -2235,7 +2237,7 @@ if(newPostLauncher){
 
 if(cancelNewPost){
   cancelNewPost.addEventListener("click",function(){
-    resetCreatePostForm();
+    resetCreatePostForm(true);
     createPostBox.classList.add("collapsed");
   });
 }
@@ -2323,7 +2325,7 @@ if(publishPost){
 
     bindTemporaryPostEvents(post);
 
-    resetCreatePostForm();
+    resetCreatePostForm(false);
     createPostBox.classList.add("collapsed");
   });
 }
