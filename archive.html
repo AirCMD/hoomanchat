@@ -3,34 +3,19 @@
 <head>
 
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>ГУМЕНЧАТ — АРЧАТ</title>
 
-
 <style>
 
-/* =========================================================
-   АРЧАТ — ПРИВАТНІ ЧАТИ
-   GitHub Pages
-   ========================================================= */
-
-html,
-body {
+html, body {
   margin: 0;
   padding: 0;
-
   background: #fff;
-
   font-family: Arial, Helvetica, sans-serif;
-
   font-size: 12px;
   line-height: 14px;
-
   color: #222;
 }
 
@@ -38,145 +23,71 @@ body {
   box-sizing: border-box;
 }
 
-
-/* =========================================================
-   ОСНОВА
-   ========================================================= */
-
 #hoomenchat-messages-page {
   display: block;
-
   width: 100%;
   max-width: 780px;
-
   margin: 10px auto;
   padding: 12px;
-
   background: #fff;
-
   border: 1px solid #777;
 }
 
-
-/* =========================================================
-   ШАПКА
-   ========================================================= */
-
 #hoomenchat-messages-page .chat-header {
   display: block;
-
   margin: 0 0 10px 0;
   padding: 5px 8px;
-
-  background:
-    linear-gradient(
-      to bottom,
-      #626262,
-      #3b3b3b
-    );
-
+  background: linear-gradient(to bottom, #626262, #3b3b3b);
   border: 1px solid #222;
-
   color: #fff;
-
   font-size: 12px;
   line-height: 14px;
-
   font-weight: bold;
-
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 
-
-/* =========================================================
-   ОСНОВНИЙ LAYOUT
-   ========================================================= */
-
 #hoomenchat-messages-page .messages-layout {
   display: table;
-
   width: 100%;
-
   table-layout: fixed;
-
   border-collapse: separate;
   border-spacing: 10px 0;
 }
 
-
-/* =========================================================
-   ЛІВА КОЛОНКА
-   ========================================================= */
-
 #hoomenchat-messages-page .chat-list-column {
   display: table-cell;
-
   width: 220px;
-
   vertical-align: top;
 }
-
-
-/* =========================================================
-   ПРАВА КОЛОНКА
-   ========================================================= */
 
 #hoomenchat-messages-page .conversation-column {
   display: table-cell;
-
   width: auto;
-
   vertical-align: top;
 }
 
-
-/* =========================================================
-   ЗАГОЛОВОК СПИСКУ
-   ========================================================= */
-
 #hoomenchat-messages-page .list-title {
   margin: 0;
-
   padding: 5px 7px;
-
   background: #f0f0f0;
-
   border: 1px solid #999;
-
   color: #333;
-
   font-size: 11px;
   line-height: 13px;
-
   font-weight: bold;
 }
-
-
-/* =========================================================
-   СПИСОК ЧАТІВ
-   ОКРЕМА ПРОКРУТКА
-   ========================================================= */
 
 #hoomenchat-messages-page .chat-list {
   margin: 0;
   padding: 0;
-
   background: #fff;
-
   border: 1px solid #aaa;
   border-top: 0;
-
   max-height: 430px;
-
   overflow-y: auto;
   overflow-x: hidden;
 }
-
-
-/* =========================================================
-   SCROLLBAR
-   ========================================================= */
 
 #hoomenchat-messages-page .chat-list::-webkit-scrollbar {
   width: 8px;
@@ -195,27 +106,15 @@ body {
   background: #888;
 }
 
-
-/* =========================================================
-   ОДИН ЧАТ
-   ========================================================= */
-
 #hoomenchat-messages-page .chat-list-item {
   display: block;
-
   width: 100%;
-
   margin: 0;
   padding: 6px;
-
   background: #f7f7f7;
-
   border-bottom: 1px solid #ccc;
-
   color: #222;
-
   text-decoration: none;
-
   cursor: pointer;
 }
 
@@ -232,53 +131,30 @@ body {
   border-left: 3px solid #555;
 }
 
-
-/* =========================================================
-   АВАТАР
-   ========================================================= */
-
 #hoomenchat-messages-page .chat-list-avatar {
   display: inline-block;
-
   width: 45px;
   height: 45px;
-
   margin-right: 6px;
-
   vertical-align: middle;
-
   object-fit: cover;
-
   background: #ddd;
-
   border: 1px solid #888;
 }
 
-
-/* =========================================================
-   ІНФОРМАЦІЯ
-   ========================================================= */
-
 #hoomenchat-messages-page .chat-list-info {
   display: inline-block;
-
   width: calc(100% - 58px);
-
   vertical-align: middle;
 }
 
 #hoomenchat-messages-page .chat-list-name {
   margin: 0;
-
   color: #111;
-
   font-size: 11px;
   line-height: 13px;
-
   font-weight: bold;
-
   text-decoration: underline;
-
   word-wrap: break-word;
 }
 
@@ -294,78 +170,48 @@ body {
 
 #hoomenchat-messages-page .chat-list-preview {
   margin-top: 3px;
-
   color: #777;
-
   font-size: 9px;
   line-height: 11px;
-
   white-space: nowrap;
-
   overflow: hidden;
-
   text-overflow: ellipsis;
 }
 
-
-/* =========================================================
-   ВІКНО ПЕРЕПИСКИ
-   ========================================================= */
-
 #hoomenchat-messages-page .conversation-box {
   position: relative;
-
   background: #fff;
-
   border: 1px solid #999;
 }
 
-
-/* =========================================================
-   HEADER ПЕРЕПИСКИ
-   ========================================================= */
-
 #hoomenchat-messages-page .conversation-header {
   min-height: 58px;
-
   padding: 6px 8px;
-
   background: #f0f0f0;
-
   border-bottom: 1px solid #999;
 }
 
 #hoomenchat-messages-page .conversation-avatar {
   display: inline-block;
-
   width: 45px;
   height: 45px;
-
   margin-right: 7px;
-
   vertical-align: middle;
-
   object-fit: cover;
-
   background: #ddd;
-
   border: 1px solid #888;
 }
 
 #hoomenchat-messages-page .conversation-user {
   display: inline-block;
-
   vertical-align: middle;
 }
 
 #hoomenchat-messages-page .conversation-name {
   display: block;
-
   color: #111;
-
   font-size: 13px;
   line-height: 15px;
-
   font-weight: bold;
 }
 
@@ -381,43 +227,24 @@ body {
 
 #hoomenchat-messages-page .conversation-status {
   display: block;
-
   margin-top: 2px;
-
   color: #2e7d32;
-
   font-size: 9px;
   line-height: 11px;
-
   font-style: italic;
 }
 
-
-/* =========================================================
-   ПОВІДОМЛЕННЯ
-   ========================================================= */
-
 #hoomenchat-messages-page .messages-window {
   height: 350px;
-
   padding: 8px;
-
   background: #fafafa;
-
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-
-/* =========================================================
-   РЯДОК
-   ========================================================= */
-
 #hoomenchat-messages-page .message-row {
   display: block;
-
   margin: 0 0 9px 0;
-
   clear: both;
 }
 
@@ -429,117 +256,65 @@ body {
   text-align: left;
 }
 
-
-/* =========================================================
-   БУЛЬБАШКА
-   ========================================================= */
-
 #hoomenchat-messages-page .message-bubble {
   display: inline-block;
-
   max-width: 78%;
-
   padding: 6px 8px;
-
   background: #fff;
-
   border: 1px solid #aaa;
-
   color: #222;
-
   font-size: 11px;
   line-height: 14px;
-
   text-align: left;
-
   word-wrap: break-word;
-
   overflow-wrap: anywhere;
 }
 
 #hoomenchat-messages-page .mine .message-bubble {
   background: #f0f0f0;
-
   border-color: #888;
 }
 
-
-/* =========================================================
-   ЧАС
-   ========================================================= */
-
 #hoomenchat-messages-page .message-time {
   margin-top: 2px;
-
   color: #999;
-
   font-size: 8px;
   line-height: 10px;
 }
 
-
-/* =========================================================
-   ЗОБРАЖЕННЯ
-   ========================================================= */
-
 #hoomenchat-messages-page .chat-image {
   display: block;
-
   max-width: 100%;
-
   width: auto;
-
   max-height: 220px;
-
   margin: 0;
-
   background: #ddd;
-
   border: 1px solid #888;
-
   cursor: pointer;
-
   object-fit: contain;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 #hoomenchat-messages-page .chat-image-caption {
   margin-top: 4px;
-
   color: #777;
-
   font-size: 9px;
-
   line-height: 11px;
-
   word-break: break-word;
 }
 
-
-/* =========================================================
-   ФАЙЛ
-   ========================================================= */
-
 #hoomenchat-messages-page .chat-file {
   display: block;
-
   min-width: 150px;
-
   max-width: 100%;
-
   padding: 6px 7px;
-
   background: #f4f4f4;
-
   border: 1px solid #aaa;
-
   color: #333;
-
   text-decoration: none;
-
   font-size: 10px;
-
   line-height: 13px;
-
   overflow-wrap: anywhere;
 }
 
@@ -552,57 +327,33 @@ body {
   margin-right: 5px;
 }
 
-
-/* =========================================================
-   COMPOSE
-   ========================================================= */
-
 #hoomenchat-messages-page .message-compose {
   padding: 7px;
-
   background: #f0f0f0;
-
   border-top: 1px solid #999;
 }
 
-
-/* =========================================================
-   ІНСТРУМЕНТИ
-   ========================================================= */
-
 #hoomenchat-messages-page .compose-tools {
   display: flex;
-
   align-items: center;
-
   flex-wrap: wrap;
-
   gap: 4px;
-
   margin-bottom: 5px;
 }
 
 #hoomenchat-messages-page .tool-button {
   display: inline-block;
-
   padding: 3px 7px;
-
   background: #eeeeee;
-
   border: 1px solid #999;
-
   color: #444;
-
   font-size: 10px;
-
   line-height: 12px;
-
   cursor: pointer;
 }
 
 #hoomenchat-messages-page .tool-button:hover {
   background: #ddd;
-
   color: #000;
 }
 
@@ -610,24 +361,13 @@ body {
   display: none;
 }
 
-
-/* =========================================================
-   EMOJI
-   ========================================================= */
-
 #hoomenchat-messages-page .emoji-panel {
   display: none;
-
   margin: 0 0 5px 0;
-
   padding: 5px;
-
   background: #fff;
-
   border: 1px solid #999;
-
-  box-shadow:
-    0 1px 3px rgba(0,0,0,0.12);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
 }
 
 #hoomenchat-messages-page .emoji-panel.open {
@@ -636,66 +376,38 @@ body {
 
 #hoomenchat-messages-page .emoji-grid {
   display: flex;
-
   flex-wrap: wrap;
-
   gap: 3px;
 }
 
 #hoomenchat-messages-page .emoji-button {
   width: 28px;
   height: 26px;
-
   padding: 0;
-
   background: #fff;
-
   border: 1px solid #ccc;
-
   font-size: 16px;
-
   line-height: 24px;
-
   cursor: pointer;
 }
 
 #hoomenchat-messages-page .emoji-button:hover {
   background: #eee;
-
   border-color: #999;
 }
 
-
-/* =========================================================
-   INPUT
-   ========================================================= */
-
 #hoomenchat-messages-page .message-input {
   display: block;
-
   width: 100%;
-
   min-height: 55px;
-
   margin: 0 0 5px 0;
-
   padding: 5px 6px;
-
   background: #fff;
-
   border: 1px solid #999;
-
   color: #222;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 11px;
-
   line-height: 14px;
-
   resize: vertical;
 }
 
@@ -703,44 +415,27 @@ body {
   outline: 1px solid #555;
 }
 
-
-/* =========================================================
-   ВИБРАНІ ФАЙЛИ
-   ========================================================= */
-
 #hoomenchat-messages-page .selected-files {
   margin: 0 0 5px 0;
 }
 
 #hoomenchat-messages-page .selected-file {
   display: inline-block;
-
   margin: 2px 4px 2px 0;
-
   padding: 3px 5px;
-
   background: #fff;
-
   border: 1px solid #bbb;
-
   color: #555;
-
   font-size: 9px;
-
   line-height: 11px;
-
   max-width: 100%;
-
   overflow-wrap: anywhere;
 }
 
 #hoomenchat-messages-page .selected-file-remove {
   margin-left: 4px;
-
   color: #888;
-
   cursor: pointer;
-
   font-weight: bold;
 }
 
@@ -748,86 +443,43 @@ body {
   color: #000;
 }
 
-
-/* =========================================================
-   SEND
-   ========================================================= */
-
 #hoomenchat-messages-page .send-button {
   display: inline-block;
-
   padding: 4px 12px;
-
-  background:
-    linear-gradient(
-      to bottom,
-      #fff176,
-      #fbc02d
-    );
-
+  background: linear-gradient(to bottom, #fff176, #fbc02d);
   border: 1px solid #a78119;
-
   color: #000;
-
   font-size: 10px;
-
   line-height: 13px;
-
   font-weight: bold;
-
   cursor: pointer;
 }
 
 #hoomenchat-messages-page .send-button:hover {
-  background:
-    linear-gradient(
-      to bottom,
-      #fff59d,
-      #fdd835
-    );
+  background: linear-gradient(to bottom, #fff59d, #fdd835);
 }
-
-
-/* =========================================================
-   СТАТУС
-   ========================================================= */
 
 #hoomenchat-messages-page .compose-status {
   display: inline-block;
-
   margin-left: 7px;
-
   color: #777;
-
   font-size: 9px;
 }
-
-
-/* =========================================================
-   IMAGE VIEWER — СПРАВЖНЄ ОКРЕМЕ ВІКНО ПОВЕРХ СТОРІНКИ
-   ========================================================= */
 
 #hoomenchat-messages-page .image-viewer,
 body > .image-viewer {
   display: none !important;
-
   position: fixed !important;
-
   left: 0 !important;
   top: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
-
   width: 100vw !important;
   height: 100vh !important;
-
   margin: 0 !important;
   padding: 20px !important;
-
   background: rgba(0,0,0,0.80) !important;
-
   z-index: 2147483647 !important;
-
   align-items: center !important;
   justify-content: center !important;
 }
@@ -840,48 +492,31 @@ body > .image-viewer.open {
 #hoomenchat-messages-page .image-viewer img,
 body > .image-viewer img {
   display: block !important;
-
   max-width: 92vw !important;
   max-height: 88vh !important;
-
   width: auto !important;
   height: auto !important;
-
   object-fit: contain !important;
-
   background: #fff !important;
-
   border: 1px solid #fff !important;
-
-  box-shadow:
-    0 4px 20px rgba(0,0,0,0.50) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.50) !important;
 }
 
 #hoomenchat-messages-page .image-viewer-close,
 body > .image-viewer .image-viewer-close {
   position: fixed !important;
-
   top: 12px !important;
   right: 15px !important;
-
   width: 32px !important;
   height: 32px !important;
-
   color: #fff !important;
-
   background: rgba(0,0,0,0.35) !important;
-
   border: 1px solid rgba(255,255,255,0.8) !important;
-
   font-size: 22px !important;
   line-height: 30px !important;
-
   font-weight: bold !important;
-
   text-align: center !important;
-
   cursor: pointer !important;
-
   z-index: 2147483647 !important;
 }
 
@@ -890,5009 +525,865 @@ body > .image-viewer .image-viewer-close:hover {
   background: rgba(0,0,0,0.65) !important;
 }
 
-
-/* =========================================================
-   НАЗАД
-   ========================================================= */
-
 #hoomenchat-messages-page .back-link {
   display: block;
-
   margin: 8px 0 0 0;
-
   padding: 5px 7px;
-
   background: #f0f0f0;
-
   border: 1px solid #aaa;
-
   color: #444;
-
   font-size: 10px;
-
   text-decoration: underline;
 }
 
 #hoomenchat-messages-page .back-link:hover {
   background: #e2e2e2;
-
   color: #000;
 }
 
-
-/* =========================================================
-   МОБІЛЬНА ВЕРСІЯ
-   ========================================================= */
-
 @media screen and (max-width: 650px) {
-
   #hoomenchat-messages-page {
-
     margin: 5px auto;
-
     padding: 7px;
   }
 
   #hoomenchat-messages-page .messages-layout {
-
     display: block;
-
     border-spacing: 0;
   }
 
   #hoomenchat-messages-page .chat-list-column,
   #hoomenchat-messages-page .conversation-column {
-
     display: block;
-
     width: 100%;
   }
 
   #hoomenchat-messages-page .chat-list-column {
-
     margin-bottom: 8px;
   }
 
   #hoomenchat-messages-page .chat-list {
-
     max-height: 300px;
   }
 
   #hoomenchat-messages-page .messages-window {
-
     height: 300px;
   }
 
-  /* Краще відображення зображень на телефоні */
   #hoomenchat-messages-page .chat-image {
     max-height: 260px;
   }
-
 }
 
 </style>
+</head>
 
+<body>
 
 <div id="hoomenchat-messages-page">
 
+  <div class="chat-header">
+    АРЧАТ — ПРИВАТНІ ЧАТИ
+  </div>
 
-<!-- =====================================================
-     ШАПКА
-     ===================================================== -->
+  <div class="messages-layout">
 
-<div class="chat-header">
-  АРЧАТ — ПРИВАТНІ ЧАТИ
+    <div class="chat-list-column">
+      <div class="list-title">Мої чати — 15</div>
+      <div class="chat-list" id="chat-list"></div>
+    </div>
+
+    <div class="conversation-column">
+      <div class="conversation-box">
+
+        <div class="conversation-header" id="conversation-header"></div>
+        <div class="messages-window" id="messages-window"></div>
+
+        <div class="message-compose">
+          <div class="compose-tools">
+            <button class="tool-button" id="emoji-button" type="button">😊</button>
+            <button class="tool-button" id="image-button" type="button">🖼</button>
+            <button class="tool-button" id="file-button" type="button">📎</button>
+
+            <input class="hidden-file-input" id="image-input" type="file" accept="image/*" multiple>
+            <input class="hidden-file-input" id="file-input" type="file" multiple>
+          </div>
+
+          <div class="emoji-panel" id="emoji-panel">
+            <div class="emoji-grid" id="emoji-grid"></div>
+          </div>
+
+          <div class="selected-files" id="selected-files"></div>
+
+          <textarea class="message-input" id="message-input" placeholder="Написати повідомлення..."></textarea>
+
+          <button class="send-button" id="send-button" type="button">НАДІСЛАТИ</button>
+          <span class="compose-status" id="compose-status"></span>
+        </div>
+
+      </div>
+
+      <a class="back-link" href="index.html">← Повернутися до Гуменчату</a>
+    </div>
+
+  </div>
 </div>
 
-
-<div class="messages-layout">
-
-
-<!-- =====================================================
-     СПИСОК ЧАТІВ
-     ===================================================== -->
-
-<div class="chat-list-column">
-
-<div class="list-title">
-  Мої чати — 15
+<div class="image-viewer" id="image-viewer">
+  <div class="image-viewer-close" id="image-viewer-close">✕</div>
+  <img id="image-viewer-image" src="" alt="">
 </div>
-
-<div
-  class="chat-list"
-  id="chat-list"
->
-</div>
-
-</div>
-
-
-<!-- =====================================================
-     ПЕРЕПИСКА
-     ===================================================== -->
-
-<div class="conversation-column">
-
-<div class="conversation-box">
-
-
-<div
-  class="conversation-header"
-  id="conversation-header"
->
-</div>
-
-
-<div
-  class="messages-window"
-  id="messages-window"
->
-</div>
-
-
-<div class="message-compose">
-
-
-<div class="compose-tools">
-
-
-<button
-  class="tool-button"
-  id="emoji-button"
-  type="button"
->
-  😊 
-</button>
-
-
-<button
-  class="tool-button"
-  id="image-button"
-  type="button"
->
-  🖼 
-</button>
-
-
-<button
-  class="tool-button"
-  id="file-button"
-  type="button"
->
-  📎 
-</button>
-
-
-<input
-  class="hidden-file-input"
-  id="image-input"
-  type="file"
-   accept="image/*"
-  multiple
->
-
-
-<input
-  class="hidden-file-input"
-  id="file-input"
-  type="file"
-  multiple
->
-
-
-</div>
-
-
-<div
-  class="emoji-panel"
-  id="emoji-panel"
->
-
-<div
-  class="emoji-grid"
-  id="emoji-grid"
->
-</div>
-
-</div>
-
-
-<div
-  class="selected-files"
-  id="selected-files"
->
-</div>
-
-
-<textarea
-  class="message-input"
-  id="message-input"
-  placeholder="Написати повідомлення..."
-></textarea>
-
-
-<button
-  class="send-button"
-  id="send-button"
-  type="button"
->
-  НАДІСЛАТИ
-</button>
-
-
-<span
-  class="compose-status"
-  id="compose-status"
->
-</span>
-
-
-</div>
-
-
-</div>
-
-
-<a
-  class="back-link"
-  href="index.html"
->
-  ← Повернутися до Гуменчату
-</a>
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-<!-- =====================================================
-     ПЕРЕГЛЯД ЗОБРАЖЕННЯ
-     ===================================================== -->
-
-<div
-  class="image-viewer"
-  id="image-viewer"
->
-
-<div
-  class="image-viewer-close"
-  id="image-viewer-close"
->
-  ✕
-</div>
-
-
-<img
-  id="image-viewer-image"
-  src=""
-  alt=""
->
-
-
-</div>
-
 
 <script>
-
-(function(){
-
-"use strict";
-
-
-/* =========================================================
-   КОРИСТУВАЧ
-   ========================================================= */
-
-var currentUser = {
-  name: "copy_pasta"
-};
-
-
-/* =========================================================
-   АВАТАР-ЗАГЛУШКА
-   ========================================================= */
-
-var placeholderAvatar =
-  "data:image/svg+xml;charset=UTF-8," +
-  encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">' +
-    '<rect width="100" height="100" fill="#dddddd"/>' +
-    '<circle cx="50" cy="37" r="18" fill="#999999"/>' +
-    '<rect x="22" y="60" width="56" height="28" fill="#999999"/>' +
-    '</svg>'
-  );
-
-
-/* =========================================================
-   ЛІМІТИ ВКЛАДЕНЬ
-   ========================================================= */
-
-var MAX_IMAGE_SIZE =
-  10 * 1024 * 1024;
-
-var MAX_FILE_SIZE =
-  20 * 1024 * 1024;
-
-
-/* =========================================================
-   ДОЗВОЛЕНІ ЗОБРАЖЕННЯ
-   ========================================================= */
-
-var allowedImageTypes = {
-
-  "image/jpeg": true,
-  "image/png": true,
-  "image/gif": true,
-  "image/webp": true,
-  "image/heic": true,
-  "image/heif": true
-
-};
-
-
-/* =========================================================
-   ЗАБОРОНЕНІ ФАЙЛИ
-   Активні / виконувані / веб-формати
-   ========================================================= */
-
-var blockedExtensions = {
-
-  ".exe": true,
-  ".com": true,
-  ".scr": true,
-  ".msi": true,
-  ".msp": true,
-
-  ".bat": true,
-  ".cmd": true,
-
-  ".ps1": true,
-  ".psm1": true,
-  ".psd1": true,
-
-  ".vbs": true,
-  ".vbe": true,
-  ".js": true,
-  ".jse": true,
-
-  ".wsf": true,
-  ".wsh": true,
-
-  ".hta": true,
-
-  ".jar": true,
-  ".class": true,
-
-  ".apk": true,
-  ".appx": true,
-  ".msix": true,
-
-  ".dll": true,
-  ".sys": true,
-  ".drv": true,
-
-  ".scr": true,
-
-  ".html": true,
-  ".htm": true,
-  ".xhtml": true,
-
-  ".svg": true,
-  ".svgz": true,
-
-  ".mht": true,
-  ".mhtml": true,
-
-  ".php": true,
-  ".phtml": true,
-  ".asp": true,
-  ".aspx": true,
-  ".jsp": true,
-
-  ".sh": true,
-  ".bash": true,
-  ".zsh": true,
-
-  ".py": true,
-  ".pyw": true,
-  ".rb": true,
-  ".pl": true,
-
-  ".lua": true,
-
-  ".desktop": true
-};
-
-
-/* =========================================================
-   15 ПЕРСОНАЖІВ
-   ========================================================= */
-
-var users = {
-
-  dreaming_romance: {
-
-    name:
-      "dreaming_romance",
-
-    avatar:
-      "https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA",
-
-    profile:
-      "profiles/dreaming-romance.html",
-
-    status:
-      "онлайн",
-
-    autoReply: [
-
-      "Це автоматичне повідомлення. Ви заблокували dreaming_romance, вона не зможе прочитати чат."
-
-    ]
-
-  },
-
-
-  sakurai_agatsuma: {
-
-    name:
-      "sakurai_agatsuma",
-
-    avatar:
-      "https://blogger.googleusercontent.com/img/a/AVvXsEg6F3ycnXu5A2gS5zM4p0-qELjeNz4oXvfJAwkLxSJnL4kELcGviUtPwYe-Oa8lV_ThO7h6iq0dwSnx2FeaHbkzG6HEC8S0HILQKiHh49eWl65LSGoj7RgeAYb7V5MV7b7Mu7Sxexq9LYM_7XPF6SkSjStcQO32x02IKUWdFlUck9z30GmMEJgH2OLM3YA",
-
-    profile:
-      "profiles/sakurai-agatsuma.html",
-
-    status:
-      "онлайн",
-
-    autoReply: [
-
-      "Ок :)",
-      "Я зрозуміла.",
-      "Цікава думка.",
-      "Добре, розповідай."
-
-    ]
-
-  },
-
-
-  alter_core: {
-
-    name:
-      "alter_core",
-
-    avatar:
-      "https://blogger.googleusercontent.com/img/a/AVvXsEiZ7hOITEG-aCscLuMNEBml1v2zidsEixQymUsU5UukZN4Jb-AAbqwdGj3CJ8gSTbOvXMgyPp3T4xAQzq3TRYhFjOYbF0TkE6lWGESsA-K31pEcpcOV2Cr061lkzABNZRKN5CPAr9WmD38DWNYbebjw8CuqHGWvgBCumZebUra3Kjf6sjUDTZDpVZQehD0",
-
-    profile:
-      "profiles/alter-core.html",
-
-    status:
-      "недавно був(ла)",
-
-    autoReply: [
-
-      "Це автоматичне повідомлення. Ви заблокували alter_core, вона не зможе прочитати чат.",
-
-    ]
-
-  },
-
-
-  another_hoomen: {
-
-    name:
-      "another_hoomen",
-
-    avatar:
-      "https://blogger.googleusercontent.com/img/a/AVvXsEhGJcedC21GOJf9E7-pAiRFqRkZkhWOsgZEmPho3dZtnirOPtoUonHL_MdwDkt-LvPpt_azt8iqxuPs6DPv8rP29QKHxw2k4jB6O1Wc7KZO8zgKHr_nNaeuI5fActfzQoxMiJc46N3oennG9eU664xDo5Cl6MXbWKDw-bjMiQ2UW1kcpCUmphIv9X1pkhE",
-
-    profile:
-      "profiles/another-hoomen.html",
-
-    status:
-      "онлайн",
-
-    autoReply: [
-
-      "Давно тебе не бачив.",
-      "Привіт.",
-      "Можемо поговорити.",
-      "Зараз трохи зайнятий."
-
-    ]
-
-  },
-
-
-  velvet_moon: {
-
-    name:
-      "velvet_moon",
-
-    avatar:
-      "https://blogger.googleusercontent.com/img/a/AVvXsEjvCZvQq7YfiAW2jyK5-_QrfSWCXfr1U1is8CoNCEVrSi8r66EOrusjYVkhcSXuLIE_RoLqNXflCSV37rByzCXUnMSmAyeV7J8OQvwcKw51nqzdepT_WG8p4EUDlGQgOdw0bjiEG3Enkud1f3CmpEcpE5Cg7LTxetdvKXZw_X9xoR69inJXkv_HlnuQJsw",
-
-    profile:
-      "profiles/velvet-moon.html",
-
-    status:
-      "був(ла) давно",
-
-    autoReply: [
-
-      "Привіт :)",
-      "Я зараз тут.",
-      "Цікаво.",
-      "Розкажи детальніше."
-
-    ]
-
-  },
-
-
-  pixel_heart: {
-
-    name:
-      "pixel_heart",
-
-    avatar:
-      placeholderAvatar,
-
-    profile:
-      "profiles/pixel-heart.html",
-
-    status:
-      "недавно був(ла)",
-
-    autoReply: [
-
-      "О, привіт.",
-      "Мм, можливо.",
-      "Я подумаю над цим.",
-      "Хех :)"
-
-    ]
-
-  },
-
-
-  night_fox: {
-
-    name:
-      "night_fox",
-
-    avatar:
-      placeholderAvatar,
-
-    profile:
-      "profiles/night-fox.html",
-
-    status:
-      "онлайн",
-
-    autoReply: [
-
-      "Привіт.",
-      "Я слухаю.",
-      "Цікаво звучить.",
-      "А що далі?"
-
-    ]
-
-  },
-
-
-  cherry_byte: {
-
-    name:
-      "cherry_byte",
-
-    avatar:
-      "https://blogger.googleusercontent.com/img/a/AVvXsEi_V3-i5gqAEgl0UEqmujNCZgYVFD0iZ1-4pEQZls0WpjMDTkeOMRhk_wzB3_jQZSylary26k6cH7mqk7edNro_gxIDMN1vnwKwqeGZ-zwRnObVwL79CzOydbmlivp0DSZy6mJGyiJ5KgoxYNr4GmuxxrLibqLgyE0IPzfmQ92xNe8LP6GEt8b35K8PJQA",
-
-    profile:
-      "profiles/cherry-byte.html",
-
-    status:
-      "недавно був(ла)",
-
-    autoReply: [
-
-      "Няя :)",
-      "Ого.",
-      "Неочікувано.",
-      "Ясно."
-
-    ]
-
-  },
-
-
-  water_blue: {
-
-    name:
-      "water_blue",
-
-    avatar:
-      "https://blogger.googleusercontent.com/img/a/AVvXsEi-IVzTEq2IynM_TIFrvaScqnwEXbfXXKJyw6mDm1JXy1YBqBB3g-garhk0xNCgObaBw-W2473PSKJoMZPIuegdmiviufrD7jCSY02X2NLH6_waaxjQJ3IE5V-n_Ynv9Qo9VLluhy35n70BcPGUvp2EOvJofrpAVNBmAU784U4-iO0GRTziDFWR7Wtgl2Q",
-
-    profile:
-      "profiles/water-blue.html",
-
-    status:
-      "онлайн",
-
-    autoReply: [
-
-      "Привіт, я дуже зайнята. Пиши мені сюди ХХХ-ХХХ-ХХ-ХХ.",
-      "Нажаль, у мене немає просто часу на це.",
-      "Вибач, не до спілкування.",
-      "Зайнята."
-
-    ]
-
-  },
-
-
-  pasta_friend: {
-
-    name:
-      "pasta_friend",
-
-    avatar:
-      placeholderAvatar,
-
-    profile:
-      "profiles/pasta-friend.html",
-
-    status:
-      "онлайн",
-
-    autoReply: [
-
-      "Ахах.",
-      "Та ну.",
-      "Серйозно?",
-      "Цікаво."
-
-    ]
-
-  },
-
-
-  rusty_robot: {
-
-    name:
-      "rusty_robot",
-
-    avatar:
-      placeholderAvatar,
-
-    profile:
-      "profiles/rusty-robot.html",
-
-    status:
-      "недавно був(ла)",
-
-    autoReply: [
-
-      "Отримано.",
-      "Обробляю інформацію.",
-      "Звучить цікаво.",
-      "Повернуся до цього."
-
-    ]
-
-  },
-
-
-  soft_static: {
-
-    name:
-      "soft_static",
-
-    avatar:
-      placeholderAvatar,
-
-    profile:
-      "profiles/soft-static.html",
-
-    status:
-      "онлайн",
-
-    autoReply: [
-
-      "Привіт.",
-      "Можливо.",
-      "Я не знаю.",
-      "Це хороше питання."
-
-    ]
-
-  },
-
-
-  blue_comet: {
-
-    name:
-      "blue_comet",
-
-    avatar:
-      placeholderAvatar,
-
-    profile:
-      "profiles/blue-comet.html",
-
-    status:
-      "онлайн",
-
-    autoReply: [
-
-      "О, ти тут.",
-      "Добре.",
-      "Можемо поговорити.",
-      "Я слухаю."
-
-    ]
-
-  },
-
-
-  coffee_signal: {
-
-    name:
-      "coffee_signal",
-
-    avatar:
-      "https://blogger.googleusercontent.com/img/a/AVvXsEhzk94r86FgzVUKV3vexrNMu1qNtg4p4TmKESMylkPtOoGL6KI0fDw0743JR2KaYsKSMT1FQC81AptsedII-X6O06QTejI2h2L6F95NioihwLF9RdiK-CBRxsIwNFZMTJenUoXFC_tR98O4FbGaKO30PoHL7JlRZPyVb9rYdwf3djhTsyFMvB--c0FdiRY",
-
-    profile:
-      "profiles/coffee-signal.html",
-
-    status:
-      "недавно був(ла)",
-
-    autoReply: [
-
-      "Привіт ☕",
-      "Саме п'ю каву.",
-      "Оце так.",
-      "Можна."
-
-    ]
-
-  },
-
-
-  paper_storm: {
-
-    name:
-      "paper_storm",
-
-    avatar:
-      placeholderAvatar,
-
-    profile:
-      "profiles/paper-storm.html",
-
-    status:
-      "онлайн",
-
-    autoReply: [
-
-      "Привіт.",
-      "Розкажи.",
-      "Несподівано.",
-      "Я ще думаю."
-
-    ]
-
-  }
-
-};
-
-
-/* =========================================================
-   15 ЧАТІВ
-   ========================================================= */
-
-var chats = {
-
-  dreaming_romance: {
-
-    user:
-      "dreaming_romance",
-
-    messages: [
-
-    {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, ймовірно, ти мене не пам'ятаєш. Коли мені було 8 років, я вперше зустріла тебе. Ми разом зростали, грали з іншими дітьми на вулиці і навіть навчались у одному класі. А потім ти кудись зник разом з батьками. Щиро перепрошую що потурбувала. Що скажеш стосовно знайомства?",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Привіт. Вау... Чесно? Я трішки вражений. Так, самі часи я трішки пам'ятаю, але багато чого вже забув.",
-
-        time:
-          "Невертайм"
-      },
-
-       {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Чи пам'ятаєш ти дівчинку, яка носила часто чорні речі? Ми з тобою та іншими грали в класику. Пам'ятаю як ти розповідав мені що мрієш мати свого власного кота, авто та займатися творчістю. Я проводжала тебе додому, а ще нас інколи залишали разом наодинці. Ти не звертав на мене увагу, бо завжди багато навчався. Ти часто залишав нашу невеличку компанію щоб вдома зробити завдання по школі.",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Щось пригадую трішки. Але не пам'ятаю щоб розмовляв з тобою. Пам'ятаю ігри та інше, але нажаль тебе я пригадати не можу.",
-
-        time:
-          "Невертайм"
-      },
-
-       {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Шкода що не можеш. Я була вкохана в тебе. Це були просто неймовірні почуття. Якщо не секрет, то куди ти переїхав?",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Мені дуже приємно від твоїх слів, не очікував що я міг стати першим вкоханим. Я неподалік проживаю. Батьки купили хатку в багатоповерхівці і ми там поселились.",
-
-        time:
-          "Невертайм"
-      },
-
-       {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Ти б погодився на стусни? Чи у тебе вже хтось є?",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Так, звісно. Вибач, я маю наувазі що у мене немає стусанки. Тому так, я буду радий.",
-
-        time:
-          "Невертайм"
-      },
-
-       {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "У такому випадку, поставимо одне одного у стусни в сімейці?",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Так, зачекай. Зараз. Все, є.",
-
-        time:
-          "Невертайм"
-      },
-
-       {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Мені дуже приємно, зустрінемось завтра? Мій номер телефона ХХХ-ХХХ-ХХ-ХХ. А твій?",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Так, я наберу тебе. Мій? ХХХ-ХХХ-ХХ-ХХ. Я напишу тобі в чат тоді.",
-
-        time:
-          "Невертайм"
-      },
-
-             {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Чекатиму. Поспілкуємось там. Тоді до завтра?",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "До завтра.",
-
-        time:
-          "Невертайм"
-      },
-
-             {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, хотіла поцікавитись, чому ти напив в сімейці що ти не одружений? І хто така vivienne_nox? Чому ти пишеш їй та ставиш реакцї?",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Привіт. Я дуже ціную наші стусни. Вирішив приховати щоб інші не наврочили. vivienne_nox моя нова друменка) Ми з нею нещодавно познайомилися. Вона така прикольна, у нас багато чого спілього.",
-
-        time:
-          "Невертайм"
-      },
-
-                  {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Мені не приємно що ти приховуєш наші стусни У мене в гумгайлі зазначено що ми з тобою разом. Я б хотіла щоб ти також це зазначив. Мені також не приємно що у тебе з'явилася друменка, яка потенційно може бути розглянена тобою у якості стусанки. Я ж не заводжу друменів серед чоловіків, не ставлю реакції та не пікаплю їх. Мені необхідно щоб це було навзаєм.",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Мені не подобається таке ставлення. Ти ніби обмежуєш мою свободу дій. Я продовжуватиму з нею спілкування та ставити реакції.",
-
-        time:
-          "Невертайм"
-      },
-
-                   {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Ти в стуснах. Ти ніколи не писав мені під моїми дописами та тимпаче ніколи не ставив реакції. Ти не ставиш своїм друменам таку кількість реакцій як їй. Більш того, ти приховуєш мене, а це зелена світна для шукайголів.",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Не правда. Я ж ставив реакції.",
-
-        time:
-          "Невертайм"
-      },
-
-                   {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Не бреши!",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Якщо я кільком друменам поставлю по 1 реакції, ти відчепишся?",
-
-        time:
-          "Невертайм"
-      },
-
-                   {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Мені потрібно щоб ця увага з твого боку йшла до мене. Мені боляче що чужа гуменка стала для тебе мейтом, а я єю ніколи й не була. Мені боляче від того що ти мене приховуєш і так зі мною поводишся.",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Мені потрібен час, я маю подумати над цим. Але навряд чи я це зміню.",
-
-        time:
-          "Невертайм"
-      },
-
-                   {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Тоді навіщо тобі потрібна саме я? Ти не цінуєш мене та робиш мені боляче своїми вчинками!",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Вона просто друменка, не більше. Чого ти починаєш?",
-
-        time:
-          "Невертайм"
-      },
-
-                   {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "У такому випадку, прощавай. Мене це не влаштовує.",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Ня, як ти? Дякую що розблокувала. Пройшло чимало часу з нашого останнього спілкування)",
-
-        time:
-          "Невертайм"
-      },
-
-                   {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Ти видалив її?",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Кого?)",
-
-        time:
-          "Невертайм"
-      },
-
-                   {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "vivienne_nox",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Ем, ні. Й не збираюсь)",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "ммм... я хочу в майбутньому одружитись з україночкою) Іноземки також гарні, але свої рідніші)",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Оскільки ми з тобою перебуваємо в стосунках, ти кажеш про нас? Про мене?",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Я ж не казав що вже знаю з ким одружусь) Я тобі за свої бажання в майбутньому розповів)",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "А можна конкретику?",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Зрозуміло... сімейку ти також не повернув.",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Щастя любить тишу.",
-
-        time:
-          "Невертайм"
-      },
-
-                   {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "...",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Ня?) Ми все ще разом?",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Напевно...",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Йо, як ти?",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, хто така sruiki_stikki?",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-              
-        text:
-          "Знайома, а що?",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Та ні, нічого.",
-
-        time:
-          "Невертайм"
-      },
-
-     {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Я думаю між нами нічого не вийде. Ти постійно сумна. Мені це набрдло. Я уходжу.",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Я не лялька щоб тебе розважати. Бувай.",
-
-        time:
-          "Невертайм"
-      },
-
-     {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Йо, вбач. Я бву тким кзлом. Ти мій скраб, я ціюн етбе) З днем анродженян) Можше орбити із моню що хочш)",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Ти вживав якісь напої? Що з тобою?",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Торшки) Я пропнуваа стсуни іншй.",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Кому?",
-
-        time:
-          "Невертайм"
-      },
-
-       {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "sruiki_stikki",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Вона красива...",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "тка, карсивва) Вдмовила мні)",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Тому ти поліз назад до мене? В іншому випадку, ти б ніколи не повернувся...",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Алже я з тбою)",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Під випивкою... а мене ти красивою ніколи не вважав.",
-
-        time:
-          "Невертайм"
-      },
-
-       {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Не почнай(",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Йо! Ти як?",
-
-        time:
-          "12:04"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, погано( Напиши через 2 тижні будь ласка.",
-
-        time:
-          "12:06"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Нам потрібно поговорити. Мені треба розібратись в собі, бо я думаю що чуттів до тебе не маю більше.",
-
-        time:
-          "12:07"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Ох, серйозно?) Ти взагалі напевно їх ніколи й не мав. Але не лише тримав мене поруч, приховав стусни, ліз до інших.",
-
-        time:
-          "12:09"
-      },
-
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Мені потрібна пауза. Я напишу тобі через 3 дні",
-
-        time:
-          "12:12"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Пауза, ти серйозно? 😭",
-
-        time:
-          "12:13"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Ти вкотре намагаєшся все переграти на свій бік. Щоб все було по-твоєму.",
-
-        time:
-          "12:15"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Все, я пішов, напишу через 3 дні своє рішення. Не сумуй)",
-
-        time:
-          "12:17"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Я й не сумую, удачі з іншими друменками. Наші стусни офіційно завершені.",
-
-        time:
-          "12:17"
-      }
-
-    ]
-
-  },
-
-
-  sakurai_agatsuma: {
-
-    user:
-      "sakurai_agatsuma",
-
-    messages: [
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Привіт. Ти бачила останнє оновлення?",
-
-        time:
-          "10:41"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, ні. Я закинула гру.",
-
-        time:
-          "10:43"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "В сенсі? Чого закинула??",
-
-        time:
-          "10:44"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Мені набридло грати в неї самій. У грі забагато однакових завдань, який сенс обходити кожну галявину на кожному каналі та збирати купу матеріалів? Щоб що? Скільки я не покращую персонажа, те тягнеться нескінченно. Я швидко отримала високий рівень, але не спроможна пройти складніших ворогів. Бо у мене занадто слабкий персонаж. І скільки не робиш його кращим, все одно він слабкий та щоразу програє битву зі шмарклями. Мене це вже задовбало. З кожною прокачкою просять більше монет назбирати, більше матеріалів. Я вже 25 разів поспіль прокачала, але треба 500. Нащо мені витрачати на це все час? Я краще у щось інше пограю, що не вимагає стільки ресурсів і не знищує нервову систему.",
-
-        time:
-          "10:48"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Ок. Там просто нова класна подія. Думала ти захочеш це побачити.",
-
-        time:
-          "10:51"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Дякую, але все ж відмовлюсь. Я вже видалила гру з кінцями.",
-
-        time:
-          "10:52"
-      }
-
-    ]
-
-  },
-
-
-  alter_core: {
-
-    user:
-      "alter_core",
-
-    messages: [
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, я не проти знайомства. Тож, розповім тобі тут про себе. Моє справжнє ім'я Антуанна. Я завжди мріяла мати друзів, відвідувати з ними закинуті місця, музеї, ходити разом на виставки, особливо аніме. Я обожнюю суміш емоційної культури та готики. Саме тому я виглядаю так як зараз, це моя душа. Нажаль, так склалися обставини що друзів у мене немає. Мене просто не приймали, від чого серце сумує та проливає сльози... Вони сказали що їм не подобається моя зовнішність та інтереси. Тому ми не зійшлися.",
-
-        time:
-          "12:01"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, приємно познайомитись! Мені подобається аніме, субкультури. Якщо ти не проти, то я рада буду стати твоєю подружкою. Як ти сьогодні почуваєшся?",
-
-        time:
-          "12:03"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Звісно не проти. Можливо, ми станемо гарними друзями. Але для цього мені потрібен час. Давай у грі поспілкуємось? Мені там значно зручніше.",
-
-        time:
-          "12:05"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Так, залюбки.",
-
-        time:
-          "12:06"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Привіт! Я тобі не писала, але у мене є кілька претензій. Не те щоб це сильно мені не подобалося, але я б хотіла дещо уточнити.",
-
-        time:
-          "09:21"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт. Що саме?",
-
-        time:
-          "09:23"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Мене дратує звук від твого персонажа, чи не могла б ти його прибрати?",
-
-        time:
-          "09:23"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Так, звісно... я думала що бульбашки це прикольно...",
-
-        time:
-          "09:24"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Чудово. А ще чи могла б ти змінити персонажу одяг та зачіску? Я не те щоб прискіпуюсь, але це виглядає досить сумно.",
-
-        time:
-          "09:27"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Але у тебе також персонажка не яскравих кольорів. Плюс ти почала розмову зі своїх сумних життєвих подій. Це задало тон усієї розмови. Перепрошую, але я не буду нічого змінювати у персонажці.",
-
-        time:
-          "09:29"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Я сьогодні хочу побути на самоті. Хочу провести час у кімнаті 1 на 1 з собою.",
-
-        time:
-          "09:35"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Добре, чекатиму.",
-
-        time:
-          "09:37"
-      }
-
-    ]
-
-  },
-
-
-  another_hoomen: {
-
-    user:
-      "another_hoomen",
-
-    messages: [
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Давно тебе не бачив.",
-
-        time:
-          "Вчора"
-      }
-
-    ]
-
-  },
-
-
-  velvet_moon: {
-    user: "velvet_moon",
-    messages: [
-       {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, пишу з нового гумайла, як і обіцяла. Ти ж видалила стару переписку?",
-
-        time:
-          "Невертайм"
-      },
-
-             {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, так.",
-
-        time:
-          "Невертайм"
-      },
-
-      
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Супер. Впустиш до свого острова? 😁🙄😏",
-
-        time:
-          "Невертайм"
-      },
-
-             {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Острів відкритий, тому ти й так можеш вступити без проблем)",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Дякую!",
-
-        time:
-          "Невертайм"
-      }
-    ]
-  },
-
-  pixel_heart: {
-    user: "pixel_heart",
-    messages: []
-  },
-
-  night_fox: {
-    user: "night_fox",
-    messages: []
-  },
-
-  cherry_byte: {
-    user: "cherry_byte",
-    messages: [
-       {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Ніао, купила новий парфум, ароматно пахне та й виглядає дуже естетично.",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, розкажеш подробиці?",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "То тобі дійсно цікаво?",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Так",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Він у формі витягнутого декоративного прозорого серця, довкола нього метал у формі коріння. А всередині парфум такий червоний як кров.",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Прикольно",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Та не дуже, якщо відповідь настільки звичайна 😒",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Ок. Як скажеш.",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Ти не в настрої?",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Чому ж? В настрої, все норм.",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "М... окей.",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, як справи?",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Ніао, справи добре. А твої?",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Також.",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Це добре.",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Так.",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Саме так. Добре.",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Що?",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Нічого такого.",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Гарні ж парфуми.",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Так, гарні.",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Порозмовляли.",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "...",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "🙄?",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "👍🏻",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Дай знати якщо захочеш розмову.",
-
-        time:
-          "Невертайм"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Ок. Ти теж можеш завжди мені написати.",
-
-        time:
-          "Невертайм"
-      },
-    ]
-  },
-
-  water_blue: {
-    user: "water_blue",
-    messages: [
-
-            {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, мені також подобаються тама-чі.",
-
-        time:
-          "10:43"
-      },
-
-      {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, це чудово. А з якою метою ти мені про це пишеш?",
-
-        time:
-          "10:44"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Я не знайшла у твоєму гумгайлі острів, тому хочу попросити надати стежку на нього :)",
-
-        time:
-          "10:48"
-      },
-
-            {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Аа, звісно. Залюбки!",
-
-        time:
-          "10:44"
-      },
-
-    ]
-  },
-
-  pasta_friend: {
-    user: "pasta_friend",
-    messages: []
-  },
-
-  rusty_robot: {
-    user: "rusty_robot",
-    messages: []
-  },
-
-  soft_static: {
-    user: "soft_static",
-    messages: []
-  },
-
-  blue_comet: {
-    user: "blue_comet",
-    messages: []
-  },
-
-  coffee_signal: {
-    user: "coffee_signal",
-    messages: [
-       {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Сонячного раночку! Давно тебе не бачили. Гаряча кава вже чекає на тебе, дивись, не забарись! Отримай безкоштовну порцію по промокоду 4400! Акція діє протягом трьох днів.",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, дякую. Дуже смачна кава була.",
-
-        time:
-          "Невертайм"
-      },
-
-             {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Ми щиро раді що тобі сподобався наш сервіс! Свята ось-ось будуть тут. Пригости кавою друменів та рідних.",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, є безкоштовні промокоди?",
-
-        time:
-          "Невертайм"
-      },
-
-             {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Нажаль, немає 😔 Але якщо ти замовиш повноцінний обід з кавою та тістечком, то отримаєш 3 кави разом для своїх друменів та близьких.",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Як скажеш. Немає, то немає.",
-
-        time:
-          "Невертайм"
-      },
-
-             {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, люба друменко! Давно тебе не бачили 👀. Лови промокод на 50% знижку на каву, 9321. При другому замовленні ти отримаєш додатково до 15% знижки! Акція діє протягом двох тижнів. Поспішай!",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, чекаю на безкоштовну.",
-
-        time:
-          "Невертайм"
-      },
-
-             {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Щоб отримати каву безкоштовно, потрібно зробити 5 замовлень.",
-
-        time:
-          "Невертайм"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Привіт, тоді не треба.",
-
-        time:
-          "Невертайм"
-      },
-
-             {
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          "Доброго раночку! Давно тебе не бачили. Гаряча кава вже чекає на тебе, дивись, не забарись! Отримай безкоштовну порцію по промокоду 4191! Акція діє протягом трьох днів.",
-
-        time:
-          "Вчора"
-      },
-
-      {
-        from:
-          "me",
-
-        type:
-          "text",
-
-        text:
-          "Дякую.",
-
-        time:
-          "Вчора"
-      },
-    ]
-  },
-
-  paper_storm: {
-    user: "paper_storm",
-    messages: []
-  }
-
-};
-
-
-/* =========================================================
-   ПОТОЧНИЙ ЧАТ
-   ========================================================= */
-
-var currentChat =
-  "dreaming_romance";
-
-
-/* =========================================================
-   ТИМЧАСОВІ ВКЛАДЕННЯ
-   ========================================================= */
-
-var pendingAttachments = [];
-
-
-/* =========================================================
-   EMOJI
-   ========================================================= */
-
-var emojis = [
-
-  "😀","😃","😄","😁","😆","😅",
-  "😂","🤣","😊","🙂","🙃","😉",
-  "😌","😍","🥰","😘","😗","😙",
-  "😚","😋","😛","😝","😜","🤪",
-  "🤨","🧐","🤓","😎","🥹","😭",
-  "😢","😥","😮","😲","😴","🤔",
-  "😐","😑","😶","🙄","😏","😣",
-  "😥","😮‍💨","😪","😫","🥱","😤",
-  "😠","😡","🤬","🤯","😳","🥺",
-  "😱","😨","😰","😓","🤗","🤭",
-  "🫢","🫣","🤫","😇","❤️","🧡",
-  "💛","💚","💙","💜","🖤","🤍",
-  "🤎","💔","💕","💞","💓","💗",
-  "💖","💘","💝","✨","⭐","🌟",
-  "🔥","🌸","🌹","🌷","🌻","🌙",
-  "☀️","☕","🍕","🍔","🎮","🎵",
-  "🎨","📚","💻","🖥️","📱","🐱",
-  "🐶","🦊","🐼","🐰","🦄","👀",
-  "👍","👎","👏","🙏","🤝","👌",
-  "✌️","🤞","💪","🫶","🙌","🎉"
-
-];
-
-
-/* =========================================================
-   GET
-   ========================================================= */
-
-function get(id) {
-
-  return document.getElementById(id);
-
-}
-
-
-/* =========================================================
-   ESCAPE
-   ========================================================= */
-
-function escapeHtml(text) {
-
-  return String(text)
-
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-
-    .replace(
-      /</g,
-      "&lt;"
-    )
-
-    .replace(
-      />/g,
-      "&gt;"
-    )
-
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-
-}
-
-
-/* =========================================================
-   ОТРИМАТИ РОЗШИРЕННЯ
-   ========================================================= */
-
-function getExtension(fileName) {
-
-  var cleanName =
-    String(fileName || "")
-      .toLowerCase()
-      .split("?")[0]
-      .split("#")[0];
-
-  var dot =
-    cleanName.lastIndexOf(".");
-
-  if (dot === -1) {
-
-    return "";
-
-  }
-
-  return cleanName.substring(dot);
-
-}
-
-
-/* =========================================================
-   ПЕРЕВІРКА ЗОБРАЖЕННЯ
-   ========================================================= */
-
-function isAllowedImage(file) {
-
-  if (!file) {
-
-    return {
-      allowed: false,
-      reason: "Файл не визначено."
-    };
-
-  }
-
-
-  if (
-    !allowedImageTypes[
-      file.type
-    ]
-  ) {
-
-    return {
-
-      allowed: false,
-
-      reason:
-        "Дозволені лише JPG, PNG, GIF та WebP."
-
-    };
-
-  }
-
-
-  if (
-    file.size >
-    MAX_IMAGE_SIZE
-  ) {
-
-    return {
-
-      allowed: false,
-
-      reason:
-        "Зображення завелике. Максимум 10 MB."
-
-    };
-
-  }
-
-
-  return {
-    allowed: true
+(function() {
+  "use strict";
+
+  var currentUser = {
+    name: "copy_pasta"
   };
 
-}
-
-
-/* =========================================================
-   ПЕРЕВІРКА ЗВИЧАЙНОГО ФАЙЛУ
-   ========================================================= */
-
-function isAllowedFile(file) {
-
-  if (!file) {
-
-    return {
-
-      allowed: false,
-
-      reason:
-        "Файл не визначено."
-
-    };
-
-  }
-
-
-  if (
-    file.size >
-    MAX_FILE_SIZE
-  ) {
-
-    return {
-
-      allowed: false,
-
-      reason:
-        "Файл завеликий. Максимум 20 MB."
-
-    };
-
-  }
-
-
-  var extension =
-    getExtension(
-      file.name
+  var placeholderAvatar =
+    "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">' +
+      '<rect width="100" height="100" fill="#dddddd"/>' +
+      '<circle cx="50" cy="37" r="18" fill="#999999"/>' +
+      '<rect x="22" y="60" width="56" height="28" fill="#999999"/>' +
+      '</svg>'
     );
 
+  var MAX_IMAGE_SIZE = 10 * 1024 * 1024;
+  var MAX_FILE_SIZE = 20 * 1024 * 1024;
 
-  if (
-    blockedExtensions[
-      extension
-    ]
-  ) {
+  var allowedImageTypes = {
+    "image/jpeg": true,
+    "image/png": true,
+    "image/gif": true,
+    "image/webp": true,
+    "image/heic": true,
+    "image/heif": true
+  };
 
-    return {
+  var blockedExtensions = {
+    ".exe": true, ".com": true, ".scr": true, ".msi": true, ".msp": true,
+    ".bat": true, ".cmd": true, ".ps1": true, ".psm1": true, ".psd1": true,
+    ".vbs": true, ".vbe": true, ".js": true, ".jse": true, ".wsf": true, ".wsh": true,
+    ".hta": true, ".jar": true, ".class": true, ".apk": true, ".appx": true, ".msix": true,
+    ".dll": true, ".sys": true, ".drv": true, ".html": true, ".htm": true, ".xhtml": true,
+    ".svg": true, ".svgz": true, ".mht": true, ".mhtml": true, ".php": true, ".phtml": true,
+    ".asp": true, ".aspx": true, ".jsp": true, ".sh": true, ".bash": true, ".zsh": true,
+    ".py": true, ".pyw": true, ".rb": true, ".pl": true, ".lua": true, ".desktop": true
+  };
 
-      allowed: false,
+  var users = {
+    dreaming_romance: {
+      name: "dreaming_romance",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA",
+      profile: "profiles/dreaming-romance.html",
+      status: "онлайн",
+      autoReply: ["Це автоматичне повідомлення. Ви заблокували dreaming_romance, вона не зможе прочитати чат."]
+    },
+    sakurai_agatsuma: {
+      name: "sakurai_agatsuma",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEg6F3ycnXu5A2gS5zM4p0-qELjeNz4oXvfJAwkLxSJnL4kELcGviUtPwYe-Oa8lV_ThO7h6iq0dwSnx2FeaHbkzG6HEC8S0HILQKiHh49eWl65LSGoj7RgeAYb7V5MV7b7Mu7Sxexq9LYM_7XPF6SkSjStcQO32x02IKUWdFlUck9z30GmMEJgH2OLM3YA",
+      profile: "profiles/sakurai-agatsuma.html",
+      status: "онлайн",
+      autoReply: ["Ок :)", "Я зрозуміла.", "Цікава думка.", "Добре, розповідай."]
+    },
+    alter_core: {
+      name: "alter_core",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiZ7hOITEG-aCscLuMNEBml1v2zidsEixQymUsU5UukZN4Jb-AAbqwdGj3CJ8gSTbOvXMgyPp3T4xAQzq3TRYhFjOYbF0TkE6lWGESsA-K31pEcpcOV2Cr061lkzABNZRKN5CPAr9WmD38DWNYbebjw8CuqHGWvgBCumZebUra3Kjf6sjUDTZDpVZQehD0",
+      profile: "profiles/alter-core.html",
+      status: "недавно був(ла)",
+      autoReply: ["Це автоматичне повідомлення. Ви заблокували alter_core, вона не зможе прочитати чат."]
+    },
+    another_hoomen: {
+      name: "another_hoomen",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhGJcedC21GOJf9E7-pAiRFqRkZkhWOsgZEmPho3dZtnirOPtoUonHL_MdwDkt-LvPpt_azt8iqxuPs6DPv8rP29QKHxw2k4jB6O1Wc7KZO8zgKHr_nNaeuI5fActfzQoxMiJc46N3oennG9eU664xDo5Cl6MXbWKDw-bjMiQ2UW1kcpCUmphIv9X1pkhE",
+      profile: "profiles/another-hoomen.html",
+      status: "онлайн",
+      autoReply: ["Давно тебе не бачив.", "Привіт.", "Можемо поговорити.", "Зараз трохи зайнятий."]
+    },
+    velvet_moon: {
+      name: "velvet_moon",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEjvCZvQq7YfiAW2jyK5-_QrfSWCXfr1U1is8CoNCEVrSi8r66EOrusjYVkhcSXuLIE_RoLqNXflCSV37rByzCXUnMSmAyeV7J8OQvwcKw51nqzdepT_WG8p4EUDlGQgOdw0bjiEG3Enkud1f3CmpEcpE5Cg7LTxetdvKXZw_X9xoR69inJXkv_HlnuQJsw",
+      profile: "profiles/velvet-moon.html",
+      status: "був(ла) давно",
+      autoReply: ["Привіт :)", "Я зараз тут.", "Цікаво.", "Розкажи детальніше."]
+    },
+    pixel_heart: {
+      name: "pixel_heart",
+      avatar: placeholderAvatar,
+      profile: "profiles/pixel-heart.html",
+      status: "недавно був(ла)",
+      autoReply: ["О, привіт.", "Мм, можливо.", "Я подумаю над цим.", "Хех :)"]
+    },
+    night_fox: {
+      name: "night_fox",
+      avatar: placeholderAvatar,
+      profile: "profiles/night-fox.html",
+      status: "онлайн",
+      autoReply: ["Привіт.", "Я слухаю.", "Цікаво звучить.", "А що далі?"]
+    },
+    cherry_byte: {
+      name: "cherry_byte",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEi_V3-i5gqAEgl0UEqmujNCZgYVFD0iZ1-4pEQZls0WpjMDTkeOMRhk_wzB3_jQZSylary26k6cH7mqk7edNro_gxIDMN1vnwKwqeGZ-zwRnObVwL79CzOydbmlivp0DSZy6mJGyiJ5KgoxYNr4GmuxxrLibqLgyE0IPzfmQ92xNe8LP6GEt8b35K8PJQA",
+      profile: "profiles/cherry-byte.html",
+      status: "недавно був(ла)",
+      autoReply: ["Няя :)", "Ого.", "Неочікувано.", "Ясно."]
+    },
+    water_blue: {
+      name: "water_blue",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEi-IVzTEq2IynM_TIFrvaScqnwEXbfXXKJyw6mDm1JXy1YBqBB3g-garhk0xNCgObaBw-W2473PSKJoMZPIuegdmiviufrD7jCSY02X2NLH6_waaxjQJ3IE5V-n_Ynv9Qo9VLluhy35n70BcPGUvp2EOvJofrpAVNBmAU784U4-iO0GRTziDFWR7Wtgl2Q",
+      profile: "profiles/water-blue.html",
+      status: "онлайн",
+      autoReply: ["Привіт, я дуже зайнята. Пиши мені сюди ХХХ-ХХХ-ХХ-ХХ.", "Нажаль, у мене немає просто часу на це.", "Вибач, не до спілкування.", "Зайнята."]
+    },
+    pasta_friend: {
+      name: "pasta_friend",
+      avatar: placeholderAvatar,
+      profile: "profiles/pasta-friend.html",
+      status: "онлайн",
+      autoReply: ["Ахах.", "Та ну.", "Серйозно?", "Цікаво."]
+    },
+    rusty_robot: {
+      name: "rusty_robot",
+      avatar: placeholderAvatar,
+      profile: "profiles/rusty-robot.html",
+      status: "недавно був(ла)",
+      autoReply: ["Отримано.", "Обробляю інформацію.", "Звучить цікаво.", "Повернуся до цього."]
+    },
+    soft_static: {
+      name: "soft_static",
+      avatar: placeholderAvatar,
+      profile: "profiles/soft-static.html",
+      status: "онлайн",
+      autoReply: ["Привіт.", "Можливо.", "Я не знаю.", "Це хороше питання."]
+    },
+    blue_comet: {
+      name: "blue_comet",
+      avatar: placeholderAvatar,
+      profile: "profiles/blue-comet.html",
+      status: "онлайн",
+      autoReply: ["О, ти тут.", "Добре.", "Можемо поговорити.", "Я слухаю."]
+    },
+    coffee_signal: {
+      name: "coffee_signal",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhzk94r86FgzVUKV3vexrNMu1qNtg4p4TmKESMylkPtOoGL6KI0fDw0743JR2KaYsKSMT1FQC81AptsedII-X6O06QTejI2h2L6F95NioihwLF9RdiK-CBRxsIwNFZMTJenUoXFC_tR98O4FbGaKO30PoHL7JlRZPyVb9rYdwf3djhTsyFMvB--c0FdiRY",
+      profile: "profiles/coffee-signal.html",
+      status: "недавно був(ла)",
+      autoReply: ["Привіт ☕", "Саме п'ю каву.", "Оце так.", "Можна."]
+    },
+    paper_storm: {
+      name: "paper_storm",
+      avatar: placeholderAvatar,
+      profile: "profiles/paper-storm.html",
+      status: "онлайн",
+      autoReply: ["Привіт.", "Розкажи.", "Несподівано.", "Я ще думаю."]
+    }
+  };
 
-      reason:
-        "Цей тип файлу заборонений."
+  /* =========================================================
+     ЧАТИ (повідомлення підвантажуються з JSON)
+     ========================================================= */
 
-    };
+  var chats = {
+    dreaming_romance:   { user: "dreaming_romance",   messages: [], loaded: false },
+    sakurai_agatsuma:   { user: "sakurai_agatsuma",   messages: [], loaded: false },
+    alter_core:         { user: "alter_core",         messages: [], loaded: false },
+    another_hoomen:     { user: "another_hoomen",     messages: [], loaded: false },
+    velvet_moon:        { user: "velvet_moon",        messages: [], loaded: false },
+    pixel_heart:        { user: "pixel_heart",        messages: [], loaded: false },
+    night_fox:          { user: "night_fox",          messages: [], loaded: false },
+    cherry_byte:        { user: "cherry_byte",        messages: [], loaded: false },
+    water_blue:         { user: "water_blue",         messages: [], loaded: false },
+    pasta_friend:       { user: "pasta_friend",       messages: [], loaded: false },
+    rusty_robot:        { user: "rusty_robot",        messages: [], loaded: false },
+    soft_static:        { user: "soft_static",        messages: [], loaded: false },
+    blue_comet:         { user: "blue_comet",         messages: [], loaded: false },
+    coffee_signal:      { user: "coffee_signal",      messages: [], loaded: false },
+    paper_storm:        { user: "paper_storm",        messages: [], loaded: false }
+  };
 
-  }
+  var currentChat = "dreaming_romance";
+  var pendingAttachments = [];
 
-
-  /*
-   * Додаткова перевірка MIME.
-   */
-
-  var dangerousMimePrefixes = [
-
-    "text/html",
-    "application/xhtml+xml",
-    "image/svg+xml",
-    "text/javascript",
-    "application/javascript",
-    "application/x-javascript",
-    "application/x-msdownload",
-    "application/x-sh",
-    "application/x-httpd-php"
-
+  var emojis = [
+    "😀","😃","😄","😁","😆","😅","😂","🤣","😊","🙂","🙃","😉",
+    "😌","😍","🥰","😘","😗","😙","😚","😋","😛","😝","😜","🤪",
+    "🤨","🧐","🤓","😎","🥹","😭","😢","😥","😮","😲","😴","🤔",
+    "😐","😑","😶","🙄","😏","😣","😮‍💨","😪","😫","🥱","😤",
+    "😠","😡","🤬","🤯","😳","🥺","😱","😨","😰","😓","🤗","🤭",
+    "🫢","🫣","🤫","😇","❤️","🧡","💛","💚","💙","💜","🖤","🤍",
+    "🤎","💔","💕","💞","💓","💗","💖","💘","💝","✨","⭐","🌟",
+    "🔥","🌸","🌹","🌷","🌻","🌙","☀️","☕","🍕","🍔","🎮","🎵",
+    "🎨","📚","💻","🖥️","📱","🐱","🐶","🦊","🐼","🐰","🦄","👀",
+    "👍","👎","👏","🙏","🤝","👌","✌️","🤞","💪","🫶","🙌","🎉"
   ];
 
+  function get(id) {
+    return document.getElementById(id);
+  }
 
-  for (
-    var i = 0;
-    i < dangerousMimePrefixes.length;
-    i++
-  ) {
+  function escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 
-    if (
-      file.type ===
-      dangerousMimePrefixes[i]
-    ) {
+  function getExtension(fileName) {
+    var cleanName = String(fileName || "").toLowerCase().split("?")[0].split("#")[0];
+    var dot = cleanName.lastIndexOf(".");
+    return dot === -1 ? "" : cleanName.substring(dot);
+  }
 
-      return {
-
-        allowed: false,
-
-        reason:
-          "Цей тип файлу заборонений."
-
-      };
-
+  function isAllowedImage(file) {
+    if (!file) return { allowed: false, reason: "Файл не визначено." };
+    if (!allowedImageTypes[file.type]) {
+      return { allowed: false, reason: "Дозволені лише JPG, PNG, GIF, WebP, HEIC." };
     }
-
+    if (file.size > MAX_IMAGE_SIZE) {
+      return { allowed: false, reason: "Зображення завелике. Максимум 10 MB." };
+    }
+    return { allowed: true };
   }
 
-
-  return {
-
-    allowed: true
-
-  };
-
-}
-
-
-/* =========================================================
-   EMOJI
-   ========================================================= */
-
-function renderEmojiPanel() {
-
-  var container =
-    get(
-      "emoji-grid"
-    );
-
-
-  if (!container) {
-
-    return;
-
+  function isAllowedFile(file) {
+    if (!file) return { allowed: false, reason: "Файл не визначено." };
+    if (file.size > MAX_FILE_SIZE) {
+      return { allowed: false, reason: "Файл завеликий. Максимум 20 MB." };
+    }
+    var extension = getExtension(file.name);
+    if (blockedExtensions[extension]) {
+      return { allowed: false, reason: "Цей тип файлу заборонений." };
+    }
+    return { allowed: true };
   }
 
+  function renderEmojiPanel() {
+    var container = get("emoji-grid");
+    if (!container) return;
+    container.innerHTML = "";
+    emojis.forEach(function(emoji) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "emoji-button";
+      button.textContent = emoji;
+      button.addEventListener("click", function() {
+        insertEmoji(emoji);
+      });
+      container.appendChild(button);
+    });
+  }
 
-  container.innerHTML =
-    "";
+  function insertEmoji(emoji) {
+    var input = get("message-input");
+    if (!input) return;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    input.value = input.value.substring(0, start) + emoji + input.value.substring(end);
+    input.focus();
+    input.setSelectionRange(start + emoji.length, start + emoji.length);
+  }
 
+  function renderChatList() {
+    var container = get("chat-list");
+    if (!container) return;
+    container.innerHTML = "";
 
-  emojis.forEach(
-    function(emoji) {
+    Object.keys(chats).forEach(function(chatId) {
+      var chat = chats[chatId];
+      var user = users[chat.user];
+      if (!user) return;
 
+      var item = document.createElement("div");
+      item.className = "chat-list-item" + (chatId === currentChat ? " active" : "");
 
-      var button =
-        document.createElement(
-          "button"
-        );
+      var avatar = document.createElement("img");
+      avatar.className = "chat-list-avatar";
+      avatar.src = user.avatar;
+      avatar.alt = user.name;
 
+      var info = document.createElement("div");
+      info.className = "chat-list-info";
 
-      button.type =
-        "button";
+      var name = document.createElement("div");
+      name.className = "chat-list-name";
+      var profileLink = document.createElement("a");
+      profileLink.href = user.profile;
+      profileLink.textContent = user.name;
+      profileLink.addEventListener("click", function(e) { e.stopPropagation(); });
+      name.appendChild(profileLink);
 
+      var preview = document.createElement("div");
+      preview.className = "chat-list-preview";
 
-      button.className =
-        "emoji-button";
-
-
-      button.textContent =
-        emoji;
-
-
-      button.addEventListener(
-        "click",
-        function() {
-
-          insertEmoji(
-            emoji
-          );
-
+      if (chat.messages.length > 0) {
+        var last = chat.messages[chat.messages.length - 1];
+        if (last.type === "image") {
+          preview.textContent = "🖼 Зображення";
+        } else if (last.type === "file") {
+          preview.textContent = "📎 " + last.fileName;
+        } else {
+          preview.textContent = last.text || "";
         }
-      );
-
-
-      container.appendChild(
-        button
-      );
-
-    }
-  );
-
-}
-
-
-function insertEmoji(
-  emoji
-) {
-
-  var input =
-    get(
-      "message-input"
-    );
-
-
-  if (!input) {
-
-    return;
-
-  }
-
-
-  var start =
-    input.selectionStart;
-
-
-  var end =
-    input.selectionEnd;
-
-
-  var before =
-    input.value.substring(
-      0,
-      start
-    );
-
-
-  var after =
-    input.value.substring(
-      end
-    );
-
-
-  input.value =
-    before +
-    emoji +
-    after;
-
-
-  input.focus();
-
-
-  var position =
-    start +
-    emoji.length;
-
-
-  input.setSelectionRange(
-    position,
-    position
-  );
-
-}
-
-
-/* =========================================================
-   СПИСОК ЧАТІВ
-   ========================================================= */
-
-function renderChatList() {
-
-  var container =
-    get(
-      "chat-list"
-    );
-
-
-  if (!container) {
-
-    return;
-
-  }
-
-
-  container.innerHTML =
-    "";
-
-
-  Object.keys(
-    chats
-  ).forEach(
-    function(chatId) {
-
-
-      var chat =
-        chats[
-          chatId
-        ];
-
-
-      var user =
-        users[
-          chat.user
-        ];
-
-
-      if (!user) {
-
-        return;
-
+      } else {
+        preview.textContent = chat.loaded ? "Немає повідомлень" : "Завантаження...";
       }
 
+      info.appendChild(name);
+      info.appendChild(preview);
+      item.appendChild(avatar);
+      item.appendChild(info);
 
-      var item =
-        document.createElement(
-          "div"
-        );
+      item.addEventListener("click", function() {
+        openChat(chatId);
+      });
 
+      container.appendChild(item);
+    });
+  }
 
-      item.className =
-        "chat-list-item";
+  function openChat(chatId) {
+    if (!chats[chatId]) return;
 
+    currentChat = chatId;
+    pendingAttachments = [];
+    renderSelectedFiles();
+    renderChatList();
 
-      if (
-        chatId ===
-        currentChat
-      ) {
+    if (!chats[chatId].loaded) {
+      loadChat(chatId);
+    } else {
+      renderConversation();
+    }
+  }
 
-        item.className +=
-          " active";
+  function loadChat(chatId) {
+    var status = get("compose-status");
+    if (status) status.textContent = "Завантаження...";
 
+    fetch("chats/" + chatId + ".json")
+      .then(function(response) {
+        if (!response.ok) throw new Error("Файл не знайдено");
+        return response.json();
+      })
+      .then(function(data) {
+        chats[chatId].messages = data.messages || [];
+        chats[chatId].loaded = true;
+
+        if (currentChat === chatId) {
+          renderConversation();
+        }
+        renderChatList();
+
+        if (status) status.textContent = "";
+      })
+      .catch(function(error) {
+        console.error("Помилка завантаження чату:", error);
+        chats[chatId].messages = [];
+        chats[chatId].loaded = true;
+
+        if (currentChat === chatId) {
+          renderConversation();
+        }
+        renderChatList();
+
+        if (status) {
+          status.textContent = "Чат порожній або файл відсутній";
+          setTimeout(function() {
+            if (status.textContent === "Чат порожній або файл відсутній") {
+              status.textContent = "";
+            }
+          }, 3000);
+        }
+      });
+  }
+
+  function renderConversationHeader() {
+    var header = get("conversation-header");
+    if (!header) return;
+
+    var chat = chats[currentChat];
+    var user = users[chat.user];
+
+    header.innerHTML = "";
+
+    var avatar = document.createElement("img");
+    avatar.className = "conversation-avatar";
+    avatar.src = user.avatar;
+    avatar.alt = user.name;
+
+    var userBlock = document.createElement("div");
+    userBlock.className = "conversation-user";
+
+    var name = document.createElement("div");
+    name.className = "conversation-name";
+    var profileLink = document.createElement("a");
+    profileLink.href = user.profile;
+    profileLink.textContent = user.name;
+    name.appendChild(profileLink);
+
+    var status = document.createElement("div");
+    status.className = "conversation-status";
+    status.textContent = "● " + user.status;
+
+    userBlock.appendChild(name);
+    userBlock.appendChild(status);
+    header.appendChild(avatar);
+    header.appendChild(userBlock);
+  }
+
+  function createImageMessage(message) {
+    var container = document.createElement("div");
+    var image = document.createElement("img");
+    image.className = "chat-image";
+    image.src = message.url;
+    image.alt = message.fileName || "Зображення";
+    image.addEventListener("click", function() {
+      openImageViewer(message.url, message.fileName);
+    });
+    container.appendChild(image);
+
+    if (message.fileName) {
+      var caption = document.createElement("div");
+      caption.className = "chat-image-caption";
+      caption.textContent = message.fileName;
+      container.appendChild(caption);
+    }
+    return container;
+  }
+
+  function createFileMessage(message) {
+    var link = document.createElement("a");
+    link.className = "chat-file";
+    link.href = message.url;
+    link.download = message.fileName || "file";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.innerHTML = '<span class="chat-file-icon">📎</span>' + escapeHtml(message.fileName || "Файл");
+    return link;
+  }
+
+  function renderMessages() {
+    var windowElement = get("messages-window");
+    if (!windowElement) return;
+
+    var chat = chats[currentChat];
+    windowElement.innerHTML = "";
+
+    chat.messages.forEach(function(message) {
+      var row = document.createElement("div");
+      row.className = "message-row " + (message.from === "me" ? "mine" : "theirs");
+
+      var bubble = document.createElement("div");
+      bubble.className = "message-bubble";
+
+      if (message.type === "image") {
+        bubble.appendChild(createImageMessage(message));
+      } else if (message.type === "file") {
+        bubble.appendChild(createFileMessage(message));
+      } else {
+        bubble.textContent = message.text || "";
       }
 
+      var time = document.createElement("div");
+      time.className = "message-time";
+      time.textContent = message.time || "";
 
-      var avatar =
-        document.createElement(
-          "img"
-        );
+      row.appendChild(bubble);
+      row.appendChild(time);
+      windowElement.appendChild(row);
+    });
 
+    windowElement.scrollTop = windowElement.scrollHeight;
+  }
 
-      avatar.className =
-        "chat-list-avatar";
+  function renderConversation() {
+    renderConversationHeader();
+    renderMessages();
+  }
 
+  function getCurrentTime() {
+    var date = new Date();
+    var hours = String(date.getHours()).padStart(2, "0");
+    var minutes = String(date.getMinutes()).padStart(2, "0");
+    return hours + ":" + minutes;
+  }
 
-      avatar.src =
-        user.avatar;
+  function renderSelectedFiles() {
+    var container = get("selected-files");
+    if (!container) return;
+    container.innerHTML = "";
 
+    pendingAttachments.forEach(function(file, index) {
+      var item = document.createElement("span");
+      item.className = "selected-file";
+      item.appendChild(document.createTextNode((file.kind === "image" ? "🖼 " : "📎 ") + file.name));
 
-      avatar.alt =
-        user.name;
+      var remove = document.createElement("span");
+      remove.className = "selected-file-remove";
+      remove.textContent = "✕";
+      remove.addEventListener("click", function() {
+        removePendingFile(index);
+      });
+      item.appendChild(remove);
+      container.appendChild(item);
+    });
+  }
 
+  function removePendingFile(index) {
+    if (!pendingAttachments[index]) return;
+    var attachment = pendingAttachments[index];
+    if (attachment.url && attachment.url.indexOf("blob:") === 0) {
+      try { URL.revokeObjectURL(attachment.url); } catch (e) {}
+    }
+    pendingAttachments.splice(index, 1);
+    renderSelectedFiles();
+  }
 
-      var info =
-        document.createElement(
-          "div"
-        );
+  function handleFiles(fileList, kind) {
+    if (!fileList) return;
 
+    Array.prototype.forEach.call(fileList, function(file) {
+      if (!file) return;
 
-      info.className =
-        "chat-list-info";
-
-
-      var name =
-        document.createElement(
-          "div"
-        );
-
-
-      name.className =
-        "chat-list-name";
-
-
-      var profileLink =
-        document.createElement(
-          "a"
-        );
-
-
-      profileLink.href =
-        user.profile;
-
-
-      profileLink.textContent =
-        user.name;
-
-
-      profileLink.addEventListener(
-        "click",
-        function(event) {
-
-          event.stopPropagation();
-
-        }
-      );
-
-
-      name.appendChild(
-        profileLink
-      );
-
-
-      var preview =
-        document.createElement(
-          "div"
-        );
-
-
-      preview.className =
-        "chat-list-preview";
-
-
-      if (
-        chat.messages.length >
-        0
-      ) {
-
-
-        var last =
-          chat.messages[
-            chat.messages.length - 1
-          ];
-
-
-        if (
-          last.type ===
-          "image"
-        ) {
-
-          preview.textContent =
-            "🖼 Зображення";
-
-        }
-
-        else if (
-          last.type ===
-          "file"
-        ) {
-
-          preview.textContent =
-            "📎 " +
-            last.fileName;
-
+      if (kind === "image") {
+        var imageCheck = isAllowedImage(file);
+        if (!imageCheck.allowed) {
+          showStatus(imageCheck.reason);
+          return;
         }
 
-        else {
-
-          preview.textContent =
-            last.text ||
-            "";
-
-        }
-
-      }
-
-      else {
-
-        preview.textContent =
-          "Новий чат";
-
-      }
-
-
-      info.appendChild(
-        name
-      );
-
-      info.appendChild(
-        preview
-      );
-
-
-      item.appendChild(
-        avatar
-      );
-
-      item.appendChild(
-        info
-      );
-
-
-      item.addEventListener(
-        "click",
-        function() {
-
-          openChat(
-            chatId
-          );
-
-        }
-      );
-
-
-      container.appendChild(
-        item
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   ВІДКРИТИ ЧАТ
-   ========================================================= */
-
-function openChat(
-  chatId
-) {
-
-  if (
-    !chats[
-      chatId
-    ]
-  ) {
-
-    return;
-
-  }
-
-
-  currentChat =
-    chatId;
-
-
-  pendingAttachments =
-    [];
-
-
-  renderSelectedFiles();
-
-  renderChatList();
-
-  renderConversation();
-
-}
-
-
-/* =========================================================
-   HEADER
-   ========================================================= */
-
-function renderConversationHeader() {
-
-  var header =
-    get(
-      "conversation-header"
-    );
-
-
-  if (!header) {
-
-    return;
-
-  }
-
-
-  var chat =
-    chats[
-      currentChat
-    ];
-
-
-  var user =
-    users[
-      chat.user
-    ];
-
-
-  header.innerHTML =
-    "";
-
-
-  var avatar =
-    document.createElement(
-      "img"
-    );
-
-
-  avatar.className =
-    "conversation-avatar";
-
-
-  avatar.src =
-    user.avatar;
-
-
-  avatar.alt =
-    user.name;
-
-
-  var userBlock =
-    document.createElement(
-      "div"
-    );
-
-
-  userBlock.className =
-    "conversation-user";
-
-
-  var name =
-    document.createElement(
-      "div"
-    );
-
-
-  name.className =
-    "conversation-name";
-
-
-  var profileLink =
-    document.createElement(
-      "a"
-    );
-
-
-  profileLink.href =
-    user.profile;
-
-
-  profileLink.textContent =
-    user.name;
-
-
-  name.appendChild(
-    profileLink
-  );
-
-
-  var status =
-    document.createElement(
-      "div"
-    );
-
-
-  status.className =
-    "conversation-status";
-
-
-  status.textContent =
-    "● " +
-    user.status;
-
-
-  userBlock.appendChild(
-    name
-  );
-
-
-  userBlock.appendChild(
-    status
-  );
-
-
-  header.appendChild(
-    avatar
-  );
-
-
-  header.appendChild(
-    userBlock
-  );
-
-}
-
-
-/* =========================================================
-   IMAGE MESSAGE
-   ========================================================= */
-
-function createImageMessage(
-  message
-) {
-
-  var container =
-    document.createElement(
-      "div"
-    );
-
-
-  var image =
-    document.createElement(
-      "img"
-    );
-
-
-  image.className =
-    "chat-image";
-
-
-  image.src =
-    message.url;
-
-
-  image.alt =
-    message.fileName ||
-    "Зображення";
-
-
-  image.addEventListener(
-    "click",
-    function() {
-
-      openImageViewer(
-        message.url,
-        message.fileName
-      );
-
-    }
-  );
-
-
-  container.appendChild(
-    image
-  );
-
-
-  if (
-    message.fileName
-  ) {
-
-
-    var caption =
-      document.createElement(
-        "div"
-      );
-
-
-    caption.className =
-      "chat-image-caption";
-
-
-    caption.textContent =
-      message.fileName;
-
-
-    container.appendChild(
-      caption
-    );
-
-  }
-
-
-  return container;
-
-}
-
-
-/* =========================================================
-   FILE MESSAGE
-   ========================================================= */
-
-function createFileMessage(
-  message
-) {
-
-  var link =
-    document.createElement(
-      "a"
-    );
-
-
-  link.className =
-    "chat-file";
-
-
-  link.href =
-    message.url;
-
-
-  link.download =
-    message.fileName ||
-    "file";
-
-
-  link.target =
-    "_blank";
-
-
-  link.rel =
-    "noopener noreferrer";
-
-
-  link.setAttribute(
-    "referrerpolicy",
-    "no-referrer"
-  );
-
-
-  link.innerHTML =
-
-    '<span class="chat-file-icon">📎</span>' +
-
-    escapeHtml(
-      message.fileName ||
-      "Файл"
-    );
-
-
-  return link;
-
-}
-
-
-/* =========================================================
-   ПОВІДОМЛЕННЯ
-   ========================================================= */
-
-function renderMessages() {
-
-  var windowElement =
-    get(
-      "messages-window"
-    );
-
-
-  if (!windowElement) {
-
-    return;
-
-  }
-
-
-  var chat =
-    chats[
-      currentChat
-    ];
-
-
-  windowElement.innerHTML =
-    "";
-
-
-  chat.messages.forEach(
-    function(message) {
-
-
-      var row =
-        document.createElement(
-          "div"
-        );
-
-
-      if (
-        message.from ===
-        "me"
-      ) {
-
-        row.className =
-          "message-row mine";
-
-      }
-
-      else {
-
-        row.className =
-          "message-row theirs";
-
-      }
-
-
-      var bubble =
-        document.createElement(
-          "div"
-        );
-
-
-      bubble.className =
-        "message-bubble";
-
-
-      if (
-        message.type ===
-        "image"
-      ) {
-
-
-        bubble.appendChild(
-          createImageMessage(
-            message
-          )
-        );
-
-      }
-
-      else if (
-        message.type ===
-        "file"
-      ) {
-
-
-        bubble.appendChild(
-          createFileMessage(
-            message
-          )
-        );
-
-      }
-
-      else {
-
-
-        bubble.textContent =
-          message.text ||
-          "";
-
-      }
-
-
-      var time =
-        document.createElement(
-          "div"
-        );
-
-
-      time.className =
-        "message-time";
-
-
-      time.textContent =
-        message.time ||
-        "";
-
-
-      row.appendChild(
-        bubble
-      );
-
-
-      row.appendChild(
-        time
-      );
-
-
-      windowElement.appendChild(
-        row
-      );
-
-    }
-  );
-
-
-  windowElement.scrollTop =
-    windowElement.scrollHeight;
-
-}
-
-
-/* =========================================================
-   CONVERSATION
-   ========================================================= */
-
-function renderConversation() {
-
-  renderConversationHeader();
-
-  renderMessages();
-
-}
-
-
-/* =========================================================
-   ЧАС
-   ========================================================= */
-
-function getCurrentTime() {
-
-  var date =
-    new Date();
-
-
-  var hours =
-    String(
-      date.getHours()
-    ).padStart(
-      2,
-      "0"
-    );
-
-
-  var minutes =
-    String(
-      date.getMinutes()
-    ).padStart(
-      2,
-      "0"
-    );
-
-
-  return (
-
-    hours +
-    ":" +
-    minutes
-
-  );
-
-}
-
-
-/* =========================================================
-   ВИБРАНІ ФАЙЛИ
-   ========================================================= */
-
-function renderSelectedFiles() {
-
-  var container =
-    get(
-      "selected-files"
-    );
-
-
-  if (!container) {
-
-    return;
-
-  }
-
-
-  container.innerHTML =
-    "";
-
-
-  pendingAttachments.forEach(
-    function(
-      file,
-      index
-    ) {
-
-
-      var item =
-        document.createElement(
-          "span"
-        );
-
-
-      item.className =
-        "selected-file";
-
-
-      item.appendChild(
-
-        document.createTextNode(
-
-          (
-
-            file.kind ===
-            "image"
-
-              ?
-
-            "🖼 "
-
-              :
-
-            "📎 "
-
-          )
-
-          +
-
-          file.name
-
-        )
-
-      );
-
-
-      var remove =
-        document.createElement(
-          "span"
-        );
-
-
-      remove.className =
-        "selected-file-remove";
-
-
-      remove.textContent =
-        "✕";
-
-
-      remove.addEventListener(
-        "click",
-        function() {
-
-          removePendingFile(
-            index
-          );
-
-        }
-      );
-
-
-      item.appendChild(
-        remove
-      );
-
-
-      container.appendChild(
-        item
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   ВИДАЛИТИ ВКЛАДЕННЯ
-   ========================================================= */
-
-function removePendingFile(
-  index
-) {
-
-  if (
-    !pendingAttachments[
-      index
-    ]
-  ) {
-
-    return;
-
-  }
-
-
-  var attachment =
-    pendingAttachments[
-      index
-    ];
-
-
-  if (
-    attachment.url &&
-    attachment.url.indexOf(
-      "blob:"
-    ) === 0
-  ) {
-
-
-    try {
-
-      URL.revokeObjectURL(
-        attachment.url
-      );
-
-    }
-
-    catch (
-      error
-    ) {}
-
-  }
-
-
-  pendingAttachments.splice(
-    index,
-    1
-  );
-
-
-  renderSelectedFiles();
-
-}
-
-
-/* =========================================================
-   ОБРОБКА ФАЙЛІВ
-   ========================================================= */
-
-function handleFiles(fileList, kind) {
-
-  if (!fileList) {
-    return;
-  }
-
-  Array.prototype.forEach.call(fileList, function(file) {
-
-    if (!file) {
-      return;
-    }
-
-/* =====================================================
-       ЗОБРАЖЕННЯ
-       ===================================================== */
-
-    if (kind === "image") {
-
-      var imageCheck = isAllowedImage(file);
-
-      if (!imageCheck.allowed) {
-        showStatus(imageCheck.reason);
+        var reader = new FileReader();
+        reader.onload = function(event) {
+          pendingAttachments.push({
+            kind: "image",
+            name: file.name,
+            url: event.target.result,
+            size: file.size,
+            type: file.type || "image/jpeg"
+          });
+          renderSelectedFiles();
+        };
+        reader.onerror = function() {
+          showStatus("Не вдалося прочитати зображення.");
+        };
+        reader.readAsDataURL(file);
         return;
       }
 
-      // Завжди читаємо як data URL — це надійніше для Brave, Safari тощо
-      var reader = new FileReader();
-
-      reader.onload = function(event) {
-
-        pendingAttachments.push({
-          kind: "image",
-          name: file.name,
-          url: event.target.result,   // data:image/...;base64,...
-          size: file.size,
-          type: file.type || "image/jpeg"
-        });
-
-        renderSelectedFiles();
-      };
-
-      reader.onerror = function() {
-        showStatus("Не вдалося прочитати зображення.");
-      };
-
-      reader.readAsDataURL(file);
-      return;
-    }
-
-/* =====================================================
-       ЗВИЧАЙНІ ФАЙЛИ
-       ===================================================== */
-
-    var fileCheck = isAllowedFile(file);
-
-    if (!fileCheck.allowed) {
-      showStatus(fileCheck.reason);
-      return;
-    }
-
-    var fileUrl = URL.createObjectURL(file);
-
-    pendingAttachments.push({
-      kind: "file",
-      name: file.name,
-      url: fileUrl,
-      size: file.size,
-      type: file.type
-    });
-
-  });
-
-  renderSelectedFiles();
-}
-
-
-/* =========================================================
-   STATUS
-   ========================================================= */
-
-function showStatus(
-  text
-) {
-
-  var status =
-    get(
-      "compose-status"
-    );
-
-
-  if (!status) {
-
-    return;
-
-  }
-
-
-  status.textContent =
-    text;
-
-
-  setTimeout(
-    function() {
-
-      if (
-        status.textContent ===
-        text
-      ) {
-
-        status.textContent =
-          "";
-
+      var fileCheck = isAllowedFile(file);
+      if (!fileCheck.allowed) {
+        showStatus(fileCheck.reason);
+        return;
       }
 
-    },
-    3500
-  );
-
-}
-
-
-/* =========================================================
-   ВІДПРАВИТИ
-   ========================================================= */
-
-function sendMessage() {
-
-  var input =
-    get(
-      "message-input"
-    );
-
-
-  if (!input) {
-
-    return;
-
-  }
-
-
-  var text =
-    input.value.trim();
-
-
-  var hasText =
-    text.length >
-    0;
-
-
-  var hasAttachments =
-    pendingAttachments.length >
-    0;
-
-
-  if (
-    !hasText &&
-    !hasAttachments
-  ) {
-
-
-    showStatus(
-      "Введіть повідомлення або прикріпіть файл."
-    );
-
-
-    return;
-
-  }
-
-
-  var now =
-    getCurrentTime();
-
-
-  /*
-   * ТЕКСТ
-   */
-
-  if (hasText) {
-
-
-    chats[
-      currentChat
-    ].messages.push({
-
-      from:
-        "me",
-
-      type:
-        "text",
-
-      text:
-        text,
-
-      time:
-        now
-
+      var fileUrl = URL.createObjectURL(file);
+      pendingAttachments.push({
+        kind: "file",
+        name: file.name,
+        url: fileUrl,
+        size: file.size,
+        type: file.type
+      });
     });
 
+    renderSelectedFiles();
   }
 
+  function showStatus(text) {
+    var status = get("compose-status");
+    if (!status) return;
+    status.textContent = text;
+    setTimeout(function() {
+      if (status.textContent === text) status.textContent = "";
+    }, 3500);
+  }
 
-  /*
-   * ВКЛАДЕННЯ
-   */
+  function sendMessage() {
+    var input = get("message-input");
+    if (!input) return;
 
-  pendingAttachments.forEach(
-    function(
-      attachment
-    ) {
+    var text = input.value.trim();
+    var hasText = text.length > 0;
+    var hasAttachments = pendingAttachments.length > 0;
 
-
-      chats[
-        currentChat
-      ].messages.push({
-
-        from:
-          "me",
-
-        type:
-          attachment.kind,
-
-        text:
-          "",
-
-        url:
-          attachment.url,
-
-        fileName:
-          attachment.name,
-
-        mime:
-          attachment.type,
-
-        time:
-          now
-
-      });
-
+    if (!hasText && !hasAttachments) {
+      showStatus("Введіть повідомлення або прикріпіть файл.");
+      return;
     }
-  );
 
+    var now = getCurrentTime();
 
-  input.value =
-    "";
-
-
-  pendingAttachments =
-    [];
-
-
-  renderSelectedFiles();
-
-  renderMessages();
-
-  renderChatList();
-
-
-  showStatus(
-    "Надіслано."
-  );
-
-
-  /*
-   * АВТОВІДПОВІДЬ
-   */
-
-  triggerAutoReply(
-    currentChat
-  );
-
-}
-
-
-/* =========================================================
-   АВТОВІДПОВІДЬ
-   ========================================================= */
-
-function triggerAutoReply(
-  chatId
-) {
-
-  var chat =
-    chats[
-      chatId
-    ];
-
-
-  if (!chat) {
-
-    return;
-
-  }
-
-
-  var user =
-    users[
-      chat.user
-    ];
-
-
-  if (!user) {
-
-    return;
-
-  }
-
-
-  if (
-    !Array.isArray(
-      user.autoReply
-    )
-    ||
-    user.autoReply.length ===
-    0
-  ) {
-
-    return;
-
-  }
-
-
-  var delay =
-
-    700 +
-
-    Math.floor(
-      Math.random() *
-      1400
-    );
-
-
-  setTimeout(
-    function() {
-
-
-      var reply =
-
-        user.autoReply[
-
-          Math.floor(
-
-            Math.random() *
-            user.autoReply.length
-
-          )
-
-        ];
-
-
-      chats[
-        chatId
-      ].messages.push({
-
-        from:
-          "them",
-
-        type:
-          "text",
-
-        text:
-          reply,
-
-        time:
-          getCurrentTime()
-
+    if (hasText) {
+      chats[currentChat].messages.push({
+        from: "me",
+        type: "text",
+        text: text,
+        time: now
       });
+    }
 
+    pendingAttachments.forEach(function(attachment) {
+      chats[currentChat].messages.push({
+        from: "me",
+        type: attachment.kind,
+        text: "",
+        url: attachment.url,
+        fileName: attachment.name,
+        mime: attachment.type,
+        time: now
+      });
+    });
 
+    input.value = "";
+    pendingAttachments = [];
+    renderSelectedFiles();
+    renderMessages();
+    renderChatList();
+    showStatus("Надіслано.");
+    triggerAutoReply(currentChat);
+  }
+
+  function triggerAutoReply(chatId) {
+    var chat = chats[chatId];
+    if (!chat) return;
+    var user = users[chat.user];
+    if (!user || !Array.isArray(user.autoReply) || user.autoReply.length === 0) return;
+
+    var delay = 700 + Math.floor(Math.random() * 1400);
+    setTimeout(function() {
+      var reply = user.autoReply[Math.floor(Math.random() * user.autoReply.length)];
+      chats[chatId].messages.push({
+        from: "them",
+        type: "text",
+        text: reply,
+        time: getCurrentTime()
+      });
       renderChatList();
-
-
-      if (
-        currentChat ===
-        chatId
-      ) {
-
-        renderMessages();
-
-      }
-
-
-    },
-    delay
-  );
-
-}
-
-
-/* =========================================================
-   INPUT
-   ========================================================= */
-
-function setupInput() {
-
-  var input =
-    get(
-      "message-input"
-    );
-
-
-  var button =
-    get(
-      "send-button"
-    );
-
-
-  var emojiButton =
-    get(
-      "emoji-button"
-    );
-
-
-  var emojiPanel =
-    get(
-      "emoji-panel"
-    );
-
-
-  var imageButton =
-    get(
-      "image-button"
-    );
-
-
-  var fileButton =
-    get(
-      "file-button"
-    );
-
-
-  var imageInput =
-    get(
-      "image-input"
-    );
-
-
-  var fileInput =
-    get(
-      "file-input"
-    );
-
-
-  /*
-   * НАДСИЛАННЯ
-   */
-
-  if (button) {
-
-    button.addEventListener(
-      "click",
-      sendMessage
-    );
-
+      if (currentChat === chatId) renderMessages();
+    }, delay);
   }
 
+  function setupInput() {
+    var input = get("message-input");
+    var button = get("send-button");
+    var emojiButton = get("emoji-button");
+    var emojiPanel = get("emoji-panel");
+    var imageButton = get("image-button");
+    var fileButton = get("file-button");
+    var imageInput = get("image-input");
+    var fileInput = get("file-input");
 
-  /*
-   * ENTER
-   */
+    if (button) button.addEventListener("click", sendMessage);
 
-  if (input) {
-
-    input.addEventListener(
-      "keydown",
-      function(event) {
-
-
-        if (
-          event.key ===
-          "Enter"
-          &&
-          !event.shiftKey
-        ) {
-
-
+    if (input) {
+      input.addEventListener("keydown", function(event) {
+        if (event.key === "Enter" && !event.shiftKey) {
           event.preventDefault();
-
-
           sendMessage();
-
         }
+      });
+    }
 
-      }
-    );
+    if (emojiButton && emojiPanel) {
+      emojiButton.addEventListener("click", function() {
+        emojiPanel.classList.toggle("open");
+      });
+    }
 
+    if (imageButton && imageInput) {
+      imageButton.addEventListener("click", function() { imageInput.click(); });
+      imageInput.addEventListener("change", function() {
+        handleFiles(imageInput.files, "image");
+        imageInput.value = "";
+      });
+    }
+
+    if (fileButton && fileInput) {
+      fileButton.addEventListener("click", function() { fileInput.click(); });
+      fileInput.addEventListener("change", function() {
+        handleFiles(fileInput.files, "file");
+        fileInput.value = "";
+      });
+    }
   }
 
+  function openImageViewer(url, alt) {
+    var viewer = get("image-viewer");
+    var image = get("image-viewer-image");
+    if (!viewer || !image || !url) return;
 
-  /*
-   * EMOJI
-   */
+    if (viewer.parentNode !== document.body) {
+      document.body.appendChild(viewer);
+    }
 
-  if (
-    emojiButton &&
-    emojiPanel
-  ) {
+    viewer.style.position = "fixed";
+    viewer.style.left = "0";
+    viewer.style.top = "0";
+    viewer.style.right = "0";
+    viewer.style.bottom = "0";
+    viewer.style.width = "100vw";
+    viewer.style.height = "100vh";
+    viewer.style.zIndex = "2147483647";
 
-
-    emojiButton.addEventListener(
-      "click",
-      function() {
-
-        emojiPanel.classList.toggle(
-          "open"
-        );
-
-      }
-    );
-
+    image.src = url;
+    image.alt = alt || "";
+    viewer.classList.add("open");
+    document.body.style.overflow = "hidden";
   }
 
-
-  /*
-   * ЗОБРАЖЕННЯ
-   */
-
-  if (
-    imageButton &&
-    imageInput
-  ) {
-
-
-    imageButton.addEventListener(
-      "click",
-      function() {
-
-        imageInput.click();
-
-      }
-    );
-
-
-    imageInput.addEventListener(
-      "change",
-      function() {
-
-
-        handleFiles(
-          imageInput.files,
-          "image"
-        );
-
-
-        imageInput.value =
-          "";
-
-      }
-    );
-
+  function closeImageViewer() {
+    var viewer = get("image-viewer");
+    var image = get("image-viewer-image");
+    if (!viewer) return;
+    viewer.classList.remove("open");
+    if (image) {
+      image.src = "";
+      image.alt = "";
+    }
+    document.body.style.overflow = "";
   }
 
-
-  /*
-   * ІНШІ ФАЙЛИ
-   */
-
-  if (
-    fileButton &&
-    fileInput
-  ) {
-
-
-    fileButton.addEventListener(
-      "click",
-      function() {
-
-        fileInput.click();
-
-      }
-    );
-
-
-    fileInput.addEventListener(
-      "change",
-      function() {
-
-
-        handleFiles(
-          fileInput.files,
-          "file"
-        );
-
-
-        fileInput.value =
-          "";
-
-      }
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   IMAGE VIEWER
-   ========================================================= */
-
-function openImageViewer(
-  url,
-  alt
-) {
-
-  var viewer =
-    get(
-      "image-viewer"
-    );
-
-  var image =
-    get(
-      "image-viewer-image"
-    );
-
-
-  if (
-    !viewer ||
-    !image ||
-    !url
-  ) {
-
-    return;
-
-  }
-
-
-  /*
-   * Виносимо viewer безпосередньо
-   * в body, щоб він гарантовано
-   * був поверх усієї сторінки.
-   */
-
-  if (
-    viewer.parentNode !==
-    document.body
-  ) {
-
-    document.body.appendChild(
-      viewer
-    );
-
-  }
-
-
-  viewer.style.position =
-    "fixed";
-
-  viewer.style.left =
-    "0";
-
-  viewer.style.top =
-    "0";
-
-  viewer.style.right =
-    "0";
-
-  viewer.style.bottom =
-    "0";
-
-  viewer.style.width =
-    "100vw";
-
-  viewer.style.height =
-    "100vh";
-
-  viewer.style.zIndex =
-    "2147483647";
-
-
-  image.src =
-    url;
-
-  image.alt =
-    alt || "";
-
-
-  viewer.classList.add(
-    "open"
-  );
-
-
-  /*
-   * Забороняємо прокрутку
-   * основної сторінки.
-   */
-
-  document.body.style.overflow =
-    "hidden";
-
-}
-
-
-function closeImageViewer() {
-
-  var viewer =
-    get(
-      "image-viewer"
-    );
-
-  var image =
-    get(
-      "image-viewer-image"
-    );
-
-
-  if (!viewer) {
-
-    return;
-
-  }
-
-
-  viewer.classList.remove(
-    "open"
-  );
-
-
-  if (image) {
-
-    image.src =
-      "";
-
-    image.alt =
-      "";
-
-  }
-
-
-  /*
-   * Повертаємо прокрутку сторінки.
-   */
-
-  document.body.style.overflow =
-    "";
-
-}
-
-
-function setupImageViewer() {
-
-  var viewer =
-    get(
-      "image-viewer"
-    );
-
-
-  var close =
-    get(
-      "image-viewer-close"
-    );
-
-
-  if (!viewer) {
-
-    return;
-
-  }
-
-
-  /*
-   * Виносимо viewer у body
-   * одразу після завантаження.
-   */
-
-  if (
-    viewer.parentNode !==
-    document.body
-  ) {
-
-    document.body.appendChild(
-      viewer
-    );
-
-  }
-
-
-  if (close) {
-
-    close.addEventListener(
-      "click",
-      function(event) {
-
+  function setupImageViewer() {
+    var viewer = get("image-viewer");
+    var close = get("image-viewer-close");
+    if (!viewer) return;
+
+    if (viewer.parentNode !== document.body) {
+      document.body.appendChild(viewer);
+    }
+
+    if (close) {
+      close.addEventListener("click", function(event) {
         event.stopPropagation();
-
         closeImageViewer();
+      });
+    }
 
-      }
-    );
+    viewer.addEventListener("click", function(event) {
+      if (event.target === viewer) closeImageViewer();
+    });
 
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Escape") closeImageViewer();
+    });
   }
 
-
-  /*
-   * Клік по темному фону
-   * закриває переглядач.
-   */
-
-  viewer.addEventListener(
-    "click",
-    function(event) {
-
-      if (
-        event.target ===
-        viewer
-      ) {
-
-        closeImageViewer();
-
-      }
-
-    }
-  );
-
-
-  /*
-   * Esc — закрити.
-   */
-
-  document.addEventListener(
-    "keydown",
-    function(event) {
-
-      if (
-        event.key ===
-        "Escape"
-      ) {
-
-        closeImageViewer();
-
-      }
-
-    }
-  );
-
-}
-
-/* =========================================================
-   ЗАПУСК
-   ========================================================= */
-
-renderEmojiPanel();
-
-renderChatList();
-
-renderConversation();
-
-renderSelectedFiles();
-
-setupInput();
-
-setupImageViewer();
-
+  // Запуск
+  renderEmojiPanel();
+  renderChatList();
+  openChat(currentChat); // одразу відкриваємо перший чат
+  renderSelectedFiles();
+  setupInput();
+  setupImageViewer();
 
 })();
-
 </script>
-
 
 </body>
 </html>
