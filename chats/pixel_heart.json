@@ -4,11 +4,53 @@
     {
       "from": "me",
       "type": "text",
-      "text": "Test 1",
+      "text": "Привіт, йдеш в гру?",
       "time": "Невертайм"
     },
     {
       "from": "them",
+      "type": "text",
+      "text": "Привіт, я вже там.",
+      "time": "Невертайм"
+    },
+    {
+      "from": "me",
+      "type": "text",
+      "text": "Ок",
+      "time": "Невертайм"
+    },
+    {
+      "from": "them",
+      "type": "text",
+      "text": "Хай. Йдеш грати?",
+      "time": "Невертайм"
+    },
+    {
+      "from": "me",
+      "type": "text",
+      "text": "Через годину буду.",
+      "time": "Невертайм"
+    },
+    {
+      "from": "them",
+      "type": "text",
+      "text": "Ок.",
+      "time": "Невертайм"
+    },
+    {
+      "from": "me",
+      "type": "text",
+      "text": "Привіт, будемо грати?",
+      "time": "Невертайм"
+    },
+    {
+      "from": "them",
+      "type": "text",
+      "text": "Іншим разом, сьогодні зайнята.",
+      "time": "Невертайм"
+    },
+    {
+      "from": "me",
       "type": "text",
       "text": "Test 1",
       "time": "Невертайм"
