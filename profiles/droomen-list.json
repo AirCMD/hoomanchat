@@ -40,7 +40,7 @@
        { "time": "19:14", status: "away" },
        { "time": "20:00", status: "online" },
        { "time": "21:55", status: "offline" }
-   ]
+    ]
   },
   {
     "name": "coffee_signal",
@@ -60,7 +60,7 @@
        { "time": "17:01", status: "away" },
        { "time": "17:12", status: "online" },
        { "time": "18:00", status: "offline" }
-  ],
+    ]
   },
   {
     "name": "galya_ivanivna",
