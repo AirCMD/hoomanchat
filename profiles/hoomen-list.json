@@ -183,6 +183,14 @@
     "description": ""
   },
   {
+    "name": "soft_static",
+    "file": "soft-static.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEi0-IQ6-y_L-kVYfUNnPzMXCO39DUxNV17N6cCoYPBfkwL08hMaGfNvtzmJnDdKjC08FH_jIcq00ddIhr5z0vI5JhnQY7RuqAeyUvDOpge242fUwO5Wx0lZR18YxbOStWLTMlj6nRSfmA074mfgW2oLCxZxVNerdKr-7l8desFoDExHYFwJiXxn603G53o",
+    "status": "online",
+    "gender": "female",
+    "description": ""
+  },
+  {
     "name": "sruiki_stikki",
     "file": "sruiki-stikki.html",
     "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEhvP2ab1Fl3tJVD7N4ZinordTPbip3E8SpYB6yk93kDOeak-4B17vuUQTl_j4mggTJ9cMwD7chp48zMEjl6yiHQVRM0VpXDC_EsUkx6H894DwLM7g4cRTxiy4GXYV2kiAkTZmqJwflc0UeDzuWd_t8Bp_zB6sjBFB81qxtUCYGCyLEpueRRi9CMnqfuXnA",
@@ -215,6 +223,14 @@
     "description": ""
   },
   {
+    "name": "velvet_moon",
+    "file": "velvet-moon.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEjvCZvQq7YfiAW2jyK5-_QrfSWCXfr1U1is8CoNCEVrSi8r66EOrusjYVkhcSXuLIE_RoLqNXflCSV37rByzCXUnMSmAyeV7J8OQvwcKw51nqzdepT_WG8p4EUDlGQgOdw0bjiEG3Enkud1f3CmpEcpE5Cg7LTxetdvKXZw_X9xoR69inJXkv_HlnuQJsw",
+    "status": "online",
+    "gender": "female",
+    "description": ""
+  },
+  {
     "name": "vivienne_nox",
     "file": "vivienne-nox.html",
     "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEg4_-BBat7jhgBJAZ-t1uuQZwYnLQUkAbIqqn8IlPPKL3NlhRj_0PUkXU7tACeZnk5NJtXp5l-JEUGr3TDi_KjjLXile4kOVhM4t0w7qGPINHUrBS8bUkUHomETO9vOkUSwaUqfhv6F5bVBQB7rIF1xcWJvhkm-hPeePUMIu2giZXkIpKgN6Lh6hMMs9Hc",
@@ -228,6 +244,30 @@
     "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEi-IVzTEq2IynM_TIFrvaScqnwEXbfXXKJyw6mDm1JXy1YBqBB3g-garhk0xNCgObaBw-W2473PSKJoMZPIuegdmiviufrD7jCSY02X2NLH6_waaxjQJ3IE5V-n_Ynv9Qo9VLluhy35n70BcPGUvp2EOvJofrpAVNBmAU784U4-iO0GRTziDFWR7Wtgl2Q",
     "status": "online",
     "gender": "female",
+    "description": ""
+  },
+  {
+    "name": "wolf_fang",
+    "file": "wolf-fang.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEi-IVzTEq2IynM_TIFrvaScqnwEXbfXXKJyw6mDm1JXy1YBqBB3g-garhk0xNCgObaBw-W2473PSKJoMZPIuegdmiviufrD7jCSY02X2NLH6_waaxjQJ3IE5V-n_Ynv9Qo9VLluhy35n70BcPGUvp2EOvJofrpAVNBmAU784U4-iO0GRTziDFWR7Wtgl2Q",
+    "status": "online",
+    "gender": "male",
+    "description": ""
+  },
+  {
+    "name": "yoyo_tchi",
+    "file": "yoyo-tchi.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEiOrt7hxE1vYcsgK7N39-dAjYVppoQve2fe3zdO_6--lrWl61iwkkSdTJO0STkh4pwffyVKRtSbOu9OZDxVGfA0jCheCJV6qj5i041tH5I-9j-pMBz8z692-m1SAE5kRwiV2UD4UN79MFrt1BgLOKJdvN4EmpTo4HQUkzNq7R7XpNl7YRXK0JFh51SOALM",
+    "status": "online",
+    "gender": "male",
+    "description": ""
+  },
+  {
+    "name": "yuki_foxy",
+    "file": "yuki-foxy.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEiOrt7hxE1vYcsgK7N39-dAjYVppoQve2fe3zdO_6--lrWl61iwkkSdTJO0STkh4pwffyVKRtSbOu9OZDxVGfA0jCheCJV6qj5i041tH5I-9j-pMBz8z692-m1SAE5kRwiV2UD4UN79MFrt1BgLOKJdvN4EmpTo4HQUkzNq7R7XpNl7YRXK0JFh51SOALM",
+    "status": "online",
+    "gender": "male",
     "description": ""
   },
   {
