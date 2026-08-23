@@ -600,6 +600,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/sakurai-agatsuma.html",
       gender: "female",
       status: "online",
+      firstMessage: "Привіт! Рада тебе бачити. Як справи?",
       schedule: [
         { time: "08:00", status: "online" },
         { time: "13:00", status: "away" },
@@ -614,6 +615,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/alter-core.html",
       gender: "female",
       status: "online",
+      firstMessage: "",
       schedule: [
         { time: "17:00", status: "online" },
         { time: "17:25", status: "away" },
@@ -634,6 +636,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/another-hoomen.html",
       gender: "male",
       status: "online",
+      firstMessage: "Йо! Є хв вільного часу?",
       autoReply: ["Давно тебе не бачив.", "Привіт.", "Можемо поговорити.", "Зараз трохи зайнятий."],
       schedule: [
         { time: "07:45", status: "online" },
@@ -654,6 +657,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/velvet-moon.html",
       gender: "female",
       status: "long-ago",
+      firstMessage: "Доброго вечора. Ти пам'ятаєш про нашу домовленість?",
       autoReply: ["Привіт :)", "Я зараз тут.", "Цікаво.", "Розкажи детальніше."]
     },
     pixel_heart: {
@@ -662,6 +666,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/pixel-heart.html",
       gender: "female",
       status: "5min",
+      firstMessage: "Привітик ✨",
       autoReply: ["О, привіт.", "Мм, можливо.", "Я подумаю над цим.", "Хех :)"]
     },
     night_fox: {
@@ -670,6 +675,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/night-fox.html",
       gender: "male",
       status: "online",
+      firstMessage: "Привіт! Тут є одне питання, треба твоя порада.",
       autoReply: ["Привіт.", "Я слухаю.", "Цікаво звучить.", "А що далі?"]
     },
     cherry_byte: {
@@ -678,6 +684,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/cherry-byte.html",
       gender: "female",
       status: "25min",
+      firstMessage: "",
       autoReply: ["Няя :)", "Ого.", "Неочікувано.", "Ясно."]
     },
     water_blue: {
@@ -686,6 +693,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/water-blue.html",
       gender: "female",
       status: "online",
+      firstMessage: "Привіт. Я зараз дуже зайнята, але пізніше спишемося.",
       schedule: [
         { time: "10:00", status: "online" },
         { time: "13:00", status: "away" },
@@ -700,6 +708,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/pasta-friend.html",
       gender: "male",
       status: "online",
+      firstMessage: "Здорово! Глянь що я знайшов.",
       autoReply: ["Ахах.", "Та ну.", "Серйозно?", "Цікаво."]
     },
     rusty_robot: {
@@ -708,6 +717,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/rusty-robot.html",
       gender: "male",
       status: "50min",
+      firstMessage: "Системне вітання. Ініціалізація зв'язку успішна.",
       autoReply: ["Отримано.", "Обробляю інформацію.", "Звучить цікаво.", "Повернуся до цього."]
     },
     soft_static: {
@@ -716,6 +726,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/soft-static.html",
       gender: "female",
       status: "online",
+      firstMessage: "",
       autoReply: ["Привіт.", "Можливо.", "Я не знаю.", "Це хороше питання."]
     },
     blue_comet: {
@@ -724,6 +735,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/blue-comet.html",
       gender: "male",
       status: "online",
+      firstMessage: "Привіт-привіт.",
       autoReply: ["О, ти тут.", "Добре.", "Можемо поговорити.", "Я слухаю."]
     },
     coffee_signal: {
@@ -732,7 +744,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/coffee-signal.html",
       gender: "female",
       status: "5min",
-      autoReply: ["Привіт ☕", "Саме п'ю каву.", "Оце так.", "Можна."],
+      firstMessage: "Привіт! Час кавувати ☕",
       schedule: [
         { time: "10:00", status: "online" },
         { time: "12:02", status: "away" },
@@ -744,7 +756,8 @@ body > .image-viewer .image-viewer-close {
         { time: "17:01", status: "away" },
         { time: "17:12", status: "online" },
         { time: "18:00", status: "offline" }
-      ]
+      ],
+      autoReply: ["Привіт ☕", "Саме п'ю каву.", "Оце так.", "Можна."]
     },
     paper_storm: {
       name: "paper_storm",
@@ -752,6 +765,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/paper-storm.html",
       gender: "male",
       status: "online",
+      firstMessage: "",
       autoReply: ["Привіт.", "Розкажи.", "Несподівано.", "Я ще думаю."]
     },
     dreaming_romance: {
@@ -760,6 +774,7 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/dreaming-romance.html",
       gender: "male",
       status: "online",
+      firstMessage: "",
       schedule: [
         { time: "09:00", status: "online" },
         { time: "12:00", status: "away" },
@@ -1045,14 +1060,38 @@ body > .image-viewer .image-viewer-close {
     renderChatList();
     showActiveConversation();
 
-    if (!chats[chatId].loaded) loadChat(chatId);
-    else renderConversation();
+    if (!chats[chatId].loaded) {
+      loadChat(chatId);
+    } else {
+      renderConversation();
+      checkAndTriggerFirstMessage(chatId);
+    }
   }
 
   function closeChatToList() {
     currentChat = null;
     renderChatList();
     showEmptyState();
+  }
+
+  /* ЛОГІКА ПЕРШОГО ПОВІДОМЛЕННЯ ВІД БОТА */
+  function checkAndTriggerFirstMessage(chatId) {
+    var chat = chats[chatId];
+    var user = users[chat.user];
+    if (chat && chat.loaded && chat.messages.length === 0 && user && user.firstMessage) {
+      setTimeout(function () {
+        if (chat.messages.length === 0 && currentChat === chatId) {
+          chat.messages.push({
+            from: "them",
+            type: "text",
+            text: user.firstMessage,
+            time: getCurrentTime()
+          });
+          renderChatList();
+          renderMessages();
+        }
+      }, 1500);
+    }
   }
 
   /* ФУНКЦІЯ ЗАВАНТАЖЕННЯ ЧАТІВ ІЗ JSON-ФАЙЛІВ */
@@ -1095,13 +1134,17 @@ body > .image-viewer .image-viewer-close {
         if (currentChat === chatId) renderConversation();
         renderChatList();
         if (status) status.textContent = "";
+
+        checkAndTriggerFirstMessage(chatId);
       })
       .catch(function (error) {
         chats[chatId].messages = [];
         chats[chatId].loaded = true;
         if (currentChat === chatId) renderConversation();
         renderChatList();
-        if (status) status.textContent = "Помилка завантаження";
+        if (status) status.textContent = "";
+
+        checkAndTriggerFirstMessage(chatId);
       });
   }
 
