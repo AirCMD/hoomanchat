@@ -11,7 +11,11 @@
      Змінюй цей об'єкт для кожного профілю окремо.
      ===================================================== */
 
+  /* Базовий конфіг. На сторінці персонажа можна перевизначити:
+     <script>window.HOOMEN_PROFILE = { nickname: "...", ... };</script>
+     перед підключенням цього файлу. */
   var PROFILE_CONFIG = {
+
 
     /* Нікнейм (відображається скрізь на сторінці) */
     nickname: "copy_pasta",
@@ -80,6 +84,22 @@
     }
   };
 
+  /* Перевизначення з сторінки персонажа */
+  if (window.HOOMEN_PROFILE && typeof window.HOOMEN_PROFILE === "object") {
+    var _over = window.HOOMEN_PROFILE;
+    for (var _k in _over) {
+      if (Object.prototype.hasOwnProperty.call(_over, _k)) {
+        if (_k === "family" && _over.family && typeof _over.family === "object") {
+          PROFILE_CONFIG.family = Object.assign({}, PROFILE_CONFIG.family || {}, _over.family);
+        } else if (_k === "navLinks" && _over.navLinks && typeof _over.navLinks === "object") {
+          PROFILE_CONFIG.navLinks = Object.assign({}, PROFILE_CONFIG.navLinks || {}, _over.navLinks);
+        } else {
+          PROFILE_CONFIG[_k] = _over[_k];
+        }
+      }
+    }
+  }
+
 
   /* =====================================================
      ЗАСТОСУВАННЯ КОНФІГУ
@@ -101,7 +121,11 @@
     }
 
     var elHeader = document.getElementById("profile-header-title");
-    if (elHeader) elHeader.textContent = "Мій гумгайл: " + nick;
+    if (elHeader) {
+      elHeader.textContent = cfg.isMainCharacter
+        ? ("Мій гумгайл: " + nick)
+        : ("Профіль гумена: " + nick);
+    }
 
     var elInfoName = document.getElementById("profile-info-name");
     if (elInfoName) elInfoName.textContent = nick;
@@ -245,7 +269,7 @@
      ===================================================== */
 
   function updatePostsCount() {
-    var postList = document.querySelectorAll("#copy-posts .profile-post");
+    var postList = document.querySelectorAll("#profile-posts .profile-post, #copy-posts .profile-post");
     var countEl = document.getElementById("posts-count");
     var header = document.getElementById("posts-header");
     var nick = (PROFILE_CONFIG && PROFILE_CONFIG.nickname) || "гумен";
@@ -263,7 +287,7 @@
      ПОКАЗ ДОПИСІВ: більше / менше
      ===================================================== */
 
-  var posts = document.querySelectorAll("#copy-posts .profile-post");
+  var posts = document.querySelectorAll("#profile-posts .profile-post, #copy-posts .profile-post");
   var showMore = document.getElementById("show-more-posts");
   var showLess = document.getElementById("show-less-posts");
   var initialVisiblePosts = 3;
@@ -271,7 +295,7 @@
   var postsPerClick = 5;
 
   function updatePostVisibility() {
-    posts = document.querySelectorAll("#copy-posts .profile-post");
+    posts = document.querySelectorAll("#profile-posts .profile-post, #copy-posts .profile-post");
 
     for (var i = 0; i < posts.length; i++) {
       posts[i].style.display = i < visiblePosts ? "block" : "none";
@@ -425,7 +449,7 @@
   var publishPost = document.getElementById("publish-post");
   var cancelNewPost = document.getElementById("cancel-new-post");
   var createPostError = document.getElementById("create-post-error");
-  var copyPosts = document.getElementById("copy-posts");
+  var copyPosts = document.getElementById("profile-posts") || document.getElementById("copy-posts");
 
   var selectedPostImages = [];
   var MAX_POST_IMAGE_SIZE = 10 * 1024 * 1024;
@@ -770,7 +794,7 @@
 
   function bindExistingPostImageViewers() {
     var images = document.querySelectorAll(
-      "#copy-posts .profile-post-image"
+      "#profile-posts .profile-post-image, #copy-posts .profile-post-image"
     );
 
     images.forEach(function (image) {
@@ -937,3 +961,4 @@
   initStatistics();
 
 })();
+
