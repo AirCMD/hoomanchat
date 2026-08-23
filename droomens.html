@@ -547,7 +547,7 @@ html, body {
 
     Коли додаєш нового персонажа — додай рядок у droomen-list.json
   */
-  var LIST_URL = "profiles/droomen-list.json";
+  var LIST_URL = "profiles/droomen-list.json?v=" + Date.now()
   var PROFILES_FOLDER = "profiles";
   var PER_PAGE = 5;
 
@@ -648,7 +648,7 @@ html, body {
   /* ---- завантаження ---- */
 
   function loadProfiles() {
-    wrapper.innerHTML = '<div class="loading-box">Завантаження гуменів...</div>';
+    wrapper.innerHTML = '<div class="loading-box">Завантаження друменів...</div>';
 
     fetch(LIST_URL)
       .then(function (response) {
@@ -669,7 +669,7 @@ html, body {
         currentPage = 1;
         if (friendsHeader) {
           friendsHeader.textContent =
-            "Гумени ГУМЕНЧАТ — " + profiles.length;
+            "Друмени ГУМЕНЧАТ — " + profiles.length;
         }
         renderPage();
       })
