@@ -871,6 +871,135 @@ href="#"
     }
   ];
 
+  /* Live активності — появляються при завантаженні */
+  var liveActivities = [
+    {
+      icon: "💗",
+      user: "nasty_emogirl",
+      userUrl: "profiles/nasty-emogirl.html",
+      action: "поставила 💗 вашому допису",
+      target: null,
+      targetUrl: null
+    },
+    {
+      icon: "💬",
+      user: "terry_rex",
+      userUrl: "profiles/terry-rex.html",
+      action: "прокоментував ваш допис",
+      target: null,
+      targetUrl: null
+    },
+    {
+      icon: "💗",
+      user: "michi_cat",
+      userUrl: "profiles/michi-cat.html",
+      action: "поставила 💗",
+      target: "copy_pasta",
+      targetUrl: "profiles/copy-pasta.html"
+    },
+    {
+      icon: "👤",
+      user: "lina_kitty",
+      userUrl: "profiles/lina-kitty.html",
+      action: "хоче додати вас до списку друменів",
+      target: null,
+      targetUrl: null
+    },
+    {
+      icon: "💗",
+      user: "ihor_romashka",
+      userUrl: "profiles/ihor-romashka.html",
+      action: "поставив 💗",
+      target: "jamie_duke",
+      targetUrl: "profiles/jamie-duke.html"
+    },
+    {
+      icon: "💬",
+      user: "galya_ivanivna",
+      userUrl: "profiles/galya_ivanivna.html",
+      action: "прокоментувала ваш допис",
+      target: null,
+      targetUrl: null
+    },
+    {
+      icon: "💗",
+      user: "fray_dog",
+      userUrl: "profiles/fray-dog.html",
+      action: "поставив 💗 вашому допису",
+      target: null,
+      targetUrl: null
+    },
+    {
+      icon: "💗",
+      user: "water_blue",
+      userUrl: "profiles/water-blue.html",
+      action: "поставила 💗",
+      target: "mandy_cherry",
+      targetUrl: "profiles/mandy-cherry.html"
+    },
+    {
+      icon: "💬",
+      user: "starry_hoomen",
+      userUrl: "profiles/starry-hoomen.html",
+      action: "прокоментувала ваш допис",
+      target: null,
+      targetUrl: null
+    },
+    {
+      icon: "💗",
+      user: "vivienne_nox",
+      userUrl: "profiles/vivienne-nox.html",
+      action: "поставила 💗",
+      target: "stepan_rozymnui",
+      targetUrl: "profiles/stepan-rozymnui.html"
+    }
+  ];
+
+  var allActivities = [];
+
+  function createActivityElement(activity) {
+    var item = document.createElement("div");
+    item.className = "activity-item";
+
+    var icon = document.createElement("div");
+    icon.className = "activity-icon";
+    icon.textContent = activity.icon;
+
+    var text = document.createElement("div");
+    text.className = "activity-text";
+
+    // Користувач
+    var userLink = document.createElement("a");
+    userLink.className = "hoomen-user";
+    userLink.href = activity.userUrl || "#";
+    userLink.textContent = activity.user;
+    text.appendChild(userLink);
+
+    // Текст дії
+    var actionText = document.createElement("span");
+    actionText.textContent = " " + activity.action + " ";
+    text.appendChild(actionText);
+
+    // Мішень (якщо є)
+    if (activity.target) {
+      var targetLink = document.createElement("a");
+      targetLink.className = "hoomen-target";
+      targetLink.href = activity.targetUrl || "#";
+      targetLink.textContent = activity.target;
+      text.appendChild(targetLink);
+    }
+
+    // Час
+    var time = document.createElement("span");
+    time.className = "activity-time";
+    time.textContent = activity.time || "щойно";
+    text.appendChild(time);
+
+    item.appendChild(icon);
+    item.appendChild(text);
+    return item;
+  }
+
   function renderActivities() {
     var listEl = document.getElementById("activity-list");
     var headerEl = document.getElementById("activity-header");
@@ -879,56 +1008,40 @@ href="#"
     
     listEl.innerHTML = "";
 
+    allActivities.forEach(function(activity) {
+      listEl.appendChild(createActivityElement(activity));
+    });
+
     activitiesConfig.forEach(function(activity) {
-      var item = document.createElement("div");
-      item.className = "activity-item";
-
-      var icon = document.createElement("div");
-      icon.className = "activity-icon";
-      icon.textContent = activity.icon;
-
-      var text = document.createElement("div");
-      text.className = "activity-text";
-
-      // Користувач
-      var userLink = document.createElement("a");
-      userLink.className = "hoomen-user";
-      userLink.href = activity.userUrl || "#";
-      userLink.textContent = activity.user;
-      text.appendChild(userLink);
-
-      // Текст дії
-      var actionText = document.createElement("span");
-      actionText.textContent = " " + activity.action + " ";
-      text.appendChild(actionText);
-
-      // Мішень (якщо є)
-      if (activity.target) {
-        var targetLink = document.createElement("a");
-        targetLink.className = "hoomen-target";
-        targetLink.href = activity.targetUrl || "#";
-        targetLink.textContent = activity.target;
-        text.appendChild(targetLink);
-      }
-
-      // Час
-      var time = document.createElement("span");
-      time.className = "activity-time";
-      time.textContent = activity.time;
-      text.appendChild(time);
-
-      item.appendChild(icon);
-      item.appendChild(text);
-      listEl.appendChild(item);
+      listEl.appendChild(createActivityElement(activity));
     });
 
     // Оновити заголовок
     if (headerEl) {
-      headerEl.textContent = "Список — " + activitiesConfig.length + " активностей";
+      var totalCount = allActivities.length + activitiesConfig.length;
+      headerEl.textContent = "Список — " + totalCount + " активностей";
     }
   }
 
+  function addLiveActivity(activity) {
+    activity.time = "щойно";
+    allActivities.unshift(activity); // Додати в начало
+    renderActivities();
+  }
+
+  // Завантажити live активності з затримкою
+  function startLiveActivities() {
+    var delay = 800; // мілісекунди між появленням
+    
+    liveActivities.forEach(function(activity, index) {
+      setTimeout(function() {
+        addLiveActivity(activity);
+      }, delay * (index + 1));
+    });
+  }
+
   renderActivities();
+  startLiveActivities();
 
   // Опціонально: оновлювати активності кожні 5 секунд
   // setInterval(renderActivities, 5000);
