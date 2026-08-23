@@ -24,12 +24,36 @@
     "description": "Сімейка: шукайголова · Статус: Далека комета."
   },
   {
+    "name": "cherry_byte",
+    "file": "cherry-byte.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEi_V3-i5gqAEgl0UEqmujNCZgYVFD0iZ1-4pEQZls0WpjMDTkeOMRhk_wzB3_jQZSylary26k6cH7mqk7edNro_gxIDMN1vnwKwqeGZ-zwRnObVwL79CzOydbmlivp0DSZy6mJGyiJ5KgoxYNr4GmuxxrLibqLgyE0IPzfmQ92xNe8LP6GEt8b35K8PJQA",
+    "status": "online",
+    "gender": "female",
+    "description": "Сімейка: шукайголова · Статус: Далека комета."
+  },
+  {
+    "name": "coffee_signal",
+    "file": "coffee-signal.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEhzk94r86FgzVUKV3vexrNMu1qNtg4p4TmKESMylkPtOoGL6KI0fDw0743JR2KaYsKSMT1FQC81AptsedII-X6O06QTejI2h2L6F95NioihwLF9RdiK-CBRxsIwNFZMTJenUoXFC_tR98O4FbGaKO30PoHL7JlRZPyVb9rYdwf3djhTsyFMvB--c0FdiRY",
+    "status": "online",
+    "gender": "female",
+    "description": "Сімейка: шукайголова · Статус: Далека комета."
+  },
+  {
     "name": "copy_pasta",
     "file": "copy-pasta.html",
     "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEiNU5aLNwKBZvNgLsvxfKYA0hduyABhvfQrHryVIrw1Q2WVFne8Aop849IRmthJlGuRphRDtjX_d-pvH8gcUtCoAL-zkhXAP0utpiVidiXL57SIMaMBjeaXnGhTZ_j2wQj1RZxI-V5TsjxtARZSpoxZ8UGuDX_9t9hmiL6k1OyP6ilE8WmYwfKmHTQFvFg",
     "status": "online",
     "gender": "female",
     "description": "Сімейка: у стуснах з dreaming_romance · Статус: ліньки розписувати"
+  },
+  {
+    "name": "dmytro_pinchuk",
+    "file": "dmytro-pinchuk.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEhavXxH1olKd8QKInl2XEJOuzumK7FJHJGDIW3rZQxAHDytMrTjbjMU2GALc3fK_05KQvX0tDudgHT6_sKkRjmD2D5VN4MnuDZKMmuaQi5CYWrwERP3oqNyBz5TPRytotDlvP-FoDns0Ky3oHEVFLWGwnZ6KvJyVJqVV9oTV-XzLu-qj--InjBO4QFEn60",
+    "status": "25min",
+    "gender": "male",
+    "description": "Сімейка: шукайголова · Статус: Простий, щирий хлопчина."
   },
   {
     "name": "dreaming_romance",
@@ -45,14 +69,6 @@
       { "time": "17:00", "status": "away" },
       { "time": "21:00", "status": "offline" }
     ]
-  },
-  {
-    "name": "dmytro_pinchuk",
-    "file": "dmytro-pinchuk.html",
-    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEhavXxH1olKd8QKInl2XEJOuzumK7FJHJGDIW3rZQxAHDytMrTjbjMU2GALc3fK_05KQvX0tDudgHT6_sKkRjmD2D5VN4MnuDZKMmuaQi5CYWrwERP3oqNyBz5TPRytotDlvP-FoDns0Ky3oHEVFLWGwnZ6KvJyVJqVV9oTV-XzLu-qj--InjBO4QFEn60",
-    "status": "25min",
-    "gender": "male",
-    "description": "Сімейка: шукайголова · Статус: Простий, щирий хлопчина."
   },
   {
     "name": "fray_dog",
@@ -119,11 +135,35 @@
     "description": ""
   },
   {
+    "name": "night_fox",
+    "file": "night-fox.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEj47FGZQVZBpkxQBYQVVcANFRW4_ROFwYhkBiqqCUFbbQtDk9Nqm0OngJgQOlTWNh-K08KO-CKHy6rimZeZtt_jyPlntD35r-YBcNtLEjBkvqs-iL8sXLFEitu-rgnzmJMcyP1RzjG0eb2nurjONGAqFUi41djo5xmB91hTHfclMBote_EQNB5CXbG6ZYg",
+    "status": "online",
+    "gender": "male",
+    "description": ""
+  },
+  {
+    "name": "paper_storm",
+    "file": "paper-storm.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEjqrONG3WN749rf0VM4X87BNKhBrhokWahtrEN24gjmmrqE0QMAolsrXFTfZTJ55OxsJfzNAuFDxyoGm3rDMAV0voBpUeWXTDIOCFdDjRzu16bcQUT8xh6H2CdoPgUBGLfZOkaLwqfdHcOFLLqY5zuANw-DF_zpQT-cre6khltso6JV4Ih3wDqL3kPIJys",
+    "status": "online",
+    "gender": "male",
+    "description": ""
+  },
+  {
     "name": "petro_ivanchuk",
     "file": "petro-ivanchuk.html",
     "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEiQE07RgtIJYMSP9hCCgXCkugQ_fj7phcge88Rx1xRGPoDGTGuLxp3cIDc8y2KYiBaIPk5SXVbSGZe2JyxM_S8XNHzMu9F5sqBvZLFusI_tqOMitTzrlSh6js_bLqdIK5vO_4eKplLRo1owwTmCHdr_m6H_ibmtJuMXTRM-rRoFz9P-6iDAgOtx_pbK0oU",
     "status": "online",
     "gender": "male",
+    "description": ""
+  },
+  {
+    "name": "pixel_heart",
+    "file": "pixel-heart.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEj-JwvE44KmWRAxQsTyKdRmlsdBRpJ8WvOwLpAvvzA-tMTjKE2fq0CEWp-16Rk-z2vC0IXDlnA1X2OGtgGZdvl592QFkFc_GmfVfyOn_jYaxpKaIU8GR4RKkKQvyx5wYdE6BaRhXtKjQ8nXg8yvZS0dNyStBNg0uJILRffVdvV_2pZUCae84AMDojxshiI",
+    "status": "online",
+    "gender": "female",
     "description": ""
   },
   {
