@@ -311,28 +311,22 @@
       case "single":
         html = "Сімейка: " + (isFemale ? "не шлюбна" : "не шлюбний");
         break;
-case "relationship":
-        if (name) {
-          html = "Сімейка: у стуснах з ";
-          if (family.partnerUrl) {
-            html += '<a href="' + escapeAttr(family.partnerUrl) + '">' + escapeHtml(name) + "</a>";
-          } else {
-            html += escapeHtml(name);
-          }
+      case "relationship":
+        html = "Сімейка: у стуснах з ";
+        if (family.partnerUrl) {
+          html += '<a href="' + escapeAttr(family.partnerUrl) + '">' +
+                  escapeHtml(family.partnerName || "партнер") + "</a>";
         } else {
-          html = "Сімейка: у стуснах";
+          html += escapeHtml(family.partnerName || "партнер");
         }
         break;
       case "married":
-        html = "Сімейка: " + (isFemale ? "шлюбна" : "шлюбний");
-        if (family.partnerName) { // <--- перевірка наявності імені
-          html += " з ";
-          if (family.partnerUrl) {
-            html += '<a href="' + escapeAttr(family.partnerUrl) + '">' +
-                    escapeHtml(family.partnerName) + "</a>";
-          } else {
-            html += escapeHtml(family.partnerName);
-          }
+        html = "Сімейка: " + (isFemale ? "шлюбна" : "шлюбний") + " з ";
+        if (family.partnerUrl) {
+          html += '<a href="' + escapeAttr(family.partnerUrl) + '">' +
+                  escapeHtml(family.partnerName || "партнер") + "</a>";
+        } else {
+          html += escapeHtml(family.partnerName || "партнер");
         }
         break;
       default:
