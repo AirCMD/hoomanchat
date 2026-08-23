@@ -566,8 +566,6 @@ body > .image-viewer .image-viewer-close {
 (function () {
   "use strict";
 
-  var currentUser = { name: "copy_pasta" };
-
   var placeholderAvatar =
     "data:image/svg+xml;charset=UTF-8," +
     encodeURIComponent(
@@ -858,16 +856,18 @@ body > .image-viewer .image-viewer-close {
     var status = get("compose-status");
     if (status) status.textContent = "Завантаження...";
 
-    // Повністю робочий шлях до файлів у репозиторії GitHub
-    var url = "hoomanchat/chats/" + chatId + ".json";
+    // Прямий відносний шлях хостингу/GitHub Pages для "hoomanchat/chats/night_fox.json"
+    var filePath = "hoomanchat/chats/" + chatId + ".json";
 
-    fetch(url)
+    fetch(filePath)
       .then(function (response) {
-        if (!response.ok) throw new Error("Файл не знайдено");
+        if (!response.ok) {
+          throw new Error("HTTP помилка! Статус: " + response.status);
+        }
         return response.json();
       })
       .then(function (data) {
-        chats[chatId].messages = data.messages || [];
+        chats[chatId].messages = Array.isArray(data.messages) ? data.messages : [];
 
         if (users[chatId]) {
           if (data.autoReply) {
@@ -891,12 +891,13 @@ body > .image-viewer .image-viewer-close {
         renderChatList();
         if (status) status.textContent = "";
       })
-      .catch(function () {
+      .catch(function (error) {
+        console.error("Помилка завантаження файлу чату:", error);
         chats[chatId].messages = [];
         chats[chatId].loaded = true;
         if (currentChat === chatId) renderConversation();
         renderChatList();
-        if (status) status.textContent = "";
+        if (status) status.textContent = "Помилка завантаження";
       });
   }
 
