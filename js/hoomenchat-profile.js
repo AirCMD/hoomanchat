@@ -510,6 +510,43 @@
     });
   }
 
+  /* Ім'я, від якого коментує відвідувач (основний персонаж сайту) */
+  function getCommentAuthor() {
+    if (window.HOOMEN_CURRENT_USER && window.HOOMEN_CURRENT_USER.name) {
+      return {
+        name: window.HOOMEN_CURRENT_USER.name,
+        url: window.HOOMEN_CURRENT_USER.profileUrl || null
+      };
+    }
+    return {
+      name: "copy_pasta",
+      url: "copy-pasta.html"
+    };
+  }
+
+  function createAuthorCommentElement(text) {
+    var author = getCommentAuthor();
+
+    var comment = document.createElement("div");
+    comment.className = "fake-comment";
+
+    var nameRow = document.createElement("div");
+    nameRow.className = "fake-comment-name";
+
+    if (author.url) {
+      var link = document.createElement("a");
+      link.href = author.url;
+      link.textContent = author.name;
+      nameRow.appendChild(link);
+    } else {
+      nameRow.textContent = author.name;
+    }
+
+    comment.appendChild(nameRow);
+    comment.appendChild(document.createTextNode(text));
+    return comment;
+  }
+
   function bindSendButton(button) {
     if (button.getAttribute("data-send-bound") === "1") return;
     button.setAttribute("data-send-bound", "1");
@@ -522,15 +559,7 @@
       var text = input && input.value ? input.value.trim() : "";
       if (!text) return;
 
-      var comment = document.createElement("div");
-      comment.className = "user-comment";
-
-      var name = document.createElement("strong");
-      name.textContent = "ти: ";
-
-      comment.appendChild(name);
-      comment.appendChild(document.createTextNode(text));
-
+      var comment = createAuthorCommentElement(text);
       form.parentNode.insertBefore(comment, form);
       if (input) input.value = "";
 
@@ -1083,3 +1112,4 @@
   setInterval(updateOnlineStatusDisplay, 60000);
 
 })();
+
