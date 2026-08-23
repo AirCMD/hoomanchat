@@ -28,15 +28,39 @@
     "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEhGJcedC21GOJf9E7-pAiRFqRkZkhWOsgZEmPho3dZtnirOPtoUonHL_MdwDkt-LvPpt_azt8iqxuPs6DPv8rP29QKHxw2k4jB6O1Wc7KZO8zgKHr_nNaeuI5fActfzQoxMiJc46N3oennG9eU664xDo5Cl6MXbWKDw-bjMiQ2UW1kcpCUmphIv9X1pkhE",
     "status": "25min",
     "gender": "male",
-    "description": "Сімейка: шукайголова · Статус: Простий, щирий хлопчина."
+    "description": "Сімейка:  у стуснах з coffee_signal · Статус: Засновник coffee_signal."
+    schedule: [
+       { "time": "07:45", status: "online" },
+       { "time": "08:02", status: "away" },
+       { "time": "12:03", status: "online" },
+       { "time": "14:01", status: "away" },
+       { "time": "14:32", status: "online" },
+       { "time": "17:12", status: "away" },
+       { "time": "18:09", status: "online" },
+       { "time": "19:14", status: "away" },
+       { "time": "20:00", status: "online" },
+       { "time": "21:55", status: "offline" }
+   ]
   },
   {
     "name": "coffee_signal",
     "file": "coffee-signal.html",
     "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEhzk94r86FgzVUKV3vexrNMu1qNtg4p4TmKESMylkPtOoGL6KI0fDw0743JR2KaYsKSMT1FQC81AptsedII-X6O06QTejI2h2L6F95NioihwLF9RdiK-CBRxsIwNFZMTJenUoXFC_tR98O4FbGaKO30PoHL7JlRZPyVb9rYdwf3djhTsyFMvB--c0FdiRY",
     "status": "online",
-    "gender": "male",
-    "description": ""
+    "gender": "female",
+    "description": "Сімейка:  у стуснах з another_hoomen · Статус: Працюємо з 09:00 до 18:00 по будням, з 10:00 до 16:00 по вихідним."
+    schedule: [
+       { "time": "10:00", status: "online" },
+       { "time": "12:02", status: "away" },
+       { "time": "12:34", status: "online" },
+       { "time": "15:01", status: "away" },
+       { "time": "15:32", status: "online" },
+       { "time": "16:02", status: "away" },
+       { "time": "16:13", status: "online" },
+       { "time": "17:01", status: "away" },
+       { "time": "17:12", status: "online" },
+       { "time": "18:00", status: "offline" }
+  ],
   },
   {
     "name": "galya_ivanivna",
@@ -108,7 +132,7 @@
     "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEg6F3ycnXu5A2gS5zM4p0-qELjeNz4oXvfJAwkLxSJnL4kELcGviUtPwYe-Oa8lV_ThO7h6iq0dwSnx2FeaHbkzG6HEC8S0HILQKiHh49eWl65LSGoj7RgeAYb7V5MV7b7Mu7Sxexq9LYM_7XPF6SkSjStcQO32x02IKUWdFlUck9z30GmMEJgH2OLM3YA",
     "status": "online",
     "gender": "female",
-    "description": ""
+    "description": "Сімейка: шукайголова · Статус: Люблю обговорювати ігри, проходження, персонажів та різні ігрові дрібниці."
   },
   {
     "name": "night_fox",
@@ -124,7 +148,7 @@
     "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEi_V3-i5gqAEgl0UEqmujNCZgYVFD0iZ1-4pEQZls0WpjMDTkeOMRhk_wzB3_jQZSylary26k6cH7mqk7edNro_gxIDMN1vnwKwqeGZ-zwRnObVwL79CzOydbmlivp0DSZy6mJGyiJ5KgoxYNr4GmuxxrLibqLgyE0IPzfmQ92xNe8LP6GEt8b35K8PJQA",
     "status": "online",
     "gender": "female",
-    "description": ""
+    "description": "Сімейка: не шлюбна · Статус: Стара гра як нафталін, смердить та з неї сиплеться міль."
   },
   {
     "name": "paper_storm",
