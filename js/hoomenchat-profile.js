@@ -41,16 +41,22 @@
     statusText: "ліньки розписувати",
 
     /**
-     * Онлайн-статус. Доступні значення:
-     *   "online"    → ● онлайн
-     *   "5min"      → була/був 5 хв назад
-     *   "25min"     → була/був 25 хв назад
-     *   "50min"     → була/був 50 хв назад
-     *   "offline"   → офлайн
-     *   "long-ago"  → була/був давно
-     *   або будь-який свій рядок, наприклад "була 3 дні тому"
+     * Онлайн-статус (якщо немає schedule).
+     *   "online" | "5min" | "25min" | "50min" | "offline" | "long-ago" | свій текст
+     *
+     * АБО розклад дня (пріоритетніший за onlineStatus):
+     * schedule: [
+     *   { time: "09:00", status: "online" },
+     *   { time: "12:00", status: "away" },
+     *   { time: "14:00", status: "online" },
+     *   { time: "17:00", status: "away" },
+     *   { time: "21:00", status: "offline" }
+     * ]
+     * status: "online" | "away" | "offline"
+     * Для "away" час «був X хв/год назад» рахується сам від початку слоту.
      */
     onlineStatus: "online",
+    schedule: null,
 
     /**
      * Стать — впливає лише на форму «була / був»:
@@ -135,20 +141,7 @@
       elStatusText.textContent = cfg.statusText ? ("Статус: " + cfg.statusText) : "";
     }
 
-    var elOnline = document.getElementById("profile-online-status");
-    if (elOnline) {
-      var statusMap = buildOnlineStatusMap(cfg.gender);
-      var key = cfg.onlineStatus || "offline";
-      var info = statusMap[key];
-
-      if (info) {
-        elOnline.textContent = info.text;
-        elOnline.className = "profile-status " + info.className;
-      } else {
-        elOnline.textContent = key;
-        elOnline.className = "profile-status offline";
-      }
-    }
+    updateOnlineStatusDisplay();
 
     var elFamily = document.getElementById("profile-family");
     if (elFamily) {
@@ -177,6 +170,132 @@
       "offline":  { text: "офлайн",            className: "offline" },
       "long-ago": { text: was + " давно",      className: "long-ago" }
     };
+  }
+
+  function parseHHMM(str) {
+    if (!str || typeof str !== "string") return null;
+    var parts = str.trim().split(":");
+    if (parts.length < 2) return null;
+    var h = parseInt(parts[0], 10);
+    var m = parseInt(parts[1], 10);
+    if (isNaN(h) || isNaN(m)) return null;
+    return h * 60 + m;
+  }
+
+  function getNowMinutes() {
+    var now = new Date();
+    return now.getHours() * 60 + now.getMinutes();
+  }
+
+  /**
+   * Повертає активний слот розкладу та хвилини від його початку.
+   * Слоти йдуть по колу через добу (після 21:00 діє до 09:00 наступного дня).
+   */
+  function resolveScheduleSlot(schedule) {
+    if (!schedule || !schedule.length) return null;
+
+    var slots = [];
+    for (var i = 0; i < schedule.length; i++) {
+      var item = schedule[i];
+      if (!item || !item.time) continue;
+      var mins = parseHHMM(item.time);
+      if (mins === null) continue;
+      slots.push({
+        minutes: mins,
+        status: item.status || "offline",
+        time: item.time
+      });
+    }
+    if (!slots.length) return null;
+
+    slots.sort(function (a, b) { return a.minutes - b.minutes; });
+
+    var nowMins = getNowMinutes();
+    var active = slots[slots.length - 1];
+    var activeIndex = slots.length - 1;
+
+    for (var j = 0; j < slots.length; j++) {
+      if (slots[j].minutes <= nowMins) {
+        active = slots[j];
+        activeIndex = j;
+      }
+    }
+
+    var elapsed;
+    if (nowMins >= active.minutes) {
+      elapsed = nowMins - active.minutes;
+    } else {
+      /* після опівночі, слот з учора */
+      elapsed = nowMins + (24 * 60 - active.minutes);
+    }
+
+    return {
+      status: active.status,
+      elapsedMinutes: elapsed,
+      slotTime: active.time
+    };
+  }
+
+  function formatAwayText(gender, elapsedMinutes) {
+    var isFemale = gender !== "male";
+    var was = isFemale ? "була" : "був";
+    var m = Math.max(0, Math.floor(elapsedMinutes));
+
+    if (m < 1) {
+      return { text: was + " щойно", className: "recent" };
+    }
+    if (m < 60) {
+      var cls = m < 15 ? "recent" : "away";
+      return { text: was + " " + m + " хв назад", className: cls };
+    }
+
+    var hours = Math.floor(m / 60);
+    if (hours < 24) {
+      var hWord;
+      if (hours === 1) hWord = "годину";
+      else if (hours >= 2 && hours <= 4) hWord = "години";
+      else hWord = "годин";
+      return { text: was + " " + hours + " " + hWord + " назад", className: "away" };
+    }
+
+    return { text: was + " давно", className: "long-ago" };
+  }
+
+  function resolveOnlineInfo(cfg) {
+    var gender = cfg.gender;
+    var schedule = cfg.schedule;
+
+    if (schedule && schedule.length) {
+      var slot = resolveScheduleSlot(schedule);
+      if (slot) {
+        var st = String(slot.status || "offline").toLowerCase();
+        if (st === "online" || st === "on") {
+          return { text: "● онлайн", className: "online" };
+        }
+        if (st === "offline" || st === "off" || st === "sleep") {
+          return { text: "офлайн", className: "offline" };
+        }
+        if (st === "away" || st === "afk") {
+          return formatAwayText(gender, slot.elapsedMinutes);
+        }
+        /* невідомий status у слоті — як offline */
+        return { text: "офлайн", className: "offline" };
+      }
+    }
+
+    var statusMap = buildOnlineStatusMap(gender);
+    var key = cfg.onlineStatus || "offline";
+    if (statusMap[key]) return statusMap[key];
+    return { text: key, className: "offline" };
+  }
+
+  function updateOnlineStatusDisplay() {
+    var elOnline = document.getElementById("profile-online-status");
+    if (!elOnline) return;
+
+    var info = resolveOnlineInfo(PROFILE_CONFIG);
+    elOnline.textContent = info.text;
+    elOnline.className = "profile-status " + info.className;
   }
 
   function buildFamilyHtml(family, gender) {
@@ -960,5 +1079,7 @@
   updatePostVisibility();
   initStatistics();
 
-})();
+  /* Оновлення статусу за розкладом раз на хвилину */
+  setInterval(updateOnlineStatusDisplay, 60000);
 
+})();
