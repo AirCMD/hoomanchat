@@ -313,20 +313,27 @@
         break;
       case "relationship":
         html = "Сімейка: у стуснах з ";
-        if (family.partnerUrl) {
-          html += '<a href="' + escapeAttr(family.partnerUrl) + '">' +
-                  escapeHtml(family.partnerName || "партнер") + "</a>";
+        if (family.partnerName) { // <--- додати цю перевірку
+          if (family.partnerUrl) {
+            html += '<a href="' + escapeAttr(family.partnerUrl) + '">' +
+                    escapeHtml(family.partnerName) + "</a>";
+          } else {
+            html += escapeHtml(family.partnerName);
+        }
         } else {
-          html += escapeHtml(family.partnerName || "партнер");
+          html = "Сімейка: у стосунках"; // <--- текст без "з партнер"
         }
         break;
       case "married":
-        html = "Сімейка: " + (isFemale ? "шлюбна" : "шлюбний") + " з ";
-        if (family.partnerUrl) {
-          html += '<a href="' + escapeAttr(family.partnerUrl) + '">' +
-                  escapeHtml(family.partnerName || "партнер") + "</a>";
-        } else {
-          html += escapeHtml(family.partnerName || "партнер");
+        html = "Сімейка: " + (isFemale ? "шлюбна" : "шлюбний");
+        if (family.partnerName) { // <--- перевірка наявності імені
+          html += " з ";
+          if (family.partnerUrl) {
+            html += '<a href="' + escapeAttr(family.partnerUrl) + '">' +
+                    escapeHtml(family.partnerName) + "</a>";
+          } else {
+            html += escapeHtml(family.partnerName);
+          }
         }
         break;
       default:
