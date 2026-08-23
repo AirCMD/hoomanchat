@@ -1,3 +1,4 @@
+
 /**
  * Гуменчат — скрипт профілю персонажа
  * Підключення: <script src="hoomenchat-profile.js"></script> перед </body>
