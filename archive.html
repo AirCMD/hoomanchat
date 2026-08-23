@@ -1055,46 +1055,54 @@ body > .image-viewer .image-viewer-close {
     showEmptyState();
   }
 
-  /* НОВА ФУНКЦІЯ ЗАВАНТАЖЕННЯ ЧАТІВ ІЗ .JS ФАЙЛІВ */
+  /* ФУНКЦІЯ ЗАВАНТАЖЕННЯ ЧАТІВ ІЗ JSON-ФАЙЛІВ */
   function loadChat(chatId) {
     var status = get("compose-status");
     if (status) status.textContent = "Завантаження...";
 
-    var script = document.createElement("script");
-    script.src = "hoomanchat/chats/" + chatId + ".js";
+    fetch("hoomanchat/chats/" + chatId + ".json")
+      .then(function (response) {
+        if (!response.ok) throw new Error("Файл не знайдено");
+        return response.json();
+      })
+      .then(function (data) {
+        var messages = [];
+        if (Array.isArray(data)) {
+          messages = data.map(function (item, index) {
+            if (typeof item === "string") {
+              return {
+                from: index % 2 === 0 ? "them" : "me",
+                type: "text",
+                text: item,
+                time: "00:00"
+              };
+            } else {
+              return {
+                from: item.from || (index % 2 === 0 ? "them" : "me"),
+                type: item.type || "text",
+                text: item.text || "",
+                url: item.url || "",
+                fileName: item.fileName || "",
+                time: item.time || "00:00"
+              };
+            }
+          });
+        }
 
-    script.onload = function() {
-      var phrases = window["chat_phrases_" + chatId] || window[chatId] || [];
-      
-      var formattedMessages = phrases.map(function(text, index) {
-        return {
-          from: index % 2 === 0 ? "them" : "me",
-          type: "text",
-          text: text,
-          time: "00:00"
-        };
+        chats[chatId].messages = messages;
+        chats[chatId].loaded = true;
+
+        if (currentChat === chatId) renderConversation();
+        renderChatList();
+        if (status) status.textContent = "";
+      })
+      .catch(function (error) {
+        chats[chatId].messages = [];
+        chats[chatId].loaded = true;
+        if (currentChat === chatId) renderConversation();
+        renderChatList();
+        if (status) status.textContent = "Помилка завантаження";
       });
-
-      chats[chatId].messages = formattedMessages;
-      chats[chatId].loaded = true;
-      
-      if (currentChat === chatId) renderConversation();
-      renderChatList();
-      if (status) status.textContent = "";
-      
-      script.remove();
-    };
-
-    script.onerror = function() {
-      chats[chatId].messages = [];
-      chats[chatId].loaded = true;
-      if (currentChat === chatId) renderConversation();
-      renderChatList();
-      if (status) status.textContent = "Файл реплік не знайдено";
-      script.remove();
-    };
-
-    document.head.appendChild(script);
   }
 
   function renderConversationHeader() {
@@ -1321,7 +1329,7 @@ body > .image-viewer .image-viewer-close {
     var fileInput = get("file-input");
     var backBtn = get("conversation-back");
 
-  if (button) button.addEventListener("click", sendMessage);
+    if (button) button.addEventListener("click", sendMessage);
     if (backBtn) backBtn.addEventListener("click", closeChatToList);
 
     if (input) {
