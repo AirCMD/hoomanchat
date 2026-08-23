@@ -29,7 +29,7 @@
     "status": "25min",
     "gender": "male",
     "description": "Сімейка:  у стуснах з coffee_signal · Статус: Засновник coffee_signal."
-    schedule: [
+    "schedule": [
        { "time": "07:45", status: "online" },
        { "time": "08:02", status: "away" },
        { "time": "12:03", status: "online" },
@@ -49,7 +49,7 @@
     "status": "online",
     "gender": "female",
     "description": "Сімейка:  у стуснах з another_hoomen · Статус: Працюємо з 09:00 до 18:00 по будням, з 10:00 до 16:00 по вихідним."
-    schedule: [
+    "schedule": [
        { "time": "10:00", status: "online" },
        { "time": "12:02", status: "away" },
        { "time": "12:34", status: "online" },
