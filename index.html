@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Гуменчат</title>
-
 <style>
 /* =====================================================
    ОСНОВНІ СТИЛІ СТОРІНКИ
@@ -99,7 +98,9 @@ html, body {
 .main-avatar {
   display: block;
   width: 100%;
-  height: 228px;
+  height: auto;
+  max-height: none;
+  aspect-ratio: 1 / 1.35;
   margin: 0 0 6px;
   object-fit: cover;
   object-position: center;
@@ -183,7 +184,7 @@ html, body {
 }
 
 /* =====================================================
-   ПРАВА КОЛОНКА ТА ЇЇ ЕЛЕМЕНТИ
+   ПРАВА КОЛОНКА
    ===================================================== */
 .welcome-box {
   margin: 0 0 8px;
@@ -247,7 +248,8 @@ html, body {
 .random-avatar {
   display: block;
   width: 100%;
-  height: 165px;
+  height: auto;
+  aspect-ratio: 1 / 1.15;
   margin: 0 0 5px;
   object-fit: cover;
   object-position: center 35%;
@@ -268,11 +270,30 @@ html, body {
 
 .random-status {
   margin: 2px 0 0;
-  color: #2e7d32;
   font-size: 10px;
   line-height: 12px;
   font-style: italic;
   text-align: center;
+}
+
+.random-status.online {
+  color: #2e7d32;
+}
+
+.random-status.recent {
+  color: #558b2f;
+}
+
+.random-status.away {
+  color: #f9a825;
+}
+
+.random-status.offline {
+  color: #757575;
+}
+
+.random-status.long-ago {
+  color: #9e9e9e;
 }
 
 .rules-box {
@@ -327,11 +348,34 @@ html, body {
 }
 
 /* =====================================================
-   АДАПТИВНІСТЬ ДЛЯ МОБІЛЬНИХ ПРИСТРОЇВ
+   МОБІЛЬНА АДАПТАЦІЯ
    ===================================================== */
+@media screen and (max-width: 900px) {
+  .site-left {
+    width: 150px;
+  }
+}
+
 @media screen and (max-width: 600px) {
+  html, body {
+    font-size: 14px;
+    line-height: 18px;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   #hoomenchat-site {
-    padding: 7px;
+    padding: 8px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    border: none;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .hoomenchat-header {
+    padding: 8px 10px;
+    font-size: 14px;
+    letter-spacing: 1.5px;
   }
 
   .site-layout {
@@ -346,22 +390,121 @@ html, body {
   }
 
   .site-left {
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+  }
+
+  .left-box {
+    padding: 10px 12px;
+  }
+
+  .site-name {
+    font-size: 18px;
+    line-height: 22px;
+    margin-bottom: 10px;
+  }
+
+  .main-avatar {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    aspect-ratio: 1 / 1.25;
+    margin: 0 auto 12px;
+    object-fit: cover;
+  }
+
+  .archat-button {
+    padding: 12px 0;
+    font-size: 13px;
+    min-height: 44px;
+    margin-bottom: 10px;
+  }
+
+  .nav-item {
+    padding: 12px 6px;
+    font-size: 15px;
+    min-height: 44px;
+  }
+
+  .account-box {
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+
+  .account-link {
+    padding: 10px 0;
+    font-size: 14px;
+    min-height: 40px;
+  }
+
+  .welcome-box {
+    font-size: 14px;
+    line-height: 20px;
+    padding: 10px 12px;
+  }
+
+  .profiles-box {
+    padding: 10px;
+  }
+
+  .profiles-header {
+    font-size: 14px;
+    padding: 10px 12px;
   }
 
   .random-profiles {
-    border-spacing: 4px 0;
+    display: block;
+    border-spacing: 0;
+  }
+
+  .random-profile-cell {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .random-profile {
+    padding: 10px;
   }
 
   .random-avatar {
-    height: 130px;
+    height: auto;
+    aspect-ratio: 1 / 1.1;
+    max-height: none;
+  }
+
+  .random-name {
+    font-size: 15px;
+    line-height: 18px;
+    margin-top: 4px;
+  }
+
+  .random-status {
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .rules-box,
+  .statistics-box {
+    font-size: 12px;
+    line-height: 16px;
+    padding: 10px 12px;
+  }
+
+  .footer-line {
+    font-size: 11px;
+    margin-top: 12px;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .main-avatar {
+    max-width: 100%;
+    aspect-ratio: 1 / 1.15;
   }
 }
 </style>
 </head>
-
 <body>
-
 <div id="hoomenchat-site">
 
 <div class="hoomenchat-header">
@@ -375,6 +518,7 @@ html, body {
      ===================================================== -->
 <div class="site-left">
   <div class="left-box">
+
     <div class="site-name">
       ГУМЕНЧАТ
     </div>
@@ -383,78 +527,32 @@ html, body {
       class="main-avatar"
       alt="ГУМЕНЧАТ"
       src="https://blogger.googleusercontent.com/img/a/AVvXsEikl2AwyMPO-fdHfH3XugR0z28OlNR7sGHxQFaYw1KHQ_3YNbbm0aGwmKo8X21RqBa-2RSi1sQmdGYFEs7XIaYylW3_6ivt1yixDE1RAhEOLPqMwEImTEd-0nUeCbb_9EUGLjjwa1OJK9njExaag52-LAN8p7YCRWAcKOdSpBgxJ62aQL7Ju2pjLLNhAWM"
-    />
+    >
 
     <a
       class="archat-button"
-      href="https://aircmd.github.io/hoomanchat/archive.html"
+      href="archive.html"
     >
       📩 АРЧАТ
     </a>
 
     <div class="nav-menu">
-      <a
-        class="nav-item"
-        href="https://aircmd.github.io/hoomanchat/profiles/copy-pasta.html"
-      >
-        Мій гумгайл
-      </a>
-
-      <a
-        class="nav-item"
-        href="https://aircmd.github.io/hoomanchat/profiles.html"
-      >
-        Гумени
-      </a>
-
-      <a
-        class="nav-item"
-        href="https://aircmd.github.io/hoomanchat/droomens.html"
-      >
-        Друмени
-      </a>
-
-      <a
-        class="nav-item"
-        href="https://aircmd.github.io/hoomanchat/activity.html"
-      >
-        Стрічерчат
-      </a>
-
-      <a
-        class="nav-item"
-        href="https://aircmd.github.io/hoomanchat/islands.html"
-      >
-        Острови
-      </a>
-
-      <a
-        class="nav-item"
-        href="https://aircmd.github.io/hoomanchat/rules.html"
-      >
-        Правила
-      </a>
+      <a class="nav-item" href="profiles/copy-pasta.html">Мій гумгайл</a>
+      <a class="nav-item" href="profiles.html">Гумени</a>
+      <a class="nav-item" href="droomens.html">Друмени</a>
+      <a class="nav-item" href="activity.html">Стрічерчат</a>
+      <a class="nav-item" href="islands.html">Острови</a>
+      <a class="nav-item" href="rules.html">Правила</a>
     </div>
 
     <div class="account-box">
       <div class="account-text">
         Немає гумгайла?
       </div>
-
-      <a
-        class="account-link"
-        href="#"
-      >
-        ЗАРЕЄСТРУВАТИСЯ
-      </a>
-
-      <a
-        class="account-link"
-        href="#"
-      >
-        ВХІД
-      </a>
+      <a class="account-link" href="#">ЗАРЕЄСТРУВАТИСЯ</a>
+      <a class="account-link" href="#">ВХІД</a>
     </div>
+
   </div>
 </div>
 
@@ -462,6 +560,7 @@ html, body {
      ПРАВА КОЛОНКА
      ===================================================== -->
 <div class="site-right">
+
   <div class="welcome-box">
     Вітаємо! Безліч гуменів чекають на тебе вже <strong>ЗАРАЗ</strong>: Спілкуйся, обмінюйся думками, знаходь друменів, кохання свого життя, рідних та близьких разом з нами!
   </div>
@@ -475,7 +574,7 @@ html, body {
 
   <div class="rules-box">
     Пам'ятай та дотримуйся
-    <a href="https://aircmd.github.io/hoomanchat/rules.html">ПРАВИЛ</a>
+    <a href="rules.html">ПРАВИЛ</a>
     нашого ресурсу для приємного та друмнього часу разом з нами.
   </div>
 
@@ -500,90 +599,236 @@ html, body {
   <div class="footer-line">
     Гуменчат — місце для гуменів.
   </div>
-</div>
 
 </div>
 
+</div>
 </div>
 
 <script>
-(function(){
+(function () {
 
 /*
 =========================================================
 СПИСОК ПРОФІЛІВ ГУМЕНІВ
+
+status — один з:
+  "online"    → ● онлайн
+  "5min"      → була/був 5 хв назад
+  "25min"     → була/був 25 хв назад
+  "50min"     → була/був 50 хв назад
+  "offline"   → офлайн
+  "long-ago"  → була/був давно
+  або свій рядок
+
+gender — "female" | "male" (для форми «була / був»)
 =========================================================
 */
 var hoomenProfiles = [
-  {name:"dreaming_romance", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA", link:"profiles/dreaming-romance.html", status:"онлайн"},
-  {name:"copy_pasta", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiNU5aLNwKBZvNgLsvxfKYA0hduyABhvfQrHryVIrw1Q2WVFne8Aop849IRmthJlGuRphRDtjX_d-pvH8gcUtCoAL-zkhXAP0utpiVidiXL57SIMaMBjeaXnGhTZ_j2wQj1RZxI-V5TsjxtARZSpoxZ8UGuDX_9t9hmiL6k1OyP6ilE8WmYwfKmHTQFvFg", link:"profiles/copy-pasta.html", status:"онлайн"},
-  {name:"sakurai_agatsuma", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEg6F3ycnXu5A2gS5zM4p0-qELjeNz4oXvfJAwkLxSJnL4kELcGviUtPwYe-Oa8lV_ThO7h6iq0dwSnx2FeaHbkzG6HEC8S0HILQKiHh49eWl65LSGoj7RgeAYb7V5MV7b7Mu7Sxexq9LYM_7XPF6SkSjStcQO32x02IKUWdFlUck9z30GmMEJgH2OLM3YA", link:"profiles/sakurai-agatsuma.html", status:"онлайн"},
-  {name:"sruiki_stikki", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEhvP2ab1Fl3tJVD7N4ZinordTPbip3E8SpYB6yk93kDOeak-4B17vuUQTl_j4mggTJ9cMwD7chp48zMEjl6yiHQVRM0VpXDC_EsUkx6H894DwLM7g4cRTxiy4GXYV2kiAkTZmqJwflc0UeDzuWd_t8Bp_zB6sjBFB81qxtUCYGCyLEpueRRi9CMnqfuXnA", link:"profiles/sruiki-stikki.html", status:"недавно був(ла)"},
-  {name:"yurii_ichigo", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiMGES7-O1UP0GNtOe_tYLUJ1-xHmX0DIUGn78v1Mi8sT9_WmVXm1-mw2Nh5uKfKksgKrdapry46R4R5kPIIQi0XWexejQq2fPwS2TjpVqeF0xHdtJfDgDgHOgEyUSiuXQ2q-L2X_PqmD0m8KWf5QdIOdQAx2xuN0F6HGE0V32-BECRndeELmjUeEGtCq0", link:"profiles/yurii-ichigo.html", status:"онлайн"},
-  {name:"dmytro_pinchuk", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEhavXxH1olKd8QKInl2XEJOuzumK7FJHJGDIW3rZQxAHDytMrTjbjMU2GALc3fK_05KQvX0tDudgHT6_sKkRjmD2D5VN4MnuDZKMmuaQi5CYWrwERP3oqNyBz5TPRytotDlvP-FoDns0Ky3oHEVFLWGwnZ6KvJyVJqVV9oTV-XzLu-qj--InjBO4QFEn60", link:"profiles/dmytro-pinchuk.html", status:"недавно був(ла)"},
-  {name:"alter_core", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiZ7hOITEG-aCscLuMNEBml1v2zidsEixQymUsU5UukZN4Jb-AAbqwdGj3CJ8gSTbOvXMgyPp3T4xAQzq3TRYhFjOYbF0TkE6lWGESsA-K31pEcpcOV2Cr061lkzABNZRKN5CPAr9WmD38DWNYbebjw8CuqHGWvgBCumZebUra3Kjf6sjUDTZDpVZQehD0", link:"profiles/alter-core.html", status:"онлайн"},
-  {name:"jamie_duke", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEgPpa3Gt4kiAZeFs_hkm-7r-hONto-MkgD4IsV45oR62iAtlDl7hCjIITb6_24X15pYCAFX5IaT62DjlssssqJQDFdK_pQK4WMPZfshycmKvaXf4kNRCyB21lN697na1udfujk3g8UyroGoY0EBRfDPw4B9xwq7BAZ5cgghre1UbpeWFD-KLYmgK53enQ8", link:"profiles/jamie-duke.html", status:"онлайн"},
-  {name:"mandy_cherry", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEhSBLEJ-KTDRSXnAHsyVXw8s37cv9VDalnfpPWSYXcX62zAkyKqtUCKJQGvo_OvoUCK_1HZ50_56MxN6L9JHU7g2R3Tuiy31qffIXEUt7AN_cYoMciserBwQZNNr8UE21fWCPbckz_2bmuXdAKvkaGrtxtVOUfnfs3oH4jHaa3_jB2OdaB_W_roEaO0Pb0", link:"profiles/mandy-cherry.html", status:"онлайн"},
-  {name:"starry_hoomen", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEh-CsXO_KpPIGmUgoaZKstk3Cd-aqa8GZVkEKDtQD8u9edYP0ZTZfXwlb8-R9eefiJc8zZ5W56WHfRHwllPdC0Et8Lxg0vldCvwr4i4oBFB8ySmtHT_VtE-r6kse6kcfKYa0qBBTGoVaBi4JyrKuKVHnsF4r-x6ENMSIm8oHaDSwhfHyPuInqFqcqtH_wk", link:"profiles/starry-hoomen.html", status:"давно"},
-  {name:"nasty_emogirl", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEi_jDMj2NcAlV9uJhfVItew6bG7fd7kuO75psvBLcjlsZWX5fJeHyuCR3D9wU_MJcuDdFfUtCJtk9MEzRZKVOQ6KuXoijYgdg9G8L8bJcykFg-r0UhHUzKOZDCaK4HGygclVOgfDnXqG-IF6XhN0ngmnPPoq1tgRgsHH3L4wly34MtM6wjUcT8SIf9Eveg", link:"profiles/nasty-emogirl.html", status:"онлайн"},
-  {name:"terry_rex", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEgpXZHF9126nFKiLJixKkn5SC4DgHXhBvcsrER4frWXjrjgck_Q8hxnP8q4BIjPKgkB-4oV-OV-szzZ-oLoosvaNnUY0sH3KG8k7WX93uFg8ICHSKvTrYviYbP_AwAnlcP0iHjQhYBH5cJ0HOnma8TM4VBFWeh-vLvjIkZqL8r09IADouh7jJF_DC_T8os", link:"profiles/terry-rex.html", status:"онлайн"},
-  {name:"vivienne_nox", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEg4_-BBat7jhgBJAZ-t1uuQZwYnLQUkAbIqqn8IlPPKL3NlhRj_0PUkXU7tACeZnk5NJtXp5l-JEUGr3TDi_KjjLXile4kOVhM4t0w7qGPINHUrBS8bUkUHomETO9vOkUSwaUqfhv6F5bVBQB7rIF1xcWJvhkm-hPeePUMIu2giZXkIpKgN6Lh6hMMs9Hc", link:"profiles/vivienne-nox.html", status:"онлайн"},
-  {name:"stepan_rozymnui", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEgO1CRhQ_YLpsX7sHK_bz7X8X8uLq4pNNpg54SwXYDqriJiazRPcVo3-Mlq_s8SvpuZ9krT8hawnpMJsxTpylLwapFO0lO20fZUWaQbQpYz56lkhXeNxSncxkYtX4BllPsvW1qXFt1q1G-z_ilKSI0-NyIoFw6QfNj7eltX4kTs39KPxb92n1ULTzptyKI", link:"profiles/stepan-rozymnui.html", status:"онлайн"},
-  {name:"petro_ivanchuk", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiQE07RgtIJYMSP9hCCgXCkugQ_fj7phcge88Rx1xRGPoDGTGuLxp3cIDc8y2KYiBaIPk5SXVbSGZe2JyxM_S8XNHzMu9F5sqBvZLFusI_tqOMitTzrlSh6js_bLqdIK5vO_4eKplLRo1owwTmCHdr_m6H_ibmtJuMXTRM-rRoFz9P-6iDAgOtx_pbK0oU", link:"profiles/petro-ivanchuk.html", status:"онлайн"},
-  {name:"michi_cat", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiCMznNBLCZN91-45UNr82114YyAndvqyhk5XjQGdPgS8n9iV6MhMMY92RDrHiNUjn1jrFNeG2cUBbSE5jgXGicRXnor73m-VyxhkNk0Q6ONIQlo9AuPhNfvI6OHizSnQedjzGizhDa5xwURNyE9Z3Xsc8XnVmf5ILuNd2vMzAW47IRYidLp9Fe0CzZTok", link:"profiles/michi-cat.html", status:"онлайн"},
-  {name:"lina_kitty", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiP5nxi3GluK2l04GgUIXISQOB89V_zEl3ghwE_Ozx0GKP7VPAhkvCqPtChk76Jf3gff-nYAi6u1NSiGd-uapL8oE4II9OHkrjl-FrDD66lINP_Aliib8vroLa2yuUDvihJvdwmIneg8ByanupCFaGHgYNSzm7H80-wVLkuczGj-FP3nATEfRItdzKhOy8", link:"profiles/lina-kitty.html", status:"онлайн"},
-  {name:"ihor_romashka", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEi0PvnoUYIJxymS3LNnNSEWYSUYUx1Lt5ziuN6dC2MSlMumzvhhn8UFH5kfsPD42KBC4cjYaIWQHminTouA1rteC3Mo0wY3wXdokMsID40_KK6emMRKhV4VqgEOWzofA31QE2tCQMy_VXJRmOSMy9LO2XLpD88eRvXFOLxT0XnAq2i-3lBBCPhgB2s7wWg", link:"profiles/ihor-romashka.html", status:"онлайн"},
-  {name:"galya_ivanivna", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEid2Z8ZcJu8ApzLALkhkAu_jk99bvh7Tz6e0oAWsLciLLUgUFM-y0ZFIMeDziESrFU78CsrJtdPWl5dM6WPna2-Kco4twVtElUrigDwaXwsHRXdxgejA6nkSZ-6u6VT4W-bPY0pzj1WCgMvZAkG4uk-5fnPqFzqdYIWYzeVpT-UgnMdBtRWFIgVCsOVqSA", link:"profiles/galya_ivanivna.html", status:"онлайн"},
-  {name:"fray_dog", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEiSWhpkYPCm5rzuwxBKIqWxlJoCCYo4Rq7bpJTtB4I3PstFHLvDa53iqaOLRClWVj3LaZx5nai03Lmn-1c0mwhrW1ZScnmyUDfvcej9bsIpg7t_gpb63j-hunAlNC_gILX1Z-3cCJp7KKG2qPRcnnFKuUiwL1KiXVvqgZ2I2FraOa2SRQLSIB4m_AGWgX8", link:"profiles/fray-dog.html", status:"онлайн"},
-  {name:"water_blue", avatar:"https://blogger.googleusercontent.com/img/a/AVvXsEi-IVzTEq2IynM_TIFrvaScqnwEXbfXXKJyw6mDm1JXy1YBqBB3g-garhk0xNCgObaBw-W2473PSKJoMZPIuegdmiviufrD7jCSY02X2NLH6_waaxjQJ3IE5V-n_Ynv9Qo9VLluhy35n70BcPGUvp2EOvJofrpAVNBmAU784U4-iO0GRTziDFWR7Wtgl2Q", link:"profiles/water-blue.html", status:"онлайн"}
-   
+  {
+    name: "dreaming_romance",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA",
+    link: "profiles/dreaming-romance.html",
+    status: "online",
+    gender: "male"
+  },
+  {
+    name: "copy_pasta",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiNU5aLNwKBZvNgLsvxfKYA0hduyABhvfQrHryVIrw1Q2WVFne8Aop849IRmthJlGuRphRDtjX_d-pvH8gcUtCoAL-zkhXAP0utpiVidiXL57SIMaMBjeaXnGhTZ_j2wQj1RZxI-V5TsjxtARZSpoxZ8UGuDX_9t9hmiL6k1OyP6ilE8WmYwfKmHTQFvFg",
+    link: "profiles/copy-pasta.html",
+    status: "online",
+    gender: "female"
+  },
+  {
+    name: "sakurai_agatsuma",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEg6F3ycnXu5A2gS5zM4p0-qELjeNz4oXvfJAwkLxSJnL4kELcGviUtPwYe-Oa8lV_ThO7h6iq0dwSnx2FeaHbkzG6HEC8S0HILQKiHh49eWl65LSGoj7RgeAYb7V5MV7b7Mu7Sxexq9LYM_7XPF6SkSjStcQO32x02IKUWdFlUck9z30GmMEJgH2OLM3YA",
+    link: "profiles/sakurai-agatsuma.html",
+    status: "online",
+    gender: "female"
+  },
+  {
+    name: "sruiki_stikki",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhvP2ab1Fl3tJVD7N4ZinordTPbip3E8SpYB6yk93kDOeak-4B17vuUQTl_j4mggTJ9cMwD7chp48zMEjl6yiHQVRM0VpXDC_EsUkx6H894DwLM7g4cRTxiy4GXYV2kiAkTZmqJwflc0UeDzuWd_t8Bp_zB6sjBFB81qxtUCYGCyLEpueRRi9CMnqfuXnA",
+    link: "profiles/sruiki-stikki.html",
+    status: "5min",
+    gender: "male"
+  },
+  {
+    name: "yurii_ichigo",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiMGES7-O1UP0GNtOe_tYLUJ1-xHmX0DIUGn78v1Mi8sT9_WmVXm1-mw2Nh5uKfKksgKrdapry46R4R5kPIIQi0XWexejQq2fPwS2TjpVqeF0xHdtJfDgDgHOgEyUSiuXQ2q-L2X_PqmD0m8KWf5QdIOdQAx2xuN0F6HGE0V32-BECRndeELmjUeEGtCq0",
+    link: "profiles/yurii-ichigo.html",
+    status: "online",
+    gender: "male"
+  },
+  {
+    name: "dmytro_pinchuk",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhavXxH1olKd8QKInl2XEJOuzumK7FJHJGDIW3rZQxAHDytMrTjbjMU2GALc3fK_05KQvX0tDudgHT6_sKkRjmD2D5VN4MnuDZKMmuaQi5CYWrwERP3oqNyBz5TPRytotDlvP-FoDns0Ky3oHEVFLWGwnZ6KvJyVJqVV9oTV-XzLu-qj--InjBO4QFEn60",
+    link: "profiles/dmytro-pinchuk.html",
+    status: "25min",
+    gender: "male"
+  },
+  {
+    name: "alter_core",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiZ7hOITEG-aCscLuMNEBml1v2zidsEixQymUsU5UukZN4Jb-AAbqwdGj3CJ8gSTbOvXMgyPp3T4xAQzq3TRYhFjOYbF0TkE6lWGESsA-K31pEcpcOV2Cr061lkzABNZRKN5CPAr9WmD38DWNYbebjw8CuqHGWvgBCumZebUra3Kjf6sjUDTZDpVZQehD0",
+    link: "profiles/alter-core.html",
+    status: "online",
+    gender: "male"
+  },
+  {
+    name: "jamie_duke",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEgPpa3Gt4kiAZeFs_hkm-7r-hONto-MkgD4IsV45oR62iAtlDl7hCjIITb6_24X15pYCAFX5IaT62DjlssssqJQDFdK_pQK4WMPZfshycmKvaXf4kNRCyB21lN697na1udfujk3g8UyroGoY0EBRfDPw4B9xwq7BAZ5cgghre1UbpeWFD-KLYmgK53enQ8",
+    link: "profiles/jamie-duke.html",
+    status: "online",
+    gender: "male"
+  },
+  {
+    name: "mandy_cherry",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhSBLEJ-KTDRSXnAHsyVXw8s37cv9VDalnfpPWSYXcX62zAkyKqtUCKJQGvo_OvoUCK_1HZ50_56MxN6L9JHU7g2R3Tuiy31qffIXEUt7AN_cYoMciserBwQZNNr8UE21fWCPbckz_2bmuXdAKvkaGrtxtVOUfnfs3oH4jHaa3_jB2OdaB_W_roEaO0Pb0",
+    link: "profiles/mandy-cherry.html",
+    status: "online",
+    gender: "female"
+  },
+  {
+    name: "starry_hoomen",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEh-CsXO_KpPIGmUgoaZKstk3Cd-aqa8GZVkEKDtQD8u9edYP0ZTZfXwlb8-R9eefiJc8zZ5W56WHfRHwllPdC0Et8Lxg0vldCvwr4i4oBFB8ySmtHT_VtE-r6kse6kcfKYa0qBBTGoVaBi4JyrKuKVHnsF4r-x6ENMSIm8oHaDSwhfHyPuInqFqcqtH_wk",
+    link: "profiles/starry-hoomen.html",
+    status: "long-ago",
+    gender: "female"
+  },
+  {
+    name: "nasty_emogirl",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEi_jDMj2NcAlV9uJhfVItew6bG7fd7kuO75psvBLcjlsZWX5fJeHyuCR3D9wU_MJcuDdFfUtCJtk9MEzRZKVOQ6KuXoijYgdg9G8L8bJcykFg-r0UhHUzKOZDCaK4HGygclVOgfDnXqG-IF6XhN0ngmnPPoq1tgRgsHH3L4wly34MtM6wjUcT8SIf9Eveg",
+    link: "profiles/nasty-emogirl.html",
+    status: "online",
+    gender: "female"
+  },
+  {
+    name: "terry_rex",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEgpXZHF9126nFKiLJixKkn5SC4DgHXhBvcsrER4frWXjrjgck_Q8hxnP8q4BIjPKgkB-4oV-OV-szzZ-oLoosvaNnUY0sH3KG8k7WX93uFg8ICHSKvTrYviYbP_AwAnlcP0iHjQhYBH5cJ0HOnma8TM4VBFWeh-vLvjIkZqL8r09IADouh7jJF_DC_T8os",
+    link: "profiles/terry-rex.html",
+    status: "online",
+    gender: "male"
+  },
+  {
+    name: "vivienne_nox",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEg4_-BBat7jhgBJAZ-t1uuQZwYnLQUkAbIqqn8IlPPKL3NlhRj_0PUkXU7tACeZnk5NJtXp5l-JEUGr3TDi_KjjLXile4kOVhM4t0w7qGPINHUrBS8bUkUHomETO9vOkUSwaUqfhv6F5bVBQB7rIF1xcWJvhkm-hPeePUMIu2giZXkIpKgN6Lh6hMMs9Hc",
+    link: "profiles/vivienne-nox.html",
+    status: "online",
+    gender: "female"
+  },
+  {
+    name: "stepan_rozymnui",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEgO1CRhQ_YLpsX7sHK_bz7X8X8uLq4pNNpg54SwXYDqriJiazRPcVo3-Mlq_s8SvpuZ9krT8hawnpMJsxTpylLwapFO0lO20fZUWaQbQpYz56lkhXeNxSncxkYtX4BllPsvW1qXFt1q1G-z_ilKSI0-NyIoFw6QfNj7eltX4kTs39KPxb92n1ULTzptyKI",
+    link: "profiles/stepan-rozymnui.html",
+    status: "online",
+    gender: "male"
+  },
+  {
+    name: "petro_ivanchuk",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiQE07RgtIJYMSP9hCCgXCkugQ_fj7phcge88Rx1xRGPoDGTGuLxp3cIDc8y2KYiBaIPk5SXVbSGZe2JyxM_S8XNHzMu9F5sqBvZLFusI_tqOMitTzrlSh6js_bLqdIK5vO_4eKplLRo1owwTmCHdr_m6H_ibmtJuMXTRM-rRoFz9P-6iDAgOtx_pbK0oU",
+    link: "profiles/petro-ivanchuk.html",
+    status: "online",
+    gender: "male"
+  },
+  {
+    name: "michi_cat",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiCMznNBLCZN91-45UNr82114YyAndvqyhk5XjQGdPgS8n9iV6MhMMY92RDrHiNUjn1jrFNeG2cUBbSE5jgXGicRXnor73m-VyxhkNk0Q6ONIQlo9AuPhNfvI6OHizSnQedjzGizhDa5xwURNyE9Z3Xsc8XnVmf5ILuNd2vMzAW47IRYidLp9Fe0CzZTok",
+    link: "profiles/michi-cat.html",
+    status: "online",
+    gender: "female"
+  },
+  {
+    name: "lina_kitty",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiP5nxi3GluK2l04GgUIXISQOB89V_zEl3ghwE_Ozx0GKP7VPAhkvCqPtChk76Jf3gff-nYAi6u1NSiGd-uapL8oE4II9OHkrjl-FrDD66lINP_Aliib8vroLa2yuUDvihJvdwmIneg8ByanupCFaGHgYNSzm7H80-wVLkuczGj-FP3nATEfRItdzKhOy8",
+    link: "profiles/lina-kitty.html",
+    status: "online",
+    gender: "female"
+  },
+  {
+    name: "ihor_romashka",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEi0PvnoUYIJxymS3LNnNSEWYSUYUx1Lt5ziuN6dC2MSlMumzvhhn8UFH5kfsPD42KBC4cjYaIWQHminTouA1rteC3Mo0wY3wXdokMsID40_KK6emMRKhV4VqgEOWzofA31QE2tCQMy_VXJRmOSMy9LO2XLpD88eRvXFOLxT0XnAq2i-3lBBCPhgB2s7wWg",
+    link: "profiles/ihor-romashka.html",
+    status: "online",
+    gender: "male"
+  },
+  {
+    name: "galya_ivanivna",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEid2Z8ZcJu8ApzLALkhkAu_jk99bvh7Tz6e0oAWsLciLLUgUFM-y0ZFIMeDziESrFU78CsrJtdPWl5dM6WPna2-Kco4twVtElUrigDwaXwsHRXdxgejA6nkSZ-6u6VT4W-bPY0pzj1WCgMvZAkG4uk-5fnPqFzqdYIWYzeVpT-UgnMdBtRWFIgVCsOVqSA",
+    link: "profiles/galya_ivanivna.html",
+    status: "online",
+    gender: "female"
+  },
+  {
+    name: "fray_dog",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiSWhpkYPCm5rzuwxBKIqWxlJoCCYo4Rq7bpJTtB4I3PstFHLvDa53iqaOLRClWVj3LaZx5nai03Lmn-1c0mwhrW1ZScnmyUDfvcej9bsIpg7t_gpb63j-hunAlNC_gILX1Z-3cCJp7KKG2qPRcnnFKuUiwL1KiXVvqgZ2I2FraOa2SRQLSIB4m_AGWgX8",
+    link: "profiles/fray-dog.html",
+    status: "online",
+    gender: "male"
+  },
+  {
+    name: "water_blue",
+    avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEi-IVzTEq2IynM_TIFrvaScqnwEXbfXXKJyw6mDm1JXy1YBqBB3g-garhk0xNCgObaBw-W2473PSKJoMZPIuegdmiviufrD7jCSY02X2NLH6_waaxjQJ3IE5V-n_Ynv9Qo9VLluhy35n70BcPGUvp2EOvJofrpAVNBmAU784U4-iO0GRTziDFWR7Wtgl2Q",
+    link: "profiles/water-blue.html",
+    status: "online",
+    gender: "female"
+  }
 ];
 
-/*
-=========================================================
-ФУНКЦІЯ ПЕРЕМІШУВАННЯ МАСИВУ
-=========================================================
-*/
-function shuffle(a){
+function statusInfo(status, gender) {
+  var isFemale = gender !== "male";
+  var was = isFemale ? "була" : "був";
+
+  var map = {
+    "online":   { text: "● онлайн",          className: "online" },
+    "5min":     { text: "● " + was + " 5 хв назад",  className: "recent" },
+    "25min":    { text: "● " + was + " 25 хв назад", className: "away" },
+    "50min":    { text: "● " + was + " 50 хв назад", className: "away" },
+    "offline":  { text: "● офлайн",          className: "offline" },
+    "long-ago": { text: "● " + was + " давно",      className: "long-ago" }
+  };
+
+  if (map[status]) return map[status];
+  return { text: "● " + status, className: "offline" };
+}
+
+function shuffle(a) {
   var c = a.slice();
   for (var i = c.length - 1; i > 0; i--) {
-    var r = Math.floor(Math.random() * (i + 1)), t = c[i];
+    var r = Math.floor(Math.random() * (i + 1));
+    var t = c[i];
     c[i] = c[r];
     c[r] = t;
   }
   return c;
 }
 
-/*
-=========================================================
-ВІДОБРАЖЕННЯ ВИПАДКИХ ПРОФІЛІВ
-=========================================================
-*/
-function showProfiles(){
+function showProfiles() {
   var c = document.getElementById("random-hoomen-list");
-  if(!c) return;
+  if (!c) return;
   c.innerHTML = "";
-  shuffle(hoomenProfiles).slice(0, 3).forEach(function(p){
+
+  shuffle(hoomenProfiles).slice(0, 3).forEach(function (p) {
     var cell = document.createElement("div");
     cell.className = "random-profile-cell";
-    
+
     var a = document.createElement("a");
     a.className = "random-profile";
     a.href = p.link;
-    
+
     var img = document.createElement("img");
     img.className = "random-avatar";
     img.src = p.avatar;
     img.alt = p.name;
-    
+
     var n = document.createElement("div");
     n.className = "random-name";
     n.textContent = p.name;
-    
+
+    var info = statusInfo(p.status || "offline", p.gender);
     var s = document.createElement("div");
-    s.className = "random-status";
-    s.textContent = "● " + p.status;
-    
+    s.className = "random-status " + info.className;
+    s.textContent = info.text;
+
     a.appendChild(img);
     a.appendChild(n);
     a.appendChild(s);
@@ -592,51 +837,41 @@ function showProfiles(){
   });
 }
 
-/*
-=========================================================
-ПЕРЕВІРКА НА ЗАБОРОНЕНІ ЧИСЛА
-=========================================================
-*/
-function forbidden(n){
+function forbidden(n) {
   var t = String(n);
-  return t.indexOf("63") !== -1 || t.indexOf("68") !== -1 || t.indexOf("13") !== -1 || t.indexOf("666") !== -1;
+  return (
+    t.indexOf("63") !== -1 ||
+    t.indexOf("68") !== -1 ||
+    t.indexOf("13") !== -1 ||
+    t.indexOf("666") !== -1
+  );
 }
 
-/*
-=========================================================
-ГЕНЕРАЦІЯ БЕЗПЕЧНОГО ЧИСЛА ДЛЯ СТАТИСТИКИ
-=========================================================
-*/
-function safeNumber(base, variation){
-  var n, tries = 0;
+function safeNumber(base, variation) {
+  var n;
+  var tries = 0;
   do {
     n = base + Math.floor(Math.random() * (variation * 2 + 1)) - variation;
     tries++;
     if (tries > 100) {
       n = base + variation + 1;
-      while(forbidden(n)) n++;
+      while (forbidden(n)) n++;
       break;
     }
   } while (forbidden(n));
   return n;
 }
 
-/*
-=========================================================
-ОНОВЛЕННЯ СТАТИСТИКИ САЙТУ
-=========================================================
-*/
-function updateStatistics(){
-  document.getElementById("registered-hoomen").textContent = safeNumber(8000000, 23000).toLocaleString("uk-UA");
-  document.getElementById("online-hoomen").textContent = safeNumber(1000000, 38000).toLocaleString("uk-UA");
-  document.getElementById("today-hoomen").textContent = safeNumber(2400000, 90000).toLocaleString("uk-UA");
+function updateStatistics() {
+  var elReg = document.getElementById("registered-hoomen");
+  var elOnline = document.getElementById("online-hoomen");
+  var elToday = document.getElementById("today-hoomen");
+
+  if (elReg) elReg.textContent = safeNumber(8000000, 23000).toLocaleString("uk-UA");
+  if (elOnline) elOnline.textContent = safeNumber(1000000, 38000).toLocaleString("uk-UA");
+  if (elToday) elToday.textContent = safeNumber(2400000, 90000).toLocaleString("uk-UA");
 }
 
-/*
-=========================================================
-ІНІЦІАЛІЗАЦІЯ ТА ЗАПУСК
-=========================================================
-*/
 showProfiles();
 updateStatistics();
 setInterval(updateStatistics, 30000);
