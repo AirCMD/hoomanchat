@@ -4,99 +4,737 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Гуменчат — dreaming_romance</title>
-<style>
-html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:14px;color:#222}*{box-sizing:border-box}
-#hoomenchat-site{width:100%;min-height:100vh;margin:0;padding:12px;background:#fff;border:1px solid #777}
-#hoomenchat-site a{color:#444}.hoomenchat-header{margin:0 0 10px;padding:5px 8px;background:linear-gradient(to bottom,#626262,#3b3b3b);border:1px solid #222;color:#fff;font-size:12px;line-height:14px;font-weight:bold;letter-spacing:1px;text-transform:uppercase}
-.site-layout{display:table;width:100%;border-collapse:separate;border-spacing:10px 0}.site-left{display:table-cell;width:165px;vertical-align:top}.site-right{display:table-cell;vertical-align:top}.left-box{padding:3px 7px;background:#f0f0f0;border:1px solid #999}.site-name{margin:1px 0 6px;padding:0 0 4px;border-bottom:1px solid #bcbcbc;color:#111;font-size:15px;line-height:17px;font-weight:bold;text-align:center;word-break:break-word}.main-avatar{display:block;width:100%;height:228px;margin:0 0 6px;object-fit:cover;background:#ddd;border:1px solid #888}
-.archat-button{display:block;width:100%;margin:0 0 5px;padding:4px 0;background:linear-gradient(to bottom,#fff176,#fbc02d);border:1px solid #a78119;color:#000;font-size:10px;line-height:13px;font-weight:bold;text-align:center;text-decoration:none;text-transform:uppercase}.archat-button:hover{background:linear-gradient(to bottom,#fff59d,#fdd835)}
-.nav-menu{border-top:1px solid #999}.nav-item{display:block;width:100%;padding:3px 2px;border-bottom:1px solid #c7c7c7;color:#444;font-size:11px;line-height:13px;text-decoration:underline}.nav-item:hover{background:#e2e2e2;color:#000;text-decoration:none}.account-box{margin:8px 0 0;padding:5px 4px;border-top:1px solid #999;text-align:center}.account-text{margin:0 0 5px;color:#555;font-size:9px;line-height:12px}.account-link{display:block;margin:2px 0;color:#444;font-size:10px;line-height:12px;font-weight:bold;text-decoration:underline}
-.profile-box{margin:0 0 8px;padding:7px;background:#fff;border:1px solid #aaa}.profile-header{margin:0 0 7px;padding:5px 7px;background:#f0f0f0;border:1px solid #999;color:#222;font-size:12px;line-height:15px;font-weight:bold}.profile-info{padding:6px 7px;background:#f9f9f9;border:1px solid #aaa;color:#444;font-size:11px;line-height:15px}.profile-status{margin-top:4px;color:#2e7d32;font-size:10px;font-style:italic}.posts-header{margin:8px 0 5px;padding:4px 7px;background:#f0f0f0;border:1px solid #999;color:#333;font-size:11px;line-height:13px;font-weight:bold}
-.profile-post{margin:0 0 7px;background:#fff;border:1px solid #aaa}.profile-post-title{padding:4px 7px;background:#f5f5f5;border-bottom:1px solid #aaa;color:#222;font-size:11px;line-height:14px;font-weight:bold}.profile-post-body{padding:6px 7px;color:#333;font-size:11px;line-height:15px;white-space:pre-wrap}.post-actions{padding:4px 7px;border-top:1px solid #ddd;background:#fafafa}.like-button,.comment-button{display:inline-block;margin:0 8px 0 0;padding:1px 3px;border:0;background:transparent;color:#555;font:10px/13px Arial,sans-serif;cursor:pointer}.like-button:hover,.comment-button:hover{color:#000;text-decoration:underline}.like-button.liked{color:#c62828;font-weight:bold}.comments-area{display:none;padding:6px 7px;background:#f8f8f8;border-top:1px solid #ddd}.comments-area.open{display:block}.fake-comment,.user-comment{margin:0 0 5px;padding:4px 5px;background:#fff;border:1px solid #ccc;font-size:10px;line-height:13px}.fake-comment-name{margin-bottom:2px;color:#222;font-weight:bold}.comment-form{margin-top:6px}.comment-input{display:block;width:100%;min-height:45px;padding:4px 5px;resize:vertical;background:#fff;border:1px solid #aaa;color:#222;font:10px/13px Arial,sans-serif}.comment-send{margin-top:4px;padding:3px 8px;background:#eee;border:1px solid #999;color:#444;font-size:10px;line-height:12px;cursor:pointer}.comment-send:hover{background:#ddd;color:#000}.profile-post-date{padding:3px 7px;border-top:1px solid #ddd;color:#888;font-size:9px;line-height:11px}
-.show-more{display:block;width:100%;margin:2px 0 0;padding:5px 7px;background:#f0f0f0;border:1px solid #999;color:#444;font:10px/13px Arial,sans-serif;font-weight:bold;text-align:center;text-decoration:underline;cursor:pointer}.show-more:hover{background:#e1e1e1;color:#000}.show-more.hidden{display:none}.rules-box{margin:8px 0 0;padding:5px 8px;background:#fff;border:1px solid #aaa;color:#444;font-size:11px;line-height:14px}.rules-box a{font-weight:bold;text-decoration:underline}.statistics-box{margin:8px 0 0;padding:5px 8px;background:#fff;border:1px solid #aaa;color:#555;font:10px/13px "Courier New",monospace}.statistics-title{margin:0 0 3px;color:#333;font:bold 10px/12px Arial,sans-serif}.statistics-number{color:#222;font-weight:bold}.statistics-online{color:#2e7d32;font-weight:bold}.footer-line{margin:7px 0 0;padding-top:4px;border-top:1px solid #ccc;color:#888;font-size:9px;line-height:11px;text-align:center}
-@media(max-width:800px){#hoomenchat-site{padding:7px}.site-layout{display:block}.site-left,.site-right{display:block;width:100%}.site-left{margin-bottom:8px}}
-</style>
+<link rel="stylesheet" href="../css/hoomenchat-profile.css">
 </head>
 <body>
-<div id="hoomenchat-site">
-<div class="hoomenchat-header">ГУМЕНЧАТ</div>
-<div class="site-layout">
-<aside class="site-left"><div class="left-box">
-<div class="site-name">dreaming_romance</div>
-<img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA" alt="dreaming_romance">
-<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
-<div class="nav-menu">
-<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
-<a class="nav-item" href="../profiles.html">Гумени</a>
-<a class="nav-item" href="../droomens.html">Друмени</a>
-<a class="nav-item" href="../activity.html">Стрічерчат</a>
-<a class="nav-item" href="../islands.html">Острови</a>
-<a class="nav-item" href="../rules.html">Правила</a>
-</div>
-<div class="account-box"><div class="account-text">Немає гумгайла?</div><a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a><a class="account-link" href="../login.html">ВХІД</a></div>
-</div></aside>
-<main class="site-right">
-<div class="profile-box"><div class="profile-header">Профіль гумена: dreaming_romance</div><div class="profile-info"><strong>dreaming_romance</strong><div>Сімейка: не одружений</div><div>Статус: ня? 🥺</div><div class="profile-status">● онлайн</div></div></div>
-<div class="posts-header">Дописи dreaming_romance — 25</div>
-<div id="dreaming-posts"></div>
-<button id="show-more-posts" class="show-more">показати ще...</button>
-<div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
-<div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div></div>
-<div class="footer-line">Гуменчат — місце для гуменів.</div>
-</main></div></div>
-<script>
-(function(){
-const posts=[
-["Де моя людина?","Ну серйозно... скільки ще її чекати?(","15 вересня",1,[["dreaming_romance","🥺"],["copy_pasta","Я ж тут..."]]],
-["Невже я не зустріну ту саму?((","Ех...","4 травня",1,[["copy_pasta","Може я і є та сама?"],["dreaming_romance","Не жартуй..."],["copy_pasta","В якому саме місці я пожартувала?"]]],
-["Чому іншим так легко знаходити кохання?","А мені ні?(","13 серпня",1,[["dreaming_romance","Та за що?("]]],
-["Інколи мені здається","що моя людина десь загубилась...","12 серпня",1,[["copy_pasta","Та ні, я тут."],["dreaming_romance","😭"]]],
-["У всіх хтось є","А я сам.","11 серпня",0,[]],
-["Невже мені справді не судилося бути з кимось?","Мех...","10 серпня",0,[]],
-["Я вже починаю думати що зі мною щось не так...","😔","9 серпня",1,[["copy_pasta","Напевно."]]],
-["Хочу просто зустріти людину","З якою все буде по-справжньому...","8 серпня",0,[]],
-["Чому я постійно знаходжу не тих людей?","Що з цим світом не так?","7 серпня",0,[["copy_pasta","В сенсі? Це означає що я не та людина? Тоді навіщо я тобіу списку друменів?"],["dreaming_romance","Не ти."]]],
-["Можливо","моя друга половинка не знає про моє існування?","6 серпня",0,[["copy_pasta","Це ти про праву чи ліву півкулю?"],["dreaming_romance","А про кохану дівчину."],["copy_pasta","Тобто, про мене 🧠?"]]],
-["Іноді дуже хочеться","щоб хтось просто вибрав мене.","5 серпня",1,[["copy_pasta","Пікічі, я Джош. Я обираю тебе."],["dreaming_romance","Оце мене й лякає."]]],
-["Цікаво...","Де зараз та людина, яка колись стане для мене всім?","4 серпня",1,[["copy_pasta","Просто поясни мені одну річ: чому ти зі мною зустрічаєшся?"],["dreaming_romance","Ти щось придумала чи жартуєш."],["copy_pasta","То давай я сюди відправлю посилання на переписку?"],["dreaming_romance","В такому випадку я тебе заблокую."]]],
-["Прокидаючись, я хочу бачити поруч свою людину ^.^","Обійняти її, цілувати та приносити щось смачненьке.","3 серпня",1,[["copy_pasta","Так, так і ще раз — так! 💕 Пішли одружимось?"],["dreaming_romance","Мде)"]]],
-["Невже любов...","Це не для мене?","2 серпня",1,[["dreaming_romance","Невже я не можу бути коханим?"],["copy_pasta","Кожна частинка моєї любові для тебе... Мої почуття, мої щирі та світлі почуття любові, які переповнюють мене. Я хочу ділитися цим світлом тільки з тобою!"],["dreaming_romance","Що?"]]],
-["Скільки можна чекати","на свою людину?","1 серпня",0,[["copy_pasta","Я тут."]]],
-["Я не хочу абсолютно все","Я хочу щоб мене любили...","31 липня",0,[["copy_pasta","Саме тому я тебе і люблю 💕"],["dreaming_romance","Мех 😒, не псуй атмосферу."]]],
-["ЧОМУ?","Саме мені з цим не щастить?","30 липня",0,[["copy_pasta","Із чим саме тобі не щастить?"],["dreaming_romance","Та ні з чим, просто забудь."]]],
-["А що як...","Я просто народився не в той час?","29 липня",0,[["copy_pasta","Не в той час для чого саме? Який час, на твою думку, був би для тебе найкращим?"],["dreaming_romance","Не в той час для всього... мені здається що найкращим часом для мене могло бути середньовіччя, але з магією)"]]],
-["Хочу нарешті відчути","Що я для когось особливий.","28 липня",1,[["copy_pasta","Для мене ти самий особливий 💕"]]],
-["У мене інколи таке відчуття","ніби я чекаю на людину, якої ще не зустрічав 😌","27 липня",1,[["copy_pasta","Так я тут."],["dreaming_romance","Ти так, я маю наувазі незнайому людину)"]]],
-["Чому","Ніхто не може просто залишитися поруч?","26 липня",0,[["copy_pasta","Бо ти постійно кудись йдеш."],["dreaming_romance","Рух — це життя."]]],
-["Мені цікаво","чи існує взагалі та сама людина для мене?...","25 липня",0,[["copy_pasta","100%, я тут."],["dreaming_romance","Я не про це..."],["copy_pasta","А про що тоді?"]]],
-["Мабуть, я просто ще не зустрів ту...","Яка може мене зрозуміти.","24 липня",0,[["copy_pasta","Поділись зі мною тим що викликає твоє занепокоєння, поговоримо по душам 💕."],["dreaming_romance","Все норм."]]],
-["Ну чому...","Мені так не щастить із коханням?(","23 липня",0,[["copy_pasta","Я тебе годину чекала біля кінотеатра. Розумієш? ГОДИНУ. Щоб ти просто розвернувся та й пішов собі, бо грошей не взяв на свій квиток."],["dreaming_romance","Не правда. 57 хвилин та 12 секунд. Там не було романтичної комедії чи мелодрами."]]],
-["Мех...","Я втомився.....","22 липня",0,[["copy_pasta","Привіт, що трапилось?"],["dreaming_romance","Все норм 👍🏻"],["copy_pasta","Але ти сам написав що ні."],["dreaming_romance","Це слова з пісні)"]]]
-];
-const root=document.getElementById('dreaming-posts');
-function render(){
- posts.forEach((p)=>{
-  const el=document.createElement('article');el.className='profile-post';
-  el.innerHTML='<div class="profile-post-title"></div><div class="profile-post-body"></div><div class="post-actions"><button class="like-button" type="button">♡ Подобається <span class="like-count"></span></button><button class="comment-button" type="button">💬 Коментарі <span class="comment-count"></span></button></div><div class="comments-area"></div><div class="profile-post-date"></div>';
-  el.querySelector('.profile-post-title').textContent=p[0];el.querySelector('.profile-post-body').textContent=p[1];el.querySelector('.like-count').textContent=p[3];el.querySelector('.comment-count').textContent=p[4].length;el.querySelector('.profile-post-date').textContent=p[2];
-  const ca=el.querySelector('.comments-area');
-  p[4].forEach(c=>{const d=document.createElement('div');d.className='fake-comment';d.innerHTML='<div class="fake-comment-name"></div>';d.querySelector('.fake-comment-name').textContent=c[0];d.appendChild(document.createTextNode(c[1]));ca.appendChild(d)});
-  ca.insertAdjacentHTML('beforeend','<div class="comment-form"><textarea class="comment-input" placeholder="Написати коментар..."></textarea><button class="comment-send" type="button">Відправити</button></div>');
-  root.appendChild(el);
- });
-}
-render();
-const postEls=[...root.children],more=document.getElementById('show-more-posts');let visible=3;
-function refresh(){postEls.forEach((e,i)=>e.style.display=i<visible?'block':'none');more.className=visible>=postEls.length?'show-more hidden':'show-more'}
-more.onclick=()=>{visible=Math.min(visible+5,postEls.length);refresh()};
 
-document.querySelectorAll('.like-button').forEach(b=>b.onclick=()=>{const c=b.querySelector('.like-count'),n=Number(c.textContent),liked=b.classList.toggle('liked');c.textContent=liked?n+1:n-1;b.firstChild.nodeValue=liked?'♥ Подобається ':'♡ Подобається '});
-document.querySelectorAll('.comment-button').forEach(b=>b.onclick=()=>b.closest('.profile-post').querySelector('.comments-area').classList.toggle('open'));
-document.querySelectorAll('.comment-send').forEach(b=>b.onclick=()=>{const f=b.closest('.comment-form'),i=f.querySelector('.comment-input'),t=i.value.trim();if(!t)return;const d=document.createElement('div');d.className='user-comment';d.innerHTML='<strong>ти: </strong>';d.appendChild(document.createTextNode(t));f.parentNode.insertBefore(d,f);i.value='';const c=b.closest('.profile-post').querySelector('.comment-count');c.textContent=Number(c.textContent)+1});
-function safe(base,range){let n;do{n=base+Math.floor(Math.random()*range)}while(/63|68|13|666/.test(String(n)));return n}
-function stats(){document.getElementById('registered-hoomen').textContent=safe(8000000,47001).toLocaleString('uk-UA');document.getElementById('online-hoomen').textContent=safe(1000000,76001).toLocaleString('uk-UA');document.getElementById('today-hoomen').textContent=safe(2400000,180001).toLocaleString('uk-UA')}
-refresh();stats();setInterval(stats,30000);
-})();
+<div id="hoomenchat-site">
+
+<div class="hoomenchat-header">
+ГУМЕНЧАТ
+</div>
+
+<div class="site-layout">
+
+<div class="site-left">
+<div class="left-box">
+
+<div class="site-name" id="profile-nickname">dreaming_romance</div>
+
+<img
+  class="main-avatar"
+  id="profile-avatar"
+  alt="dreaming_romance"
+  src="https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA"
+>
+
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+
+<div class="nav-menu" id="nav-menu">
+<!-- Наповнюється з конфігу -->
+</div>
+
+<div class="account-box">
+  <div class="account-text">Немає гумгайла?</div>
+  <a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
+  <a class="account-link" href="../login.html">ВХІД</a>
+</div>
+
+</div>
+</div>
+
+<div class="site-right">
+
+<div class="profile-box">
+  <div class="profile-header" id="profile-header-title">Профіль гумена: dreaming_romance</div>
+  <div class="profile-info">
+    <strong id="profile-info-name">dreaming_romance</strong>
+    <div id="profile-family"></div>
+    <div id="profile-status-text"></div>
+    <div class="profile-status" id="profile-online-status"></div>
+  </div>
+</div>
+
+<div class="posts-header" id="posts-header">
+  Дописи dreaming_romance — <span id="posts-count">0</span>
+</div>
+
+<!-- Сторонній персонаж: кнопки «Новий допис» немає -->
+
+<div id="profile-posts">
+<!-- ДОПИС 1 -->
+<div class="profile-post">
+<div class="profile-post-title">Де моя людина?</div>
+<div class="profile-post-body">Ну серйозно... скільки ще її чекати?(</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="1">♡ Подобається <span class="like-count">1</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+🥺
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Я ж тут...
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">15 вересня</div>
+</div>
+
+<!-- ДОПИС 2 -->
+<div class="profile-post">
+<div class="profile-post-title">Невже я не зустріну ту саму?((</div>
+<div class="profile-post-body">Ех...</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="1">♡ Подобається <span class="like-count">1</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">3</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Може я і є та сама?
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Не жартуй...
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+В якому саме місці я пожартувала?
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">4 травня</div>
+</div>
+
+<!-- ДОПИС 3 -->
+<div class="profile-post">
+<div class="profile-post-title">Чому іншим так легко знаходити кохання?</div>
+<div class="profile-post-body">А мені ні?(</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="1">♡ Подобається <span class="like-count">1</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Та за що?(
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">13 серпня</div>
+</div>
+
+<!-- ДОПИС 4 -->
+<div class="profile-post">
+<div class="profile-post-title">Інколи мені здається</div>
+<div class="profile-post-body">що моя людина десь загубилась...</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="1">♡ Подобається <span class="like-count">1</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Та ні, я тут.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+😭
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">12 серпня</div>
+</div>
+
+<!-- ДОПИС 5 -->
+<div class="profile-post">
+<div class="profile-post-title">У всіх хтось є</div>
+<div class="profile-post-body">А я сам.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">11 серпня</div>
+</div>
+
+<!-- ДОПИС 6 -->
+<div class="profile-post">
+<div class="profile-post-title">Невже мені справді не судилося бути з кимось?</div>
+<div class="profile-post-body">Мех...</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">10 серпня</div>
+</div>
+
+<!-- ДОПИС 7 -->
+<div class="profile-post">
+<div class="profile-post-title">Я вже починаю думати що зі мною щось не так...</div>
+<div class="profile-post-body">😔</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="1">♡ Подобається <span class="like-count">1</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Напевно.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">9 серпня</div>
+</div>
+
+<!-- ДОПИС 8 -->
+<div class="profile-post">
+<div class="profile-post-title">Хочу просто зустріти людину</div>
+<div class="profile-post-body">З якою все буде по-справжньому...</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">8 серпня</div>
+</div>
+
+<!-- ДОПИС 9 -->
+<div class="profile-post">
+<div class="profile-post-title">Чому я постійно знаходжу не тих людей?</div>
+<div class="profile-post-body">Що з цим світом не так?</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+В сенсі? Це означає що я не та людина? Тоді навіщо я тобіу списку друменів?
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Не ти.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">7 серпня</div>
+</div>
+
+<!-- ДОПИС 10 -->
+<div class="profile-post">
+<div class="profile-post-title">Можливо</div>
+<div class="profile-post-body">моя друга половинка не знає про моє існування?</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">3</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Це ти про праву чи ліву півкулю?
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+А про кохану дівчину.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Тобто, про мене 🧠?
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">6 серпня</div>
+</div>
+
+<!-- ДОПИС 11 -->
+<div class="profile-post">
+<div class="profile-post-title">Іноді дуже хочеться</div>
+<div class="profile-post-body">щоб хтось просто вибрав мене.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="1">♡ Подобається <span class="like-count">1</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Пікічі, я Джош. Я обираю тебе.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Оце мене й лякає.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">5 серпня</div>
+</div>
+
+<!-- ДОПИС 12 -->
+<div class="profile-post">
+<div class="profile-post-title">Цікаво...</div>
+<div class="profile-post-body">Де зараз та людина, яка колись стане для мене всім?</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="1">♡ Подобається <span class="like-count">1</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">4</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Просто поясни мені одну річ: чому ти зі мною зустрічаєшся?
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Ти щось придумала чи жартуєш.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+То давай я сюди відправлю посилання на переписку?
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+В такому випадку я тебе заблокую.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">4 серпня</div>
+</div>
+
+<!-- ДОПИС 13 -->
+<div class="profile-post">
+<div class="profile-post-title">Прокидаючись, я хочу бачити поруч свою людину ^.^</div>
+<div class="profile-post-body">Обійняти її, цілувати та приносити щось смачненьке.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="1">♡ Подобається <span class="like-count">1</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Так, так і ще раз — так! 💕 Пішли одружимось?
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Мде)
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">3 серпня</div>
+</div>
+
+<!-- ДОПИС 14 -->
+<div class="profile-post">
+<div class="profile-post-title">Невже любов...</div>
+<div class="profile-post-body">Це не для мене?</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="1">♡ Подобається <span class="like-count">1</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">3</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Невже я не можу бути коханим?
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Кожна частинка моєї любові для тебе... Мої почуття, мої щирі та світлі почуття любові, які переповнюють мене. Я хочу ділитися цим світлом тільки з тобою!
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Що?
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">2 серпня</div>
+</div>
+
+<!-- ДОПИС 15 -->
+<div class="profile-post">
+<div class="profile-post-title">Скільки можна чекати</div>
+<div class="profile-post-body">на свою людину?</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Я тут.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">1 серпня</div>
+</div>
+
+<!-- ДОПИС 16 -->
+<div class="profile-post">
+<div class="profile-post-title">Я не хочу абсолютно все</div>
+<div class="profile-post-body">Я хочу щоб мене любили...</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Саме тому я тебе і люблю 💕
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Мех 😒, не псуй атмосферу.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">31 липня</div>
+</div>
+
+<!-- ДОПИС 17 -->
+<div class="profile-post">
+<div class="profile-post-title">ЧОМУ?</div>
+<div class="profile-post-body">Саме мені з цим не щастить?</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Із чим саме тобі не щастить?
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Та ні з чим, просто забудь.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">30 липня</div>
+</div>
+
+<!-- ДОПИС 18 -->
+<div class="profile-post">
+<div class="profile-post-title">А що як...</div>
+<div class="profile-post-body">Я просто народився не в той час?</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Не в той час для чого саме? Який час, на твою думку, був би для тебе найкращим?
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Не в той час для всього... мені здається що найкращим часом для мене могло бути середньовіччя, але з магією)
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">29 липня</div>
+</div>
+
+<!-- ДОПИС 19 -->
+<div class="profile-post">
+<div class="profile-post-title">Хочу нарешті відчути</div>
+<div class="profile-post-body">Що я для когось особливий.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="1">♡ Подобається <span class="like-count">1</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Для мене ти самий особливий 💕
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">28 липня</div>
+</div>
+
+<!-- ДОПИС 20 -->
+<div class="profile-post">
+<div class="profile-post-title">У мене інколи таке відчуття</div>
+<div class="profile-post-body">ніби я чекаю на людину, якої ще не зустрічав 😌</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="1">♡ Подобається <span class="like-count">1</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Так я тут.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Ти так, я маю наувазі незнайому людину)
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">27 липня</div>
+</div>
+
+<!-- ДОПИС 21 -->
+<div class="profile-post">
+<div class="profile-post-title">Чому</div>
+<div class="profile-post-body">Ніхто не може просто залишитися поруч?</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Бо ти постійно кудись йдеш.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Рух — це життя.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">26 липня</div>
+</div>
+
+<!-- ДОПИС 22 -->
+<div class="profile-post">
+<div class="profile-post-title">Мені цікаво</div>
+<div class="profile-post-body">чи існує взагалі та сама людина для мене?...</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">3</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+100%, я тут.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Я не про це...
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+А про що тоді?
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">25 липня</div>
+</div>
+
+<!-- ДОПИС 23 -->
+<div class="profile-post">
+<div class="profile-post-title">Мабуть, я просто ще не зустрів ту...</div>
+<div class="profile-post-body">Яка може мене зрозуміти.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Поділись зі мною тим що викликає твоє занепокоєння, поговоримо по душам 💕.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Все норм.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">24 липня</div>
+</div>
+
+<!-- ДОПИС 24 -->
+<div class="profile-post">
+<div class="profile-post-title">Ну чому...</div>
+<div class="profile-post-body">Мені так не щастить із коханням?(</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Я тебе годину чекала біля кінотеатра. Розумієш? ГОДИНУ. Щоб ти просто розвернувся та й пішов собі, бо грошей не взяв на свій квиток.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Не правда. 57 хвилин та 12 секунд. Там не було романтичної комедії чи мелодрами.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">23 липня</div>
+</div>
+
+<!-- ДОПИС 25 -->
+<div class="profile-post">
+<div class="profile-post-title">Мех...</div>
+<div class="profile-post-body">Я втомився.....</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">4</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Привіт, що трапилось?
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Все норм 👍🏻
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Але ти сам написав що ні.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="dreaming-romance.html">dreaming_romance</a></div>
+Це слова з пісні)
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">22 липня</div>
+</div>
+
+</div>
+
+<div class="posts-pager" id="posts-pager">
+  <button class="show-more hidden" id="show-less-posts" type="button">показати менше...</button>
+  <button class="show-more hidden" id="show-more-posts" type="button">показати ще...</button>
+</div>
+
+<div class="rules-box">
+  Пам'ятай та дотримуйся
+  <a href="../rules.html">ПРАВИЛ</a>
+  нашого ресурсу для приємного та друмнього часу разом з нами.
+</div>
+
+<div class="statistics-box">
+  <div class="statistics-title">Статистика Гуменчату</div>
+  <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
+  <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
+  <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
+</div>
+
+<div class="image-viewer" id="post-image-viewer">
+  <button class="image-viewer-close" id="post-image-viewer-close" type="button" aria-label="Закрити">✕</button>
+  <button class="image-viewer-prev" id="post-image-viewer-prev" type="button" aria-label="Попереднє зображення">‹</button>
+  <img class="image-viewer-image" id="post-image-viewer-image" src="" alt="Зображення допису">
+  <button class="image-viewer-next" id="post-image-viewer-next" type="button" aria-label="Наступне зображення">›</button>
+</div>
+
+<div class="footer-line">Гуменчат — місце для гуменів.</div>
+
+</div>
+</div>
+</div>
+
+<script>
+window.HOOMEN_PROFILE = {
+  nickname: "dreaming_romance",
+  avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA",
+  isMainCharacter: false,
+  mainCharacterUrl: "copy-pasta.html",
+  statusText: "ня? 🥺",
+  onlineStatus: "online",
+  gender: "male",
+  family: {
+    type: "single"
+  },
+  navLinks: {
+    home: "../index.html",
+    profiles: "../profiles.html",
+    droomens: "../droomens.html",
+    activity: "../activity.html",
+    islands: "../islands.html",
+    rules: "../rules.html"
+  }
+};
 </script>
+<script src="../js/hoomenchat-profile.js"></script>
+
 </body>
 </html>
