@@ -4,72 +4,226 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Гуменчат — alter_core</title>
-<style>
-html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:14px;color:#222}
-*{box-sizing:border-box}
-#hoomenchat-site{display:block;width:100%;min-height:100vh;margin:0;padding:12px;background:#fff;border:1px solid #777}
-#hoomenchat-site a{color:#444}
-.hoomenchat-header{display:block;margin:0 0 10px;padding:5px 8px;background:linear-gradient(to bottom,#626262,#3b3b3b);border:1px solid #222;color:#fff;font-size:12px;line-height:14px;font-weight:bold;letter-spacing:1px;text-transform:uppercase}
-.site-layout{display:table;width:100%;border-collapse:separate;border-spacing:10px 0}
-.site-left{display:table-cell;width:165px;vertical-align:top}.site-right{display:table-cell;vertical-align:top}
-.left-box{padding:3px 7px;background:#f0f0f0;border:1px solid #999}
-.site-name{margin:1px 0 6px;padding:0 0 4px;border-bottom:1px solid #bcbcbc;color:#111;font-size:15px;line-height:17px;font-weight:bold;text-align:center;word-break:break-word}
-.main-avatar{display:block;width:100%;height:228px;margin:0 0 6px;object-fit:cover;object-position:center;background:#ddd;border:1px solid #888}
-.archat-button{display:block;width:100%;margin:0 0 5px;padding:4px 0;background:linear-gradient(to bottom,#fff176,#fbc02d);border:1px solid #a78119;color:#000;font-size:10px;line-height:13px;font-weight:bold;text-align:center;text-decoration:none;text-transform:uppercase}
-.nav-menu{display:block;margin:0;padding:0;border-top:1px solid #999}.nav-item{display:block;width:100%;margin:0;padding:3px 2px;border-bottom:1px solid #c7c7c7;color:#444;font-size:11px;line-height:13px;text-decoration:underline}.nav-item:hover{background:#e2e2e2;color:#000;text-decoration:none}
-.account-box{margin:8px 0 0;padding:5px 4px;border-top:1px solid #999;text-align:center}.account-text{margin:0 0 5px;color:#555;font-size:9px;line-height:12px}.account-link{display:block;margin:2px 0;color:#444;font-size:10px;line-height:12px;font-weight:bold;text-decoration:underline}
-.profile-box{margin:0 0 8px;padding:7px;background:#fff;border:1px solid #aaa}.profile-header{margin:0 0 7px;padding:5px 7px;background:#f0f0f0;border:1px solid #999;color:#222;font-size:12px;line-height:15px;font-weight:bold}.profile-info{padding:6px 7px;background:#f9f9f9;border:1px solid #aaa;color:#444;font-size:11px;line-height:15px}.profile-info strong{color:#222}.profile-status{margin-top:4px;color:#2e7d32;font-size:10px;line-height:12px;font-style:italic}
-.posts-header{margin:8px 0 5px;padding:4px 7px;background:#f0f0f0;border:1px solid #999;color:#333;font-size:11px;line-height:13px;font-weight:bold}.profile-post{margin:0 0 7px;background:#fff;border:1px solid #aaa}.profile-post-title{margin:0;padding:4px 7px;background:#f5f5f5;border-bottom:1px solid #aaa;color:#222;font-size:11px;line-height:14px;font-weight:bold}.profile-post-body{padding:6px 7px;color:#333;font-size:11px;line-height:15px;white-space:pre-wrap}.profile-post-date{padding:3px 7px;border-top:1px solid #ddd;color:#888;font-size:9px;line-height:11px}
-.post-actions{display:block;padding:4px 7px;border-top:1px solid #ddd;background:#fafafa}.like-button,.comment-button{display:inline-block;margin:0 8px 0 0;padding:1px 3px;border:0;background:transparent;color:#555;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:13px;cursor:pointer}.like-button:hover,.comment-button:hover{color:#000;text-decoration:underline}.like-button.liked{color:#c62828;font-weight:bold}
-.comments-area{display:none;margin:0;padding:6px 7px;background:#f8f8f8;border-top:1px solid #ddd}.comments-area.open{display:block}.fake-comment{margin:0 0 5px;padding:4px 5px;background:#fff;border:1px solid #ccc;font-size:10px;line-height:13px}.fake-comment-name{margin-bottom:2px;color:#222;font-weight:bold}.comment-form{margin-top:6px}.comment-input{display:block;width:100%;min-height:45px;padding:4px 5px;resize:vertical;background:#fff;border:1px solid #aaa;color:#222;font:10px/13px Arial,sans-serif}.comment-send{margin-top:4px;padding:3px 8px;background:#eee;border:1px solid #999;color:#444;font-size:10px;line-height:12px;cursor:pointer}.comment-send:hover{background:#ddd;color:#000}.user-comment{margin:0 0 5px;padding:4px 5px;background:#fff;border:1px solid #aaa;font-size:10px;line-height:13px}
-.show-more{display:block;width:100%;margin:2px 0;padding:5px 7px;background:#f0f0f0;border:1px solid #999;color:#444;font:bold 10px/13px Arial,sans-serif;text-align:center;text-decoration:underline;cursor:pointer}.show-more:hover{background:#e1e1e1;color:#000}.show-more.hidden{display:none}
-.rules-box{margin:8px 0 0;padding:5px 8px;background:#fff;border:1px solid #aaa;color:#444;font-size:11px;line-height:14px}.rules-box a{color:#333;font-weight:bold;text-decoration:underline}.statistics-box{margin:8px 0 0;padding:5px 8px;background:#fff;border:1px solid #aaa;color:#555;font:10px/13px "Courier New",Courier,monospace}.statistics-title{margin:0 0 3px;color:#333;font:bold 10px/12px Arial,sans-serif}.statistics-number{color:#222;font-weight:bold}.statistics-online{color:#2e7d32;font-weight:bold}.footer-line{margin:7px 0 0;padding-top:4px;border-top:1px solid #ccc;color:#888;font-size:9px;line-height:11px;text-align:center}
-@media screen and (max-width:600px){#hoomenchat-site{padding:7px}.site-layout{display:block;border-spacing:0}.site-left,.site-right{display:block;width:100%}.site-left{margin-bottom:8px}}
-</style>
+<link rel="stylesheet" href="../css/hoomenchat-profile.css">
 </head>
 <body>
+
 <div id="hoomenchat-site">
-<div class="hoomenchat-header">ГУМЕНЧАТ</div>
+
+<div class="hoomenchat-header">
+ГУМЕНЧАТ
+</div>
+
 <div class="site-layout">
-<div class="site-left"><div class="left-box">
-<div class="site-name">alter_core</div>
-<img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEiZ7hOITEG-aCscLuMNEBml1v2zidsEixQymUsU5UukZN4Jb-AAbqwdGj3CJ8gSTbOvXMgyPp3T4xAQzq3TRYhFjOYbF0TkE6lWGESsA-K31pEcpcOV2Cr061lkzABNZRKN5CPAr9WmD38DWNYbebjw8CuqHGWvgBCumZebUra3Kjf6sjUDTZDpVZQehD0" alt="alter_core">
+
+<div class="site-left">
+<div class="left-box">
+
+<div class="site-name" id="profile-nickname">alter_core</div>
+
+<img
+  class="main-avatar"
+  id="profile-avatar"
+  alt="alter_core"
+  src="https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA"
+>
+
 <a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
-<div class="nav-menu">
-<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
-<a class="nav-item" href="../profiles.html">Гумени</a>
-<a class="nav-item" href="../droomens.html">Друмени</a>
-<a class="nav-item" href="../activity.html">Стрічерчат</a>
-<a class="nav-item" href="../islands.html">Острови</a>
-<a class="nav-item" href="../rules.html">Правила</a>
+
+<div class="nav-menu" id="nav-menu">
+<!-- Наповнюється з конфігу -->
 </div>
-<div class="account-box"><div class="account-text">Немає гумгайла?</div><a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a><a class="account-link" href="../login.html">ВХІД</a></div>
-</div></div>
+
+<div class="account-box">
+  <div class="account-text">Немає гумгайла?</div>
+  <a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
+  <a class="account-link" href="../login.html">ВХІД</a>
+</div>
+
+</div>
+</div>
+
 <div class="site-right">
-<div class="profile-box"><div class="profile-header">Профіль гумена: alter_core</div><div class="profile-info"><strong>alter_core</strong><div>Сімейка: у стуснах з <a href='https://aircmd.github.io/hoomanchat/profiles/jamie-duke.html'> jamie_duke</a></div><div>Статус: Люблю обговорювати ігри, проходження, персонажів та різні ігрові дрібниці.</div><div class="profile-status">● недавно був(ла)</div></div></div>
-<div class="posts-header">Дописи alter_core — 4</div>
-<div id="alter-posts">
-<div class="profile-post"><div class="profile-post-title">Мені подобаються ізольовані ігри симулятори життя</div><div class="profile-post-body">Я змогла зробити там свій світ друменів, де немає зайвих. Це мій світ, де гумени виглядають так, як хотілося б їх бачити. Вони досконалі, вони живуть, радіють, працюють на роботі мрії, кохають, створюють красиві сім'ї. Я дуже хочу щоб такий світ міг бути справжнім.</div><div class="post-actions"><button class="like-button" type="button">♡ Подобається <span class="like-count">7</span></button><button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button></div><div class="comments-area"><div class="comment-form"><textarea class="comment-input" placeholder="Написати коментар..."></textarea><button class="comment-send" type="button">Відправити</button></div></div><div class="profile-post-date">28 квітня</div></div>
-<div class="profile-post"><div class="profile-post-title">Розчарування</div><div class="profile-post-body">Я дуже розчарована в гуменах зі своєї субкультури. Я не побачила того рівня суму, який має бути частиною душі емо. Не почула тієї щирості. Вони дивилися на мене як на чужинку, а це найгірше почуття. Більше я не піду з ними.</div><div class="post-actions"><button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button><button class="comment-button" type="button">💬 Коментарі <span class="comment-count">3</span></button></div><div class="comments-area"><div class="fake-comment"><div class="fake-comment-name">nasty_emogirl</div>Дуже сумно чути такі слова... Дуже боляче та не приємно( Ми не знаємо та вперше тебе побачили, звісно що складно довіритися новенькій. Кожному у нашій компанії потрібен час щоб дізнатись краще. Але після цих слів ми також не хочемо бути з тобою, вибач(</div><div class="fake-comment"><div class="fake-comment-name">jamie_duke</div>Я тебе так розумію... Ти дуже красива і сумна, чудова дівчина. Давай спілкуватися?</div><div class="fake-comment"><div class="fake-comment-name">alter_core</div>Дякую тобі, jamie. Поспілкуємось в арчаті...</div><div class="comment-form"><textarea class="comment-input" placeholder="Написати коментар..."></textarea><button class="comment-send" type="button">Відправити</button></div></div><div class="profile-post-date">8 вересня</div></div>
-<div class="profile-post"><div class="profile-post-title">Мені не подобається бути гуменкою</div><div class="profile-post-body">На мою думку, ось ця вся ідея уникати можливого контакту з прибульцями це сумно. Там можуть бути такі гумени як я. Через відсутність бажання знайти схожих на себе і приходиться жити у пеклі, де тебе ніхто не розуміє. Стільки гуменів і з жодним з них не хочу бути друменами. Гумени огидні(</div><div class="post-actions"><button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button><button class="comment-button" type="button">💬 Коментарі <span class="comment-count">3</span></button></div><div class="comments-area"><div class="fake-comment"><div class="fake-comment-name">sakurai_agatsuma</div>Іронічно. Це ж як себе назвати огидною. Звісно, частина гуменів поділяють вашу думку що уникання першого контакту обмежує нашу цивілізацію. Але ж не так щоб грубити.</div><div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>У тебе вже є найкраща подружка, це ти сама. Відчепись просто від інших.</div><div class="fake-comment"><div class="fake-comment-name">alter_core</div>Я розчарована у ваших словах.</div><div class="comment-form"><textarea class="comment-input" placeholder="Написати коментар..."></textarea><button class="comment-send" type="button">Відправити</button></div></div><div class="profile-post-date">1 вересня</div></div>
-<div class="profile-post"><div class="profile-post-title">Я не самітниця, просто перебираю гуменами</div><div class="profile-post-body">Не всі варті друмни, не всі варті щоб їх близько підпускали. У мене відсутнє відчуття що я належу цьому місцю.</div><div class="post-actions"><button class="like-button" type="button">♡ Подобається <span class="like-count">0</span></button><button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button></div><div class="comments-area"><div class="fake-comment"><div class="fake-comment-name">copy_pasta</div>До побачення, телебачення.</div><div class="fake-comment"><div class="fake-comment-name">sakurai_agatsuma</div>Ніхто не заважає, можна просто видалитись.</div><div class="comment-form"><textarea class="comment-input" placeholder="Написати коментар..."></textarea><button class="comment-send" type="button">Відправити</button></div></div><div class="profile-post-date">12 серпня</div></div>
+
+<div class="profile-box">
+  <div class="profile-header" id="profile-header-title">Профіль гумена: alter_core</div>
+  <div class="profile-info">
+    <strong id="profile-info-name">alter_core</strong>
+    <div id="profile-family"></div>
+    <div id="profile-status-text"></div>
+    <div class="profile-status" id="profile-online-status"></div>
+  </div>
 </div>
-<div id="show-more-posts" class="show-more hidden">показати ще...</div>
-<div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
-<div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div></div>
+
+<div class="posts-header" id="posts-header">
+  Дописи alter_core — <span id="posts-count">0</span>
+</div>
+
+<!-- Сторонній персонаж: кнопки «Новий допис» немає -->
+
+<div id="profile-posts">
+<!-- ДОПИС 1 -->
+<div class="profile-post">
+<div class="profile-post-title">Мені подобаються ізольовані ігри симулятори життя</div>
+<div class="profile-post-body">Я змогла зробити там свій світ друменів, де немає зайвих. Це мій світ, де гумени виглядають так, як хотілося б їх бачити. Вони досконалі, вони живуть, радіють, працюють на роботі мрії, кохають, створюють красиві сім'ї. Я дуже хочу щоб такий світ міг бути справжнім.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="7">♡ Подобається <span class="like-count">7</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">28 квітня</div>
+</div>
+
+<!-- ДОПИС 2 -->
+<div class="profile-post">
+<div class="profile-post-title">Розчарування</div>
+<div class="profile-post-body">Я дуже розчарована в гуменах зі своєї субкультури. Я не побачила того рівня суму, який має бути частиною душі емо. Не почула тієї щирості. Вони дивилися на мене як на чужинку, а це найгірше почуття. Більше я не піду з ними.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="1">♡ Подобається <span class="like-count">1</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">3</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="nasty-emogirl.html">nasty_emogirl</a></div>
+Дуже сумно чути такі слова... Дуже боляче та не приємно( Ми не знаємо та вперше тебе побачили, звісно що складно довіритися новенькій. Кожному у нашій компанії потрібен час щоб дізнатись краще. Але після цих слів ми також не хочемо бути з тобою, вибач(
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="jamie-duke.html">jamie_duke</a></div>
+Я тебе так розумію... Ти дуже красива і сумна, чудова дівчина. Давай спілкуватися?
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="alter-core.html">alter_core</a></div>
+Дякую тобі, jamie. Поспілкуємось в арчаті...
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">8 вересня</div>
+</div>
+
+<!-- ДОПИС 3 -->
+<div class="profile-post">
+<div class="profile-post-title">Мені не подобається бути гуменкою</div>
+<div class="profile-post-body">На мою думку, ось ця вся ідея уникати можливого контакту з прибульцями це сумно. Там можуть бути такі гумени як я. Через відсутність бажання знайти схожих на себе і приходиться жити у пеклі, де тебе ніхто не розуміє. Стільки гуменів і з жодним з них не хочу бути друменами. Гумени огидні(</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="sakurai-agatsuma.html">sakurai_agatsuma</a></div>
+Іронічно. Це ж як себе назвати огидною. Звісно, частина гуменів поділяють вашу думку що уникання першого контакту обмежує нашу цивілізацію. Але ж не так щоб грубити.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+У тебе вже є найкраща подружка, це ти сама. Відчепись просто від інших.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="alter-core.html">alter_core</a></div>
+Я розчарована у ваших словах.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">1 вересня</div>
+</div>
+
+<!-- ДОПИС 4 -->
+<div class="profile-post">
+<div class="profile-post-title">Я не самітниця, просто перебираю гуменами</div>
+<div class="profile-post-body">Не всі варті друмни, не всі варті щоб їх близько підпускали. У мене відсутнє відчуття що я належу цьому місцю.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="0">♡ Подобається <span class="like-count">0</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+До побачення, телебачення.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="sakurai-agatsuma.html">sakurai_agatsuma</a></div>
+Ніхто не заважає, можна просто видалитись.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">12 серпня</div>
+</div>
+
+</div>
+
+<div class="posts-pager" id="posts-pager">
+  <button class="show-more hidden" id="show-less-posts" type="button">показати менше...</button>
+  <button class="show-more hidden" id="show-more-posts" type="button">показати ще...</button>
+</div>
+
+<div class="rules-box">
+  Пам'ятай та дотримуйся
+  <a href="../rules.html">ПРАВИЛ</a>
+  нашого ресурсу для приємного та друмнього часу разом з нами.
+</div>
+
+<div class="statistics-box">
+  <div class="statistics-title">Статистика Гуменчату</div>
+  <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
+  <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
+  <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
+</div>
+
+<div class="image-viewer" id="post-image-viewer">
+  <button class="image-viewer-close" id="post-image-viewer-close" type="button" aria-label="Закрити">✕</button>
+  <button class="image-viewer-prev" id="post-image-viewer-prev" type="button" aria-label="Попереднє зображення">‹</button>
+  <img class="image-viewer-image" id="post-image-viewer-image" src="" alt="Зображення допису">
+  <button class="image-viewer-next" id="post-image-viewer-next" type="button" aria-label="Наступне зображення">›</button>
+</div>
+
 <div class="footer-line">Гуменчат — місце для гуменів.</div>
-</div></div></div>
+
+</div>
+</div>
+</div>
+
 <script>
-(function(){
-var posts=document.querySelectorAll('#alter-posts .profile-post');var showMore=document.getElementById('show-more-posts');var visiblePosts=3;var postsPerClick=5;
-function updatePostVisibility(){for(var i=0;i<posts.length;i++)posts[i].style.display=i<visiblePosts?'block':'none';showMore.className=visiblePosts>=posts.length?'show-more hidden':'show-more'}
-showMore.addEventListener('click',function(){visiblePosts+=postsPerClick;if(visiblePosts>posts.length)visiblePosts=posts.length;updatePostVisibility()});
-document.querySelectorAll('.like-button').forEach(function(button){button.addEventListener('click',function(){var c=button.querySelector('.like-count'),n=parseInt(c.textContent,10);if(button.classList.contains('liked')){n--;button.classList.remove('liked')}else{n++;button.classList.add('liked')}c.textContent=n})});
-document.querySelectorAll('.comment-button').forEach(function(button){button.addEventListener('click',function(){button.closest('.profile-post').querySelector('.comments-area').classList.toggle('open')})});
-document.querySelectorAll('.comment-send').forEach(function(button){button.addEventListener('click',function(){var form=button.closest('.comment-form'),input=form.querySelector('.comment-input'),text=input.value.trim();if(!text)return;var c=document.createElement('div');c.className='user-comment';c.innerHTML='<strong>ти:</strong> '+text.replace(/</g,'&lt;').replace(/>/g,'&gt;');form.parentNode.insertBefore(c,form);input.value='';var count=button.closest('.profile-post').querySelector('.comment-count');count.textContent=parseInt(count.textContent,10)+1})});
-function safeNumber(base,range){var value;do{value=base+Math.floor(Math.random()*range)}while(/63|68|13|666/.test(String(value)));return value}
-function updateStatistics(){document.getElementById('registered-hoomen').textContent=safeNumber(8000000,47001).toLocaleString('uk-UA');document.getElementById('online-hoomen').textContent=safeNumber(1000000,76001).toLocaleString('uk-UA');document.getElementById('today-hoomen').textContent=safeNumber(2400000,180001).toLocaleString('uk-UA')}
-updatePostVisibility();updateStatistics();setInterval(updateStatistics,30000);
+window.HOOMEN_PROFILE = {
+  nickname: "alter_core",
+  avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA",
+  isMainCharacter: false,
+  mainCharacterUrl: "copy-pasta.html",
+  statusText: "в пошуках друменів...",
+  onlineStatus: "online",
+  gender: "female",
+  family: {
+      type: "relationship",
+      partnerName: "jamie_duke",
+      partnerUrl: "https://aircmd.github.io/hoomanchat/profiles/jamie-duke.html"
+  },
+  navLinks: {
+    home: "../index.html",
+    profiles: "../profiles.html",
+    droomens: "../droomens.html",
+    activity: "../activity.html",
+    islands: "../islands.html",
+    rules: "../rules.html"
+  }
+};
+</script>
+<script src="../js/hoomenchat-profile.js"></script>
+
+</body>
+</html>
 })();
 </script>
 </body></html>
