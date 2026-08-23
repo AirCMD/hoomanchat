@@ -30,16 +30,16 @@
     "gender": "male",
     "description": "Сімейка:  у стуснах з coffee_signal · Статус: Засновник coffee_signal."
     "schedule": [
-       { "time": "07:45", status: "online" },
-       { "time": "08:02", status: "away" },
-       { "time": "12:03", status: "online" },
-       { "time": "14:01", status: "away" },
-       { "time": "14:32", status: "online" },
-       { "time": "17:12", status: "away" },
-       { "time": "18:09", status: "online" },
-       { "time": "19:14", status: "away" },
-       { "time": "20:00", status: "online" },
-       { "time": "21:55", status: "offline" }
+       { "time": "07:45", "status": "online" },
+       { "time": "08:02", "status": "away" },
+       { "time": "12:03", "status": "online" },
+       { "time": "14:01", "status": "away" },
+       { "time": "14:32", "status": "online" },
+       { "time": "17:12", "status": "away" },
+       { "time": "18:09", "status": "online" },
+       { "time": "19:14", "status": "away" },
+       { "time": "20:00", "status": "online" },
+       { "time": "21:55", "status": "offline" }
     ],
   },
   {
@@ -50,16 +50,16 @@
     "gender": "female",
     "description": "Сімейка:  у стуснах з another_hoomen · Статус: Працюємо з 09:00 до 18:00 по будням, з 10:00 до 16:00 по вихідним."
     "schedule": [
-       { "time": "10:00", status: "online" },
-       { "time": "12:02", status: "away" },
-       { "time": "12:34", status: "online" },
-       { "time": "15:01", status: "away" },
-       { "time": "15:32", status: "online" },
-       { "time": "16:02", status: "away" },
-       { "time": "16:13", status: "online" },
-       { "time": "17:01", status: "away" },
-       { "time": "17:12", status: "online" },
-       { "time": "18:00", status: "offline" }
+       { "time": "10:00", "status": "online" },
+       { "time": "12:02", "status": "away" },
+       { "time": "12:34", "status": "online" },
+       { "time": "15:01", "status": "away" },
+       { "time": "15:32", "status": "online" },
+       { "time": "16:02", "status": "away" },
+       { "time": "16:13", "status": "online" },
+       { "time": "17:01", "status": "away" },
+       { "time": "17:12", "status": "online" },
+       { "time": "18:00", "status": "offline" }
     ],
   },
   {
