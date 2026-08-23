@@ -862,19 +862,111 @@ function safeNumber(base, variation) {
   return n;
 }
 
-function updateStatistics() {
+/* Поточні значення статистики */
+var stats = {
+  registered: 8012457,  /* фіксовано — не змінюється */
+  online: safeNumber(1000000, 38000),
+  today: safeNumber(2400000, 90000)
+};
+
+var statsAnimating = {
+  registered: false,
+  online: false,
+  today: false
+};
+
+function formatStat(n) {
+  return Math.round(n).toLocaleString("uk-UA");
+}
+
+function animateStat(key, el, from, to, duration) {
+  if (!el) return;
+  if (statsAnimating[key]) return;
+  statsAnimating[key] = true;
+
+  var start = performance.now();
+  duration = duration || 900;
+
+  function frame(now) {
+    var t = Math.min(1, (now - start) / duration);
+    /* easeOutCubic */
+    var ease = 1 - Math.pow(1 - t, 3);
+    var value = from + (to - from) * ease;
+    el.textContent = formatStat(value);
+
+    if (t < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      el.textContent = formatStat(to);
+      stats[key] = to;
+      statsAnimating[key] = false;
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function pickNearby(current, minDelta, maxDelta, floorMin) {
+  var delta = minDelta + Math.floor(Math.random() * (maxDelta - minDelta + 1));
+  if (Math.random() < 0.5) delta = -delta;
+  var next = current + delta;
+  if (floorMin && next < floorMin) next = floorMin + Math.abs(delta);
+  while (forbidden(next)) {
+    next += delta >= 0 ? 1 : -1;
+  }
+  return next;
+}
+
+/* Малі «живі» коливання (зареєстровані — завжди фіксовані) */
+function tickStatistics() {
+  var elOnline = document.getElementById("online-hoomen");
+  var elToday = document.getElementById("today-hoomen");
+
+  /* Онлайн — частіше і помітніше */
+  var nextOnline = pickNearby(stats.online, 80, 1200, 100000);
+  animateStat("online", elOnline, stats.online, nextOnline, 1100);
+
+  /* Сьогодні завітало — середня динаміка */
+  if (Math.random() < 0.7) {
+    var nextToday = pickNearby(stats.today, 20, 400, 500000);
+    animateStat("today", elToday, stats.today, nextToday, 900);
+  }
+}
+
+/* Більший стрибок (зареєстровані не змінюються) */
+function jumpStatistics() {
+  var elOnline = document.getElementById("online-hoomen");
+  var elToday = document.getElementById("today-hoomen");
+
+  var nextOnline = safeNumber(1000000, 38000);
+  var nextToday = safeNumber(2400000, 90000);
+
+  animateStat("online", elOnline, stats.online, nextOnline, 1600);
+  animateStat("today", elToday, stats.today, nextToday, 1500);
+}
+
+function initStatistics() {
   var elReg = document.getElementById("registered-hoomen");
   var elOnline = document.getElementById("online-hoomen");
   var elToday = document.getElementById("today-hoomen");
 
-  if (elReg) elReg.textContent = safeNumber(8000000, 23000).toLocaleString("uk-UA");
-  if (elOnline) elOnline.textContent = safeNumber(1000000, 38000).toLocaleString("uk-UA");
-  if (elToday) elToday.textContent = safeNumber(2400000, 90000).toLocaleString("uk-UA");
+  if (elReg) elReg.textContent = formatStat(stats.registered);
+  if (elOnline) elOnline.textContent = formatStat(stats.online);
+  if (elToday) elToday.textContent = formatStat(stats.today);
+
+  /* Перший «живий» тік через 3 с, далі кожні 4–7 с */
+  setTimeout(function loopTick() {
+    tickStatistics();
+    var delay = 4000 + Math.floor(Math.random() * 3000);
+    setTimeout(loopTick, delay);
+  }, 3000);
+
+  /* Великі стрибки */
+  setInterval(jumpStatistics, 35000);
 }
 
 showProfiles();
-updateStatistics();
-setInterval(updateStatistics, 30000);
+initStatistics();
 
 })();
 </script>
