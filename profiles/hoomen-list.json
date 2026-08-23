@@ -54,6 +54,14 @@
     "status": "25min",
     "gender": "male",
     "description": "Сімейка: шукайголова · Статус: Простий, щирий хлопчина."
+ },
+  {
+    "name": "doo_moth",
+    "file": "doo-moth",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEiRrSzQ1NNdLvInKgTEOzh5vWI6F6dKvjl-zOPBPAYPr-MrbIExDzeD8cprGrdtsZLAvxcyTNhosFt0zMsJPHD3orU27_DFgEesbQPDa4O5GA4i8UyCHOtX5RbPmCkHFlvPfW_MuqbWM7-ORjZeBmsmV0eUN0QwLFfQgKmYn17lk6JBVoEWUZCe0aORVbw",
+    "status": "25min",
+    "gender": "male",
+    "description": "Сімейка: шукайголова · Статус: Простий, щирий хлопчина."
   },
   {
     "name": "dreaming_romance",
@@ -145,6 +153,14 @@
   {
     "name": "paper_storm",
     "file": "paper-storm.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEjqrONG3WN749rf0VM4X87BNKhBrhokWahtrEN24gjmmrqE0QMAolsrXFTfZTJ55OxsJfzNAuFDxyoGm3rDMAV0voBpUeWXTDIOCFdDjRzu16bcQUT8xh6H2CdoPgUBGLfZOkaLwqfdHcOFLLqY5zuANw-DF_zpQT-cre6khltso6JV4Ih3wDqL3kPIJys",
+    "status": "online",
+    "gender": "male",
+    "description": ""
+  },
+  {
+    "name": "pasta_friend",
+    "file": "pasta-friend.html",
     "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEjqrONG3WN749rf0VM4X87BNKhBrhokWahtrEN24gjmmrqE0QMAolsrXFTfZTJ55OxsJfzNAuFDxyoGm3rDMAV0voBpUeWXTDIOCFdDjRzu16bcQUT8xh6H2CdoPgUBGLfZOkaLwqfdHcOFLLqY5zuANw-DF_zpQT-cre6khltso6JV4Ih3wDqL3kPIJys",
     "status": "online",
     "gender": "male",
