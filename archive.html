@@ -485,9 +485,6 @@ body > .image-viewer .image-viewer-close {
   cursor: pointer;
 }
 
-/* =====================================================
-   МОБІЛЬНА ВЕРСІЯ
-   ===================================================== */
 @media screen and (max-width: 650px) {
   #hoomenchat-messages-page {
     margin: 0;
@@ -495,118 +492,29 @@ body > .image-viewer .image-viewer-close {
     border: none;
     max-width: none;
   }
-
-  #hoomenchat-messages-page .chat-header {
-    padding: 10px;
-    font-size: 13px;
-  }
-
-  #hoomenchat-messages-page .messages-layout {
-    display: block;
-    border-spacing: 0;
-  }
-
+  #hoomenchat-messages-page .chat-header { padding: 10px; font-size: 13px; }
+  #hoomenchat-messages-page .messages-layout { display: block; border-spacing: 0; }
   #hoomenchat-messages-page .chat-list-column,
-  #hoomenchat-messages-page .conversation-column {
-    display: block;
-    width: 100%;
-  }
-
-  /* На мобільному: або список, або діалог */
-  #hoomenchat-messages-page.mobile-chat-open .chat-list-column {
-    display: none;
-  }
-  #hoomenchat-messages-page:not(.mobile-chat-open) .conversation-column {
-    display: none;
-  }
-
-  #hoomenchat-messages-page .conversation-back {
-    display: block;
-  }
-
-  #hoomenchat-messages-page .list-title {
-    font-size: 13px;
-    padding: 10px;
-  }
-
-  #hoomenchat-messages-page .chat-list {
-    max-height: none;
-    border: 1px solid #aaa;
-  }
-
-  #hoomenchat-messages-page .chat-list-item {
-    padding: 10px;
-    min-height: 64px;
-  }
-
-  #hoomenchat-messages-page .chat-list-avatar {
-    width: 48px;
-    height: 48px;
-  }
-
-  #hoomenchat-messages-page .chat-list-name {
-    font-size: 13px;
-    line-height: 16px;
-  }
-
-  #hoomenchat-messages-page .chat-list-status {
-    font-size: 11px;
-  }
-
-  #hoomenchat-messages-page .chat-list-preview {
-    font-size: 11px;
-    white-space: normal;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-
-  #hoomenchat-messages-page .conversation-header {
-    min-height: 64px;
-    padding: 10px;
-  }
-
-  #hoomenchat-messages-page .conversation-name {
-    font-size: 15px;
-  }
-
-  #hoomenchat-messages-page .conversation-status {
-    font-size: 11px;
-  }
-
-  #hoomenchat-messages-page .messages-window {
-    height: calc(100dvh - 280px);
-    min-height: 240px;
-    max-height: 55dvh;
-  }
-
-  #hoomenchat-messages-page .message-bubble {
-    max-width: 88%;
-    font-size: 13px;
-    line-height: 17px;
-    padding: 8px 10px;
-  }
-
-  #hoomenchat-messages-page .message-compose {
-    padding: 10px;
-  }
-
-  #hoomenchat-messages-page .message-input {
-    font-size: 14px;
-    min-height: 64px;
-  }
-
-  #hoomenchat-messages-page .back-link {
-    font-size: 13px;
-    padding: 12px;
-    min-height: 44px;
-  }
-
-  #hoomenchat-messages-page .conversation-empty {
-    min-height: 40dvh;
-    font-size: 14px;
-    padding: 48px 20px;
-  }
+  #hoomenchat-messages-page .conversation-column { display: block; width: 100%; }
+  #hoomenchat-messages-page.mobile-chat-open .chat-list-column { display: none; }
+  #hoomenchat-messages-page:not(.mobile-chat-open) .conversation-column { display: none; }
+  #hoomenchat-messages-page .conversation-back { display: block; }
+  #hoomenchat-messages-page .list-title { font-size: 13px; padding: 10px; }
+  #hoomenchat-messages-page .chat-list { max-height: none; border: 1px solid #aaa; }
+  #hoomenchat-messages-page .chat-list-item { padding: 10px; min-height: 64px; }
+  #hoomenchat-messages-page .chat-list-avatar { width: 48px; height: 48px; }
+  #hoomenchat-messages-page .chat-list-name { font-size: 13px; line-height: 16px; }
+  #hoomenchat-messages-page .chat-list-status { font-size: 11px; }
+  #hoomenchat-messages-page .chat-list-preview { font-size: 11px; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  #hoomenchat-messages-page .conversation-header { min-height: 64px; padding: 10px; }
+  #hoomenchat-messages-page .conversation-name { font-size: 15px; }
+  #hoomenchat-messages-page .conversation-status { font-size: 11px; }
+  #hoomenchat-messages-page .messages-window { height: calc(100dvh - 280px); min-height: 240px; max-height: 55dvh; }
+  #hoomenchat-messages-page .message-bubble { max-width: 88%; font-size: 13px; line-height: 17px; padding: 8px 10px; }
+  #hoomenchat-messages-page .message-compose { padding: 10px; }
+  #hoomenchat-messages-page .message-input { font-size: 14px; min-height: 64px; }
+  #hoomenchat-messages-page .back-link { font-size: 13px; padding: 12px; min-height: 44px; }
+  #hoomenchat-messages-page .conversation-empty { min-height: 40dvh; font-size: 14px; padding: 48px 20px; }
 }
 </style>
 </head>
@@ -685,12 +593,6 @@ body > .image-viewer .image-viewer-close {
     ".apk": true, ".html": true, ".htm": true, ".php": true, ".sh": true, ".py": true
   };
 
-  /*
-    status — запасний рядок, якщо немає schedule
-    schedule — як на профілях:
-      { time: "09:00", status: "online" | "away" | "offline" }
-    gender — "male" | "female" для «був/була»
-  */
   var users = {
     sakurai_agatsuma: {
       name: "sakurai_agatsuma",
@@ -712,18 +614,18 @@ body > .image-viewer .image-viewer-close {
       profile: "profiles/alter-core.html",
       gender: "female",
       status: "online",
-  schedule: [
-    { time: "17:00", status: "online" },
-    { time: "17:25", status: "away" },
-    { time: "18:00", status: "online" },
-    { time: "20:03", status: "away" },
-    { time: "20:29", status: "online" },
-    { time: "23:03", status: "away" },
-    { time: "23:31", status: "online" },
-    { time: "01:23", status: "away" },
-    { time: "02:00", status: "online" },
-    { time: "05:00", status: "offline" }
-  ],
+      schedule: [
+        { time: "17:00", status: "online" },
+        { time: "17:25", status: "away" },
+        { time: "18:00", status: "online" },
+        { time: "20:03", status: "away" },
+        { time: "20:29", status: "online" },
+        { time: "23:03", status: "away" },
+        { time: "23:31", status: "online" },
+        { time: "01:23", status: "away" },
+        { time: "02:00", status: "online" },
+        { time: "05:00", status: "offline" }
+      ],
       autoReply: ["Це автоматичне повідомлення. Ви заблокували alter_core, вона не зможе прочитати чат."]
     },
     another_hoomen: {
@@ -733,18 +635,18 @@ body > .image-viewer .image-viewer-close {
       gender: "male",
       status: "online",
       autoReply: ["Давно тебе не бачив.", "Привіт.", "Можемо поговорити.", "Зараз трохи зайнятий."],
-  schedule: [
-    { time: "07:45", status: "online" },
-    { time: "08:02", status: "away" },
-    { time: "12:03", status: "online" },
-    { time: "14:01", status: "away" },
-    { time: "14:32", status: "online" },
-    { time: "17:12", status: "away" },
-    { time: "18:09", status: "online" },
-    { time: "19:14", status: "away" },
-    { time: "20:00", status: "online" },
-    { time: "21:55", status: "offline" }
-  ],
+      schedule: [
+        { time: "07:45", status: "online" },
+        { time: "08:02", status: "away" },
+        { time: "12:03", status: "online" },
+        { time: "14:01", status: "away" },
+        { time: "14:32", status: "online" },
+        { time: "17:12", status: "away" },
+        { time: "18:09", status: "online" },
+        { time: "19:14", status: "away" },
+        { time: "20:00", status: "online" },
+        { time: "21:55", status: "offline" }
+      ]
     },
     velvet_moon: {
       name: "velvet_moon",
@@ -831,18 +733,18 @@ body > .image-viewer .image-viewer-close {
       gender: "female",
       status: "5min",
       autoReply: ["Привіт ☕", "Саме п'ю каву.", "Оце так.", "Можна."],
-  schedule: [
-    { time: "10:00", status: "online" },
-    { time: "12:02", status: "away" },
-    { time: "12:34", status: "online" },
-    { time: "15:01", status: "away" },
-    { time: "15:32", status: "online" },
-    { time: "16:02", status: "away" },
-    { time: "16:13", status: "online" },
-    { time: "17:01", status: "away" },
-    { time: "17:12", status: "online" },
-    { time: "18:00", status: "offline" }
-  ],
+      schedule: [
+        { time: "10:00", status: "online" },
+        { time: "12:02", status: "away" },
+        { time: "12:34", status: "online" },
+        { time: "15:01", status: "away" },
+        { time: "15:32", status: "online" },
+        { time: "16:02", status: "away" },
+        { time: "16:13", status: "online" },
+        { time: "17:01", status: "away" },
+        { time: "17:12", status: "online" },
+        { time: "18:00", status: "offline" }
+      ]
     },
     paper_storm: {
       name: "paper_storm",
@@ -887,7 +789,6 @@ body > .image-viewer .image-viewer-close {
     paper_storm: { user: "paper_storm", messages: [], loaded: false }
   };
 
-  /* null = жоден чат не відкритий */
   var currentChat = null;
   var pendingAttachments = [];
 
@@ -906,8 +807,6 @@ body > .image-viewer .image-viewer-close {
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
   }
-
-  /* ========== СТАТУС ЗА РОЗКЛАДОМ (як на профілях) ========== */
 
   function parseHHMM(str) {
     if (!str || typeof str !== "string") return null;
@@ -1001,8 +900,6 @@ body > .image-viewer .image-viewer-close {
     renderChatList();
     if (currentChat) renderConversationHeader();
   }
-
-  /* ========== UI ========== */
 
   function getExtension(fileName) {
     var clean = String(fileName || "").toLowerCase().split("?")[0];
@@ -1158,34 +1055,46 @@ body > .image-viewer .image-viewer-close {
     showEmptyState();
   }
 
+  /* НОВА ФУНКЦІЯ ЗАВАНТАЖЕННЯ ЧАТІВ ІЗ .JS ФАЙЛІВ */
   function loadChat(chatId) {
     var status = get("compose-status");
     if (status) status.textContent = "Завантаження...";
 
-    fetch("/hoomanchat/chats/" + chatId + ".json")
-      .then(function (response) {
-        if (!response.ok) throw new Error("Файл не знайдено");
-        return response.json();
-      })
-      .then(function (data) {
-        chats[chatId].messages = data.messages || [];
-        chats[chatId].loaded = true;
-        if (currentChat === chatId) renderConversation();
-        renderChatList();
-        if (status) status.textContent = "";
-      })
-      .catch(function () {
-        chats[chatId].messages = [];
-        chats[chatId].loaded = true;
-        if (currentChat === chatId) renderConversation();
-        renderChatList();
-        if (status) {
-          status.textContent = "Чат порожній або файл відсутній";
-          setTimeout(function () {
-            if (status.textContent.indexOf("порожній") !== -1) status.textContent = "";
-          }, 3000);
-        }
+    var script = document.createElement("script");
+    script.src = "hoomanchat/chats/" + chatId + ".js";
+
+    script.onload = function() {
+      var phrases = window["chat_phrases_" + chatId] || window[chatId] || [];
+      
+      var formattedMessages = phrases.map(function(text, index) {
+        return {
+          from: index % 2 === 0 ? "them" : "me",
+          type: "text",
+          text: text,
+          time: "00:00"
+        };
       });
+
+      chats[chatId].messages = formattedMessages;
+      chats[chatId].loaded = true;
+      
+      if (currentChat === chatId) renderConversation();
+      renderChatList();
+      if (status) status.textContent = "";
+      
+      script.remove();
+    };
+
+    script.onerror = function() {
+      chats[chatId].messages = [];
+      chats[chatId].loaded = true;
+      if (currentChat === chatId) renderConversation();
+      renderChatList();
+      if (status) status.textContent = "Файл реплік не знайдено";
+      script.remove();
+    };
+
+    document.head.appendChild(script);
   }
 
   function renderConversationHeader() {
@@ -1412,7 +1321,7 @@ body > .image-viewer .image-viewer-close {
     var fileInput = get("file-input");
     var backBtn = get("conversation-back");
 
-    if (button) button.addEventListener("click", sendMessage);
+  if (button) button.addEventListener("click", sendMessage);
     if (backBtn) backBtn.addEventListener("click", closeChatToList);
 
     if (input) {
@@ -1486,7 +1395,6 @@ body > .image-viewer .image-viewer-close {
     });
   }
 
-  /* Запуск — БЕЗ авто-відкриття чату */
   updateListTitle();
   renderEmojiPanel();
   renderChatList();
