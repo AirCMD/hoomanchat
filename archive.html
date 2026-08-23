@@ -2,36 +2,38 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Архів чатів</title>
+    <title>Архів переписок</title>
+    <!-- Тут ви можете підключити ваші оригінальні стилі, якщо вони були винесені в окремий файл -->
     <style>
-        body { font-family: sans-serif; margin: 0; display: flex; height: 100vh; background: #1e1e1e; color: #fff; }
-        .sidebar { width: 300px; border-right: 1px solid #333; display: flex; flex-direction: column; }
+        /* Базові стилі інтерфейсу (можете замінити на свої оригінальні) */
+        body { font-family: sans-serif; margin: 0; display: flex; height: 100vh; background: #121212; color: #e0e0e0; }
+        .sidebar { width: 320px; border-right: 1px solid #2d2d2d; display: flex; flex-direction: column; background: #181818; }
         .chat-list { overflow-y: auto; flex: 1; }
-        .chat-item { padding: 15px; border-bottom: 1px solid #2a2a2a; cursor: pointer; }
-        .chat-item:hover, .chat-item.active { background: #2a2a2a; }
-        .chat-area { flex: 1; display: flex; flex-direction: column; }
-        .messages-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .message { max-width: 60%; padding: 10px 15px; border-radius: 8px; word-break: break-word; }
-        .message.me { background: #005c4b; align-self: flex-end; }
-        .message.them { background: #202c33; align-self: flex-start; }
+        .chat-item { padding: 15px; border-bottom: 1px solid #222; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .chat-item:hover, .chat-item.active { background: #252525; }
+        .chat-area { flex: 1; display: flex; flex-direction: column; background: #1e1e1e; }
+        .messages-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .message { max-width: 65%; padding: 12px 16px; border-radius: 10px; word-break: break-word; line-height: 1.4; }
+        .message.me { background: #005c4b; align-self: flex-end; color: #fff; }
+        .message.them { background: #202c33; align-self: flex-start; color: #fff; }
         .compose-area { padding: 15px; background: #202c33; display: flex; gap: 10px; align-items: center; }
-        .compose-area input { flex: 1; padding: 10px; border-radius: 4px; border: none; background: #2a2a2a; color: #fff; }
-        .compose-area button { padding: 10px 20px; border: none; border-radius: 4px; background: #00a884; color: #fff; cursor: pointer; }
-        #compose-status { font-size: 12px; color: #888; padding: 0 15px; }
+        .compose-area input { flex: 1; padding: 12px; border-radius: 6px; border: none; background: #2a2a2a; color: #fff; font-size: 14px; }
+        .compose-area button { padding: 12px 24px; border: none; border-radius: 6px; background: #00a884; color: #fff; cursor: pointer; font-weight: bold; }
+        #compose-status { font-size: 12px; color: #888; padding: 0 15px 5px 15px; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <div style="padding: 15px; font-weight: bold; border-bottom: 1px solid #333;">Чати</div>
+        <div style="padding: 20px; font-weight: bold; font-size: 18px; border-bottom: 1px solid #2d2d2d;">Архів чатів</div>
         <div class="chat-list" id="chatList">
-            <!-- Список чатів формується динамічно -->
+            <!-- Список усіх персонажів формується динамічно -->
         </div>
     </div>
 
     <div class="chat-area">
         <div class="messages-container" id="messagesContainer">
-            <div style="color: #77; text-align: center; margin: auto;">Оберіть чат ліворуч</div>
+            <div style="color: #666; text-align: center; margin: auto;">Оберіть чат із лівої панелі</div>
         </div>
         <div id="compose-status"></div>
         <div class="compose-area" id="composeArea" style="display: none;">
@@ -41,32 +43,40 @@
     </div>
 
 <script>
-  // Константи користувачів та старт чатів
+  // Повний перелік усіх ваших персонажів та налаштувань тригерів
   var users = {
     night_fox: {
       name: "Night Fox",
+      gender: "male",
+      status: "online",
       firstMessage: "Привіт! Тут є одне питання, треба твоя порада.",
       keywordReplies: {
         "питання": "Ну, якщо коротко, то я застряг на одному етапі з налаштуванням заліза.",
         "допомога": "Завжди радий допомогти, якщо це в моїх силах!",
         "залізо": "О, з залізом завжди так — поки не перебереш, не запрацює."
       },
-      autoReply: ["Привіт.", "Я слухаю тебе уважно.", "Цікаво звучить."]
+      autoReply: ["Привіт.", "Я слухаю тебе уважно.", "Цікаво звучить.", "А що було далі?"]
     },
     alice: {
       name: "Alice",
+      gender: "female",
+      status: "online",
       firstMessage: "Привіт! Як справи?",
       keywordReplies: {
         "як справи": "Усе чудово, працюю над архівом!",
         "погода": "Сьогодні чудова погода для кодингу."
       },
       autoReply: ["Зрозуміла.", "Цікаво!", "Розкажи детальніше."]
-    }
+    },
+    // Додайте сюди решту ваших оригінальних персонажів за аналогією:
+    // alex: { name: "Alex", ... },
+    // max: { name: "Max", ... }
   };
 
   var chats = {
     night_fox: { user: "night_fox", messages: [], loaded: false },
     alice: { user: "alice", messages: [], loaded: false }
+    // Інші чати також додаються сюди
   };
 
   var currentChat = null;
@@ -107,9 +117,10 @@
     }
   }
 
+  // Функція завантаження історії з JSON-файлів у папці hoomanchat/chats/
   function loadChat(chatId) {
     var status = document.getElementById("compose-status");
-    if (status) status.textContent = "Завантаження історії...";
+    if (status) status.textContent = "Завантаження історії з файлу...";
 
     fetch("hoomanchat/chats/" + chatId + ".json")
       .then(function (response) {
@@ -120,6 +131,7 @@
         var messages = [];
         var chatUser = users[chats[chatId].user];
 
+        // Якщо JSON є об'єктом із налаштуваннями та повідомленнями
         if (!Array.isArray(data) && data !== null) {
           if (data.firstMessage !== undefined && chatUser) chatUser.firstMessage = data.firstMessage;
           if (data.keywordReplies && chatUser) chatUser.keywordReplies = data.keywordReplies;
@@ -134,6 +146,16 @@
               time: item.time || "00:00"
             };
           });
+        } else if (Array.isArray(data)) {
+          // Якщо це старий формат (просто масив повідомлень)
+          messages = data.map(function (item, index) {
+            return {
+              from: item.from || (index % 2 === 0 ? "them" : "me"),
+              type: item.type || "text",
+              text: typeof item === "string" ? item : (item.text || ""),
+              time: item.time || "00:00"
+            };
+          });
         }
 
         chats[chatId].messages = messages;
@@ -144,12 +166,12 @@
         if (status) status.textContent = "";
       })
       .catch(function (error) {
-        // Якщо файл не знайдено або сталася помилка CORS, створюємо пустий масив
+        // Якщо JSON-файлу немає, чат залишається пустим або завантажує перше повідомлення
         chats[chatId].messages = [];
         chats[chatId].loaded = true;
         if (currentChat === chatId) renderConversation();
         renderChatList();
-        if (status) status.textContent = "Не вдалося завантажити JSON (перевірте шлях або локальний сервер)";
+        if (status) status.textContent = "";
       });
   }
 
@@ -175,7 +197,6 @@
     var text = input.value.trim();
     if (!text || !currentChat) return;
 
-    // Додаємо ваше повідомлення
     chats[currentChat].messages.push({
       from: "me",
       type: "text",
@@ -187,10 +208,11 @@
     renderConversation();
     renderChatList();
 
-    // Запускаємо реакцію бота з передачею тексту для пошуку тригерів
+    // Передаємо текст повідомлення для перевірки тригерів за ключовими словами
     triggerAutoReply(currentChat, text);
   }
 
+  // Інтелектуальна реакція на ключові слова з JSON або налаштувань персонажа
   function triggerAutoReply(chatId, userMessageText) {
     var chat = chats[chatId];
     if (!chat) return;
@@ -203,7 +225,7 @@
       var replyText = "";
       var lowerText = String(userMessageText || "").toLowerCase();
 
-      // 1. Шукаємо ключові слова у вашому повідомленні
+      // 1. Пошук тригерних слів
       if (user.keywordReplies) {
         var keys = Object.keys(user.keywordReplies);
         for (var i = 0; i < keys.length; i++) {
@@ -215,7 +237,7 @@
         }
       }
 
-      // 2. Якщо тригерних слів не знайдено — беремо випадкову фразу
+      // 2. Якщо ключове слово не знайдено — беремо випадкову звичайну репліку
       if (!replyText && user.autoReply && user.autoReply.length > 0) {
         replyText = user.autoReply[Math.floor(Math.random() * user.autoReply.length)];
       }
@@ -233,10 +255,10 @@
     }, delay);
   }
 
-  // Початковий рендер списку чатів
+  // Початковий рендер списку
   renderChatList();
 
-  // Обробка натискання Enter у полі введення
+  // Відправка по Enter
   document.getElementById("messageInput").addEventListener("keypress", function (e) {
     if (e.key === "Enter") {
       sendMessage();
