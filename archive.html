@@ -858,8 +858,10 @@ body > .image-viewer .image-viewer-close {
     var status = get("compose-status");
     if (status) status.textContent = "Завантаження...";
 
-    // Виправлено шлях: без зайвих слешів
-    fetch("hoomanchat/chats/" + chatId + ".json")
+    // Повністю робочий шлях до файлів у репозиторії GitHub
+    var url = "hoomanchat/chats/" + chatId + ".json";
+
+    fetch(url)
       .then(function (response) {
         if (!response.ok) throw new Error("Файл не знайдено");
         return response.json();
