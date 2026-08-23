@@ -321,7 +321,7 @@
             html += escapeHtml(family.partnerName);
         }
         } else {
-          html = "Сімейка: у стосунках"; // <--- текст без "з партнер"
+          html = "Сімейка: у стуснах"; // <--- текст без "з партнер"
         }
         break;
       case "married":
