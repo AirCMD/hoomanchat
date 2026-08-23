@@ -1,570 +1,53 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ГУМЕНЧАТ — АРЧАТ</title>
-<link rel="icon" type="image/svg+xml" href="planet-favicon.svg">
-<style>
-html, body {
-  margin: 0;
-  padding: 0;
-  background: #fff;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
-  line-height: 14px;
-  color: #222;
-}
-* { box-sizing: border-box; }
-
-#hoomenchat-messages-page {
-  display: block;
-  width: 100%;
-  max-width: 780px;
-  margin: 10px auto;
-  padding: 12px;
-  background: #fff;
-  border: 1px solid #777;
-  min-height: 100vh;
-  min-height: 100dvh;
-}
-
-#hoomenchat-messages-page .chat-header {
-  display: block;
-  margin: 0 0 10px 0;
-  padding: 5px 8px;
-  background: linear-gradient(to bottom, #626262, #3b3b3b);
-  border: 1px solid #222;
-  color: #fff;
-  font-size: 12px;
-  line-height: 14px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-#hoomenchat-messages-page .messages-layout {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: separate;
-  border-spacing: 10px 0;
-}
-
-#hoomenchat-messages-page .chat-list-column {
-  display: table-cell;
-  width: 220px;
-  vertical-align: top;
-}
-
-#hoomenchat-messages-page .conversation-column {
-  display: table-cell;
-  width: auto;
-  vertical-align: top;
-}
-
-#hoomenchat-messages-page .list-title {
-  margin: 0;
-  padding: 5px 7px;
-  background: #f0f0f0;
-  border: 1px solid #999;
-  color: #333;
-  font-size: 11px;
-  line-height: 13px;
-  font-weight: bold;
-}
-
-#hoomenchat-messages-page .chat-list {
-  margin: 0;
-  padding: 0;
-  background: #fff;
-  border: 1px solid #aaa;
-  border-top: 0;
-  max-height: 430px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-#hoomenchat-messages-page .chat-list::-webkit-scrollbar { width: 8px; }
-#hoomenchat-messages-page .chat-list::-webkit-scrollbar-track { background: #f0f0f0; }
-#hoomenchat-messages-page .chat-list::-webkit-scrollbar-thumb {
-  background: #aaa;
-  border: 1px solid #888;
-}
-
-#hoomenchat-messages-page .chat-list-item {
-  display: block;
-  width: 100%;
-  margin: 0;
-  padding: 6px;
-  background: #f7f7f7;
-  border-bottom: 1px solid #ccc;
-  color: #222;
-  text-decoration: none;
-  cursor: pointer;
-}
-#hoomenchat-messages-page .chat-list-item:last-child { border-bottom: 0; }
-#hoomenchat-messages-page .chat-list-item:hover { background: #e8e8e8; }
-#hoomenchat-messages-page .chat-list-item.active {
-  background: #dedede;
-  border-left: 3px solid #555;
-}
-
-#hoomenchat-messages-page .chat-list-avatar {
-  display: inline-block;
-  width: 45px;
-  height: 45px;
-  margin-right: 6px;
-  vertical-align: middle;
-  object-fit: cover;
-  background: #ddd;
-  border: 1px solid #888;
-}
-
-#hoomenchat-messages-page .chat-list-info {
-  display: inline-block;
-  width: calc(100% - 58px);
-  vertical-align: middle;
-}
-
-#hoomenchat-messages-page .chat-list-name {
-  margin: 0;
-  color: #111;
-  font-size: 11px;
-  line-height: 13px;
-  font-weight: bold;
-  word-wrap: break-word;
-}
-#hoomenchat-messages-page .chat-list-name a {
-  color: #111;
-  text-decoration: underline;
-}
-
-#hoomenchat-messages-page .chat-list-status {
-  margin-top: 1px;
-  font-size: 9px;
-  line-height: 11px;
-  font-style: italic;
-}
-#hoomenchat-messages-page .chat-list-status.online { color: #2e7d32; }
-#hoomenchat-messages-page .chat-list-status.recent { color: #558b2f; }
-#hoomenchat-messages-page .chat-list-status.away { color: #f9a825; }
-#hoomenchat-messages-page .chat-list-status.offline,
-#hoomenchat-messages-page .chat-list-status.long-ago { color: #9e9e9e; }
-
-#hoomenchat-messages-page .chat-list-preview {
-  margin-top: 3px;
-  color: #777;
-  font-size: 9px;
-  line-height: 11px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-#hoomenchat-messages-page .conversation-box {
-  position: relative;
-  background: #fff;
-  border: 1px solid #999;
-}
-
-#hoomenchat-messages-page .conversation-header {
-  min-height: 58px;
-  padding: 6px 8px;
-  background: #f0f0f0;
-  border-bottom: 1px solid #999;
-}
-
-#hoomenchat-messages-page .conversation-back {
-  display: none;
-  margin: 0 0 6px 0;
-  padding: 6px 8px;
-  background: #eee;
-  border: 1px solid #999;
-  color: #333;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  width: 100%;
-  text-align: left;
-}
-#hoomenchat-messages-page .conversation-back:hover { background: #ddd; }
-
-#hoomenchat-messages-page .conversation-avatar {
-  display: inline-block;
-  width: 45px;
-  height: 45px;
-  margin-right: 7px;
-  vertical-align: middle;
-  object-fit: cover;
-  background: #ddd;
-  border: 1px solid #888;
-}
-
-#hoomenchat-messages-page .conversation-user {
-  display: inline-block;
-  vertical-align: middle;
-  max-width: calc(100% - 60px);
-}
-
-#hoomenchat-messages-page .conversation-name {
-  display: block;
-  color: #111;
-  font-size: 13px;
-  line-height: 15px;
-  font-weight: bold;
-}
-#hoomenchat-messages-page .conversation-name a {
-  color: #111;
-  text-decoration: underline;
-}
-
-#hoomenchat-messages-page .conversation-status {
-  display: block;
-  margin-top: 2px;
-  font-size: 9px;
-  line-height: 11px;
-  font-style: italic;
-}
-#hoomenchat-messages-page .conversation-status.online { color: #2e7d32; }
-#hoomenchat-messages-page .conversation-status.recent { color: #558b2f; }
-#hoomenchat-messages-page .conversation-status.away { color: #f9a825; }
-#hoomenchat-messages-page .conversation-status.offline,
-#hoomenchat-messages-page .conversation-status.long-ago { color: #9e9e9e; }
-
-#hoomenchat-messages-page .messages-window {
-  height: 350px;
-  padding: 8px;
-  background: #fafafa;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-#hoomenchat-messages-page .conversation-empty {
-  padding: 40px 16px;
-  text-align: center;
-  color: #888;
-  font-size: 12px;
-  line-height: 16px;
-  background: #fafafa;
-  border: 1px solid #999;
-  min-height: 200px;
-}
-
-#hoomenchat-messages-page .message-row {
-  display: block;
-  margin: 0 0 9px 0;
-  clear: both;
-}
-#hoomenchat-messages-page .message-row.mine { text-align: right; }
-#hoomenchat-messages-page .message-row.theirs { text-align: left; }
-
-#hoomenchat-messages-page .message-bubble {
-  display: inline-block;
-  max-width: 78%;
-  padding: 6px 8px;
-  background: #fff;
-  border: 1px solid #aaa;
-  color: #222;
-  font-size: 11px;
-  line-height: 14px;
-  text-align: left;
-  word-wrap: break-word;
-  overflow-wrap: anywhere;
-}
-#hoomenchat-messages-page .mine .message-bubble {
-  background: #f0f0f0;
-  border-color: #888;
-}
-
-#hoomenchat-messages-page .message-time {
-  margin-top: 2px;
-  color: #999;
-  font-size: 8px;
-  line-height: 10px;
-}
-
-#hoomenchat-messages-page .chat-image {
-  display: block;
-  max-width: 100%;
-  max-height: 220px;
-  margin: 0;
-  background: #ddd;
-  border: 1px solid #888;
-  cursor: pointer;
-  object-fit: contain;
-}
-
-#hoomenchat-messages-page .chat-file {
-  display: block;
-  min-width: 150px;
-  max-width: 100%;
-  padding: 6px 7px;
-  background: #f4f4f4;
-  border: 1px solid #aaa;
-  color: #333;
-  text-decoration: none;
-  font-size: 10px;
-  line-height: 13px;
-  overflow-wrap: anywhere;
-}
-#hoomenchat-messages-page .chat-file:hover { background: #e6e6e6; color: #000; }
-#hoomenchat-messages-page .chat-file-icon { margin-right: 5px; }
-
-#hoomenchat-messages-page .message-compose {
-  padding: 7px;
-  background: #f0f0f0;
-  border-top: 1px solid #999;
-}
-
-#hoomenchat-messages-page .compose-tools {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-bottom: 5px;
-}
-
-#hoomenchat-messages-page .tool-button {
-  display: inline-block;
-  padding: 6px 10px;
-  background: #eeeeee;
-  border: 1px solid #999;
-  color: #444;
-  font-size: 12px;
-  line-height: 14px;
-  cursor: pointer;
-  min-height: 32px;
-}
-#hoomenchat-messages-page .tool-button:hover { background: #ddd; color: #000; }
-
-#hoomenchat-messages-page .hidden-file-input { display: none; }
-
-#hoomenchat-messages-page .emoji-panel {
-  display: none;
-  margin: 0 0 5px 0;
-  padding: 5px;
-  background: #fff;
-  border: 1px solid #999;
-}
-#hoomenchat-messages-page .emoji-panel.open { display: block; }
-
-#hoomenchat-messages-page .emoji-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
-}
-
-#hoomenchat-messages-page .emoji-button {
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  background: #fff;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  line-height: 30px;
-  cursor: pointer;
-}
-
-#hoomenchat-messages-page .message-input {
-  display: block;
-  width: 100%;
-  min-height: 55px;
-  margin: 0 0 5px 0;
-  padding: 8px;
-  background: #fff;
-  border: 1px solid #999;
-  color: #222;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
-  line-height: 15px;
-  resize: vertical;
-}
-
-#hoomenchat-messages-page .selected-files { margin: 0 0 5px 0; }
-
-#hoomenchat-messages-page .selected-file {
-  display: inline-block;
-  margin: 2px 4px 2px 0;
-  padding: 3px 5px;
-  background: #fff;
-  border: 1px solid #bbb;
-  color: #555;
-  font-size: 9px;
-  max-width: 100%;
-  overflow-wrap: anywhere;
-}
-
-#hoomenchat-messages-page .selected-file-remove {
-  margin-left: 4px;
-  color: #888;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-#hoomenchat-messages-page .send-button {
-  display: inline-block;
-  padding: 8px 14px;
-  background: linear-gradient(to bottom, #fff176, #fbc02d);
-  border: 1px solid #a78119;
-  color: #000;
-  font-size: 11px;
-  line-height: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  min-height: 36px;
-}
-
-#hoomenchat-messages-page .compose-status {
-  display: inline-block;
-  margin-left: 7px;
-  color: #777;
-  font-size: 9px;
-}
-
-#hoomenchat-messages-page .back-link {
-  display: block;
-  margin: 8px 0 0 0;
-  padding: 8px 10px;
-  background: #f0f0f0;
-  border: 1px solid #aaa;
-  color: #444;
-  font-size: 12px;
-  text-decoration: underline;
-}
-
-body > .image-viewer {
-  display: none;
-  position: fixed;
-  left: 0; top: 0; right: 0; bottom: 0;
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  padding: 20px;
-  background: rgba(0,0,0,0.80);
-  z-index: 2147483647;
-  align-items: center;
-  justify-content: center;
-}
-body > .image-viewer.open { display: flex; }
-body > .image-viewer img {
-  max-width: 92vw;
-  max-height: 88vh;
-  object-fit: contain;
-  background: #fff;
-  border: 1px solid #fff;
-}
-body > .image-viewer .image-viewer-close {
-  position: fixed;
-  top: 12px;
-  right: 15px;
-  width: 36px;
-  height: 36px;
-  color: #fff;
-  background: rgba(0,0,0,0.35);
-  border: 1px solid rgba(255,255,255,0.8);
-  font-size: 22px;
-  line-height: 34px;
-  text-align: center;
-  cursor: pointer;
-}
-
-@media screen and (max-width: 650px) {
-  #hoomenchat-messages-page {
-    margin: 0;
-    padding: 8px;
-    border: none;
-    max-width: none;
-  }
-  #hoomenchat-messages-page .chat-header { padding: 10px; font-size: 13px; }
-  #hoomenchat-messages-page .messages-layout { display: block; border-spacing: 0; }
-  #hoomenchat-messages-page .chat-list-column,
-  #hoomenchat-messages-page .conversation-column { display: block; width: 100%; }
-  #hoomenchat-messages-page.mobile-chat-open .chat-list-column { display: none; }
-  #hoomenchat-messages-page:not(.mobile-chat-open) .conversation-column { display: none; }
-  #hoomenchat-messages-page .conversation-back { display: block; }
-  #hoomenchat-messages-page .list-title { font-size: 13px; padding: 10px; }
-  #hoomenchat-messages-page .chat-list { max-height: none; border: 1px solid #aaa; }
-  #hoomenchat-messages-page .chat-list-item { padding: 10px; min-height: 64px; }
-  #hoomenchat-messages-page .chat-list-avatar { width: 48px; height: 48px; }
-  #hoomenchat-messages-page .chat-list-name { font-size: 13px; line-height: 16px; }
-  #hoomenchat-messages-page .chat-list-status { font-size: 11px; }
-  #hoomenchat-messages-page .chat-list-preview {
-    font-size: 11px;
-    white-space: normal;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-  #hoomenchat-messages-page .conversation-header { min-height: 64px; padding: 10px; }
-  #hoomenchat-messages-page .conversation-name { font-size: 15px; }
-  #hoomenchat-messages-page .conversation-status { font-size: 11px; }
-  #hoomenchat-messages-page .messages-window {
-    height: calc(100dvh - 280px);
-    min-height: 240px;
-    max-height: 55dvh;
-  }
-  #hoomenchat-messages-page .message-bubble {
-    max-width: 88%;
-    font-size: 13px;
-    line-height: 17px;
-    padding: 8px 10px;
-  }
-  #hoomenchat-messages-page .message-compose { padding: 10px; }
-  #hoomenchat-messages-page .message-input { font-size: 14px; min-height: 64px; }
-  #hoomenchat-messages-page .back-link { font-size: 13px; padding: 12px; min-height: 44px; }
-  #hoomenchat-messages-page .conversation-empty { min-height: 40dvh; font-size: 14px; padding: 48px 20px; }
-}
-</style>
-</head>
-<body>
-<div id="hoomenchat-messages-page">
-  <div class="chat-header">АРЧАТ — ПРИВАТНІ ЧАТИ</div>
-  <div class="messages-layout">
-    <div class="chat-list-column">
-      <div class="list-title" id="list-title">Мої чати</div>
-      <div class="chat-list" id="chat-list"></div>
-    </div>
-    <div class="conversation-column">
-      <button class="conversation-back" id="conversation-back" type="button">← До списку чатів</button>
-      <div class="conversation-box" id="conversation-box">
-        <div class="conversation-empty" id="conversation-empty">
-          Оберіть чат зі списку зліва,<br>щоб відкрити переписку.
-        </div>
-        <div id="conversation-active" style="display:none">
-          <div class="conversation-header" id="conversation-header"></div>
-          <div class="messages-window" id="messages-window"></div>
-          <div class="message-compose">
-            <div class="compose-tools">
-              <button class="tool-button" id="emoji-button" type="button">😊</button>
-              <button class="tool-button" id="image-button" type="button">🖼</button>
-              <button class="tool-button" id="file-button" type="button">📎</button>
-              <input class="hidden-file-input" id="image-input" type="file" accept="image/*" multiple>
-              <input class="hidden-file-input" id="file-input" type="file" multiple>
-            </div>
-            <div class="emoji-panel" id="emoji-panel">
-              <div class="emoji-grid" id="emoji-grid"></div>
-            </div>
-            <div class="selected-files" id="selected-files"></div>
-            <textarea class="message-input" id="message-input" placeholder="Написати повідомлення..."></textarea>
-            <button class="send-button" id="send-button" type="button">НАДІСЛАТИ</button>
-            <span class="compose-status" id="compose-status"></span>
-          </div>
-        </div>
-      </div>
-      <a class="back-link" href="index.html">← Повернутися до Гуменчату</a>
-    </div>
-  </div>
-</div>
-
-<div class="image-viewer" id="image-viewer">
-  <div class="image-viewer-close" id="image-viewer-close">✕</div>
-  <img id="image-viewer-image" src="" alt="">
-</div>
-
 <script>
 (function () {
   "use strict";
+
+  /*
+   * =========================================================
+   * ГУМЕНЧАТ — АРЧАТ
+   * Завантаження чатів з:
+   *
+   * hoomanchat/chats/<username>.json
+   *
+   * БОТИ:
+   *   blue_comet
+   *   rusty_robot
+   *   night_fox
+   *
+   * Тільки вони:
+   *   - мають firstMessage
+   *   - реагують на keywordReplies
+   *
+   * Інші користувачі:
+   *   - отримують історію з JSON
+   *   - можуть мати випадкові autoReply
+   *   - НЕ є ботами
+   * =========================================================
+   */
+
+  /* =========================================================
+     БОТИ
+     ========================================================= */
+
+  var BOT_IDS = {
+    blue_comet: true,
+    rusty_robot: true,
+    night_fox: true
+  };
+
+
+  /* =========================================================
+     DOM HELPERS
+     ========================================================= */
+
+  function get(id) {
+    return document.getElementById(id);
+  }
+
+
+  /* =========================================================
+     AVATAR PLACEHOLDER
+     ========================================================= */
 
   var placeholderAvatar =
     "data:image/svg+xml;charset=UTF-8," +
@@ -576,13 +59,24 @@ body > .image-viewer .image-viewer-close {
       "</svg>"
     );
 
+
+  /* =========================================================
+     EMOJI
+     ========================================================= */
+
   var emojis = [
     "😀","😃","😄","😁","😆","😅","😂","🤣","😊","🙂","😉","😌","😍","🥰","😘",
     "😭","😢","😮","😲","😴","🤔","😏","🥺","😱","😤","😠","❤️","💕","✨","🔥",
     "🌸","🌙","☕","🎮","🐱","🐶","👍","👎","👏","🙏","💪","🎉"
   ];
 
+
+  /* =========================================================
+     USERS
+     ========================================================= */
+
   var users = {
+
     sakurai_agatsuma: {
       name: "sakurai_agatsuma",
       avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEg6F3ycnXu5A2gS5zM4p0-qELjeNz4oXvfJAwkLxSJnL4kELcGviUtPwYe-Oa8lV_ThO7h6iq0dwSnx2FeaHbkzG6HEC8S0HILQKiHh49eWl65LSGoj7RgeAYb7V5MV7b7Mu7Sxexq9LYM_7XPF6SkSjStcQO32x02IKUWdFlUck9z30GmMEJgH2OLM3YA",
@@ -590,6 +84,7 @@ body > .image-viewer .image-viewer-close {
       gender: "female",
       status: "online"
     },
+
     alter_core: {
       name: "alter_core",
       avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiZ7hOITEG-aCscLuMNEBml1v2zidsEixQymUsU5UukZN4Jb-AAbqwdGj3CJ8gSTbOvXMgyPp3T4xAQzq3TRYhFjOYbF0TkE6lWGESsA-K31pEcpcOV2Cr061lkzABNZRKN5CPAr9WmD38DWNYbebjw8CuqHGWvgBCumZebUra3Kjf6sjUDTZDpVZQehD0",
@@ -597,6 +92,7 @@ body > .image-viewer .image-viewer-close {
       gender: "female",
       status: "online"
     },
+
     another_hoomen: {
       name: "another_hoomen",
       avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhGJcedC21GOJf9E7-pAiRFqRkZkhWOsgZEmPho3dZtnirOPtoUonHL_MdwDkt-LvPpt_azt8iqxuPs6DPv8rP29QKHxw2k4jB6O1Wc7KZO8zgKHr_nNaeuI5fActfzQoxMiJc46N3oennG9eU664xDo5Cl6MXbWKDw-bjMiQ2UW1kcpCUmphIv9X1pkhE",
@@ -604,6 +100,7 @@ body > .image-viewer .image-viewer-close {
       gender: "male",
       status: "online"
     },
+
     velvet_moon: {
       name: "velvet_moon",
       avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEjvCZvQq7YfiAW2jyK5-_QrfSWCXfr1U1is8CoNCEVrSi8r66EOrusjYVkhcSXuLIE_RoLqNXflCSV37rByzCXUnMSmAyeV7J8OQvwcKw51nqzdepT_WG8p4EUDlGQgOdw0bjiEG3Enkud1f3CmpEcpE5Cg7LTxetdvKXZw_X9xoR69inJXkv_HlnuQJsw",
@@ -611,6 +108,7 @@ body > .image-viewer .image-viewer-close {
       gender: "female",
       status: "long-ago"
     },
+
     pixel_heart: {
       name: "pixel_heart",
       avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEj-JwvE44KmWRAxQsTyKdRmlsdBRpJ8WvOwLpAvvzA-tMTjKE2fq0CEWp-16Rk-z2vC0IXDlnA1X2OGtgGZdvl592QFkFc_GmfVfyOn_jYaxpKaIU8GR4RKkKQvyx5wYdE6BaRhXtKjQ8nXg8yvZS0dNyStBNg0uJILRffVdvV_2pZUCae84AMDojxshiI",
@@ -618,6 +116,7 @@ body > .image-viewer .image-viewer-close {
       gender: "female",
       status: "5min"
     },
+
     night_fox: {
       name: "night_fox",
       avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEj47FGZQVZBpkxQBYQVVcANFRW4_ROFwYhkBiqqCUFbbQtDk9Nqm0OngJgQOlTWNh-K08KO-CKHy6rimZeZtt_jyPlntD35r-YBcNtLEjBkvqs-iL8sXLFEitu-rgnzmJMcyP1RzjG0eb2nurjONGAqFUi41djo5xmB91hTHfclMBote_EQNB5CXbG6ZYg",
@@ -626,6 +125,7 @@ body > .image-viewer .image-viewer-close {
       status: "online",
       isCustomBot: true
     },
+
     cherry_byte: {
       name: "cherry_byte",
       avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEi_V3-i5gqAEgl0UEqmujNCZgYVFD0iZ1-4pEQZls0WpjMDTkeOMRhk_wzB3_jQZSylary26k6cH7mqk7edNro_gxIDMN1vnwKwqeGZ-zwRnObVwL79CzOydbmlivp0DSZy6mJGyiJ5KgoxYNr4GmuxxrLibqLgyE0IPzfmQ92xNe8LP6GEt8b35K8PJQA",
@@ -633,6 +133,7 @@ body > .image-viewer .image-viewer-close {
       gender: "female",
       status: "25min"
     },
+
     water_blue: {
       name: "water_blue",
       avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEi-IVzTEq2IynM_TIFrvaScqnwEXbfXXKJyw6mDm1JXy1YBqBB3g-garhk0xNCgObaBw-W2473PSKJoMZPIuegdmiviufrD7jCSY02X2NLH6_waaxjQJ3IE5V-n_Ynv9Qo9VLluhy35n70BcPGUvp2EOvJofrpAVNBmAU784U4-iO0GRTziDFWR7Wtgl2Q",
@@ -640,6 +141,7 @@ body > .image-viewer .image-viewer-close {
       gender: "female",
       status: "online"
     },
+
     pasta_friend: {
       name: "pasta_friend",
       avatar: placeholderAvatar,
@@ -647,6 +149,7 @@ body > .image-viewer .image-viewer-close {
       gender: "male",
       status: "online"
     },
+
     rusty_robot: {
       name: "rusty_robot",
       avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEj0p973limLEfJtZBHR1CdP2waLt6VGEJJ9u013brvFnzMn1DD1rwthHcUQEBUzv2LvNhyanexQak7w8U5zsYJ5FCItvw5aAnxoRuG4AHD9jV2yhECUEtI4We-Gvp3RKqIG1vwx5YqwFEtuO5mgQp9XjIleeKXMRN0maO5ZFo5qexFW4U94mJj20pQa208",
@@ -655,6 +158,7 @@ body > .image-viewer .image-viewer-close {
       status: "50min",
       isCustomBot: true
     },
+
     soft_static: {
       name: "soft_static",
       avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEi0-IQ6-y_L-kVYfUNnPzMXCO39DUxNV17N6cCoYPBfkwL08hMaGfNvtzmJnDdKjC08FH_jIcq00ddIhr5z0vI5JhnQY7RuqAeyUvDOpge242fUwO5Wx0lZR18YxbOStWLTMlj6nRSfmA074mfgW2oLCxZxVNerdKr-7l8desFoDExHYFwJiXxn603G53o",
@@ -662,6 +166,7 @@ body > .image-viewer .image-viewer-close {
       gender: "female",
       status: "online"
     },
+
     blue_comet: {
       name: "blue_comet",
       avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEgHmdvoLrtjAgSiUFcb0hGp9F5p18XgzcuEaU3rGzBeO4InsMLxZF8YYIAUBZ99JGl1T0FQHMyU5-HMEFWNJsR_ydzpFwAvomjS42BttjdCB2ysf6Gk_rVpidSXv8KbWj-xA60S8oQ09UVD7lrVtS54ijkZ40T471i_m69ecU0BsCbyF_blx640ZYGsjeo",
@@ -670,6 +175,7 @@ body > .image-viewer .image-viewer-close {
       status: "online",
       isCustomBot: true
     },
+
     coffee_signal: {
       name: "coffee_signal",
       avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhzk94r86FgzVUKV3vexrNMu1qNtg4p4TmKESMylkPtOoGL6KI0fDw0743JR2KaYsKSMT1FQC81AptsedII-X6O06QTejI2h2L6F95NioihwLF9RdiK-CBRxsIwNFZMTJenUoXFC_tR98O4FbGaKO30PoHL7JlRZPyVb9rYdwf3djhTsyFMvB--c0FdiRY",
@@ -677,6 +183,7 @@ body > .image-viewer .image-viewer-close {
       gender: "female",
       status: "5min"
     },
+
     paper_storm: {
       name: "paper_storm",
       avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEjqrONG3WN749rf0VM4X87BNKhBrhokWahtrEN24gjmmrqE0QMAolsrXFTfZTJ55OxsJfzNAuFDxyoGm3rDMAV0voBpUeWXTDIOCFdDjRzu16bcQUT8xh6H2CdoPgUBGLfZOkaLwqfdHcOFLLqY5zuANw-DF_zpQT-cre6khltso6JV4Ih3wDqL3kPIJys",
@@ -684,6 +191,7 @@ body > .image-viewer .image-viewer-close {
       gender: "male",
       status: "online"
     },
+
     dreaming_romance: {
       name: "dreaming_romance",
       avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA",
@@ -693,15 +201,35 @@ body > .image-viewer .image-viewer-close {
     }
   };
 
+
+  /* =========================================================
+     CHAT STORAGE
+     ========================================================= */
+
   var chats = {};
-  Object.keys(users).forEach(function(uKey) {
-    chats[uKey] = { user: uKey, messages: [], loaded: false };
+
+  Object.keys(users).forEach(function (uKey) {
+    chats[uKey] = {
+      user: uKey,
+      messages: [],
+      loaded: false,
+      loadError: false
+    };
   });
+
 
   var currentChat = null;
   var pendingAttachments = [];
 
-  function get(id) { return document.getElementById(id); }
+
+  /* =========================================================
+     HELPERS
+     ========================================================= */
+
+  function isBot(chatId) {
+    return !!BOT_IDS[chatId];
+  }
+
 
   function escapeHtml(text) {
     return String(text)
@@ -711,405 +239,1314 @@ body > .image-viewer .image-viewer-close {
       .replace(/"/g, "&quot;");
   }
 
-  function resolveUserStatus(user) {
-    if (!user) return { text: "офлайн", className: "offline" };
-    var key = user.status || "offline";
-    var was = user.gender !== "male" ? "була" : "був";
-    var map = {
-      online: { text: "● онлайн", className: "online" },
-      "5min": { text: was + " 5 хв назад", className: "recent" },
-      "25min": { text: was + " 25 хв назад", className: "away" },
-      "50min": { text: was + " 50 хв назад", className: "away" },
-      offline: { text: "офлайн", className: "offline" },
-      "long-ago": { text: was + " давно", className: "long-ago" }
-    };
-    return map[key] || { text: String(key), className: "offline" };
+
+  function getCurrentTime() {
+    var date = new Date();
+
+    return String(date.getHours()).padStart(2, "0") +
+      ":" +
+      String(date.getMinutes()).padStart(2, "0");
   }
 
+
+  /* =========================================================
+     GITHUB PATH
+     
+     Важливо:
+     якщо сторінка знаходиться, наприклад:
+     
+     /repo/hoomanchat/archat.html
+     
+     нам потрібен:
+     
+     /repo/hoomanchat/chats/user.json
+     
+     а НЕ:
+     
+     /repo/hoomanchat/hoomanchat/chats/user.json
+     ========================================================= */
+
+  function getChatFilePath(chatId) {
+
+    var pathname = window.location.pathname || "";
+
+    var marker = "/hoomanchat/";
+
+    var markerIndex = pathname.indexOf(marker);
+
+    if (markerIndex !== -1) {
+
+      var siteRoot = pathname.substring(0, markerIndex);
+
+      return (
+        window.location.origin +
+        siteRoot +
+        "/hoomanchat/chats/" +
+        encodeURIComponent(chatId) +
+        ".json"
+      );
+    }
+
+    /*
+     * Якщо поточна сторінка вже знаходиться
+     * в корені репозиторію.
+     */
+
+    return new URL(
+      "hoomanchat/chats/" +
+      encodeURIComponent(chatId) +
+      ".json",
+      document.baseURI
+    ).href;
+  }
+
+
+  /* =========================================================
+     STATUS
+     ========================================================= */
+
+  function resolveUserStatus(user) {
+
+    if (!user) {
+      return {
+        text: "офлайн",
+        className: "offline"
+      };
+    }
+
+    var key = user.status || "offline";
+
+    var was = user.gender !== "male" ? "була" : "був";
+
+    var map = {
+
+      online: {
+        text: "● онлайн",
+        className: "online"
+      },
+
+      "5min": {
+        text: was + " 5 хв назад",
+        className: "recent"
+      },
+
+      "25min": {
+        text: was + " 25 хв назад",
+        className: "away"
+      },
+
+      "50min": {
+        text: was + " 50 хв назад",
+        className: "away"
+      },
+
+      offline: {
+        text: "офлайн",
+        className: "offline"
+      },
+
+      "long-ago": {
+        text: was + " давно",
+        className: "long-ago"
+      }
+    };
+
+    return map[key] || {
+      text: String(key),
+      className: "offline"
+    };
+  }
+
+
+  /* =========================================================
+     EMOJI
+     ========================================================= */
+
   function renderEmojiPanel() {
+
     var container = get("emoji-grid");
+
     if (!container) return;
+
     container.innerHTML = "";
+
     emojis.forEach(function (emoji) {
+
       var button = document.createElement("button");
+
       button.type = "button";
       button.className = "emoji-button";
       button.textContent = emoji;
-      button.addEventListener("click", function () { insertEmoji(emoji); });
+
+      button.addEventListener("click", function () {
+        insertEmoji(emoji);
+      });
+
       container.appendChild(button);
     });
   }
 
+
   function insertEmoji(emoji) {
+
     var input = get("message-input");
+
     if (!input) return;
+
     var start = input.selectionStart;
     var end = input.selectionEnd;
-    input.value = input.value.substring(0, start) + emoji + input.value.substring(end);
+
+    input.value =
+      input.value.substring(0, start) +
+      emoji +
+      input.value.substring(end);
+
     input.focus();
-    input.setSelectionRange(start + emoji.length, start + emoji.length);
+
+    input.setSelectionRange(
+      start + emoji.length,
+      start + emoji.length
+    );
   }
+
+
+  /* =========================================================
+     CHAT LIST
+     ========================================================= */
 
   function updateListTitle() {
+
     var el = get("list-title");
-    if (el) el.textContent = "Мої чати — " + Object.keys(chats).length;
+
+    if (el) {
+      el.textContent =
+        "Мої чати — " +
+        Object.keys(chats).length;
+    }
   }
 
+
   function renderChatList() {
+
     var container = get("chat-list");
+
     if (!container) return;
+
     container.innerHTML = "";
 
     Object.keys(chats).forEach(function (chatId) {
+
       var chat = chats[chatId];
+
       var user = users[chat.user];
+
       if (!user) return;
 
       var item = document.createElement("div");
-      item.className = "chat-list-item" + (chatId === currentChat ? " active" : "");
+
+      item.className =
+        "chat-list-item" +
+        (chatId === currentChat ? " active" : "");
+
 
       var avatar = document.createElement("img");
+
       avatar.className = "chat-list-avatar";
       avatar.src = user.avatar;
       avatar.alt = user.name;
 
+
       var info = document.createElement("div");
+
       info.className = "chat-list-info";
 
+
       var name = document.createElement("div");
+
       name.className = "chat-list-name";
+
+
       var profileLink = document.createElement("a");
+
       profileLink.href = user.profile;
       profileLink.textContent = user.name;
-      profileLink.addEventListener("click", function (e) { e.stopPropagation(); });
+
+      profileLink.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+
+
       name.appendChild(profileLink);
 
+
       var st = resolveUserStatus(user);
+
+
       var statusEl = document.createElement("div");
-      statusEl.className = "chat-list-status " + st.className;
+
+      statusEl.className =
+        "chat-list-status " +
+        st.className;
+
       statusEl.textContent = st.text;
 
+
       var preview = document.createElement("div");
+
       preview.className = "chat-list-preview";
+
+
       if (chat.messages.length > 0) {
-        var last = chat.messages[chat.messages.length - 1];
-        if (last.type === "image") preview.textContent = "🖼 Зображення";
-        else if (last.type === "file") preview.textContent = "📎 " + last.fileName;
-        else preview.textContent = last.text || "";
+
+        var last =
+          chat.messages[chat.messages.length - 1];
+
+        if (last.type === "image") {
+
+          preview.textContent = "🖼 Зображення";
+
+        } else if (last.type === "file") {
+
+          preview.textContent =
+            "📎 " +
+            (last.fileName || "Файл");
+
+        } else {
+
+          preview.textContent =
+            last.text || "";
+        }
+
+      } else if (chat.loadError) {
+
+        preview.textContent =
+          "Не вдалося завантажити історію";
+
+      } else if (chat.loaded) {
+
+        preview.textContent =
+          "Немає повідомлень";
+
       } else {
-        preview.textContent = chat.loaded ? "Немає повідомлень" : "—";
+
+        preview.textContent = "—";
       }
+
 
       info.appendChild(name);
       info.appendChild(statusEl);
       info.appendChild(preview);
+
       item.appendChild(avatar);
       item.appendChild(info);
 
-      item.addEventListener("click", function () { openChat(chatId); });
+
+      item.addEventListener("click", function () {
+        openChat(chatId);
+      });
+
+
       container.appendChild(item);
     });
   }
 
+
+  /* =========================================================
+     MOBILE
+     ========================================================= */
+
   function setMobileChatOpen(open) {
+
     var page = get("hoomenchat-messages-page");
+
     if (!page) return;
-    if (open) page.classList.add("mobile-chat-open");
-    else page.classList.remove("mobile-chat-open");
+
+    if (open) {
+      page.classList.add("mobile-chat-open");
+    } else {
+      page.classList.remove("mobile-chat-open");
+    }
   }
 
+
   function showEmptyState() {
+
     var empty = get("conversation-empty");
     var active = get("conversation-active");
+
     if (empty) empty.style.display = "block";
+
     if (active) active.style.display = "none";
+
     setMobileChatOpen(false);
   }
 
+
   function showActiveConversation() {
+
     var empty = get("conversation-empty");
     var active = get("conversation-active");
+
     if (empty) empty.style.display = "none";
+
     if (active) active.style.display = "block";
+
     setMobileChatOpen(true);
   }
 
+
+  /* =========================================================
+     OPEN CHAT
+     ========================================================= */
+
   function openChat(chatId) {
+
     if (!chats[chatId]) return;
+
     currentChat = chatId;
+
     pendingAttachments = [];
+
     renderSelectedFiles();
+
     renderChatList();
+
     showActiveConversation();
 
-    if (!chats[chatId].loaded) loadChat(chatId);
-    else renderConversation();
+
+    if (!chats[chatId].loaded) {
+
+      loadChat(chatId);
+
+    } else {
+
+      renderConversation();
+    }
   }
 
+
   function closeChatToList() {
+
     currentChat = null;
+
     renderChatList();
+
     showEmptyState();
   }
 
+
+  /* =========================================================
+     LOAD CHAT FROM GITHUB
+     ========================================================= */
+
   function loadChat(chatId) {
+
     var status = get("compose-status");
-    if (status) status.textContent = "Завантаження...";
 
-    // Прямий відносний шлях хостингу/GitHub Pages для "hoomanchat/chats/night_fox.json"
-    var filePath = "hoomanchat/chats/" + chatId + ".json";
+    var chat = chats[chatId];
 
-    fetch(filePath)
+    if (!chat) return;
+
+
+    if (status) {
+      status.textContent =
+        "Завантаження історії...";
+    }
+
+
+    var filePath = getChatFilePath(chatId);
+
+
+    console.log(
+      "[АРЧАТ] Завантаження:",
+      filePath
+    );
+
+
+    /*
+     * cache-buster:
+     * GitHub Pages іноді віддає старий JSON
+     */
+
+    var requestUrl =
+      filePath +
+      (filePath.indexOf("?") === -1 ? "?" : "&") +
+      "v=" +
+      Date.now();
+
+
+    fetch(requestUrl, {
+      method: "GET",
+      cache: "no-store"
+    })
+
       .then(function (response) {
-        if (!response.ok) {
-          throw new Error("HTTP помилка! Статус: " + response.status);
-        }
-        return response.json();
-      })
-      .then(function (data) {
-        chats[chatId].messages = Array.isArray(data.messages) ? data.messages : [];
 
-        if (users[chatId]) {
-          if (data.autoReply) {
-            users[chatId].autoReply = data.autoReply;
-          }
-          if (data.keywordReplies) {
-            users[chatId].triggers = data.keywordReplies;
-          }
-          if (data.firstMessage && chats[chatId].messages.length === 0) {
-            chats[chatId].messages.push({
+        if (!response.ok) {
+
+          throw new Error(
+            "HTTP " +
+            response.status +
+            " для " +
+            filePath
+          );
+        }
+
+        return response.text();
+      })
+
+
+      .then(function (text) {
+
+        var data;
+
+        try {
+
+          data = JSON.parse(text);
+
+        } catch (jsonError) {
+
+          console.error(
+            "[АРЧАТ] GitHub повернув не JSON:",
+            text.substring(0, 300)
+          );
+
+          throw new Error(
+            "Файл існує, але GitHub повернув не JSON"
+          );
+        }
+
+
+        /*
+         * ІСТОРІЯ.
+         *
+         * Для ВСІХ користувачів.
+         */
+
+        if (Array.isArray(data.messages)) {
+
+          chat.messages =
+            data.messages.slice();
+
+        } else {
+
+          chat.messages = [];
+        }
+
+
+        /*
+         * =====================================================
+         * НАЛАШТУВАННЯ БОТА
+         *
+         * ТІЛЬКИ:
+         * blue_comet
+         * rusty_robot
+         * night_fox
+         * =====================================================
+         */
+
+        if (isBot(chatId)) {
+
+          users[chatId].autoReply =
+            Array.isArray(data.autoReply)
+              ? data.autoReply.slice()
+              : [];
+
+          users[chatId].triggers =
+            data.keywordReplies &&
+            typeof data.keywordReplies === "object"
+              ? data.keywordReplies
+              : {};
+
+          /*
+           * firstMessage додаємо тільки боту
+           * і тільки якщо історія порожня.
+           */
+
+          if (
+            data.firstMessage &&
+            chat.messages.length === 0
+          ) {
+
+            chat.messages.push({
               from: "them",
               type: "text",
-              text: data.firstMessage,
+              text: String(data.firstMessage),
               time: getCurrentTime()
             });
           }
+
+        } else {
+
+          /*
+           * ЗВИЧАЙНИЙ КОРИСТУВАЧ:
+           *
+           * Історію залишаємо.
+           *
+           * Якщо в JSON є autoReply —
+           * можна використовувати випадкові відповіді.
+           *
+           * keywordReplies НЕ перетворюємо
+           * на ботські тригери.
+           */
+
+          users[chatId].autoReply =
+            Array.isArray(data.autoReply)
+              ? data.autoReply.slice()
+              : [];
+
+          users[chatId].triggers = {};
         }
 
-        chats[chatId].loaded = true;
-        if (currentChat === chatId) renderConversation();
+
+        chat.loaded = true;
+        chat.loadError = false;
+
+
+        console.log(
+          "[АРЧАТ] Завантажено:",
+          chatId,
+          "повідомлень:",
+          chat.messages.length,
+          "бот:",
+          isBot(chatId)
+        );
+
+
+        if (currentChat === chatId) {
+          renderConversation();
+        }
+
         renderChatList();
-        if (status) status.textContent = "";
+
+
+        if (status) {
+          status.textContent = "";
+        }
       })
+
+
       .catch(function (error) {
-        console.error("Помилка завантаження файлу чату:", error);
-        chats[chatId].messages = [];
-        chats[chatId].loaded = true;
-        if (currentChat === chatId) renderConversation();
+
+        console.error(
+          "[АРЧАТ] Помилка завантаження чату:",
+          chatId,
+          error
+        );
+
+
+        /*
+         * Не ламаємо чат повністю.
+         * Але позначаємо, що історію не отримали.
+         */
+
+        chat.messages = [];
+        chat.loaded = true;
+        chat.loadError = true;
+
+
+        /*
+         * Якщо це бот і JSON не завантажився,
+         * залишаємо можливість побачити помилку
+         * в консолі, але НЕ вигадуємо історію.
+         */
+
+        if (currentChat === chatId) {
+          renderConversation();
+        }
+
         renderChatList();
-        if (status) status.textContent = "Помилка завантаження";
+
+
+        if (status) {
+
+          status.textContent =
+            "Історію не завантажено";
+        }
       });
   }
 
+
+  /* =========================================================
+     CONVERSATION HEADER
+     ========================================================= */
+
   function renderConversationHeader() {
-    var header = get("conversation-header");
+
+    var header =
+      get("conversation-header");
+
     if (!header || !currentChat) return;
+
+
     var chat = chats[currentChat];
+
     var user = users[chat.user];
+
     if (!user) return;
 
+
     header.innerHTML = "";
-    var avatar = document.createElement("img");
-    avatar.className = "conversation-avatar";
+
+
+    var avatar =
+      document.createElement("img");
+
+    avatar.className =
+      "conversation-avatar";
+
     avatar.src = user.avatar;
     avatar.alt = user.name;
 
-    var userBlock = document.createElement("div");
-    userBlock.className = "conversation-user";
 
-    var name = document.createElement("div");
-    name.className = "conversation-name";
-    var profileLink = document.createElement("a");
-    profileLink.href = user.profile;
-    profileLink.textContent = user.name;
+    var userBlock =
+      document.createElement("div");
+
+    userBlock.className =
+      "conversation-user";
+
+
+    var name =
+      document.createElement("div");
+
+    name.className =
+      "conversation-name";
+
+
+    var profileLink =
+      document.createElement("a");
+
+    profileLink.href =
+      user.profile;
+
+    profileLink.textContent =
+      user.name;
+
+
     name.appendChild(profileLink);
 
-    var st = resolveUserStatus(user);
-    var status = document.createElement("div");
-    status.className = "conversation-status " + st.className;
-    status.textContent = st.text;
+
+    var st =
+      resolveUserStatus(user);
+
+
+    var status =
+      document.createElement("div");
+
+    status.className =
+      "conversation-status " +
+      st.className;
+
+    status.textContent =
+      st.text;
+
 
     userBlock.appendChild(name);
     userBlock.appendChild(status);
+
     header.appendChild(avatar);
     header.appendChild(userBlock);
   }
 
+
+  /* =========================================================
+     RENDER MESSAGES
+     ========================================================= */
+
   function renderMessages() {
-    var windowElement = get("messages-window");
+
+    var windowElement =
+      get("messages-window");
+
     if (!windowElement || !currentChat) return;
-    var chat = chats[currentChat];
+
+
+    var chat =
+      chats[currentChat];
+
+
     windowElement.innerHTML = "";
 
+
     chat.messages.forEach(function (message) {
-      var row = document.createElement("div");
-      row.className = "message-row " + (message.from === "me" ? "mine" : "theirs");
-      var bubble = document.createElement("div");
-      bubble.className = "message-bubble";
+
+      var row =
+        document.createElement("div");
+
+      row.className =
+        "message-row " +
+        (
+          message.from === "me"
+            ? "mine"
+            : "theirs"
+        );
+
+
+      var bubble =
+        document.createElement("div");
+
+      bubble.className =
+        "message-bubble";
+
 
       if (message.type === "image") {
-        var img = document.createElement("img");
-        img.className = "chat-image";
-        img.src = message.url;
-        img.addEventListener("click", function () { openImageViewer(message.url); });
+
+        var img =
+          document.createElement("img");
+
+        img.className =
+          "chat-image";
+
+        img.src =
+          message.url;
+
+        img.addEventListener(
+          "click",
+          function () {
+            openImageViewer(message.url);
+          }
+        );
+
         bubble.appendChild(img);
+
+
       } else if (message.type === "file") {
-        var link = document.createElement("a");
-        link.className = "chat-file";
-        link.href = message.url;
-        link.download = message.fileName || "file";
-        link.innerHTML = '<span class="chat-file-icon">📎</span>' + escapeHtml(message.fileName || "Файл");
+
+        var link =
+          document.createElement("a");
+
+        link.className =
+          "chat-file";
+
+        link.href =
+          message.url;
+
+        link.download =
+          message.fileName || "file";
+
+        link.innerHTML =
+          '<span class="chat-file-icon">📎</span>' +
+          escapeHtml(
+            message.fileName || "Файл"
+          );
+
         bubble.appendChild(link);
+
+
       } else {
-        bubble.textContent = message.text || "";
+
+        bubble.textContent =
+          message.text || "";
       }
 
-      var time = document.createElement("div");
-      time.className = "message-time";
-      time.textContent = message.time || "";
+
+      var time =
+        document.createElement("div");
+
+      time.className =
+        "message-time";
+
+      time.textContent =
+        message.time || "";
+
 
       row.appendChild(bubble);
       row.appendChild(time);
+
       windowElement.appendChild(row);
     });
-    windowElement.scrollTop = windowElement.scrollHeight;
+
+
+    windowElement.scrollTop =
+      windowElement.scrollHeight;
   }
 
+
   function renderConversation() {
+
     renderConversationHeader();
     renderMessages();
   }
 
-  function getCurrentTime() {
-    var date = new Date();
-    return String(date.getHours()).padStart(2, "0") + ":" + String(date.getMinutes()).padStart(2, "0");
-  }
+
+  /* =========================================================
+     ATTACHMENTS
+     ========================================================= */
 
   function renderSelectedFiles() {
-    var container = get("selected-files");
+
+    var container =
+      get("selected-files");
+
     if (!container) return;
+
+
     container.innerHTML = "";
-    pendingAttachments.forEach(function (file, index) {
-      var item = document.createElement("span");
-      item.className = "selected-file";
-      item.textContent = (file.kind === "image" ? "🖼 " : "📎 ") + file.name;
-      var remove = document.createElement("span");
-      remove.className = "selected-file-remove";
-      remove.textContent = "✕";
-      remove.addEventListener("click", function () {
-        pendingAttachments.splice(index, 1);
-        renderSelectedFiles();
-      });
-      item.appendChild(remove);
-      container.appendChild(item);
-    });
+
+
+    pendingAttachments.forEach(
+      function (file, index) {
+
+        var item =
+          document.createElement("span");
+
+        item.className =
+          "selected-file";
+
+        item.textContent =
+          (
+            file.kind === "image"
+              ? "🖼 "
+              : "📎 "
+          ) +
+          file.name;
+
+
+        var remove =
+          document.createElement("span");
+
+        remove.className =
+          "selected-file-remove";
+
+        remove.textContent =
+          "✕";
+
+
+        remove.addEventListener(
+          "click",
+          function () {
+
+            pendingAttachments.splice(
+              index,
+              1
+            );
+
+            renderSelectedFiles();
+          }
+        );
+
+
+        item.appendChild(remove);
+
+        container.appendChild(item);
+      }
+    );
   }
+
+
+  /* =========================================================
+     SEND MESSAGE
+     ========================================================= */
 
   function sendMessage() {
-    if (!currentChat) return;
-    var input = get("message-input");
-    if (!input) return;
-    var text = input.value.trim();
-    if (!text && !pendingAttachments.length) return;
 
-    var now = getCurrentTime();
-    if (text) {
-      chats[currentChat].messages.push({ from: "me", type: "text", text: text, time: now });
+    if (!currentChat) return;
+
+
+    var input =
+      get("message-input");
+
+    if (!input) return;
+
+
+    var text =
+      input.value.trim();
+
+
+    if (
+      !text &&
+      !pendingAttachments.length
+    ) {
+      return;
     }
+
+
+    var now =
+      getCurrentTime();
+
+
+    if (text) {
+
+      chats[currentChat].messages.push({
+        from: "me",
+        type: "text",
+        text: text,
+        time: now
+      });
+    }
+
+
     input.value = "";
+
     pendingAttachments = [];
+
     renderSelectedFiles();
+
     renderMessages();
+
     renderChatList();
-    triggerAutoReply(currentChat, text);
+
+
+    /*
+     * Відповідь запускаємо після повідомлення.
+     */
+
+    triggerAutoReply(
+      currentChat,
+      text
+    );
   }
 
-  function triggerAutoReply(chatId, userText) {
-    var chat = chats[chatId];
+
+  /* =========================================================
+     AUTO REPLY
+     
+     ВАЖЛИВО:
+     
+     БОТИ:
+       1. keywordReplies
+       2. якщо тригеру нема — random autoReply
+     
+     НЕБОТИ:
+       тільки random autoReply
+       якщо він є.
+     ========================================================= */
+
+  function triggerAutoReply(
+    chatId,
+    userText
+  ) {
+
+    var chat =
+      chats[chatId];
+
     if (!chat) return;
-    var user = users[chat.user];
+
+
+    var user =
+      users[chat.user];
+
     if (!user) return;
 
-    var delay = 800 + Math.floor(Math.random() * 1000);
-    setTimeout(function () {
-      var replyText = "";
-      var triggers = user.triggers || user.keywordReplies;
 
-      if (triggers && userText) {
-        var lowerText = userText.toLowerCase();
-        for (var trig in triggers) {
-          if (lowerText.indexOf(trig.toLowerCase()) !== -1) {
-            replyText = triggers[trig];
+    /*
+     * Важливий захист:
+     *
+     * якщо у звичайного користувача немає
+     * autoReply — він просто не відповідає.
+     *
+     * Але це НЕ робить його ботом.
+     */
+
+    var hasAutoReply =
+      Array.isArray(user.autoReply) &&
+      user.autoReply.length > 0;
+
+
+    var hasTriggers =
+      isBot(chatId) &&
+      user.triggers &&
+      typeof user.triggers === "object";
+
+
+    if (!hasAutoReply && !hasTriggers) {
+      return;
+    }
+
+
+    var delay =
+      800 +
+      Math.floor(
+        Math.random() * 1000
+      );
+
+
+    setTimeout(function () {
+
+      /*
+       * Якщо чат вже закрили —
+       * відповідь все одно додаємо
+       * в історію, як реальна переписка.
+       */
+
+
+      var replyText = "";
+
+
+      /*
+       * =====================================================
+       * ТРИГЕРИ — ТІЛЬКИ БОТИ
+       * =====================================================
+       */
+
+      if (
+        isBot(chatId) &&
+        hasTriggers &&
+        userText
+      ) {
+
+        var lowerText =
+          userText.toLowerCase();
+
+
+        for (
+          var trigger in user.triggers
+        ) {
+
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              user.triggers,
+              trigger
+            )
+          ) {
+            continue;
+          }
+
+
+          if (
+            lowerText.indexOf(
+              String(trigger).toLowerCase()
+            ) !== -1
+          ) {
+
+            replyText =
+              user.triggers[trigger];
+
             break;
           }
         }
       }
-      if (!replyText && user.autoReply && user.autoReply.length) {
-        replyText = user.autoReply[Math.floor(Math.random() * user.autoReply.length)];
+
+
+      /*
+       * =====================================================
+       * RANDOM AUTOREPLY
+       *
+       * Для бота — якщо тригер не спрацював.
+       *
+       * Для звичайного користувача —
+       * це єдиний тип автоматичної відповіді.
+       * =====================================================
+       */
+
+      if (
+        !replyText &&
+        hasAutoReply
+      ) {
+
+        replyText =
+          user.autoReply[
+            Math.floor(
+              Math.random() *
+              user.autoReply.length
+            )
+          ];
       }
+
+
+      /*
+       * Додаємо відповідь.
+       */
+
       if (replyText) {
-        chat.messages.push({ from: "them", type: "text", text: replyText, time: getCurrentTime() });
+
+        chat.messages.push({
+          from: "them",
+          type: "text",
+          text: String(replyText),
+          time: getCurrentTime()
+        });
+
+
         renderChatList();
-        if (currentChat === chatId) renderMessages();
+
+
+        if (currentChat === chatId) {
+          renderMessages();
+        }
       }
+
     }, delay);
   }
 
+
+  /* =========================================================
+     INPUT
+     ========================================================= */
+
   function setupInput() {
-    var input = get("message-input");
-    var button = get("send-button");
-    var emojiButton = get("emoji-button");
-    var emojiPanel = get("emoji-panel");
-    var backBtn = get("conversation-back");
 
-    if (button) button.addEventListener("click", sendMessage);
-    if (backBtn) backBtn.addEventListener("click", closeChatToList);
+    var input =
+      get("message-input");
 
-    if (input) {
-      input.addEventListener("keydown", function (event) {
-        if (event.key === "Enter" && !event.shiftKey) {
-          event.preventDefault();
-          sendMessage();
-        }
-      });
+    var button =
+      get("send-button");
+
+    var emojiButton =
+      get("emoji-button");
+
+    var emojiPanel =
+      get("emoji-panel");
+
+    var backBtn =
+      get("conversation-back");
+
+
+    if (button) {
+
+      button.addEventListener(
+        "click",
+        sendMessage
+      );
     }
 
-    if (emojiButton && emojiPanel) {
-      emojiButton.addEventListener("click", function () {
-        emojiPanel.classList.toggle("open");
-      });
+
+    if (backBtn) {
+
+      backBtn.addEventListener(
+        "click",
+        closeChatToList
+      );
+    }
+
+
+    if (input) {
+
+      input.addEventListener(
+        "keydown",
+        function (event) {
+
+          if (
+            event.key === "Enter" &&
+            !event.shiftKey
+          ) {
+
+            event.preventDefault();
+
+            sendMessage();
+          }
+        }
+      );
+    }
+
+
+    if (
+      emojiButton &&
+      emojiPanel
+    ) {
+
+      emojiButton.addEventListener(
+        "click",
+        function () {
+
+          emojiPanel.classList.toggle(
+            "open"
+          );
+        }
+      );
     }
   }
 
+
+  /* =========================================================
+     IMAGE VIEWER
+     ========================================================= */
+
   function openImageViewer(url) {
-    var viewer = get("image-viewer");
-    var image = get("image-viewer-image");
+
+    var viewer =
+      get("image-viewer");
+
+    var image =
+      get("image-viewer-image");
+
+
     if (!viewer || !image) return;
+
+
     image.src = url;
+
     viewer.classList.add("open");
   }
 
-  function closeImageViewer() {
-    var viewer = get("image-viewer");
-    if (viewer) viewer.classList.remove("open");
-  }
 
-  function setupImageViewer() {
-    var viewer = get("image-viewer");
-    var close = get("image-viewer-close");
-    if (viewer && close) {
-      close.addEventListener("click", closeImageViewer);
-      viewer.addEventListener("click", function(e) { if (e.target === viewer) closeImageViewer(); });
+  function closeImageViewer() {
+
+    var viewer =
+      get("image-viewer");
+
+    if (viewer) {
+      viewer.classList.remove("open");
     }
   }
 
+
+  function setupImageViewer() {
+
+    var viewer =
+      get("image-viewer");
+
+    var close =
+      get("image-viewer-close");
+
+
+    if (
+      viewer &&
+      close
+    ) {
+
+      close.addEventListener(
+        "click",
+        closeImageViewer
+      );
+
+
+      viewer.addEventListener(
+        "click",
+        function (e) {
+
+          if (
+            e.target === viewer
+          ) {
+            closeImageViewer();
+          }
+        }
+      );
+    }
+  }
+
+
+  /* =========================================================
+     START
+     ========================================================= */
+
   updateListTitle();
+
   renderEmojiPanel();
+
   renderChatList();
+
   showEmptyState();
+
   setupInput();
+
   setupImageViewer();
+
+
+  /*
+   * Для діагностики одразу видно,
+   * який шлях буде використовуватись.
+   */
+
+  console.log(
+    "[АРЧАТ] Боти:",
+    Object.keys(BOT_IDS)
+  );
+
+  console.log(
+    "[АРЧАТ] Приклад шляху JSON:",
+    getChatFilePath("pixel_heart")
+  );
+
 })();
 </script>
-</body>
-</html>
