@@ -1,126 +1,1149 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <title>Архів переписок</title>
-    <!-- Тут ви можете підключити ваші оригінальні стилі, якщо вони були винесені в окремий файл -->
-    <style>
-        /* Базові стилі інтерфейсу (можете замінити на свої оригінальні) */
-        body { font-family: sans-serif; margin: 0; display: flex; height: 100vh; background: #121212; color: #e0e0e0; }
-        .sidebar { width: 320px; border-right: 1px solid #2d2d2d; display: flex; flex-direction: column; background: #181818; }
-        .chat-list { overflow-y: auto; flex: 1; }
-        .chat-item { padding: 15px; border-bottom: 1px solid #222; cursor: pointer; display: flex; align-items: center; gap: 10px; }
-        .chat-item:hover, .chat-item.active { background: #252525; }
-        .chat-area { flex: 1; display: flex; flex-direction: column; background: #1e1e1e; }
-        .messages-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .message { max-width: 65%; padding: 12px 16px; border-radius: 10px; word-break: break-word; line-height: 1.4; }
-        .message.me { background: #005c4b; align-self: flex-end; color: #fff; }
-        .message.them { background: #202c33; align-self: flex-start; color: #fff; }
-        .compose-area { padding: 15px; background: #202c33; display: flex; gap: 10px; align-items: center; }
-        .compose-area input { flex: 1; padding: 12px; border-radius: 6px; border: none; background: #2a2a2a; color: #fff; font-size: 14px; }
-        .compose-area button { padding: 12px 24px; border: none; border-radius: 6px; background: #00a884; color: #fff; cursor: pointer; font-weight: bold; }
-        #compose-status { font-size: 12px; color: #888; padding: 0 15px 5px 15px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ГУМЕНЧАТ — АРЧАТ</title>
+<link rel="icon" type="image/svg+xml" href="planet-favicon.svg">
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  color: #222;
+}
+* { box-sizing: border-box; }
+
+#hoomenchat-messages-page {
+  display: block;
+  width: 100%;
+  max-width: 780px;
+  margin: 10px auto;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #777;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+#hoomenchat-messages-page .chat-header {
+  display: block;
+  margin: 0 0 10px 0;
+  padding: 5px 8px;
+  background: linear-gradient(to bottom, #626262, #3b3b3b);
+  border: 1px solid #222;
+  color: #fff;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+#hoomenchat-messages-page .messages-layout {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 10px 0;
+}
+
+#hoomenchat-messages-page .chat-list-column {
+  display: table-cell;
+  width: 220px;
+  vertical-align: top;
+}
+
+#hoomenchat-messages-page .conversation-column {
+  display: table-cell;
+  width: auto;
+  vertical-align: top;
+}
+
+#hoomenchat-messages-page .list-title {
+  margin: 0;
+  padding: 5px 7px;
+  background: #f0f0f0;
+  border: 1px solid #999;
+  color: #333;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+}
+
+#hoomenchat-messages-page .chat-list {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  border: 1px solid #aaa;
+  border-top: 0;
+  max-height: 430px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#hoomenchat-messages-page .chat-list::-webkit-scrollbar { width: 8px; }
+#hoomenchat-messages-page .chat-list::-webkit-scrollbar-track { background: #f0f0f0; }
+#hoomenchat-messages-page .chat-list::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border: 1px solid #888;
+}
+
+#hoomenchat-messages-page .chat-list-item {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 6px;
+  background: #f7f7f7;
+  border-bottom: 1px solid #ccc;
+  color: #222;
+  text-decoration: none;
+  cursor: pointer;
+}
+#hoomenchat-messages-page .chat-list-item:last-child { border-bottom: 0; }
+#hoomenchat-messages-page .chat-list-item:hover { background: #e8e8e8; }
+#hoomenchat-messages-page .chat-list-item.active {
+  background: #dedede;
+  border-left: 3px solid #555;
+}
+
+#hoomenchat-messages-page .chat-list-avatar {
+  display: inline-block;
+  width: 45px;
+  height: 45px;
+  margin-right: 6px;
+  vertical-align: middle;
+  object-fit: cover;
+  background: #ddd;
+  border: 1px solid #888;
+}
+
+#hoomenchat-messages-page .chat-list-info {
+  display: inline-block;
+  width: calc(100% - 58px);
+  vertical-align: middle;
+}
+
+#hoomenchat-messages-page .chat-list-name {
+  margin: 0;
+  color: #111;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+  word-wrap: break-word;
+}
+#hoomenchat-messages-page .chat-list-name a {
+  color: #111;
+  text-decoration: underline;
+}
+
+#hoomenchat-messages-page .chat-list-status {
+  margin-top: 1px;
+  font-size: 9px;
+  line-height: 11px;
+  font-style: italic;
+}
+#hoomenchat-messages-page .chat-list-status.online { color: #2e7d32; }
+#hoomenchat-messages-page .chat-list-status.recent { color: #558b2f; }
+#hoomenchat-messages-page .chat-list-status.away { color: #f9a825; }
+#hoomenchat-messages-page .chat-list-status.offline,
+#hoomenchat-messages-page .chat-list-status.long-ago { color: #9e9e9e; }
+
+#hoomenchat-messages-page .chat-list-preview {
+  margin-top: 3px;
+  color: #777;
+  font-size: 9px;
+  line-height: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#hoomenchat-messages-page .conversation-box {
+  position: relative;
+  background: #fff;
+  border: 1px solid #999;
+}
+
+#hoomenchat-messages-page .conversation-header {
+  min-height: 58px;
+  padding: 6px 8px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #999;
+}
+
+#hoomenchat-messages-page .conversation-back {
+  display: none;
+  margin: 0 0 6px 0;
+  padding: 6px 8px;
+  background: #eee;
+  border: 1px solid #999;
+  color: #333;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+#hoomenchat-messages-page .conversation-back:hover {
+  background: #ddd;
+}
+
+#hoomenchat-messages-page .conversation-avatar {
+  display: inline-block;
+  width: 45px;
+  height: 45px;
+  margin-right: 7px;
+  vertical-align: middle;
+  object-fit: cover;
+  background: #ddd;
+  border: 1px solid #888;
+}
+
+#hoomenchat-messages-page .conversation-user {
+  display: inline-block;
+  vertical-align: middle;
+  max-width: calc(100% - 60px);
+}
+
+#hoomenchat-messages-page .conversation-name {
+  display: block;
+  color: #111;
+  font-size: 13px;
+  line-height: 15px;
+  font-weight: bold;
+}
+#hoomenchat-messages-page .conversation-name a {
+  color: #111;
+  text-decoration: underline;
+}
+
+#hoomenchat-messages-page .conversation-status {
+  display: block;
+  margin-top: 2px;
+  font-size: 9px;
+  line-height: 11px;
+  font-style: italic;
+}
+#hoomenchat-messages-page .conversation-status.online { color: #2e7d32; }
+#hoomenchat-messages-page .conversation-status.recent { color: #558b2f; }
+#hoomenchat-messages-page .conversation-status.away { color: #f9a825; }
+#hoomenchat-messages-page .conversation-status.offline,
+#hoomenchat-messages-page .conversation-status.long-ago { color: #9e9e9e; }
+
+#hoomenchat-messages-page .messages-window {
+  height: 350px;
+  padding: 8px;
+  background: #fafafa;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#hoomenchat-messages-page .conversation-empty {
+  padding: 40px 16px;
+  text-align: center;
+  color: #888;
+  font-size: 12px;
+  line-height: 16px;
+  background: #fafafa;
+  border: 1px solid #999;
+  min-height: 200px;
+}
+
+#hoomenchat-messages-page .message-row {
+  display: block;
+  margin: 0 0 9px 0;
+  clear: both;
+}
+#hoomenchat-messages-page .message-row.mine { text-align: right; }
+#hoomenchat-messages-page .message-row.theirs { text-align: left; }
+
+#hoomenchat-messages-page .message-bubble {
+  display: inline-block;
+  max-width: 78%;
+  padding: 6px 8px;
+  background: #fff;
+  border: 1px solid #aaa;
+  color: #222;
+  font-size: 11px;
+  line-height: 14px;
+  text-align: left;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+#hoomenchat-messages-page .mine .message-bubble {
+  background: #f0f0f0;
+  border-color: #888;
+}
+
+#hoomenchat-messages-page .message-time {
+  margin-top: 2px;
+  color: #999;
+  font-size: 8px;
+  line-height: 10px;
+}
+
+#hoomenchat-messages-page .chat-image {
+  display: block;
+  max-width: 100%;
+  max-height: 220px;
+  margin: 0;
+  background: #ddd;
+  border: 1px solid #888;
+  cursor: pointer;
+  object-fit: contain;
+}
+
+#hoomenchat-messages-page .chat-image-caption {
+  margin-top: 4px;
+  color: #777;
+  font-size: 9px;
+  line-height: 11px;
+  word-break: break-word;
+}
+
+#hoomenchat-messages-page .chat-file {
+  display: block;
+  min-width: 150px;
+  max-width: 100%;
+  padding: 6px 7px;
+  background: #f4f4f4;
+  border: 1px solid #aaa;
+  color: #333;
+  text-decoration: none;
+  font-size: 10px;
+  line-height: 13px;
+  overflow-wrap: anywhere;
+}
+#hoomenchat-messages-page .chat-file:hover {
+  background: #e6e6e6;
+  color: #000;
+}
+#hoomenchat-messages-page .chat-file-icon { margin-right: 5px; }
+
+#hoomenchat-messages-page .message-compose {
+  padding: 7px;
+  background: #f0f0f0;
+  border-top: 1px solid #999;
+}
+
+#hoomenchat-messages-page .compose-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 5px;
+}
+
+#hoomenchat-messages-page .tool-button {
+  display: inline-block;
+  padding: 6px 10px;
+  background: #eeeeee;
+  border: 1px solid #999;
+  color: #444;
+  font-size: 12px;
+  line-height: 14px;
+  cursor: pointer;
+  min-height: 32px;
+}
+#hoomenchat-messages-page .tool-button:hover {
+  background: #ddd;
+  color: #000;
+}
+
+#hoomenchat-messages-page .hidden-file-input { display: none; }
+
+#hoomenchat-messages-page .emoji-panel {
+  display: none;
+  margin: 0 0 5px 0;
+  padding: 5px;
+  background: #fff;
+  border: 1px solid #999;
+}
+#hoomenchat-messages-page .emoji-panel.open { display: block; }
+
+#hoomenchat-messages-page .emoji-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+#hoomenchat-messages-page .emoji-button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  line-height: 30px;
+  cursor: pointer;
+}
+
+#hoomenchat-messages-page .message-input {
+  display: block;
+  width: 100%;
+  min-height: 55px;
+  margin: 0 0 5px 0;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #999;
+  color: #222;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 15px;
+  resize: vertical;
+}
+
+#hoomenchat-messages-page .selected-files { margin: 0 0 5px 0; }
+
+#hoomenchat-messages-page .selected-file {
+  display: inline-block;
+  margin: 2px 4px 2px 0;
+  padding: 3px 5px;
+  background: #fff;
+  border: 1px solid #bbb;
+  color: #555;
+  font-size: 9px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+#hoomenchat-messages-page .selected-file-remove {
+  margin-left: 4px;
+  color: #888;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#hoomenchat-messages-page .send-button {
+  display: inline-block;
+  padding: 8px 14px;
+  background: linear-gradient(to bottom, #fff176, #fbc02d);
+  border: 1px solid #a78119;
+  color: #000;
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  min-height: 36px;
+}
+
+#hoomenchat-messages-page .compose-status {
+  display: inline-block;
+  margin-left: 7px;
+  color: #777;
+  font-size: 9px;
+}
+
+#hoomenchat-messages-page .back-link {
+  display: block;
+  margin: 8px 0 0 0;
+  padding: 8px 10px;
+  background: #f0f0f0;
+  border: 1px solid #aaa;
+  color: #444;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
+body > .image-viewer {
+  display: none;
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 20px;
+  background: rgba(0,0,0,0.80);
+  z-index: 2147483647;
+  align-items: center;
+  justify-content: center;
+}
+body > .image-viewer.open { display: flex; }
+body > .image-viewer img {
+  max-width: 92vw;
+  max-height: 88vh;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid #fff;
+}
+body > .image-viewer .image-viewer-close {
+  position: fixed;
+  top: 12px;
+  right: 15px;
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.8);
+  font-size: 22px;
+  line-height: 34px;
+  text-align: center;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 650px) {
+  #hoomenchat-messages-page {
+    margin: 0;
+    padding: 8px;
+    border: none;
+    max-width: none;
+  }
+
+  #hoomenchat-messages-page .chat-header {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  #hoomenchat-messages-page .messages-layout {
+    display: block;
+    border-spacing: 0;
+  }
+
+  #hoomenchat-messages-page .chat-list-column,
+  #hoomenchat-messages-page .conversation-column {
+    display: block;
+    width: 100%;
+  }
+
+  #hoomenchat-messages-page.mobile-chat-open .chat-list-column {
+    display: none;
+  }
+  #hoomenchat-messages-page:not(.mobile-chat-open) .conversation-column {
+    display: none;
+  }
+
+  #hoomenchat-messages-page .conversation-back {
+    display: block;
+  }
+
+  #hoomenchat-messages-page .list-title {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  #hoomenchat-messages-page .chat-list {
+    max-height: none;
+    border: 1px solid #aaa;
+  }
+
+  #hoomenchat-messages-page .chat-list-item {
+    padding: 10px;
+    min-height: 64px;
+  }
+
+  #hoomenchat-messages-page .chat-list-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  #hoomenchat-messages-page .chat-list-name {
+    font-size: 13px;
+    line-height: 16px;
+  }
+
+  #hoomenchat-messages-page .chat-list-status {
+    font-size: 11px;
+  }
+
+  #hoomenchat-messages-page .chat-list-preview {
+    font-size: 11px;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  #hoomenchat-messages-page .conversation-header {
+    min-height: 64px;
+    padding: 10px;
+  }
+
+  #hoomenchat-messages-page .conversation-name {
+    font-size: 15px;
+  }
+
+  #hoomenchat-messages-page .conversation-status {
+    font-size: 11px;
+  }
+
+  #hoomenchat-messages-page .messages-window {
+    height: calc(100dvh - 280px);
+    min-height: 240px;
+    max-height: 55dvh;
+  }
+
+  #hoomenchat-messages-page .message-bubble {
+    max-width: 88%;
+    font-size: 13px;
+    line-height: 17px;
+    padding: 8px 10px;
+  }
+
+  #hoomenchat-messages-page .message-compose {
+    padding: 10px;
+  }
+
+  #hoomenchat-messages-page .message-input {
+    font-size: 14px;
+    min-height: 64px;
+  }
+
+  #hoomenchat-messages-page .back-link {
+    font-size: 13px;
+    padding: 12px;
+    min-height: 44px;
+  }
+
+  #hoomenchat-messages-page .conversation-empty {
+    min-height: 40dvh;
+    font-size: 14px;
+    padding: 48px 20px;
+  }
+}
+</style>
 </head>
 <body>
-
-    <div class="sidebar">
-        <div style="padding: 20px; font-weight: bold; font-size: 18px; border-bottom: 1px solid #2d2d2d;">Архів чатів</div>
-        <div class="chat-list" id="chatList">
-            <!-- Список усіх персонажів формується динамічно -->
-        </div>
+<div id="hoomenchat-messages-page">
+  <div class="chat-header">АРЧАТ — ПРИВАТНІ ЧАТИ</div>
+  <div class="messages-layout">
+    <div class="chat-list-column">
+      <div class="list-title" id="list-title">Мої чати</div>
+      <div class="chat-list" id="chat-list"></div>
     </div>
-
-    <div class="chat-area">
-        <div class="messages-container" id="messagesContainer">
-            <div style="color: #666; text-align: center; margin: auto;">Оберіть чат із лівої панелі</div>
+    <div class="conversation-column">
+      <button class="conversation-back" id="conversation-back" type="button">← До списку чатів</button>
+      <div class="conversation-box" id="conversation-box">
+        <div class="conversation-empty" id="conversation-empty">
+          Оберіть чат зі списку зліва,<br>щоб відкрити переписку.
         </div>
-        <div id="compose-status"></div>
-        <div class="compose-area" id="composeArea" style="display: none;">
-            <input type="text" id="messageInput" placeholder="Введіть повідомлення..." autofocus>
-            <button onclick="sendMessage()">Надіслати</button>
+        <div id="conversation-active" style="display:none">
+          <div class="conversation-header" id="conversation-header"></div>
+          <div class="messages-window" id="messages-window"></div>
+          <div class="message-compose">
+            <div class="compose-tools">
+              <button class="tool-button" id="emoji-button" type="button">😊</button>
+              <button class="tool-button" id="image-button" type="button">🖼</button>
+              <button class="tool-button" id="file-button" type="button">📎</button>
+              <input class="hidden-file-input" id="image-input" type="file" accept="image/*" multiple>
+              <input class="hidden-file-input" id="file-input" type="file" multiple>
+            </div>
+            <div class="emoji-panel" id="emoji-panel">
+              <div class="emoji-grid" id="emoji-grid"></div>
+            </div>
+            <div class="selected-files" id="selected-files"></div>
+            <textarea class="message-input" id="message-input" placeholder="Написати повідомлення..."></textarea>
+            <button class="send-button" id="send-button" type="button">НАДІСЛАТИ</button>
+            <span class="compose-status" id="compose-status"></span>
+          </div>
         </div>
+      </div>
+      <a class="back-link" href="index.html">← Повернутися до Гуменчату</a>
     </div>
+  </div>
+</div>
+
+<div class="image-viewer" id="image-viewer">
+  <div class="image-viewer-close" id="image-viewer-close">✕</div>
+  <img id="image-viewer-image" src="" alt="">
+</div>
 
 <script>
-  // Повний перелік усіх ваших персонажів та налаштувань тригерів
+(function () {
+  "use strict";
+
+  var placeholderAvatar =
+    "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">' +
+      '<rect width="100" height="100" fill="#dddddd"/>' +
+      '<circle cx="50" cy="37" r="18" fill="#999999"/>' +
+      '<rect x="22" y="60" width="56" height="28" fill="#999999"/>' +
+      "</svg>"
+    );
+
+  var MAX_IMAGE_SIZE = 10 * 1024 * 1024;
+  var MAX_FILE_SIZE = 20 * 1024 * 1024;
+
+  var allowedImageTypes = {
+    "image/jpeg": true, "image/png": true, "image/gif": true,
+    "image/webp": true, "image/heic": true, "image/heif": true
+  };
+
+  var blockedExtensions = {
+    ".exe": true, ".com": true, ".scr": true, ".msi": true, ".bat": true,
+    ".cmd": true, ".ps1": true, ".vbs": true, ".js": true, ".jar": true,
+    ".apk": true, ".html": true, ".htm": true, ".php": true, ".sh": true, ".py": true
+  };
+
   var users = {
-    night_fox: {
-      name: "Night Fox",
-      gender: "male",
-      status: "online",
-      firstMessage: "Привіт! Тут є одне питання, треба твоя порада.",
-      keywordReplies: {
-        "питання": "Ну, якщо коротко, то я застряг на одному етапі з налаштуванням заліза.",
-        "допомога": "Завжди радий допомогти, якщо це в моїх силах!",
-        "залізо": "О, з залізом завжди так — поки не перебереш, не запрацює."
-      },
-      autoReply: ["Привіт.", "Я слухаю тебе уважно.", "Цікаво звучить.", "А що було далі?"]
-    },
-    alice: {
-      name: "Alice",
+    sakurai_agatsuma: {
+      name: "sakurai_agatsuma",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEg6F3ycnXu5A2gS5zM4p0-qELjeNz4oXvfJAwkLxSJnL4kELcGviUtPwYe-Oa8lV_ThO7h6iq0dwSnx2FeaHbkzG6HEC8S0HILQKiHh49eWl65LSGoj7RgeAYb7V5MV7b7Mu7Sxexq9LYM_7XPF6SkSjStcQO32x02IKUWdFlUck9z30GmMEJgH2OLM3YA",
+      profile: "profiles/sakurai-agatsuma.html",
       gender: "female",
       status: "online",
-      firstMessage: "Привіт! Як справи?",
-      keywordReplies: {
-        "як справи": "Усе чудово, працюю над архівом!",
-        "погода": "Сьогодні чудова погода для кодингу."
-      },
-      autoReply: ["Зрозуміла.", "Цікаво!", "Розкажи детальніше."]
+      schedule: [
+        { time: "08:00", status: "online" },
+        { time: "13:00", status: "away" },
+        { time: "15:00", status: "online" },
+        { time: "22:00", status: "offline" }
+      ],
+      autoReply: ["Ок :)", "Я зрозуміла.", "Цікава думка.", "Добре, розповідай."]
     },
-    // Додайте сюди решту ваших оригінальних персонажів за аналогією:
-    // alex: { name: "Alex", ... },
-    // max: { name: "Max", ... }
+    alter_core: {
+      name: "alter_core",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiZ7hOITEG-aCscLuMNEBml1v2zidsEixQymUsU5UukZN4Jb-AAbqwdGj3CJ8gSTbOvXMgyPp3T4xAQzq3TRYhFjOYbF0TkE6lWGESsA-K31pEcpcOV2Cr061lkzABNZRKN5CPAr9WmD38DWNYbebjw8CuqHGWvgBCumZebUra3Kjf6sjUDTZDpVZQehD0",
+      profile: "profiles/alter-core.html",
+      gender: "female",
+      status: "online",
+      schedule: [
+        { time: "17:00", status: "online" },
+        { time: "17:25", status: "away" },
+        { time: "18:00", status: "online" },
+        { time: "20:03", status: "away" },
+        { time: "20:29", status: "online" },
+        { time: "23:03", status: "away" },
+        { time: "23:31", status: "online" },
+        { time: "01:23", status: "away" },
+        { time: "02:00", status: "online" },
+        { time: "05:00", status: "offline" }
+      ],
+      autoReply: ["Це автоматичне повідомлення. Ви заблокували alter_core, вона не зможе прочитати чат."]
+    },
+    another_hoomen: {
+      name: "another_hoomen",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhGJcedC21GOJf9E7-pAiRFqRkZkhWOsgZEmPho3dZtnirOPtoUonHL_MdwDkt-LvPpt_azt8iqxuPs6DPv8rP29QKHxw2k4jB6O1Wc7KZO8zgKHr_nNaeuI5fActfzQoxMiJc46N3oennG9eU664xDo5Cl6MXbWKDw-bjMiQ2UW1kcpCUmphIv9X1pkhE",
+      profile: "profiles/another-hoomen.html",
+      gender: "male",
+      status: "online",
+      autoReply: ["Давно тебе не бачив.", "Привіт.", "Можемо поговорити.", "Зараз трохи зайнятий."],
+      schedule: [
+        { time: "07:45", status: "online" },
+        { time: "08:02", status: "away" },
+        { time: "12:03", status: "online" },
+        { time: "14:01", status: "away" },
+        { time: "14:32", status: "online" },
+        { time: "17:12", status: "away" },
+        { time: "18:09", status: "online" },
+        { time: "19:14", status: "away" },
+        { time: "20:00", status: "online" },
+        { time: "21:55", status: "offline" }
+      ]
+    },
+    velvet_moon: {
+      name: "velvet_moon",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEjvCZvQq7YfiAW2jyK5-_QrfSWCXfr1U1is8CoNCEVrSi8r66EOrusjYVkhcSXuLIE_RoLqNXflCSV37rByzCXUnMSmAyeV7J8OQvwcKw51nqzdepT_WG8p4EUDlGQgOdw0bjiEG3Enkud1f3CmpEcpE5Cg7LTxetdvKXZw_X9xoR69inJXkv_HlnuQJsw",
+      profile: "profiles/velvet-moon.html",
+      gender: "female",
+      status: "long-ago",
+      autoReply: ["Привіт :)", "Я зараз тут.", "Цікаво.", "Розкажи детальніше."]
+    },
+    pixel_heart: {
+      name: "pixel_heart",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEj-JwvE44KmWRAxQsTyKdRmlsdBRpJ8WvOwLpAvvzA-tMTjKE2fq0CEWp-16Rk-z2vC0IXDlnA1X2OGtgGZdvl592QFkFc_GmfVfyOn_jYaxpKaIU8GR4RKkKQvyx5wYdE6BaRhXtKjQ8nXg8yvZS0dNyStBNg0uJILRffVdvV_2pZUCae84AMDojxshiI",
+      profile: "profiles/pixel-heart.html",
+      gender: "female",
+      status: "5min",
+      autoReply: ["О, привіт.", "Мм, можливо.", "Я подумаю над цим.", "Хех :)"]
+    },
+    night_fox: {
+      name: "night_fox",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEj47FGZQVZBpkxQBYQVVcANFRW4_ROFwYhkBiqqCUFbbQtDk9Nqm0OngJgQOlTWNh-K08KO-CKHy6rimZeZtt_jyPlntD35r-YBcNtLEjBkvqs-iL8sXLFEitu-rgnzmJMcyP1RzjG0eb2nurjONGAqFUi41djo5xmB91hTHfclMBote_EQNB5CXbG6ZYg",
+      profile: "profiles/night-fox.html",
+      gender: "male",
+      status: "online",
+      autoReply: ["Привіт.", "Я слухаю.", "Цікаво звучить.", "А що далі?"]
+    },
+    cherry_byte: {
+      name: "cherry_byte",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEi_V3-i5gqAEgl0UEqmujNCZgYVFD0iZ1-4pEQZls0WpjMDTkeOMRhk_wzB3_jQZSylary26k6cH7mqk7edNro_gxIDMN1vnwKwqeGZ-zwRnObVwL79CzOydbmlivp0DSZy6mJGyiJ5KgoxYNr4GmuxxrLibqLgyE0IPzfmQ92xNe8LP6GEt8b35K8PJQA",
+      profile: "profiles/cherry-byte.html",
+      gender: "female",
+      status: "25min",
+      autoReply: ["Няя :)", "Ого.", "Неочікувано.", "Ясно."]
+    },
+    water_blue: {
+      name: "water_blue",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEi-IVzTEq2IynM_TIFrvaScqnwEXbfXXKJyw6mDm1JXy1YBqBB3g-garhk0xNCgObaBw-W2473PSKJoMZPIuegdmiviufrD7jCSY02X2NLH6_waaxjQJ3IE5V-n_Ynv9Qo9VLluhy35n70BcPGUvp2EOvJofrpAVNBmAU784U4-iO0GRTziDFWR7Wtgl2Q",
+      profile: "profiles/water-blue.html",
+      gender: "female",
+      status: "online",
+      schedule: [
+        { time: "10:00", status: "online" },
+        { time: "13:00", status: "away" },
+        { time: "18:00", status: "online" },
+        { time: "23:00", status: "offline" }
+      ],
+      autoReply: ["Привіт, я дуже зайнята. Пиши мені сюди ХХХ-ХХХ-ХХ-ХХ.", "Нажаль, у мене немає просто часу на це.", "Вибач, не до спілкування.", "Зайнята."]
+    },
+    pasta_friend: {
+      name: "pasta_friend",
+      avatar: placeholderAvatar,
+      profile: "profiles/pasta-friend.html",
+      gender: "male",
+      status: "online",
+      autoReply: ["Ахах.", "Та ну.", "Серйозно?", "Цікаво."]
+    },
+    rusty_robot: {
+      name: "rusty_robot",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEj0p973limLEfJtZBHR1CdP2waLt6VGEJJ9u013brvFnzMn1DD1rwthHcUQEBUzv2LvNhyanexQak7w8U5zsYJ5FCItvw5aAnxoRuG4AHD9jV2yhECUEtI4We-Gvp3RKqIG1vwx5YqwFEtuO5mgQp9XjIleeKXMRN0maO5ZFo5qexFW4U94mJj20pQa208",
+      profile: "profiles/rusty-robot.html",
+      gender: "male",
+      status: "50min",
+      autoReply: ["Отримано.", "Обробляю інформацію.", "Звучить цікаво.", "Повернуся до цього."]
+    },
+    soft_static: {
+      name: "soft_static",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEi0-IQ6-y_L-kVYfUNnPzMXCO39DUxNV17N6cCoYPBfkwL08hMaGfNvtzmJnDdKjC08FH_jIcq00ddIhr5z0vI5JhnQY7RuqAeyUvDOpge242fUwO5Wx0lZR18YxbOStWLTMlj6nRSfmA074mfgW2oLCxZxVNerdKr-7l8desFoDExHYFwJiXxn603G53o",
+      profile: "profiles/soft-static.html",
+      gender: "female",
+      status: "online",
+      autoReply: ["Привіт.", "Можливо.", "Я не знаю.", "Це хороше питання."]
+    },
+    blue_comet: {
+      name: "blue_comet",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEgHmdvoLrtjAgSiUFcb0hGp9F5p18XgzcuEaU3rGzBeO4InsMLxZF8YYIAUBZ99JGl1T0FQHMyU5-HMEFWNJsR_ydzpFwAvomjS42BttjdCB2ysf6Gk_rVpidSXv8KbWj-xA60S8oQ09UVD7lrVtS54ijkZ40T471i_m69ecU0BsCbyF_blx640ZYGsjeo",
+      profile: "profiles/blue-comet.html",
+      gender: "male",
+      status: "online",
+      autoReply: ["О, ти тут.", "Добре.", "Можемо поговорити.", "Я слухаю."]
+    },
+    coffee_signal: {
+      name: "coffee_signal",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhzk94r86FgzVUKV3vexrNMu1qNtg4p4TmKESMylkPtOoGL6KI0fDw0743JR2KaYsKSMT1FQC81AptsedII-X6O06QTejI2h2L6F95NioihwLF9RdiK-CBRxsIwNFZMTJenUoXFC_tR98O4FbGaKO30PoHL7JlRZPyVb9rYdwf3djhTsyFMvB--c0FdiRY",
+      profile: "profiles/coffee-signal.html",
+      gender: "female",
+      status: "5min",
+      autoReply: ["Привіт ☕", "Саме п'ю каву.", "Оце так.", "Можна."],
+      schedule: [
+        { time: "10:00", status: "online" },
+        { time: "12:02", status: "away" },
+        { time: "12:34", status: "online" },
+        { time: "15:01", status: "away" },
+        { time: "15:32", status: "online" },
+        { time: "16:02", status: "away" },
+        { time: "16:13", status: "online" },
+        { time: "17:01", status: "away" },
+        { time: "17:12", status: "online" },
+        { time: "18:00", status: "offline" }
+      ]
+    },
+    paper_storm: {
+      name: "paper_storm",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEjqrONG3WN749rf0VM4X87BNKhBrhokWahtrEN24gjmmrqE0QMAolsrXFTfZTJ55OxsJfzNAuFDxyoGm3rDMAV0voBpUeWXTDIOCFdDjRzu16bcQUT8xh6H2CdoPgUBGLfZOkaLwqfdHcOFLLqY5zuANw-DF_zpQT-cre6khltso6JV4Ih3wDqL3kPIJys",
+      profile: "profiles/paper-storm.html",
+      gender: "male",
+      status: "online",
+      autoReply: ["Привіт.", "Розкажи.", "Несподівано.", "Я ще думаю."]
+    },
+    dreaming_romance: {
+      name: "dreaming_romance",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA",
+      profile: "profiles/dreaming-romance.html",
+      gender: "male",
+      status: "online",
+      schedule: [
+        { time: "09:00", status: "online" },
+        { time: "12:00", status: "away" },
+        { time: "14:00", status: "online" },
+        { time: "17:00", status: "away" },
+        { time: "21:00", status: "offline" }
+      ],
+      autoReply: ["Це автоматичне повідомлення. Ви заблокували dreaming_romance, вона не зможе прочитати чат."]
+    }
   };
 
   var chats = {
+    dreaming_romance: { user: "dreaming_romance", messages: [], loaded: false },
+    sakurai_agatsuma: { user: "sakurai_agatsuma", messages: [], loaded: false },
+    alter_core: { user: "alter_core", messages: [], loaded: false },
+    another_hoomen: { user: "another_hoomen", messages: [], loaded: false },
+    velvet_moon: { user: "velvet_moon", messages: [], loaded: false },
+    pixel_heart: { user: "pixel_heart", messages: [], loaded: false },
     night_fox: { user: "night_fox", messages: [], loaded: false },
-    alice: { user: "alice", messages: [], loaded: false }
-    // Інші чати також додаються сюди
+    cherry_byte: { user: "cherry_byte", messages: [], loaded: false },
+    water_blue: { user: "water_blue", messages: [], loaded: false },
+    pasta_friend: { user: "pasta_friend", messages: [], loaded: false },
+    rusty_robot: { user: "rusty_robot", messages: [], loaded: false },
+    soft_static: { user: "soft_static", messages: [], loaded: false },
+    blue_comet: { user: "blue_comet", messages: [], loaded: false },
+    coffee_signal: { user: "coffee_signal", messages: [], loaded: false },
+    paper_storm: { user: "paper_storm", messages: [], loaded: false }
   };
 
   var currentChat = null;
+  var pendingAttachments = [];
 
-  function getCurrentTime() {
+  var emojis = [
+    "😀","😃","😄","😁","😆","😅","😂","🤣","😊","🙂","😉","😌","😍","🥰","😘",
+    "😭","😢","😮","😲","😴","🤔","😏","🥺","😱","😤","😠","❤️","💕","✨","🔥",
+    "🌸","🌙","☕","🎮","🐱","🐶","👍","👎","👏","🙏","💪","🎉"
+  ];
+
+  function get(id) { return document.getElementById(id); }
+
+  function escapeHtml(text) {
+    return String(text)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function parseHHMM(str) {
+    if (!str || typeof str !== "string") return null;
+    var parts = str.trim().split(":");
+    if (parts.length < 2) return null;
+    var h = parseInt(parts[0], 10);
+    var m = parseInt(parts[1], 10);
+    if (isNaN(h) || isNaN(m)) return null;
+    return h * 60 + m;
+  }
+
+  function resolveScheduleSlot(schedule) {
+    if (!schedule || !schedule.length) return null;
+    var slots = [];
+    for (var i = 0; i < schedule.length; i++) {
+      var item = schedule[i];
+      if (!item || !item.time) continue;
+      var mins = parseHHMM(item.time);
+      if (mins === null) continue;
+      slots.push({ minutes: mins, status: item.status || "offline" });
+    }
+    if (!slots.length) return null;
+    slots.sort(function (a, b) { return a.minutes - b.minutes; });
+
     var now = new Date();
-    var h = String(now.getHours()).padStart(2, '0');
-    var m = String(now.getMinutes()).padStart(2, '0');
-    return h + ":" + m;
+    var nowMins = now.getHours() * 60 + now.getMinutes();
+    var active = slots[slots.length - 1];
+    for (var j = 0; j < slots.length; j++) {
+      if (slots[j].minutes <= nowMins) active = slots[j];
+    }
+
+    var elapsed = nowMins >= active.minutes
+      ? nowMins - active.minutes
+      : nowMins + (24 * 60 - active.minutes);
+
+    return { status: active.status, elapsedMinutes: elapsed };
+  }
+
+  function formatAwayText(gender, elapsedMinutes) {
+    var was = gender !== "male" ? "була" : "був";
+    var m = Math.max(0, Math.floor(elapsedMinutes));
+    if (m < 1) return { text: was + " щойно", className: "recent" };
+    if (m < 60) {
+      return {
+        text: was + " " + m + " хв назад",
+        className: m < 15 ? "recent" : "away"
+      };
+    }
+    var hours = Math.floor(m / 60);
+    if (hours < 24) {
+      var hWord = hours === 1 ? "годину" : (hours >= 2 && hours <= 4 ? "години" : "годин");
+      return { text: was + " " + hours + " " + hWord + " назад", className: "away" };
+    }
+    return { text: was + " давно", className: "long-ago" };
+  }
+
+  function resolveUserStatus(user) {
+    if (!user) return { text: "офлайн", className: "offline" };
+
+    if (user.schedule && user.schedule.length) {
+      var slot = resolveScheduleSlot(user.schedule);
+      if (slot) {
+        var st = String(slot.status || "").toLowerCase();
+        if (st === "online" || st === "on") {
+          return { text: "● онлайн", className: "online" };
+        }
+        if (st === "offline" || st === "off" || st === "sleep") {
+          return { text: "офлайн", className: "offline" };
+        }
+        if (st === "away" || st === "afk") {
+          return formatAwayText(user.gender, slot.elapsedMinutes);
+        }
+      }
+    }
+
+    var key = user.status || "offline";
+    var was = user.gender !== "male" ? "була" : "був";
+    var map = {
+      online: { text: "● онлайн", className: "online" },
+      "5min": { text: was + " 5 хв назад", className: "recent" },
+      "25min": { text: was + " 25 хв назад", className: "away" },
+      "50min": { text: was + " 50 хв назад", className: "away" },
+      offline: { text: "офлайн", className: "offline" },
+      "long-ago": { text: was + " давно", className: "long-ago" }
+    };
+    if (map[key]) return map[key];
+    return { text: String(key), className: "offline" };
+  }
+
+  function refreshAllStatuses() {
+    renderChatList();
+    if (currentChat) renderConversationHeader();
+  }
+
+  function getExtension(fileName) {
+    var clean = String(fileName || "").toLowerCase().split("?")[0];
+    var dot = clean.lastIndexOf(".");
+    return dot === -1 ? "" : clean.substring(dot);
+  }
+
+  function isAllowedImage(file) {
+    if (!file) return { allowed: false, reason: "Файл не визначено." };
+    if (!allowedImageTypes[file.type]) {
+      return { allowed: false, reason: "Дозволені лише JPG, PNG, GIF, WebP, HEIC." };
+    }
+    if (file.size > MAX_IMAGE_SIZE) {
+      return { allowed: false, reason: "Зображення завелике. Максимум 10 MB." };
+    }
+    return { allowed: true };
+  }
+
+  function isAllowedFile(file) {
+    if (!file) return { allowed: false, reason: "Файл не визначено." };
+    if (file.size > MAX_FILE_SIZE) {
+      return { allowed: false, reason: "Файл завеликий. Максимум 20 MB." };
+    }
+    if (blockedExtensions[getExtension(file.name)]) {
+      return { allowed: false, reason: "Цей тип файлу заборонений." };
+    }
+    return { allowed: true };
+  }
+
+  function renderEmojiPanel() {
+    var container = get("emoji-grid");
+    if (!container) return;
+    container.innerHTML = "";
+    emojis.forEach(function (emoji) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "emoji-button";
+      button.textContent = emoji;
+      button.addEventListener("click", function () { insertEmoji(emoji); });
+      container.appendChild(button);
+    });
+  }
+
+  function insertEmoji(emoji) {
+    var input = get("message-input");
+    if (!input) return;
+    var start = input.selectionStart;
+    var end = input.selectionEnd;
+    input.value = input.value.substring(0, start) + emoji + input.value.substring(end);
+    input.focus();
+    input.setSelectionRange(start + emoji.length, start + emoji.length);
+  }
+
+  function updateListTitle() {
+    var el = get("list-title");
+    if (el) el.textContent = "Мої чати — " + Object.keys(chats).length;
   }
 
   function renderChatList() {
-    var container = document.getElementById("chatList");
+    var container = get("chat-list");
+    if (!container) return;
     container.innerHTML = "";
-    
-    for (var chatId in chats) {
+
+    Object.keys(chats).forEach(function (chatId) {
       var chat = chats[chatId];
       var user = users[chat.user];
-      var div = document.createElement("div");
-      div.className = "chat-item" + (currentChat === chatId ? " active" : "");
-      div.innerHTML = "<strong>" + (user ? user.name : chatId) + "</strong>";
-      div.onclick = (function(id) {
-        return function() { selectChat(id); };
-      })(chatId);
-      container.appendChild(div);
-    }
+      if (!user) return;
+
+      var item = document.createElement("div");
+      item.className = "chat-list-item" + (chatId === currentChat ? " active" : "");
+
+      var avatar = document.createElement("img");
+      avatar.className = "chat-list-avatar";
+      avatar.src = user.avatar;
+      avatar.alt = user.name;
+
+      var info = document.createElement("div");
+      info.className = "chat-list-info";
+
+      var name = document.createElement("div");
+      name.className = "chat-list-name";
+      var profileLink = document.createElement("a");
+      profileLink.href = user.profile;
+      profileLink.textContent = user.name;
+      profileLink.addEventListener("click", function (e) { e.stopPropagation(); });
+      name.appendChild(profileLink);
+
+      var st = resolveUserStatus(user);
+      var statusEl = document.createElement("div");
+      statusEl.className = "chat-list-status " + st.className;
+      statusEl.textContent = st.text;
+
+      var preview = document.createElement("div");
+      preview.className = "chat-list-preview";
+      if (chat.messages.length > 0) {
+        var last = chat.messages[chat.messages.length - 1];
+        if (last.type === "image") preview.textContent = "🖼 Зображення";
+        else if (last.type === "file") preview.textContent = "📎 " + last.fileName;
+        else preview.textContent = last.text || "";
+      } else {
+        preview.textContent = chat.loaded ? "Немає повідомлень" : "—";
+      }
+
+      info.appendChild(name);
+      info.appendChild(statusEl);
+      info.appendChild(preview);
+      item.appendChild(avatar);
+      item.appendChild(info);
+
+      item.addEventListener("click", function () { openChat(chatId); });
+      container.appendChild(item);
+    });
   }
 
-  function selectChat(chatId) {
+  function setMobileChatOpen(open) {
+    var page = get("hoomenchat-messages-page");
+    if (!page) return;
+    if (open) page.classList.add("mobile-chat-open");
+    else page.classList.remove("mobile-chat-open");
+  }
+
+  function showEmptyState() {
+    var empty = get("conversation-empty");
+    var active = get("conversation-active");
+    if (empty) empty.style.display = "block";
+    if (active) active.style.display = "none";
+    setMobileChatOpen(false);
+  }
+
+  function showActiveConversation() {
+    var empty = get("conversation-empty");
+    var active = get("conversation-active");
+    if (empty) empty.style.display = "none";
+    if (active) active.style.display = "block";
+    setMobileChatOpen(true);
+  }
+
+  function openChat(chatId) {
+    if (!chats[chatId]) return;
     currentChat = chatId;
+    pendingAttachments = [];
+    renderSelectedFiles();
     renderChatList();
-    document.getElementById("composeArea").style.display = "flex";
-    
-    if (!chats[chatId].loaded) {
-      loadChat(chatId);
-    } else {
-      renderConversation();
-    }
+    showActiveConversation();
+
+    if (!chats[chatId].loaded) loadChat(chatId);
+    else renderConversation();
   }
 
-  // Функція завантаження історії з JSON-файлів у папці hoomanchat/chats/
+  function closeChatToList() {
+    currentChat = null;
+    renderChatList();
+    showEmptyState();
+  }
+
   function loadChat(chatId) {
-    var status = document.getElementById("compose-status");
-    if (status) status.textContent = "Завантаження історії з файлу...";
+    var status = get("compose-status");
+    if (status) status.textContent = "Завантаження...";
 
     fetch("hoomanchat/chats/" + chatId + ".json")
       .then(function (response) {
@@ -128,143 +1151,333 @@
         return response.json();
       })
       .then(function (data) {
-        var messages = [];
-        var chatUser = users[chats[chatId].user];
-
-        // Якщо JSON є об'єктом із налаштуваннями та повідомленнями
-        if (!Array.isArray(data) && data !== null) {
-          if (data.firstMessage !== undefined && chatUser) chatUser.firstMessage = data.firstMessage;
-          if (data.keywordReplies && chatUser) chatUser.keywordReplies = data.keywordReplies;
-          if (data.autoReply && chatUser) chatUser.autoReply = data.autoReply;
-
-          var rawMessages = Array.isArray(data.messages) ? data.messages : [];
-          messages = rawMessages.map(function (item, index) {
-            return {
-              from: item.from || (index % 2 === 0 ? "them" : "me"),
-              type: item.type || "text",
-              text: item.text || "",
-              time: item.time || "00:00"
-            };
-          });
-        } else if (Array.isArray(data)) {
-          // Якщо це старий формат (просто масив повідомлень)
-          messages = data.map(function (item, index) {
-            return {
-              from: item.from || (index % 2 === 0 ? "them" : "me"),
-              type: item.type || "text",
-              text: typeof item === "string" ? item : (item.text || ""),
-              time: item.time || "00:00"
-            };
-          });
-        }
-
-        chats[chatId].messages = messages;
+        chats[chatId].messages = data.messages || [];
         chats[chatId].loaded = true;
-
         if (currentChat === chatId) renderConversation();
         renderChatList();
         if (status) status.textContent = "";
       })
-      .catch(function (error) {
-        // Якщо JSON-файлу немає, чат залишається пустим або завантажує перше повідомлення
+      .catch(function () {
         chats[chatId].messages = [];
         chats[chatId].loaded = true;
         if (currentChat === chatId) renderConversation();
         renderChatList();
-        if (status) status.textContent = "";
+        if (status) {
+          status.textContent = "Чат порожній або файл відсутній";
+          setTimeout(function () {
+            if (status.textContent.indexOf("порожній") !== -1) status.textContent = "";
+          }, 3000);
+        }
       });
   }
 
-  function renderConversation() {
-    var container = document.getElementById("messagesContainer");
-    container.innerHTML = "";
-    
-    if (!currentChat) return;
+  function renderConversationHeader() {
+    var header = get("conversation-header");
+    if (!header || !currentChat) return;
     var chat = chats[currentChat];
-
-    for (var i = 0; i < chat.messages.length; i++) {
-      var msg = chat.messages[i];
-      var div = document.createElement("div");
-      div.className = "message " + msg.from;
-      div.textContent = msg.text;
-      container.appendChild(div);
-    }
-    container.scrollTop = container.scrollHeight;
-  }
-
-  function sendMessage() {
-    var input = document.getElementById("messageInput");
-    var text = input.value.trim();
-    if (!text || !currentChat) return;
-
-    chats[currentChat].messages.push({
-      from: "me",
-      type: "text",
-      text: text,
-      time: getCurrentTime()
-    });
-
-    input.value = "";
-    renderConversation();
-    renderChatList();
-
-    // Передаємо текст повідомлення для перевірки тригерів за ключовими словами
-    triggerAutoReply(currentChat, text);
-  }
-
-  // Інтелектуальна реакція на ключові слова з JSON або налаштувань персонажа
-  function triggerAutoReply(chatId, userMessageText) {
-    var chat = chats[chatId];
-    if (!chat) return;
     var user = users[chat.user];
     if (!user) return;
 
-    var delay = 800 + Math.floor(Math.random() * 1000);
-    
+    header.innerHTML = "";
+
+    var avatar = document.createElement("img");
+    avatar.className = "conversation-avatar";
+    avatar.src = user.avatar;
+    avatar.alt = user.name;
+
+    var userBlock = document.createElement("div");
+    userBlock.className = "conversation-user";
+
+    var name = document.createElement("div");
+    name.className = "conversation-name";
+    var profileLink = document.createElement("a");
+    profileLink.href = user.profile;
+    profileLink.textContent = user.name;
+    name.appendChild(profileLink);
+
+    var st = resolveUserStatus(user);
+    var status = document.createElement("div");
+    status.className = "conversation-status " + st.className;
+    status.textContent = st.text;
+
+    userBlock.appendChild(name);
+    userBlock.appendChild(status);
+    header.appendChild(avatar);
+    header.appendChild(userBlock);
+  }
+
+  function createImageMessage(message) {
+    var container = document.createElement("div");
+    var image = document.createElement("img");
+    image.className = "chat-image";
+    image.src = message.url;
+    image.alt = message.fileName || "Зображення";
+    image.addEventListener("click", function () {
+      openImageViewer(message.url, message.fileName);
+    });
+    container.appendChild(image);
+    if (message.fileName) {
+      var caption = document.createElement("div");
+      caption.className = "chat-image-caption";
+      caption.textContent = message.fileName;
+      container.appendChild(caption);
+    }
+    return container;
+  }
+
+  function createFileMessage(message) {
+    var link = document.createElement("a");
+    link.className = "chat-file";
+    link.href = message.url;
+    link.download = message.fileName || "file";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.innerHTML = '<span class="chat-file-icon">📎</span>' + escapeHtml(message.fileName || "Файл");
+    return link;
+  }
+
+  function renderMessages() {
+    var windowElement = get("messages-window");
+    if (!windowElement || !currentChat) return;
+    var chat = chats[currentChat];
+    windowElement.innerHTML = "";
+
+    chat.messages.forEach(function (message) {
+      var row = document.createElement("div");
+      row.className = "message-row " + (message.from === "me" ? "mine" : "theirs");
+      var bubble = document.createElement("div");
+      bubble.className = "message-bubble";
+
+      if (message.type === "image") bubble.appendChild(createImageMessage(message));
+      else if (message.type === "file") bubble.appendChild(createFileMessage(message));
+      else bubble.textContent = message.text || "";
+
+      var time = document.createElement("div");
+      time.className = "message-time";
+      time.textContent = message.time || "";
+
+      row.appendChild(bubble);
+      row.appendChild(time);
+      windowElement.appendChild(row);
+    });
+    windowElement.scrollTop = windowElement.scrollHeight;
+  }
+
+  function renderConversation() {
+    renderConversationHeader();
+    renderMessages();
+  }
+
+  function getCurrentTime() {
+    var date = new Date();
+    return String(date.getHours()).padStart(2, "0") + ":" + String(date.getMinutes()).padStart(2, "0");
+  }
+
+  function renderSelectedFiles() {
+    var container = get("selected-files");
+    if (!container) return;
+    container.innerHTML = "";
+    pendingAttachments.forEach(function (file, index) {
+      var item = document.createElement("span");
+      item.className = "selected-file";
+      item.appendChild(document.createTextNode((file.kind === "image" ? "🖼 " : "📎 ") + file.name));
+      var remove = document.createElement("span");
+      remove.className = "selected-file-remove";
+      remove.textContent = "✕";
+      remove.addEventListener("click", function () { removePendingFile(index); });
+      item.appendChild(remove);
+      container.appendChild(item);
+    });
+  }
+
+  function removePendingFile(index) {
+    if (!pendingAttachments[index]) return;
+    var attachment = pendingAttachments[index];
+    if (attachment.url && attachment.url.indexOf("blob:") === 0) {
+      try { URL.revokeObjectURL(attachment.url); } catch (e) {}
+    }
+    pendingAttachments.splice(index, 1);
+    renderSelectedFiles();
+  }
+
+  function handleFiles(fileList, kind) {
+    if (!fileList) return;
+    Array.prototype.forEach.call(fileList, function (file) {
+      if (!file) return;
+      if (kind === "image") {
+        var imageCheck = isAllowedImage(file);
+        if (!imageCheck.allowed) { showStatus(imageCheck.reason); return; }
+        var reader = new FileReader();
+        reader.onload = function (event) {
+          pendingAttachments.push({
+            kind: "image", name: file.name, url: event.target.result,
+            size: file.size, type: file.type || "image/jpeg"
+          });
+          renderSelectedFiles();
+        };
+        reader.onerror = function () { showStatus("Не вдалося прочитати зображення."); };
+        reader.readAsDataURL(file);
+        return;
+      }
+      var fileCheck = isAllowedFile(file);
+      if (!fileCheck.allowed) { showStatus(fileCheck.reason); return; }
+      pendingAttachments.push({
+        kind: "file", name: file.name, url: URL.createObjectURL(file),
+        size: file.size, type: file.type
+      });
+    });
+    renderSelectedFiles();
+  }
+
+  function showStatus(text) {
+    var status = get("compose-status");
+    if (!status) return;
+    status.textContent = text;
     setTimeout(function () {
-      var replyText = "";
-      var lowerText = String(userMessageText || "").toLowerCase();
+      if (status.textContent === text) status.textContent = "";
+    }, 3500);
+  }
 
-      // 1. Пошук тригерних слів
-      if (user.keywordReplies) {
-        var keys = Object.keys(user.keywordReplies);
-        for (var i = 0; i < keys.length; i++) {
-          var keyword = keys[i];
-          if (lowerText.indexOf(keyword) !== -1) {
-            replyText = user.keywordReplies[keyword];
-            break;
-          }
-        }
-      }
+  function sendMessage() {
+    if (!currentChat) return;
+    var input = get("message-input");
+    if (!input) return;
+    var text = input.value.trim();
+    if (!text && !pendingAttachments.length) {
+      showStatus("Введіть повідомлення або прикріпіть файл.");
+      return;
+    }
 
-      // 2. Якщо ключове слово не знайдено — беремо випадкову звичайну репліку
-      if (!replyText && user.autoReply && user.autoReply.length > 0) {
-        replyText = user.autoReply[Math.floor(Math.random() * user.autoReply.length)];
-      }
+    var now = getCurrentTime();
+    if (text) {
+      chats[currentChat].messages.push({ from: "me", type: "text", text: text, time: now });
+    }
+    pendingAttachments.forEach(function (attachment) {
+      chats[currentChat].messages.push({
+        from: "me", type: attachment.kind, text: "",
+        url: attachment.url, fileName: attachment.name, mime: attachment.type, time: now
+      });
+    });
 
-      if (replyText) {
-        chats[chatId].messages.push({
-          from: "them",
-          type: "text",
-          text: replyText,
-          time: getCurrentTime()
-        });
-        renderChatList();
-        if (currentChat === chatId) renderConversation();
-      }
+    input.value = "";
+    pendingAttachments = [];
+    renderSelectedFiles();
+    renderMessages();
+    renderChatList();
+    showStatus("Надіслано.");
+    triggerAutoReply(currentChat);
+  }
+
+  function triggerAutoReply(chatId) {
+    var chat = chats[chatId];
+    if (!chat) return;
+    var user = users[chat.user];
+    if (!user || !user.autoReply || !user.autoReply.length) return;
+    var delay = 700 + Math.floor(Math.random() * 1400);
+    setTimeout(function () {
+      var reply = user.autoReply[Math.floor(Math.random() * user.autoReply.length)];
+      chats[chatId].messages.push({
+        from: "them", type: "text", text: reply, time: getCurrentTime()
+      });
+      renderChatList();
+      if (currentChat === chatId) renderMessages();
     }, delay);
   }
 
-  // Початковий рендер списку
-  renderChatList();
+  function setupInput() {
+    var input = get("message-input");
+    var button = get("send-button");
+    var emojiButton = get("emoji-button");
+    var emojiPanel = get("emoji-panel");
+    var imageButton = get("image-button");
+    var fileButton = get("file-button");
+    var imageInput = get("image-input");
+    var fileInput = get("file-input");
+    var backBtn = get("conversation-back");
 
-  // Відправка по Enter
-  document.getElementById("messageInput").addEventListener("keypress", function (e) {
-    if (e.key === "Enter") {
-      sendMessage();
+    if (button) button.addEventListener("click", sendMessage);
+    if (backBtn) backBtn.addEventListener("click", closeChatToList);
+
+    if (input) {
+      input.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          sendMessage();
+        }
+      });
     }
-  });
-</script>
 
+    if (emojiButton && emojiPanel) {
+      emojiButton.addEventListener("click", function () {
+        emojiPanel.classList.toggle("open");
+      });
+    }
+
+    if (imageButton && imageInput) {
+      imageButton.addEventListener("click", function () { imageInput.click(); });
+      imageInput.addEventListener("change", function () {
+        handleFiles(imageInput.files, "image");
+        imageInput.value = "";
+      });
+    }
+
+    if (fileButton && fileInput) {
+      fileButton.addEventListener("click", function () { fileInput.click(); });
+      fileInput.addEventListener("change", function () {
+        handleFiles(fileInput.files, "file");
+        fileInput.value = "";
+      });
+    }
+  }
+
+  function openImageViewer(url, alt) {
+    var viewer = get("image-viewer");
+    var image = get("image-viewer-image");
+    if (!viewer || !image || !url) return;
+    if (viewer.parentNode !== document.body) document.body.appendChild(viewer);
+    image.src = url;
+    image.alt = alt || "";
+    viewer.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeImageViewer() {
+    var viewer = get("image-viewer");
+    var image = get("image-viewer-image");
+    if (!viewer) return;
+    viewer.classList.remove("open");
+    if (image) { image.src = ""; image.alt = ""; }
+    document.body.style.overflow = "";
+  }
+
+  function setupImageViewer() {
+    var viewer = get("image-viewer");
+    var close = get("image-viewer-close");
+    if (!viewer) return;
+    if (viewer.parentNode !== document.body) document.body.appendChild(viewer);
+    if (close) {
+      close.addEventListener("click", function (e) {
+        e.stopPropagation();
+        closeImageViewer();
+      });
+    }
+    viewer.addEventListener("click", function (e) {
+      if (e.target === viewer) closeImageViewer();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeImageViewer();
+    });
+  }
+
+  updateListTitle();
+  renderEmojiPanel();
+  renderChatList();
+  showEmptyState();
+  renderSelectedFiles();
+  setupInput();
+  setupImageViewer();
+  setInterval(refreshAllStatuses, 60000);
+})();
+</script>
 </body>
 </html>
