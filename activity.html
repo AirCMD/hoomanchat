@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Гуменчат — Активність</title>
-
+<link rel="icon" type="image/svg+xml" href="planet-favicon.svg">
 <style>
 html,body{
   margin:0;
@@ -83,7 +83,8 @@ html,body{
 .main-avatar{
   display:block;
   width:100%;
-  height:228px;
+  height:auto;
+  aspect-ratio: 1 / 1.35;
   margin:0 0 6px;
   object-fit:cover;
   object-position:center;
@@ -105,6 +106,10 @@ html,body{
   text-align:center;
   text-decoration:none;
   text-transform:uppercase
+}
+
+.archat-button:hover{
+  background:linear-gradient(to bottom,#fff59d,#fdd835)
 }
 
 .nav-menu{
@@ -129,6 +134,13 @@ html,body{
 .nav-item:hover{
   background:#e2e2e2;
   color:#000;
+  text-decoration:none
+}
+
+.nav-item.active{
+  background:#e2e2e2;
+  color:#000;
+  font-weight:bold;
   text-decoration:none
 }
 
@@ -309,10 +321,30 @@ html,body{
   text-align:center
 }
 
+@media screen and (max-width: 900px) {
+  .site-left { width: 150px; }
+}
+
 @media screen and (max-width:600px){
+  html, body {
+    font-size: 14px;
+    line-height: 18px;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
 
   #hoomenchat-site{
-    padding:7px
+    padding: 8px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    border: none;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .hoomenchat-header {
+    padding: 8px 10px;
+    font-size: 14px;
+    letter-spacing: 1.5px;
   }
 
   .site-layout{
@@ -327,11 +359,105 @@ html,body{
   }
 
   .site-left{
-    margin-bottom:8px
+    margin-bottom: 12px;
   }
 
-  .activity-list{
-    max-height:300px
+  .left-box { 
+    padding: 10px 12px; 
+  }
+
+  .site-name {
+    font-size: 18px;
+    line-height: 22px;
+    margin-bottom: 10px;
+  }
+
+  .main-avatar {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    aspect-ratio: 1 / 1.25;
+    margin: 0 auto 12px;
+    object-fit: cover;
+  }
+
+  .archat-button {
+    padding: 12px 0;
+    font-size: 13px;
+    min-height: 44px;
+    margin-bottom: 10px;
+  }
+
+  .nav-item {
+    padding: 12px 6px;
+    font-size: 15px;
+    min-height: 44px;
+  }
+
+  .account-box {
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+
+  .account-link {
+    padding: 10px 0;
+    font-size: 14px;
+    min-height: 40px;
+  }
+
+  .activity-intro {
+    font-size: 14px;
+    line-height: 20px;
+    padding: 10px 12px;
+  }
+
+  .activity-box {
+    padding: 10px;
+  }
+
+  .activity-header {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .activity-list {
+    max-height: 400px;
+  }
+
+  .activity-item {
+    padding: 10px;
+  }
+
+  .activity-icon {
+    font-size: 14px;
+    width: 20px;
+    padding-right: 6px;
+  }
+
+  .activity-text {
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .hoomen-user,
+  .hoomen-target {
+    font-size: 12px;
+  }
+
+  .activity-time {
+    font-size: 10px;
+  }
+
+  .rules-box,
+  .statistics-box {
+    font-size: 12px;
+    line-height: 16px;
+    padding: 10px 12px;
+  }
+
+  .footer-line {
+    font-size: 11px;
+    margin-top: 12px;
   }
 }
 </style>
@@ -356,18 +482,18 @@ html,body{
 <div class="left-box">
 
 <div class="site-name">
-ОСТРОВИ
+ГУМЕНЧАТ
 </div>
 
 <img
 class="main-avatar"
-alt="ОСТРОВИ"
+alt="ГУМЕНЧАТ"
 src="https://blogger.googleusercontent.com/img/a/AVvXsEikl2AwyMPO-fdHfH3XugR0z28OlNR7sGHxQFaYw1KHQ_3YNbbm0aGwmKo8X21RqBa-2RSi1sQmdGYFEs7XIaYylW3_6ivt1yixDE1RAhEOLPqMwEImTEd-0nUeCbb_9EUGLjjwa1OJK9njExaag52-LAN8p7YCRWAcKOdSpBgxJ62aQL7Ju2pjLLNhAWM"
 />
 
 <a
 class="archat-button"
-href="https://aircmd.github.io/hoomanchat/archive.html"
+href="archive.html"
 >
 📩 АРЧАТ
 </a>
@@ -376,42 +502,42 @@ href="https://aircmd.github.io/hoomanchat/archive.html"
 
 <a
 class="nav-item"
-href="https://aircmd.github.io/hoomanchat/index.html"
+href="index.html"
 >
 Головна
 </a>
 
 <a
 class="nav-item"
-href="https://aircmd.github.io/hoomanchat/profiles.html"
+href="profiles.html"
 >
 Гумени
 </a>
 
 <a
 class="nav-item"
-href="https://aircmd.github.io/hoomanchat/droomens.html"
+href="droomens.html"
 >
 Друмени
 </a>
 
 <a
-class="nav-item"
-href="https://aircmd.github.io/hoomanchat/activity.html"
+class="nav-item active"
+href="activity.html"
 >
 Стрічерчат
 </a>
 
 <a
 class="nav-item"
-href="https://aircmd.github.io/hoomanchat/islands.html"
+href="islands.html"
 >
 Острови
 </a>
 
 <a
 class="nav-item"
-href="https://aircmd.github.io/hoomanchat/rules.html"
+href="rules.html"
 >
 Правила
 </a>
@@ -466,228 +592,14 @@ href="#"
 
 <div class="activity-box">
 
-<div class="activity-header">
-Список — 24 активності
+<div class="activity-header" id="activity-header">
+Список — 0 активностей
 </div>
 
-<div class="activity-list">
-
-  <!-- ДОПИС 1 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">dreaming_romance</a> поставив 💗 <a class="hoomen-target" href="https://aircmd.github.io/hoomanchat/profiles/sruiki-stikki.html">sruiki_stikki</a>
-      <span class="activity-time">5 хв</span>
-    </div>
+<div class="activity-list" id="activity-list">
+  <div style="padding: 10px; text-align: center; color: #888;">
+    Завантаження активностей...
   </div>
-
-  <!-- ДОПИС 2 -->
-  <div class="activity-item">
-    <div class="activity-icon">👤</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/alter-core.html">alter_core</a> хоче додати вас до списку друменів
-      <span class="activity-time">12 хв</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 3 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/yurii-ichigo.html">yurii_ichigo</a> поставив 💗 вашому допису
-      <span class="activity-time">18 хв</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 4 -->
-  <div class="activity-item">
-    <div class="activity-icon">💬</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/yurii-ichigo.html">yurii_ichigo</a> прокоментував ваш допис
-      <span class="activity-time">25 хв</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 5 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/sakurai-agatsuma.html">sakurai_agatsuma</a> поставила 💗 вашому допису
-      <span class="activity-time">40 хв</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 6 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/alter-core.html">alter_core</a> поставив 💗 <a class="hoomen-target" href="https://aircmd.github.io/hoomanchat/profiles/sruiki-stikki.html">sruiki_stikki</a>
-      <span class="activity-time">1 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 7 -->
-  <div class="activity-item">
-    <div class="activity-icon">💬</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">dreaming_romance</a> прокоментував ваш допис
-      <span class="activity-time">1 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 8 -->
-  <div class="activity-item">
-    <div class="activity-icon">👤</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/dmytro-pinchuk.html">dmytro_pinchuk</a> хоче додати вас до списку друменів
-      <span class="activity-time">2 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 9 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/sakurai-agatsuma.html">sakurai_agatsuma</a> поставила 💗 <a class="hoomen-target" href="#">alter_core</a>
-      <span class="activity-time">2 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 10 -->
-  <div class="activity-item">
-    <div class="activity-icon">💬</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">dreaming_romance</a> прокоментував ваш допис
-      <span class="activity-time">3 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 11 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/sakurai-agatsuma.html">sakurai_agatsuma</a> поставив 💗 вашому допису
-      <span class="activity-time">4 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 12 -->
-  <div class="activity-item">
-    <div class="activity-icon">💬</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/sakurai-agatsuma.html">sakurai_agatsuma</a> прокоментувала ваш допис
-      <span class="activity-time">5 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 13 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="#">yurii_ichigo</a> поставив 💗 <a class="hoomen-target" href="#">dreaming_romance</a>
-      <span class="activity-time">6 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 14 -->
-  <div class="activity-item">
-    <div class="activity-icon">👤</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/yurii-ichigo.html">yurii_ichigo</a> хоче додати вас до списку друменів
-      <span class="activity-time">7 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 15 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/sakurai-agatsuma.html">sakurai_agatsuma</a> поставив 💗 вашому допису
-      <span class="activity-time">8 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 16 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">dreaming_romance</a> поставив 💗 <a class="hoomen-target" href="https://aircmd.github.io/hoomanchat/profiles/vivienne-nox.html">vivienne_nox</a>
-      <span class="activity-time">8 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 17 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">dreaming_romance</a> поставив 💗 <a class="hoomen-target" href="https://aircmd.github.io/hoomanchat/profiles/vivienne-nox.html">vivienne_nox</a>
-      <span class="activity-time">8 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 18 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">dreaming_romance</a> поставив 💗 <a class="hoomen-target" href="https://aircmd.github.io/hoomanchat/profiles/vivienne-nox.html">vivienne_nox</a>
-      <span class="activity-time">8 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 19 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">dreaming_romance</a> поставив 💗 <a class="hoomen-target" href="https://aircmd.github.io/hoomanchat/profiles/vivienne-nox.html">vivienne_nox</a>
-      <span class="activity-time">8 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 20 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">dreaming_romance</a> поставив 💗 <a class="hoomen-target" href="#">vivienne_nox</a>
-      <span class="activity-time">8 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 21 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">dreaming_romance</a> поставив 💗 <a class="hoomen-target" href="https://aircmd.github.io/hoomanchat/profiles/vivienne-nox.html">vivienne_nox</a>
-      <span class="activity-time">8 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 22 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="#">dreaming_romance</a> поставив 💗 <a class="hoomen-target" href="https://aircmd.github.io/hoomanchat/profiles/vivienne-nox.html">vivienne_nox</a>
-      <span class="activity-time">8 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 23 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">dreaming_romance</a> поставив 💗 <a class="hoomen-target" href="https://aircmd.github.io/hoomanchat/profiles/vivienne-nox.html">vivienne_nox</a>
-      <span class="activity-time">8 год</span>
-    </div>
-  </div>
-
-  <!-- ДОПИС 24 -->
-  <div class="activity-item">
-    <div class="activity-icon">💗</div>
-    <div class="activity-text">
-      <a class="hoomen-user" href="https://aircmd.github.io/hoomanchat/profiles/dreaming-romance.html">dreaming_romance</a> поставив 💗 <a class="hoomen-target" href="https://aircmd.github.io/hoomanchat/profiles/vivienne-nox.html">vivienne_nox</a>
-      <span class="activity-time">8 год</span>
-    </div>
-  </div>
-
 </div>
 
 </div>
@@ -695,7 +607,7 @@ href="#"
 
 <div class="rules-box">
 Пам'ятай та дотримуйся
-<a href="https://aircmd.github.io/hoomanchat/rules.html">ПРАВИЛ</a>
+<a href="rules.html">ПРАВИЛ</a>
 нашого ресурсу для приємного та друмнього часу разом з нами.
 </div>
 
@@ -732,7 +644,167 @@ href="#"
 
 </div>
 
-</div>
-
 </body>
 </html>
+
+<script>
+(function() {
+  "use strict";
+
+  /* Конфіг активностей — додай сюди свої 10 активностей */
+  var activitiesConfig = [
+    {
+      icon: "💗",
+      user: "dreaming_romance",
+      userUrl: "profiles/dreaming-romance.html",
+      action: "поставив 💗",
+      target: "sruiki_stikki",
+      targetUrl: "profiles/sruiki-stikki.html",
+      time: "5 хв"
+    },
+    {
+      icon: "👤",
+      user: "alter_core",
+      userUrl: "profiles/alter-core.html",
+      action: "хоче додати вас до списку друменів",
+      target: null,
+      targetUrl: null,
+      time: "12 хв"
+    },
+    {
+      icon: "💗",
+      user: "yurii_ichigo",
+      userUrl: "profiles/yurii-ichigo.html",
+      action: "поставив 💗 вашому допису",
+      target: null,
+      targetUrl: null,
+      time: "18 хв"
+    },
+    {
+      icon: "💬",
+      user: "yurii_ichigo",
+      userUrl: "profiles/yurii-ichigo.html",
+      action: "прокоментував ваш допис",
+      target: null,
+      targetUrl: null,
+      time: "25 хв"
+    },
+    {
+      icon: "💗",
+      user: "sakurai_agatsuma",
+      userUrl: "profiles/sakurai-agatsuma.html",
+      action: "поставила 💗 вашому допису",
+      target: null,
+      targetUrl: null,
+      time: "40 хв"
+    },
+    {
+      icon: "💗",
+      user: "alter_core",
+      userUrl: "profiles/alter-core.html",
+      action: "поставив 💗",
+      target: "sruiki_stikki",
+      targetUrl: "profiles/sruiki-stikki.html",
+      time: "1 год"
+    },
+    {
+      icon: "💬",
+      user: "dreaming_romance",
+      userUrl: "profiles/dreaming-romance.html",
+      action: "прокоментував ваш допис",
+      target: null,
+      targetUrl: null,
+      time: "1 год"
+    },
+    {
+      icon: "👤",
+      user: "dmytro_pinchuk",
+      userUrl: "profiles/dmytro-pinchuk.html",
+      action: "хоче додати вас до списку друменів",
+      target: null,
+      targetUrl: null,
+      time: "2 год"
+    },
+    {
+      icon: "💗",
+      user: "sakurai_agatsuma",
+      userUrl: "profiles/sakurai-agatsuma.html",
+      action: "поставила 💗",
+      target: "alter_core",
+      targetUrl: "profiles/alter-core.html",
+      time: "2 год"
+    },
+    {
+      icon: "💬",
+      user: "dreaming_romance",
+      userUrl: "profiles/dreaming-romance.html",
+      action: "прокоментував ваш допис",
+      target: null,
+      targetUrl: null,
+      time: "3 год"
+    }
+  ];
+
+  function renderActivities() {
+    var listEl = document.getElementById("activity-list");
+    var headerEl = document.getElementById("activity-header");
+    
+    if (!listEl) return;
+    
+    listEl.innerHTML = "";
+
+    activitiesConfig.forEach(function(activity) {
+      var item = document.createElement("div");
+      item.className = "activity-item";
+
+      var icon = document.createElement("div");
+      icon.className = "activity-icon";
+      icon.textContent = activity.icon;
+
+      var text = document.createElement("div");
+      text.className = "activity-text";
+
+      // Користувач
+      var userLink = document.createElement("a");
+      userLink.className = "hoomen-user";
+      userLink.href = activity.userUrl || "#";
+      userLink.textContent = activity.user;
+      text.appendChild(userLink);
+
+      // Текст дії
+      var actionText = document.createElement("span");
+      actionText.textContent = " " + activity.action + " ";
+      text.appendChild(actionText);
+
+      // Мішень (якщо є)
+      if (activity.target) {
+        var targetLink = document.createElement("a");
+        targetLink.className = "hoomen-target";
+        targetLink.href = activity.targetUrl || "#";
+        targetLink.textContent = activity.target;
+        text.appendChild(targetLink);
+      }
+
+      // Час
+      var time = document.createElement("span");
+      time.className = "activity-time";
+      time.textContent = activity.time;
+      text.appendChild(time);
+
+      item.appendChild(icon);
+      item.appendChild(text);
+      listEl.appendChild(item);
+    });
+
+    // Оновити заголовок
+    if (headerEl) {
+      headerEl.textContent = "Список — " + activitiesConfig.length + " активностей";
+    }
+  }
+
+  renderActivities();
+
+  // Опціонально: оновлювати активності кожні 5 секунд
+  // setInterval(renderActivities, 5000);
+})();
+</script>
