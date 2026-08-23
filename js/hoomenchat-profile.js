@@ -802,34 +802,126 @@
 
 
   /* =====================================================
-     СТАТИСТИКА (фейкова)
+     СТАТИСТИКА (динамічна, з анімацією)
      ===================================================== */
+
+  function forbiddenStat(n) {
+    var t = String(n);
+    return (
+      t.indexOf("63") !== -1 ||
+      t.indexOf("68") !== -1 ||
+      t.indexOf("13") !== -1 ||
+      t.indexOf("666") !== -1
+    );
+  }
 
   function safeNumber(base, range) {
     var value;
     do {
       value = base + Math.floor(Math.random() * range);
-    } while (
-      String(value).indexOf("63") !== -1 ||
-      String(value).indexOf("68") !== -1 ||
-      String(value).indexOf("13") !== -1 ||
-      String(value).indexOf("666") !== -1
-    );
+    } while (forbiddenStat(value));
     return value;
   }
 
-  function updateStatistics() {
-    var registered = safeNumber(8000000, 47001);
-    var online = safeNumber(1000000, 76001);
-    var today = safeNumber(2400000, 180001);
+  var stats = {
+    registered: 8012457,  /* фіксовано — не змінюється */
+    online: safeNumber(1000000, 76001),
+    today: safeNumber(2400000, 180001)
+  };
 
+  var statsAnimating = {
+    registered: false,
+    online: false,
+    today: false
+  };
+
+  function formatStat(n) {
+    return Math.round(n).toLocaleString("uk-UA");
+  }
+
+  function animateStat(key, el, from, to, duration) {
+    if (!el) return;
+    if (statsAnimating[key]) return;
+    statsAnimating[key] = true;
+
+    var start = performance.now();
+    duration = duration || 900;
+
+    function frame(now) {
+      var t = Math.min(1, (now - start) / duration);
+      var ease = 1 - Math.pow(1 - t, 3);
+      var value = from + (to - from) * ease;
+      el.textContent = formatStat(value);
+
+      if (t < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        el.textContent = formatStat(to);
+        stats[key] = to;
+        statsAnimating[key] = false;
+      }
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  function pickNearby(current, minDelta, maxDelta, floorMin) {
+    var delta = minDelta + Math.floor(Math.random() * (maxDelta - minDelta + 1));
+    if (Math.random() < 0.5) delta = -delta;
+    var next = current + delta;
+    if (floorMin && next < floorMin) next = floorMin + Math.abs(delta);
+    while (forbiddenStat(next)) {
+      next += delta >= 0 ? 1 : -1;
+    }
+    return next;
+  }
+
+  function tickStatistics() {
+    var elOnline = document.getElementById("online-hoomen");
+    var elToday = document.getElementById("today-hoomen");
+
+    animateStat(
+      "online",
+      elOnline,
+      stats.online,
+      pickNearby(stats.online, 80, 1200, 100000),
+      1100
+    );
+
+    if (Math.random() < 0.7) {
+      animateStat(
+        "today",
+        elToday,
+        stats.today,
+        pickNearby(stats.today, 20, 400, 500000),
+        900
+      );
+    }
+  }
+
+  function jumpStatistics() {
+    var elOnline = document.getElementById("online-hoomen");
+    var elToday = document.getElementById("today-hoomen");
+
+    animateStat("online", elOnline, stats.online, safeNumber(1000000, 76001), 1600);
+    animateStat("today", elToday, stats.today, safeNumber(2400000, 180001), 1500);
+  }
+
+  function initStatistics() {
     var elReg = document.getElementById("registered-hoomen");
     var elOnline = document.getElementById("online-hoomen");
     var elToday = document.getElementById("today-hoomen");
 
-    if (elReg) elReg.textContent = registered.toLocaleString("uk-UA");
-    if (elOnline) elOnline.textContent = online.toLocaleString("uk-UA");
-    if (elToday) elToday.textContent = today.toLocaleString("uk-UA");
+    if (elReg) elReg.textContent = formatStat(stats.registered);
+    if (elOnline) elOnline.textContent = formatStat(stats.online);
+    if (elToday) elToday.textContent = formatStat(stats.today);
+
+    setTimeout(function loopTick() {
+      tickStatistics();
+      setTimeout(loopTick, 4000 + Math.floor(Math.random() * 3000));
+    }, 3000);
+
+    setInterval(jumpStatistics, 35000);
   }
 
 
@@ -842,7 +934,6 @@
   bindAllCommentButtons();
   bindExistingPostImageViewers();
   updatePostVisibility();
-  updateStatistics();
-  setInterval(updateStatistics, 30000);
+  initStatistics();
 
 })();
