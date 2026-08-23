@@ -311,17 +311,16 @@
       case "single":
         html = "Сімейка: " + (isFemale ? "не шлюбна" : "не шлюбний");
         break;
-      case "relationship":
-        html = "Сімейка: у стуснах з ";
-        if (family.partnerName) { // <--- додати цю перевірку
+case "relationship":
+        if (name) {
+          html = "Сімейка: у стуснах з ";
           if (family.partnerUrl) {
-            html += '<a href="' + escapeAttr(family.partnerUrl) + '">' +
-                    escapeHtml(family.partnerName) + "</a>";
+            html += '<a href="' + escapeAttr(family.partnerUrl) + '">' + escapeHtml(name) + "</a>";
           } else {
-            html += escapeHtml(family.partnerName);
-        }
+            html += escapeHtml(name);
+          }
         } else {
-          html = "Сімейка: у стуснах"; // <--- текст без "з партнер"
+          html = "Сімейка: у стуснах";
         }
         break;
       case "married":
