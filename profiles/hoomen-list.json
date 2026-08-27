@@ -166,16 +166,16 @@
     "gender": "female",
     "description": "Сімейка: шлюбна · Статус: Люблю 🧸🌹👨‍👩‍👧"
     "schedule": [
-      { time: "09:00", status: "online" },
-      { time: "09:30", status: "away" },
-      { time: "10:25", status: "online" },
-      { time: "12:30", status: "away" },
-      { time: "14:35", status: "online" },
-      { time: "15:00", status: "away" },
-      { time: "17:01", status: "online" },
-      { time: "18:14", status: "away" },
-      { time: "20:00", status: "online" },
-      { time: "22:00", status: "offline" }
+      { "time": "09:00", "status": "online" },
+      { "time": "09:30", "status": "away" },
+      { "time": "10:25", "status": "online" },
+      { "time": "12:30", "status": "away" },
+      { "time": "14:35", "status": "online" },
+      { "time": "15:00", "status": "away" },
+      { "time": "17:01", "status": "online" },
+      { "time": "18:14", "status": "away" },
+      { "time": "20:00", "status": "online" },
+      { "time": "22:00", "status": "offline" }
     ]
   },
   {
