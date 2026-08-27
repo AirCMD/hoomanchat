@@ -1,0 +1,696 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #fdf8f4;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  color: #4a3b32;
+}
+
+* { box-sizing: border-box; }
+
+#hoomenchat-site {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 12px;
+  background: #fffbf7;
+  border: 1px solid #e0c4b3;
+}
+
+#hoomenchat-site a { color: #8c5332; }
+
+.hoomenchat-header {
+  display: block;
+  margin: 0 0 10px;
+  padding: 5px 8px;
+  background: linear-gradient(to bottom, #e89a6c, #cf7d4e);
+  border: 1px solid #b36337;
+  color: #fff;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.site-layout {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 10px 0;
+}
+
+.site-left {
+  display: table-cell;
+  width: 165px;
+  vertical-align: top;
+}
+
+.site-right {
+  display: table-cell;
+  vertical-align: top;
+}
+
+.left-box {
+  padding: 3px 7px;
+  background: #fbf0e6;
+  border: 1px solid #dcbfae;
+}
+
+.site-name {
+  margin: 1px 0 6px;
+  padding: 0 0 4px;
+  border-bottom: 1px solid #e3cbbd;
+  color: #5c3826;
+  font-size: 15px;
+  line-height: 17px;
+  font-weight: bold;
+  text-align: center;
+  word-break: break-word;
+}
+
+.main-avatar {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1.35;
+  margin: 0 0 6px;
+  object-fit: cover;
+  object-position: center;
+  background: #f2decb;
+  border: 1px solid #d6b29d;
+}
+
+.archat-button {
+  display: block;
+  width: 100%;
+  margin: 0 0 5px;
+  padding: 4px 0;
+  background: linear-gradient(to bottom, #ffbe98, #f09564);
+  border: 1px solid #c97342;
+  color: #fff !important;
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.archat-button:hover {
+  background: linear-gradient(to bottom, #ffcaa8, #f5a374);
+  color: #fff;
+}
+
+.nav-menu {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #dcbfae;
+}
+
+.nav-item {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 3px 2px;
+  border-bottom: 1px solid #ebd3c5;
+  color: #8c5332 !important;
+  font-size: 11px;
+  line-height: 13px;
+  text-decoration: underline;
+}
+
+.nav-item:hover {
+  background: #f7e4d7;
+  color: #5c3826 !important;
+  text-decoration: none;
+}
+
+.nav-item.current {
+  background: #f7e4d7;
+  color: #5c3826 !important;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.account-box {
+  margin: 8px 0 0;
+  padding: 5px 4px;
+  border-top: 1px solid #dcbfae;
+  text-align: center;
+}
+
+.account-text {
+  margin: 0 0 5px;
+  color: #8a6c5b;
+  font-size: 9px;
+  line-height: 12px;
+}
+
+.account-link {
+  display: block;
+  margin: 2px 0;
+  color: #8c5332 !important;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.account-link:hover {
+  color: #5c3826 !important;
+  text-decoration: none;
+}
+
+/* =====================================================
+   ISLANDS — ОСНОВНИЙ КОНТЕНТ
+   Структура і відступи синхронізовані з еталонною сторінкою.
+   ===================================================== */
+
+.profile-box {
+  margin: 0 0 8px;
+  padding: 7px;
+  background: #fff;
+  border: 1px solid #e3cbbd;
+}
+
+.profile-header {
+  margin: 0 0 7px;
+  padding: 4px 7px;
+  background: #fbf0e6;
+  border: 1px solid #dcbfae;
+  color: #5c3826;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+}
+
+.profile-info {
+  padding: 6px 7px;
+  background: #fffbf8;
+  border: 1px solid #e8d5c8;
+  color: #554137;
+  font-size: 11px;
+  line-height: 15px;
+}
+
+.profile-status {
+  margin-top: 4px;
+  color: #d96b27;
+  font-size: 10px;
+  line-height: 13px;
+  font-style: italic;
+}
+
+.posts-header {
+  margin: 8px 0 5px;
+  padding: 4px 7px;
+  background: #fbf0e6;
+  border: 1px solid #dcbfae;
+  color: #5c3826;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+}
+
+.profile-post {
+  margin: 0 0 7px;
+  background: #fff;
+  border: 1px solid #e3cbbd;
+}
+
+.profile-post-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 7px;
+  background: #fdf3eb;
+  border-bottom: 1px solid #e3cbbd;
+  color: #4a3b32;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+}
+
+.post-author-link {
+  flex: 0 0 auto;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+.post-author-link a {
+  color: #8c5332 !important;
+  text-decoration: underline;
+}
+
+.profile-post-body {
+  padding: 6px 7px;
+  color: #4a3b32;
+  font-size: 11px;
+  line-height: 15px;
+  overflow-wrap: anywhere;
+}
+
+.profile-post-date {
+  padding: 3px 7px;
+  border-top: 1px solid #f2e2d8;
+  color: #aa8876;
+  font-size: 9px;
+  line-height: 11px;
+}
+
+.post-actions {
+  padding: 4px 7px;
+  border-top: 1px solid #f2e2d8;
+  background: #fffdfb;
+}
+
+.like-button,
+.comment-button {
+  margin: 0 8px 0 0;
+  padding: 1px 3px;
+  border: 0;
+  background: transparent;
+  color: #8a6c5b;
+  font: 10px/13px Arial, Helvetica, sans-serif;
+  cursor: pointer;
+}
+
+.like-button:hover,
+.comment-button:hover {
+  color: #5c3826;
+}
+
+.like-button.liked {
+  color: #e65100;
+  font-weight: bold;
+}
+
+.comments-area {
+  display: none;
+  padding: 6px 7px;
+  background: #fcf5ef;
+  border-top: 1px solid #f2e2d8;
+}
+
+.comments-area.open {
+  display: block;
+}
+
+.fake-comment,
+.user-comment {
+  margin: 0 0 5px;
+  padding: 4px 5px;
+  background: #fff;
+  border: 1px solid #ead8cc;
+  color: #4a3b32;
+  font-size: 10px;
+  line-height: 13px;
+  overflow-wrap: anywhere;
+}
+
+.fake-comment-name {
+  margin-bottom: 2px;
+  font-weight: bold;
+}
+
+.comment-form {
+  margin-top: 6px;
+}
+
+.comment-input {
+  display: block;
+  width: 100%;
+  min-height: 45px;
+  padding: 4px 5px;
+  resize: vertical;
+  border: 1px solid #dcbfae;
+  background: #fff;
+  color: #4a3b32;
+  font: 10px/13px Arial, Helvetica, sans-serif;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: #cf7d4e;
+}
+
+.comment-send,
+.show-more,
+.create-post-btn {
+  padding: 3px 8px;
+  background: #fbf0e6;
+  border: 1px solid #dcbfae;
+  color: #75462b;
+  font-size: 10px;
+  line-height: 13px;
+  cursor: pointer;
+}
+
+.comment-send:hover,
+.show-more:hover,
+.create-post-btn:hover {
+  background: #f7e4d7;
+  color: #5c3826;
+}
+
+.create-post-btn {
+  display: block;
+  width: 100%;
+  margin: 0 0 5px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.create-post-form {
+  display: none;
+  margin: 0 0 8px;
+  padding: 7px;
+  background: #fff;
+  border: 1px solid #e3cbbd;
+}
+
+.create-post-form.open {
+  display: block;
+}
+
+.show-more {
+  display: block;
+  width: 100%;
+  margin-top: 2px;
+  padding: 5px 7px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: underline;
+}
+
+.show-more.hidden {
+  display: none;
+}
+
+.rules-box {
+  margin: 8px 0 0;
+  padding: 5px 8px;
+  background: #fff;
+  border: 1px solid #e3cbbd;
+  color: #75462b;
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.rules-box a {
+  color: #5c3826;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.statistics-box {
+  margin: 8px 0 0;
+  padding: 5px 8px;
+  background: #fff;
+  border: 1px solid #e3cbbd;
+  color: #8a6c5b;
+  font: 10px/13px "Courier New", Courier, monospace;
+}
+
+.statistics-title {
+  margin: 0 0 3px;
+  color: #5c3826;
+  font: bold 10px/12px Arial, Helvetica, sans-serif;
+}
+
+.statistics-number {
+  color: #4a3b32;
+  font-weight: bold;
+}
+
+.statistics-online {
+  color: #d96b27;
+  font-weight: bold;
+}
+
+.footer-line {
+  margin: 7px 0 0;
+  padding-top: 4px;
+  border-top: 1px solid #ead8cc;
+  color: #aa8876;
+  font-size: 9px;
+  line-height: 11px;
+  text-align: center;
+}
+
+/* =====================================================
+   МОБІЛЬНА АДАПТАЦІЯ
+   Синхронізована з еталонною сторінкою "Острови".
+   ===================================================== */
+
+@media screen and (max-width: 900px) {
+  .site-left {
+    width: 150px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  html, body {
+    font-size: 14px;
+    line-height: 18px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  #hoomenchat-site {
+    padding: 8px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    border: none;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .hoomenchat-header {
+    padding: 8px 10px;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 1.5px;
+  }
+
+  .site-layout {
+    display: block;
+    border-spacing: 0;
+  }
+
+  .site-left,
+  .site-right {
+    display: block;
+    width: 100%;
+  }
+
+  .site-left {
+    margin-bottom: 12px;
+  }
+
+  .left-box {
+    padding: 10px 12px;
+  }
+
+  .site-name {
+    font-size: 18px;
+    line-height: 22px;
+    margin-bottom: 10px;
+  }
+
+  .main-avatar {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    margin: 0 auto 12px;
+    aspect-ratio: 1 / 1.25;
+  }
+
+  .archat-button {
+    padding: 12px 0;
+    font-size: 13px;
+    line-height: 18px;
+    min-height: 44px;
+    margin-bottom: 10px;
+  }
+
+  .nav-item {
+    padding: 12px 6px;
+    font-size: 15px;
+    line-height: 19px;
+    min-height: 44px;
+  }
+
+  .account-box {
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+
+  .account-link {
+    padding: 10px 0;
+    font-size: 14px;
+    line-height: 18px;
+    min-height: 40px;
+  }
+
+  .profile-box {
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+
+  .profile-header {
+    font-size: 14px;
+    line-height: 18px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+
+  .profile-info {
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .profile-status {
+    font-size: 12px;
+    line-height: 16px;
+    margin-top: 5px;
+  }
+
+  .posts-header {
+    margin: 10px 0 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .create-post-btn {
+    min-height: 44px;
+    padding: 11px 12px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .create-post-form {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .profile-post {
+    margin-bottom: 10px;
+  }
+
+  .profile-post-title {
+    display: block;
+    padding: 10px 12px;
+    font-size: 15px;
+    line-height: 19px;
+  }
+
+  .post-author-link {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    line-height: 16px;
+    white-space: normal;
+  }
+
+  .profile-post-body {
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .post-actions {
+    padding: 8px 12px;
+  }
+
+  .like-button,
+  .comment-button {
+    min-height: 36px;
+    margin-right: 8px;
+    padding: 7px 5px;
+    font-size: 13px;
+    line-height: 17px;
+  }
+
+  .comments-area {
+    padding: 10px 12px;
+  }
+
+  .fake-comment,
+  .user-comment {
+    padding: 8px 9px;
+    font-size: 12px;
+    line-height: 17px;
+  }
+
+  .comment-input {
+    min-height: 70px;
+    padding: 8px 9px;
+    font-size: 13px;
+    line-height: 17px;
+  }
+
+  .comment-send {
+    min-height: 36px;
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+  .profile-post-date {
+    padding: 6px 12px;
+    font-size: 11px;
+    line-height: 14px;
+  }
+
+  .show-more {
+    min-height: 42px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 17px;
+  }
+
+  .rules-box,
+  .statistics-box {
+    font-size: 12px;
+    line-height: 16px;
+    padding: 10px 12px;
+  }
+
+  .statistics-title {
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .footer-line {
+    font-size: 11px;
+    line-height: 14px;
+    margin-top: 12px;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .main-avatar {
+    max-width: 100%;
+    aspect-ratio: 1 / 1.15;
+  }
+
+  .profile-post-title {
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .like-button,
+  .comment-button {
+    font-size: 12px;
+    margin-right: 4px;
+  }
+}
