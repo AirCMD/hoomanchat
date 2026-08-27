@@ -176,7 +176,7 @@
     { time: "18:14", status: "away" },
     { time: "20:00", status: "online" },
     { time: "22:00", status: "offline" }
-  ],
+    ]
   },
   {
     "name": "petro_ivanchuk",
