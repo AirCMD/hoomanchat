@@ -3,491 +3,154 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="../css/islandsblue-template.css">
-<title>ОСТРІВ: TAMATCHI</title>
+<link rel="stylesheet" href="../css/islandsviolet-template.css">
+<title>ОСТРІВ: ВІЛЬНИХ ДУМОК</title>
 
-<style>
-  /* Піксельний курсор */
-body {
-  cursor: url('cur220.svg'), auto;
-}
-
-  /* Дощ */
-  #rain-container {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 9998;
-    overflow: hidden;
-  }
-
-  /* Сніг */
-  #snowflakes-container {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 9999;
-    overflow: hidden;
-  }
-
-  .raindrop {
-    position: absolute;
-    top: -40px;
-    width: 2px;
-    height: 18px;
-    background: linear-gradient(
-      to bottom,
-      rgba(100, 150, 200, 0),
-      rgba(100, 150, 200, 0.95)
-    );
-    opacity: 0.9;
-    animation: rain-fall linear forwards;
-    will-change: transform;
-  }
-
-  @keyframes rain-fall {
-    from {
-      transform: translateY(0);
-      opacity: 0.9;
-    }
-
-    to {
-      transform: translateY(110vh);
-      opacity: 0;
-    }
-  }
-
-  .snowflake {
-    position: absolute;
-    font-size: 1.5em;
-    opacity: 0.8;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  /* Контент */
-  #hoomenchat-site {
-    position: relative;
-    z-index: 2;
-  }
-
-  /* Стиль для гіфок та емодзі в дописах */
-  .post-media {
-    margin: 10px 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .post-gif {
-    max-width: 100%;
-    height: auto;
-    border-radius: 5px;
-    background: transparent;
-  }
-
-  .post-emoji-badge {
-    font-size: 3em;
-    display: inline-block;
-    animation: bounce 0.6s infinite;
-  }
-
-  @keyframes bounce {
-    0%, 100% {
-      transform: translateY(0);
-    }
-
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
-  @keyframes snow-fall {
-    to {
-      transform: translateY(100vh);
-      opacity: 0;
-    }
-  }
-
-  .snowflake.falling {
-    animation: snow-fall linear forwards;
-  }
-
-  .post-emoji-small {
-    font-size: 1.2em;
-    margin-right: 5px;
-  }
-</style>
 </head>
-
 <body>
-
-<!-- Дощ -->
-<div id="rain-container"></div>
-
-<!-- Сніг під курсором -->
-<div id="snowflakes-container"></div>
-
 <div id="hoomenchat-site">
-
 <div class="hoomenchat-header">ГУМЕНЧАТ</div>
-
 <div class="site-layout">
-
-<div class="site-left">
-<div class="left-box">
-
-<div class="site-name">TAMATCHI</div>
-
-<img
-  class="main-avatar"
-  src="https://blogger.googleusercontent.com/img/a/AVvXsEiuabvbaBGsGrJJ19QSN16e0aNBAomJuxsmt18bQb9bQdy02xcQc1JhhrVHHNrUPC7UjvAPKjNsNjBimVcj2BPI8K54rV3qDu3AYMsTWE1BTwz79hkE7p4I11Ovf1S3xQq-S0LYSmu_0xgwVrmnp6xE8IZCtSiG33out7Vc_Am_7JBTL5qzSsiKgSgNk-w"
-  alt="TAMATCHI"
->
-
+<div class="site-left"><div class="left-box">
+<div class="site-name">FREEMIND</div>
+<img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEiuabvbaBGsGrJJ19QSN16e0aNBAomJuxsmt18bQb9bQdy02xcQc1JhhrVHHNrUPC7UjvAPKjNsNjBimVcj2BPI8K54rV3qDu3AYMsTWE1BTwz79hkE7p4I11Ovf1S3xQq-S0LYSmu_0xgwVrmnp6xE8IZCtSiG33out7Vc_Am_7JBTL5qzSsiKgSgNk-w" alt="FREEMIND">
 <a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
-
 <div class="nav-menu">
-  <a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
-  <a class="nav-item" href="../profiles.html">Гумени</a>
-  <a class="nav-item" href="../droomens.html">Друмени</a>
-  <a class="nav-item" href="../activity.html">Стрічерчат</a>
-  <a class="nav-item current" href="../islands.html">Острови</a>
-  <a class="nav-item" href="../rules.html">Правила</a>
+<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
+<a class="nav-item" href="../profiles.html">Гумени</a>
+<a class="nav-item" href="../droomens.html">Друмени</a>
+<a class="nav-item" href="../activity.html">Стрічерчат</a>
+<a class="nav-item current" href="../islands.html">Острови</a>
+<a class="nav-item" href="../rules.html">Правила</a>
 </div>
-
-<div class="account-box">
-  <div class="account-text">Немає гумгайла?</div>
-  <a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
-  <a class="account-link" href="../login.html">ВХІД</a>
-</div>
-
-</div>
-</div>
+<div class="account-box"><div class="account-text">Немає гумгайла?</div><a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a><a class="account-link" href="../login.html">ВХІД</a></div>
+</div></div>
 
 <div class="site-right">
-
 <div class="profile-box">
-
-<div class="profile-header">
-  TAMATCHI — острів
-</div>
-
+<div class="profile-header">FREEMIND — острів</div>
 <div class="profile-info">
-  <div>острів для обговорення emo, core та альтернативної музики.</div>
-  <div class="profile-status" style="color:green; font-style:normal;">
-    Статус: відкрита острів
-  </div>
+<div>острів для обговорення emo, core та альтернативної музики.</div>
+<div class="profile-status" style="color:green; font-style:normal;">Статус: відкрита острів</div>
+</div>
 </div>
 
-</div>
+<div class="posts-header">Дописи спільноти</div>
+<button id="toggle-create-btn" class="create-post-btn">Створити публікацію</button>
 
-<div class="posts-header">
-  Дописи спільноти
-</div>
-
-<button
-  id="toggle-create-btn"
-  class="create-post-btn"
->
-  Створити публікацію
-</button>
-
-<div
-  id="create-post-box"
-  class="create-post-form"
->
-
-<input
-  type="text"
-  id="new-post-title"
-  class="comment-input"
-  style="min-height:24px; margin-bottom:5px;"
-  placeholder="Заголовок допису..."
->
-
-<textarea
-  id="new-post-text"
-  class="comment-input"
-  placeholder="Текст допису..."
-></textarea>
-
-<input
-  type="text"
-  id="new-post-gif"
-  class="comment-input"
-  style="min-height:24px; margin-bottom:5px;"
-  placeholder="Посилання на гіфку (опціонально)..."
->
-
-<input
-  type="text"
-  id="new-post-emoji"
-  class="comment-input"
-  style="min-height:24px; margin-bottom:5px;"
-  placeholder="Емодзі (опціонально, наприклад: 🎉)..."
->
-
-<button
-  id="submit-post-btn"
-  class="comment-send"
-  style="margin-top:5px;"
->
-  Опублікувати
-</button>
-
+<div id="create-post-box" class="create-post-form">
+  <input type="text" id="new-post-title" class="comment-input" style="min-height:24px; margin-bottom:5px;" placeholder="Заголовок допису...">
+  <textarea id="new-post-text" class="comment-input" placeholder="Текст допису..."></textarea>
+  <button id="submit-post-btn" class="comment-send" style="margin-top:5px;">Опублікувати</button>
 </div>
 
 <div id="island-posts"></div>
 
-<div
-  id="show-more-posts"
-  class="show-more"
->
-  показати ще...
-</div>
-
-<div class="rules-box">
-  Пам'ятай та дотримуйся
-  <a href="../rules.html">ПРАВИЛ</a>
-  нашого ресурсу для приємного та друмнього часу разом з нами.
-</div>
-
-<div class="statistics-box">
-
-<div class="statistics-title">
-  Статистика Гуменчату
-</div>
-
-<div>
-  Зареєстровано гуменів:
-  <span id="registered-hoomen"></span>
-</div>
-
-<div>
-  Зараз онлайн:
-  <span
-    class="statistics-online"
-    id="online-hoomen"
-  ></span>
-</div>
-
-<div>
-  Гуменів сьогодні завітало:
-  <span id="today-hoomen"></span>
-</div>
-
-</div>
-
-<div class="footer-line">
-  Гуменчат — місце для гуменів.
-</div>
-
-</div>
-</div>
-</div>
+<div id="show-more-posts" class="show-more">показати ще...</div>
+<div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
+<div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span id="today-hoomen"></span></div></div>
+<div class="footer-line">Гуменчат — місце для гуменів.</div>
+</div></div></div>
 
 <script>
 (function(){
-
 const initialPostsData = [
-  {title: "Сьогодні мені захотілося погратися з трекером.", body: "Мені вдалося зняти нашийник щоб краще погратися з ним.", likes: 521, date: "22 червня", gif: "", emoji: "🎾", comments: [{name: "fray_dog", text: "Нажаль, дописів з трекера більше не буде."}, {name: "fray_dog", text: "Фрая знищила нашийник та трекер."}]},
-  {title: "Схоже, сьогодні гумени не хочуть проводити зі мною час.", body: "Вони зачинилися на кухні і щось обговорюють.", likes: 2, date: "20 червня", gif: "", emoji: "🚪", comments: [{name: "fray_dog", text: "Ніхто собаку віддавати не збирається. Не пишіть в арчат."}, {name: "fray_dog", text: "Гумени дали мені їжи."}, {name: "fray_dog", text: "Це все прикольно. Але це не те."}]},
-  {title: "Сьогодні я помстилась гуменам!", body: "Залишила смердючий подарунок під ковдрею, де вони сплять та надзюрила на подушку.", likes: 1982, date: "17 червня", gif: "", emoji: "💩", comments: [{name: "fray_dog", text: "Мені не подобається ваша реакція, це не гарно."}]},
-  {title: "Я знайшла нову улюблену іграшку.", body: "Але гумени мене впіймали та повезли до вета. Я не люблю ветів, бо вони роблять уколи.", likes: 79, date: "15 червня", gif: "", emoji: "🏥", comments: [{name: "fray_dog", text: "Я дуже довго дзявкала на вета та не давалась йому! Але він мене відволік."}, {name: "fray_dog", text: "Мене забрали додому, але я вже не захотіла їжи. Мене образили мої гумени."}]},
-  {title: "Сьогодні я гуляю в парку з іншими собаками.", body: "Ми інформативно обмінялися повідомленнями з дотриманням собачого етикету. Але мені не сподобався запах долматинця і тому я почала дзявкати, долматинець втік.", likes: 44, date: "13 червня", gif: "", emoji: "🌳", comments: [{name: "fray_dog", text: "Малінуа дуже поважна собака, з нею ми дружньо провели час."}, {name: "fray_dog", text: "Але після малінуа я обрала вівчарика. Вівчар мій найліпший друг."}, {name: "fray_dog", text: "Увагу вівчарика забрала кокер спаніель, тому я пішла досліджувати їжу гуменів, яка сиділа на лавочці. Там була досить смачна сосиска, але довелося бігти."}]},
-  {title: "Мені не подобається сміх гуменів.", body: "Вони дзявкають! Але я не дзявкаю, я дзявкаю!", likes: 77, date: "12 червня", gif: "", emoji: "😂", comments: [{name: "yurii_ichigo", text: "Це реально смішно) Як це собака вас ще там не покусала?)"}, {name: "fray_dog", text: "Фрая спочатку дзявкала люто та сердито, розізлилася та й пішла."}]},
-  {title: "Мені придбали нову іграшку.", body: "Але вона мені не подобається. Я хочу стару! Я дзявкатиму допоки мені її не повернуть назад!", likes: 57, date: "9 червня", gif: "", emoji: "🧸", comments: [{name: "fray_dog", text: "Дзяв!"}]},
-  {title: "Розірвала подушку на ліжку, покарали :(", body: "Гумени забрали мою улюблену їжу.", likes: 3, date: "8 червня", gif: "", emoji: "😔", comments: [{name: "yurii_ichigo", text: "Собака сама навчилась писати? Я чогось не розумію, що тут відбувається?"}, {name: "fray_dog", text: "Трекер з камерою. Він має вбудовану функцію відслідковувати місцерозташування та на основі дій робити дописи."}]},
-  {title: "Чекаю їжі...", body: "Маніпулюю своїми великими чарівними очима. Гумени обов'язково дадуть мені смаківничка.", likes: 4, date: "5 червня", gif: "", emoji: "🍖", comments: [{name: "fray_dog", text: "Дзявкнула на гумена."}, {name: "fray_dog", text: "Тільки хотіла дзявкнути, нарешті погодували."}]},
-  {title: "Гуляю біля річки.", body: "Тут стільки цікавих нових запахів, але я не змогла встояти перед можливістю пострибати у річці. Полювала та дзявкала на мушлю? Власники на мене накричали через те що я трішки водичкою їх зачепила.", likes: 87, date: "3 червня", gif: "", emoji: "🌊", comments: [{name: "fray_dog", text: "Подзявкала на сусідів трішки."}, {name: "fray_dog", text: "Та на дітей дзявкнула."}]},
-  {title: "Заголовок допису #11", body: "Текст допису #11", likes: 10, date: "1 червня", gif: "", emoji: "✨", comments: []},
-  {title: "Заголовок допису #12", body: "Текст допису #12", likes: 15, date: "30 травня", gif: "", emoji: "⭐", comments: []},
-  {title: "Заголовок допису #13", body: "Текст допису #13", likes: 8, date: "29 травня", gif: "", emoji: "🎉", comments: []},
-  {title: "Заголовок допису #14", body: "Текст допису #14", likes: 23, date: "28 травня", gif: "", emoji: "🎊", comments: []},
-  {title: "Заголовок допису #15", body: "Текст допису #15", likes: 41, date: "27 травня", gif: "", emoji: "🎈", comments: []},
-  {title: "Заголовок допису #16", body: "Текст допису #16", likes: 12, date: "25 травня", gif: "", emoji: "🎁", comments: []},
-  {title: "Заголовок допису #17", body: "Текст допису #17", likes: 5, date: "24 травня", gif: "", emoji: "🎀", comments: []},
-  {title: "Заголовок допису #18", body: "Текст допису #18", likes: 19, date: "23 травня", gif: "", emoji: "🌟", comments: []},
-  {title: "Заголовок допису #19", body: "Текст допису #19", likes: 30, date: "21 травня", gif: "", emoji: "💫", comments: []},
-  {title: "Заголовок допису #20", body: "Текст допису #20", likes: 14, date: "20 травня", gif: "", emoji: "🌈", comments: []},
-  {title: "Заголовок допису #21", body: "Текст допису #21", likes: 6, date: "18 травня", gif: "", emoji: "☀️", comments: []},
-  {title: "Заголовок допису #22", body: "Текст допису #22", likes: 22, date: "17 травня", gif: "", emoji: "🌙", comments: []},
-  {title: "Заголовок допису #23", body: "Текст допису #23", likes: 18, date: "15 травня", gif: "", emoji: "⭐", comments: []},
-  {title: "Заголовок допису #24", body: "Текст допису #24", likes: 9, date: "14 травня", gif: "", emoji: "✨", comments: []},
-  {title: "Заголовок допису #25", body: "Текст допису #25", likes: 35, date: "12 травня", gif: "", emoji: "🎯", comments: []},
-  {title: "Заголовок допису #26", body: "Текст допису #26", likes: 27, date: "11 травня", gif: "", emoji: "🎪", comments: []},
-  {title: "Заголовок допису #27", body: "Текст допису #27", likes: 11, date: "9 травня", gif: "", emoji: "🎭", comments: []},
-  {title: "Заголовок допису #28", body: "Текст допису #28", likes: 16, date: "8 травня", gif: "", emoji: "🎬", comments: []},
-  {title: "Заголовок допису #29", body: "Текст допису #29", likes: 4, date: "6 травня", gif: "", emoji: "🎮", comments: []},
-  {title: "Заголовок допису #30", body: "Текст допису #30", likes: 50, date: "5 травня", gif: "", emoji: "🎲", comments: []},
-  {title: "Заголовок допису #31", body: "Текст допису #31", likes: 13, date: "3 травня", gif: "", emoji: "🎰", comments: []},
-  {title: "Заголовок допису #32", body: "Текст допису #32", likes: 21, date: "2 травня", gif: "", emoji: "🎸", comments: []},
-  {title: "Заголовок допису #33", body: "Текст допису #33", likes: 7, date: "30 квітня", gif: "", emoji: "🎹", comments: []},
-  {title: "Заголовок допису #34", body: "Текст допису #34", likes: 29, date: "28 квітня", gif: "", emoji: "🎺", comments: []},
-  {title: "Заголовок допису #35", body: "Текст допису #35", likes: 17, date: "27 квітня", gif: "", emoji: "🎻", comments: []},
-  {title: "Заголовок допису #36", body: "Текст допису #36", likes: 33, date: "25 квітня", gif: "", emoji: "🥁", comments: []},
-  {title: "Заголовок допису #37", body: "Текст допису #37", likes: 2, date: "24 квітня", gif: "", emoji: "🎤", comments: []},
-  {title: "Заголовок допису #38", body: "Текст допису #38", likes: 44, date: "22 квітня", gif: "", emoji: "🎧", comments: []},
-  {title: "Заголовок допису #39", body: "Текст допису #39", likes: 12, date: "20 квітня", gif: "", emoji: "🎵", comments: []},
-  {title: "Заголовок допису #40", body: "Текст допису #40", likes: 25, date: "19 квітня", gif: "", emoji: "🎶", comments: []},
-  {title: "Заголовок допису #41", body: "Текст допису #41", likes: 8, date: "17 квітня", gif: "", emoji: "🎼", comments: []},
-  {title: "Заголовок допису #42", body: "Текст допису #42", likes: 19, date: "15 квітня", gif: "", emoji: "🎻", comments: []},
-  {title: "Заголовок допису #43", body: "Текст допису #43", likes: 31, date: "14 квітня", gif: "", emoji: "🥁", comments: []},
-  {title: "Заголовок допису #44", body: "Текст допису #44", likes: 10, date: "12 квітня", gif: "", emoji: "🎺", comments: []},
-  {title: "Заголовок допису #45", body: "Текст допису #45", likes: 22, date: "10 квітня", gif: "", emoji: "🎸", comments: []},
-  {title: "Заголовок допису #46", body: "Текст допису #46", likes: 14, date: "8 квітня", gif: "", emoji: "🎹", comments: []},
-  {title: "Заголовок допису #47", body: "Текст допису #47", likes: 38, date: "6 квітня", gif: "", emoji: "🎤", comments: []},
-  {title: "Заголовок допису #48", body: "Текст допису #48", likes: 5, date: "5 квітня", gif: "", emoji: "🎧", comments: []},
-  {title: "Заголовок допису #49", body: "Текст допису #49", likes: 16, date: "3 квітня", gif: "", emoji: "🎵", comments: []},
-  {title: "Заголовок допису #50", body: "Текст допису #50", likes: 27, date: "1 квітня", gif: "", emoji: "🎶", comments: []}
+  {title: "Сьогодні мені захотілося погратися з трекером.", body: "Мені вдалося зняти нашийник щоб краще погратися з ним.", likes: 521, date: "22 червня", comments: [{name: "fray_dog", text: "Нажаль, дописів з трекера більше не буде."}, {name: "fray_dog", text: "Фрая знищила нашийник та трекер."}]},
+  {title: "Схоже, сьогодні гумени не хочуть проводити зі мною час.", body: "Вони зачинилися на кухні і щось обговорюють.", likes: 2, date: "20 червня", comments: [{name: "fray_dog", text: "Ніхто собаку віддавати не збирається. Не пишіть в арчат."}, {name: "fray_dog", text: "Гумени дали мені їжі."}, {name: "fray_dog", text: "Це все прикольно. Але це не те."}]},
+  {title: "Сьогодні я помстилась гуменам!", body: "Залишила смердючий подарунок під ковдрою, де вони сплять та надзюрила на подушку.", likes: 1982, date: "17 червня", comments: [{name: "fray_dog", text: "Мені не подобається ваша реакція, це не гарно."}]},
+  {title: "Я знайшла нову улюблену іграшку.", body: "Але гумени мене впіймали та повезли до вета. Я не люблю ветів, бо вони роблять уколи.", likes: 79, date: "15 червня", comments: [{name: "fray_dog", text: "Я дуже довго дзявкала на вета та не давалась йому! Але він мене відволік."}, {name: "fray_dog", text: "Мене забрали додому, але я вже не захотіла їжі. Мене образили мої гумени."}]},
+  {title: "Сьогодні я гуляю в парку з іншими собаками.", body: "Ми інформативно обмінялися повідомленнями з дотриманням собачого етикету. Але мені не сподобався запах долматинця і тому я почала дзявкати, долматинець втік.", likes: 44, date: "13 червня", comments: [{name: "fray_dog", text: "Малінуа дуже поважна собака, з нею ми дружньо провели час."}, {name: "fray_dog", text: "Але після малінуа я обрала вівчарика. Вівчар мій найліпший друг."}, {name: "fray_dog", text: "Увагу вівчарика забрала кокер спаніель, тому я пішла досліджувати їжу гуменів, яка сиділа на лавочці. Там була досить смачна сосиска, але довелося бігти."}]},
+  {title: "Мені не подобається сміх гуменів.", body: "Вони дзявкають! Але я не дзявкаю, я дзявкаю!", likes: 77, date: "12 червня", comments: [{name: "yurii_ichigo", text: "Це реально смішно) Як це собака вас ще там не покусала?)"}, {name: "fray_dog", text: "Фрая спочатку дзявкала люто та сердито, розізлилася та й пішла."}]},
+  {title: "Мені придбали нову іграшку.", body: "Але вона мені не подобається. Я хочу стару! Я дзявкатиму допоки мені її не повернуть назад!", likes: 57, date: "9 червня", comments: [{name: "fray_dog", text: "Дзяв!"}]},
+  {title: "Розірвала подушку на ліжку, покарали :(", body: "Гумени забрали мою улюблену їжу.", likes: 3, date: "8 червня", comments: [{name: "yurii_ichigo", text: "Собака сама навчилась писати? Я чогось не розумію, що тут відбувається?"}, {name: "fray_dog", text: "Трекер з камерою. Він має вбудовану функцію відслідковувати місцерозташування та на основі дій робити дописи."}]},
+  {title: "Чекаю їжі...", body: "Маніпулюю своїми великими чарівними очима. Гумени обов'язково дадуть мені смаківничка.", likes: 4, date: "5 червня", comments: [{name: "fray_dog", text: "Дзявкнула на гумена."}, {name: "fray_dog", text: "Тільки хотіла дзявкнути, нарешті погодували."}]},
+  {title: "Гуляю біля річки.", body: "Тут стільки цікавих нових запахів, але я не змогла встояти перед можливістю пострибати у річці. Полювала та дзявкала на мушлю? Власники на мене накричали через те що я трішки водичкою їх зачепила.", likes: 87, date: "3 червня", comments: [{name: "fray_dog", text: "Подзявкала на сусідів трішки."}, {name: "fray_dog", text: "Та на дітей дзявкнула."}]},
+  {title: "Заголовок допису #11", body: "Текст допису #11", likes: 10, date: "1 червня", comments: []},
+  {title: "Заголовок допису #12", body: "Текст допису #12", likes: 15, date: "30 травня", comments: []},
+  {title: "Заголовок допису #13", body: "Текст допису #13", likes: 8, date: "29 травня", comments: []},
+  {title: "Заголовок допису #14", body: "Текст допису #14", likes: 23, date: "28 травня", comments: []},
+  {title: "Заголовок допису #15", body: "Текст допису #15", likes: 41, date: "27 травня", comments: []},
+  {title: "Заголовок допису #16", body: "Текст допису #16", likes: 12, date: "25 травня", comments: []},
+  {title: "Заголовок допису #17", body: "Текст допису #17", likes: 5, date: "24 травня", comments: []},
+  {title: "Заголовок допису #18", body: "Текст допису #18", likes: 19, date: "23 травня", comments: []},
+  {title: "Заголовок допису #19", body: "Текст допису #19", likes: 30, date: "21 травня", comments: []},
+  {title: "Заголовок допису #20", body: "Текст допису #20", likes: 14, date: "20 травня", comments: []},
+  {title: "Заголовок допису #21", body: "Текст допису #21", likes: 6, date: "18 травня", comments: []},
+  {title: "Заголовок допису #22", body: "Текст допису #22", likes: 22, date: "17 травня", comments: []},
+  {title: "Заголовок допису #23", body: "Текст допису #23", likes: 18, date: "15 травня", comments: []},
+  {title: "Заголовок допису #24", body: "Текст допису #24", likes: 9, date: "14 травня", comments: []},
+  {title: "Заголовок допису #25", body: "Текст допису #25", likes: 35, date: "12 травня", comments: []},
+  {title: "Заголовок допису #26", body: "Текст допису #26", likes: 27, date: "11 травня", comments: []},
+  {title: "Заголовок допису #27", body: "Текст допису #27", likes: 11, date: "9 травня", comments: []},
+  {title: "Заголовок допису #28", body: "Текст допису #28", likes: 16, date: "8 травня", comments: []},
+  {title: "Заголовок допису #29", body: "Текст допису #29", likes: 4, date: "6 травня", comments: []},
+  {title: "Заголовок допису #30", body: "Текст допису #30", likes: 50, date: "5 травня", comments: []},
+  {title: "Заголовок допису #31", body: "Текст допису #31", likes: 13, date: "3 травня", comments: []},
+  {title: "Заголовок допису #32", body: "Текст допису #32", likes: 21, date: "2 травня", comments: []},
+  {title: "Заголовок допису #33", body: "Текст допису #33", likes: 7, date: "30 квітня", comments: []},
+  {title: "Заголовок допису #34", body: "Текст допису #34", likes: 29, date: "28 квітня", comments: []},
+  {title: "Заголовок допису #35", body: "Текст допису #35", likes: 17, date: "27 квітня", comments: []},
+  {title: "Заголовок допису #36", body: "Текст допису #36", likes: 33, date: "25 квітня", comments: []},
+  {title: "Заголовок допису #37", body: "Текст допису #37", likes: 2, date: "24 квітня", comments: []},
+  {title: "Заголовок допису #38", body: "Текст допису #38", likes: 44, date: "22 квітня", comments: []},
+  {title: "Заголовок допису #39", body: "Текст допису #39", likes: 12, date: "20 квітня", comments: []},
+  {title: "Заголовок допису #40", body: "Текст допису #40", likes: 25, date: "19 квітня", comments: []},
+  {title: "Заголовок допису #41", body: "Текст допису #41", likes: 8, date: "17 квітня", comments: []},
+  {title: "Заголовок допису #42", body: "Текст допису #42", likes: 19, date: "15 квітня", comments: []},
+  {title: "Заголовок допису #43", body: "Текст допису #43", likes: 31, date: "14 квітня", comments: []},
+  {title: "Заголовок допису #44", body: "Текст допису #44", likes: 10, date: "12 квітня", comments: []},
+  {title: "Заголовок допису #45", body: "Текст допису #45", likes: 22, date: "10 квітня", comments: []},
+  {title: "Заголовок допису #46", body: "Текст допису #46", likes: 14, date: "8 квітня", comments: []},
+  {title: "Заголовок допису #47", body: "Текст допису #47", likes: 38, date: "6 квітня", comments: []},
+  {title: "Заголовок допису #48", body: "Текст допису #48", likes: 5, date: "5 квітня", comments: []},
+  {title: "Заголовок допису #49", body: "Текст допису #49", likes: 16, date: "3 квітня", comments: []},
+  {title: "Заголовок допису #50", body: "Текст допису #50", likes: 27, date: "1 квітня", comments: []}
 ];
 
 const container = document.getElementById('island-posts');
 
-function createPostElement(title, body, likes, date, gif = "", emoji = "", comments = []) {
-
+function createPostElement(title, body, likes, date, comments = []) {
   const post = document.createElement('div');
   post.className = 'profile-post';
-
+  
   let commentsHtml = '';
-
   comments.forEach(c => {
-    commentsHtml += `
-      <div class="fake-comment">
-        <div class="fake-comment-name">${c.name}</div>
-        ${c.text}
-      </div>
-    `;
+    commentsHtml += `<div class="fake-comment"><div class="fake-comment-name">${c.name}</div>${c.text}</div>`;
   });
-
-  let mediaHtml = '';
-
-  if (gif || emoji) {
-
-    mediaHtml = '<div class="post-media">';
-
-    if (gif) {
-      mediaHtml += `
-        <img
-          src="${gif}"
-          class="post-gif"
-          alt="gif"
-          onerror="this.style.display='none'"
-        >
-      `;
-    }
-
-    if (emoji) {
-      mediaHtml += `
-        <span class="post-emoji-badge">${emoji}</span>
-      `;
-    }
-
-    mediaHtml += '</div>';
-  }
 
   post.innerHTML = `
     <div class="profile-post-title">
-      <span>
-        ${emoji ? '<span class="post-emoji-small">' + emoji + '</span>' : ''}
-        ${title}
-      </span>
-
-      <span class="post-author-link">
-        острів:
-        <a href="island.html">TAMATCHI</a>
-      </span>
+      <span>${title}</span>
+      <span class="post-author-link">острів: <a href="island.html">FREEMIND</a></span>
     </div>
-
     <div class="profile-post-body">${body}</div>
-
-    ${mediaHtml}
-
     <div class="post-actions">
-      <button class="like-button">
-        ♡ Подобається
-        <span class="like-count">${likes}</span>
-      </button>
-
-      <button class="comment-button">
-        💬 Коментарі
-        <span class="comment-count">${comments.length}</span>
-      </button>
+      <button class="like-button">♡ Подобається <span class="like-count">${likes}</span></button>
+      <button class="comment-button">💬 Коментарі <span class="comment-count">${comments.length}</span></button>
     </div>
-
     <div class="comments-area">
-
-      <div class="comments-list">
-        ${commentsHtml}
-      </div>
-
+      <div class="comments-list">${commentsHtml}</div>
       <div class="comment-form">
-        <textarea
-          class="comment-input"
-          placeholder="Написати коментар..."
-        ></textarea>
-
-        <button class="comment-send">
-          Відправити
-        </button>
+        <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+        <button class="comment-send">Відправити</button>
       </div>
-
     </div>
-
-    <div class="profile-post-date">
-      ${date}
-    </div>
+    <div class="profile-post-date">${date}</div>
   `;
-
   return post;
 }
 
-/* Виведення 50 дописів */
-
+// Виведення унікальних 50 дописів
 initialPostsData.forEach(item => {
-
-  const elem = createPostElement(
-    item.title,
-    item.body,
-    item.likes,
-    item.date,
-    item.gif,
-    item.emoji,
-    item.comments
-  );
-
+  const elem = createPostElement(item.title, item.body, item.likes, item.date, item.comments);
   container.appendChild(elem);
-
 });
 
-/* Показати ще */
-
 let visible = 3;
-
-function update() {
-
-  const posts = [
-    ...container.querySelectorAll('.profile-post')
-  ];
-
-  posts.forEach((post, index) => {
-
-    post.style.display =
-      index < visible
-        ? 'block'
-        : 'none';
-
-  });
-
-  const showBtn =
-    document.getElementById('show-more-posts');
-
+function update(){
+  const posts = [...container.querySelectorAll('.profile-post')];
+  posts.forEach((p, i) => p.style.display = i < visible ? 'block' : 'none');
+  const showBtn = document.getElementById('show-more-posts');
   if (visible >= posts.length) {
     showBtn.textContent = 'показати менше...';
   } else {
@@ -495,412 +158,83 @@ function update() {
   }
 }
 
-document
-  .getElementById('show-more-posts')
-  .onclick = () => {
+document.getElementById('show-more-posts').onclick = () => {
+  const posts = [...container.querySelectorAll('.profile-post')];
+  if (visible >= posts.length) {
+    visible = 3;
+  } else {
+    visible = Math.min(visible + 10, posts.length);
+  }
+  update();
+};
 
-    const posts = [
-      ...container.querySelectorAll('.profile-post')
-    ];
+// Створення нової публікації
+document.getElementById('toggle-create-btn').onclick = () => {
+  document.getElementById('create-post-box').classList.toggle('open');
+};
 
-    if (visible >= posts.length) {
-      visible = 3;
-    } else {
-      visible = Math.min(
-        visible + 10,
-        posts.length
-      );
-    }
+document.getElementById('submit-post-btn').onclick = () => {
+  const titleInput = document.getElementById('new-post-title');
+  const textInput = document.getElementById('new-post-text');
+  const title = titleInput.value.trim();
+  const text = textInput.value.trim();
 
-    update();
+  if (!title || !text) return;
 
-  };
-
-/* Створення нового допису */
-
-document
-  .getElementById('toggle-create-btn')
-  .onclick = () => {
-
-    document
-      .getElementById('create-post-box')
-      .classList
-      .toggle('open');
-
-  };
-
-document
-  .getElementById('submit-post-btn')
-  .onclick = () => {
-
-    const titleInput =
-      document.getElementById('new-post-title');
-
-    const textInput =
-      document.getElementById('new-post-text');
-
-    const gifInput =
-      document.getElementById('new-post-gif');
-
-    const emojiInput =
-      document.getElementById('new-post-emoji');
-
-    const title =
-      titleInput.value.trim();
-
-    const text =
-      textInput.value.trim();
-
-    const gif =
-      gifInput.value.trim();
-
-    const emoji =
-      emojiInput.value.trim();
-
-    if (!title || !text) return;
-
-    const newPost =
-      createPostElement(
-        title,
-        text,
-        0,
-        'щойно',
-        gif,
-        emoji,
-        []
-      );
-
-    container.insertBefore(
-      newPost,
-      container.firstChild
-    );
-
-    titleInput.value = '';
-    textInput.value = '';
-    gifInput.value = '';
-    emojiInput.value = '';
-
-    document
-      .getElementById('create-post-box')
-      .classList
-      .remove('open');
-
-    bindEvents(newPost);
-
-    update();
-
-  };
-
-/* Лайки та коментарі */
+  const newPost = createPostElement(title, text, 0, 'щойно', []);
+  container.insertBefore(newPost, container.firstChild);
+  
+  titleInput.value = '';
+  textInput.value = '';
+  document.getElementById('create-post-box').classList.remove('open');
+  bindEvents(newPost);
+  update();
+};
 
 function bindEvents(scope) {
+  scope.querySelectorAll('.like-button').forEach(btn => btn.onclick = () => {
+    const c = btn.querySelector('.like-count');
+    let n = parseInt(c.textContent, 10);
+    n += btn.classList.toggle('liked') ? 1 : -1;
+    c.textContent = n;
+    btn.firstChild.textContent = btn.classList.contains('liked') ? '♥ Подобається ' : '♡ Подобається ';
+  });
 
-  scope
-    .querySelectorAll('.like-button')
-    .forEach(btn => {
+  scope.querySelectorAll('.comment-button').forEach(btn => btn.onclick = () => {
+    btn.closest('.profile-post').querySelector('.comments-area').classList.toggle('open');
+  });
 
-      btn.onclick = () => {
-
-        const c =
-          btn.querySelector('.like-count');
-
-        let n =
-          parseInt(c.textContent, 10);
-
-        n += btn.classList.toggle('liked')
-          ? 1
-          : -1;
-
-        c.textContent = n;
-
-        btn.firstChild.textContent =
-          btn.classList.contains('liked')
-            ? '♥ Подобається '
-            : '♡ Подобається ';
-
-      };
-
-    });
-
-  scope
-    .querySelectorAll('.comment-button')
-    .forEach(btn => {
-
-      btn.onclick = () => {
-
-        btn
-          .closest('.profile-post')
-          .querySelector('.comments-area')
-          .classList
-          .toggle('open');
-
-      };
-
-    });
-
-  scope
-    .querySelectorAll('.comment-send')
-    .forEach(btn => {
-
-      btn.onclick = () => {
-
-        const form =
-          btn.closest('.comment-form');
-
-        const input =
-          form.querySelector('.comment-input');
-
-        const text =
-          input.value.trim();
-
-        if (!text) return;
-
-        const c =
-          document.createElement('div');
-
-        c.className =
-          'user-comment';
-
-        c.innerHTML =
-          '<strong>ти: </strong>' +
-          text.replace(/</g, '&lt;');
-
-        form.before(c);
-
-        input.value = '';
-
-        const post =
-          form.closest('.profile-post');
-
-        const count =
-          post.querySelector('.comment-count');
-
-        count.textContent =
-          parseInt(count.textContent, 10) + 1;
-
-      };
-
-    });
-
+  scope.querySelectorAll('.comment-send').forEach(btn => btn.onclick = () => {
+    const form = btn.closest('.comment-form'), input = form.querySelector('.comment-input'), text = input.value.trim();
+    if (!text) return;
+    const c = document.createElement('div');
+    c.className = 'user-comment';
+    c.innerHTML = '<strong>ти: </strong>' + text.replace(/</g, '&lt;');
+    form.before(c);
+    input.value = '';
+    const post = form.closest('.profile-post');
+    const count = post.querySelector('.comment-count');
+    count.textContent = parseInt(count.textContent, 10) + 1;
+  });
 }
 
-/* Статистика */
-
-function safe(base, range) {
-
+function safe(base, range){
   let v;
-
-  do {
-
-    v =
-      base +
-      Math.floor(
-        Math.random() * range
-      );
-
-  } while (
-    /63|68|13|666/.test(
-      String(v)
-    )
-  );
-
+  do { v = base + Math.floor(Math.random() * range); } while(/63|68|13|666/.test(String(v)));
   return v;
 }
 
-function stats() {
-
-  document
-    .getElementById('registered-hoomen')
-    .textContent =
-      safe(
-        8000000,
-        47001
-      ).toLocaleString('uk-UA');
-
-  document
-    .getElementById('online-hoomen')
-    .textContent =
-      safe(
-        1000000,
-        76001
-      ).toLocaleString('uk-UA');
-
-  document
-    .getElementById('today-hoomen')
-    .textContent =
-      safe(
-        2400000,
-        180001
-      ).toLocaleString('uk-UA');
-
+function stats(){
+  document.getElementById('registered-hoomen').textContent = safe(8000000, 47001).toLocaleString('uk-UA');
+  document.getElementById('online-hoomen').textContent = safe(1000000, 76001).toLocaleString('uk-UA');
+  document.getElementById('today-hoomen').textContent = safe(2400000, 180001).toLocaleString('uk-UA');
 }
 
 bindEvents(document);
 update();
 stats();
-
-setInterval(
-  stats,
-  30000
-);
-
-
-/* ==========================================
-   ДОЩ
-========================================== */
-
-function createRain() {
-
-  const rainContainer =
-    document.getElementById('rain-container');
-
-  if (!rainContainer) {
-    return;
-  }
-
-  function spawnRaindrop() {
-
-    const drop =
-      document.createElement('div');
-
-    drop.className =
-      'raindrop';
-
-    drop.style.left =
-      Math.random() * 100 + 'vw';
-
-    const duration =
-      700 +
-      Math.random() * 500;
-
-    drop.style.animationDuration =
-      duration + 'ms';
-
-    drop.style.height =
-      12 +
-      Math.random() * 18 +
-      'px';
-
-    rainContainer.appendChild(drop);
-
-    setTimeout(() => {
-
-      if (drop.parentNode) {
-        drop.remove();
-      }
-
-    }, duration + 100);
-
-  }
-
-  /* Одразу створюємо дощ */
-  for (
-    let i = 0;
-    i < 80;
-    i++
-  ) {
-
-    setTimeout(
-      spawnRaindrop,
-      i * 15
-    );
-
-  }
-
-  /* Постійний дощ */
-  setInterval(
-    spawnRaindrop,
-    20
-  );
-
-}
-
-
-/* ==========================================
-   СНІГ ПІД КУРСОРОМ
-========================================== */
-
-function createSnowUnderCursor() {
-
-  const snowContainer =
-    document.getElementById(
-      'snowflakes-container'
-    );
-
-  const snowflakes =
-    ['❄', '❅', '❆', '✽', '✾'];
-
-  document.addEventListener(
-    'mousemove',
-    (e) => {
-
-      if (Math.random() < 0.3) {
-
-        const snowflake =
-          document.createElement('div');
-
-        snowflake.className =
-          'snowflake falling';
-
-        snowflake.textContent =
-          snowflakes[
-            Math.floor(
-              Math.random() *
-              snowflakes.length
-            )
-          ];
-
-        snowflake.style.left =
-          e.clientX +
-          (Math.random() - 0.5) * 40 +
-          'px';
-
-        snowflake.style.top =
-          e.clientY +
-          (Math.random() - 0.5) * 40 +
-          'px';
-
-        snowflake.style.color =
-          '#' +
-          Math.floor(
-            Math.random() *
-            0xffffff
-          )
-          .toString(16)
-          .padStart(6, '0');
-
-        const duration =
-          1500 +
-          Math.random() * 1000;
-
-        snowflake.style.animationDuration =
-          duration + 'ms';
-
-        snowContainer.appendChild(
-          snowflake
-        );
-
-        setTimeout(() => {
-
-          snowflake.remove();
-
-        }, duration);
-
-      }
-
-    }
-  );
-
-}
-
-
-/* Запуск ефектів */
-
-createRain();
-createSnowUnderCursor();
-
+setInterval(stats, 30000);
 })();
 </script>
-
 </body>
 </html>
