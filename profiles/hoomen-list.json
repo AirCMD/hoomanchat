@@ -161,10 +161,22 @@
   {
     "name": "pasta_friend",
     "file": "pasta-friend.html",
-    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEjqrONG3WN749rf0VM4X87BNKhBrhokWahtrEN24gjmmrqE0QMAolsrXFTfZTJ55OxsJfzNAuFDxyoGm3rDMAV0voBpUeWXTDIOCFdDjRzu16bcQUT8xh6H2CdoPgUBGLfZOkaLwqfdHcOFLLqY5zuANw-DF_zpQT-cre6khltso6JV4Ih3wDqL3kPIJys",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEjeItFC3-52Hqh5Zt8oMPFYSbPgc5sqbb2ZOg-e62c0Bzd6gdv3lmxx8Fx-vr9A2Hh0Go1GmzvIbXzG7mjUdwA_53Vou7h0_GERc2zRV5IuJhf0MGbkdvU15QSqYO3bOppNMgMaKJ1X-Y-_iqsSf73zIvdeqlXP3wu9rsu9avdub1faI1rmCd-PL7tBqPw",
     "status": "online",
-    "gender": "male",
-    "description": ""
+    "gender": "female",
+    "description": "Сімейка: шлюбна · Статус: Люблю 🧸🌹👨‍👩‍👧"
+  schedule: [
+    { time: "09:00", status: "online" },
+    { time: "09:30", status: "away" },
+    { time: "10:25", status: "online" },
+    { time: "12:30", status: "away" },
+    { time: "14:35", status: "online" },
+    { time: "15:00", status: "away" },
+    { time: "17:01", status: "online" },
+    { time: "18:14", status: "away" },
+    { time: "20:00", status: "online" },
+    { time: "22:00", status: "offline" }
+  ],
   },
   {
     "name": "petro_ivanchuk",
