@@ -4,164 +4,163 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Гуменчат — Правила ресурсу</title>
-
 <style>
-html,body{
-  margin:0;
-  padding:0;
-  background:#fff;
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:12px;
-  line-height:14px;
-  color:#222
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  color: #222;
+}
+* { box-sizing: border-box; }
+
+#hoomenchat-site {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #777;
+}
+#hoomenchat-site a { color: #444; }
+
+.hoomenchat-header {
+  display: block;
+  margin: 0 0 10px;
+  padding: 5px 8px;
+  background: linear-gradient(to bottom, #626262, #3b3b3b);
+  border: 1px solid #222;
+  color: #fff;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
-*{box-sizing:border-box}
-
-#hoomenchat-site{
-  display:block;
-  width:100%;
-  min-height:100vh;
-  margin:0;
-  padding:12px;
-  background:#fff;
-  border:1px solid #777
+.site-layout {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 10px 0;
+}
+.site-left {
+  display: table-cell;
+  width: 165px;
+  vertical-align: top;
+}
+.site-right {
+  display: table-cell;
+  vertical-align: top;
 }
 
-#hoomenchat-site a{color:#444}
-
-.hoomenchat-header{
-  display:block;
-  margin:0 0 10px;
-  padding:5px 8px;
-  background:linear-gradient(to bottom,#626262,#3b3b3b);
-  border:1px solid #222;
-  color:#fff;
-  font-size:12px;
-  line-height:14px;
-  font-weight:bold;
-  letter-spacing:1px;
-  text-transform:uppercase
+.left-box {
+  padding: 3px 7px;
+  background: #f0f0f0;
+  border: 1px solid #999;
 }
 
-.site-layout{
-  display:table;
-  width:100%;
-  border-collapse:separate;
-  border-spacing:10px 0
+.site-name {
+  margin: 1px 0 6px;
+  padding: 0 0 4px;
+  border-bottom: 1px solid #bcbcbc;
+  color: #111;
+  font-size: 15px;
+  line-height: 17px;
+  font-weight: bold;
+  text-align: center;
+  word-break: break-word;
 }
 
-.site-left{
-  display:table-cell;
-  width:165px;
-  vertical-align:top
+.main-avatar {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1.35;
+  margin: 0 0 6px;
+  object-fit: cover;
+  object-position: center;
+  background: #ddd;
+  border: 1px solid #888;
 }
 
-.site-right{
-  display:table-cell;
-  vertical-align:top
+.archat-button {
+  display: block;
+  width: 100%;
+  margin: 0 0 5px;
+  padding: 4px 0;
+  background: linear-gradient(to bottom, #fff176, #fbc02d);
+  border: 1px solid #a78119;
+  color: #000;
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.archat-button:hover {
+  background: linear-gradient(to bottom, #fff59d, #fdd835);
+  color: #000;
 }
 
-.left-box{
-  padding:3px 7px;
-  background:#f0f0f0;
-  border:1px solid #999
+.nav-menu {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #999;
+}
+.nav-item {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 3px 2px;
+  border-bottom: 1px solid #c7c7c7;
+  color: #444;
+  font-size: 11px;
+  line-height: 13px;
+  text-decoration: underline;
+}
+.nav-item:hover {
+  background: #e2e2e2;
+  color: #000;
+  text-decoration: none;
+}
+.nav-item.current {
+  background: #e2e2e2;
+  color: #000;
+  font-weight: bold;
+  text-decoration: none;
 }
 
-.site-name{
-  margin:1px 0 6px;
-  padding:0 0 4px;
-  border-bottom:1px solid #bcbcbc;
-  color:#111;
-  font-size:15px;
-  line-height:17px;
-  font-weight:bold;
-  text-align:center;
-  word-break:break-word
+.account-box {
+  margin: 8px 0 0;
+  padding: 5px 4px;
+  border-top: 1px solid #999;
+  text-align: center;
 }
-
-.main-avatar{
-  display:block;
-  width:100%;
-  height:228px;
-  margin:0 0 6px;
-  object-fit:cover;
-  object-position:center;
-  background:#ddd;
-  border:1px solid #888
+.account-text {
+  margin: 0 0 5px;
+  color: #555;
+  font-size: 9px;
+  line-height: 12px;
 }
-
-.archat-button{
-  display:block;
-  width:100%;
-  margin:0 0 5px;
-  padding:4px 0;
-  background:linear-gradient(to bottom,#fff176,#fbc02d);
-  border:1px solid #a78119;
-  color:#000;
-  font-size:10px;
-  line-height:13px;
-  font-weight:bold;
-  text-align:center;
-  text-decoration:none;
-  text-transform:uppercase
+.account-link {
+  display: block;
+  margin: 2px 0;
+  color: #444;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: bold;
+  text-decoration: underline;
 }
-
-.nav-menu{
-  display:block;
-  margin:0;
-  padding:0;
-  border-top:1px solid #999
+.account-link:hover {
+  color: #000;
+  text-decoration: none;
 }
-
-.nav-item{
-  display:block;
-  width:100%;
-  margin:0;
-  padding:3px 2px;
-  border-bottom:1px solid #c7c7c7;
-  color:#444;
-  font-size:11px;
-  line-height:13px;
-  text-decoration:underline
-}
-
-.nav-item:hover{
-  background:#e2e2e2;
-  color:#000;
-  text-decoration:none
-}
-
-.account-box{
-  margin:8px 0 0;
-  padding:5px 4px;
-  border-top:1px solid #999;
-  text-align:center
-}
-
-.account-text{
-  margin:0 0 5px;
-  color:#555;
-  font-size:9px;
-  line-height:12px
-}
-
-.account-link{
-  display:block;
-  margin:2px 0;
-  color:#444;
-  font-size:10px;
-  line-height:12px;
-  font-weight:bold;
-  text-decoration:underline
-}
-
-.account-link:hover{
-  color:#000;
-  text-decoration:none
-}
-
-/* СТИЛІ ПРАВИЛ ТА МОДАЛЬНОГО ВІКНА */
 
 .rules-title {
   margin: 0 0 8px 0;
@@ -189,11 +188,7 @@ html,body{
   font-size: 12px;
   line-height: 16px;
 }
-
-.rule-item:first-child {
-  padding-top: 2px;
-}
-
+.rule-item:first-child { padding-top: 2px; }
 .rule-item:last-child {
   padding-bottom: 2px;
   border-bottom: 0;
@@ -204,25 +199,28 @@ html,body{
   font-weight: bold;
   text-decoration: underline;
   cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
 }
-
 .here-link:hover {
   color: #000;
   text-decoration: none;
 }
 
-.footer-line{
-  margin:12px 0 0;
-  padding-top:4px;
-  border-top:1px solid #ccc;
-  color:#888;
-  font-size:9px;
-  line-height:11px;
-  text-align:center
+.footer-line {
+  margin: 12px 0 0;
+  padding-top: 4px;
+  border-top: 1px solid #ccc;
+  color: #888;
+  font-size: 9px;
+  line-height: 11px;
+  text-align: center;
 }
 
-/* МОДАЛЬНЕ ВІКНО */
-
+/* Модальне вікно */
 .rules-overlay {
   display: none;
   position: fixed;
@@ -232,6 +230,10 @@ html,body{
   height: 100%;
   background: rgba(0, 0, 0, 0.35);
   z-index: 999999;
+  padding: 16px;
+}
+.rules-overlay.open {
+  display: block;
 }
 
 .rules-dialog {
@@ -244,7 +246,7 @@ html,body{
   padding: 0;
   background: #fff;
   border: 1px solid #555;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
 .dialog-header {
@@ -270,236 +272,253 @@ html,body{
   font-size: 12px;
   font-weight: bold;
   cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0 2px;
+  line-height: 1;
 }
-
 .dialog-close:hover {
   color: #ffdddd;
 }
 
 .dialog-button {
   display: block;
-  width: 60px;
-  margin: 8px auto 0 auto;
-  padding: 3px 5px;
+  width: 80px;
+  margin: 10px auto 0 auto;
+  padding: 6px 8px;
   background: #e6e6e6;
   border: 1px solid #999;
   color: #222;
-  font-size: 10px;
-  line-height: 12px;
+  font-size: 11px;
+  line-height: 13px;
   font-weight: bold;
   text-align: center;
   cursor: pointer;
+  font-family: inherit;
 }
-
 .dialog-button:hover {
   background: #ccc;
 }
 
-@media screen and (max-width:600px){
-  #hoomenchat-site{
-    padding:7px
+/* =====================================================
+   МОБІЛЬНА АДАПТАЦІЯ
+   ===================================================== */
+@media screen and (max-width: 900px) {
+  .site-left { width: 150px; }
+}
+
+@media screen and (max-width: 600px) {
+  html, body {
+    font-size: 14px;
+    line-height: 18px;
+    -webkit-text-size-adjust: 100%;
   }
 
-  .site-layout{
-    display:block;
-    border-spacing:0
+  #hoomenchat-site {
+    padding: 8px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    border: none;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 
+  .hoomenchat-header {
+    padding: 8px 10px;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+  }
+
+  .site-layout {
+    display: block;
+    border-spacing: 0;
+  }
   .site-left,
-  .site-right{
-    display:block;
-    width:100%
+  .site-right {
+    display: block;
+    width: 100%;
+  }
+  .site-left { margin-bottom: 12px; }
+
+  .left-box { padding: 10px 12px; }
+
+  .site-name {
+    font-size: 18px;
+    line-height: 22px;
+    margin-bottom: 10px;
   }
 
-  .site-left{
-    margin-bottom:8px
+  .main-avatar {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto 12px;
+    aspect-ratio: 1 / 1.25;
+  }
+
+  .archat-button {
+    padding: 12px 0;
+    font-size: 13px;
+    min-height: 44px;
+    margin-bottom: 10px;
+  }
+
+  .nav-item {
+    padding: 12px 6px;
+    font-size: 15px;
+    min-height: 44px;
+  }
+
+  .account-box {
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+  .account-link {
+    padding: 10px 0;
+    font-size: 14px;
+    min-height: 40px;
+  }
+
+  .rules-title {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .rules-box {
+    padding: 10px 12px;
+  }
+
+  .rule-item {
+    font-size: 14px;
+    line-height: 20px;
+    padding: 10px 0;
+  }
+
+  .rules-dialog {
+    width: 94%;
+    max-width: none;
+  }
+
+  .dialog-header {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .dialog-body {
+    padding: 12px;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .dialog-button {
+    width: 100%;
+    max-width: 160px;
+    min-height: 40px;
+    font-size: 13px;
+  }
+
+  .footer-line {
+    font-size: 11px;
+    margin-top: 14px;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .main-avatar {
+    max-width: 100%;
+    aspect-ratio: 1 / 1.15;
   }
 }
 </style>
 </head>
-
 <body>
-
 <div id="hoomenchat-site">
 
-<div class="hoomenchat-header">
-ГУМЕНЧАТ
-</div>
+<div class="hoomenchat-header">ГУМЕНЧАТ</div>
 
 <div class="site-layout">
 
-<!-- =====================================================
-     ЛІВА КОЛОНКА
-     ===================================================== -->
-
 <div class="site-left">
+  <div class="left-box">
 
-<div class="left-box">
+    <div class="site-name">ПРАВИЛА</div>
 
-<div class="site-name">
-ПРАВИЛА
+    <img
+      class="main-avatar"
+      alt="ПРАВИЛА"
+      src="https://blogger.googleusercontent.com/img/a/AVvXsEikl2AwyMPO-fdHfH3XugR0z28OlNR7sGHxQFaYw1KHQ_3YNbbm0aGwmKo8X21RqBa-2RSi1sQmdGYFEs7XIaYylW3_6ivt1yixDE1RAhEOLPqMwEImTEd-0nUeCbb_9EUGLjjwa1OJK9njExaag52-LAN8p7YCRWAcKOdSpBgxJ62aQL7Ju2pjLLNhAWM"
+    >
+
+    <a class="archat-button" href="archive.html">📩 АРЧАТ</a>
+
+    <div class="nav-menu">
+      <a class="nav-item" href="profiles/copy-pasta.html">Мій гумгайл</a>
+      <a class="nav-item" href="profiles.html">Гумени</a>
+      <a class="nav-item" href="droomens.html">Друмени</a>
+      <a class="nav-item" href="activity.html">Стрічерчат</a>
+      <a class="nav-item" href="islands.html">Острови</a>
+      <a class="nav-item current" href="rules.html">Правила</a>
+    </div>
+
+    <div class="account-box">
+      <div class="account-text">Немає гумгайла?</div>
+      <a class="account-link" href="#">ЗАРЕЄСТРУВАТИСЯ</a>
+      <a class="account-link" href="#">ВХІД</a>
+    </div>
+
+  </div>
 </div>
-
-<img
-class="main-avatar"
-alt="ПРАВИЛА"
-src="https://blogger.googleusercontent.com/img/a/AVvXsEikl2AwyMPO-fdHfH3XugR0z28OlNR7sGHxQFaYw1KHQ_3YNbbm0aGwmKo8X21RqBa-2RSi1sQmdGYFEs7XIaYylW3_6ivt1yixDE1RAhEOLPqMwEImTEd-0nUeCbb_9EUGLjjwa1OJK9njExaag52-LAN8p7YCRWAcKOdSpBgxJ62aQL7Ju2pjLLNhAWM"
-/>
-
-<a
-class="archat-button"
-href="https://aircmd.github.io/hoomanchat/archive.html"
->
-📩 АРЧАТ
-</a>
-
-<div class="nav-menu">
-
-<a
-class="nav-item"
-href="https://aircmd.github.io/hoomanchat/index.html"
->
-Головна
-</a>
-
-<a
-class="nav-item"
-href="https://aircmd.github.io/hoomanchat/profiles.html"
->
-Гумени
-</a>
-
-<a
-class="nav-item"
-href="https://aircmd.github.io/hoomanchat/droomens.html"
->
-Друмени
-</a>
-
-<a
-class="nav-item"
-href="https://aircmd.github.io/hoomanchat/activity.html"
->
-Стрічерчат
-</a>
-
-<a
-class="nav-item"
-href="https://aircmd.github.io/hoomanchat/islands.html"
->
-Острови
-</a>
-
-<a
-class="nav-item"
-href="https://aircmd.github.io/hoomanchat/rules.html"
->
-Правила
-</a>
-
-</div>
-
-<div class="account-box">
-
-<div class="account-text">
-Немає гумгайла?
-</div>
-
-<a
-class="account-link"
-href="#"
->
-ЗАРЕЄСТРУВАТИСЯ
-</a>
-
-<a
-class="account-link"
-href="#"
->
-ВХІД
-</a>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =====================================================
-     ПРАВА КОЛОНКА (ПРАВИЛА)
-     ===================================================== -->
 
 <div class="site-right">
 
-  <!-- ЗАГОЛОВОК ПРАВИЛ -->
   <div class="rules-title">
     ПРАВИЛА НАШОГО РЕСУРСУ
   </div>
 
-  <!-- ТЕКСТ ПРАВИЛ -->
   <div class="rules-box">
-
     <div class="rule-item">
       Правила нашої спільноти ідентичні
       <strong>Правовому Кодексу</strong>.
       Детальніше ви можете ознайомитися з ними
-      <span class="here-link" onclick="hoomenShowRulesMessage()">
-        ТУТ
-      </span>.
+      <button type="button" class="here-link" id="rules-here-link">ТУТ</button>.
     </div>
-
     <div class="rule-item">
       Якщо ви належите до чужої галактики,
       цивілізації, квадранта, ви можете переглядати
       наш ресурс, але взаємодія, реєстрація та інше
       недоступні. Ми не шукаємо друзів чи ворогів за межами нашого дому.
     </div>
-
     <div class="rule-item">
       Ви не можете вступати у перший контакт з гуменами. Будь ласка, поважайте нашу приватність.
     </div>
-
     <div class="rule-item">
       ¤ Гумени — повністю вигадана інопланетна гуманоїдна раса. Сторінки та події — художня вигадка або ж інтерактивна книга з подіями, створена однією людиною. Частина з них відтворена по снам. Будь-які події та збіги з реальністю — випадкові.
     </div>
-
     <div class="rule-item">
       ♡ Гумени — це гуманоїдна цивілізація. Наш квадрант та фізична адреса не для представників інших планет.
     </div>
-
     <div class="rule-item">
       ♡ Арчат — обмін приватними повідомленнями. Єдиний доступний публічний шерінг на сторінках належить @copy_pasta
     </div>
-
     <div class="rule-item">
       ♡ Гумгайл — список доступних для перегляду користувачів нашої платформи.
     </div>
-
     <div class="rule-item">
       ♡ Друмени — список близьких користувачів конкретного гумена. Можна побачити лише шерінг від @copy_pasta
     </div>
-
     <div class="rule-item">
       ♡ Стрічерчат — активність гуменів зі списку друменів. Можна побачити лише шерінг від @copy_pasta
     </div>
-
     <div class="rule-item">
       ♡ Острови — створені гуменами по інтересах острівці.
     </div>
-
     <div class="rule-item">
       ♡ Гумгайл — це ще й також особиста сторінка гумена.
     </div>
-
     <div class="rule-item">
       ♡ Шерінг — публічний контент, видимий всім.
     </div>
-
     <div class="rule-item">
       ♡ Зареєструватись тут неможливо, шерінг: copy_pasta. Ви бачите цей сайт від імені цієї персонажки. Активність її списку друзів, переписки, тощо. Ваші коментарі, нові повідомлення, того зберігаються на вашій сторіці як 1 сеанс.
     </div>
-
   </div>
 
   <div class="footer-line">
@@ -507,45 +526,59 @@ href="#"
   </div>
 
 </div>
-
+</div>
 </div>
 
-</div>
-
-<!-- СПЛИВАЮЧЕ ВІКНО -->
-<div class="rules-overlay" id="hoomen-rules-overlay" onclick="hoomenCloseRulesMessage(event)">
-  <div class="rules-dialog" onclick="event.stopPropagation()">
+<!-- Спливаюче вікно -->
+<div class="rules-overlay" id="hoomen-rules-overlay" role="dialog" aria-modal="true" aria-labelledby="rules-dialog-title">
+  <div class="rules-dialog">
     <div class="dialog-header">
-      <span class="dialog-close" onclick="hoomenCloseRulesMessage()">✕</span>
-      ГУМЕНЧАТ
+      <button type="button" class="dialog-close" id="rules-dialog-x" aria-label="Закрити">✕</button>
+      <span id="rules-dialog-title">ГУМЕНЧАТ</span>
     </div>
-
     <div class="dialog-body">
       Нажаль, ми не змогли розпізнати ваше місце проживання.
-      <br /><br />
+      <br><br>
       Схоже, ви знаходитеся за межами нашої планети.
-      <br /><br />
+      <br><br>
       Прибульці не можуть переглядати правила нашого ресурсу. Ви маєте бути корінними гуменами. Якщо ви представники інших планет, будь ласка, припиніть шукати будь-яку можливість контакту з нашою цивілізацією. Ми не хочемо обмінюватись технологіями, знаннями і не шукаємо союзників за межею нашого дому.
-
-      <div class="dialog-button" onclick="hoomenCloseRulesMessage()">
-        ЗАКРИТИ
-      </div>
+      <button type="button" class="dialog-button" id="rules-dialog-close">ЗАКРИТИ</button>
     </div>
   </div>
 </div>
 
 <script>
-  function hoomenShowRulesMessage() {
-    document.getElementById('hoomen-rules-overlay').style.display = 'block';
+(function () {
+  var overlay = document.getElementById("hoomen-rules-overlay");
+  var openBtn = document.getElementById("rules-here-link");
+  var closeX = document.getElementById("rules-dialog-x");
+  var closeBtn = document.getElementById("rules-dialog-close");
+
+  function openDialog() {
+    if (overlay) overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
   }
 
-  function hoomenCloseRulesMessage(event) {
-    if (event && event.target !== event.currentTarget) {
-      return;
-    }
-    document.getElementById('hoomen-rules-overlay').style.display = 'none';
+  function closeDialog() {
+    if (overlay) overlay.classList.remove("open");
+    document.body.style.overflow = "";
   }
+
+  if (openBtn) openBtn.addEventListener("click", openDialog);
+  if (closeX) closeX.addEventListener("click", closeDialog);
+  if (closeBtn) closeBtn.addEventListener("click", closeDialog);
+
+  if (overlay) {
+    overlay.addEventListener("click", function (e) {
+      if (e.target === overlay) closeDialog();
+    });
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeDialog();
+  });
+})();
 </script>
-
 </body>
 </html>
+
