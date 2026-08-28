@@ -1,0 +1,696 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #e8e0f0; /* Пастельно-фіолетовий задня частина фону */
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  color: #4a4063;
+}
+
+* { box-sizing: border-box; }
+
+#hoomenchat-site {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 12px;
+  background: #fdfbf7;
+  border: 1px solid #dcd0ea;
+  box-shadow: 0 4px 12px rgba(120, 100, 160, 0.08);
+}
+
+#hoomenchat-site a { color: #6b5b95; }
+
+.hoomenchat-header {
+  display: block;
+  margin: 0 0 10px;
+  padding: 5px 8px;
+  background: linear-gradient(90deg, #ffb7b2, #ffd3b6, #dcedc1, #a8e6cf, #d4a5a5);
+  border: 1px solid #e2c0d8;
+  color: #4a3e56;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.site-layout {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 10px 0;
+}
+
+.site-left {
+  display: table-cell;
+  width: 165px;
+  vertical-align: top;
+}
+
+.site-right {
+  display: table-cell;
+  vertical-align: top;
+}
+
+.left-box {
+  padding: 3px 7px;
+  background: #f7f3fb;
+  border: 1px solid #e3d7f0;
+}
+
+.site-name {
+  margin: 1px 0 6px;
+  padding: 0 0 4px;
+  border-bottom: 1px solid #e3d7f0;
+  color: #6b5b95;
+  font-size: 15px;
+  line-height: 17px;
+  font-weight: bold;
+  text-align: center;
+  word-break: break-word;
+}
+
+.main-avatar {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1.35;
+  margin: 0 0 6px;
+  object-fit: cover;
+  object-position: center;
+  background: #f0e6f6;
+  border: 1px solid #dcd0ea;
+}
+
+.archat-button {
+  display: block;
+  width: 100%;
+  margin: 0 0 5px;
+  padding: 4px 0;
+  background: linear-gradient(90deg, #ffb7b2, #ffd3b6);
+  border: 1px solid #f8a5a0;
+  color: #5d4037 !important;
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.archat-button:hover {
+  background: linear-gradient(90deg, #ffd3b6, #dcedc1);
+  color: #4a3e56 !important;
+}
+
+.nav-menu {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #e3d7f0;
+}
+
+.nav-item {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 3px 2px;
+  border-bottom: 1px solid #ede4f5;
+  color: #6b5b95 !important;
+  font-size: 11px;
+  line-height: 13px;
+  text-decoration: underline;
+}
+
+.nav-item:hover {
+  background: #f2ebf9;
+  color: #4a3e56 !important;
+  text-decoration: none;
+}
+
+.nav-item.current {
+  background: #eadef7;
+  color: #4a3e56 !important;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.account-box {
+  margin: 8px 0 0;
+  padding: 5px 4px;
+  border-top: 1px solid #e3d7f0;
+  text-align: center;
+}
+
+.account-text {
+  margin: 0 0 5px;
+  color: #8c7b9e;
+  font-size: 9px;
+  line-height: 12px;
+}
+
+.account-link {
+  display: block;
+  margin: 2px 0;
+  color: #6b5b95 !important;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.account-link:hover {
+  color: #4a3e56 !important;
+  text-decoration: none;
+}
+
+/* =====================================================
+   ISLANDS — ОСНОВНИЙ КОНТЕНТ
+   ===================================================== */
+
+.profile-box {
+  margin: 0 0 8px;
+  padding: 7px;
+  background: #ffffff;
+  border: 1px solid #e3d7f0;
+}
+
+.profile-header {
+  margin: 0 0 7px;
+  padding: 4px 7px;
+  background: linear-gradient(90deg, #dcedc1, #a8e6cf);
+  border: 1px solid #c5e3bd;
+  color: #385e42;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+}
+
+.profile-info {
+  padding: 6px 7px;
+  background: #fdfbf7;
+  border: 1px solid #ebdcf5;
+  color: #4a4063;
+  font-size: 11px;
+  line-height: 15px;
+}
+
+.profile-status {
+  margin-top: 4px;
+  color: #529471;
+  font-size: 10px;
+  line-height: 13px;
+  font-style: italic;
+}
+
+.posts-header {
+  margin: 8px 0 5px;
+  padding: 4px 7px;
+  background: linear-gradient(90deg, #a8e6cf, #b5ead7);
+  border: 1px solid #a3ded0;
+  color: #2e594d;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+}
+
+.profile-post {
+  margin: 0 0 7px;
+  background: #ffffff;
+  border: 1px solid #e3d7f0;
+}
+
+.profile-post-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 7px;
+  background: linear-gradient(90deg, #ffdac1, #e2f0cb);
+  border-bottom: 1px solid #e3d7f0;
+  color: #5c433c;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+}
+
+.post-author-link {
+  flex: 0 0 auto;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+.post-author-link a {
+  color: #6b5b95 !important;
+  text-decoration: underline;
+}
+
+.profile-post-body {
+  padding: 6px 7px;
+  color: #4a4063;
+  font-size: 11px;
+  line-height: 15px;
+  overflow-wrap: anywhere;
+}
+
+.profile-post-date {
+  padding: 3px 7px;
+  border-top: 1px solid #f2ebf9;
+  color: #a493b8;
+  font-size: 9px;
+  line-height: 11px;
+}
+
+.post-actions {
+  padding: 4px 7px;
+  border-top: 1px solid #f2ebf9;
+  background: #faf6fc;
+}
+
+.like-button,
+.comment-button {
+  margin: 0 8px 0 0;
+  padding: 1px 3px;
+  border: 0;
+  background: transparent;
+  color: #6b5b95;
+  font: 10px/13px Arial, Helvetica, sans-serif;
+  cursor: pointer;
+}
+
+.like-button:hover,
+.comment-button:hover {
+  color: #ff8b94;
+}
+
+.like-button.liked {
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+.comments-area {
+  display: none;
+  padding: 6px 7px;
+  background: #faf6fc;
+  border-top: 1px solid #f2ebf9;
+}
+
+.comments-area.open {
+  display: block;
+}
+
+.fake-comment,
+.user-comment {
+  margin: 0 0 5px;
+  padding: 4px 5px;
+  background: #ffffff;
+  border: 1px solid #e8ddf2;
+  color: #4a4063;
+  font-size: 10px;
+  line-height: 13px;
+  overflow-wrap: anywhere;
+}
+
+.fake-comment-name {
+  margin-bottom: 2px;
+  font-weight: bold;
+  color: #6b5b95;
+}
+
+.comment-form {
+  margin-top: 6px;
+}
+
+.comment-input {
+  display: block;
+  width: 100%;
+  min-height: 45px;
+  padding: 4px 5px;
+  resize: vertical;
+  border: 1px solid #dcd0ea;
+  background: #ffffff;
+  color: #4a4063;
+  font: 10px/13px Arial, Helvetica, sans-serif;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: #b5ead7;
+}
+
+.comment-send,
+.show-more,
+.create-post-btn {
+  padding: 3px 8px;
+  background: linear-gradient(90deg, #c7ceea, #e2f0cb);
+  border: 1px solid #b3beea;
+  color: #4a3e56;
+  font-size: 10px;
+  line-height: 13px;
+  cursor: pointer;
+}
+
+.comment-send:hover,
+.show-more:hover,
+.create-post-btn:hover {
+  background: linear-gradient(90deg, #ffb7b2, #ffd3b6);
+  color: #4a3e56;
+}
+
+.create-post-btn {
+  display: block;
+  width: 100%;
+  margin: 0 0 5px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.create-post-form {
+  display: none;
+  margin: 0 0 8px;
+  padding: 7px;
+  background: #ffffff;
+  border: 1px solid #e3d7f0;
+}
+
+.create-post-form.open {
+  display: block;
+}
+
+.show-more {
+  display: block;
+  width: 100%;
+  margin-top: 2px;
+  padding: 5px 7px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: underline;
+}
+
+.show-more.hidden {
+  display: none;
+}
+
+.rules-box {
+  margin: 8px 0 0;
+  padding: 5px 8px;
+  background: #ffffff;
+  border: 1px solid #e3d7f0;
+  color: #4a4063;
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.rules-box a {
+  color: #6b5b95;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.statistics-box {
+  margin: 8px 0 0;
+  padding: 5px 8px;
+  background: #faf6fc;
+  border: 1px solid #e3d7f0;
+  color: #6b5b95;
+  font: 10px/13px "Courier New", Courier, monospace;
+}
+
+.statistics-title {
+  margin: 0 0 3px;
+  color: #6b5b95;
+  font: bold 10px/12px Arial, Helvetica, sans-serif;
+}
+
+.statistics-number {
+  color: #4a3e56;
+  font-weight: bold;
+}
+
+.statistics-online {
+  color: #529471;
+  font-weight: bold;
+}
+
+.footer-line {
+  margin: 7px 0 0;
+  padding-top: 4px;
+  border-top: 1px solid #e3d7f0;
+  color: #a493b8;
+  font-size: 9px;
+  line-height: 11px;
+  text-align: center;
+}
+
+/* =====================================================
+   МОБІЛЬНА АДАПТАЦІЯ
+   ===================================================== */
+
+@media screen and (max-width: 900px) {
+  .site-left {
+    width: 150px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  html, body {
+    font-size: 14px;
+    line-height: 18px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  #hoomenchat-site {
+    padding: 8px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    border: none;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .hoomenchat-header {
+    padding: 8px 10px;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 1.5px;
+  }
+
+  .site-layout {
+    display: block;
+    border-spacing: 0;
+  }
+
+  .site-left,
+  .site-right {
+    display: block;
+    width: 100%;
+  }
+
+  .site-left {
+    margin-bottom: 12px;
+  }
+
+  .left-box {
+    padding: 10px 12px;
+  }
+
+  .site-name {
+    font-size: 18px;
+    line-height: 22px;
+    margin-bottom: 10px;
+  }
+
+  .main-avatar {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    margin: 0 auto 12px;
+    aspect-ratio: 1 / 1.25;
+  }
+
+  .archat-button {
+    padding: 12px 0;
+    font-size: 13px;
+    line-height: 18px;
+    min-height: 44px;
+    margin-bottom: 10px;
+  }
+
+  .nav-item {
+    padding: 12px 6px;
+    font-size: 15px;
+    line-height: 19px;
+    min-height: 44px;
+  }
+
+  .account-box {
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+
+  .account-link {
+    padding: 10px 0;
+    font-size: 14px;
+    line-height: 18px;
+    min-height: 40px;
+  }
+
+  .profile-box {
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+
+  .profile-header {
+    font-size: 14px;
+    line-height: 18px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+
+  .profile-info {
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .profile-status {
+    font-size: 12px;
+    line-height: 16px;
+    margin-top: 5px;
+  }
+
+  .posts-header {
+    margin: 10px 0 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .create-post-btn {
+    min-height: 44px;
+    padding: 11px 12px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .create-post-form {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .profile-post {
+    margin-bottom: 10px;
+  }
+
+  .profile-post-title {
+    display: block;
+    padding: 10px 12px;
+    font-size: 15px;
+    line-height: 19px;
+  }
+
+  .post-author-link {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    line-height: 16px;
+    white-space: normal;
+  }
+
+  .profile-post-body {
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .post-actions {
+    padding: 8px 12px;
+  }
+
+  .like-button,
+  .comment-button {
+    min-height: 36px;
+    margin-right: 8px;
+    padding: 7px 5px;
+    font-size: 13px;
+    line-height: 17px;
+  }
+
+  .comments-area {
+    padding: 10px 12px;
+  }
+
+  .fake-comment,
+  .user-comment {
+    padding: 8px 9px;
+    font-size: 12px;
+    line-height: 17px;
+  }
+
+  .comment-input {
+    min-height: 70px;
+    padding: 8px 9px;
+    font-size: 13px;
+    line-height: 17px;
+  }
+
+  .comment-send {
+    min-height: 36px;
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+  .profile-post-date {
+    padding: 6px 12px;
+    font-size: 11px;
+    line-height: 14px;
+  }
+
+  .show-more {
+    min-height: 42px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 17px;
+  }
+
+  .rules-box,
+  .statistics-box {
+    font-size: 12px;
+    line-height: 16px;
+    padding: 10px 12px;
+  }
+
+  .statistics-title {
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .footer-line {
+    font-size: 11px;
+    line-height: 14px;
+    margin-top: 12px;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .main-avatar {
+    max-width: 100%;
+    aspect-ratio: 1 / 1.15;
+  }
+
+  .profile-post-title {
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .like-button,
+  .comment-button {
+    font-size: 12px;
+    margin-right: 4px;
+  }
+}
