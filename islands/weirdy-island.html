@@ -6,6 +6,120 @@
 <link rel="stylesheet" href="../css/islandvaporwave-template.css">
 <title>ОСТРІВ: ГЛІЧ</title>
 <style>
+/* =====================================================
+   ВХІД СТОРІНКИ (легкий, ~1с, GPU)
+   ===================================================== */
+html.page-booting body {
+  overflow: hidden;
+}
+
+#page-enter-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  pointer-events: none;
+  background: #0a0a12;
+  opacity: 0;
+  visibility: hidden;
+}
+
+html.page-booting #page-enter-overlay {
+  opacity: 1;
+  visibility: visible;
+  animation: enter-overlay 1s ease-out forwards;
+}
+
+@keyframes enter-overlay {
+  0%   { opacity: 1; }
+  55%  { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+/* глитч-смуги (дуже легкі) */
+#page-enter-overlay::before,
+#page-enter-overlay::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 0, 180, 0.55);
+  opacity: 0;
+}
+
+html.page-booting #page-enter-overlay::before {
+  top: 28%;
+  animation: glitch-line 0.9s steps(2, end) forwards;
+}
+
+html.page-booting #page-enter-overlay::after {
+  top: 62%;
+  background: rgba(0, 255, 255, 0.45);
+  animation: glitch-line 0.9s 0.08s steps(2, end) forwards;
+}
+
+@keyframes glitch-line {
+  0%, 100% { opacity: 0; transform: translateX(0); }
+  20% { opacity: 1; transform: translateX(-8px); }
+  40% { opacity: 0.7; transform: translateX(12px); }
+  60% { opacity: 1; transform: translateX(-4px); }
+  80% { opacity: 0.4; transform: translateX(6px); }
+}
+
+/* контент з’являється знизу + легкий зсув */
+#hoomenchat-site {
+  position: relative;
+  z-index: 2;
+}
+
+html.page-booting #hoomenchat-site {
+  animation: page-slide-in 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+
+@keyframes page-slide-in {
+  0% {
+    opacity: 0;
+    transform: translate3d(18px, 12px, 0) skewX(-1.5deg);
+    filter: hue-rotate(40deg) contrast(1.2);
+  }
+  35% {
+    opacity: 0.85;
+    transform: translate3d(-6px, 0, 0) skewX(0.8deg);
+    filter: hue-rotate(-15deg) contrast(1.05);
+  }
+  55% {
+    transform: translate3d(4px, 0, 0) skewX(-0.4deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) skewX(0);
+    filter: none;
+  }
+}
+
+/* якщо prefers-reduced-motion — без анімації */
+@media (prefers-reduced-motion: reduce) {
+  html.page-booting #hoomenchat-site,
+  html.page-booting #page-enter-overlay,
+  html.page-booting #page-enter-overlay::before,
+  html.page-booting #page-enter-overlay::after {
+    animation: none !important;
+  }
+  html.page-booting #page-enter-overlay {
+    opacity: 0;
+    visibility: hidden;
+  }
+  html.page-booting #hoomenchat-site {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* =====================================================
+   ІСНУЮЧІ ЕФЕКТИ ОСТРОВА
+   ===================================================== */
 body {
   cursor: url('cur220.svg'), auto;
 }
@@ -58,10 +172,6 @@ body {
   pointer-events: none;
   user-select: none;
 }
-#hoomenchat-site {
-  position: relative;
-  z-index: 2;
-}
 .post-media {
   margin: 10px 0;
   display: flex;
@@ -98,8 +208,16 @@ body {
   margin-right: 5px;
 }
 </style>
+<script>
+/* клас до parse body — без миготіння «голого» контенту */
+document.documentElement.classList.add("page-booting");
+</script>
 </head>
 <body>
+
+<!-- оверлей входу (зникає сам через CSS) -->
+<div id="page-enter-overlay" aria-hidden="true"></div>
+
 <div id="rain-container"></div>
 <div id="snowflakes-container"></div>
 
@@ -181,10 +299,13 @@ body {
 (function () {
   "use strict";
 
-  /*
-    Нік у коментарі → посилання на profiles/
-    fray_dog → ../profiles/fray-dog.html
-  */
+  /* зняти клас після анімації — далі нульове навантаження */
+  function finishPageEnter() {
+    document.documentElement.classList.remove("page-booting");
+    document.body.style.overflow = "";
+  }
+  setTimeout(finishPageEnter, 1050);
+
   function profileUrl(name) {
     var slug = String(name || "")
       .trim()
@@ -359,7 +480,6 @@ body {
     var textInput = document.getElementById("new-post-text");
     var gifInput = document.getElementById("new-post-gif");
     var emojiInput = document.getElementById("new-post-emoji");
-
     var title = titleInput.value.trim();
     var text = textInput.value.trim();
     var gif = gifInput.value.trim();
@@ -368,7 +488,6 @@ body {
 
     var newPost = createPostElement(title, text, 0, "щойно", gif, emoji, []);
     container.insertBefore(newPost, container.firstChild);
-
     titleInput.value = "";
     textInput.value = "";
     gifInput.value = "";
@@ -383,7 +502,6 @@ body {
     scope.querySelectorAll(".like-button").forEach(function (btn) {
       if (btn.getAttribute("data-like-bound") === "1") return;
       btn.setAttribute("data-like-bound", "1");
-
       btn.onclick = function () {
         var c = btn.querySelector(".like-count");
         var n = parseInt(String(c.textContent).replace(/\s/g, ""), 10) || 0;
@@ -400,7 +518,6 @@ body {
     scope.querySelectorAll(".comment-button").forEach(function (btn) {
       if (btn.getAttribute("data-comment-bound") === "1") return;
       btn.setAttribute("data-comment-bound", "1");
-
       btn.onclick = function () {
         btn
           .closest(".profile-post")
@@ -412,14 +529,12 @@ body {
     scope.querySelectorAll(".comment-send").forEach(function (btn) {
       if (btn.getAttribute("data-send-bound") === "1") return;
       btn.setAttribute("data-send-bound", "1");
-
       btn.onclick = function () {
         var form = btn.closest(".comment-form");
         var input = form.querySelector(".comment-input");
         var text = input.value.trim();
         if (!text) return;
 
-        /* як на EMOCORE: copy_pasta + посилання на профіль */
         var c = document.createElement("div");
         c.className = "fake-comment";
         c.innerHTML =
@@ -462,7 +577,6 @@ body {
   stats();
   setInterval(stats, 30000);
 
-  /* ДОЩ */
   function createRain() {
     var rainContainer = document.getElementById("rain-container");
     if (!rainContainer) return;
@@ -486,7 +600,6 @@ body {
     setInterval(spawnRaindrop, 20);
   }
 
-  /* СНІГ ПІД КУРСОРОМ */
   function createSnowUnderCursor() {
     var snowContainer = document.getElementById("snowflakes-container");
     var snowflakes = ["❄", "❅", "❆", "✽", "✾"];
@@ -522,3 +635,4 @@ body {
 </script>
 </body>
 </html>
+
