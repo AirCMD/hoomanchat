@@ -4,88 +4,75 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Гуменчат — yurii_ichigo</title>
-<style>
-html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:14px;color:#222}
-*{box-sizing:border-box}
-#hoomenchat-site{width:100%;min-height:100vh;margin:0;padding:12px;background:#fff;border:1px solid #777}
-#hoomenchat-site a{color:#444}
-.hoomenchat-header{margin:0 0 10px;padding:5px 8px;background:linear-gradient(#626262,#3b3b3b);border:1px solid #222;color:#fff;font-weight:bold;letter-spacing:1px;text-transform:uppercase}
-.site-layout{display:table;width:100%;border-collapse:separate;border-spacing:10px 0}
-.site-left{display:table-cell;width:165px;vertical-align:top}
-.site-right{display:table-cell;vertical-align:top}
-.left-box{padding:3px 7px;background:#f0f0f0;border:1px solid #999}
-.site-name{margin:1px 0 6px;padding:0 0 4px;border-bottom:1px solid #bcbcbc;color:#111;font-size:15px;line-height:17px;font-weight:bold;text-align:center;word-break:break-word}
-.main-avatar{display:block;width:100%;height:228px;margin:0 0 6px;object-fit:cover;background:#ddd;border:1px solid #888}
-.archat-button{display:block;width:100%;margin:0 0 5px;padding:4px 0;background:linear-gradient(#fff176,#fbc02d);border:1px solid #a78119;color:#000;font-size:10px;line-height:13px;font-weight:bold;text-align:center;text-decoration:none;text-transform:uppercase}
-.nav-menu{border-top:1px solid #999}
-.nav-item{display:block;width:100%;padding:3px 2px;border-bottom:1px solid #c7c7c7;color:#444;font-size:11px;line-height:13px;text-decoration:underline}
-.account-box{margin:8px 0 0;padding:5px 4px;border-top:1px solid #999;text-align:center}
-.account-text{margin:0 0 5px;color:#555;font-size:9px;line-height:12px}
-.account-link{display:block;margin:2px 0;color:#444;font-size:10px;line-height:12px;font-weight:bold;text-decoration:underline}
-.profile-box{margin:0 0 8px;padding:7px;background:#fff;border:1px solid #aaa}
-.profile-header{margin:0 0 7px;padding:5px 7px;background:#f0f0f0;border:1px solid #999;font-weight:bold}
-.profile-info{padding:6px 7px;background:#f9f9f9;border:1px solid #aaa;font-size:11px;line-height:15px}
-.profile-status{margin-top:4px;color:#2e7d32;font-size:10px;font-style:italic}
-.posts-header{margin:8px 0 5px;padding:4px 7px;background:#f0f0f0;border:1px solid #999;font-weight:bold}
-.profile-post{margin:0 0 7px;background:#fff;border:1px solid #aaa}
-.profile-post-title{padding:4px 7px;background:#f5f5f5;border-bottom:1px solid #aaa;font-weight:bold}
-.profile-post-body{padding:6px 7px;color:#333;font-size:11px;line-height:15px}
-.profile-post-date{padding:3px 7px;border-top:1px solid #ddd;color:#888;font-size:9px}
-.post-actions{padding:4px 7px;border-top:1px solid #ddd;background:#fafafa}
-.like-button,.comment-button{display:inline-block;margin-right:8px;padding:1px 3px;border:0;background:transparent;color:#555;font-size:10px;cursor:pointer}
-.like-button.liked{color:#c62828;font-weight:bold}
-.comments-area{display:none;padding:6px 7px;background:#f8f8f8;border-top:1px solid #ddd}
-.comments-area.open{display:block}
-.comment-form{margin-top:6px}
-.comment-input{display:block;width:100%;min-height:45px;padding:4px 5px;resize:vertical;background:#fff;border:1px solid #aaa;font:10px/13px Arial,sans-serif}
-.comment-send{margin-top:4px;padding:3px 8px;background:#eee;border:1px solid #999;color:#444;font-size:10px;cursor:pointer}
-.user-comment{margin:0 0 5px;padding:4px 5px;background:#fff;border:1px solid #aaa;font-size:10px}
-.show-more{display:block;width:100%;margin:2px 0;padding:5px 7px;background:#f0f0f0;border:1px solid #999;color:#444;font:bold 10px/13px Arial,sans-serif;text-align:center;text-decoration:underline}
-.show-more.hidden{display:none}
-.rules-box{margin:8px 0 0;padding:5px 8px;background:#fff;border:1px solid #aaa;font-size:11px;line-height:14px}
-.statistics-box{margin:8px 0 0;padding:5px 8px;background:#fff;border:1px solid #aaa;color:#555;font:10px/13px "Courier New",monospace}
-.statistics-title{margin-bottom:3px;font:bold 10px/12px Arial,sans-serif}
-.statistics-online{color:#2e7d32;font-weight:bold}
-.statistics-number{font-weight:bold}
-.footer-line{margin-top:7px;padding-top:4px;border-top:1px solid #ccc;color:#888;font-size:9px;text-align:center}
-@media(max-width:600px){.site-layout{display:block}.site-left,.site-right{display:block;width:100%}.site-left{margin-bottom:8px}#hoomenchat-site{padding:7px}}
-</style>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<link rel="stylesheet" href="../css/hoomenchat-profile.css">
 </head>
 <body>
+
 <div id="hoomenchat-site">
-<div class="hoomenchat-header">ГУМЕНЧАТ</div>
-<div class="site-layout">
-<div class="site-left"><div class="left-box">
-<div class="site-name">yurii_ichigo</div>
-<img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEiMGES7-O1UP0GNtOe_tYLUJ1-xHmX0DIUGn78v1Mi8sT9_WmVXm1-mw2Nh5uKfKksgKrdapry46R4R5kPIIQi0XWexejQq2fPwS2TjpVqeF0xHdtJfDgDgHOgEyUSiuXQ2q-L2X_PqmD0m8KWf5QdIOdQAx2xuN0F6HGE0V32-BECRndeELmjUeEGtCq0" alt="yurii_ichigo">
-<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
-<div class="nav-menu">
-<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
-<a class="nav-item" href="../profiles.html">Гумени</a>
-<a class="nav-item" href="../droomens.html">Друмени</a>
-<a class="nav-item" href="../activity.html">Стрічерчат</a>
-<a class="nav-item" href="../islands.html">Острови</a>
-<a class="nav-item" href="../rules.html">Правила</a>
+
+<div class="hoomenchat-header">
+ГУМЕНЧАТ
 </div>
-<div class="account-box"><div class="account-text">Немає гумгайла?</div>
-<a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
-<a class="account-link" href="../login.html">ВХІД</a></div>
-</div></div>
+
+<div class="site-layout">
+
+<div class="site-left">
+<div class="left-box">
+
+<div class="site-name" id="profile-nickname">yurii_ichigo</div>
+
+<img
+  class="main-avatar"
+  id="profile-avatar"
+  alt="yurii_ichigo"
+  src="https://blogger.googleusercontent.com/img/a/AVvXsEiMGES7-O1UP0GNtOe_tYLUJ1-xHmX0DIUGn78v1Mi8sT9_WmVXm1-mw2Nh5uKfKksgKrdapry46R4R5kPIIQi0XWexejQq2fPwS2TjpVqeF0xHdtJfDgDgHOgEyUSiuXQ2q-L2X_PqmD0m8KWf5QdIOdQAx2xuN0F6HGE0V32-BECRndeELmjUeEGtCq0"
+>
+
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+
+<div class="nav-menu" id="nav-menu">
+<!-- Наповнюється з конфігу -->
+</div>
+
+<div class="account-box">
+  <div class="account-text">Немає гумгайла?</div>
+  <a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
+  <a class="account-link" href="../login.html">ВХІД</a>
+</div>
+
+</div>
+</div>
+
 <div class="site-right">
-<div class="profile-box"><div class="profile-header">Профіль гумена: yurii_ichigo</div>
-<div class="profile-info"><strong>yurii_ichigo</strong>
-<div>Сімейка: шлюбний</div>
-<div>Статус: Розробник сайту Гуменчат. Прабатько серця ресурсу.</div>
-<div class="profile-status">● онлайн</div></div></div>
-<div class="posts-header">Дописи yurii_ichigo — 2</div>
-<div id="yurii-posts"><div class="profile-post">
+
+<div class="profile-box">
+  <div class="profile-header" id="profile-header-title">Профіль гумена: yurii_ichigo</div>
+  <div class="profile-info">
+    <strong id="profile-info-name">yurii_ichigo</strong>
+    <div id="profile-family"></div>
+    <div id="profile-status-text"></div>
+    <div class="profile-status" id="profile-online-status"></div>
+  </div>
+</div>
+
+<div class="posts-header" id="posts-header">
+  Дописи yurii_ichigo — <span id="posts-count">0</span>
+</div>
+
+<!-- Сторонній персонаж: кнопки «Новий допис» немає -->
+
+<div id="profile-posts">
+<!-- ДОПИС 1 -->
+<div class="profile-post">
 <div class="profile-post-title">Розробку сайта завершено</div>
-<div class="profile-post-body">Я вдячний всім та кожному хто доєднався до створення нашого з вами ресурсу, який став сім&#x27;єю для всіх нас. З повагою, Юрій.</div>
+<div class="profile-post-body">Я вдячний всім та кожному хто доєднався до створення нашого з вами ресурсу, який став сім'єю для всіх нас. З повагою, Юрій.</div>
 <div class="post-actions">
-<button class="like-button" type="button">♡ Подобається <span class="like-count">57 394</span></button>
+<button class="like-button" type="button" data-base-likes="57 394">♡ Подобається <span class="like-count">57 394</span></button>
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
 <div class="comments-area">
+
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
@@ -93,66 +80,98 @@ html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-se
 </div>
 <div class="profile-post-date">1 квітня</div>
 </div>
+
+<!-- ДОПИС 2 -->
 <div class="profile-post">
 <div class="profile-post-title">Якщо у вас виникли проблеми або ж ви помітили щось незвичне</div>
-<div class="profile-post-body">Ви можете надати зворотній зв&#x27;язок з нашим відділом по фіксу.</div>
+<div class="profile-post-body">Ви можете надати зворотній зв'язок з нашим відділом по фіксу.</div>
 <div class="post-actions">
-<button class="like-button" type="button">♡ Подобається <span class="like-count">931 885</span></button>
+<button class="like-button" type="button" data-base-likes="931 885">♡ Подобається <span class="like-count">931 885</span></button>
 <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
 </div>
 <div class="comments-area">
+
 <div class="comment-form">
 <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
 <button class="comment-send" type="button">Відправити</button>
 </div>
 </div>
 <div class="profile-post-date">29 березня</div>
+</div>
 
-</div></div>
-<div id="show-more-posts" class="show-more hidden">показати ще...</div>
-<div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
+</div>
+
+<div class="posts-pager" id="posts-pager">
+  <button class="show-more hidden" id="show-less-posts" type="button">показати менше...</button>
+  <button class="show-more hidden" id="show-more-posts" type="button">показати ще...</button>
+</div>
+
+<div class="rules-box">
+  Пам'ятай та дотримуйся
+  <a href="../rules.html">ПРАВИЛ</a>
+  нашого ресурсу для приємного та друмнього часу разом з нами.
+</div>
+
 <div class="statistics-box">
-<div class="statistics-title">Статистика Гуменчату</div>
-<div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
-<div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
-<div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
+  <div class="statistics-title">Статистика Гуменчату</div>
+  <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
+  <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
+  <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
 </div>
+
+<div class="image-viewer" id="post-image-viewer">
+  <button class="image-viewer-close" id="post-image-viewer-close" type="button" aria-label="Закрити">✕</button>
+  <button class="image-viewer-prev" id="post-image-viewer-prev" type="button" aria-label="Попереднє зображення">‹</button>
+  <img class="image-viewer-image" id="post-image-viewer-image" src="" alt="Зображення допису">
+  <button class="image-viewer-next" id="post-image-viewer-next" type="button" aria-label="Наступне зображення">›</button>
+</div>
+
 <div class="footer-line">Гуменчат — місце для гуменів.</div>
-</div></div></div>
-<script>
-(function(){
-var posts=document.querySelectorAll("#yurii-posts .profile-post");
-var showMore=document.getElementById("show-more-posts");
-posts.forEach(function(post){post.style.display="block";});
-document.querySelectorAll(".like-button").forEach(function(button){
-button.addEventListener("click",function(){
-var c=button.querySelector(".like-count"),n=parseInt(c.textContent.replace(/\s/g,""),10);
-if(button.classList.contains("liked")){n--;button.classList.remove("liked");}else{n++;button.classList.add("liked");}
-c.textContent=n.toLocaleString("uk-UA");
-});
-});
-document.querySelectorAll(".comment-button").forEach(function(button){
-button.addEventListener("click",function(){
-button.closest(".profile-post").querySelector(".comments-area").classList.toggle("open");
-});
-});
-document.querySelectorAll(".comment-send").forEach(function(button){
-button.addEventListener("click",function(){
-var form=button.closest(".comment-form"),input=form.querySelector(".comment-input"),text=input.value.trim();
-if(!text)return;
-var c=document.createElement("div");c.className="user-comment";c.textContent="ти: "+text;form.parentNode.insertBefore(c,form);input.value="";
-var count=button.closest(".profile-post").querySelector(".comment-count");count.textContent=parseInt(count.textContent,10)+1;
-});
-});
-function safeNumber(base,range){var v;do{v=base+Math.floor(Math.random()*range)}while(/63|68|13|666/.test(String(v)));return v}
-function stats(){
-document.getElementById("registered-hoomen").textContent=safeNumber(8000000,47001).toLocaleString("uk-UA");
-document.getElementById("online-hoomen").textContent=safeNumber(1000000,76001).toLocaleString("uk-UA");
-document.getElementById("today-hoomen").textContent=safeNumber(2400000,180001).toLocaleString("uk-UA");
-}
-stats();setInterval(stats,30000);
-})();
-</script>
+
 </div>
+</div>
+</div>
+
+<script>
+window.HOOMEN_PROFILE = {
+  nickname: "yurii_ichigo",
+  avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiMGES7-O1UP0GNtOe_tYLUJ1-xHmX0DIUGn78v1Mi8sT9_WmVXm1-mw2Nh5uKfKksgKrdapry46R4R5kPIIQi0XWexejQq2fPwS2TjpVqeF0xHdtJfDgDgHOgEyUSiuXQ2q-L2X_PqmD0m8KWf5QdIOdQAx2xuN0F6HGE0V32-BECRndeELmjUeEGtCq0",
+  isMainCharacter: false,
+  mainCharacterUrl: "copy-pasta.html",
+  statusText: "Прибулець зі СтарДек.",
+  onlineStatus: "online",
+  schedule: [
+    { time: "10:00", status: "online" },
+    { time: "10:30", status: "away" },
+    { time: "12:34", status: "online" },
+    { time: "12:59", status: "away" },
+    { time: "15:32", status: "online" },
+    { time: "16:02", status: "away" },
+    { time: "17:13", status: "online" },
+    { time: "17:45", status: "away" },
+    { time: "18:00", status: "online" },
+    { time: "19:00", status: "offline" }
+  ],
+  gender: "male",
+  family: {
+      type: "relationship",
+      partnerName: "",
+      partnerUrl: ""
+  },
+  navLinks: {
+    home: "../index.html",
+    profiles: "../profiles.html",
+    droomens: "../droomens.html",
+    activity: "../activity.html",
+    islands: "../islands.html",
+    rules: "../rules.html"
+  }
+};
+</script>
+<script src="../js/hoomenchat-profile.js"></script>
+
 </body>
 </html>
+})();
+</script>
+</body></html>
