@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Гуменчат — ai-ta</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<link rel="stylesheet" href="../css/hoomenchat-profile.css">
+</head>
+<body>
+
+<div id="hoomenchat-site">
+
+<div class="hoomenchat-header">
+ГУМЕНЧАТ
+</div>
+
+<div class="site-layout">
+
+<div class="site-left">
+<div class="left-box">
+
+<div class="site-name" id="profile-nickname">ai-ta</div>
+
+<img
+  class="main-avatar"
+  id="profile-avatar"
+  alt="ai-ta"
+  src="https://blogger.googleusercontent.com/img/a/AVvXsEiL6thgUlIrDQGm3nc01Mnoc9gYjNY80-ozxGc7K_qASeopokJU66ij96w3upFRNP52KE0PWVmrnmZ4tQLC09T3mMrROn6Ahv2CnHSMW0nu64JsE_u9rlDes4ukK8QpNM6IooLn2Vldk1MGa56fVUafBnijVgkUIpwA1KGF5UZcl6yudcprY7l4LQjcvCI"
+>
+
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+
+<div class="nav-menu" id="nav-menu">
+<!-- Наповнюється з конфігу -->
+</div>
+
+<div class="account-box">
+  <div class="account-text">Немає гумгайла?</div>
+  <a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
+  <a class="account-link" href="../login.html">ВХІД</a>
+</div>
+
+</div>
+</div>
+
+<div class="site-right">
+
+<div class="profile-box">
+  <div class="profile-header" id="profile-header-title">Профіль гумена: ai-ta</div>
+  <div class="profile-info">
+    <strong id="profile-info-name">ai-ta</strong>
+    <div id="profile-family"></div>
+    <div id="profile-status-text"></div>
+    <div class="profile-status" id="profile-online-status"></div>
+  </div>
+</div>
+
+<div class="posts-header" id="posts-header">
+  Дописи ai-ta — <span id="posts-count">0</span>
+</div>
+
+<!-- Сторонній персонаж: кнопки «Новий допис» немає -->
+
+<div id="profile-posts">
+<!-- ДОПИС 1 -->
+<div class="profile-post">
+<div class="profile-post-title">Привіт.</div>
+<div class="profile-post-body">Діагностика показала, що в моєму варп-ядрі стався витік, бо поряд із тобою мій пульс перевищує швидкість світла</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="17">♡ Подобається <span class="like-count">11 755</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="god-queen.html">god_queen</a></div>
+Приєднуйся до асиміляції.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="fere-nar.html">fere_nar</a></div>
+Привітики Ші-Та!
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">4 листопада</div>
+</div>
+
+</div>
+
+<div class="posts-pager" id="posts-pager">
+  <button class="show-more hidden" id="show-less-posts" type="button">показати менше...</button>
+  <button class="show-more hidden" id="show-more-posts" type="button">показати ще...</button>
+</div>
+
+<div class="rules-box">
+  Пам'ятай та дотримуйся
+  <a href="../rules.html">ПРАВИЛ</a>
+  нашого ресурсу для приємного та друмнього часу разом з нами.
+</div>
+
+<div class="statistics-box">
+  <div class="statistics-title">Статистика Гуменчату</div>
+  <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
+  <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
+  <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
+</div>
+
+<div class="image-viewer" id="post-image-viewer">
+  <button class="image-viewer-close" id="post-image-viewer-close" type="button" aria-label="Закрити">✕</button>
+  <button class="image-viewer-prev" id="post-image-viewer-prev" type="button" aria-label="Попереднє зображення">‹</button>
+  <img class="image-viewer-image" id="post-image-viewer-image" src="" alt="Зображення допису">
+  <button class="image-viewer-next" id="post-image-viewer-next" type="button" aria-label="Наступне зображення">›</button>
+</div>
+
+<div class="footer-line">Гуменчат — місце для гуменів.</div>
+
+</div>
+</div>
+</div>
+
+<script>
+window.HOOMEN_PROFILE = {
+  nickname: "👽 ai-ta",
+  avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiL6thgUlIrDQGm3nc01Mnoc9gYjNY80-ozxGc7K_qASeopokJU66ij96w3upFRNP52KE0PWVmrnmZ4tQLC09T3mMrROn6Ahv2CnHSMW0nu64JsE_u9rlDes4ukK8QpNM6IooLn2Vldk1MGa56fVUafBnijVgkUIpwA1KGF5UZcl6yudcprY7l4LQjcvCI",
+  isMainCharacter: false,
+  mainCharacterUrl: "copy-pasta.html",
+  statusText: "Ші-дроїд зі СтарДек.",
+  onlineStatus: "online",
+  schedule: [
+    { time: "06:00", status: "online" },
+    { time: "12:02", status: "away" },
+    { time: "12:34", status: "online" },
+    { time: "15:01", status: "away" },
+    { time: "15:32", status: "online" },
+    { time: "16:02", status: "away" },
+    { time: "16:13", status: "online" },
+    { time: "17:01", status: "away" },
+    { time: "17:12", status: "online" },
+    { time: "01:00", status: "offline" }
+  ],
+  gender: "male",
+  family: {
+      type: "relationship",
+      partnerName: "",
+      partnerUrl: ""
+  },
+  navLinks: {
+    home: "../index.html",
+    profiles: "../profiles.html",
+    droomens: "../droomens.html",
+    activity: "../activity.html",
+    islands: "../islands.html",
+    rules: "../rules.html"
+  }
+};
+</script>
+<script src="../js/hoomenchat-profile.js"></script>
+
+</body>
+</html>
+})();
+</script>
+</body></html>
