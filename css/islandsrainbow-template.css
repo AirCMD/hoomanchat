@@ -1,26 +1,30 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: #e8e0f0; /* Пастельно-фіолетовий задня частина фону */
+  background: #e8e0f0;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 12px;
   line-height: 14px;
   color: #4a4063;
+  min-height: 100%;
 }
-
 * { box-sizing: border-box; }
 
+/*
+  Фон сайту = той самий пастельно-фіолетовий, що й body.
+  Інакше #hoomenchat-site з біло-кремовим фоном на 100vh
+  повністю закриває фіолетовий колір «під дописами».
+*/
 #hoomenchat-site {
   display: block;
   width: 100%;
   min-height: 100vh;
   margin: 0;
   padding: 12px;
-  background: #fdfbf7;
+  background: #e8e0f0;
   border: 1px solid #dcd0ea;
   box-shadow: 0 4px 12px rgba(120, 100, 160, 0.08);
 }
-
 #hoomenchat-site a { color: #6b5b95; }
 
 .hoomenchat-header {
@@ -43,16 +47,15 @@ html, body {
   border-collapse: separate;
   border-spacing: 10px 0;
 }
-
 .site-left {
   display: table-cell;
   width: 165px;
   vertical-align: top;
 }
-
 .site-right {
   display: table-cell;
   vertical-align: top;
+  background: transparent;
 }
 
 .left-box {
@@ -100,7 +103,6 @@ html, body {
   text-decoration: none;
   text-transform: uppercase;
 }
-
 .archat-button:hover {
   background: linear-gradient(90deg, #ffd3b6, #dcedc1);
   color: #4a3e56 !important;
@@ -112,7 +114,6 @@ html, body {
   padding: 0;
   border-top: 1px solid #e3d7f0;
 }
-
 .nav-item {
   display: block;
   width: 100%;
@@ -124,13 +125,11 @@ html, body {
   line-height: 13px;
   text-decoration: underline;
 }
-
 .nav-item:hover {
   background: #f2ebf9;
   color: #4a3e56 !important;
   text-decoration: none;
 }
-
 .nav-item.current {
   background: #eadef7;
   color: #4a3e56 !important;
@@ -144,14 +143,12 @@ html, body {
   border-top: 1px solid #e3d7f0;
   text-align: center;
 }
-
 .account-text {
   margin: 0 0 5px;
   color: #8c7b9e;
   font-size: 9px;
   line-height: 12px;
 }
-
 .account-link {
   display: block;
   margin: 2px 0;
@@ -161,7 +158,6 @@ html, body {
   font-weight: bold;
   text-decoration: underline;
 }
-
 .account-link:hover {
   color: #4a3e56 !important;
   text-decoration: none;
@@ -170,14 +166,12 @@ html, body {
 /* =====================================================
    ISLANDS — ОСНОВНИЙ КОНТЕНТ
    ===================================================== */
-
 .profile-box {
   margin: 0 0 8px;
   padding: 7px;
   background: #ffffff;
   border: 1px solid #e3d7f0;
 }
-
 .profile-header {
   margin: 0 0 7px;
   padding: 4px 7px;
@@ -188,7 +182,6 @@ html, body {
   line-height: 13px;
   font-weight: bold;
 }
-
 .profile-info {
   padding: 6px 7px;
   background: #fdfbf7;
@@ -197,7 +190,6 @@ html, body {
   font-size: 11px;
   line-height: 15px;
 }
-
 .profile-status {
   margin-top: 4px;
   color: #529471;
@@ -205,7 +197,6 @@ html, body {
   line-height: 13px;
   font-style: italic;
 }
-
 .posts-header {
   margin: 8px 0 5px;
   padding: 4px 7px;
@@ -216,13 +207,11 @@ html, body {
   line-height: 13px;
   font-weight: bold;
 }
-
 .profile-post {
   margin: 0 0 7px;
   background: #ffffff;
   border: 1px solid #e3d7f0;
 }
-
 .profile-post-title {
   display: flex;
   justify-content: space-between;
@@ -236,7 +225,6 @@ html, body {
   line-height: 13px;
   font-weight: bold;
 }
-
 .post-author-link {
   flex: 0 0 auto;
   font-size: 10px;
@@ -244,12 +232,10 @@ html, body {
   font-weight: normal;
   white-space: nowrap;
 }
-
 .post-author-link a {
   color: #6b5b95 !important;
   text-decoration: underline;
 }
-
 .profile-post-body {
   padding: 6px 7px;
   color: #4a4063;
@@ -257,7 +243,6 @@ html, body {
   line-height: 15px;
   overflow-wrap: anywhere;
 }
-
 .profile-post-date {
   padding: 3px 7px;
   border-top: 1px solid #f2ebf9;
@@ -265,13 +250,11 @@ html, body {
   font-size: 9px;
   line-height: 11px;
 }
-
 .post-actions {
   padding: 4px 7px;
   border-top: 1px solid #f2ebf9;
   background: #faf6fc;
 }
-
 .like-button,
 .comment-button {
   margin: 0 8px 0 0;
@@ -282,28 +265,23 @@ html, body {
   font: 10px/13px Arial, Helvetica, sans-serif;
   cursor: pointer;
 }
-
 .like-button:hover,
 .comment-button:hover {
   color: #ff8b94;
 }
-
 .like-button.liked {
   color: #ff6b6b;
   font-weight: bold;
 }
-
 .comments-area {
   display: none;
   padding: 6px 7px;
   background: #faf6fc;
   border-top: 1px solid #f2ebf9;
 }
-
 .comments-area.open {
   display: block;
 }
-
 .fake-comment,
 .user-comment {
   margin: 0 0 5px;
@@ -315,17 +293,14 @@ html, body {
   line-height: 13px;
   overflow-wrap: anywhere;
 }
-
 .fake-comment-name {
   margin-bottom: 2px;
   font-weight: bold;
   color: #6b5b95;
 }
-
 .comment-form {
   margin-top: 6px;
 }
-
 .comment-input {
   display: block;
   width: 100%;
@@ -337,12 +312,10 @@ html, body {
   color: #4a4063;
   font: 10px/13px Arial, Helvetica, sans-serif;
 }
-
 .comment-input:focus {
   outline: none;
   border-color: #b5ead7;
 }
-
 .comment-send,
 .show-more,
 .create-post-btn {
@@ -354,14 +327,12 @@ html, body {
   line-height: 13px;
   cursor: pointer;
 }
-
 .comment-send:hover,
 .show-more:hover,
 .create-post-btn:hover {
   background: linear-gradient(90deg, #ffb7b2, #ffd3b6);
   color: #4a3e56;
 }
-
 .create-post-btn {
   display: block;
   width: 100%;
@@ -369,7 +340,6 @@ html, body {
   font-weight: bold;
   text-align: center;
 }
-
 .create-post-form {
   display: none;
   margin: 0 0 8px;
@@ -377,11 +347,9 @@ html, body {
   background: #ffffff;
   border: 1px solid #e3d7f0;
 }
-
 .create-post-form.open {
   display: block;
 }
-
 .show-more {
   display: block;
   width: 100%;
@@ -391,11 +359,9 @@ html, body {
   text-align: center;
   text-decoration: underline;
 }
-
 .show-more.hidden {
   display: none;
 }
-
 .rules-box {
   margin: 8px 0 0;
   padding: 5px 8px;
@@ -405,13 +371,11 @@ html, body {
   font-size: 11px;
   line-height: 14px;
 }
-
 .rules-box a {
   color: #6b5b95;
   font-weight: bold;
   text-decoration: underline;
 }
-
 .statistics-box {
   margin: 8px 0 0;
   padding: 5px 8px;
@@ -420,28 +384,24 @@ html, body {
   color: #6b5b95;
   font: 10px/13px "Courier New", Courier, monospace;
 }
-
 .statistics-title {
   margin: 0 0 3px;
   color: #6b5b95;
   font: bold 10px/12px Arial, Helvetica, sans-serif;
 }
-
 .statistics-number {
   color: #4a3e56;
   font-weight: bold;
 }
-
 .statistics-online {
   color: #529471;
   font-weight: bold;
 }
-
 .footer-line {
   margin: 7px 0 0;
   padding-top: 4px;
-  border-top: 1px solid #e3d7f0;
-  color: #a493b8;
+  border-top: 1px solid #d5c8e6;
+  color: #8a7a9e;
   font-size: 9px;
   line-height: 11px;
   text-align: center;
@@ -450,60 +410,52 @@ html, body {
 /* =====================================================
    МОБІЛЬНА АДАПТАЦІЯ
    ===================================================== */
-
 @media screen and (max-width: 900px) {
   .site-left {
     width: 150px;
   }
 }
-
 @media screen and (max-width: 600px) {
   html, body {
     font-size: 14px;
     line-height: 18px;
     -webkit-text-size-adjust: 100%;
+    background: #e8e0f0;
   }
-
   #hoomenchat-site {
     padding: 8px;
     padding-bottom: max(12px, env(safe-area-inset-bottom));
     border: none;
     min-height: 100vh;
     min-height: 100dvh;
+    background: #e8e0f0;
   }
-
   .hoomenchat-header {
     padding: 8px 10px;
     font-size: 14px;
     line-height: 18px;
     letter-spacing: 1.5px;
   }
-
   .site-layout {
     display: block;
     border-spacing: 0;
   }
-
   .site-left,
   .site-right {
     display: block;
     width: 100%;
   }
-
   .site-left {
     margin-bottom: 12px;
   }
-
   .left-box {
     padding: 10px 12px;
   }
-
   .site-name {
     font-size: 18px;
     line-height: 22px;
     margin-bottom: 10px;
   }
-
   .main-avatar {
     width: 100%;
     max-width: 320px;
@@ -511,7 +463,6 @@ html, body {
     margin: 0 auto 12px;
     aspect-ratio: 1 / 1.25;
   }
-
   .archat-button {
     padding: 12px 0;
     font-size: 13px;
@@ -519,57 +470,48 @@ html, body {
     min-height: 44px;
     margin-bottom: 10px;
   }
-
   .nav-item {
     padding: 12px 6px;
     font-size: 15px;
     line-height: 19px;
     min-height: 44px;
   }
-
   .account-box {
     margin-top: 12px;
     padding-top: 10px;
   }
-
   .account-link {
     padding: 10px 0;
     font-size: 14px;
     line-height: 18px;
     min-height: 40px;
   }
-
   .profile-box {
     margin-bottom: 10px;
     padding: 10px;
   }
-
   .profile-header {
     font-size: 14px;
     line-height: 18px;
     padding: 10px 12px;
     margin-bottom: 8px;
   }
-
   .profile-info {
     padding: 10px 12px;
     font-size: 14px;
     line-height: 20px;
   }
-
   .profile-status {
     font-size: 12px;
     line-height: 16px;
     margin-top: 5px;
   }
-
   .posts-header {
     margin: 10px 0 8px;
     padding: 10px 12px;
     font-size: 14px;
     line-height: 18px;
   }
-
   .create-post-btn {
     min-height: 44px;
     padding: 11px 12px;
@@ -577,23 +519,19 @@ html, body {
     font-size: 14px;
     line-height: 18px;
   }
-
   .create-post-form {
     padding: 10px;
     margin-bottom: 10px;
   }
-
   .profile-post {
     margin-bottom: 10px;
   }
-
   .profile-post-title {
     display: block;
     padding: 10px 12px;
     font-size: 15px;
     line-height: 19px;
   }
-
   .post-author-link {
     display: block;
     margin-top: 5px;
@@ -601,17 +539,14 @@ html, body {
     line-height: 16px;
     white-space: normal;
   }
-
   .profile-post-body {
     padding: 10px 12px;
     font-size: 14px;
     line-height: 20px;
   }
-
   .post-actions {
     padding: 8px 12px;
   }
-
   .like-button,
   .comment-button {
     min-height: 36px;
@@ -620,74 +555,62 @@ html, body {
     font-size: 13px;
     line-height: 17px;
   }
-
   .comments-area {
     padding: 10px 12px;
   }
-
   .fake-comment,
   .user-comment {
     padding: 8px 9px;
     font-size: 12px;
     line-height: 17px;
   }
-
   .comment-input {
     min-height: 70px;
     padding: 8px 9px;
     font-size: 13px;
     line-height: 17px;
   }
-
   .comment-send {
     min-height: 36px;
     padding: 7px 12px;
     font-size: 13px;
   }
-
   .profile-post-date {
     padding: 6px 12px;
     font-size: 11px;
     line-height: 14px;
   }
-
   .show-more {
     min-height: 42px;
     padding: 10px 12px;
     font-size: 13px;
     line-height: 17px;
   }
-
   .rules-box,
   .statistics-box {
     font-size: 12px;
     line-height: 16px;
     padding: 10px 12px;
   }
-
   .statistics-title {
     font-size: 12px;
     line-height: 16px;
   }
-
   .footer-line {
     font-size: 11px;
     line-height: 14px;
     margin-top: 12px;
   }
 }
-
 @media screen and (max-width: 380px) {
   .main-avatar {
     max-width: 100%;
     aspect-ratio: 1 / 1.15;
   }
-
   .profile-post-title {
     font-size: 14px;
     line-height: 18px;
   }
-
   .like-button,
   .comment-button {
     font-size: 12px;
