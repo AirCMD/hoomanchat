@@ -55,7 +55,7 @@ html, body {
 .site-right {
   display: table-cell;
   vertical-align: top;
-  background: transparent;
+  background: #e8e0f0;
 }
 
 .left-box {
@@ -184,7 +184,7 @@ html, body {
 }
 .profile-info {
   padding: 6px 7px;
-  background: #fdfbf7;
+  background: #e8e0f0;;
   border: 1px solid #ebdcf5;
   color: #4a4063;
   font-size: 11px;
