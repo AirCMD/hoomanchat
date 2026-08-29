@@ -628,30 +628,63 @@
     rusty_robot: "Привіт! Тут є одне питання, треба твоя порада."
   };
 
+  function showTypingIndicator() {
+    var windowElement = get("messages-window");
+    if (!windowElement) return null;
+    var existing = windowElement.querySelector(".typing-row");
+    if (existing) return existing;
+
+    var row = document.createElement("div");
+    row.className = "typing-row";
+    row.id = "typing-indicator";
+    row.innerHTML =
+      '<div class="typing-bubble">Пише' +
+      '<span class="typing-dots">' +
+      '<span>.</span><span>.</span><span>.</span>' +
+      "</span></div>";
+    windowElement.appendChild(row);
+    windowElement.scrollTop = windowElement.scrollHeight;
+    return row;
+  }
+
+  function hideTypingIndicator() {
+    var el = document.getElementById("typing-indicator");
+    if (el && el.parentNode) el.parentNode.removeChild(el);
+  }
+
   function ensureBotFirstMessage(chatId) {
     var chat = chats[chatId];
     if (!chat || !botsWhoWriteFirst[chatId]) return;
     if (chat._botStarted) return;
+    chat._botStarted = true;
 
-    var hasThem = false;
+    /* Прибираємо попередньо завантажені повідомлення від бота —
+       покажемо їх із затримкою та індикатором «Пише...» */
+    var kept = [];
     for (var i = 0; i < chat.messages.length; i++) {
-      if (chat.messages[i] && chat.messages[i].from === "them") {
-        hasThem = true;
-        break;
+      if (chat.messages[i] && chat.messages[i].from === "me") {
+        kept.push(chat.messages[i]);
       }
     }
-    if (hasThem) {
-      chat._botStarted = true;
-      return;
+    chat.messages = kept;
+
+    if (currentChat === chatId) {
+      renderMessages();
+      showTypingIndicator();
     }
 
-    chat.messages.push({
-      from: "them",
-      type: "text",
-      text: botsWhoWriteFirst[chatId],
-      time: getCurrentTime()
-    });
-    chat._botStarted = true;
+    var delay = 1800 + Math.floor(Math.random() * 1200);
+    setTimeout(function () {
+      hideTypingIndicator();
+      chat.messages.push({
+        from: "them",
+        type: "text",
+        text: botsWhoWriteFirst[chatId],
+        time: getCurrentTime()
+      });
+      renderChatList();
+      if (currentChat === chatId) renderMessages();
+    }, delay);
   }
 
   function openChat(chatId) {
@@ -664,8 +697,8 @@
 
     if (!chats[chatId].loaded) loadChat(chatId);
     else {
-      ensureBotFirstMessage(chatId);
       renderConversation();
+      ensureBotFirstMessage(chatId);
     }
   }
 
@@ -695,16 +728,16 @@
         }
         chats[chatId].messages = msgs;
         chats[chatId].loaded = true;
-        ensureBotFirstMessage(chatId);
         if (currentChat === chatId) renderConversation();
+        ensureBotFirstMessage(chatId);
         renderChatList();
         if (status) status.textContent = "";
       })
       .catch(function () {
         chats[chatId].messages = [];
         chats[chatId].loaded = true;
-        ensureBotFirstMessage(chatId);
         if (currentChat === chatId) renderConversation();
+        ensureBotFirstMessage(chatId);
         renderChatList();
         if (status) {
           if (!botsWhoWriteFirst[chatId]) {
@@ -970,8 +1003,13 @@
     var reply = pickBotReply(user, lastText);
     if (!reply) return;
 
-    var delay = 700 + Math.floor(Math.random() * 1400);
+    if (currentChat === chatId) {
+      showTypingIndicator();
+    }
+
+    var delay = 1200 + Math.floor(Math.random() * 1600);
     setTimeout(function () {
+      hideTypingIndicator();
       chats[chatId].messages.push({
         from: "them", type: "text", text: reply, time: getCurrentTime()
       });
@@ -1075,4 +1113,3 @@
   setupImageViewer();
   setInterval(refreshAllStatuses, 60000);
 })();
-
