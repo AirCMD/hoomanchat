@@ -621,6 +621,39 @@
     setMobileChatOpen(true);
   }
 
+  /* Боти, які пишуть першими при відкритті чату */
+  var botsWhoWriteFirst = {
+    blue_comet: "Привіт! Тут є одне питання, треба твоя порада.",
+    night_fox: "Привіт! Тут є одне питання, треба твоя порада.",
+    rusty_robot: "Привіт! Тут є одне питання, треба твоя порада."
+  };
+
+  function ensureBotFirstMessage(chatId) {
+    var chat = chats[chatId];
+    if (!chat || !botsWhoWriteFirst[chatId]) return;
+    if (chat._botStarted) return;
+
+    var hasThem = false;
+    for (var i = 0; i < chat.messages.length; i++) {
+      if (chat.messages[i] && chat.messages[i].from === "them") {
+        hasThem = true;
+        break;
+      }
+    }
+    if (hasThem) {
+      chat._botStarted = true;
+      return;
+    }
+
+    chat.messages.push({
+      from: "them",
+      type: "text",
+      text: botsWhoWriteFirst[chatId],
+      time: getCurrentTime()
+    });
+    chat._botStarted = true;
+  }
+
   function openChat(chatId) {
     if (!chats[chatId]) return;
     currentChat = chatId;
@@ -630,7 +663,10 @@
     showActiveConversation();
 
     if (!chats[chatId].loaded) loadChat(chatId);
-    else renderConversation();
+    else {
+      ensureBotFirstMessage(chatId);
+      renderConversation();
+    }
   }
 
   function closeChatToList() {
@@ -659,6 +695,7 @@
         }
         chats[chatId].messages = msgs;
         chats[chatId].loaded = true;
+        ensureBotFirstMessage(chatId);
         if (currentChat === chatId) renderConversation();
         renderChatList();
         if (status) status.textContent = "";
@@ -666,13 +703,18 @@
       .catch(function () {
         chats[chatId].messages = [];
         chats[chatId].loaded = true;
+        ensureBotFirstMessage(chatId);
         if (currentChat === chatId) renderConversation();
         renderChatList();
         if (status) {
-          status.textContent = "Чат порожній або файл відсутній";
-          setTimeout(function () {
-            if (status.textContent.indexOf("порожній") !== -1) status.textContent = "";
-          }, 3000);
+          if (!botsWhoWriteFirst[chatId]) {
+            status.textContent = "Чат порожній або файл відсутній";
+            setTimeout(function () {
+              if (status.textContent.indexOf("порожній") !== -1) status.textContent = "";
+            }, 3000);
+          } else {
+            status.textContent = "";
+          }
         }
       });
   }
@@ -1033,3 +1075,4 @@
   setupImageViewer();
   setInterval(refreshAllStatuses, 60000);
 })();
+
