@@ -1072,7 +1072,3 @@
   setupImageViewer();
   setInterval(refreshAllStatuses, 60000);
 })();
-
-  setupImageViewer();
-  setInterval(refreshAllStatuses, 60000);
-})();
