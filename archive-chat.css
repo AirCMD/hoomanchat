@@ -1,0 +1,602 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  color: #222;
+}
+* { box-sizing: border-box; }
+
+#hoomenchat-messages-page {
+  display: block;
+  width: 100%;
+  max-width: 780px;
+  margin: 10px auto;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #777;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+#hoomenchat-messages-page .chat-header {
+  display: block;
+  margin: 0 0 10px 0;
+  padding: 5px 8px;
+  background: linear-gradient(to bottom, #626262, #3b3b3b);
+  border: 1px solid #222;
+  color: #fff;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+#hoomenchat-messages-page .messages-layout {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 10px 0;
+}
+
+#hoomenchat-messages-page .chat-list-column {
+  display: table-cell;
+  width: 220px;
+  vertical-align: top;
+}
+
+#hoomenchat-messages-page .conversation-column {
+  display: table-cell;
+  width: auto;
+  vertical-align: top;
+}
+
+#hoomenchat-messages-page .list-title {
+  margin: 0;
+  padding: 5px 7px;
+  background: #f0f0f0;
+  border: 1px solid #999;
+  color: #333;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+}
+
+#hoomenchat-messages-page .chat-list {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  border: 1px solid #aaa;
+  border-top: 0;
+  max-height: 430px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#hoomenchat-messages-page .chat-list::-webkit-scrollbar { width: 8px; }
+#hoomenchat-messages-page .chat-list::-webkit-scrollbar-track { background: #f0f0f0; }
+#hoomenchat-messages-page .chat-list::-webkit-scrollbar-thumb {
+  background: #aaa;
+  border: 1px solid #888;
+}
+
+#hoomenchat-messages-page .chat-list-item {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 6px;
+  background: #f7f7f7;
+  border-bottom: 1px solid #ccc;
+  color: #222;
+  text-decoration: none;
+  cursor: pointer;
+}
+#hoomenchat-messages-page .chat-list-item:last-child { border-bottom: 0; }
+#hoomenchat-messages-page .chat-list-item:hover { background: #e8e8e8; }
+#hoomenchat-messages-page .chat-list-item.active {
+  background: #dedede;
+  border-left: 3px solid #555;
+}
+
+#hoomenchat-messages-page .chat-list-avatar {
+  display: inline-block;
+  width: 45px;
+  height: 45px;
+  margin-right: 6px;
+  vertical-align: middle;
+  object-fit: cover;
+  background: #ddd;
+  border: 1px solid #888;
+}
+
+#hoomenchat-messages-page .chat-list-info {
+  display: inline-block;
+  width: calc(100% - 58px);
+  vertical-align: middle;
+}
+
+#hoomenchat-messages-page .chat-list-name {
+  margin: 0;
+  color: #111;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+  word-wrap: break-word;
+}
+#hoomenchat-messages-page .chat-list-name a {
+  color: #111;
+  text-decoration: underline;
+}
+
+#hoomenchat-messages-page .chat-list-status {
+  margin-top: 1px;
+  font-size: 9px;
+  line-height: 11px;
+  font-style: italic;
+}
+#hoomenchat-messages-page .chat-list-status.online { color: #2e7d32; }
+#hoomenchat-messages-page .chat-list-status.recent { color: #558b2f; }
+#hoomenchat-messages-page .chat-list-status.away { color: #f9a825; }
+#hoomenchat-messages-page .chat-list-status.offline,
+#hoomenchat-messages-page .chat-list-status.long-ago { color: #9e9e9e; }
+
+#hoomenchat-messages-page .chat-list-preview {
+  margin-top: 3px;
+  color: #777;
+  font-size: 9px;
+  line-height: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#hoomenchat-messages-page .conversation-box {
+  position: relative;
+  background: #fff;
+  border: 1px solid #999;
+}
+
+#hoomenchat-messages-page .conversation-header {
+  min-height: 58px;
+  padding: 6px 8px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #999;
+}
+
+#hoomenchat-messages-page .conversation-back {
+  display: none;
+  margin: 0 0 6px 0;
+  padding: 6px 8px;
+  background: #eee;
+  border: 1px solid #999;
+  color: #333;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+#hoomenchat-messages-page .conversation-back:hover {
+  background: #ddd;
+}
+
+#hoomenchat-messages-page .conversation-avatar {
+  display: inline-block;
+  width: 45px;
+  height: 45px;
+  margin-right: 7px;
+  vertical-align: middle;
+  object-fit: cover;
+  background: #ddd;
+  border: 1px solid #888;
+}
+
+#hoomenchat-messages-page .conversation-user {
+  display: inline-block;
+  vertical-align: middle;
+  max-width: calc(100% - 60px);
+}
+
+#hoomenchat-messages-page .conversation-name {
+  display: block;
+  color: #111;
+  font-size: 13px;
+  line-height: 15px;
+  font-weight: bold;
+}
+#hoomenchat-messages-page .conversation-name a {
+  color: #111;
+  text-decoration: underline;
+}
+
+#hoomenchat-messages-page .conversation-status {
+  display: block;
+  margin-top: 2px;
+  font-size: 9px;
+  line-height: 11px;
+  font-style: italic;
+}
+#hoomenchat-messages-page .conversation-status.online { color: #2e7d32; }
+#hoomenchat-messages-page .conversation-status.recent { color: #558b2f; }
+#hoomenchat-messages-page .conversation-status.away { color: #f9a825; }
+#hoomenchat-messages-page .conversation-status.offline,
+#hoomenchat-messages-page .conversation-status.long-ago { color: #9e9e9e; }
+
+#hoomenchat-messages-page .messages-window {
+  height: 350px;
+  padding: 8px;
+  background: #fafafa;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#hoomenchat-messages-page .conversation-empty {
+  padding: 40px 16px;
+  text-align: center;
+  color: #888;
+  font-size: 12px;
+  line-height: 16px;
+  background: #fafafa;
+  border: 1px solid #999;
+  min-height: 200px;
+}
+
+#hoomenchat-messages-page .message-row {
+  display: block;
+  margin: 0 0 9px 0;
+  clear: both;
+}
+#hoomenchat-messages-page .message-row.mine { text-align: right; }
+#hoomenchat-messages-page .message-row.theirs { text-align: left; }
+
+#hoomenchat-messages-page .message-bubble {
+  display: inline-block;
+  max-width: 78%;
+  padding: 6px 8px;
+  background: #fff;
+  border: 1px solid #aaa;
+  color: #222;
+  font-size: 11px;
+  line-height: 14px;
+  text-align: left;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+#hoomenchat-messages-page .mine .message-bubble {
+  background: #f0f0f0;
+  border-color: #888;
+}
+
+#hoomenchat-messages-page .message-time {
+  margin-top: 2px;
+  color: #999;
+  font-size: 8px;
+  line-height: 10px;
+}
+
+#hoomenchat-messages-page .chat-image {
+  display: block;
+  max-width: 100%;
+  max-height: 220px;
+  margin: 0;
+  background: #ddd;
+  border: 1px solid #888;
+  cursor: pointer;
+  object-fit: contain;
+}
+
+#hoomenchat-messages-page .chat-image-caption {
+  margin-top: 4px;
+  color: #777;
+  font-size: 9px;
+  line-height: 11px;
+  word-break: break-word;
+}
+
+#hoomenchat-messages-page .chat-file {
+  display: block;
+  min-width: 150px;
+  max-width: 100%;
+  padding: 6px 7px;
+  background: #f4f4f4;
+  border: 1px solid #aaa;
+  color: #333;
+  text-decoration: none;
+  font-size: 10px;
+  line-height: 13px;
+  overflow-wrap: anywhere;
+}
+#hoomenchat-messages-page .chat-file:hover {
+  background: #e6e6e6;
+  color: #000;
+}
+#hoomenchat-messages-page .chat-file-icon { margin-right: 5px; }
+
+#hoomenchat-messages-page .message-compose {
+  padding: 7px;
+  background: #f0f0f0;
+  border-top: 1px solid #999;
+}
+
+#hoomenchat-messages-page .compose-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 5px;
+}
+
+#hoomenchat-messages-page .tool-button {
+  display: inline-block;
+  padding: 6px 10px;
+  background: #eeeeee;
+  border: 1px solid #999;
+  color: #444;
+  font-size: 12px;
+  line-height: 14px;
+  cursor: pointer;
+  min-height: 32px;
+}
+#hoomenchat-messages-page .tool-button:hover {
+  background: #ddd;
+  color: #000;
+}
+
+#hoomenchat-messages-page .hidden-file-input { display: none; }
+
+#hoomenchat-messages-page .emoji-panel {
+  display: none;
+  margin: 0 0 5px 0;
+  padding: 5px;
+  background: #fff;
+  border: 1px solid #999;
+}
+#hoomenchat-messages-page .emoji-panel.open { display: block; }
+
+#hoomenchat-messages-page .emoji-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+#hoomenchat-messages-page .emoji-button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  line-height: 30px;
+  cursor: pointer;
+}
+
+#hoomenchat-messages-page .message-input {
+  display: block;
+  width: 100%;
+  min-height: 55px;
+  margin: 0 0 5px 0;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #999;
+  color: #222;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 15px;
+  resize: vertical;
+}
+
+#hoomenchat-messages-page .selected-files { margin: 0 0 5px 0; }
+
+#hoomenchat-messages-page .selected-file {
+  display: inline-block;
+  margin: 2px 4px 2px 0;
+  padding: 3px 5px;
+  background: #fff;
+  border: 1px solid #bbb;
+  color: #555;
+  font-size: 9px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+#hoomenchat-messages-page .selected-file-remove {
+  margin-left: 4px;
+  color: #888;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#hoomenchat-messages-page .send-button {
+  display: inline-block;
+  padding: 8px 14px;
+  background: linear-gradient(to bottom, #fff176, #fbc02d);
+  border: 1px solid #a78119;
+  color: #000;
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  min-height: 36px;
+}
+
+#hoomenchat-messages-page .compose-status {
+  display: inline-block;
+  margin-left: 7px;
+  color: #777;
+  font-size: 9px;
+}
+
+#hoomenchat-messages-page .back-link {
+  display: block;
+  margin: 8px 0 0 0;
+  padding: 8px 10px;
+  background: #f0f0f0;
+  border: 1px solid #aaa;
+  color: #444;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
+body > .image-viewer {
+  display: none;
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 20px;
+  background: rgba(0,0,0,0.80);
+  z-index: 2147483647;
+  align-items: center;
+  justify-content: center;
+}
+body > .image-viewer.open { display: flex; }
+body > .image-viewer img {
+  max-width: 92vw;
+  max-height: 88vh;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid #fff;
+}
+body > .image-viewer .image-viewer-close {
+  position: fixed;
+  top: 12px;
+  right: 15px;
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.8);
+  font-size: 22px;
+  line-height: 34px;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* =====================================================
+   МОБІЛЬНА ВЕРСІЯ
+   ===================================================== */
+@media screen and (max-width: 650px) {
+  #hoomenchat-messages-page {
+    margin: 0;
+    padding: 8px;
+    border: none;
+    max-width: none;
+  }
+
+  #hoomenchat-messages-page .chat-header {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  #hoomenchat-messages-page .messages-layout {
+    display: block;
+    border-spacing: 0;
+  }
+
+  #hoomenchat-messages-page .chat-list-column,
+  #hoomenchat-messages-page .conversation-column {
+    display: block;
+    width: 100%;
+  }
+
+  /* На мобільному: або список, або діалог */
+  #hoomenchat-messages-page.mobile-chat-open .chat-list-column {
+    display: none;
+  }
+  #hoomenchat-messages-page:not(.mobile-chat-open) .conversation-column {
+    display: none;
+  }
+
+  #hoomenchat-messages-page .conversation-back {
+    display: block;
+  }
+
+  #hoomenchat-messages-page .list-title {
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  #hoomenchat-messages-page .chat-list {
+    max-height: none;
+    border: 1px solid #aaa;
+  }
+
+  #hoomenchat-messages-page .chat-list-item {
+    padding: 10px;
+    min-height: 64px;
+  }
+
+  #hoomenchat-messages-page .chat-list-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  #hoomenchat-messages-page .chat-list-name {
+    font-size: 13px;
+    line-height: 16px;
+  }
+
+  #hoomenchat-messages-page .chat-list-status {
+    font-size: 11px;
+  }
+
+  #hoomenchat-messages-page .chat-list-preview {
+    font-size: 11px;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  #hoomenchat-messages-page .conversation-header {
+    min-height: 64px;
+    padding: 10px;
+  }
+
+  #hoomenchat-messages-page .conversation-name {
+    font-size: 15px;
+  }
+
+  #hoomenchat-messages-page .conversation-status {
+    font-size: 11px;
+  }
+
+  #hoomenchat-messages-page .messages-window {
+    height: calc(100dvh - 280px);
+    min-height: 240px;
+    max-height: 55dvh;
+  }
+
+  #hoomenchat-messages-page .message-bubble {
+    max-width: 88%;
+    font-size: 13px;
+    line-height: 17px;
+    padding: 8px 10px;
+  }
+
+  #hoomenchat-messages-page .message-compose {
+    padding: 10px;
+  }
+
+  #hoomenchat-messages-page .message-input {
+    font-size: 14px;
+    min-height: 64px;
+  }
+
+  #hoomenchat-messages-page .back-link {
+    font-size: 13px;
+    padding: 12px;
+    min-height: 44px;
+  }
+
+  #hoomenchat-messages-page .conversation-empty {
+    min-height: 40dvh;
+    font-size: 14px;
+    padding: 48px 20px;
+  }
+}
