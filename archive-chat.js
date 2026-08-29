@@ -892,41 +892,57 @@
     triggerAutoReply(currentChat);
   }
 
+  function pickFromList(arr) {
+    if (!arr || !arr.length) return null;
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
   function pickBotReply(user, lastText) {
     if (!user) return null;
+
+    /* На випадок, якщо bots/*.js підвантажились із запізненням */
+    if (!user.keywordReplies && window.HoomenBotReplies && window.HoomenBotReplies[user.name]) {
+      applyBotReplies();
+    }
+
     var text = String(lastText || "").trim().toLowerCase();
     if (!text) {
-      if (user.autoReply && user.autoReply.length) {
-        return user.autoReply[Math.floor(Math.random() * user.autoReply.length)];
-      }
-      return null;
+      return pickFromList(user.autoReply);
     }
 
     var words = text.split(/\s+/).filter(Boolean);
     var isSingleWord = words.length === 1;
-    var word = isSingleWord ? words[0].replace(/[.,!?;:]+$/g, "") : "";
+    var word = isSingleWord ? words[0].replace(/[.,!?;:«»"'()]+$/g, "").replace(/^[.,!?;:«»"'()]+/g, "") : "";
 
+    /* 1) Точне одне слово → singleWordReplies */
     if (isSingleWord && user.singleWordReplies && user.singleWordReplies[word]) {
       return user.singleWordReplies[word];
     }
 
+    /* 2) Точний ключ у keywordReplies (і для одного слова «питання») */
     if (user.keywordReplies) {
-      var keys = Object.keys(user.keywordReplies);
+      if (isSingleWord && user.keywordReplies[word] && user.keywordReplies[word].length) {
+        return pickFromList(user.keywordReplies[word]);
+      }
+      if (user.keywordReplies[text] && user.keywordReplies[text].length) {
+        return pickFromList(user.keywordReplies[text]);
+      }
+
+      /* 3) Підрядок: довші ключі першими (щоб «питання» било раніше за «як») */
+      var keys = Object.keys(user.keywordReplies).sort(function (a, b) {
+        return b.length - a.length;
+      });
       for (var i = 0; i < keys.length; i++) {
         var key = keys[i];
-        if (text.indexOf(key) !== -1) {
-          var arr = user.keywordReplies[key];
-          if (arr && arr.length) {
-            return arr[Math.floor(Math.random() * arr.length)];
-          }
+        if (key && text.indexOf(key) !== -1) {
+          var hit = pickFromList(user.keywordReplies[key]);
+          if (hit) return hit;
         }
       }
     }
 
-    if (user.autoReply && user.autoReply.length) {
-      return user.autoReply[Math.floor(Math.random() * user.autoReply.length)];
-    }
-    return null;
+    /* 4) Запасний autoReply */
+    return pickFromList(user.autoReply);
   }
 
   function triggerAutoReply(chatId) {
@@ -1053,6 +1069,10 @@
   showEmptyState();
   renderSelectedFiles();
   setupInput();
+  setupImageViewer();
+  setInterval(refreshAllStatuses, 60000);
+})();
+
   setupImageViewer();
   setInterval(refreshAllStatuses, 60000);
 })();
