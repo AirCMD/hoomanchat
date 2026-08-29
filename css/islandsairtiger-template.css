@@ -1,0 +1,821 @@
+```css
+html, body {
+  margin: 0;
+  padding: 0;
+  background:
+    radial-gradient(circle at 50% -20%, #ffffff 0%, #dff8ff 25%, #8ee8f5 65%, #4bc9df 100%);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  color: #075985;
+}
+
+* { box-sizing: border-box; }
+
+#hoomenchat-site {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 12px;
+  background:
+    linear-gradient(to bottom, rgba(255,255,255,0.55), rgba(126,232,244,0.38)),
+    #8ee8f5;
+  border: 1px solid #38bdf8;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    inset 0 -1px 0 rgba(0,120,180,0.15);
+}
+
+#hoomenchat-site a {
+  color: #0077b6;
+}
+
+/* =====================================================
+   HEADER — GLOSSY FRUTIGER AERO
+   ===================================================== */
+
+.hoomenchat-header {
+  display: block;
+  margin: 0 0 10px;
+  padding: 6px 9px;
+  background:
+    linear-gradient(
+      to bottom,
+      #ffffff 0%,
+      #d9fbff 18%,
+      #65e0ef 48%,
+      #16b9d4 52%,
+      #079bc0 100%
+    );
+  border: 1px solid #008db5;
+  border-radius: 7px;
+  color: #03445c;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.95),
+    0 1px 3px rgba(0,90,130,0.25);
+}
+
+.site-layout {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 10px 0;
+}
+
+.site-left {
+  display: table-cell;
+  width: 165px;
+  vertical-align: top;
+}
+
+.site-right {
+  display: table-cell;
+  vertical-align: top;
+}
+
+/* =====================================================
+   LEFT SIDEBAR
+   ===================================================== */
+
+.left-box {
+  padding: 5px 8px;
+  background:
+    linear-gradient(to bottom, rgba(255,255,255,0.92), rgba(218,250,255,0.85));
+  border: 1px solid #4fc3e0;
+  border-radius: 8px;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 2px 5px rgba(0,100,150,0.18);
+}
+
+.site-name {
+  margin: 1px 0 6px;
+  padding: 0 0 5px;
+  border-bottom: 1px solid #8bdcec;
+  color: #0369a1;
+  font-size: 15px;
+  line-height: 17px;
+  font-weight: bold;
+  text-align: center;
+  word-break: break-word;
+  text-shadow: 0 1px 0 #ffffff;
+}
+
+.main-avatar {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1.35;
+  margin: 0 0 7px;
+  object-fit: cover;
+  object-position: center;
+  background:
+    linear-gradient(to bottom, #d9fbff, #70ddea);
+  border: 2px solid #39bde0;
+  border-radius: 7px;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 2px 5px rgba(0,100,150,0.22);
+}
+
+.archat-button {
+  display: block;
+  width: 100%;
+  margin: 0 0 5px;
+  padding: 5px 0;
+  background:
+    linear-gradient(
+      to bottom,
+      #ffffff 0%,
+      #d8ffb0 18%,
+      #9bea50 48%,
+      #63ce25 52%,
+      #38a915 100%
+    );
+  border: 1px solid #429b17;
+  border-radius: 6px;
+  color: #185900 !important;
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.95),
+    0 1px 3px rgba(45,120,0,0.25);
+}
+
+.archat-button:hover {
+  background:
+    linear-gradient(
+      to bottom,
+      #ffffff,
+      #e9ffc8 20%,
+      #a9f45c 50%,
+      #55bd1c 100%
+    );
+  color: #124900 !important;
+}
+
+.nav-menu {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #76d7e9;
+}
+
+.nav-item {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 4px 3px;
+  border-bottom: 1px solid #b5e9f2;
+  color: #0077a8 !important;
+  font-size: 11px;
+  line-height: 13px;
+  text-decoration: underline;
+}
+
+.nav-item:hover {
+  background:
+    linear-gradient(to right, #dfffff, #a8f1fa);
+  color: #005a85 !important;
+  text-decoration: none;
+}
+
+.nav-item.current {
+  background:
+    linear-gradient(to right, #bdf5ff, #7de2f0);
+  color: #005a85 !important;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.account-box {
+  margin: 8px 0 0;
+  padding: 6px 4px;
+  border-top: 1px solid #76d7e9;
+  text-align: center;
+}
+
+.account-text {
+  margin: 0 0 5px;
+  color: #176783;
+  font-size: 9px;
+  line-height: 12px;
+}
+
+.account-link {
+  display: block;
+  margin: 2px 0;
+  color: #0077a8 !important;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.account-link:hover {
+  color: #00527a !important;
+  text-decoration: none;
+}
+
+/* =====================================================
+   MAIN CONTENT
+   ===================================================== */
+
+.profile-box {
+  margin: 0 0 8px;
+  padding: 8px;
+  background:
+    linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(222,250,255,0.82));
+  border: 1px solid #55c8e2;
+  border-radius: 8px;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 2px 6px rgba(0,100,150,0.16);
+}
+
+.profile-header {
+  margin: 0 0 7px;
+  padding: 5px 8px;
+  background:
+    linear-gradient(to bottom, #ffffff, #c8f7ff 35%, #75dcea 100%);
+  border: 1px solid #42b9d7;
+  border-radius: 6px;
+  color: #075985;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+  box-shadow: inset 0 1px 0 #ffffff;
+}
+
+.profile-info {
+  padding: 7px 8px;
+  background:
+    linear-gradient(to bottom, #ffffff, #f1fdff);
+  border: 1px solid #9cdeeb;
+  border-radius: 5px;
+  color: #075985;
+  font-size: 11px;
+  line-height: 15px;
+  box-shadow: inset 0 1px 0 #ffffff;
+}
+
+.profile-status {
+  margin-top: 4px;
+  color: #35a915;
+  font-size: 10px;
+  line-height: 13px;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.posts-header {
+  margin: 8px 0 5px;
+  padding: 5px 8px;
+  background:
+    linear-gradient(to bottom, #ffffff, #c8f7ff 35%, #75dcea 100%);
+  border: 1px solid #42b9d7;
+  border-radius: 6px;
+  color: #075985;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+  box-shadow: inset 0 1px 0 #ffffff;
+}
+
+.profile-post {
+  margin: 0 0 8px;
+  background: #ffffff;
+  border: 1px solid #54c6df;
+  border-radius: 7px;
+  overflow: hidden;
+  box-shadow:
+    0 2px 5px rgba(0,100,150,0.15);
+}
+
+.profile-post-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  background:
+    linear-gradient(to bottom, #ffffff, #d7faff 35%, #9aeaf3 100%);
+  border-bottom: 1px solid #67cfe2;
+  color: #075985;
+  font-size: 11px;
+  line-height: 13px;
+  font-weight: bold;
+  text-shadow: 0 1px 0 #ffffff;
+}
+
+.post-author-link {
+  flex: 0 0 auto;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+.post-author-link a {
+  color: #0077a8 !important;
+  text-decoration: underline;
+}
+
+.profile-post-body {
+  padding: 7px 8px;
+  background:
+    linear-gradient(to bottom, #ffffff, #f6feff);
+  color: #075985;
+  font-size: 11px;
+  line-height: 15px;
+  overflow-wrap: anywhere;
+}
+
+.profile-post-date {
+  padding: 4px 8px;
+  background: #e6fbff;
+  border-top: 1px solid #c2edf3;
+  color: #159bb8;
+  font-size: 9px;
+  line-height: 11px;
+}
+
+.post-actions {
+  padding: 5px 8px;
+  border-top: 1px solid #c2edf3;
+  background:
+    linear-gradient(to bottom, #effeff, #d5f8fc);
+}
+
+.like-button,
+.comment-button {
+  margin: 0 8px 0 0;
+  padding: 2px 4px;
+  border: 0;
+  background: transparent;
+  color: #0077a8;
+  font: 10px/13px Arial, Helvetica, sans-serif;
+  cursor: pointer;
+  text-shadow: 0 1px 0 #ffffff;
+}
+
+.like-button:hover,
+.comment-button:hover {
+  color: #00527a;
+}
+
+.like-button.liked {
+  color: #e83e72;
+  font-weight: bold;
+}
+
+.comments-area {
+  display: none;
+  padding: 7px 8px;
+  background:
+    linear-gradient(to bottom, #eafcff, #d5f8fc);
+  border-top: 1px solid #bcebf2;
+}
+
+.comments-area.open {
+  display: block;
+}
+
+.fake-comment,
+.user-comment {
+  margin: 0 0 5px;
+  padding: 5px 6px;
+  background:
+    linear-gradient(to bottom, #ffffff, #f3fdff);
+  border: 1px solid #9edfeb;
+  border-radius: 5px;
+  color: #075985;
+  font-size: 10px;
+  line-height: 13px;
+  overflow-wrap: anywhere;
+}
+
+.fake-comment-name {
+  margin-bottom: 2px;
+  font-weight: bold;
+  color: #0876a5;
+}
+
+.comment-form {
+  margin-top: 6px;
+}
+
+.comment-input {
+  display: block;
+  width: 100%;
+  min-height: 45px;
+  padding: 5px 6px;
+  resize: vertical;
+  border: 1px solid #5fc9df;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #075985;
+  font: 10px/13px Arial, Helvetica, sans-serif;
+  box-shadow: inset 0 1px 3px rgba(0,100,150,0.08);
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: #16b9d4;
+  box-shadow:
+    0 0 4px rgba(22,185,212,0.35),
+    inset 0 1px 3px rgba(0,100,150,0.08);
+}
+
+.comment-send,
+.show-more,
+.create-post-btn {
+  padding: 4px 9px;
+  background:
+    linear-gradient(
+      to bottom,
+      #ffffff,
+      #d7fbff 35%,
+      #73dbea 100%
+    );
+  border: 1px solid #36afd0;
+  border-radius: 5px;
+  color: #00658c;
+  font-size: 10px;
+  line-height: 13px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 1px 2px rgba(0,100,150,0.2);
+}
+
+.comment-send:hover,
+.show-more:hover,
+.create-post-btn:hover {
+  background:
+    linear-gradient(
+      to bottom,
+      #ffffff,
+      #e8fdff 30%,
+      #9ceaf4 100%
+    );
+  color: #004f70;
+}
+
+.create-post-btn {
+  display: block;
+  width: 100%;
+  margin: 0 0 5px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.create-post-form {
+  display: none;
+  margin: 0 0 8px;
+  padding: 8px;
+  background:
+    linear-gradient(to bottom, #ffffff, #eafcff);
+  border: 1px solid #54c6df;
+  border-radius: 7px;
+  box-shadow: 0 2px 5px rgba(0,100,150,0.12);
+}
+
+.create-post-form.open {
+  display: block;
+}
+
+.show-more {
+  display: block;
+  width: 100%;
+  margin-top: 2px;
+  padding: 6px 8px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: underline;
+}
+
+.show-more.hidden {
+  display: none;
+}
+
+/* =====================================================
+   INFO BOXES
+   ===================================================== */
+
+.rules-box {
+  margin: 8px 0 0;
+  padding: 6px 9px;
+  background:
+    linear-gradient(to bottom, #ffffff, #eafcff);
+  border: 1px solid #55c8e2;
+  border-radius: 6px;
+  color: #075985;
+  font-size: 11px;
+  line-height: 14px;
+  box-shadow: inset 0 1px 0 #ffffff;
+}
+
+.rules-box a {
+  color: #0077a8;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.statistics-box {
+  margin: 8px 0 0;
+  padding: 6px 9px;
+  background:
+    linear-gradient(to bottom, #ffffff, #eafcff);
+  border: 1px solid #55c8e2;
+  border-radius: 6px;
+  color: #075985;
+  font: 10px/13px "Courier New", Courier, monospace;
+  box-shadow: inset 0 1px 0 #ffffff;
+}
+
+.statistics-title {
+  margin: 0 0 3px;
+  color: #075985;
+  font: bold 10px/12px Arial, Helvetica, sans-serif;
+}
+
+.statistics-number {
+  color: #03445c;
+  font-weight: bold;
+}
+
+.statistics-online {
+  color: #43a817;
+  font-weight: bold;
+}
+
+.footer-line {
+  margin: 7px 0 0;
+  padding-top: 5px;
+  border-top: 1px solid #9de2ed;
+  color: #159bb8;
+  font-size: 9px;
+  line-height: 11px;
+  text-align: center;
+}
+
+/* =====================================================
+   МОБІЛЬНА АДАПТАЦІЯ
+   ===================================================== */
+
+@media screen and (max-width: 900px) {
+  .site-left {
+    width: 150px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  html, body {
+    font-size: 14px;
+    line-height: 18px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  #hoomenchat-site {
+    padding: 8px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    border: none;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .hoomenchat-header {
+    padding: 8px 10px;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 1.5px;
+  }
+
+  .site-layout {
+    display: block;
+    border-spacing: 0;
+  }
+
+  .site-left,
+  .site-right {
+    display: block;
+    width: 100%;
+  }
+
+  .site-left {
+    margin-bottom: 12px;
+  }
+
+  .left-box {
+    padding: 10px 12px;
+  }
+
+  .site-name {
+    font-size: 18px;
+    line-height: 22px;
+    margin-bottom: 10px;
+  }
+
+  .main-avatar {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    margin: 0 auto 12px;
+    aspect-ratio: 1 / 1.25;
+  }
+
+  .archat-button {
+    padding: 12px 0;
+    font-size: 13px;
+    line-height: 18px;
+    min-height: 44px;
+    margin-bottom: 10px;
+  }
+
+  .nav-item {
+    padding: 12px 6px;
+    font-size: 15px;
+    line-height: 19px;
+    min-height: 44px;
+  }
+
+  .account-box {
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+
+  .account-link {
+    padding: 10px 0;
+    font-size: 14px;
+    line-height: 18px;
+    min-height: 40px;
+  }
+
+  .profile-box {
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+
+  .profile-header {
+    font-size: 14px;
+    line-height: 18px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+
+  .profile-info {
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .profile-status {
+    font-size: 12px;
+    line-height: 16px;
+    margin-top: 5px;
+  }
+
+  .posts-header {
+    margin: 10px 0 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .create-post-btn {
+    min-height: 44px;
+    padding: 11px 12px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .create-post-form {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .profile-post {
+    margin-bottom: 10px;
+  }
+
+  .profile-post-title {
+    display: block;
+    padding: 10px 12px;
+    font-size: 15px;
+    line-height: 19px;
+  }
+
+  .post-author-link {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    line-height: 16px;
+    white-space: normal;
+  }
+
+  .profile-post-body {
+    padding: 10px 12px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .post-actions {
+    padding: 8px 12px;
+  }
+
+  .like-button,
+  .comment-button {
+    min-height: 36px;
+    margin-right: 8px;
+    padding: 7px 5px;
+    font-size: 13px;
+    line-height: 17px;
+  }
+
+  .comments-area {
+    padding: 10px 12px;
+  }
+
+  .fake-comment,
+  .user-comment {
+    padding: 8px 9px;
+    font-size: 12px;
+    line-height: 17px;
+  }
+
+  .comment-input {
+    min-height: 70px;
+    padding: 8px 9px;
+    font-size: 13px;
+    line-height: 17px;
+  }
+
+  .comment-send {
+    min-height: 36px;
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+  .profile-post-date {
+    padding: 6px 12px;
+    font-size: 11px;
+    line-height: 14px;
+  }
+
+  .show-more {
+    min-height: 42px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 17px;
+  }
+
+  .rules-box,
+  .statistics-box {
+    font-size: 12px;
+    line-height: 16px;
+    padding: 10px 12px;
+  }
+
+  .statistics-title {
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .footer-line {
+    font-size: 11px;
+    line-height: 14px;
+    margin-top: 12px;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .main-avatar {
+    max-width: 100%;
+    aspect-ratio: 1 / 1.15;
+  }
+
+  .profile-post-title {
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .like-button,
+  .comment-button {
+    font-size: 12px;
+    margin-right: 4px;
+  }
+}
+```
