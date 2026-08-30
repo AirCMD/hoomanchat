@@ -13,6 +13,8 @@
 
   var MAX_IMAGE_SIZE = 10 * 1024 * 1024;
   var MAX_FILE_SIZE = 20 * 1024 * 1024;
+  /* false = не зберігати історію після перезавантаження */
+  var SAVE_HISTORY = false;
   var STORAGE_PREFIX = "hoomen_pm_";
 
   var allowedImageTypes = {
@@ -105,6 +107,7 @@
   }
 
   function loadMessages(nick) {
+    if (!SAVE_HISTORY) return [];
     try {
       var raw = localStorage.getItem(storageKey(nick));
       if (!raw) return [];
@@ -116,6 +119,7 @@
   }
 
   function saveMessages(nick, messages) {
+    if (!SAVE_HISTORY) return;
     try {
       var slim = messages.map(function (m) {
         var copy = {
