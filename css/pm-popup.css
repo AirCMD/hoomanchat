@@ -1,0 +1,320 @@
+/* Попап особистих повідомлень (ПМ) на профілях */
+
+#hoomen-pm-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  background: rgba(0, 0, 0, 0.55);
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  box-sizing: border-box;
+}
+#hoomen-pm-overlay.open {
+  display: flex;
+}
+
+#hoomen-pm-window {
+  width: 100%;
+  max-width: 420px;
+  max-height: min(92vh, 640px);
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #555;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  color: #222;
+}
+
+#hoomen-pm-window .pm-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: linear-gradient(to bottom, #626262, #3b3b3b);
+  border-bottom: 1px solid #222;
+  color: #fff;
+  flex-shrink: 0;
+}
+#hoomen-pm-window .pm-header-avatar {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  background: #ddd;
+  border: 1px solid #888;
+  flex-shrink: 0;
+}
+#hoomen-pm-window .pm-header-info {
+  flex: 1;
+  min-width: 0;
+}
+#hoomen-pm-window .pm-header-name {
+  font-weight: bold;
+  font-size: 13px;
+  line-height: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#hoomen-pm-window .pm-header-sub {
+  font-size: 9px;
+  line-height: 11px;
+  color: #ddd;
+  font-style: italic;
+  margin-top: 1px;
+}
+#hoomen-pm-window .pm-close {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  color: #fff;
+  font-size: 18px;
+  line-height: 30px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+#hoomen-pm-window .pm-close:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+#hoomen-pm-window .pm-messages {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
+  background: #fafafa;
+  min-height: 180px;
+}
+#hoomen-pm-window .pm-row {
+  display: block;
+  margin: 0 0 9px 0;
+  clear: both;
+}
+#hoomen-pm-window .pm-row.mine { text-align: right; }
+#hoomen-pm-window .pm-row.theirs { text-align: left; }
+#hoomen-pm-window .pm-bubble {
+  display: inline-block;
+  max-width: 82%;
+  padding: 6px 8px;
+  background: #fff;
+  border: 1px solid #aaa;
+  color: #222;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: left;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+#hoomen-pm-window .pm-row.mine .pm-bubble {
+  background: #f0f0f0;
+  border-color: #888;
+}
+#hoomen-pm-window .pm-time {
+  margin-top: 2px;
+  color: #999;
+  font-size: 8px;
+  line-height: 10px;
+}
+#hoomen-pm-window .pm-image {
+  display: block;
+  max-width: 100%;
+  max-height: 180px;
+  object-fit: contain;
+  background: #ddd;
+  border: 1px solid #888;
+  cursor: pointer;
+}
+#hoomen-pm-window .pm-file {
+  display: block;
+  padding: 6px 7px;
+  background: #f4f4f4;
+  border: 1px solid #aaa;
+  color: #333;
+  text-decoration: none;
+  font-size: 11px;
+}
+#hoomen-pm-window .pm-file:hover {
+  background: #e6e6e6;
+  color: #000;
+}
+
+#hoomen-pm-window .pm-typing {
+  display: none;
+  margin: 0 0 8px 0;
+  text-align: left;
+}
+#hoomen-pm-window .pm-typing.show { display: block; }
+#hoomen-pm-window .pm-typing-bubble {
+  display: inline-block;
+  padding: 6px 10px;
+  background: #f4f4f4;
+  border: 1px solid #bbb;
+  color: #888;
+  font-size: 11px;
+  font-style: italic;
+}
+#hoomen-pm-window .pm-typing-dots span {
+  display: inline-block;
+  opacity: 0;
+  animation: pmTypingDot 1.2s infinite;
+}
+#hoomen-pm-window .pm-typing-dots span:nth-child(1) { animation-delay: 0s; }
+#hoomen-pm-window .pm-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+#hoomen-pm-window .pm-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes pmTypingDot {
+  0%, 20% { opacity: 0; }
+  40%, 60% { opacity: 1; }
+  80%, 100% { opacity: 0; }
+}
+
+#hoomen-pm-window .pm-compose {
+  padding: 8px;
+  background: #f0f0f0;
+  border-top: 1px solid #999;
+  flex-shrink: 0;
+}
+#hoomen-pm-window .pm-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 5px;
+}
+#hoomen-pm-window .pm-tool {
+  padding: 6px 10px;
+  background: #eee;
+  border: 1px solid #999;
+  color: #444;
+  font-size: 14px;
+  line-height: 16px;
+  cursor: pointer;
+  min-height: 32px;
+}
+#hoomen-pm-window .pm-tool:hover {
+  background: #ddd;
+  color: #000;
+}
+#hoomen-pm-window .pm-hidden-input { display: none; }
+
+#hoomen-pm-window .pm-emoji-panel {
+  display: none;
+  margin: 0 0 5px 0;
+  padding: 5px;
+  background: #fff;
+  border: 1px solid #999;
+  max-height: 120px;
+  overflow-y: auto;
+}
+#hoomen-pm-window .pm-emoji-panel.open { display: block; }
+#hoomen-pm-window .pm-emoji-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+#hoomen-pm-window .pm-emoji-btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  line-height: 30px;
+  cursor: pointer;
+}
+#hoomen-pm-window .pm-emoji-btn:hover { background: #f0f0f0; }
+
+#hoomen-pm-window .pm-selected {
+  margin: 0 0 5px 0;
+}
+#hoomen-pm-window .pm-selected-item {
+  display: inline-block;
+  margin: 2px 4px 2px 0;
+  padding: 3px 5px;
+  background: #fff;
+  border: 1px solid #bbb;
+  color: #555;
+  font-size: 9px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+#hoomen-pm-window .pm-selected-remove {
+  margin-left: 4px;
+  color: #888;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#hoomen-pm-window .pm-input {
+  display: block;
+  width: 100%;
+  min-height: 52px;
+  margin: 0 0 5px 0;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid #999;
+  color: #222;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 16px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+#hoomen-pm-window .pm-send-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#hoomen-pm-window .pm-send {
+  padding: 8px 14px;
+  background: linear-gradient(to bottom, #fff176, #fbc02d);
+  border: 1px solid #a78119;
+  color: #000;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  min-height: 36px;
+}
+#hoomen-pm-window .pm-send:hover {
+  background: linear-gradient(to bottom, #fff59d, #fdd835);
+}
+#hoomen-pm-window .pm-status {
+  color: #777;
+  font-size: 9px;
+}
+#hoomen-pm-window .pm-footer-link {
+  display: block;
+  margin-top: 6px;
+  text-align: center;
+  font-size: 10px;
+  color: #555;
+}
+#hoomen-pm-window .pm-footer-link a {
+  color: #333;
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 480px) {
+  #hoomen-pm-overlay { padding: 0; align-items: stretch; }
+  #hoomen-pm-window {
+    max-width: none;
+    max-height: none;
+    height: 100%;
+    border: none;
+  }
+  #hoomen-pm-window .pm-messages {
+    min-height: 0;
+  }
+  #hoomen-pm-window .pm-input {
+    font-size: 15px;
+    min-height: 60px;
+  }
+  #hoomen-pm-window .pm-tool {
+    min-height: 40px;
+    font-size: 16px;
+  }
+}
