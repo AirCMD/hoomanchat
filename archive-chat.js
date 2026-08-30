@@ -94,7 +94,7 @@
       profile: "profiles/velvet-moon.html",
       gender: "female",
       status: "long-ago",
-      autoReply: ["Привіт :)", "Я зараз тут.", "Цікаво.", "Розкажи детальніше."]
+      autoReply: ["Схоже, velvet_moon давно не було в мережі. Вона отримає ваше повідомлення коли з'явиться в мережі."]
     },
     pixel_heart: {
       name: "pixel_heart",
@@ -102,7 +102,7 @@
       profile: "profiles/pixel-heart.html",
       gender: "female",
       status: "5min",
-      autoReply: ["О, привіт.", "Мм, можливо.", "Я подумаю над цим.", "Хех :)"]
+      autoReply: ["Не цікаво."]
     },
     night_fox: {
       name: "night_fox",
@@ -272,7 +272,7 @@
        { time: "20:00", status: "online" },
        { time: "23:00", status: "offline" }
   ],
-      autoReply: ["Це автоматичне повідомлення. Ви заблокували dreaming_romance, вона не зможе прочитати чат."]
+      autoReply: ["Це автоматичне повідомлення. Ви заблокували dreaming_romance, він не зможе прочитати арчат."]
     }
   };
 
