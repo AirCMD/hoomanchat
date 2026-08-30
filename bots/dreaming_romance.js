@@ -1,11 +1,11 @@
 /**
- * Відповіді бота night_fox
+ * Відповіді бота dreaming_romance
  * Редагуй тільки firstMessage / autoReply / keywordReplies / singleWordReplies
  */
 (function () {
   "use strict";
   window.HoomenBotReplies = window.HoomenBotReplies || {};
-  window.HoomenBotReplies.night_fox = {
+  window.HoomenBotReplies.dreaming_romance = {
     firstMessage: "Написання повідомлення автоматично розблокує dreaming_romance.",
     autoReply: [
       "Мм...",
