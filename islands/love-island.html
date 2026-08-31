@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/islandspink-template.css">
+<title>ОСТРІВ: LOVE</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+</head>
+<body>
+<div id="hoomenchat-site">
+<div class="hoomenchat-header">ГУМЕНЧАТ</div>
+<div class="site-layout">
+<div class="site-left"><div class="left-box">
+<div class="site-name">LOVE</div>
+<img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEi15ZGDPLZBky2l91QEWb2su_KQcIROWWvaS47GTXTDclk5MOb-zqkAWe502_YcPEycUw3bve1h7Lfd4ZnivPVC_lAf4yBFwpVgBeWp---Ex6IZ18Qdu2-DYaEgRJKUuTF9N1cjpyUTS7wqyvxRC7KFG9u4F7_FSk3jRPjcwf1ngwiYP-bvvpcmzAIIh5w" alt="LOVE">
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+<div class="nav-menu">
+<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
+<a class="nav-item" href="../profiles.html">Гумени</a>
+<a class="nav-item" href="../droomens.html">Друмени</a>
+<a class="nav-item" href="../activity.html">Стрічерчат</a>
+<a class="nav-item current" href="../islands.html">Острови</a>
+<a class="nav-item" href="../rules.html">Правила</a>
+</div>
+<div class="account-box"><div class="account-text">Немає гумгайла?</div><a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a><a class="account-link" href="../login.html">ВХІД</a></div>
+</div></div>
+<div class="site-right">
+<div class="profile-box">
+<div class="profile-header">LOVE — острів</div>
+<div class="profile-info">
+<div>Острів для тих, хто шукає стусни, кохня, серйозний шлюбний крок. Ми раді всім, залишайте анкети, ми з радістю їх опригумнимо.</div>
+<div class="profile-status" style="color:green; font-style:normal;">Статус: відкритий острів</div>
+</div>
+</div>
+<div class="posts-header">Дописи спільноти</div>
+<button id="toggle-create-btn" class="create-post-btn">Створити публікацію</button>
+<div id="create-post-box" class="create-post-form">
+  <input type="text" id="new-post-title" class="comment-input" style="min-height:24px; margin-bottom:5px;" placeholder="Заголовок допису...">
+  <textarea id="new-post-text" class="comment-input" placeholder="Текст допису..."></textarea>
+  <button id="submit-post-btn" class="comment-send" style="margin-top:5px;">Опублікувати</button>
+</div>
+<div id="island-posts"></div>
+<div id="show-more-posts" class="show-more">показати ще...</div>
+<div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
+<div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span id="today-hoomen"></span></div></div>
+<div class="footer-line">Гуменчат — місце для гуменів.</div>
+</div></div></div>
+<script>
+(function(){
+/*
+  Нік у коментарі → посилання на profiles/
+  fray_dog → ../profiles/fray-dog.html
+*/
+function profileUrl(name) {
+  var slug = String(name || "")
+    .trim()
+    .replace(/^@/, "")
+    .replace(/_/g, "-");
+  if (!slug) return "#";
+  return "../profiles/" + encodeURIComponent(slug) + ".html";
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+const initialPostsData = [
+  {title: "Секта", body: "Сектантський допис", likes: 521, date: "22 червня", comments: [{name: "fray_dog", text: "Сектантський коментар"}, {name: "fray_dog", text: "Сектантський коментар"}]},
+  {title: "Секта", body: "Сектантський допис", likes: 2, date: "20 червня", comments: [{name: "fray_dog", text: "Сектантський коментар"}, {name: "fray_dog", text: "Сектантський коментар"}, {name: "fray_dog", text: "Сектантський коментар"}]},
+  {title: "Секта", body: "Сектантський допис", likes: 1982, date: "17 червня", comments: [{name: "fray_dog", text: "Сектантський коментар"}]},
+  {title: "Секта", body: "Сектантський допис", likes: 79, date: "15 червня", comments: [{name: "fray_dog", text: "Сектантський коментар"}, {name: "fray_dog", text: "Сектантський коментар"}]},
+  {title: "Секта", body: "Сектантський допис", likes: 44, date: "13 червня", comments: [{name: "fray_dog", text: "Сектантський коментар"}, {name: "fray_dog", text: "Сектантський коментар"}, {name: "fray_dog", text: "Сектантський коментар"}]},
+  {title: "Секта", body: "Сектантський допис", likes: 77, date: "12 червня", comments: [{name: "yurii_ichigo", text: "Сектантський коментар"}, {name: "fray_dog", text: "Сектантський коментар"}]},
+  {title: "Секта", body: "Сектантський допис", likes: 57, date: "9 червня", comments: [{name: "fray_dog", text: "Сектантський коментар"}]},
+  {title: "Секта", body: "Сектантський допис", likes: 3, date: "8 червня", comments: [{name: "yurii_ichigo", text: "Сектантський коментар"}, {name: "fray_dog", text: "Сектантський коментар"}]},
+  {title: "Секта", body: "Сектантський допис", likes: 4, date: "5 червня", comments: [{name: "fray_dog", text: "Сектантський коментар"}, {name: "fray_dog", text: "Сектантський коментар"}]},
+  {title: "Секта", body: "Сектантський допис", likes: 87, date: "3 червня", comments: [{name: "fray_dog", text: "Сектантський коментар"}, {name: "fray_dog", text: "Сектантський коментар"}]},
+  {title: "Заголовок допису #11", body: "Текст допису #11", likes: 10, date: "1 червня", comments: []},
+  {title: "Заголовок допису #12", body: "Текст допису #12", likes: 15, date: "30 травня", comments: []},
+  {title: "Заголовок допису #13", body: "Текст допису #13", likes: 8, date: "29 травня", comments: []},
+  {title: "Заголовок допису #14", body: "Текст допису #14", likes: 23, date: "28 травня", comments: []},
+  {title: "Заголовок допису #15", body: "Текст допису #15", likes: 41, date: "27 травня", comments: []},
+  {title: "Заголовок допису #16", body: "Текст допису #16", likes: 12, date: "25 травня", comments: []},
+  {title: "Заголовок допису #17", body: "Текст допису #17", likes: 5, date: "24 травня", comments: []},
+  {title: "Заголовок допису #18", body: "Текст допису #18", likes: 19, date: "23 травня", comments: []},
+  {title: "Заголовок допису #19", body: "Текст допису #19", likes: 30, date: "21 травня", comments: []},
+  {title: "Заголовок допису #20", body: "Текст допису #20", likes: 14, date: "20 травня", comments: []},
+  {title: "Заголовок допису #21", body: "Текст допису #21", likes: 6, date: "18 травня", comments: []},
+  {title: "Заголовок допису #22", body: "Текст допису #22", likes: 22, date: "17 травня", comments: []},
+  {title: "Заголовок допису #23", body: "Текст допису #23", likes: 18, date: "15 травня", comments: []},
+  {title: "Заголовок допису #24", body: "Текст допису #24", likes: 9, date: "14 травня", comments: []},
+  {title: "Заголовок допису #25", body: "Текст допису #25", likes: 35, date: "12 травня", comments: []},
+  {title: "Заголовок допису #26", body: "Текст допису #26", likes: 27, date: "11 травня", comments: []},
+  {title: "Заголовок допису #27", body: "Текст допису #27", likes: 11, date: "9 травня", comments: []},
+  {title: "Заголовок допису #28", body: "Текст допису #28", likes: 16, date: "8 травня", comments: []},
+  {title: "Заголовок допису #29", body: "Текст допису #29", likes: 4, date: "6 травня", comments: []},
+  {title: "Заголовок допису #30", body: "Текст допису #30", likes: 50, date: "5 травня", comments: []},
+  {title: "Заголовок допису #31", body: "Текст допису #31", likes: 13, date: "3 травня", comments: []},
+  {title: "Заголовок допису #32", body: "Текст допису #32", likes: 21, date: "2 травня", comments: []},
+  {title: "Заголовок допису #33", body: "Текст допису #33", likes: 7, date: "30 квітня", comments: []},
+  {title: "Заголовок допису #34", body: "Текст допису #34", likes: 29, date: "28 квітня", comments: []},
+  {title: "Заголовок допису #35", body: "Текст допису #35", likes: 17, date: "27 квітня", comments: []},
+  {title: "Заголовок допису #36", body: "Текст допису #36", likes: 33, date: "25 квітня", comments: []},
+  {title: "Заголовок допису #37", body: "Текст допису #37", likes: 2, date: "24 квітня", comments: []},
+  {title: "Заголовок допису #38", body: "Текст допису #38", likes: 44, date: "22 квітня", comments: []},
+  {title: "Заголовок допису #39", body: "Текст допису #39", likes: 12, date: "20 квітня", comments: []},
+  {title: "Заголовок допису #40", body: "Текст допису #40", likes: 25, date: "19 квітня", comments: []},
+  {title: "Заголовок допису #41", body: "Текст допису #41", likes: 8, date: "17 квітня", comments: []},
+  {title: "Заголовок допису #42", body: "Текст допису #42", likes: 19, date: "15 квітня", comments: []},
+  {title: "Заголовок допису #43", body: "Текст допису #43", likes: 31, date: "14 квітня", comments: []},
+  {title: "Заголовок допису #44", body: "Текст допису #44", likes: 10, date: "12 квітня", comments: []},
+  {title: "Заголовок допису #45", body: "Текст допису #45", likes: 22, date: "10 квітня", comments: []},
+  {title: "Заголовок допису #46", body: "Текст допису #46", likes: 14, date: "8 квітня", comments: []},
+  {title: "Шануймо сон", body: "Не спала Тетяна цілий тиждень. Вона намагалася всіляко заснути й не могла. Жінка перепробувала все можливе... Пила різні пігулки, які прописував їй лікар, змінювала освітлення, слухала білий шум, прибирала електричні прилади щоб 30 хвилин провести без них. Результату не було. І тоді вона почула грркання біля вікна. Перед нею з'явився Повітряний Тигр і запропонував їй чудовий сон, потрібно було лише покірно вклонитися йому. Тетяна послухала та виконала умови. Більше вона ніколи не знала шлях інсомнії. Шануймо сон денний та нічний, шануймо Повітряного Тигра.", likes: 138214, date: "6 квітня", comments: []},
+  {title: "Шануймо їжу", body: "Ходив пустелею Василь три дні та три ночі, адже посеред бурі він загубив зв'язок зі своїми друменами. Перший день. Василь йшов та не вклонявся Повітряному Тигру, намагаючись розтягувати запаси, які перебували в його сумці. Не відчув жагу. День другий. Василь знову не вклонився Повітряному Тигру, йти пустелею було значно важче. Їжа та вода закінчувалися, а шлях далекий і невідомо коли він дійде до цивілізації. День третій. Василь допив останню краплю в пляшці та продовжив свій шлях. Через відсутність води та їжі, Василь покорився Повітряному Тигру, отримавши їжу. Гумен побачив цивілізацію і швидко дійшов. Так шануймо Повітряного Тигра за воду та їжу, яку він нам дає. Шана.", likes: 0, date: "5 квітня", comments: []},
+  {title: "Захар Гак шукає дівчину", body: "Ти шукаєш мене, а я шукаю тебе. Відгукнись! Якщо тобі набридли всі ті стеретипи стосовно того, якою має бути ідеальна жінка, нав'язування шлюбну, якщо ти шукаєш стосунків без зобов'язань, я тут. Який план? Зустрічаємось у тебе, проводимо гарно час. Ти не хочеш щоб тобі дарували дорогі чи дешеві підарунки. Голодна? Їжу та напої приносиш з собою. Ти не передумаєш стосовно стуснів і не хотітимеш більшого. А якщо тобі набридне такий формат, ми спокійно це обговоримо і підемо своїми шляхами. Готова до пригод? Напиши ТАК під цією анкетою 😉", likes: 0, date: "Невертайм", comments: [{name: "zakhar_gak", text: "Ну шо, дівки. Де ви є? Я тут, поки черги немає! 😉"}]},
+  {title: "Віктор Гак в пошуках кохної", body: "Так вже вийшло що мене оточує чимало дівчат та жінок як у житті, так і в інтернеті. Але я не хочу цю зграю голодних вівчиць. Я шукаю одну єдину, унікальну гуменку. Ти: 1.55 см зросту, у тебе довге біляве не фарбоване волосся, маленький носик, великі блакитні очі та файне личко. Ти носиш білі сукні з принтами троянд і твій гардером складається переважно з одягу таких принтів. Вмієш готувати, прибираєшся, працюєш. Спроможна підтримувати чоловіка, поруч коли треба. Коли не треба, не турбуєш. У тебе ніколи не буває претензій і ти готова вислухати мене та мої історії. Тобі цікаво як пройшов мій день. До інших прохання не турбувати.", likes: 1, date: "Невертайм", comments: [{name: "victor_gak", text: "Чекаю твої повідомлення в Арчаті."}]}
+];
+
+const container = document.getElementById('island-posts');
+
+function createPostElement(title, body, likes, date, comments) {
+  comments = comments || [];
+  const post = document.createElement('div');
+  post.className = 'profile-post';
+
+  let commentsHtml = '';
+  comments.forEach(function (c) {
+    var href = profileUrl(c.name);
+    commentsHtml +=
+      '<div class="fake-comment">' +
+        '<div class="fake-comment-name">' +
+          '<a href="' + href + '">' + escapeHtml(c.name) + '</a>' +
+        '</div>' +
+        escapeHtml(c.text) +
+      '</div>';
+  });
+
+  post.innerHTML =
+    '<div class="profile-post-title">' +
+      '<span>' + escapeHtml(title) + '</span>' +
+      '<span class="post-author-link">острів: <a href="LOVE-island.html">LOVE</a></span>' +
+    '</div>' +
+    '<div class="profile-post-body">' + escapeHtml(body) + '</div>' +
+    '<div class="post-actions">' +
+      '<button class="like-button" type="button" data-base-likes="' + likes + '">♡ Подобається <span class="like-count">' + likes + '</span></button>' +
+      '<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">' + comments.length + '</span></button>' +
+    '</div>' +
+    '<div class="comments-area">' +
+      '<div class="comments-list">' + commentsHtml + '</div>' +
+      '<div class="comment-form">' +
+        '<textarea class="comment-input" placeholder="Написати коментар..."></textarea>' +
+        '<button class="comment-send" type="button">Відправити</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="profile-post-date">' + escapeHtml(date) + '</div>';
+
+  return post;
+}
+
+initialPostsData.forEach(function (item) {
+  container.appendChild(
+    createPostElement(item.title, item.body, item.likes, item.date, item.comments)
+  );
+});
+
+let visible = 3;
+
+function update() {
+  const posts = container.querySelectorAll('.profile-post');
+  posts.forEach(function (p, i) {
+    p.style.display = i < visible ? 'block' : 'none';
+  });
+  const showBtn = document.getElementById('show-more-posts');
+  if (visible >= posts.length) {
+    showBtn.textContent = 'показати менше...';
+  } else {
+    showBtn.textContent = 'показати ще...';
+  }
+}
+
+document.getElementById('show-more-posts').onclick = function () {
+  const posts = container.querySelectorAll('.profile-post');
+  if (visible >= posts.length) {
+    visible = 3;
+  } else {
+    visible = Math.min(visible + 10, posts.length);
+  }
+  update();
+};
+
+document.getElementById('toggle-create-btn').onclick = function () {
+  document.getElementById('create-post-box').classList.toggle('open');
+};
+
+document.getElementById('submit-post-btn').onclick = function () {
+  const titleInput = document.getElementById('new-post-title');
+  const textInput = document.getElementById('new-post-text');
+  const title = titleInput.value.trim();
+  const text = textInput.value.trim();
+  if (!title || !text) return;
+
+  const newPost = createPostElement(title, text, 0, 'щойно', []);
+  container.insertBefore(newPost, container.firstChild);
+
+  titleInput.value = '';
+  textInput.value = '';
+  document.getElementById('create-post-box').classList.remove('open');
+  bindEvents(newPost);
+  visible = Math.max(visible, 1);
+  update();
+};
+
+function bindEvents(scope) {
+  scope.querySelectorAll('.like-button').forEach(function (btn) {
+    if (btn.getAttribute('data-like-bound') === '1') return;
+    btn.setAttribute('data-like-bound', '1');
+
+    btn.onclick = function () {
+      const c = btn.querySelector('.like-count');
+      let n = parseInt(String(c.textContent).replace(/\s/g, ''), 10) || 0;
+      const liked = btn.classList.toggle('liked');
+      n += liked ? 1 : -1;
+      if (n < 0) n = 0;
+      c.textContent = n.toLocaleString('uk-UA');
+      btn.childNodes[0].textContent = liked ? '♥ Подобається ' : '♡ Подобається ';
+    };
+  });
+
+  scope.querySelectorAll('.comment-button').forEach(function (btn) {
+    if (btn.getAttribute('data-comment-bound') === '1') return;
+    btn.setAttribute('data-comment-bound', '1');
+
+    btn.onclick = function () {
+      btn.closest('.profile-post').querySelector('.comments-area').classList.toggle('open');
+    };
+  });
+
+  scope.querySelectorAll('.comment-send').forEach(function (btn) {
+    if (btn.getAttribute('data-send-bound') === '1') return;
+    btn.setAttribute('data-send-bound', '1');
+
+    btn.onclick = function () {
+      const form = btn.closest('.comment-form');
+      const input = form.querySelector('.comment-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      /* Коментар від copy_pasta у тому ж форматі, з посиланням на профіль */
+      const c = document.createElement('div');
+      c.className = 'fake-comment';
+      c.innerHTML =
+        '<div class="fake-comment-name">' +
+          '<a href="' + profileUrl('copy_pasta') + '">copy_pasta</a>' +
+        '</div>' +
+        escapeHtml(text);
+
+      const list = form.closest('.comments-area').querySelector('.comments-list');
+      if (list) list.appendChild(c);
+      else form.parentNode.insertBefore(c, form);
+
+      input.value = '';
+      const post = form.closest('.profile-post');
+      const count = post.querySelector('.comment-count');
+      count.textContent = (parseInt(count.textContent, 10) || 0) + 1;
+    };
+  });
+}
+
+function safe(base, range) {
+  let v;
+  do {
+    v = base + Math.floor(Math.random() * range);
+  } while (/63|68|13|666/.test(String(v)));
+  return v;
+}
+
+function stats() {
+  /* зареєстровані — фіксовані */
+  document.getElementById('registered-hoomen').textContent = (8012457).toLocaleString('uk-UA');
+  document.getElementById('online-hoomen').textContent = safe(1000000, 76001).toLocaleString('uk-UA');
+  document.getElementById('today-hoomen').textContent = safe(2400000, 180001).toLocaleString('uk-UA');
+}
+
+bindEvents(document);
+update();
+stats();
+setInterval(stats, 30000);
+})();
+</script>
+</body>
+</html>
