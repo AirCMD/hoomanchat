@@ -4,269 +4,348 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Гуменчат — mandy_cherry</title>
-<style>
-html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:14px;color:#222}
-*{box-sizing:border-box}
-#hoomenchat-site{display:block;width:100%;min-height:100vh;margin:0;padding:12px;background:#fff;border:1px solid #444}
-#hoomenchat-site a{color:#444}
-.hoomenchat-header{display:block;margin:0 0 10px;padding:5px 8px;background:linear-gradient(to bottom,#626262,#3b3b3b);border:1px solid #222;color:#fff;font-size:12px;line-height:14px;font-weight:bold;letter-spacing:1px;text-transform:uppercase}
-.site-layout{display:table;width:100%;border-collapse:separate;border-spacing:10px 0}
-.site-left{display:table-cell;width:165px;vertical-align:top}.site-right{display:table-cell;vertical-align:top}
-.left-box{padding:3px 7px;background:#FF8AB3;border:1px solid #999}
-.site-name{margin:1px 0 6px;padding:0 0 4px;border-bottom:1px solid #bcbcbc;color:#111;font-size:15px;line-height:17px;font-weight:bold;text-align:center;word-break:break-word}
-.main-avatar{display:block;width:100%;height:228px;margin:0 0 6px;object-fit:cover;object-position:center;background:#ddd;border:1px solid #888}
-.archat-button{display:block;width:100%;margin:0 0 5px;padding:4px 0;background:linear-gradient(to bottom,#FF8AB3,#fbc02d);border:1px solid #a78119;color:#000;font-size:10px;line-height:13px;font-weight:bold;text-align:center;text-decoration:none;text-transform:uppercase}
-.nav-menu{display:block;margin:0;padding:0;border-top:1px solid #999}.nav-item{display:block;width:100%;margin:0;padding:3px 2px;border-bottom:1px solid #c7c7c7;color:#444;font-size:11px;line-height:13px;text-decoration:underline}.nav-item:hover{background:#FF8AC8;color:#000;text-decoration:none}
-.account-box{margin:8px 0 0;padding:5px 4px;border-top:1px solid #999;text-align:center}.account-text{margin:0 0 5px;color:#555;font-size:9px;line-height:12px}.account-link{display:block;margin:2px 0;color:#444;font-size:10px;line-height:12px;font-weight:bold;text-decoration:underline}
-.profile-box{margin:0 0 8px;padding:7px;background:#fff;border:1px solid #aaa}.profile-header{margin:0 0 7px;padding:5px 7px;background:#FF8AB3;border:1px solid #999;color:#222;font-size:12px;line-height:15px;font-weight:bold}.profile-info{padding:6px 7px;background:#f9f9f9;border:1px solid #aaa;color:#444;font-size:11px;line-height:15px}.profile-info strong{color:#222}.profile-status{margin-top:4px;color:#2e7d32;font-size:10px;line-height:12px;font-style:italic}
-.posts-header{margin:8px 0 5px;padding:4px 7px;background:#FF8AB3;border:1px solid #999;color:#333;font-size:11px;line-height:13px;font-weight:bold}.profile-post{margin:0 0 7px;background:#fff;border:1px solid #aaa}.profile-post-title{margin:0;padding:4px 7px;background:#f5f5f5;border-bottom:1px solid #aaa;color:#222;font-size:11px;line-height:14px;font-weight:bold}.profile-post-body{padding:6px 7px;color:#333;font-size:11px;line-height:15px;white-space:pre-wrap}.profile-post-date{padding:3px 7px;border-top:1px solid #ddd;color:#888;font-size:9px;line-height:11px}
-.post-actions{display:block;padding:4px 7px;border-top:1px solid #ddd;background:#fafafa}.like-button,.comment-button{display:inline-block;margin:0 8px 0 0;padding:1px 3px;border:0;background:transparent;color:#555;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:13px;cursor:pointer}.like-button:hover,.comment-button:hover{color:#000;text-decoration:underline}.like-button.liked{color:#c62828;font-weight:bold}
-.comments-area{display:none;margin:0;padding:6px 7px;background:#FF8AB3;border-top:1px solid #ddd}.comments-area.open{display:block}.fake-comment{margin:0 0 5px;padding:4px 5px;background:#fff;border:1px solid #ccc;font-size:10px;line-height:13px}.fake-comment-name{margin-bottom:2px;color:#222;font-weight:bold}.comment-form{margin-top:6px}.comment-input{display:block;width:100%;min-height:45px;padding:4px 5px;resize:vertical;background:#fff;border:1px solid #aaa;color:#222;font:10px/13px Arial,sans-serif}.comment-send{margin-top:4px;padding:3px 8px;background:#eee;border:1px solid #999;color:#444;font-size:10px;line-height:12px;cursor:pointer}.comment-send:hover{background:#ddd;color:#000}.user-comment{margin:0 0 5px;padding:4px 5px;background:#fff;border:1px solid #aaa;font-size:10px;line-height:13px}
-.show-more{display:block;width:100%;margin:2px 0;padding:5px 7px;background:#FF8AB3;border:1px solid #999;color:#444;font:bold 10px/13px Arial,sans-serif;text-align:center;text-decoration:underline;cursor:pointer}.show-more:hover{background:#e1e1e1;color:#000}.show-more.hidden{display:none}
-.rules-box{margin:8px 0 0;padding:5px 8px;background:#fff;border:1px solid #aaa;color:#444;font-size:11px;line-height:14px}.rules-box a{color:#333;font-weight:bold;text-decoration:underline}.statistics-box{margin:8px 0 0;padding:5px 8px;background:#fff;border:1px solid #aaa;color:#555;font:10px/13px "Courier New",Courier,monospace}.statistics-title{margin:0 0 3px;color:#333;font:bold 10px/12px Arial,sans-serif}.statistics-number{color:#222;font-weight:bold}.statistics-online{color:#2e7d32;font-weight:bold}.footer-line{margin:7px 0 0;padding-top:4px;border-top:1px solid #ccc;color:#888;font-size:9px;line-height:11px;text-align:center}
-@media screen and (max-width:600px){#hoomenchat-site{padding:7px}.site-layout{display:block;border-spacing:0}.site-left,.site-right{display:block;width:100%}.site-left{margin-bottom:8px}}
-</style>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<link rel="stylesheet" href="../css/hoomenchat-profile.css">
+<link rel="stylesheet" href="../css/pm-popup.css">
 </head>
 <body>
+
 <div id="hoomenchat-site">
-<div class="hoomenchat-header">ГУМЕНЧАТ</div>
-<div class="site-layout">
-<div class="site-left"><div class="left-box">
-<div class="site-name">mandy_cherry</div>
-<img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEhSBLEJ-KTDRSXnAHsyVXw8s37cv9VDalnfpPWSYXcX62zAkyKqtUCKJQGvo_OvoUCK_1HZ50_56MxN6L9JHU7g2R3Tuiy31qffIXEUt7AN_cYoMciserBwQZNNr8UE21fWCPbckz_2bmuXdAKvkaGrtxtVOUfnfs3oH4jHaa3_jB2OdaB_W_roEaO0Pb0" alt="mandy_cherry">
-<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
-<div class="nav-menu">
-<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
-<a class="nav-item" href="../profiles.html">Гумени</a>
-<a class="nav-item" href="../droomens.html">Друмени</a>
-<a class="nav-item" href="../activity.html">Стрічерчат</a>
-<a class="nav-item" href="../islands.html">Острови</a>
-<a class="nav-item" href="../rules.html">Правила</a>
+
+<div class="hoomenchat-header">
+ГУМЕНЧАТ
 </div>
-<div class="account-box"><div class="account-text">Немає гумгайла?</div><a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a><a class="account-link" href="../login.html">ВХІД</a></div>
-</div></div>
+
+<div class="site-layout">
+
+<div class="site-left">
+<div class="left-box">
+
+<div class="site-name" id="profile-nickname">mandy_cherry</div>
+
+<img
+  class="main-avatar"
+  id="profile-avatar"
+  alt="mandy_cherry"
+  src="https://blogger.googleusercontent.com/img/a/AVvXsEhSBLEJ-KTDRSXnAHsyVXw8s37cv9VDalnfpPWSYXcX62zAkyKqtUCKJQGvo_OvoUCK_1HZ50_56MxN6L9JHU7g2R3Tuiy31qffIXEUt7AN_cYoMciserBwQZNNr8UE21fWCPbckz_2bmuXdAKvkaGrtxtVOUfnfs3oH4jHaa3_jB2OdaB_W_roEaO0Pb0"
+>
+
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+
+<div class="nav-menu" id="nav-menu">
+<!-- Наповнюється з конфігу -->
+</div>
+
+<div class="account-box">
+  <div class="account-text">Немає гумгайла?</div>
+  <a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
+  <a class="account-link" href="../login.html">ВХІД</a>
+</div>
+
+</div>
+</div>
+
 <div class="site-right">
-<div class="profile-box"><div class="profile-header">Профіль гумена: mandy_cherry</div><div class="profile-info"><strong>mandy_cherry</strong><div>Сімейка: у стуснах</div><div>Статус: Дизайнерка гуменчат.</div><div class="profile-status">● онлайн</div></div></div>
-<div class="posts-header" id="posts-count-header">Дописи mandy_cherry — 10</div>
-<div id="mandy-posts"></div>
-<div id="show-more-posts" class="show-more">показати ще...</div>
-<div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
-<div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div></div>
+
+<div class="profile-box">
+  <div class="profile-header" id="profile-header-title">Профіль гумена: mandy_cherry</div>
+  <div class="profile-info">
+    <strong id="profile-info-name">mandy_cherry</strong>
+    <div id="profile-family"></div>
+    <div id="profile-status-text"></div>
+    <div class="profile-status" id="profile-online-status"></div>
+  </div>
+</div>
+
+<div class="posts-header" id="posts-header">
+  Дописи mandy_cherry — <span id="posts-count">0</span>
+</div>
+
+<!-- Сторонній персонаж: кнопки «Новий допис» немає -->
+
+<div id="profile-posts">
+<!-- ДОПИС 0 -->
+<div class="profile-post">
+<div class="profile-post-title">Я гидую з того що ви зробили з островами</div>
+<div class="profile-post-body">Найгірше що можна було зробити, так це спаплюжити мій дизайн островів вашою бридотою!</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="789">♡ Подобається <span class="like-count">789</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">2 квітня</div>
+</div>
+
+<!-- ДОПИС 1 -->
+<div class="profile-post">
+<div class="profile-post-title">Будьте чемними та вихованими</div>
+<div class="profile-post-body">Залишайтесь чесними із самими собою, а також з вашими друменами, близькими та рідними. Рідні й близькі бувають досить різними.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="977">♡ Подобається <span class="like-count">977</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="alter-core.html">alter_core</a></div>
+Я завжди чесна сама з собою.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="mandy-cherry.html">mandy_cherry</a></div>
+Хто б сумнівався 😂🤣
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">2 квітня</div>
+</div>
+
+<!-- ДОПИС 2 -->
+<div class="profile-post">
+<div class="profile-post-title">Мій дизайн сайту не потребує критики.</div>
+<div class="profile-post-body">Якщо вам не подобається його зовнішній вигляд, ви завжди можете видалитись.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="55">♡ Подобається <span class="like-count">55</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">29 березня</div>
+</div>
+
+<!-- ДОПИС 3 -->
+<div class="profile-post">
+<div class="profile-post-title">Якщо вас щось не влаштовує</div>
+<div class="profile-post-body">Ви завжди можете створити те, що влаштовуватиме саме вас.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="557">♡ Подобається <span class="like-count">557</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">25 березня</div>
+</div>
+</div>
+
+<!-- ДОПИС 4 -->
+<div class="profile-post">
+<div class="profile-post-title">Рожевий мій улюблений колір</div>
+<div class="profile-post-body">Він такий чері, ммм.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="28 597">♡ Подобається <span class="like-count">28 597</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">22 березня</div>
+</div>
+</div>
+
+<!-- ДОПИС 5 -->
+<div class="profile-post">
+<div class="profile-post-title">Жовта кнопка найкраща</div>
+<div class="profile-post-body">Жодний інший колір так не пасуватиме як жовтий для арчату.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="771">♡ Подобається <span class="like-count">771</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">19 березня</div>
+</div>
+</div>
+
+<!-- ДОПИС 6 -->
+<div class="profile-post">
+<div class="profile-post-title">Сірі панелі неймовірні</div>
+<div class="profile-post-body">Сірі панелі сайту завжди змушуватимуть вас знову та й знову повертатися на цей ресурс як тільки виникне ностальгія. Почуття між двома закохними, зв'язок з рідними, безліч друменів, котрі чекають вас.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="11 231">♡ Подобається <span class="like-count">11 231</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">18 березня</div>
+</div>
+</div>
+
+<!-- ДОПИС 7 -->
+<div class="profile-post">
+<div class="profile-post-title">Я б могла зробити його рожевим</div>
+<div class="profile-post-body">Так, могла. Але рожевий колір існує лише для мене.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="451">♡ Подобається <span class="like-count">451</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">12 березня</div>
+</div>
+</div>
+
+<!-- ДОПИС 8 -->
+<div class="profile-post">
+<div class="profile-post-title">Чому саме Я?</div>
+<div class="profile-post-body">На моє місце претендувало безліч дизайнерів. Але жоден із них не вклав у гуменчат душу. Їхні пропозиції були досить обмеженими та ніякими. Саме тому ніхто окрім мене просто не зміг би впоратися із завданням створити таку красиву та неповторну тему для Гуменчат.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="47 921">♡ Подобається <span class="like-count">47 921</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">10 березня</div>
+</div>
+</div>
+
+<!-- ДОПИС 9 -->
+<div class="profile-post">
+<div class="profile-post-title">Мене звати Аня</div>
+<div class="profile-post-body">Для вас я Ганна.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="72 344">♡ Подобається <span class="like-count">72 344</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">8 березня</div>
+</div>
+</div>
+
+<!-- ДОПИС 10 -->
+<div class="profile-post">
+<div class="profile-post-title">Дякую за запрошення!</div>
+<div class="profile-post-body">Я вам дуже вдячна за пропозицію роботи у такій чудовій команді. Мені дуже приємно з вами всіма познайомитися. Буду рада допомогти всім чим тільки зможу і проходити з вами цей шлях, долати всі труднощі та розділяти приємні моменти, які траплятимуться на нашому шляху!</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="871 245">♡ Подобається <span class="like-count">871 245</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">5 березня</div>
+</div>
+</div>
+
+<div class="posts-pager" id="posts-pager">
+  <button class="show-more hidden" id="show-less-posts" type="button">показати менше...</button>
+  <button class="show-more hidden" id="show-more-posts" type="button">показати ще...</button>
+</div>
+
+<div class="rules-box">
+  Пам'ятай та дотримуйся
+  <a href="../rules.html">ПРАВИЛ</a>
+  нашого ресурсу для приємного та друмнього часу разом з нами.
+</div>
+
+<div class="statistics-box">
+  <div class="statistics-title">Статистика Гуменчату</div>
+  <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
+  <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
+  <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
+</div>
+
+<div class="image-viewer" id="post-image-viewer">
+  <button class="image-viewer-close" id="post-image-viewer-close" type="button" aria-label="Закрити">✕</button>
+  <button class="image-viewer-prev" id="post-image-viewer-prev" type="button" aria-label="Попереднє зображення">‹</button>
+  <img class="image-viewer-image" id="post-image-viewer-image" src="" alt="Зображення допису">
+  <button class="image-viewer-next" id="post-image-viewer-next" type="button" aria-label="Наступне зображення">›</button>
+</div>
+
 <div class="footer-line">Гуменчат — місце для гуменів.</div>
-</div></div></div>
+
+</div>
+</div>
+</div>
+
 <script>
-(function(){
-var postsArray = [
-  {
-    title: "Будьте чемними та вихованими",
-    body: "Залишайтесь чесними із самими собою, а також з вашими друзями, близькими та рідними. Рідні й близькі бувають досить різними.",
-    likes: 977,
-    comments: [
-      { name: "alter_core", text: "Я завжди чесна сама з собою." },
-      { name: "mandy_cherry", text: "Хто б сумнівався 😂🤣" }
-    ],
-    date: "2 квітня"
+window.HOOMEN_PROFILE = {
+  nickname: "mandy_cherry",
+  avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhSBLEJ-KTDRSXnAHsyVXw8s37cv9VDalnfpPWSYXcX62zAkyKqtUCKJQGvo_OvoUCK_1HZ50_56MxN6L9JHU7g2R3Tuiy31qffIXEUt7AN_cYoMciserBwQZNNr8UE21fWCPbckz_2bmuXdAKvkaGrtxtVOUfnfs3oH4jHaa3_jB2OdaB_W_roEaO0Pb0",
+  isMainCharacter: false,
+  mainCharacterUrl: "copy-pasta.html",
+  statusText: "Ші-дроїд зі СтарДек.",
+  onlineStatus: "online",
+  schedule: [
+    { time: "07:00", status: "online" },
+    { time: "08:02", status: "away" },
+    { time: "12:34", status: "online" },
+    { time: "15:01", status: "away" },
+    { time: "15:32", status: "online" },
+    { time: "16:02", status: "away" },
+    { time: "16:13", status: "online" },
+    { time: "17:01", status: "away" },
+    { time: "17:12", status: "online" },
+    { time: "01:00", status: "offline" }
+  ],
+  gender: "male",
+  family: {
+      type: "relationship",
+      partnerName: "",
+      partnerUrl: ""
   },
-  {
-    title: "Мій дизайн сайту не потребує критики.",
-    body: "Якщо вам не подобається його зовнішній вигляд, ви завжди можете видалитись.",
-    likes: 55,
-    comments: [],
-    date: "29 березня"
-  },
-  {
-    title: "Якщо вас щось не влаштовує",
-    body: "Ви завжди можете створити те, що влаштовуватиме саме вас.",
-    likes: 557,
-    comments: [],
-    date: "25 березня"
-  },
-  {
-    title: "Рожевий мій улюблений колір",
-    body: "Він такий чері, ммм.",
-    likes: 28597,
-    comments: [],
-    date: "22 березня"
-  },
-  {
-    title: "Жовта кнопка найкраща",
-    body: "Жодний інший колір так не пасуватиме як жовтий для арчату.",
-    likes: 771,
-    comments: [],
-    date: "19 березня"
-  },
-  {
-    title: "Сірі панелі неймовірні",
-    body: "Сірі панелі сайту завжди змушуватимуть вас знову та й знову повертатися на цей ресурс як тільки виникне ностальгія. Почуття між двома закоханими, зв'язок з рідними, безліч друменів, котрі чекають вас.",
-    likes: 11231,
-    comments: [],
-    date: "18 березня"
-  },
-  {
-    title: "Я б могла зробити його рожевим",
-    body: "Так, могла. Але рожевий колір існує лише для мене.",
-    likes: 451,
-    comments: [],
-    date: "12 березня"
-  },
-  {
-    title: "Чому саме Я?",
-    body: "На моє місце претендувало безліч дизайнерів. Але жоден із них не вклав у гуменчат душу. Їхні пропозиції були досить обмеженими та ніякими. Саме тому ніхто окрім мене просто не зміг би впоратися із завданням створити таку красиву та неповторну тему для Гуменчат.",
-    likes: 47921,
-    comments: [],
-    date: "10 березня"
-  },
-  {
-    title: "Мене звати Аня",
-    body: "Для вас я Ганна.",
-    likes: 72344,
-    comments: [],
-    date: "8 березня"
-  },
-  {
-    title: "Дякую за запрошення!",
-    body: "Я вам дуже вдячна за пропозицію роботи у такій чудовій команді. Мені дуже приємно з вами всіма познайомитися. Буду рада допомогти всім чим тільки зможу і проходити з вами цей шлях, долати всі труднощі та розділяти приємні моменти, які траплятимуться на нашому шляху!",
-    likes: 871245,
-    comments: [],
-    date: "5 березня"
+  navLinks: {
+    home: "../index.html",
+    profiles: "../profiles.html",
+    droomens: "../droomens.html",
+    activity: "../activity.html",
+    islands: "../islands.html",
+    rules: "../rules.html"
   }
-];
-
-var postsContainer = document.getElementById("mandy-posts");
-var showMoreBtn = document.getElementById("show-more-posts");
-var postsHeader = document.getElementById("posts-count-header");
-
-var visibleCount = 3;
-var step = 5;
-
-postsHeader.textContent = "Дописи mandy_cherry — " + postsArray.length;
-
-function renderPosts() {
-  postsContainer.innerHTML = "";
-  var limit = Math.min(visibleCount, postsArray.length);
-
-  for (var i = 0; i < limit; i++) {
-    var p = postsArray[i];
-
-    var postDiv = document.createElement("div");
-    postDiv.className = "profile-post";
-
-    var titleDiv = document.createElement("div");
-    titleDiv.className = "profile-post-title";
-    titleDiv.textContent = p.title;
-
-    var bodyDiv = document.createElement("div");
-    bodyDiv.className = "profile-post-body";
-    bodyDiv.textContent = p.body;
-
-    var actionsDiv = document.createElement("div");
-    actionsDiv.className = "post-actions";
-
-    var likeBtn = document.createElement("button");
-    likeBtn.className = "like-button";
-    likeBtn.type = "button";
-    likeBtn.innerHTML = '♡ Подобається <span class="like-count">' + p.likes.toLocaleString('uk-UA') + '</span>';
-
-    var commentBtn = document.createElement("button");
-    commentBtn.className = "comment-button";
-    commentBtn.type = "button";
-    commentBtn.innerHTML = '💬 Коментарі <span class="comment-count">' + p.comments.length + '</span>';
-
-    actionsDiv.appendChild(likeBtn);
-    actionsDiv.appendChild(commentBtn);
-
-    var commentsArea = document.createElement("div");
-    commentsArea.className = "comments-area";
-
-    p.comments.forEach(function(c) {
-      var fakeC = document.createElement("div");
-      fakeC.className = "fake-comment";
-      fakeC.innerHTML = '<div class="fake-comment-name">' + c.name + '</div>' + c.text;
-      commentsArea.appendChild(fakeC);
-    });
-
-    var formDiv = document.createElement("div");
-    formDiv.className = "comment-form";
-    formDiv.innerHTML = '<textarea class="comment-input" placeholder="Написати коментар..."></textarea><button class="comment-send" type="button">Відправити</button>';
-    commentsArea.appendChild(formDiv);
-
-    var dateDiv = document.createElement("div");
-    dateDiv.className = "profile-post-date";
-    dateDiv.textContent = p.date;
-
-    postDiv.appendChild(titleDiv);
-    postDiv.appendChild(bodyDiv);
-    postDiv.appendChild(actionsDiv);
-    postDiv.appendChild(commentsArea);
-    postDiv.appendChild(dateDiv);
-
-    postsContainer.appendChild(postDiv);
-  }
-
-  showMoreBtn.className = visibleCount >= postsArray.length ? "show-more hidden" : "show-more";
-  bindEvents();
-}
-
-function bindEvents() {
-  document.querySelectorAll('#mandy-posts .like-button').forEach(function(button){
-    button.onclick = function(){
-      var c = button.querySelector('.like-count'), n = parseInt(c.textContent.replace(/\s/g, ''), 10);
-      if(button.classList.contains('liked')){
-        n--;
-        button.classList.remove('liked');
-        button.innerHTML = '♡ Подобається <span class="like-count">' + n.toLocaleString('uk-UA') + '</span>';
-      } else {
-        n++;
-        button.classList.add('liked');
-        button.innerHTML = '♥ Подобається <span class="like-count">' + n.toLocaleString('uk-UA') + '</span>';
-      }
-    };
-  });
-
-  document.querySelectorAll('#mandy-posts .comment-button').forEach(function(button){
-    button.onclick = function(){
-      button.closest('.profile-post').querySelector('.comments-area').classList.toggle('open');
-    };
-  });
-
-  document.querySelectorAll('#mandy-posts .comment-send').forEach(function(button){
-    button.onclick = function(){
-      var form = button.closest('.comment-form'), input = form.querySelector('.comment-input'), text = input.value.trim();
-      if(!text) return;
-      var c = document.createElement('div');
-      c.className = 'user-comment';
-      c.innerHTML = '<strong>ти:</strong> ' + text.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      form.parentNode.insertBefore(c, form);
-      input.value = '';
-      var count = button.closest('.profile-post').querySelector('.comment-count');
-      count.textContent = parseInt(count.textContent, 10) + 1;
-    };
-  });
-}
-
-showMoreBtn.addEventListener("click", function() {
-  visibleCount += step;
-  renderPosts();
-});
-
-function safeNumber(base, range) {
-  var value;
-  do {
-    value = base + Math.floor(Math.random() * range);
-  } while (/63|68|13|666/.test(String(value)));
-  return value;
-}
-
-function updateStatistics() {
-  document.getElementById("registered-hoomen").textContent = safeNumber(8000000, 47001).toLocaleString("uk-UA");
-  document.getElementById("online-hoomen").textContent = safeNumber(1000000, 76001).toLocaleString("uk-UA");
-  document.getElementById("today-hoomen").textContent = safeNumber(2400000, 180001).toLocaleString("uk-UA");
-}
-
-renderPosts();
-updateStatistics();
-setInterval(updateStatistics, 30000);
-})();
+};
 </script>
+<script src="../js/hoomenchat-profile.js"></script>
+<script src="../js/pm-popup.js"></script>
+
 </body>
 </html>
