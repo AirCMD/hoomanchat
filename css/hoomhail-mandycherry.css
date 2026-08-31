@@ -1,0 +1,1204 @@
+/* =========================================================
+   Гуменчат — стилі профілю персонажа
+   Підключати: <link rel="stylesheet" href="hoomenchat-profile.css">
+   ========================================================= */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+  color: #222;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+#hoomenchat-site {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #777;
+}
+
+#hoomenchat-site a {
+  color: #444;
+}
+
+
+/* =========================================================
+   ВЕРХНЯ ПАНЕЛЬ
+   ========================================================= */
+
+.hoomenchat-header {
+  margin: 0 0 10px;
+  padding: 5px 8px;
+  background: linear-gradient(#626262, #3b3b3b);
+  border: 1px solid #222;
+  color: #fff;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   ОСНОВНИЙ КАРКАС
+   ========================================================= */
+
+.site-layout {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 10px 0;
+}
+
+.site-left {
+  display: table-cell;
+  width: 165px;
+  vertical-align: top;
+}
+
+.site-right {
+  display: table-cell;
+  vertical-align: top;
+}
+
+
+/* =========================================================
+   ЛІВА ПАНЕЛЬ
+   ========================================================= */
+
+.left-box {
+  padding: 3px 7px;
+  background: #f0f0f0;
+  border: 1px solid #FF8AB3;
+}
+
+.site-name {
+  margin: 1px 0 6px;
+  padding: 0 0 4px;
+  border-bottom: 1px solid #bcbcbc;
+  color: #111;
+  font-size: 15px;
+  line-height: 17px;
+  font-weight: bold;
+  text-align: center;
+  word-break: break-word;
+}
+
+.main-avatar {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  aspect-ratio: 1 / 1.35;
+  margin: 0 0 6px;
+  object-fit: cover;
+  object-position: center center;
+  background: #ddd;
+  border: 1px solid #888;
+}
+
+.archat-button {
+  display: block;
+  width: 100%;
+  margin: 0 0 5px;
+  padding: 4px 0;
+  background: linear-gradient(#fff176, #fbc02d);
+  border: 1px solid #a78119;
+  color: #000;
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.archat-button:hover {
+  background: linear-gradient(#fff59d, #fdd835);
+}
+
+.nav-menu {
+  border-top: 1px solid #FF8AB3;
+}
+
+.nav-item {
+  display: block;
+  width: 100%;
+  padding: 3px 2px;
+  border-bottom: 1px solid #c7c7c7;
+  color: #444;
+  font-size: 11px;
+  line-height: 13px;
+  text-decoration: underline;
+}
+
+.nav-item:hover {
+  background: #e2e2e2;
+  color: #000;
+  text-decoration: none;
+}
+
+.account-box {
+  margin: 8px 0 0;
+  padding: 5px 4px;
+  border-top: 1px solid #FF8AB3;
+  text-align: center;
+}
+
+.account-text {
+  margin: 0 0 5px;
+  color: #555;
+  font-size: 9px;
+  line-height: 12px;
+}
+
+.account-link {
+  display: block;
+  margin: 2px 0;
+  color: #444;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.account-link:hover {
+  color: #000;
+  text-decoration: none;
+}
+
+
+/* =========================================================
+   ПРОФІЛЬ
+   ========================================================= */
+
+.profile-box {
+  margin: 0 0 8px;
+  padding: 7px;
+  background: #fff;
+  border: 1px solid #aaa;
+}
+
+.profile-header {
+  margin: 0 0 7px;
+  padding: 5px 7px;
+  background: #f0f0f0;
+  border: 1px solid #FF8AB3;
+  font-weight: bold;
+}
+
+.profile-info {
+  padding: 6px 7px;
+  background: #f9f9f9;
+  border: 1px solid #aaa;
+  font-size: 11px;
+  line-height: 15px;
+}
+
+.profile-info strong {
+  color: #222;
+}
+
+.profile-status {
+  margin-top: 4px;
+  font-size: 10px;
+  line-height: 12px;
+  font-style: italic;
+}
+
+.profile-status.online {
+  color: #2e7d32;
+}
+
+.profile-status.recent {
+  color: #558b2f;
+}
+
+.profile-status.away {
+  color: #f9a825;
+}
+
+.profile-status.offline {
+  color: #757575;
+}
+
+.profile-status.long-ago {
+  color: #9e9e9e;
+}
+
+
+/* =========================================================
+   ДОПИСИ
+   ========================================================= */
+
+.posts-header {
+  margin: 8px 0 5px;
+  padding: 4px 7px;
+  background: #f0f0f0;
+  border: 1px solid #FF8AB3;
+  font-weight: bold;
+}
+
+.profile-post {
+  margin: 0 0 7px;
+  background: #fff;
+  border: 1px solid #aaa;
+}
+
+.profile-post-title {
+  padding: 4px 7px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #aaa;
+  font-weight: bold;
+}
+
+.profile-post-body {
+  padding: 6px 7px;
+  color: #333;
+  font-size: 11px;
+  line-height: 15px;
+}
+
+.profile-post-date {
+  padding: 3px 7px;
+  border-top: 1px solid #ddd;
+  color: #888;
+  font-size: 9px;
+  line-height: 11px;
+}
+
+
+/* =========================================================
+   ЛАЙКИ / КОМЕНТАРІ
+   ========================================================= */
+
+.post-actions {
+  padding: 4px 7px;
+  border-top: 1px solid #ddd;
+  background: #fafafa;
+}
+
+.like-button,
+.comment-button {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 1px 3px;
+  border: 0;
+  background: transparent;
+  color: #555;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 13px;
+  cursor: pointer;
+}
+
+.like-button:hover,
+.comment-button:hover {
+  color: #000;
+  text-decoration: underline;
+}
+
+.like-button.liked {
+  color: #c62828;
+  font-weight: bold;
+}
+
+.comments-area {
+  display: none;
+  padding: 6px 7px;
+  background: #f8f8f8;
+  border-top: 1px solid #ddd;
+}
+
+.comments-area.open {
+  display: block;
+}
+
+.fake-comment {
+  margin: 0 0 5px;
+  padding: 4px 5px;
+  background: #fff;
+  border: 1px solid #ccc;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+.fake-comment-name {
+  margin-bottom: 2px;
+  color: #222;
+  font-weight: bold;
+}
+
+.fake-comment-name a {
+  color: #222;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.fake-comment-name a:hover {
+  color: #000;
+  text-decoration: none;
+}
+
+.comment-form {
+  margin-top: 6px;
+}
+
+.comment-input {
+  display: block;
+  width: 100%;
+  min-height: 45px;
+  padding: 4px 5px;
+  resize: vertical;
+  background: #fff;
+  border: 1px solid #aaa;
+  color: #222;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+.comment-send {
+  margin-top: 4px;
+  padding: 3px 8px;
+  background: #eee;
+  border: 1px solid #FF8AB3;
+  color: #444;
+  font-size: 10px;
+  line-height: 12px;
+  cursor: pointer;
+}
+
+.comment-send:hover {
+  background: #ddd;
+  color: #000;
+}
+
+.user-comment {
+  margin: 0 0 5px;
+  padding: 4px 5px;
+  background: #fff;
+  border: 1px solid #aaa;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+.user-comment strong {
+  font-weight: bold;
+}
+
+
+/* =========================================================
+   ПОКАЗАТИ ЩЕ / МЕНШЕ
+   ========================================================= */
+
+.posts-pager {
+  margin: 2px 0;
+}
+
+.show-more {
+  display: block;
+  width: 100%;
+  margin: 2px 0;
+  padding: 5px 7px;
+  background: #f0f0f0;
+  border: 1px solid #FF8AB3;
+  color: #444;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.show-more:hover {
+  background: #e1e1e1;
+  color: #000;
+}
+
+.show-more.hidden {
+  display: none;
+}
+
+
+/* =========================================================
+   ПРАВИЛА
+   ========================================================= */
+
+.rules-box {
+  margin: 8px 0 0;
+  padding: 5px 8px;
+  background: #fff;
+  border: 1px solid #aaa;
+  color: #444;
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.rules-box a {
+  color: #333;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   СТАТИСТИКА
+   ========================================================= */
+
+.statistics-box {
+  margin: 8px 0 0;
+  padding: 5px 8px;
+  background: #fff;
+  border: 1px solid #aaa;
+  color: #555;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+.statistics-title {
+  margin: 0 0 3px;
+  color: #333;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: bold;
+}
+
+.statistics-number {
+  color: #222;
+  font-weight: bold;
+}
+
+.statistics-online {
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer-line {
+  margin-top: 7px;
+  padding-top: 4px;
+  border-top: 1px solid #ccc;
+  color: #888;
+  font-size: 9px;
+  line-height: 11px;
+  text-align: center;
+}
+
+
+/* =========================================================
+   СТВОРЕННЯ ДОПИСУ
+   ========================================================= */
+
+.create-post-box {
+  margin: 0 0 8px;
+  padding: 7px;
+  background: #fff;
+  border: 1px solid #aaa;
+}
+
+.create-post-title {
+  margin: 0 0 7px;
+  padding: 5px 7px;
+  background: #f0f0f0;
+  border: 1px solid #FF8AB3;
+  font-weight: bold;
+}
+
+.create-post-input {
+  display: block;
+  width: 100%;
+  margin: 0 0 5px;
+  padding: 4px 5px;
+  background: #fff;
+  border: 1px solid #aaa;
+  color: #222;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+.create-post-text {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.create-post-file {
+  display: block;
+  width: 100%;
+  margin: 0 0 5px;
+  padding: 3px;
+  background: #fafafa;
+  border: 1px solid #aaa;
+  color: #444;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+.create-post-preview {
+  display: none;
+  width: 100%;
+  max-height: 400px;
+  margin: 5px 0;
+  object-fit: contain;
+  background: #ddd;
+  border: 1px solid #aaa;
+}
+
+.create-post-preview.open {
+  display: block;
+}
+
+.create-post-actions {
+  padding-top: 2px;
+}
+
+.create-post-button {
+  padding: 3px 8px;
+  background: #eee;
+  border: 1px solid #FF8AB3;
+  color: #444;
+  font-size: 10px;
+  line-height: 12px;
+  cursor: pointer;
+}
+
+.create-post-button:hover {
+  background: #ddd;
+  color: #000;
+}
+
+.create-post-error {
+  display: none;
+  margin: 4px 0 0;
+  color: #a00;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+.create-post-error.open {
+  display: block;
+}
+
+.profile-post-image {
+  display: block;
+  width: 100%;
+  max-height: 500px;
+  margin: 6px 0 0;
+  object-fit: contain;
+  background: #ddd;
+  border: 1px solid #aaa;
+  cursor: pointer;
+}
+
+.create-post-launcher {
+  display: block;
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 5px 7px;
+  background: #f0f0f0;
+  border: 1px solid #FF8AB3;
+  color: #444;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.create-post-launcher:hover {
+  background: #e1e1e1;
+  color: #000;
+}
+
+.create-post-box.collapsed {
+  display: none;
+}
+
+.create-post-file-note {
+  margin: 2px 0 5px;
+  color: #777;
+  font-size: 9px;
+  line-height: 12px;
+}
+
+.create-post-previews {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+  margin: 5px 0;
+}
+
+.create-post-preview-frame {
+  position: relative;
+  min-width: 0;
+  padding: 4px;
+  background: #f5f5f5;
+  border: 1px solid #aaa;
+}
+
+.create-post-preview-image {
+  display: block;
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  background: #ddd;
+  border: 1px solid #FF8AB3;
+  cursor: pointer;
+}
+
+.create-post-preview-remove {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #888;
+  color: #222;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+}
+
+.create-post-preview-remove:hover {
+  background: #ddd;
+  color: #000;
+}
+
+.create-post-preview-name {
+  margin-top: 3px;
+  color: #555;
+  font-size: 8px;
+  line-height: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.post-images-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.post-image-frame {
+  min-width: 0;
+  padding: 4px;
+  background: #f5f5f5;
+  border: 1px solid #aaa;
+}
+
+.post-image-frame .profile-post-image {
+  width: 100%;
+  height: 180px;
+  max-height: none;
+  margin: 0;
+  object-fit: cover;
+  background: #ddd;
+  border: 1px solid #FF8AB3;
+}
+
+.image-viewer {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.78);
+  z-index: 999999;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 70px;
+}
+
+.image-viewer.open {
+  display: flex;
+}
+
+.image-viewer-image {
+  display: block;
+  max-width: 92vw;
+  max-height: 88vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+.image-viewer-close,
+.image-viewer-prev,
+.image-viewer-next {
+  position: fixed;
+  z-index: 2;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  user-select: none;
+}
+
+.image-viewer-close {
+  top: 12px;
+  right: 15px;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+  line-height: 28px;
+  text-align: center;
+}
+
+.image-viewer-prev,
+.image-viewer-next {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 46px;
+  font-size: 24px;
+  line-height: 42px;
+  text-align: center;
+}
+
+.image-viewer-prev {
+  left: 18px;
+}
+
+.image-viewer-next {
+  right: 18px;
+}
+
+.image-viewer-close:hover,
+.image-viewer-prev:hover,
+.image-viewer-next:hover {
+  background: rgba(0, 0, 0, 0.60);
+}
+
+
+/* =========================================================
+   МОБІЛЬНА ВЕРСІЯ (покращена)
+   ========================================================= */
+
+/* Планшет / вузький десктоп */
+@media (max-width: 900px) {
+  .site-layout {
+    border-spacing: 8px 0;
+  }
+
+  .site-left {
+    width: 150px;
+  }
+}
+
+/* Телефон */
+@media (max-width: 600px) {
+
+  html, body {
+    font-size: 14px;
+    line-height: 18px;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  #hoomenchat-site {
+    padding: 8px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    border: none;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  .hoomenchat-header {
+    margin: 0 0 10px;
+    padding: 8px 10px;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+  }
+
+  .site-layout {
+    display: block;
+    border-spacing: 0;
+    width: 100%;
+  }
+
+  .site-left,
+  .site-right {
+    display: block;
+    width: 100%;
+  }
+
+  .site-left {
+    margin-bottom: 12px;
+  }
+
+  .left-box {
+    padding: 10px 12px;
+  }
+
+  .site-name {
+    font-size: 18px;
+    line-height: 22px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+  }
+
+  /* Аватарка: повністю видима, без обрізання по висоті */
+  .main-avatar {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    max-height: none;
+    aspect-ratio: 1 / 1.25;
+    margin: 0 auto 12px;
+    object-fit: cover;
+    object-position: center center;
+  }
+
+  .archat-button {
+    padding: 12px 0;
+    font-size: 13px;
+    line-height: 16px;
+    margin-bottom: 10px;
+    min-height: 44px;
+  }
+
+  .nav-menu {
+    margin-top: 4px;
+  }
+
+  .nav-item {
+    padding: 12px 6px;
+    font-size: 15px;
+    line-height: 18px;
+    min-height: 44px;
+  }
+
+  .account-box {
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+
+  .account-text {
+    font-size: 11px;
+    line-height: 14px;
+    margin-bottom: 6px;
+  }
+
+  .account-link {
+    padding: 10px 0;
+    font-size: 14px;
+    line-height: 18px;
+    min-height: 40px;
+  }
+
+  .profile-box {
+    margin-bottom: 12px;
+    padding: 8px;
+  }
+
+  .profile-header {
+    font-size: 14px;
+    line-height: 18px;
+    padding: 10px 12px;
+  }
+
+  .profile-info {
+    font-size: 14px;
+    line-height: 20px;
+    padding: 10px 12px;
+  }
+
+  .profile-status {
+    font-size: 12px;
+    line-height: 16px;
+    margin-top: 6px;
+  }
+
+  .posts-header {
+    font-size: 14px;
+    line-height: 18px;
+    padding: 10px 12px;
+    margin: 10px 0 8px;
+  }
+
+  .create-post-launcher {
+    padding: 12px 10px;
+    font-size: 14px;
+    line-height: 18px;
+    min-height: 44px;
+    margin-bottom: 10px;
+  }
+
+  .create-post-box {
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+
+  .create-post-title {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .create-post-input,
+  .create-post-file {
+    font-size: 14px;
+    line-height: 18px;
+    padding: 10px;
+    min-height: 44px;
+  }
+
+  .create-post-text {
+    min-height: 100px;
+  }
+
+  .create-post-button {
+    padding: 10px 14px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+
+  .create-post-file-note {
+    font-size: 11px;
+    line-height: 14px;
+  }
+
+  .profile-post {
+    margin-bottom: 10px;
+  }
+
+  .profile-post-title {
+    font-size: 15px;
+    line-height: 20px;
+    padding: 10px 12px;
+  }
+
+  .profile-post-body {
+    font-size: 14px;
+    line-height: 20px;
+    padding: 10px 12px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .profile-post-date {
+    font-size: 11px;
+    line-height: 14px;
+    padding: 6px 12px;
+  }
+
+  .post-actions {
+    padding: 10px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+
+  .like-button,
+  .comment-button {
+    font-size: 14px;
+    line-height: 18px;
+    padding: 8px 6px;
+    min-height: 40px;
+    margin-right: 0;
+  }
+
+  .comments-area {
+    padding: 10px 12px;
+  }
+
+  .fake-comment,
+  .user-comment {
+    font-size: 13px;
+    line-height: 18px;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+
+  .comment-input {
+    font-size: 14px;
+    line-height: 18px;
+    min-height: 60px;
+    padding: 10px;
+  }
+
+  .comment-send {
+    padding: 10px 14px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+
+  /* Сітка зображень: 2 колонки, на дуже вузьких — 1 */
+  .create-post-previews,
+  .post-images-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .create-post-preview-image {
+    height: 120px;
+  }
+
+  .post-image-frame {
+    padding: 4px;
+  }
+
+  .post-image-frame .profile-post-image {
+    height: 150px;
+    max-height: none;
+  }
+
+  /* Одиночне зображення в дописі — на всю ширину */
+  .profile-post-body > .profile-post-image {
+    width: 100%;
+    max-height: 70vh;
+    height: auto;
+    object-fit: contain;
+  }
+
+  /* Тимчасові blob-зображення (Brave, iOS Safari тощо) */
+  .profile-post-image,
+  .create-post-preview-image {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .create-post-preview-remove {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    line-height: 26px;
+    top: 6px;
+    right: 6px;
+  }
+
+  .show-more {
+    padding: 12px 10px;
+    font-size: 14px;
+    line-height: 18px;
+    min-height: 44px;
+  }
+
+  .posts-pager {
+    margin: 6px 0;
+  }
+
+  /* Повноекранний перегляд зображень */
+  .image-viewer {
+    padding: 16px 48px;
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  .image-viewer-image {
+    max-width: 96vw;
+    max-height: 80vh;
+  }
+
+  .image-viewer-prev {
+    left: 4px;
+    width: 42px;
+    height: 52px;
+    font-size: 28px;
+    line-height: 50px;
+  }
+
+  .image-viewer-next {
+    right: 4px;
+    width: 42px;
+    height: 52px;
+    font-size: 28px;
+    line-height: 50px;
+  }
+
+  .image-viewer-close {
+    top: max(8px, env(safe-area-inset-top));
+    right: max(8px, env(safe-area-inset-right));
+    width: 36px;
+    height: 36px;
+    font-size: 22px;
+    line-height: 34px;
+  }
+
+  .rules-box,
+  .statistics-box {
+    font-size: 12px;
+    line-height: 16px;
+    padding: 10px 12px;
+    margin-top: 10px;
+  }
+
+  .statistics-title {
+    font-size: 12px;
+  }
+
+  .footer-line {
+    font-size: 11px;
+    line-height: 14px;
+    margin-top: 12px;
+    padding-top: 8px;
+  }
+}
+
+/* Дуже вузькі екрани (< 380px) */
+@media (max-width: 380px) {
+
+  #hoomenchat-site {
+    padding: 6px;
+  }
+
+  .main-avatar {
+    max-width: 100%;
+    aspect-ratio: 1 / 1.15;
+  }
+
+  .create-post-previews,
+  .post-images-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .create-post-preview-image,
+  .post-image-frame .profile-post-image {
+    height: 180px;
+  }
+
+  .like-button,
+  .comment-button {
+    display: block;
+    width: 100%;
+    margin: 0 0 4px;
+    text-align: left;
+  }
+
+  .post-actions {
+    flex-direction: column;
+    gap: 0;
+  }
