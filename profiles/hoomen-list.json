@@ -46,6 +46,14 @@
     "status": "online",
     "gender": "female",
     "description": "Сімейка: шукайголова · Статус: Далека комета."
+   },
+  {
+    "name": "bondar_call",
+    "file": "bondar-callman.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEhFzF0igbZf_fExoZckxIo3EvEWTrRBV_2sQBzaYS39VkeduMPPpUQqspOaXLDuY2gVlDJTrO3EK8IjBA0CCSrRlz0OA2IcoJFKcbTO7AlbXFtR0qenWsp4Zqe5Fi7CsFLEhbiyou1wBb03EW1SWmrfY1nkldkNfChwu6bqph0NwTlBsY-FcTjMNgv5C1M",
+    "status": "online",
+    "gender": "male",
+    "description": ""
   },
   {
     "name": "borya_den",

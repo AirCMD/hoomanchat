@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Гуменчат — bondar_call</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<link rel="stylesheet" href="../css/hoomenchat-profile.css">
+<link rel="stylesheet" href="../css/pm-popup.css">
+</head>
+<body>
+
+<div id="hoomenchat-site">
+
+<div class="hoomenchat-header">
+ГУМЕНЧАТ
+</div>
+
+<div class="site-layout">
+
+<div class="site-left">
+<div class="left-box">
+
+<div class="site-name" id="profile-nickname">bondar_call</div>
+
+<img
+  class="main-avatar"
+  id="profile-avatar"
+  alt="bondar_call"
+  src="https://blogger.googleusercontent.com/img/a/AVvXsEhFzF0igbZf_fExoZckxIo3EvEWTrRBV_2sQBzaYS39VkeduMPPpUQqspOaXLDuY2gVlDJTrO3EK8IjBA0CCSrRlz0OA2IcoJFKcbTO7AlbXFtR0qenWsp4Zqe5Fi7CsFLEhbiyou1wBb03EW1SWmrfY1nkldkNfChwu6bqph0NwTlBsY-FcTjMNgv5C1M"
+>
+
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+
+<div class="nav-menu" id="nav-menu">
+<!-- Наповнюється з конфігу -->
+</div>
+
+<div class="account-box">
+  <div class="account-text">Немає гумгайла?</div>
+  <a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
+  <a class="account-link" href="../login.html">ВХІД</a>
+</div>
+
+</div>
+</div>
+
+<div class="site-right">
+
+<div class="profile-box">
+  <div class="profile-header" id="profile-header-title">Профіль гумена: bondar_call</div>
+  <div class="profile-info">
+    <strong id="profile-info-name">bondar_call</strong>
+    <div id="profile-family"></div>
+    <div id="profile-status-text"></div>
+    <div class="profile-status" id="profile-online-status"></div>
+  </div>
+</div>
+
+<div class="posts-header" id="posts-header">
+  Дописи bondar_call — <span id="posts-count">0</span>
+</div>
+
+<!-- Сторонній персонаж: кнопки «Новий допис» немає -->
+
+<div id="profile-posts">
+<!-- ДОПИС 1 -->
+<div class="profile-post">
+<div class="profile-post-title">Гумени викидають добрі речі на смітника.</div>
+<div class="profile-post-body">Не розумію так званих гуменів. Гарні ж речі. Невже не шкода коробку?</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="511">♡ Подобається <span class="like-count">511</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="vasyl-callman.html">vasyl_call</a></div>
+Твоя так звана чергова коробка відправиться на смітник.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">9 квітня</div>
+</div>
+
+</div>
+
+<div class="posts-pager" id="posts-pager">
+  <button class="show-more hidden" id="show-less-posts" type="button">показати менше...</button>
+  <button class="show-more hidden" id="show-more-posts" type="button">показати ще...</button>
+</div>
+
+<div class="rules-box">
+  Пам'ятай та дотримуйся
+  <a href="../rules.html">ПРАВИЛ</a>
+  нашого ресурсу для приємного та друмнього часу разом з нами.
+</div>
+
+<div class="statistics-box">
+  <div class="statistics-title">Статистика Гуменчату</div>
+  <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
+  <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
+  <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
+</div>
+
+<div class="image-viewer" id="post-image-viewer">
+  <button class="image-viewer-close" id="post-image-viewer-close" type="button" aria-label="Закрити">✕</button>
+  <button class="image-viewer-prev" id="post-image-viewer-prev" type="button" aria-label="Попереднє зображення">‹</button>
+  <img class="image-viewer-image" id="post-image-viewer-image" src="" alt="Зображення допису">
+  <button class="image-viewer-next" id="post-image-viewer-next" type="button" aria-label="Наступне зображення">›</button>
+</div>
+
+<div class="footer-line">Гуменчат — місце для гуменів.</div>
+
+</div>
+</div>
+</div>
+
+<script>
+window.HOOMEN_PROFILE = {
+  nickname: "bondar_call",
+  avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhFzF0igbZf_fExoZckxIo3EvEWTrRBV_2sQBzaYS39VkeduMPPpUQqspOaXLDuY2gVlDJTrO3EK8IjBA0CCSrRlz0OA2IcoJFKcbTO7AlbXFtR0qenWsp4Zqe5Fi7CsFLEhbiyou1wBb03EW1SWmrfY1nkldkNfChwu6bqph0NwTlBsY-FcTjMNgv5C1M",
+  isMainCharacter: false,
+  mainCharacterUrl: "copy-pasta.html",
+  statusText: "Щось маю написати? Я Бондар Колмен. Поціновувач, колекціонер коробок зі смітника.",
+  onlineStatus: "online",
+  schedule: [
+    { time: "10:01", status: "online" },
+    { time: "10:15", status: "away" },
+    { time: "13:12", status: "online" },
+    { time: "14:25", status: "away" },
+    { time: "15:02", status: "online" },
+    { time: "15:15", status: "away" },
+    { time: "16:57", status: "online" },
+    { time: "18:01", status: "away" },
+    { time: "21:12", status: "online" },
+    { time: "04:00", status: "offline" }
+  ],
+  gender: "male",
+  family: {
+      type: "single",
+      partnerName: "",
+      partnerUrl: ""
+  },
+  navLinks: {
+    home: "../index.html",
+    profiles: "../profiles.html",
+    droomens: "../droomens.html",
+    activity: "../activity.html",
+    islands: "../islands.html",
+    rules: "../rules.html"
+  }
+};
+</script>
+<script src="../js/hoomenchat-profile.js"></script>
+<script src="../js/pm-popup.js"></script>
+
+</body>
+</html>
