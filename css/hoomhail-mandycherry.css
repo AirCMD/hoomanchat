@@ -76,8 +76,8 @@ html, body {
 
 .left-box {
   padding: 3px 7px;
-  background: #f0f0f0;
-  border: 1px solid #FF8AB3;
+  background: #ff4d8b;
+  border: 1px solid #7f2847;
 }
 
 .site-name {
@@ -126,7 +126,7 @@ html, body {
 }
 
 .nav-menu {
-  border-top: 1px solid #FF8AB3;
+  border-top: 1px solid #ff4d8b;
 }
 
 .nav-item {
@@ -149,7 +149,7 @@ html, body {
 .account-box {
   margin: 8px 0 0;
   padding: 5px 4px;
-  border-top: 1px solid #FF8AB3;
+  border-top: 1px solid #ff4d8b;
   text-align: center;
 }
 
@@ -190,8 +190,8 @@ html, body {
 .profile-header {
   margin: 0 0 7px;
   padding: 5px 7px;
-  background: #f0f0f0;
-  border: 1px solid #FF8AB3;
+  background: #FF8AB3;
+  border: 1px solid #ff4d8b;
   font-weight: bold;
 }
 
@@ -242,14 +242,14 @@ html, body {
 .posts-header {
   margin: 8px 0 5px;
   padding: 4px 7px;
-  background: #f0f0f0;
-  border: 1px solid #FF8AB3;
+  background: #FF8AB3;
+  border: 1px solid #ff4d8b;
   font-weight: bold;
 }
 
 .profile-post {
   margin: 0 0 7px;
-  background: #fff;
+  background: #ff5a86;
   border: 1px solid #aaa;
 }
 
@@ -370,7 +370,7 @@ html, body {
   margin-top: 4px;
   padding: 3px 8px;
   background: #eee;
-  border: 1px solid #FF8AB3;
+  border: 1px solid #ff4d8b;
   color: #444;
   font-size: 10px;
   line-height: 12px;
@@ -409,8 +409,8 @@ html, body {
   width: 100%;
   margin: 2px 0;
   padding: 5px 7px;
-  background: #f0f0f0;
-  border: 1px solid #FF8AB3;
+  background: #FF8AB3;
+  border: 1px solid #ff4d8b;
   color: #444;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
@@ -516,8 +516,8 @@ html, body {
 .create-post-title {
   margin: 0 0 7px;
   padding: 5px 7px;
-  background: #f0f0f0;
-  border: 1px solid #FF8AB3;
+  background: #FF8AB3;
+  border: 1px solid #ff4d8b;
   font-weight: bold;
 }
 
@@ -573,7 +573,7 @@ html, body {
 .create-post-button {
   padding: 3px 8px;
   background: #eee;
-  border: 1px solid #FF8AB3;
+  border: 1px solid #ff4d8b;
   color: #444;
   font-size: 10px;
   line-height: 12px;
@@ -613,8 +613,8 @@ html, body {
   width: 100%;
   margin: 0 0 8px;
   padding: 5px 7px;
-  background: #f0f0f0;
-  border: 1px solid #FF8AB3;
+  background: #FF8AB3;
+  border: 1px solid #ff4d8b;
   color: #444;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
@@ -662,7 +662,7 @@ html, body {
   height: 110px;
   object-fit: cover;
   background: #ddd;
-  border: 1px solid #FF8AB3;
+  border: 1px solid #ff4d8b;
   cursor: pointer;
 }
 
@@ -719,7 +719,7 @@ html, body {
   margin: 0;
   object-fit: cover;
   background: #ddd;
-  border: 1px solid #FF8AB3;
+  border: 1px solid #ff4d8b;
 }
 
 .image-viewer {
