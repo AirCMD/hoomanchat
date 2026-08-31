@@ -6,7 +6,7 @@
   "use strict";
   window.HoomenBotReplies = window.HoomenBotReplies || {};
   window.HoomenBotReplies.jane_dust = {
-    firstMessage: firstMessage: [
+    firstMessage: [
   "Гей, copy_pasta... Кгм, привіт!",
   "О... ти тут. Привіт.",
   "Кгм. Давно не писала. Привіт."
