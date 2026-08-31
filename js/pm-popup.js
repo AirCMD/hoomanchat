@@ -366,6 +366,64 @@
     });
   }
 
+  function parseHHMM(str) {
+    if (!str || typeof str !== "string") return null;
+    var parts = str.trim().split(":");
+    if (parts.length < 2) return null;
+    var h = parseInt(parts[0], 10);
+    var m = parseInt(parts[1], 10);
+    if (isNaN(h) || isNaN(m)) return null;
+    return h * 60 + m;
+  }
+
+  function resolveScheduleSlot(schedule) {
+    if (!schedule || !schedule.length) return null;
+    var slots = [];
+    for (var i = 0; i < schedule.length; i++) {
+      var item = schedule[i];
+      if (!item || !item.time) continue;
+      var mins = parseHHMM(item.time);
+      if (mins === null) continue;
+      slots.push({ minutes: mins, status: item.status || "offline" });
+    }
+    if (!slots.length) return null;
+    slots.sort(function (a, b) { return a.minutes - b.minutes; });
+    var now = new Date();
+    var nowMins = now.getHours() * 60 + now.getMinutes();
+    var active = slots[slots.length - 1];
+    for (var j = 0; j < slots.length; j++) {
+      if (slots[j].minutes <= nowMins) active = slots[j];
+    }
+    return active;
+  }
+
+  /** online | away | offline — з HOOMEN_PROFILE.schedule / onlineStatus */
+  function getProfileReplyMode() {
+    var cfg = window.HOOMEN_PROFILE || {};
+    if (cfg.schedule && cfg.schedule.length) {
+      var slot = resolveScheduleSlot(cfg.schedule);
+      if (slot) {
+        var st = String(slot.status || "").toLowerCase();
+        if (st === "online" || st === "on") return "online";
+        if (st === "away" || st === "afk") return "away";
+        if (st === "offline" || st === "off" || st === "sleep") return "offline";
+      }
+    }
+    var key = String(cfg.onlineStatus || cfg.status || "online").toLowerCase();
+    if (key === "online" || key === "on") return "online";
+    if (key === "5min" || key === "25min" || key === "50min" || key === "away" || key === "recent") {
+      return "away";
+    }
+    if (key === "offline" || key === "long-ago" || key === "off") return "offline";
+    return "online";
+  }
+
+  function delayForMode(mode) {
+    if (mode === "online") return 1000 + Math.floor(Math.random() * 1600);
+    if (mode === "away") return 8000 + Math.floor(Math.random() * 12000);
+    return 0;
+  }
+
   function pickReply(nick, lastText) {
     var conf = getBotConfig(nick);
     var text = String(lastText || "").trim().toLowerCase();
@@ -406,10 +464,17 @@
   }
 
   function triggerReply(lastText) {
+    var mode = getProfileReplyMode();
+    if (mode === "offline") {
+      showStatus("Зараз офлайн — відповіді не буде.");
+      return;
+    }
+
     showTyping(true);
-    var delay = 1000 + Math.floor(Math.random() * 1600);
+    var delay = delayForMode(mode);
     setTimeout(function () {
       showTyping(false);
+      if (getProfileReplyMode() === "offline") return;
       var reply = pickReply(state.nick, lastText);
       state.messages.push({
         from: "them",
@@ -476,10 +541,15 @@
     document.body.style.overflow = "hidden";
 
     var conf = getBotConfig(nick);
-    if (!state.messages.length && conf && conf.firstMessage) {
+    var mode = getProfileReplyMode();
+    if (!state.messages.length && conf && conf.firstMessage && mode !== "offline") {
       showTyping(true);
+      var firstDelay = mode === "away"
+        ? 6000 + Math.floor(Math.random() * 8000)
+        : 1200 + Math.floor(Math.random() * 800);
       setTimeout(function () {
         showTyping(false);
+        if (getProfileReplyMode() === "offline") return;
         state.messages.push({
           from: "them",
           type: "text",
@@ -488,7 +558,7 @@
         });
         saveMessages(nick, state.messages);
         renderMessages();
-      }, 1200 + Math.floor(Math.random() * 800));
+      }, firstDelay);
     }
 
     setTimeout(function () {

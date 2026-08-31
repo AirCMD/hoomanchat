@@ -94,7 +94,7 @@
       profile: "profiles/velvet-moon.html",
       gender: "female",
       status: "long-ago",
-      autoReply: ["Схоже, velvet_moon давно не було в мережі. Вона отримає ваше повідомлення коли з'явиться в мережі."]
+      autoReply: ["Привіт :)", "Я зараз тут.", "Цікаво.", "Розкажи детальніше."]
     },
     pixel_heart: {
       name: "pixel_heart",
@@ -102,7 +102,7 @@
       profile: "profiles/pixel-heart.html",
       gender: "female",
       status: "5min",
-      autoReply: ["Не цікаво."]
+      autoReply: ["О, привіт.", "Мм, можливо.", "Я подумаю над цим.", "Хех :)"]
     },
     night_fox: {
       name: "night_fox",
@@ -272,7 +272,7 @@
        { time: "20:00", status: "online" },
        { time: "23:00", status: "offline" }
   ],
-      autoReply: ["Це автоматичне повідомлення. Ви заблокували dreaming_romance, він не зможе прочитати арчат."]
+      autoReply: ["Це автоматичне повідомлення. Ви заблокували dreaming_romance, вона не зможе прочитати чат."]
     }
   };
 
@@ -601,6 +601,13 @@
     if (chat._botStarted) return;
     chat._botStarted = true;
 
+    var user = users[chat.user];
+    var mode = getReplyMode(user);
+    if (mode === "offline") {
+      if (currentChat === chatId) renderMessages();
+      return;
+    }
+
     /* Прибираємо попередньо завантажені повідомлення від бота —
        покажемо їх із затримкою та індикатором «Пише...» */
     var kept = [];
@@ -616,9 +623,12 @@
       showTypingIndicator();
     }
 
-    var delay = 1800 + Math.floor(Math.random() * 1200);
+    var delay = mode === "away"
+      ? 6000 + Math.floor(Math.random() * 8000)
+      : 1800 + Math.floor(Math.random() * 1200);
     setTimeout(function () {
       hideTypingIndicator();
+      if (getReplyMode(user) === "offline") return;
       chat.messages.push({
         from: "them",
         type: "text",
@@ -945,11 +955,34 @@
     return pickFromList(user.autoReply);
   }
 
+  /**
+   * Режим відповіді за графіком/статусом:
+   *   online  — звичайна затримка
+   *   away    — довша затримка (був/була в мережі)
+   *   offline — мовчить
+   */
+  function getReplyMode(user) {
+    var st = resolveUserStatus(user);
+    var cls = st && st.className ? st.className : "offline";
+    if (cls === "online") return "online";
+    if (cls === "recent" || cls === "away") return "away";
+    return "offline";
+  }
+
+  function delayForMode(mode) {
+    if (mode === "online") return 1200 + Math.floor(Math.random() * 1600);
+    if (mode === "away") return 8000 + Math.floor(Math.random() * 12000);
+    return 0;
+  }
+
   function triggerAutoReply(chatId) {
     var chat = chats[chatId];
     if (!chat) return;
     var user = users[chat.user];
     if (!user) return;
+
+    var mode = getReplyMode(user);
+    if (mode === "offline") return;
 
     var lastText = "";
     for (var i = chat.messages.length - 1; i >= 0; i--) {
@@ -962,13 +995,14 @@
     var reply = pickBotReply(user, lastText);
     if (!reply) return;
 
+    var delay = delayForMode(mode);
     if (currentChat === chatId) {
       showTypingIndicator();
     }
 
-    var delay = 1200 + Math.floor(Math.random() * 1600);
     setTimeout(function () {
       hideTypingIndicator();
+      if (getReplyMode(user) === "offline") return;
       chats[chatId].messages.push({
         from: "them", type: "text", text: reply, time: getCurrentTime()
       });
