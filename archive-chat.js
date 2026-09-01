@@ -41,10 +41,14 @@
       gender: "female",
       status: "online",
       schedule: [
-        { time: "08:00", status: "online" },
-        { time: "13:00", status: "away" },
-        { time: "15:00", status: "online" },
-        { time: "22:00", status: "offline" }
+    { time: "08:00", status: "online" },
+    { time: "08:30", status: "away" },
+    { time: "10:00", status: "online" },
+    { time: "12:05", status: "away" },
+    { time: "17:00", status: "online" },
+    { time: "19:45", status: "away" },
+    { time: "20:15", status: "online" },
+    { time: "22:00", status: "offline" }
       ],
       autoReply: ["Ок :)", "Я зрозуміла.", "Цікава думка.", "Добре, розповідай."]
     },
