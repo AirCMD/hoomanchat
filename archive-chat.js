@@ -560,14 +560,32 @@
   }
   applyBotReplies();
 
-  /* Боти, які пишуть першими — текст з bots/*.js або запасний */
+  /* Боти, які пишуть першими — firstMessage: рядок або масив рядків */
   var botsWhoWriteFirst = {};
+
+  function pickFirstMessage(value, fallback) {
+    var fb = fallback || "Привіт!";
+    if (value == null || value === "") return fb;
+    if (Object.prototype.toString.call(value) === "[object Array]") {
+      if (!value.length) return fb;
+      return value[Math.floor(Math.random() * value.length)];
+    }
+    return String(value);
+  }
+
   (function buildFirstMessages() {
     var pack = window.HoomenBotReplies || {};
     var fallback = "Привіт! Тут є одне питання, треба твоя порада.";
-    ["blue_comet", "night_fox", "rusty_robot"].forEach(function (id) {
-      botsWhoWriteFirst[id] =
-        (pack[id] && pack[id].firstMessage) ? pack[id].firstMessage : fallback;
+    var ids = ["blue_comet", "night_fox", "rusty_robot"];
+    Object.keys(pack).forEach(function (id) {
+      if (ids.indexOf(id) === -1) ids.push(id);
+    });
+    ids.forEach(function (id) {
+      if (pack[id] && pack[id].firstMessage != null) {
+        botsWhoWriteFirst[id] = pack[id].firstMessage;
+      } else if (["blue_comet", "night_fox", "rusty_robot"].indexOf(id) !== -1) {
+        botsWhoWriteFirst[id] = fallback;
+      }
     });
   })();
 
@@ -632,7 +650,7 @@
       chat.messages.push({
         from: "them",
         type: "text",
-        text: botsWhoWriteFirst[chatId],
+        text: pickFirstMessage(botsWhoWriteFirst[chatId]),
         time: getCurrentTime()
       });
       renderChatList();
@@ -1106,3 +1124,4 @@
   setupImageViewer();
   setInterval(refreshAllStatuses, 60000);
 })();
+

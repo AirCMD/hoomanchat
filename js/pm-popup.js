@@ -542,7 +542,18 @@
 
     var conf = getBotConfig(nick);
     var mode = getProfileReplyMode();
-    if (!state.messages.length && conf && conf.firstMessage && mode !== "offline") {
+
+    function pickFirstMessage(value) {
+      if (value == null || value === "") return null;
+      if (Object.prototype.toString.call(value) === "[object Array]") {
+        if (!value.length) return null;
+        return value[Math.floor(Math.random() * value.length)];
+      }
+      return String(value);
+    }
+
+    var firstText = conf ? pickFirstMessage(conf.firstMessage) : null;
+    if (!state.messages.length && firstText && mode !== "offline") {
       showTyping(true);
       var firstDelay = mode === "away"
         ? 6000 + Math.floor(Math.random() * 8000)
@@ -553,7 +564,7 @@
         state.messages.push({
           from: "them",
           type: "text",
-          text: conf.firstMessage,
+          text: firstText,
           time: getCurrentTime()
         });
         saveMessages(nick, state.messages);
