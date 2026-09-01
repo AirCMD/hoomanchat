@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ГУМЕНЧАТ — Генератор острова</title>
+<style>
+html, body {
+  margin: 0; padding: 0;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px; line-height: 15px; color: #222;
+}
+* { box-sizing: border-box; }
+#wrap {
+  max-width: 920px; margin: 0 auto; padding: 12px;
+  border: 1px solid #777; min-height: 100vh;
+}
+h1 {
+  margin: 0 0 10px 0; padding: 6px 8px;
+  background: linear-gradient(to bottom, #626262, #3b3b3b);
+  border: 1px solid #222; color: #fff;
+  font-size: 13px; letter-spacing: 1px; text-transform: uppercase;
+}
+h2 {
+  margin: 14px 0 6px 0; padding: 5px 7px;
+  background: #f0f0f0; border: 1px solid #999;
+  font-size: 12px;
+}
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+label { display: block; margin: 0 0 2px 0; color: #444; font-weight: bold; font-size: 11px; }
+input[type="text"], input[type="url"], select, textarea {
+  width: 100%; padding: 7px 8px;
+  border: 1px solid #999; background: #fff; font: inherit; color: #222;
+}
+textarea { min-height: 72px; resize: vertical; }
+.field { margin-bottom: 8px; }
+.btn {
+  display: inline-block; margin: 2px 4px 2px 0; padding: 7px 12px;
+  border: 1px solid #999; background: #eee; color: #222;
+  font: inherit; font-weight: bold; cursor: pointer;
+}
+.btn:hover { background: #ddd; }
+.btn-main {
+  background: linear-gradient(to bottom, #fff176, #fbc02d);
+  border-color: #a78119; color: #000;
+}
+.btn-main:hover { background: linear-gradient(to bottom, #fff59d, #fdd835); }
+.hint { color: #777; font-size: 10px; margin: 2px 0 6px; }
+#output {
+  width: 100%; min-height: 320px; font-family: "Courier New", monospace;
+  font-size: 11px; line-height: 14px;
+}
+.ok { color: #2e7d32; font-weight: bold; margin-left: 8px; }
+.preview-avatar {
+  width: 80px; height: 108px; object-fit: cover;
+  border: 1px solid #888; background: #ddd; display: block; margin-top: 4px;
+}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <h1>Генератор острова</h1>
+  <p class="hint">
+    Заповни поля → «Згенерувати» → скопіюй HTML у файл, напр.
+    <code>islands/template-island.html</code>.
+    Пости потім можна додати через <code>island-posts-generator.html</code>.
+  </p>
+
+  <h2>1. Основне</h2>
+  <div class="grid">
+    <div class="field">
+      <label>Назва острова</label>
+      <input type="text" id="islandName" placeholder="TEMPLATE" value="">
+    </div>
+    <div class="field">
+      <label>Імʼя файлу (без .html)</label>
+      <input type="text" id="filename" placeholder="template-island">
+      <div class="hint">Якщо порожньо — з назви: пробіли → -, великі літери лишаються в title</div>
+    </div>
+    <div class="field" style="grid-column: 1 / -1;">
+      <label>URL аватарки</label>
+      <input type="url" id="avatar" placeholder="https://...">
+      <img id="avatarPreview" class="preview-avatar" alt="" hidden>
+    </div>
+    <div class="field" style="grid-column: 1 / -1;">
+      <label>Опис острова</label>
+      <textarea id="description" placeholder="Короткий опис спільноти..."></textarea>
+    </div>
+    <div class="field">
+      <label>Статус</label>
+      <select id="statusType">
+        <option value="open">відкритий острів</option>
+        <option value="closed">закритий острів</option>
+        <option value="mod">на модерації</option>
+        <option value="custom">свій текст…</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Свій текст статусу (якщо обрано)</label>
+      <input type="text" id="statusCustom" placeholder="Статус: ...">
+    </div>
+    <div class="field">
+      <label>Колір статусу</label>
+      <select id="statusColor">
+        <option value="green">зелений (відкритий)</option>
+        <option value="red">червоний (закритий)</option>
+        <option value="orange">помаранчевий</option>
+        <option value="#555">сірий</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Тема CSS</label>
+      <select id="theme">
+        <option value="islands-template.css">стандарт (islands-template)</option>
+        <option value="islandspink-template.css">рожева (islandspink)</option>
+        <option value="islandsviolet-template.css">фіолетова (islandsviolet)</option>
+        <option value="islandvaporwave-template.css">vaporwave</option>
+      </select>
+    </div>
+  </div>
+
+  <h2>2. Пости (стартові)</h2>
+  <div class="field">
+    <label>Що покласти в initialPostsData</label>
+    <select id="postsMode">
+      <option value="empty">порожній масив []</option>
+      <option value="one">один приклад-допис</option>
+      <option value="placeholders">3 заглушки (Заголовок #1…)</option>
+    </select>
+    <div class="hint">Повноцінне наповнення — окремо в island-posts-generator.html</div>
+  </div>
+
+  <div class="actions" style="margin: 12px 0;">
+    <button type="button" class="btn btn-main" id="generate">Згенерувати HTML</button>
+    <button type="button" class="btn" id="copy">Копіювати</button>
+    <span class="ok" id="copy-ok" hidden>Скопійовано</span>
+  </div>
+  <p class="hint">Збережи як <code>islands/<span id="hintFile">назва-island</span>.html</code> і за бажанням додай запис у список на <code>islands.html</code>.</p>
+  <textarea id="output" readonly placeholder="Тут зʼявиться повний HTML сторінки острова..."></textarea>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function escJs(s) {
+    return String(s == null ? "" : s)
+      .replace(/\\/g, "\\\\")
+      .replace(/'/g, "\\'")
+      .replace(/\r?\n/g, "\\n");
+  }
+
+  function slugify(name) {
+    return String(name || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9\-а-яіїєґ_]/gi, "")
+      .replace(/_+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "") || "island";
+  }
+
+  var nameEl = document.getElementById("islandName");
+  var fileEl = document.getElementById("filename");
+  var avatarEl = document.getElementById("avatar");
+  var preview = document.getElementById("avatarPreview");
+  var hintFile = document.getElementById("hintFile");
+
+  nameEl.addEventListener("input", function () {
+    if (!fileEl.dataset.touched) {
+      fileEl.value = slugify(nameEl.value) + "-island";
+      hintFile.textContent = fileEl.value || "назва-island";
+    }
+  });
+  fileEl.addEventListener("input", function () {
+    fileEl.dataset.touched = "1";
+    hintFile.textContent = fileEl.value.trim() || "назва-island";
+  });
+  avatarEl.addEventListener("input", function () {
+    var u = avatarEl.value.trim();
+    if (u) {
+      preview.src = u;
+      preview.hidden = false;
+    } else {
+      preview.hidden = true;
+    }
+  });
+
+  function statusText() {
+    var t = document.getElementById("statusType").value;
+    if (t === "open") return "Статус: відкритий острів";
+    if (t === "closed") return "Статус: закритий острів";
+    if (t === "mod") return "Статус: на модерації";
+    return (document.getElementById("statusCustom").value || "Статус: —").trim();
+  }
+
+  function statusColor() {
+    return document.getElementById("statusColor").value || "green";
+  }
+
+  function postsBlock(fileName, islandName) {
+    var mode = document.getElementById("postsMode").value;
+    if (mode === "empty") {
+      return "const initialPostsData = [];";
+    }
+    if (mode === "one") {
+      return (
+        "const initialPostsData = [\n" +
+        "  {\n" +
+        "    title: 'Ласкаво просимо на острів',\n" +
+        "    body: 'Перший допис спільноти. Правила — у описі острова.',\n" +
+        "    likes: 0,\n" +
+        "    date: 'щойно',\n" +
+        "    comments: []\n" +
+        "  }\n" +
+        "];"
+      );
+    }
+    return (
+      "const initialPostsData = [\n" +
+      "  {title: 'Заголовок допису #1', body: 'Текст допису #1', likes: 0, date: '—', comments: []},\n" +
+      "  {title: 'Заголовок допису #2', body: 'Текст допису #2', likes: 0, date: '—', comments: []},\n" +
+      "  {title: 'Заголовок допису #3', body: 'Текст допису #3', likes: 0, date: '—', comments: []}\n" +
+      "];"
+    );
+  }
+
+  function build() {
+    var name = (nameEl.value || "").trim();
+    if (!name) {
+      alert("Вкажи назву острова");
+      return "";
+    }
+    var fileBase = (fileEl.value || "").trim() || (slugify(name) + "-island");
+    fileBase = fileBase.replace(/\.html$/i, "");
+    var fileHtml = fileBase + ".html";
+    var avatar = (avatarEl.value || "").trim() || "https://via.placeholder.com/200x270?text=Island";
+    var desc = (document.getElementById("description").value || "").trim() || "Опис острова.";
+    var theme = document.getElementById("theme").value;
+    var st = statusText();
+    var sc = statusColor();
+    var title = "ОСТРІВ: " + name;
+
+    var html = [];
+    html.push("<!doctype html>");
+    html.push('<html lang="uk">');
+    html.push("<head>");
+    html.push('<meta charset="utf-8">');
+    html.push('<meta name="viewport" content="width=device-width, initial-scale=1">');
+    html.push('<link rel="stylesheet" href="../css/' + esc(theme) + '">');
+    html.push("<title>" + esc(title) + "</title>");
+    html.push('<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">');
+    html.push("</head>");
+    html.push("<body>");
+    html.push('<div id="hoomenchat-site">');
+    html.push('<div class="hoomenchat-header">ГУМЕНЧАТ</div>');
+    html.push('<div class="site-layout">');
+    html.push('<div class="site-left"><div class="left-box">');
+    html.push('<div class="site-name">' + esc(name) + "</div>");
+    html.push(
+      '<img class="main-avatar" src="' + esc(avatar) + '" alt="' + esc(name) + '">'
+    );
+    html.push('<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>');
+    html.push('<div class="nav-menu">');
+    html.push('<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>');
+    html.push('<a class="nav-item" href="../profiles.html">Гумени</a>');
+    html.push('<a class="nav-item" href="../droomens.html">Друмени</a>');
+    html.push('<a class="nav-item" href="../activity.html">Стрічерчат</a>');
+    html.push('<a class="nav-item current" href="../islands.html">Острови</a>');
+    html.push('<a class="nav-item" href="../rules.html">Правила</a>');
+    html.push("</div>");
+    html.push(
+      '<div class="account-box"><div class="account-text">Немає гумгайла?</div>' +
+      '<a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>' +
+      '<a class="account-link" href="../login.html">ВХІД</a></div>'
+    );
+    html.push("</div></div>");
+    html.push('<div class="site-right">');
+    html.push('<div class="profile-box">');
+    html.push('<div class="profile-header">' + esc(name) + " — острів</div>");
+    html.push('<div class="profile-info">');
+    html.push("<div>" + esc(desc) + "</div>");
+    html.push(
+      '<div class="profile-status" style="color:' +
+        esc(sc) +
+        '; font-style:normal;">' +
+        esc(st) +
+        "</div>"
+    );
+    html.push("</div>");
+    html.push("</div>");
+    html.push('<div class="posts-header">Дописи спільноти</div>');
+    html.push('<button id="toggle-create-btn" class="create-post-btn">Створити публікацію</button>');
+    html.push('<div id="create-post-box" class="create-post-form">');
+    html.push(
+      '  <input type="text" id="new-post-title" class="comment-input" style="min-height:24px; margin-bottom:5px;" placeholder="Заголовок допису...">'
+    );
+    html.push(
+      '  <textarea id="new-post-text" class="comment-input" placeholder="Текст допису..."></textarea>'
+    );
+    html.push(
+      '  <button id="submit-post-btn" class="comment-send" style="margin-top:5px;">Опублікувати</button>'
+    );
+    html.push("</div>");
+    html.push('<div id="island-posts"></div>');
+    html.push('<div id="show-more-posts" class="show-more">показати ще...</div>');
+    html.push(
+      '<div class="rules-box">Пам\'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>'
+    );
+    html.push(
+      '<div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div>' +
+      '<div>Зареєстровано гуменів: <span id="registered-hoomen"></span></div>' +
+      '<div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>' +
+      '<div>Гуменів сьогодні завітало: <span id="today-hoomen"></span></div></div>'
+    );
+    html.push('<div class="footer-line">Гуменчат — місце для гуменів.</div>');
+    html.push("</div></div></div>");
+
+    html.push("<script>");
+    html.push("(function(){");
+    html.push("function profileUrl(name) {");
+    html.push('  var slug = String(name || "").trim().replace(/^@/, "").replace(/_/g, "-");');
+    html.push('  if (!slug) return "#";');
+    html.push('  return "../profiles/" + encodeURIComponent(slug) + ".html";');
+    html.push("}");
+    html.push("function escapeHtml(text) {");
+    html.push('  return String(text)');
+    html.push('    .replace(/&/g, "&amp;")');
+    html.push('    .replace(/</g, "&lt;")');
+    html.push('    .replace(/>/g, "&gt;")');
+    html.push('    .replace(/"/g, "&quot;");');
+    html.push("}");
+    html.push("");
+    html.push(postsBlock(fileHtml, name));
+    html.push("");
+    html.push("const container = document.getElementById('island-posts');");
+    html.push("");
+    html.push("function createPostElement(title, body, likes, date, comments) {");
+    html.push("  comments = comments || [];");
+    html.push("  const post = document.createElement('div');");
+    html.push("  post.className = 'profile-post';");
+    html.push("  let commentsHtml = '';");
+    html.push("  comments.forEach(function (c) {");
+    html.push("    var href = profileUrl(c.name);");
+    html.push("    commentsHtml +=");
+    html.push("      '<div class=\"fake-comment\">' +");
+    html.push("        '<div class=\"fake-comment-name\">' +");
+    html.push("          '<a href=\"' + href + '\">' + escapeHtml(c.name) + '</a>' +");
+    html.push("        '</div>' +");
+    html.push("        escapeHtml(c.text) +");
+    html.push("      '</div>';");
+    html.push("  });");
+    html.push("  post.innerHTML =");
+    html.push("    '<div class=\"profile-post-title\">' +");
+    html.push("      '<span>' + escapeHtml(title) + '</span>' +");
+    html.push(
+      "      '<span class=\"post-author-link\">острів: <a href=\"" +
+        escJs(fileHtml) +
+        "\">' + " +
+        JSON.stringify(name) +
+        " + '</a></span>' +"
+    );
+    html.push("    '</div>' +");
+    html.push("    '<div class=\"profile-post-body\">' + escapeHtml(body) + '</div>' +");
+    html.push("    '<div class=\"post-actions\">' +");
+    html.push("      '<button class=\"like-button\" type=\"button\" data-base-likes=\"' + likes + '\">♡ Подобається <span class=\"like-count\">' + likes + '</span></button>' +");
+    html.push("      '<button class=\"comment-button\" type=\"button\">💬 Коментарі <span class=\"comment-count\">' + comments.length + '</span></button>' +");
+    html.push("    '</div>' +");
+    html.push("    '<div class=\"comments-area\">' +");
+    html.push("      '<div class=\"comments-list\">' + commentsHtml + '</div>' +");
+    html.push("      '<div class=\"comment-form\">' +");
+    html.push("        '<textarea class=\"comment-input\" placeholder=\"Написати коментар...\"></textarea>' +");
+    html.push("        '<button class=\"comment-send\" type=\"button\">Відправити</button>' +");
+    html.push("      '</div>' +");
+    html.push("    '</div>' +");
+    html.push("    '<div class=\"profile-post-date\">' + escapeHtml(date) + '</div>';");
+    html.push("  return post;");
+    html.push("}");
+    html.push("");
+    html.push("initialPostsData.forEach(function (item) {");
+    html.push("  container.appendChild(");
+    html.push("    createPostElement(item.title, item.body, item.likes, item.date, item.comments)");
+    html.push("  );");
+    html.push("});");
+    html.push("");
+    html.push("let visible = 3;");
+    html.push("function update() {");
+    html.push("  const posts = container.querySelectorAll('.profile-post');");
+    html.push("  posts.forEach(function (p, i) {");
+    html.push("    p.style.display = i < visible ? 'block' : 'none';");
+    html.push("  });");
+    html.push("  const showBtn = document.getElementById('show-more-posts');");
+    html.push("  if (visible >= posts.length) {");
+    html.push("    showBtn.textContent = 'показати менше...';");
+    html.push("  } else {");
+    html.push("    showBtn.textContent = 'показати ще...';");
+    html.push("  }");
+    html.push("}");
+    html.push("document.getElementById('show-more-posts').onclick = function () {");
+    html.push("  const posts = container.querySelectorAll('.profile-post');");
+    html.push("  if (visible >= posts.length) {");
+    html.push("    visible = 3;");
+    html.push("  } else {");
+    html.push("    visible = Math.min(visible + 10, posts.length);");
+    html.push("  }");
+    html.push("  update();");
+    html.push("};");
+    html.push("document.getElementById('toggle-create-btn').onclick = function () {");
+    html.push("  document.getElementById('create-post-box').classList.toggle('open');");
+    html.push("};");
+    html.push("document.getElementById('submit-post-btn').onclick = function () {");
+    html.push("  const titleInput = document.getElementById('new-post-title');");
+    html.push("  const textInput = document.getElementById('new-post-text');");
+    html.push("  const title = titleInput.value.trim();");
+    html.push("  const text = textInput.value.trim();");
+    html.push("  if (!title || !text) return;");
+    html.push("  const newPost = createPostElement(title, text, 0, 'щойно', []);");
+    html.push("  container.insertBefore(newPost, container.firstChild);");
+    html.push("  titleInput.value = '';");
+    html.push("  textInput.value = '';");
+    html.push("  document.getElementById('create-post-box').classList.remove('open');");
+    html.push("  bindEvents(newPost);");
+    html.push("  visible = Math.max(visible, 1);");
+    html.push("  update();");
+    html.push("};");
+    html.push("function bindEvents(scope) {");
+    html.push("  scope.querySelectorAll('.like-button').forEach(function (btn) {");
+    html.push("    if (btn.getAttribute('data-like-bound') === '1') return;");
+    html.push("    btn.setAttribute('data-like-bound', '1');");
+    html.push("    btn.onclick = function () {");
+    html.push("      const c = btn.querySelector('.like-count');");
+    html.push("      let n = parseInt(String(c.textContent).replace(/\\s/g, ''), 10) || 0;");
+    html.push("      const liked = btn.classList.toggle('liked');");
+    html.push("      n += liked ? 1 : -1;");
+    html.push("      if (n < 0) n = 0;");
+    html.push("      c.textContent = n.toLocaleString('uk-UA');");
+    html.push("      btn.childNodes[0].textContent = liked ? '♥ Подобається ' : '♡ Подобається ';");
+    html.push("    };");
+    html.push("  });");
+    html.push("  scope.querySelectorAll('.comment-button').forEach(function (btn) {");
+    html.push("    if (btn.getAttribute('data-comment-bound') === '1') return;");
+    html.push("    btn.setAttribute('data-comment-bound', '1');");
+    html.push("    btn.onclick = function () {");
+    html.push("      btn.closest('.profile-post').querySelector('.comments-area').classList.toggle('open');");
+    html.push("    };");
+    html.push("  });");
+    html.push("  scope.querySelectorAll('.comment-send').forEach(function (btn) {");
+    html.push("    if (btn.getAttribute('data-send-bound') === '1') return;");
+    html.push("    btn.setAttribute('data-send-bound', '1');");
+    html.push("    btn.onclick = function () {");
+    html.push("      const form = btn.closest('.comment-form');");
+    html.push("      const input = form.querySelector('.comment-input');");
+    html.push("      const text = input.value.trim();");
+    html.push("      if (!text) return;");
+    html.push("      const c = document.createElement('div');");
+    html.push("      c.className = 'fake-comment';");
+    html.push("      c.innerHTML =");
+    html.push("        '<div class=\"fake-comment-name\">' +");
+    html.push("          '<a href=\"' + profileUrl('copy_pasta') + '\">copy_pasta</a>' +");
+    html.push("        '</div>' +");
+    html.push("        escapeHtml(text);");
+    html.push("      const list = form.closest('.comments-area').querySelector('.comments-list');");
+    html.push("      if (list) list.appendChild(c);");
+    html.push("      else form.parentNode.insertBefore(c, form);");
+    html.push("      input.value = '';");
+    html.push("      const post = form.closest('.profile-post');");
+    html.push("      const count = post.querySelector('.comment-count');");
+    html.push("      count.textContent = (parseInt(count.textContent, 10) || 0) + 1;");
+    html.push("    };");
+    html.push("  });");
+    html.push("}");
+    html.push("function safe(base, range) {");
+    html.push("  let v;");
+    html.push("  do { v = base + Math.floor(Math.random() * range); }");
+    html.push("  while (/63|68|13|666/.test(String(v)));");
+    html.push("  return v;");
+    html.push("}");
+    html.push("function stats() {");
+    html.push("  document.getElementById('registered-hoomen').textContent = (8012457).toLocaleString('uk-UA');");
+    html.push("  document.getElementById('online-hoomen').textContent = safe(1000000, 76001).toLocaleString('uk-UA');");
+    html.push("  document.getElementById('today-hoomen').textContent = safe(2400000, 180001).toLocaleString('uk-UA');");
+    html.push("}");
+    html.push("bindEvents(document);");
+    html.push("update();");
+    html.push("stats();");
+    html.push("setInterval(stats, 30000);");
+    html.push("})();");
+    html.push("</" + "script>");
+    html.push("</body>");
+    html.push("</html>");
+
+    return html.join("\n");
+  }
+
+  document.getElementById("generate").onclick = function () {
+    var code = build();
+    if (code) document.getElementById("output").value = code;
+  };
+
+  document.getElementById("copy").onclick = function () {
+    var out = document.getElementById("output");
+    if (!out.value) document.getElementById("generate").click();
+    if (!out.value) return;
+    out.select();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(out.value).then(function () {
+        var ok = document.getElementById("copy-ok");
+        ok.hidden = false;
+        setTimeout(function () { ok.hidden = true; }, 2000);
+      });
+    } else {
+      document.execCommand("copy");
+      var ok = document.getElementById("copy-ok");
+      ok.hidden = false;
+      setTimeout(function () { ok.hidden = true; }, 2000);
+    }
+  };
+})();
+</script>
+</body>
+</html>
