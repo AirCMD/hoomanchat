@@ -1,1 +1,510 @@
-.
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ГУМЕНЧАТ — Генератор профілю</title>
+<style>
+html, body {
+  margin: 0; padding: 0;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px; line-height: 15px; color: #222;
+}
+* { box-sizing: border-box; }
+#wrap {
+  max-width: 920px; margin: 0 auto; padding: 12px;
+  border: 1px solid #777; min-height: 100vh;
+}
+h1 {
+  margin: 0 0 10px 0; padding: 6px 8px;
+  background: linear-gradient(to bottom, #626262, #3b3b3b);
+  border: 1px solid #222; color: #fff;
+  font-size: 13px; letter-spacing: 1px; text-transform: uppercase;
+}
+h2 {
+  margin: 14px 0 6px 0; padding: 5px 7px;
+  background: #f0f0f0; border: 1px solid #999;
+  font-size: 12px;
+}
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+label { display: block; margin: 0 0 2px 0; color: #444; font-weight: bold; font-size: 11px; }
+input[type="text"], input[type="number"], input[type="url"], select, textarea {
+  width: 100%; padding: 7px 8px;
+  border: 1px solid #999; background: #fff; font: inherit; color: #222;
+}
+textarea { min-height: 64px; resize: vertical; }
+.field { margin-bottom: 8px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
+.row .field { flex: 1; min-width: 120px; }
+.box {
+  margin: 0 0 10px 0; padding: 8px;
+  border: 1px solid #aaa; background: #fafafa;
+}
+.post-box { border-color: #888; background: #fff; }
+.comment-box { margin-top: 6px; padding: 6px; background: #f4f4f4; border: 1px solid #ccc; }
+.btn {
+  display: inline-block; margin: 2px 4px 2px 0; padding: 7px 12px;
+  border: 1px solid #999; background: #eee; color: #222;
+  font: inherit; font-weight: bold; cursor: pointer;
+}
+.btn:hover { background: #ddd; }
+.btn-main {
+  background: linear-gradient(to bottom, #fff176, #fbc02d);
+  border-color: #a78119; color: #000;
+}
+.btn-main:hover { background: linear-gradient(to bottom, #fff59d, #fdd835); }
+.btn-danger { background: #f5e0e0; border-color: #a66; color: #600; }
+.hint { color: #777; font-size: 10px; margin: 2px 0 6px; }
+#output {
+  width: 100%; min-height: 280px; font-family: "Courier New", monospace;
+  font-size: 11px; line-height: 14px;
+}
+.actions { margin: 10px 0; }
+.ok { color: #2e7d32; font-weight: bold; margin-left: 8px; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <h1>Генератор профілю гумена</h1>
+  <p class="hint">Заповни поля → «Згенерувати» → скопіюй HTML у новий файл, напр. <code>profiles/hoomen-jackson.html</code></p>
+
+  <h2>1. Основне</h2>
+  <div class="grid">
+    <div class="field">
+      <label>Нік (латиниця, як у системі)</label>
+      <input type="text" id="nickname" placeholder="vasyl_call" value="">
+    </div>
+    <div class="field">
+      <label>Імʼя файлу (без .html, з дефісами)</label>
+      <input type="text" id="filename" placeholder="vasyl-call" value="">
+      <div class="hint">Якщо порожньо — з ніка: _ → -</div>
+    </div>
+    <div class="field" style="grid-column: 1 / -1;">
+      <label>URL аватарки</label>
+      <input type="url" id="avatar" placeholder="https://...">
+    </div>
+    <div class="field">
+      <label>Стать</label>
+      <select id="gender">
+        <option value="female">female</option>
+        <option value="male">male</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Бот?</label>
+      <select id="isBot">
+        <option value="no">Ні — звичайний персонаж</option>
+        <option value="yes">Так — підключити bots/нік.js</option>
+      </select>
+    </div>
+    <div class="field" style="grid-column: 1 / -1;">
+      <label>Текст статусу (рядок під ніком)</label>
+      <input type="text" id="statusText" placeholder="Короткий статус...">
+    </div>
+    <div class="field">
+      <label>onlineStatus (якщо немає розкладу)</label>
+      <select id="onlineStatus">
+        <option value="online">online</option>
+        <option value="5min">5min</option>
+        <option value="25min">25min</option>
+        <option value="50min">50min</option>
+        <option value="offline">offline</option>
+        <option value="long-ago">long-ago</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Основний персонаж (кнопка «Новий допис»)?</label>
+      <select id="isMain">
+        <option value="false">Ні (сторонній)</option>
+        <option value="true">Так</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>mainCharacterUrl</label>
+      <input type="text" id="mainUrl" value="copy-pasta.html">
+    </div>
+  </div>
+
+  <h2>2. Сімейка</h2>
+  <div class="grid">
+    <div class="field">
+      <label>Тип</label>
+      <select id="familyType">
+        <option value="single">single — не шлюбна/ий</option>
+        <option value="seeking">seeking — шукає</option>
+        <option value="relationship">relationship — у стосунках</option>
+        <option value="married">married — шлюб</option>
+        <option value="none">none — не показувати</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Нік партнера (або порожньо)</label>
+      <input type="text" id="partnerName" placeholder="partner_nick">
+    </div>
+    <div class="field" style="grid-column: 1 / -1;">
+      <label>URL партнера (або порожньо)</label>
+      <input type="text" id="partnerUrl" placeholder="https://... або partner-file.html">
+    </div>
+  </div>
+
+  <h2>3. Розклад онлайн</h2>
+  <p class="hint">Слоти за порядком дня. status: online / away / offline</p>
+  <div id="schedule-list"></div>
+  <button type="button" class="btn" id="add-schedule">+ Слот розкладу</button>
+
+  <h2>4. Дописи</h2>
+  <div id="posts-list"></div>
+  <button type="button" class="btn" id="add-post">+ Допис</button>
+
+  <h2>5. Результат</h2>
+  <div class="actions">
+    <button type="button" class="btn btn-main" id="generate">Згенерувати HTML</button>
+    <button type="button" class="btn" id="copy">Копіювати</button>
+    <button type="button" class="btn" id="download">Завантажити .html</button>
+    <span class="ok" id="copy-ok" hidden>Скопійовано</span>
+  </div>
+  <textarea id="output" readonly placeholder="Тут зʼявиться готовий код сторінки..."></textarea>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function el(tag, cls, html) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (html != null) n.innerHTML = html;
+    return n;
+  }
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function escJs(s) {
+    return String(s == null ? "" : s)
+      .replace(/\\/g, "\\\\")
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, "\\n")
+      .replace(/\r/g, "");
+  }
+
+  function nickToFile(nick) {
+    return String(nick || "").trim().toLowerCase().replace(/_/g, "-").replace(/\s+/g, "-");
+  }
+
+  function commentFile(nick) {
+    return nickToFile(nick) + ".html";
+  }
+
+  /* ---- schedule ---- */
+  var scheduleList = document.getElementById("schedule-list");
+  function addSchedule(time, status) {
+    var box = el("div", "box row");
+    box.innerHTML =
+      '<div class="field"><label>Час</label><input type="text" class="sch-time" placeholder="10:00" value="' + esc(time || "") + '"></div>' +
+      '<div class="field"><label>Статус</label><select class="sch-status">' +
+      '<option value="online"' + (status === "online" ? " selected" : "") + '>online</option>' +
+      '<option value="away"' + (status === "away" ? " selected" : "") + '>away</option>' +
+      '<option value="offline"' + (status === "offline" ? " selected" : "") + '>offline</option>' +
+      '</select></div>' +
+      '<div class="field" style="flex:0"><button type="button" class="btn btn-danger sch-del">✕</button></div>';
+    box.querySelector(".sch-del").onclick = function () { box.remove(); };
+    scheduleList.appendChild(box);
+  }
+  document.getElementById("add-schedule").onclick = function () { addSchedule("", "online"); };
+  addSchedule("09:00", "online");
+  addSchedule("23:00", "offline");
+
+  /* ---- posts ---- */
+  var postsList = document.getElementById("posts-list");
+  var postSeq = 0;
+
+  function addComment(container, nick, text) {
+    var c = el("div", "comment-box");
+    c.innerHTML =
+      '<div class="grid">' +
+      '<div class="field"><label>Нік автора</label><input type="text" class="c-nick" value="' + esc(nick || "") + '" placeholder="other_hoomen"></div>' +
+      '<div class="field"><label>Текст коментаря</label><input type="text" class="c-text" value="' + esc(text || "") + '" placeholder="Текст..."></div>' +
+      '</div>' +
+      '<button type="button" class="btn btn-danger c-del">Видалити коментар</button>';
+    c.querySelector(".c-del").onclick = function () { c.remove(); };
+    container.appendChild(c);
+  }
+
+  function addPost() {
+    postSeq++;
+    var box = el("div", "box post-box");
+    box.dataset.postId = String(postSeq);
+    box.innerHTML =
+      '<strong>Допис #' + postSeq + '</strong>' +
+      '<div class="field"><label>Тема</label><input type="text" class="p-title" placeholder="Заголовок допису"></div>' +
+      '<div class="field"><label>Текст</label><textarea class="p-body" placeholder="Текст допису..."></textarea></div>' +
+      '<div class="row">' +
+      '<div class="field"><label>Дата</label><input type="text" class="p-date" placeholder="9 квітня"></div>' +
+      '<div class="field"><label>Кількість вподобайок</label><input type="number" class="p-likes" min="0" value="0"></div>' +
+      '</div>' +
+      '<div class="comments-wrap"><div class="hint">Коментарі</div></div>' +
+      '<button type="button" class="btn p-add-c">+ Коментар</button> ' +
+      '<button type="button" class="btn btn-danger p-del">Видалити допис</button>';
+    var wrap = box.querySelector(".comments-wrap");
+    box.querySelector(".p-add-c").onclick = function () { addComment(wrap, "", ""); };
+    box.querySelector(".p-del").onclick = function () { box.remove(); };
+    postsList.appendChild(box);
+  }
+  document.getElementById("add-post").onclick = addPost;
+  addPost();
+
+  function collectSchedule() {
+    var slots = [];
+    scheduleList.querySelectorAll(".box").forEach(function (box) {
+      var t = (box.querySelector(".sch-time").value || "").trim();
+      var s = box.querySelector(".sch-status").value;
+      if (t) slots.push({ time: t, status: s });
+    });
+    return slots;
+  }
+
+  function collectPosts() {
+    var posts = [];
+    postsList.querySelectorAll(".post-box").forEach(function (box) {
+      var title = (box.querySelector(".p-title").value || "").trim();
+      var body = (box.querySelector(".p-body").value || "").trim();
+      var date = (box.querySelector(".p-date").value || "").trim();
+      var likes = parseInt(box.querySelector(".p-likes").value, 10);
+      if (isNaN(likes) || likes < 0) likes = 0;
+      var comments = [];
+      box.querySelectorAll(".comment-box").forEach(function (c) {
+        var cn = (c.querySelector(".c-nick").value || "").trim();
+        var ct = (c.querySelector(".c-text").value || "").trim();
+        if (cn || ct) comments.push({ nick: cn, text: ct });
+      });
+      if (title || body) {
+        posts.push({ title: title, body: body, date: date || "—", likes: likes, comments: comments });
+      }
+    });
+    return posts;
+  }
+
+  function buildPostsHtml(posts) {
+    if (!posts.length) {
+      return "<!-- немає дописів -->\n";
+    }
+    return posts.map(function (p, i) {
+      var commentsHtml = p.comments.map(function (c) {
+        var href = commentFile(c.nick);
+        return (
+          '<div class="fake-comment">\n' +
+          '<div class="fake-comment-name"><a href="' + esc(href) + '">' + esc(c.nick) + "</a></div>\n" +
+          esc(c.text) + "\n" +
+          "</div>"
+        );
+      }).join("\n");
+
+      return (
+        "<!-- ДОПИС " + (i + 1) + " -->\n" +
+        '<div class="profile-post">\n' +
+        '<div class="profile-post-title">' + esc(p.title) + "</div>\n" +
+        '<div class="profile-post-body">' + esc(p.body) + "</div>\n" +
+        '<div class="post-actions">\n' +
+        '<button class="like-button" type="button" data-base-likes="' + p.likes + '">♡ Подобається <span class="like-count">' + p.likes + "</span></button>\n" +
+        '<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">' + p.comments.length + "</span></button>\n" +
+        "</div>\n" +
+        '<div class="comments-area">\n' +
+        (commentsHtml ? commentsHtml + "\n" : "") +
+        '<div class="comment-form">\n' +
+        '<textarea class="comment-input" placeholder="Написати коментар..."></textarea>\n' +
+        '<button class="comment-send" type="button">Відправити</button>\n' +
+        "</div>\n" +
+        "</div>\n" +
+        '<div class="profile-post-date">' + esc(p.date) + "</div>\n" +
+        "</div>"
+      );
+    }).join("\n\n");
+  }
+
+  function buildPage() {
+    var nick = (document.getElementById("nickname").value || "").trim();
+    if (!nick) {
+      alert("Вкажи нік");
+      return "";
+    }
+    var fileHint = (document.getElementById("filename").value || "").trim() || nickToFile(nick);
+    var avatar = (document.getElementById("avatar").value || "").trim();
+    var gender = document.getElementById("gender").value;
+    var isBot = document.getElementById("isBot").value === "yes";
+    var statusText = document.getElementById("statusText").value || "";
+    var onlineStatus = document.getElementById("onlineStatus").value;
+    var isMain = document.getElementById("isMain").value === "true";
+    var mainUrl = document.getElementById("mainUrl").value || "copy-pasta.html";
+    var familyType = document.getElementById("familyType").value;
+    var partnerName = document.getElementById("partnerName").value || "";
+    var partnerUrl = document.getElementById("partnerUrl").value || "";
+    var schedule = collectSchedule();
+    var posts = collectPosts();
+
+    var scheduleJs = schedule.length
+      ? "[\n" + schedule.map(function (s) {
+          return '    { time: "' + escJs(s.time) + '", status: "' + escJs(s.status) + '" }';
+        }).join(",\n") + "\n  ]"
+      : "null";
+
+    var botScript = isBot
+      ? '<script src="../bots/' + esc(nick) + '.js"><\/script>\n'
+      : "";
+
+    var page =
+'<!doctype html>\n' +
+'<html lang="uk">\n' +
+'<head>\n' +
+'<meta charset="utf-8">\n' +
+'<meta name="viewport" content="width=device-width,initial-scale=1">\n' +
+'<title>Гуменчат — ' + esc(nick) + '</title>\n' +
+'<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">\n' +
+'<link rel="stylesheet" href="../css/hoomenchat-profile.css">\n' +
+'<link rel="stylesheet" href="../css/pm-popup.css">\n' +
+'</head>\n' +
+'<body>\n\n' +
+'<div id="hoomenchat-site">\n\n' +
+'<div class="hoomenchat-header">\nГУМЕНЧАТ\n</div>\n\n' +
+'<div class="site-layout">\n\n' +
+'<div class="site-left">\n' +
+'<div class="left-box">\n\n' +
+'<div class="site-name" id="profile-nickname">' + esc(nick) + '</div>\n\n' +
+'<img\n' +
+'  class="main-avatar"\n' +
+'  id="profile-avatar"\n' +
+'  alt="' + esc(nick) + '"\n' +
+'  src="' + esc(avatar) + '"\n' +
+'>\n\n' +
+'<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>\n\n' +
+'<div class="nav-menu" id="nav-menu">\n' +
+'<!-- Наповнюється з конфігу -->\n' +
+'</div>\n\n' +
+'<div class="account-box">\n' +
+'  <div class="account-text">Немає гумгайла?</div>\n' +
+'  <a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>\n' +
+'  <a class="account-link" href="../login.html">ВХІД</a>\n' +
+'</div>\n\n' +
+'</div>\n' +
+'</div>\n\n' +
+'<div class="site-right">\n\n' +
+'<div class="profile-box">\n' +
+'  <div class="profile-header" id="profile-header-title">Профіль гумена: ' + esc(nick) + '</div>\n' +
+'  <div class="profile-info">\n' +
+'    <strong id="profile-info-name">' + esc(nick) + '</strong>\n' +
+'    <div id="profile-family"></div>\n' +
+'    <div id="profile-status-text"></div>\n' +
+'    <div class="profile-status" id="profile-online-status"></div>\n' +
+'  </div>\n' +
+'</div>\n\n' +
+'<div class="posts-header" id="posts-header">\n' +
+'  Дописи ' + esc(nick) + ' — <span id="posts-count">0</span>\n' +
+'</div>\n\n' +
+(isMain ? '<!-- Основний персонаж: кнопка нового допису з JS -->\n\n' : '<!-- Сторонній персонаж: кнопки «Новий допис» немає -->\n\n') +
+'<div id="profile-posts">\n' +
+buildPostsHtml(posts) +
+'\n</div>\n\n' +
+'<div class="posts-pager" id="posts-pager">\n' +
+'  <button class="show-more hidden" id="show-less-posts" type="button">показати менше...</button>\n' +
+'  <button class="show-more hidden" id="show-more-posts" type="button">показати ще...</button>\n' +
+'</div>\n\n' +
+'<div class="rules-box">\n' +
+'  Пам\'ятай та дотримуйся\n' +
+'  <a href="../rules.html">ПРАВИЛ</a>\n' +
+'  нашого ресурсу для приємного та друмнього часу разом з нами.\n' +
+'</div>\n\n' +
+'<div class="statistics-box">\n' +
+'  <div class="statistics-title">Статистика Гуменчату</div>\n' +
+'  <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>\n' +
+'  <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>\n' +
+'  <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>\n' +
+'</div>\n\n' +
+'<div class="image-viewer" id="post-image-viewer">\n' +
+'  <button class="image-viewer-close" id="post-image-viewer-close" type="button" aria-label="Закрити">✕</button>\n' +
+'  <button class="image-viewer-prev" id="post-image-viewer-prev" type="button" aria-label="Попереднє зображення">‹</button>\n' +
+'  <img class="image-viewer-image" id="post-image-viewer-image" src="" alt="Зображення допису">\n' +
+'  <button class="image-viewer-next" id="post-image-viewer-next" type="button" aria-label="Наступне зображення">›</button>\n' +
+'</div>\n\n' +
+'<div class="footer-line">Гуменчат — місце для гуменів.</div>\n\n' +
+'</div>\n' +
+'</div>\n' +
+'</div>\n\n' +
+'<script>\n' +
+'window.HOOMEN_PROFILE = {\n' +
+'  nickname: "' + escJs(nick) + '",\n' +
+'  avatar: "' + escJs(avatar) + '",\n' +
+'  isMainCharacter: ' + (isMain ? "true" : "false") + ',\n' +
+'  mainCharacterUrl: "' + escJs(mainUrl) + '",\n' +
+'  statusText: "' + escJs(statusText) + '",\n' +
+'  onlineStatus: "' + escJs(onlineStatus) + '",\n' +
+'  schedule: ' + scheduleJs + ',\n' +
+'  gender: "' + escJs(gender) + '",\n' +
+'  family: {\n' +
+'      type: "' + escJs(familyType) + '",\n' +
+'      partnerName: "' + escJs(partnerName) + '",\n' +
+'      partnerUrl: "' + escJs(partnerUrl) + '"\n' +
+'  },\n' +
+'  navLinks: {\n' +
+'    home: "../index.html",\n' +
+'    profiles: "../profiles.html",\n' +
+'    droomens: "../droomens.html",\n' +
+'    activity: "../activity.html",\n' +
+'    islands: "../islands.html",\n' +
+'    rules: "../rules.html"\n' +
+'  }\n' +
+'};\n' +
+'<\/script>\n' +
+'<script src="../js/hoomenchat-profile.js"><\/script>\n' +
+botScript +
+'<script src="../js/pm-popup.js"><\/script>\n\n' +
+'</body>\n' +
+'</html>\n';
+
+    page += "\n<!-- Рекомендована назва файлу: profiles/" + fileHint + ".html -->\n";
+    return page;
+  }
+
+  var output = document.getElementById("output");
+  document.getElementById("generate").onclick = function () {
+    var page = buildPage();
+    if (page) output.value = page;
+  };
+  document.getElementById("copy").onclick = function () {
+    if (!output.value) {
+      document.getElementById("generate").click();
+    }
+    if (!output.value) return;
+    output.select();
+    try {
+      navigator.clipboard.writeText(output.value).then(function () {
+        var ok = document.getElementById("copy-ok");
+        ok.hidden = false;
+        setTimeout(function () { ok.hidden = true; }, 2000);
+      });
+    } catch (e) {
+      document.execCommand("copy");
+    }
+  };
+  document.getElementById("download").onclick = function () {
+    if (!output.value) document.getElementById("generate").click();
+    if (!output.value) return;
+    var nick = (document.getElementById("nickname").value || "hoomen").trim();
+    var name = (document.getElementById("filename").value || "").trim() || nickToFile(nick);
+    var blob = new Blob([output.value], { type: "text/html;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name + ".html";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+})();
+</script>
+</body>
+</html>
