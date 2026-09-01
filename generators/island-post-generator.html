@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ГУМЕНЧАТ — Генератор дописів острова</title>
+<style>
+html, body {
+  margin: 0; padding: 0;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px; line-height: 15px; color: #222;
+}
+* { box-sizing: border-box; }
+#wrap {
+  max-width: 820px; margin: 0 auto; padding: 12px;
+  border: 1px solid #777; min-height: 100vh;
+}
+h1 {
+  margin: 0 0 8px 0; padding: 6px 8px;
+  background: linear-gradient(to bottom, #626262, #3b3b3b);
+  border: 1px solid #222; color: #fff;
+  font-size: 13px; letter-spacing: 1px; text-transform: uppercase;
+}
+.hint { color: #777; font-size: 10px; margin: 0 0 10px; }
+.box {
+  margin: 0 0 10px 0; padding: 8px;
+  border: 1px solid #888; background: #fff;
+}
+.comment-box {
+  margin: 6px 0; padding: 6px;
+  background: #f4f4f4; border: 1px solid #ccc;
+}
+label { display: block; margin: 0 0 2px; font-weight: bold; color: #444; font-size: 11px; }
+input, textarea, select {
+  width: 100%; padding: 7px 8px;
+  border: 1px solid #999; font: inherit; color: #222; background: #fff;
+}
+textarea { min-height: 64px; resize: vertical; }
+.field { margin-bottom: 8px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+@media (max-width: 600px) {
+  .grid, .grid3 { grid-template-columns: 1fr; }
+}
+.btn {
+  display: inline-block; margin: 2px 4px 2px 0; padding: 7px 12px;
+  border: 1px solid #999; background: #eee; font: inherit; font-weight: bold; cursor: pointer;
+}
+.btn:hover { background: #ddd; }
+.btn-main {
+  background: linear-gradient(to bottom, #fff176, #fbc02d);
+  border-color: #a78119; color: #000;
+}
+.btn-danger { background: #f5e0e0; border-color: #a66; color: #600; }
+.btn-soft { background: #e8f0fe; border-color: #6a8cbf; }
+#output {
+  width: 100%; min-height: 280px;
+  font-family: "Courier New", monospace; font-size: 11px; line-height: 14px;
+}
+.ok { color: #2e7d32; font-weight: bold; margin-left: 8px; }
+.tabs { margin: 0 0 10px; }
+.tab {
+  display: inline-block; padding: 5px 10px; margin-right: 4px;
+  border: 1px solid #999; background: #eee; cursor: pointer; font-weight: bold;
+}
+.tab.active {
+  background: linear-gradient(to bottom, #fff176, #fbc02d);
+  border-color: #a78119;
+}
+.mode-note {
+  margin: 0 0 10px; padding: 6px 8px;
+  background: #f7f7f7; border: 1px solid #ccc; font-size: 11px;
+}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <h1>Генератор дописів острова / групи</h1>
+  <p class="hint">
+    Збирає масив <code>initialPostsData</code> для вставки в скрипт сторінки острова
+    (як у вже існуючих та доступних для відвідування островів). Формат: <code>{title, body, likes, date, comments:[{name, text}]}</code>.
+  </p>
+
+  <div class="mode-note">
+    <strong>Для чого?</strong> для заміни усього масива <code>const initialPostsData = [ … ];</code>
+    (або <code>var initialPostsData = [ … ];</code>) у <code>&lt;script&gt;</code> сторінки острова.
+    Нік у коментарі → <code>../profiles/нік-з-дефісами.html</code> (це вже робить скрипт острова).
+  </div>
+
+  <div id="posts"></div>
+  <button type="button" class="btn" id="add-post">+ Допис</button>
+  <button type="button" class="btn btn-soft" id="add-empty-pack">+ 5 порожніх</button>
+
+  <div style="margin-top:12px">
+    <button type="button" class="btn btn-main" id="generate">Згенерувати код</button>
+    <button type="button" class="btn" id="copy">Копіювати</button>
+    <span class="ok" id="copy-ok" hidden>Скопійовано</span>
+  </div>
+  <p class="hint">Можна вставити замість існуючого <code>initialPostsData</code> у скрипті острова.</p>
+  <textarea id="output" readonly placeholder="Тут зʼявиться JS-масив initialPostsData..."></textarea>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/\\/g, "\\\\")
+      .replace(/'/g, "\\'")
+      .replace(/\r?\n/g, "\\n")
+      .replace(/\u2028/g, "\\u2028")
+      .replace(/\u2029/g, "\\u2029");
+  }
+
+  function escHtmlAttr(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  function clampLikes(input) {
+    var v = parseInt(input.value, 10);
+    if (isNaN(v) || v < 0) v = 0;
+    input.value = String(v);
+    return v;
+  }
+
+  var postsEl = document.getElementById("posts");
+  var output = document.getElementById("output");
+  var seq = 0;
+
+  function addComment(wrap, nick, text) {
+    var c = document.createElement("div");
+    c.className = "comment-box";
+    c.innerHTML =
+      '<div class="grid">' +
+      '<div class="field"><label>Нік автора</label>' +
+      '<input type="text" class="c-nick" placeholder="terry_rex" value="' + escHtmlAttr(nick || "") + '"></div>' +
+      '<div class="field"><label>Текст</label>' +
+      '<input type="text" class="c-text" placeholder="Текст коментаря..." value="' + escHtmlAttr(text || "") + '"></div>' +
+      "</div>" +
+      '<button type="button" class="btn btn-danger c-del">Видалити коментар</button>';
+    c.querySelector(".c-del").onclick = function () { c.remove(); };
+    wrap.appendChild(c);
+  }
+
+  function addPost(prefill) {
+    prefill = prefill || {};
+    seq++;
+    var box = document.createElement("div");
+    box.className = "box";
+    box.innerHTML =
+      "<strong>Допис #" + seq + "</strong>" +
+      '<div class="field"><label>Заголовок</label>' +
+      '<input type="text" class="p-title" placeholder="Заголовок допису" value="' + escHtmlAttr(prefill.title || "") + '"></div>' +
+      '<div class="field"><label>Текст</label>' +
+      '<textarea class="p-body" placeholder="Текст допису...">' + escHtmlAttr(prefill.body || "") + "</textarea></div>" +
+      '<div class="grid3">' +
+      '<div class="field"><label>Дата</label>' +
+      '<input type="text" class="p-date" placeholder="22 червня" value="' + escHtmlAttr(prefill.date || "") + '"></div>' +
+      '<div class="field"><label>Вподобайки (≥ 0)</label>' +
+      '<input type="number" class="p-likes" min="0" step="1" value="' + (prefill.likes != null ? prefill.likes : 0) + '"></div>' +
+      '<div class="field"><label>&nbsp;</label><span class="hint" style="display:block;padding-top:8px">лайки не можуть бути &lt; 0</span></div>' +
+      "</div>" +
+      '<div class="comments-wrap"><div class="hint">Коментарі (необовʼязково)</div></div>' +
+      '<button type="button" class="btn p-add-c">+ Коментар</button> ' +
+      '<button type="button" class="btn btn-danger p-del">Видалити допис</button>';
+
+    var wrap = box.querySelector(".comments-wrap");
+    var likesEl = box.querySelector(".p-likes");
+    likesEl.addEventListener("change", function () { clampLikes(likesEl); });
+    likesEl.addEventListener("blur", function () { clampLikes(likesEl); });
+    likesEl.addEventListener("input", function () {
+      if (likesEl.value === "") return;
+      if (/^-/.test(likesEl.value)) likesEl.value = "0";
+    });
+
+    box.querySelector(".p-add-c").onclick = function () { addComment(wrap, "", ""); };
+    box.querySelector(".p-del").onclick = function () { box.remove(); };
+
+    if (Array.isArray(prefill.comments)) {
+      prefill.comments.forEach(function (cm) {
+        addComment(wrap, cm.name || cm.nick || "", cm.text || "");
+      });
+    }
+
+    postsEl.appendChild(box);
+  }
+
+  document.getElementById("add-post").onclick = function () { addPost(); };
+  document.getElementById("add-empty-pack").onclick = function () {
+    for (var i = 0; i < 5; i++) addPost();
+  };
+  addPost();
+
+  function jsString(s) {
+    return "'" + esc(s) + "'";
+  }
+
+  function build() {
+    var items = [];
+    postsEl.querySelectorAll(".box").forEach(function (box) {
+      var title = (box.querySelector(".p-title").value || "").trim();
+      var body = (box.querySelector(".p-body").value || "").trim();
+      var date = (box.querySelector(".p-date").value || "").trim() || "—";
+      var likes = clampLikes(box.querySelector(".p-likes"));
+      if (!title && !body) return;
+
+      var comments = [];
+      box.querySelectorAll(".comment-box").forEach(function (c) {
+        var cn = (c.querySelector(".c-nick").value || "").trim();
+        var ct = (c.querySelector(".c-text").value || "").trim();
+        if (!cn && !ct) return;
+        comments.push({ name: cn, text: ct });
+      });
+
+      items.push({ title: title, body: body, likes: likes, date: date, comments: comments });
+    });
+
+    if (!items.length) {
+      alert("Додай хоча б один допис (заголовок або текст)");
+      return "";
+    }
+
+    var lines = [];
+    lines.push("const initialPostsData = [");
+    items.forEach(function (item, idx) {
+      var comma = idx < items.length - 1 ? "," : "";
+      var cLines = item.comments.map(function (c) {
+        return "      { name: " + jsString(c.name) + ", text: " + jsString(c.text) + " }";
+      });
+      var commentsBlock;
+      if (cLines.length === 0) {
+        commentsBlock = "[]";
+      } else {
+        commentsBlock = "[\n" + cLines.join(",\n") + "\n    ]";
+      }
+      lines.push(
+        "  {\n" +
+        "    title: " + jsString(item.title) + ",\n" +
+        "    body: " + jsString(item.body) + ",\n" +
+        "    likes: " + item.likes + ",\n" +
+        "    date: " + jsString(item.date) + ",\n" +
+        "    comments: " + commentsBlock + "\n" +
+        "  }" + comma
+      );
+    });
+    lines.push("];");
+    return lines.join("\n");
+  }
+
+  document.getElementById("generate").onclick = function () {
+    var code = build();
+    if (code) output.value = code;
+  };
+
+  document.getElementById("copy").onclick = function () {
+    if (!output.value) document.getElementById("generate").click();
+    if (!output.value) return;
+    output.select();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(output.value).then(function () {
+        var ok = document.getElementById("copy-ok");
+        ok.hidden = false;
+        setTimeout(function () { ok.hidden = true; }, 2000);
+      });
+    } else {
+      document.execCommand("copy");
+      var ok = document.getElementById("copy-ok");
+      ok.hidden = false;
+      setTimeout(function () { ok.hidden = true; }, 2000);
+    }
+  };
+})();
+</script>
+</body>
+</html>
