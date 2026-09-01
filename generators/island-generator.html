@@ -13,7 +13,7 @@ html, body {
 }
 * { box-sizing: border-box; }
 #wrap {
-  max-width: 920px; margin: 0 auto; padding: 12px;
+  max-width: 960px; margin: 0 auto; padding: 12px;
   border: 1px solid #777; min-height: 100vh;
 }
 h1 {
@@ -61,14 +61,59 @@ textarea { min-height: 64px; resize: vertical; }
 .btn-danger { background: #f5e0e0; border-color: #a66; color: #600; }
 .btn-soft { background: #e8f0fe; border-color: #6a8cbf; }
 .hint { color: #777; font-size: 10px; margin: 2px 0 6px; }
-#output {
-  width: 100%; min-height: 320px; font-family: "Courier New", monospace;
+.warn { color: #a60; font-size: 11px; font-weight: bold; margin: 4px 0; }
+.ok-msg { color: #2e7d32; font-size: 11px; margin: 4px 0; }
+#output, #listOutput {
+  width: 100%; min-height: 120px; font-family: "Courier New", monospace;
   font-size: 11px; line-height: 14px;
 }
+#output { min-height: 280px; }
 .ok { color: #2e7d32; font-weight: bold; margin-left: 8px; }
 .preview-avatar {
   width: 80px; height: 108px; object-fit: cover;
   border: 1px solid #888; background: #ddd; display: block; margin-top: 4px;
+}
+.check-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 6px 0; }
+.check-row label { font-weight: normal; display: inline; margin: 0; }
+
+/* Preview panel */
+#preview-panel {
+  margin: 12px 0; padding: 10px;
+  border: 1px solid #888; background: #fafafa;
+}
+#preview-panel h3 {
+  margin: 0 0 8px; font-size: 12px; text-transform: uppercase;
+  letter-spacing: 0.5px; color: #444;
+}
+.pv-layout { display: table; width: 100%; border-collapse: separate; border-spacing: 10px 0; }
+.pv-left { display: table-cell; width: 110px; vertical-align: top; }
+.pv-right { display: table-cell; vertical-align: top; }
+.pv-name {
+  font-weight: bold; font-size: 14px; text-align: center;
+  border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-bottom: 6px;
+  word-break: break-word;
+}
+.pv-avatar {
+  width: 100%; aspect-ratio: 1 / 1.35; object-fit: cover;
+  border: 1px solid #888; background: #ddd; display: block;
+}
+.pv-header {
+  background: linear-gradient(to bottom, #626262, #3b3b3b);
+  color: #fff; padding: 4px 8px; font-weight: bold; font-size: 11px;
+  margin-bottom: 6px;
+}
+.pv-desc { margin: 0 0 6px; color: #333; }
+.pv-status { font-size: 11px; margin-bottom: 8px; }
+.pv-post {
+  border: 1px solid #ccc; background: #fff; padding: 6px 8px; margin-bottom: 6px;
+}
+.pv-post-title { font-weight: bold; margin-bottom: 2px; }
+.pv-post-body { color: #444; margin-bottom: 2px; }
+.pv-post-meta { color: #888; font-size: 10px; }
+.pv-empty { color: #999; font-style: italic; }
+.pv-join {
+  margin-top: 8px; padding: 8px; border: 1px dashed #a66; background: #fff5f5;
+  text-align: center;
 }
 </style>
 </head>
@@ -76,8 +121,7 @@ textarea { min-height: 64px; resize: vertical; }
 <div id="wrap">
   <h1>Генератор острова</h1>
   <p class="hint">
-    Заповни поля → «Згенерувати» → скопіюй HTML у файл, напр.
-    <code>islands/airtiger-island.html</code>.
+    Заповни поля → прев’ю оновлюється автоматично → «Згенерувати» / «Завантажити .html».
   </p>
 
   <h2>1. Основне</h2>
@@ -90,6 +134,8 @@ textarea { min-height: 64px; resize: vertical; }
       <label>Імʼя файлу (без .html)</label>
       <input type="text" id="filename" placeholder="airtiger-island">
       <div class="hint">Якщо порожньо — з назви: пробіли → -</div>
+      <div id="slugWarn" class="warn" hidden></div>
+      <div id="slugOk" class="ok-msg" hidden></div>
     </div>
     <div class="field" style="grid-column: 1 / -1;">
       <label>URL аватарки</label>
@@ -99,6 +145,16 @@ textarea { min-height: 64px; resize: vertical; }
     <div class="field" style="grid-column: 1 / -1;">
       <label>Опис острова</label>
       <textarea id="description" placeholder="Короткий опис спільноти..."></textarea>
+    </div>
+    <div class="field">
+      <label>Назва в списку islands.html (опційно)</label>
+      <input type="text" id="listName" placeholder="⭐ 51. ОСТРІВ AIRTIGER">
+      <div class="hint">Якщо порожньо — підставиться назва острова</div>
+    </div>
+    <div class="field">
+      <label>Короткий опис для списку</label>
+      <input type="text" id="listDesc" placeholder="Опис для картки в islands.html">
+      <div class="hint">Якщо порожньо — візьметься з опису острова (обрізано)</div>
     </div>
     <div class="field">
       <label>Статус</label>
@@ -133,24 +189,78 @@ textarea { min-height: 64px; resize: vertical; }
     </div>
   </div>
 
+  <div id="closedOptions" class="box" style="display:none; background:#fff8f8; border-color:#c99;">
+    <strong>Закритий острів — додатково</strong>
+    <div class="check-row">
+      <label><input type="checkbox" id="hideCreate" checked> Приховати «Створити публікацію»</label>
+      <label><input type="checkbox" id="hidePosts"> Приховати дописи (лише для «не учасників»)</label>
+      <label><input type="checkbox" id="showJoin" checked> Кнопка «Подати заявку на вступ»</label>
+    </div>
+    <div class="hint">Після заявки показується: «Заявка на огляді модератора».</div>
+  </div>
+
   <h2>2. Дописи спільноти</h2>
-  <p class="hint">Додай скільки треба дописів і коментарів до них. Вони потраплять у <code>initialPostsData</code>.</p>
+  <p class="hint">Додай скільки треба дописів і коментарів. Вони потраплять у <code>initialPostsData</code>.</p>
   <div id="posts"></div>
   <button type="button" class="btn" id="add-post">+ Допис</button>
   <button type="button" class="btn btn-soft" id="add-empty-pack">+ 5 порожніх</button>
 
-  <div class="actions" style="margin: 14px 0 8px;">
+  <h2>3. Прев’ю</h2>
+  <div id="preview-panel">
+    <h3>Як виглядатиме</h3>
+    <div class="pv-layout">
+      <div class="pv-left">
+        <div class="pv-name" id="pv-name">—</div>
+        <img class="pv-avatar" id="pv-avatar" src="" alt="">
+      </div>
+      <div class="pv-right">
+        <div class="pv-header" id="pv-header">— — острів</div>
+        <div class="pv-desc" id="pv-desc"></div>
+        <div class="pv-status" id="pv-status"></div>
+        <div id="pv-posts"></div>
+        <div id="pv-join" class="pv-join" hidden>
+          <button type="button" class="btn" disabled>Подати заявку на вступ</button>
+          <div class="hint" style="margin-top:6px;">Після кліку: «Заявка на огляді модератора»</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>4. Експорт</h2>
+  <div class="actions" style="margin: 8px 0;">
     <button type="button" class="btn btn-main" id="generate">Згенерувати HTML</button>
-    <button type="button" class="btn" id="copy">Копіювати</button>
+    <button type="button" class="btn" id="copy">Копіювати HTML</button>
+    <button type="button" class="btn btn-soft" id="download">Завантажити .html</button>
     <span class="ok" id="copy-ok" hidden>Скопійовано</span>
   </div>
-  <p class="hint">Збережи як <code>islands/<span id="hintFile">назва-island</span>.html</code> і за бажанням додай запис у список на <code>islands.html</code>.</p>
-  <textarea id="output" readonly placeholder="Тут зʼявиться повний HTML сторінки острова..."></textarea>
+  <p class="hint">Файл: <code>islands/<span id="hintFile">назва-island</span>.html</code></p>
+  <textarea id="output" readonly placeholder="Повний HTML сторінки острова..."></textarea>
+
+  <h2>5. Запис для islands.html</h2>
+  <p class="hint">
+    Скопіюй цей рядок і встав у масив <code>var islands = [ … ]</code> на сторінці
+    <code>islands.html</code> (замість існуючого з <code>href: "#"</code> або в кінець списку).
+  </p>
+  <div class="actions" style="margin: 4px 0 8px;">
+    <button type="button" class="btn" id="copyList">Копіювати рядок списку</button>
+    <span class="ok" id="copy-list-ok" hidden>Скопійовано</span>
+  </div>
+  <textarea id="listOutput" readonly placeholder="Рядок для масиву islands..."></textarea>
 </div>
 
 <script>
 (function () {
   "use strict";
+
+  /* Відомі файли островів у islands/ — для перевірки конфлікту slug */
+  var EXISTING_SLUGS = [
+    "emocore-island",
+    "hoomen-island",
+    "tamatchi-island",
+    "weirdy-island",
+    "freemind-island",
+    "airtiger-island"
+  ];
 
   function esc(s) {
     return String(s == null ? "" : s)
@@ -195,23 +305,73 @@ textarea { min-height: 64px; resize: vertical; }
     return v;
   }
 
+  function truncate(s, n) {
+    s = String(s || "").trim();
+    if (s.length <= n) return s;
+    return s.slice(0, n - 1).trim() + "…";
+  }
+
   var nameEl = document.getElementById("islandName");
   var fileEl = document.getElementById("filename");
   var avatarEl = document.getElementById("avatar");
   var preview = document.getElementById("avatarPreview");
   var hintFile = document.getElementById("hintFile");
   var postsEl = document.getElementById("posts");
+  var statusTypeEl = document.getElementById("statusType");
+  var closedOptions = document.getElementById("closedOptions");
   var seq = 0;
+
+  function fileBase() {
+    var v = (fileEl.value || "").trim() || (slugify(nameEl.value) + "-island");
+    return v.replace(/\.html$/i, "");
+  }
+
+  function checkSlug() {
+    var base = fileBase().toLowerCase();
+    var warn = document.getElementById("slugWarn");
+    var ok = document.getElementById("slugOk");
+    hintFile.textContent = base || "назва-island";
+    if (!base) {
+      warn.hidden = true;
+      ok.hidden = true;
+      return;
+    }
+    if (EXISTING_SLUGS.indexOf(base) !== -1) {
+      warn.textContent = "Увага: файл islands/" + base + ".html уже існує (emocore/hoomen/…). Обери іншу назву або свідомо перезапиши.";
+      warn.hidden = false;
+      ok.hidden = true;
+    } else {
+      warn.hidden = true;
+      ok.textContent = "Slug вільний: islands/" + base + ".html";
+      ok.hidden = false;
+    }
+  }
+
+  function isClosed() {
+    return statusTypeEl.value === "closed";
+  }
+
+  function toggleClosedUi() {
+    closedOptions.style.display = isClosed() ? "block" : "none";
+    if (isClosed()) {
+      var colorEl = document.getElementById("statusColor");
+      if (colorEl.value === "green") colorEl.value = "red";
+    }
+    updatePreview();
+  }
 
   nameEl.addEventListener("input", function () {
     if (!fileEl.dataset.touched) {
       fileEl.value = slugify(nameEl.value) + "-island";
-      hintFile.textContent = fileEl.value || "назва-island";
     }
+    checkSlug();
+    updatePreview();
+    updateListLine();
   });
   fileEl.addEventListener("input", function () {
     fileEl.dataset.touched = "1";
-    hintFile.textContent = fileEl.value.trim() || "назва-island";
+    checkSlug();
+    updateListLine();
   });
   avatarEl.addEventListener("input", function () {
     var u = avatarEl.value.trim();
@@ -221,6 +381,21 @@ textarea { min-height: 64px; resize: vertical; }
     } else {
       preview.hidden = true;
     }
+    updatePreview();
+  });
+  statusTypeEl.addEventListener("change", toggleClosedUi);
+  ["description", "statusCustom", "statusColor", "listName", "listDesc"].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("input", function () {
+        updatePreview();
+        updateListLine();
+      });
+    }
+  });
+  ["hideCreate", "hidePosts", "showJoin"].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener("change", updatePreview);
   });
 
   function addComment(wrap, nick, text) {
@@ -234,7 +409,9 @@ textarea { min-height: 64px; resize: vertical; }
       '<input type="text" class="c-text" placeholder="Текст коментаря..." value="' + escHtmlAttr(text || "") + '"></div>' +
       "</div>" +
       '<button type="button" class="btn btn-danger c-del">Видалити коментар</button>';
-    c.querySelector(".c-del").onclick = function () { c.remove(); };
+    c.querySelector(".c-del").onclick = function () { c.remove(); updatePreview(); };
+    c.querySelector(".c-nick").addEventListener("input", updatePreview);
+    c.querySelector(".c-text").addEventListener("input", updatePreview);
     wrap.appendChild(c);
   }
 
@@ -262,15 +439,19 @@ textarea { min-height: 64px; resize: vertical; }
 
     var wrap = box.querySelector(".comments-wrap");
     var likesEl = box.querySelector(".p-likes");
-    likesEl.addEventListener("change", function () { clampLikes(likesEl); });
+    likesEl.addEventListener("change", function () { clampLikes(likesEl); updatePreview(); });
     likesEl.addEventListener("blur", function () { clampLikes(likesEl); });
     likesEl.addEventListener("input", function () {
       if (likesEl.value === "") return;
       if (/^-/.test(likesEl.value)) likesEl.value = "0";
+      updatePreview();
     });
 
-    box.querySelector(".p-add-c").onclick = function () { addComment(wrap, "", ""); };
-    box.querySelector(".p-del").onclick = function () { box.remove(); };
+    box.querySelector(".p-title").addEventListener("input", updatePreview);
+    box.querySelector(".p-body").addEventListener("input", updatePreview);
+    box.querySelector(".p-date").addEventListener("input", updatePreview);
+    box.querySelector(".p-add-c").onclick = function () { addComment(wrap, "", ""); updatePreview(); };
+    box.querySelector(".p-del").onclick = function () { box.remove(); updatePreview(); };
 
     if (Array.isArray(prefill.comments)) {
       prefill.comments.forEach(function (cm) {
@@ -279,6 +460,7 @@ textarea { min-height: 64px; resize: vertical; }
     }
 
     postsEl.appendChild(box);
+    updatePreview();
   }
 
   document.getElementById("add-post").onclick = function () { addPost(); };
@@ -288,7 +470,7 @@ textarea { min-height: 64px; resize: vertical; }
   addPost();
 
   function statusText() {
-    var t = document.getElementById("statusType").value;
+    var t = statusTypeEl.value;
     if (t === "open") return "Статус: відкритий острів";
     if (t === "closed") return "Статус: закритий острів";
     if (t === "mod") return "Статус: на модерації";
@@ -317,6 +499,88 @@ textarea { min-height: 64px; resize: vertical; }
     return items;
   }
 
+  function updatePreview() {
+    var name = (nameEl.value || "").trim() || "—";
+    var avatar = (avatarEl.value || "").trim();
+    var desc = (document.getElementById("description").value || "").trim() || "Опис острова.";
+    var st = statusText();
+    var sc = document.getElementById("statusColor").value || "green";
+    var items = collectPosts();
+
+    document.getElementById("pv-name").textContent = name;
+    document.getElementById("pv-header").textContent = name + " — острів";
+    document.getElementById("pv-desc").textContent = desc;
+    var stEl = document.getElementById("pv-status");
+    stEl.textContent = st;
+    stEl.style.color = sc;
+
+    var av = document.getElementById("pv-avatar");
+    if (avatar) {
+      av.src = avatar;
+      av.style.display = "block";
+    } else {
+      av.removeAttribute("src");
+      av.style.display = "none";
+    }
+
+    var closed = isClosed();
+    var hidePosts = closed && document.getElementById("hidePosts").checked;
+    var showJoin = closed && document.getElementById("showJoin").checked;
+    var pvPosts = document.getElementById("pv-posts");
+    var pvJoin = document.getElementById("pv-join");
+
+    if (hidePosts) {
+      pvPosts.innerHTML = '<div class="pv-empty">Дописи приховані для не-учасників</div>';
+    } else if (!items.length) {
+      pvPosts.innerHTML = '<div class="pv-empty">Поки немає дописів</div>';
+    } else {
+      var html = "";
+      items.slice(0, 2).forEach(function (p) {
+        html +=
+          '<div class="pv-post">' +
+          '<div class="pv-post-title">' + esc(p.title || "(без заголовка)") + "</div>" +
+          '<div class="pv-post-body">' + esc(truncate(p.body, 120)) + "</div>" +
+          '<div class="pv-post-meta">' + esc(p.date) + " · ♡ " + p.likes +
+          " · 💬 " + p.comments.length + "</div>" +
+          "</div>";
+      });
+      if (items.length > 2) {
+        html += '<div class="pv-empty">… ще ' + (items.length - 2) + " допис(ів)</div>";
+      }
+      pvPosts.innerHTML = html;
+    }
+
+    pvJoin.hidden = !showJoin;
+  }
+
+  function updateListLine() {
+    var name = (nameEl.value || "").trim() || "Острів";
+    var listName = (document.getElementById("listName").value || "").trim() || name;
+    var desc =
+      (document.getElementById("listDesc").value || "").trim() ||
+      truncate(document.getElementById("description").value, 90) ||
+      "Опис острова.";
+    var href = "islands/" + fileBase() + ".html";
+    var line =
+      '{ name: "' +
+      escJs(listName).replace(/"/g, '\\"') +
+      '", description: "' +
+      escJs(desc).replace(/"/g, '\\"') +
+      '", href: "' +
+      escJs(href) +
+      '" },';
+    /* Use double quotes in list to match islands.html style more closely */
+    line =
+      '{ name: "' +
+      String(listName).replace(/\\/g, "\\\\").replace(/"/g, '\\"') +
+      '", description: "' +
+      String(desc).replace(/\\/g, "\\\\").replace(/"/g, '\\"') +
+      '", href: "' +
+      href.replace(/\\/g, "\\\\").replace(/"/g, '\\"') +
+      '" },';
+    document.getElementById("listOutput").value = line;
+  }
+
   function postsJsArray(items) {
     if (!items.length) return "const initialPostsData = [];";
 
@@ -326,12 +590,9 @@ textarea { min-height: 64px; resize: vertical; }
       var cLines = item.comments.map(function (c) {
         return "      { name: '" + escJs(c.name) + "', text: '" + escJs(c.text) + "' }";
       });
-      var commentsBlock;
-      if (!cLines.length) {
-        commentsBlock = "[]";
-      } else {
-        commentsBlock = "[\n" + cLines.join(",\n") + "\n    ]";
-      }
+      var commentsBlock = !cLines.length
+        ? "[]"
+        : "[\n" + cLines.join(",\n") + "\n    ]";
       lines.push(
         "  {\n" +
         "    title: '" + escJs(item.title) + "',\n" +
@@ -352,9 +613,8 @@ textarea { min-height: 64px; resize: vertical; }
       alert("Вкажи назву острова");
       return "";
     }
-    var fileBase = (fileEl.value || "").trim() || (slugify(name) + "-island");
-    fileBase = fileBase.replace(/\.html$/i, "");
-    var fileHtml = fileBase + ".html";
+    var base = fileBase();
+    var fileHtml = base + ".html";
     var avatar = (avatarEl.value || "").trim() || "https://via.placeholder.com/200x270?text=Island";
     var desc = (document.getElementById("description").value || "").trim() || "Опис острова.";
     var theme = document.getElementById("theme").value;
@@ -362,6 +622,10 @@ textarea { min-height: 64px; resize: vertical; }
     var sc = document.getElementById("statusColor").value || "green";
     var title = "ОСТРІВ: " + name;
     var items = collectPosts();
+    var closed = isClosed();
+    var hideCreate = closed && document.getElementById("hideCreate").checked;
+    var hidePosts = closed && document.getElementById("hidePosts").checked;
+    var showJoin = closed && document.getElementById("showJoin").checked;
 
     var html = [];
     html.push("<!doctype html>");
@@ -406,21 +670,45 @@ textarea { min-height: 64px; resize: vertical; }
     );
     html.push("</div>");
     html.push("</div>");
+
+    if (showJoin) {
+      html.push('<div id="join-box" class="rules-box" style="border-color:#a66;">');
+      html.push('<button type="button" id="join-btn" class="create-post-btn" style="width:auto;display:inline-block;">Подати заявку на вступ</button>');
+      html.push('<div id="join-status" style="margin-top:6px;display:none;color:#a60;font-weight:bold;">Заявка на огляді модератора</div>');
+      html.push("</div>");
+    }
+
     html.push('<div class="posts-header">Дописи спільноти</div>');
-    html.push('<button id="toggle-create-btn" class="create-post-btn">Створити публікацію</button>');
-    html.push('<div id="create-post-box" class="create-post-form">');
-    html.push(
-      '  <input type="text" id="new-post-title" class="comment-input" style="min-height:24px; margin-bottom:5px;" placeholder="Заголовок допису...">'
-    );
-    html.push(
-      '  <textarea id="new-post-text" class="comment-input" placeholder="Текст допису..."></textarea>'
-    );
-    html.push(
-      '  <button id="submit-post-btn" class="comment-send" style="margin-top:5px;">Опублікувати</button>'
-    );
-    html.push("</div>");
-    html.push('<div id="island-posts"></div>');
-    html.push('<div id="show-more-posts" class="show-more">показати ще...</div>');
+
+    if (!hideCreate) {
+      html.push('<button id="toggle-create-btn" class="create-post-btn">Створити публікацію</button>');
+      html.push('<div id="create-post-box" class="create-post-form">');
+      html.push(
+        '  <input type="text" id="new-post-title" class="comment-input" style="min-height:24px; margin-bottom:5px;" placeholder="Заголовок допису...">'
+      );
+      html.push(
+        '  <textarea id="new-post-text" class="comment-input" placeholder="Текст допису..."></textarea>'
+      );
+      html.push(
+        '  <button id="submit-post-btn" class="comment-send" style="margin-top:5px;">Опублікувати</button>'
+      );
+      html.push("</div>");
+    } else {
+      html.push(
+        '<div class="hint" style="margin:6px 0;color:#888;">Публікації доступні лише учасникам острова.</div>'
+      );
+    }
+
+    if (hidePosts) {
+      html.push(
+        '<div id="island-posts-locked" class="rules-box">Дописи цієї спільноти бачать лише учасники. Подай заявку на вступ.</div>'
+      );
+      html.push('<div id="island-posts" style="display:none;"></div>');
+    } else {
+      html.push('<div id="island-posts"></div>');
+    }
+
+    html.push('<div id="show-more-posts" class="show-more"' + (hidePosts ? ' style="display:none;"' : "") + ">показати ще...</div>");
     html.push(
       '<div class="rules-box">Пам\'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>'
     );
@@ -494,19 +782,23 @@ textarea { min-height: 64px; resize: vertical; }
     html.push("  return post;");
     html.push("}");
     html.push("");
-    html.push("initialPostsData.forEach(function (item) {");
-    html.push("  container.appendChild(");
-    html.push("    createPostElement(item.title, item.body, item.likes, item.date, item.comments)");
-    html.push("  );");
-    html.push("});");
+    html.push("if (container) {");
+    html.push("  initialPostsData.forEach(function (item) {");
+    html.push("    container.appendChild(");
+    html.push("      createPostElement(item.title, item.body, item.likes, item.date, item.comments)");
+    html.push("    );");
+    html.push("  });");
+    html.push("}");
     html.push("");
     html.push("let visible = 3;");
     html.push("function update() {");
+    html.push("  if (!container) return;");
     html.push("  const posts = container.querySelectorAll('.profile-post');");
     html.push("  posts.forEach(function (p, i) {");
     html.push("    p.style.display = i < visible ? 'block' : 'none';");
     html.push("  });");
     html.push("  const showBtn = document.getElementById('show-more-posts');");
+    html.push("  if (!showBtn) return;");
     html.push("  if (!posts.length) { showBtn.style.display = 'none'; return; }");
     html.push("  showBtn.style.display = '';");
     html.push("  if (visible >= posts.length) {");
@@ -515,7 +807,9 @@ textarea { min-height: 64px; resize: vertical; }
     html.push("    showBtn.textContent = 'показати ще...';");
     html.push("  }");
     html.push("}");
-    html.push("document.getElementById('show-more-posts').onclick = function () {");
+    html.push("var showMoreBtn = document.getElementById('show-more-posts');");
+    html.push("if (showMoreBtn) showMoreBtn.onclick = function () {");
+    html.push("  if (!container) return;");
     html.push("  const posts = container.querySelectorAll('.profile-post');");
     html.push("  if (visible >= posts.length) {");
     html.push("    visible = 3;");
@@ -524,25 +818,40 @@ textarea { min-height: 64px; resize: vertical; }
     html.push("  }");
     html.push("  update();");
     html.push("};");
-    html.push("document.getElementById('toggle-create-btn').onclick = function () {");
-    html.push("  document.getElementById('create-post-box').classList.toggle('open');");
-    html.push("};");
-    html.push("document.getElementById('submit-post-btn').onclick = function () {");
-    html.push("  const titleInput = document.getElementById('new-post-title');");
-    html.push("  const textInput = document.getElementById('new-post-text');");
-    html.push("  const title = titleInput.value.trim();");
-    html.push("  const text = textInput.value.trim();");
-    html.push("  if (!title || !text) return;");
-    html.push("  const newPost = createPostElement(title, text, 0, 'щойно', []);");
-    html.push("  container.insertBefore(newPost, container.firstChild);");
-    html.push("  titleInput.value = '';");
-    html.push("  textInput.value = '';");
-    html.push("  document.getElementById('create-post-box').classList.remove('open');");
-    html.push("  bindEvents(newPost);");
-    html.push("  visible = Math.max(visible, 1);");
-    html.push("  update();");
-    html.push("};");
+
+    if (!hideCreate) {
+      html.push("document.getElementById('toggle-create-btn').onclick = function () {");
+      html.push("  document.getElementById('create-post-box').classList.toggle('open');");
+      html.push("};");
+      html.push("document.getElementById('submit-post-btn').onclick = function () {");
+      html.push("  const titleInput = document.getElementById('new-post-title');");
+      html.push("  const textInput = document.getElementById('new-post-text');");
+      html.push("  const title = titleInput.value.trim();");
+      html.push("  const text = textInput.value.trim();");
+      html.push("  if (!title || !text) return;");
+      html.push("  const newPost = createPostElement(title, text, 0, 'щойно', []);");
+      html.push("  container.insertBefore(newPost, container.firstChild);");
+      html.push("  titleInput.value = '';");
+      html.push("  textInput.value = '';");
+      html.push("  document.getElementById('create-post-box').classList.remove('open');");
+      html.push("  bindEvents(newPost);");
+      html.push("  visible = Math.max(visible, 1);");
+      html.push("  update();");
+      html.push("};");
+    }
+
+    if (showJoin) {
+      html.push("var joinBtn = document.getElementById('join-btn');");
+      html.push("if (joinBtn) joinBtn.onclick = function () {");
+      html.push("  joinBtn.disabled = true;");
+      html.push("  joinBtn.textContent = 'Заявку подано';");
+      html.push("  var st = document.getElementById('join-status');");
+      html.push("  if (st) st.style.display = 'block';");
+      html.push("};");
+    }
+
     html.push("function bindEvents(scope) {");
+    html.push("  if (!scope) return;");
     html.push("  scope.querySelectorAll('.like-button').forEach(function (btn) {");
     html.push("    if (btn.getAttribute('data-like-bound') === '1') return;");
     html.push("    btn.setAttribute('data-like-bound', '1');");
@@ -595,9 +904,12 @@ textarea { min-height: 64px; resize: vertical; }
     html.push("  return v;");
     html.push("}");
     html.push("function stats() {");
-    html.push("  document.getElementById('registered-hoomen').textContent = (8012457).toLocaleString('uk-UA');");
-    html.push("  document.getElementById('online-hoomen').textContent = safe(1000000, 76001).toLocaleString('uk-UA');");
-    html.push("  document.getElementById('today-hoomen').textContent = safe(2400000, 180001).toLocaleString('uk-UA');");
+    html.push("  var r = document.getElementById('registered-hoomen');");
+    html.push("  var o = document.getElementById('online-hoomen');");
+    html.push("  var t = document.getElementById('today-hoomen');");
+    html.push("  if (r) r.textContent = (8012457).toLocaleString('uk-UA');");
+    html.push("  if (o) o.textContent = safe(1000000, 76001).toLocaleString('uk-UA');");
+    html.push("  if (t) t.textContent = safe(2400000, 180001).toLocaleString('uk-UA');");
     html.push("}");
     html.push("bindEvents(document);");
     html.push("update();");
@@ -611,14 +923,22 @@ textarea { min-height: 64px; resize: vertical; }
     return html.join("\n");
   }
 
-  document.getElementById("generate").onclick = function () {
+  function ensureGenerated() {
     var code = build();
-    if (code) document.getElementById("output").value = code;
+    if (code) {
+      document.getElementById("output").value = code;
+      updateListLine();
+    }
+    return code;
+  }
+
+  document.getElementById("generate").onclick = function () {
+    ensureGenerated();
   };
 
   document.getElementById("copy").onclick = function () {
     var out = document.getElementById("output");
-    if (!out.value) document.getElementById("generate").click();
+    if (!out.value) ensureGenerated();
     if (!out.value) return;
     out.select();
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -634,6 +954,44 @@ textarea { min-height: 64px; resize: vertical; }
       setTimeout(function () { ok.hidden = true; }, 2000);
     }
   };
+
+  document.getElementById("download").onclick = function () {
+    var code = document.getElementById("output").value || ensureGenerated();
+    if (!code) return;
+    var base = fileBase() || "island";
+    var blob = new Blob([code], { type: "text/html;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = base + ".html";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () {
+      URL.revokeObjectURL(a.href);
+      a.remove();
+    }, 500);
+  };
+
+  document.getElementById("copyList").onclick = function () {
+    updateListLine();
+    var out = document.getElementById("listOutput");
+    out.select();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(out.value).then(function () {
+        var ok = document.getElementById("copy-list-ok");
+        ok.hidden = false;
+        setTimeout(function () { ok.hidden = true; }, 2000);
+      });
+    } else {
+      document.execCommand("copy");
+      var ok = document.getElementById("copy-list-ok");
+      ok.hidden = false;
+      setTimeout(function () { ok.hidden = true; }, 2000);
+    }
+  };
+
+  checkSlug();
+  updatePreview();
+  updateListLine();
 })();
 </script>
 </body>
