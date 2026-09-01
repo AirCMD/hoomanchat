@@ -99,7 +99,7 @@ input[type="file"] {
   background: #f7f7f7; border: 1px solid #ccc; font-size: 11px;
 }
 
-/* Модальне вікно для перегляду зображень */
+/* Компактне модальне вікно перегляду */
 #image-modal {
   display: none;
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -111,21 +111,21 @@ input[type="file"] {
 }
 .modal-content {
   position: relative; background: #fff;
-  max-width: 90%; max-height: 90vh; overflow: auto;
-  padding: 12px; border: 1px solid #333;
+  max-width: 80vw; max-height: 80vh; overflow: auto;
+  padding: 12px; border: 1px solid #333; text-align: center;
 }
 .modal-close {
   position: absolute; top: 6px; right: 6px;
   width: 24px; height: 24px; background: #d32f2f; color: #fff;
   border: none; cursor: pointer; font-size: 18px; font-weight: bold;
-  line-height: 24px; text-align: center; padding: 0;
+  line-height: 24px; text-align: center; padding: 0; z-index: 2;
 }
 .modal-close:hover { background: #b71c1c; }
 .modal-image {
-  display: block; max-width: 100%; height: auto; margin-bottom: 8px;
+  display: block; max-width: 100%; max-height: 65vh; height: auto; margin: 0 auto 8px auto; object-fit: contain;
 }
 .modal-description {
-  font-size: 12px; color: #333; word-break: break-word;
+  font-size: 12px; color: #333; word-break: break-word; text-align: left;
 }
 </style>
 </head>
@@ -133,13 +133,11 @@ input[type="file"] {
 <div id="wrap">
   <h1>Генератор дописів острова / групи</h1>
   <p class="hint">
-    Збирає масив <code>initialPostsData</code> для вставки в скрипт сторінки острова
-    (як у вже існуючих та доступних для відвідування островів). Формат: <code>{title, body, likes, date, comments:[{name, text}], images:[{data, desc}]}</code>.
+    Збирає масив <code>initialPostsData</code> для вставки в скрипт сторінки острова.
+    Формат: <code>{title, body, likes, userLiked, baseLikes, date, comments:[{name, text}], images:[{data, desc}]}</code>.
   </p>
   <div class="mode-note">
-    <strong>Для чого?</strong> для заміни усього масива <code>const initialPostsData = [ … ];</code>
-    (або <code>var initialPostsData = [ … ];</code>) у <code>&lt;script&gt;</code> сторінки острова.
-    Нік у коментарі → <code>../profiles/нік-з-дефісами.html</code> (це вже робить скрипт острова).
+    <strong>Для чого?</strong> для заміни усього масива <code>const initialPostsData = [ … ];</code> у <code>&lt;script&gt;</code> сторінки острова.
   </div>
   <div id="posts"></div>
   <button type="button" class="btn" id="add-post">+ Допис</button>
@@ -256,7 +254,6 @@ input[type="file"] {
       container.appendChild(thumb);
     }
 
-    // Приховані поля для зберігання даних
     var dataInput = document.createElement("input");
     dataInput.type = "hidden";
     dataInput.className = "img-data";
@@ -286,9 +283,12 @@ input[type="file"] {
       '<div class="grid3">' +
       '<div class="field"><label>Дата</label>' +
       '<input type="text" class="p-date" placeholder="22 червня" value="' + escHtmlAttr(prefill.date || "") + '"></div>' +
-      '<div class="field"><label>Вподобайки (≥ 0)</label>' +
-      '<input type="number" class="p-likes" min="0" step="1" value="' + (prefill.likes != null ? prefill.likes : 0) + '"></div>' +
-      '<div class="field"><label>&nbsp;</label><span class="hint" style="display:block;padding-top:8px">лайки не можуть бути &lt; 0</span></div>' +
+      '<div class="field"><label>Фейкові лайки (≥ 0)</label>' +
+      '<input type="number" class="p-likes" min="0" step="1" value="' + (prefill.baseLikes != null ? prefill.baseLikes : (prefill.likes != null ? prefill.likes : 0)) + '"></div>' +
+      '<div class="field"><label>Мій лайк</label>' +
+      '<label style="font-weight:normal; cursor:pointer; padding-top:6px; display:inline-block;">' +
+      '<input type="checkbox" class="p-user-liked" ' + (prefill.userLiked ? "checked" : "") + ' style="width:auto; margin-right:6px;">Поставити свій лайк' +
+      '</label></div>' +
       "</div>" +
       '<div class="images-section">' +
       '<label>Зображення (необовʼязково)</label>' +
@@ -406,7 +406,9 @@ input[type="file"] {
       var title = (box.querySelector(".p-title").value || "").trim();
       var body = (box.querySelector(".p-body").value || "").trim();
       var date = (box.querySelector(".p-date").value || "").trim() || "—";
-      var likes = clampLikes(box.querySelector(".p-likes"));
+      var baseLikes = clampLikes(box.querySelector(".p-likes"));
+      var userLiked = box.querySelector(".p-user-liked").checked;
+      var totalLikes = baseLikes + (userLiked ? 1 : 0);
       
       if (!title && !body) return;
 
@@ -430,7 +432,9 @@ input[type="file"] {
       items.push({ 
         title: title, 
         body: body, 
-        likes: likes, 
+        likes: totalLikes,
+        baseLikes: baseLikes,
+        userLiked: userLiked,
         date: date, 
         comments: comments,
         images: images 
@@ -449,28 +453,20 @@ input[type="file"] {
       var cLines = item.comments.map(function (c) {
         return "      { name: " + jsString(c.name) + ", text: " + jsString(c.text) + " }";
       });
-      var commentsBlock;
-      if (cLines.length === 0) {
-        commentsBlock = "[]";
-      } else {
-        commentsBlock = "[\n" + cLines.join(",\n") + "\n    ]";
-      }
+      var commentsBlock = cLines.length === 0 ? "[]" : "[\n" + cLines.join(",\n") + "\n    ]";
 
       var iLines = item.images.map(function (img) {
         return "      { data: " + jsString(img.data) + ", desc: " + jsString(img.desc) + " }";
       });
-      var imagesBlock;
-      if (iLines.length === 0) {
-        imagesBlock = "[]";
-      } else {
-        imagesBlock = "[\n" + iLines.join(",\n") + "\n    ]";
-      }
+      var imagesBlock = iLines.length === 0 ? "[]" : "[\n" + iLines.join(",\n") + "\n    ]";
 
       lines.push(
         "  {\n" +
         "    title: " + jsString(item.title) + ",\n" +
         "    body: " + jsString(item.body) + ",\n" +
         "    likes: " + item.likes + ",\n" +
+        "    baseLikes: " + item.baseLikes + ",\n" +
+        "    userLiked: " + item.userLiked + ",\n" +
         "    date: " + jsString(item.date) + ",\n" +
         "    comments: " + commentsBlock + ",\n" +
         "    images: " + imagesBlock + "\n" +
