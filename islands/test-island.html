@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/islands-template.css">
+<title>ОСТРІВ: Пісюн</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+</head>
+<body>
+<div id="hoomenchat-site">
+<div class="hoomenchat-header">ГУМЕНЧАТ</div>
+<div class="site-layout">
+<div class="site-left"><div class="left-box">
+<div class="site-name">Пісюн</div>
+<img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEieCpcEEOtJtG6BPF-p8VLadzTpLrPTZTwDfEPB5AAWOKFHGLvqpohoNn5M8cPy0XVbfUkm6wCoODHDIzd3nIwKF4SjScZgVvBBrXQ86DwZ6vZo4nQ0KUs-w5A888GnwnSe1KIjzKsB63UL4u8_ffXBCV0uoU4NIqNOZGitHDqaMWCBE2LILBDQpQduCbQ" alt="Пісюн">
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+<div class="nav-menu">
+<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
+<a class="nav-item" href="../profiles.html">Гумени</a>
+<a class="nav-item" href="../droomens.html">Друмени</a>
+<a class="nav-item" href="../activity.html">Стрічерчат</a>
+<a class="nav-item current" href="../islands.html">Острови</a>
+<a class="nav-item" href="../rules.html">Правила</a>
+</div>
+<div class="account-box"><div class="account-text">Немає гумгайла?</div><a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a><a class="account-link" href="../login.html">ВХІД</a></div>
+</div></div>
+<div class="site-right">
+<div class="profile-box">
+<div class="profile-header">Пісюн — острів</div>
+<div class="profile-info">
+<div>Острів лише для своїх</div>
+<div class="profile-status" style="color:red; font-style:normal;">Статус: закритий острів</div>
+</div>
+</div>
+<div id="join-box" class="rules-box" style="border-color:#a66;">
+<button type="button" id="join-btn" class="create-post-btn" style="width:auto;display:inline-block;">Подати заявку на вступ</button>
+<div id="join-status" style="margin-top:6px;display:none;color:#a60;font-weight:bold;">Заявка на огляді модератора</div>
+</div>
+<div class="posts-header">Дописи спільноти</div>
+<div class="hint" style="margin:6px 0;color:#888;">Публікації доступні лише учасникам острова.</div>
+<div id="island-posts-locked" class="rules-box">Дописи цієї спільноти бачать лише учасники. Подай заявку на вступ.</div>
+<div id="island-posts" style="display:none;"></div>
+<div id="show-more-posts" class="show-more" style="display:none;">показати ще...</div>
+<div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
+<div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span id="today-hoomen"></span></div></div>
+<div class="footer-line">Гуменчат — місце для гуменів.</div>
+</div></div></div>
+<script>
+(function(){
+function profileUrl(name) {
+  var slug = String(name || "").trim().replace(/^@/, "").replace(/_/g, "-");
+  if (!slug) return "#";
+  return "../profiles/" + encodeURIComponent(slug) + ".html";
+}
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+const initialPostsData = [];
+
+const container = document.getElementById('island-posts');
+
+function createPostElement(title, body, likes, date, comments) {
+  comments = comments || [];
+  const post = document.createElement('div');
+  post.className = 'profile-post';
+  let commentsHtml = '';
+  comments.forEach(function (c) {
+    var href = profileUrl(c.name);
+    commentsHtml +=
+      '<div class="fake-comment">' +
+        '<div class="fake-comment-name">' +
+          '<a href="' + href + '">' + escapeHtml(c.name) + '</a>' +
+        '</div>' +
+        escapeHtml(c.text) +
+      '</div>';
+  });
+  post.innerHTML =
+    '<div class="profile-post-title">' +
+      '<span>' + escapeHtml(title) + '</span>' +
+      '<span class="post-author-link">острів: <a href="emocore-island.html">' + "Пісюн" + '</a></span>' +
+    '</div>' +
+    '<div class="profile-post-body">' + escapeHtml(body) + '</div>' +
+    '<div class="post-actions">' +
+      '<button class="like-button" type="button" data-base-likes="' + likes + '">♡ Подобається <span class="like-count">' + likes + '</span></button>' +
+      '<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">' + comments.length + '</span></button>' +
+    '</div>' +
+    '<div class="comments-area">' +
+      '<div class="comments-list">' + commentsHtml + '</div>' +
+      '<div class="comment-form">' +
+        '<textarea class="comment-input" placeholder="Написати коментар..."></textarea>' +
+        '<button class="comment-send" type="button">Відправити</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="profile-post-date">' + escapeHtml(date) + '</div>';
+  return post;
+}
+
+if (container) {
+  initialPostsData.forEach(function (item) {
+    container.appendChild(
+      createPostElement(item.title, item.body, item.likes, item.date, item.comments)
+    );
+  });
+}
+
+let visible = 3;
+function update() {
+  if (!container) return;
+  const posts = container.querySelectorAll('.profile-post');
+  posts.forEach(function (p, i) {
+    p.style.display = i < visible ? 'block' : 'none';
+  });
+  const showBtn = document.getElementById('show-more-posts');
+  if (!showBtn) return;
+  if (!posts.length) { showBtn.style.display = 'none'; return; }
+  showBtn.style.display = '';
+  if (visible >= posts.length) {
+    showBtn.textContent = 'показати менше...';
+  } else {
+    showBtn.textContent = 'показати ще...';
+  }
+}
+var showMoreBtn = document.getElementById('show-more-posts');
+if (showMoreBtn) showMoreBtn.onclick = function () {
+  if (!container) return;
+  const posts = container.querySelectorAll('.profile-post');
+  if (visible >= posts.length) {
+    visible = 3;
+  } else {
+    visible = Math.min(visible + 10, posts.length);
+  }
+  update();
+};
+var joinBtn = document.getElementById('join-btn');
+if (joinBtn) joinBtn.onclick = function () {
+  joinBtn.disabled = true;
+  joinBtn.textContent = 'Заявку подано';
+  var st = document.getElementById('join-status');
+  if (st) st.style.display = 'block';
+};
+function bindEvents(scope) {
+  if (!scope) return;
+  scope.querySelectorAll('.like-button').forEach(function (btn) {
+    if (btn.getAttribute('data-like-bound') === '1') return;
+    btn.setAttribute('data-like-bound', '1');
+    btn.onclick = function () {
+      const c = btn.querySelector('.like-count');
+      let n = parseInt(String(c.textContent).replace(/\s/g, ''), 10) || 0;
+      const liked = btn.classList.toggle('liked');
+      n += liked ? 1 : -1;
+      if (n < 0) n = 0;
+      c.textContent = n.toLocaleString('uk-UA');
+      btn.childNodes[0].textContent = liked ? '♥ Подобається ' : '♡ Подобається ';
+    };
+  });
+  scope.querySelectorAll('.comment-button').forEach(function (btn) {
+    if (btn.getAttribute('data-comment-bound') === '1') return;
+    btn.setAttribute('data-comment-bound', '1');
+    btn.onclick = function () {
+      btn.closest('.profile-post').querySelector('.comments-area').classList.toggle('open');
+    };
+  });
+  scope.querySelectorAll('.comment-send').forEach(function (btn) {
+    if (btn.getAttribute('data-send-bound') === '1') return;
+    btn.setAttribute('data-send-bound', '1');
+    btn.onclick = function () {
+      const form = btn.closest('.comment-form');
+      const input = form.querySelector('.comment-input');
+      const text = input.value.trim();
+      if (!text) return;
+      const c = document.createElement('div');
+      c.className = 'fake-comment';
+      c.innerHTML =
+        '<div class="fake-comment-name">' +
+          '<a href="' + profileUrl('copy_pasta') + '">copy_pasta</a>' +
+        '</div>' +
+        escapeHtml(text);
+      const list = form.closest('.comments-area').querySelector('.comments-list');
+      if (list) list.appendChild(c);
+      else form.parentNode.insertBefore(c, form);
+      input.value = '';
+      const post = form.closest('.profile-post');
+      const count = post.querySelector('.comment-count');
+      count.textContent = (parseInt(count.textContent, 10) || 0) + 1;
+    };
+  });
+}
+function safe(base, range) {
+  let v;
+  do { v = base + Math.floor(Math.random() * range); }
+  while (/63|68|13|666/.test(String(v)));
+  return v;
+}
+function stats() {
+  var r = document.getElementById('registered-hoomen');
+  var o = document.getElementById('online-hoomen');
+  var t = document.getElementById('today-hoomen');
+  if (r) r.textContent = (8012457).toLocaleString('uk-UA');
+  if (o) o.textContent = safe(1000000, 76001).toLocaleString('uk-UA');
+  if (t) t.textContent = safe(2400000, 180001).toLocaleString('uk-UA');
+}
+bindEvents(document);
+update();
+stats();
+setInterval(stats, 30000);
+})();
+</script>
+</body>
