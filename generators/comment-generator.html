@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ГУМЕНЧАТ — Генератор коментарів</title>
+<style>
+html, body {
+  margin: 0; padding: 0;
+  background: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px; line-height: 15px; color: #222;
+}
+* { box-sizing: border-box; }
+#wrap {
+  max-width: 720px; margin: 0 auto; padding: 12px;
+  border: 1px solid #777; min-height: 100vh;
+}
+h1 {
+  margin: 0 0 8px 0; padding: 6px 8px;
+  background: linear-gradient(to bottom, #626262, #3b3b3b);
+  border: 1px solid #222; color: #fff;
+  font-size: 13px; letter-spacing: 1px; text-transform: uppercase;
+}
+.hint { color: #777; font-size: 10px; margin: 0 0 10px; }
+.box {
+  margin: 0 0 8px 0; padding: 8px;
+  border: 1px solid #aaa; background: #fafafa;
+}
+label { display: block; margin: 0 0 2px; font-weight: bold; color: #444; font-size: 11px; }
+input, textarea {
+  width: 100%; padding: 7px 8px;
+  border: 1px solid #999; font: inherit; color: #222; background: #fff;
+}
+textarea { min-height: 56px; resize: vertical; }
+.field { margin-bottom: 8px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+.btn {
+  display: inline-block; margin: 2px 4px 2px 0; padding: 7px 12px;
+  border: 1px solid #999; background: #eee; font: inherit; font-weight: bold; cursor: pointer;
+}
+.btn:hover { background: #ddd; }
+.btn-main {
+  background: linear-gradient(to bottom, #fff176, #fbc02d);
+  border-color: #a78119; color: #000;
+}
+.btn-danger { background: #f5e0e0; border-color: #a66; color: #600; }
+#output {
+  width: 100%; min-height: 200px;
+  font-family: "Courier New", monospace; font-size: 11px; line-height: 14px;
+}
+.ok { color: #2e7d32; font-weight: bold; margin-left: 8px; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <h1>Генератор коментарів</h1>
+  <p class="hint">Збирає шматки <code>fake-comment</code> для вставки в <code>comments-area</code> допису. Посилання: нік з <code>_</code> → <code>-</code> + <code>.html</code></p>
+
+  <div id="list"></div>
+  <button type="button" class="btn" id="add">+ Коментар</button>
+
+  <div style="margin-top:12px">
+    <button type="button" class="btn btn-main" id="generate">Згенерувати код</button>
+    <button type="button" class="btn" id="copy">Копіювати</button>
+    <span class="ok" id="copy-ok" hidden>Скопійовано</span>
+  </div>
+  <p class="hint">Можна скопіювати між відкритий <code>&lt;div class="comments-area"&gt;</code> і форму коментаря.</p>
+  <textarea id="output" readonly placeholder="Тут зʼявиться HTML коментарів..."></textarea>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function nickToHref(nick) {
+    return String(nick || "").trim().toLowerCase()
+      .replace(/_/g, "-")
+      .replace(/\s+/g, "-") + ".html";
+  }
+
+  var list = document.getElementById("list");
+  var output = document.getElementById("output");
+
+  function addRow(nick, text) {
+    var box = document.createElement("div");
+    box.className = "box";
+    box.innerHTML =
+      '<div class="grid">' +
+      '<div class="field"><label>Нік автора</label>' +
+      '<input type="text" class="c-nick" placeholder="bondar_call" value="' + esc(nick || "") + '"></div>' +
+      '<div class="field"><label>Текст</label>' +
+      '<input type="text" class="c-text" placeholder="Текст коментаря..." value="' + esc(text || "") + '"></div>' +
+      '</div>' +
+      '<button type="button" class="btn btn-danger c-del">Видалити</button>';
+    box.querySelector(".c-del").onclick = function () { box.remove(); };
+    list.appendChild(box);
+  }
+
+  document.getElementById("add").onclick = function () { addRow("", ""); };
+  addRow("", "");
+
+  function build() {
+    var chunks = [];
+    list.querySelectorAll(".box").forEach(function (box) {
+      var nick = (box.querySelector(".c-nick").value || "").trim();
+      var text = (box.querySelector(".c-text").value || "").trim();
+      if (!nick && !text) return;
+      var href = nickToHref(nick);
+      chunks.push(
+        '<div class="fake-comment">\n' +
+        '<div class="fake-comment-name"><a href="' + esc(href) + '">' + esc(nick) + "</a></div>\n" +
+        esc(text) + "\n" +
+        "</div>"
+      );
+    });
+    if (!chunks.length) {
+      alert("Додай хоча б один коментар (нік або текст)");
+      return "";
+    }
+    return chunks.join("\n");
+  }
+
+  document.getElementById("generate").onclick = function () {
+    var code = build();
+    if (code) output.value = code;
+  };
+
+  document.getElementById("copy").onclick = function () {
+    if (!output.value) document.getElementById("generate").click();
+    if (!output.value) return;
+    output.select();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(output.value).then(function () {
+        var ok = document.getElementById("copy-ok");
+        ok.hidden = false;
+        setTimeout(function () { ok.hidden = true; }, 2000);
+      });
+    } else {
+      document.execCommand("copy");
+    }
+  };
+})();
+</script>
+</body>
+</html>
