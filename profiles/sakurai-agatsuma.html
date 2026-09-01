@@ -753,6 +753,27 @@ window.HOOMEN_PROFILE = {
     islands: "../islands.html",
     rules: "../rules.html"
   }
+liveFeed: {
+  enabled: true,
+  onlyWhenOnline: true,  // лише коли за schedule / onlineStatus зараз «онлайн»
+  posts: [
+    { title: "Граю зараз у HoomanStage", body: "Прикольна гра, купа емоцій, задоволена!" },
+    { title: "Приїхала додому", body: "Чекаю в Hoomen Life грі." }
+  ],
+  comments: [
+    { name: "cherry_byte", text: "В Hoomen Life піду, в інші ігри точно ні." },
+    { name: "mandy_cherry", text: "👍🏻👍🏻👍🏻" },
+    { name: "pixel_heart", text: "ок." }
+  ],
+  reactions: [
+    { name: "night_fox", text: "йо" },
+    { name: "jane_dust", text: "Привіт, copy_pasta!" },
+    { name: "soft_static", text: "Вітаю…" }
+  ]
+  // опційно: startLikes, maxExtraLikes, maxAutoComments,
+  // likeIntervalMs: [10000, 28000], commentIntervalMs: [14000, 40000],
+  // reactionDelayMs: [2500, 7000]
+}
 };
 </script>
 <script src="../js/hoomenchat-profile.js"></script>
