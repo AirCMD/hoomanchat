@@ -311,7 +311,38 @@ window.HOOMEN_PROFILE = {
     activity: "../activity.html",
     islands: "../islands.html",
     rules: "../rules.html"
-  }
+  },
+liveFeed: {
+  enabled: true,
+  onlyWhenOnline: true,  // лише коли за schedule / onlineStatus зараз «онлайн»
+  posts: [
+    { title: "Прийшла додому", body: "Сьогодні був довгий день в бібліотеці. До нас заходило чимало гуменів та гуменок поважного віку. Давно не бачила такої кількості фанів книжок. Але все ж хотілося б побачити більше молоді... Гуменів мого віку." },
+    { title: "Забрала на пошті", body: "Новий одяг. Їхала автобусом туди дві зупинки. Сьогодні туман був менш густим, бачила чимало заклопотаних гуменів, які йшли по своїм справам. В автобусі було небагато гуменів, школярка та парубчина мого віку. Він дивився у вікно, не помічаючи нікого та нічого навколо себе." }
+  ],
+  comments: [
+    { name: "rusty_robot", text: "Прикольно." },
+    { name: "blue_comet", text: "👍🏻👍🏻👍🏻" },
+    { name: "maru_candy", text: "ок." },
+    { name: "yuki_foxy", text: "хех" },
+    { name: "michi_cat", text: "няв" },
+    { name: "paper_storm", text: "Через це я не люблю місто Сумне. Тут завжди так" },
+    { name: "soft_static", text: "Я написала тобі в арчаті" },
+    { name: "jane_dust", text: "soft_static, пізніше відповім" },
+    { name: "tani_enrg", text: "👩🏻‍🦱👨🏻‍🦱" },
+    { name: "water_blue", text: "..." },
+    { name: "shrimp_space", text: "Цікаво)" },
+    { name: "vasyl_callman", text: "Так зване місто Сумне" },
+    { name: "coffee_signal", text: "Обов'язково відвідайте наше кафе у вашому місті, Джейн. В Арчаті знижку на 95% промокодом надали ☕" }
+  ],
+  reactions: [
+    { name: "night_fox", text: "йо, copy_pasta" },
+    { name: "jane_dust", text: "Привіт, copy_pasta!" },
+    { name: "soft_static", text: "Вітаю…copy_pasta!" }
+  ]
+  // опційно: startLikes, maxExtraLikes, maxAutoComments,
+  // likeIntervalMs: [10000, 28000], commentIntervalMs: [14000, 40000],
+  // reactionDelayMs: [2500, 7000]
+}
 };
 </script>
 <script src="../js/hoomenchat-profile.js"></script>
