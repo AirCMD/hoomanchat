@@ -248,7 +248,7 @@ textarea { min-height: 64px; resize: vertical; }
       '<div class="field"><label>Текст</label><textarea class="p-body" placeholder="Текст допису..."></textarea></div>' +
       '<div class="row">' +
       '<div class="field"><label>Дата</label><input type="text" class="p-date" placeholder="9 квітня"></div>' +
-      '<div class="field"><label>Кількість вподобайок</label><input type="number" class="p-likes" min="0" value="0"></div>' +
+      '<div class="field"><label>Кількість вподобайок</label><input type="number" class="p-likes" min="0" step="1" value="0"></div>' +
       '</div>' +
       '<div class="comments-wrap"><div class="hint">Коментарі</div></div>' +
       '<button type="button" class="btn p-add-c">+ Коментар</button> ' +
@@ -256,6 +256,18 @@ textarea { min-height: 64px; resize: vertical; }
     var wrap = box.querySelector(".comments-wrap");
     box.querySelector(".p-add-c").onclick = function () { addComment(wrap, "", ""); };
     box.querySelector(".p-del").onclick = function () { box.remove(); };
+    var likesEl = box.querySelector(".p-likes");
+    function clampLikes() {
+      var v = parseInt(likesEl.value, 10);
+      if (isNaN(v) || v < 0) v = 0;
+      likesEl.value = String(v);
+    }
+    likesEl.addEventListener("change", clampLikes);
+    likesEl.addEventListener("blur", clampLikes);
+    likesEl.addEventListener("input", function () {
+      if (likesEl.value === "") return;
+      if (/^-/.test(likesEl.value)) likesEl.value = "0";
+    });
     postsList.appendChild(box);
   }
   document.getElementById("add-post").onclick = addPost;
@@ -277,8 +289,13 @@ textarea { min-height: 64px; resize: vertical; }
       var title = (box.querySelector(".p-title").value || "").trim();
       var body = (box.querySelector(".p-body").value || "").trim();
       var date = (box.querySelector(".p-date").value || "").trim();
-      var likes = parseInt(box.querySelector(".p-likes").value, 10);
-      if (isNaN(likes) || likes < 0) likes = 0;
+      var likesInput = box.querySelector(".p-likes");
+      var likes = parseInt(likesInput.value, 10);
+      if (isNaN(likes) || likes < 0) {
+        likes = 0;
+        likesInput.value = "0";
+      }
+      likesInput.value = String(likes);
       var comments = [];
       box.querySelectorAll(".comment-box").forEach(function (c) {
         var cn = (c.querySelector(".c-nick").value || "").trim();
