@@ -102,9 +102,15 @@ function createPostElement(title, body, likes, date, comments, images) {
   
   let imagesHtml = '';
   if (images.length > 0) {
-    imagesHtml = '<div class="post-images" style="margin: 8px 0;">';
+    imagesHtml = '<div class="post-images" style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px;">';
     images.forEach(function(img) {
-      imagesHtml += '<img src="' + escapeHtml(img.data) + '" alt="' + escapeHtml(img.desc || '') + '" style="max-width:100%; height:auto; border-radius:4px; display:block; margin-top:5px;">';
+      imagesHtml += 
+        '<div style="max-width: 200px;">' +
+          '<a href="' + escapeHtml(img.data) + '" target="_blank" rel="noopener noreferrer" style="display: block;">' +
+            '<img src="' + escapeHtml(img.data) + '" alt="' + escapeHtml(img.desc || '') + '" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; cursor: pointer;">' +
+          '</a>' +
+          (img.desc ? '<div style="font-size: 11px; color: #666; margin-top: 4px; word-break: break-word;">' + escapeHtml(img.desc) + '</div>' : '') +
+        '</div>';
     });
     imagesHtml += '</div>';
   }
