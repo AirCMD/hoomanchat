@@ -6,6 +6,64 @@
 <link rel="stylesheet" href="../css/islands-template.css">
 <title>ОСТРІВ: JANEDUST</title>
 <link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<style>
+/* Стилі для модального вікна перегляду зображення */
+.img-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 10000;
+  justify-content: center;
+  align-items: center;
+}
+.img-modal-overlay.open {
+  display: flex;
+}
+.img-modal-content {
+  position: relative;
+  background: #fff;
+  padding: 15px;
+  border-radius: 6px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  box-sizing: border-box;
+}
+.img-modal-close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #333;
+  line-height: 1;
+}
+.img-modal-close:hover {
+  color: #000;
+}
+.img-modal-body {
+  width: 100%;
+  max-height: 450px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  border-radius: 4px;
+}
+.img-modal-caption {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #444;
+  text-align: center;
+  word-break: break-word;
+}
+</style>
 </head>
 <body>
 <div id="hoomenchat-site">
@@ -46,6 +104,16 @@
 <div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span id="today-hoomen"></span></div></div>
 <div class="footer-line">Гуменчат — місце для гуменів.</div>
 </div></div></div>
+
+<!-- Модальне вікно для збільшеного перегляду зображення -->
+<div id="image-modal-overlay" class="img-modal-overlay">
+  <div class="img-modal-content">
+    <button type="button" class="img-modal-close" id="image-modal-close">✕</button>
+    <img id="image-modal-src" class="img-modal-body" src="" alt="">
+    <div id="image-modal-caption" class="img-modal-caption"></div>
+  </div>
+</div>
+
 <script>
 (function(){
 function profileUrl(name) {
@@ -93,6 +161,29 @@ const initialPostsData = [
 ];
 
 const container = document.getElementById('island-posts');
+const modalOverlay = document.getElementById('image-modal-overlay');
+const modalSrc = document.getElementById('image-modal-src');
+const modalCaption = document.getElementById('image-modal-caption');
+const modalClose = document.getElementById('image-modal-close');
+
+function openModal(src, desc) {
+  if (!modalOverlay || !modalSrc || !modalCaption) return;
+  modalSrc.src = src;
+  modalCaption.textContent = desc || '';
+  modalOverlay.classList.add('open');
+}
+
+function closeModal() {
+  if (!modalOverlay) return;
+  modalOverlay.classList.remove('open');
+}
+
+if (modalClose) modalClose.onclick = closeModal;
+if (modalOverlay) {
+  modalOverlay.onclick = function(e) {
+    if (e.target === modalOverlay) closeModal();
+  };
+}
 
 function createPostElement(title, body, likes, date, comments, images) {
   comments = comments || [];
@@ -102,14 +193,14 @@ function createPostElement(title, body, likes, date, comments, images) {
   
   let imagesHtml = '';
   if (images.length > 0) {
-    imagesHtml = '<div class="post-images" style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 10px;">';
+    imagesHtml = '<div class="post-images" style="margin: 8px 0; display: flex; flex-wrap: wrap; gap: 8px;">';
     images.forEach(function(img) {
       imagesHtml += 
-        '<div style="max-width: 200px;">' +
-          '<a href="' + escapeHtml(img.data) + '" target="_blank" rel="noopener noreferrer" style="display: block;">' +
-            '<img src="' + escapeHtml(img.data) + '" alt="' + escapeHtml(img.desc || '') + '" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; cursor: pointer;">' +
-          '</a>' +
-          (img.desc ? '<div style="font-size: 11px; color: #666; margin-top: 4px; word-break: break-word;">' + escapeHtml(img.desc) + '</div>' : '') +
+        '<div style="max-width: 120px;">' +
+          '<img src="' + escapeHtml(img.data) + '" alt="' + escapeHtml(img.desc || '') + '" ' +
+               'data-full="' + escapeHtml(img.data) + '" data-desc="' + escapeHtml(img.desc || '') + '" ' +
+               'class="preview-img" ' +
+               'style="width: 120px; height: 120px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; display: block;">' +
         '</div>';
     });
     imagesHtml += '</div>';
@@ -203,8 +294,18 @@ document.getElementById('submit-post-btn').onclick = function () {
   visible = Math.max(visible, 1);
   update();
 };
+
 function bindEvents(scope) {
   if (!scope) return;
+  
+  scope.querySelectorAll('.preview-img').forEach(function (img) {
+    if (img.getAttribute('data-img-bound') === '1') return;
+    img.setAttribute('data-img-bound', '1');
+    img.onclick = function () {
+      openModal(this.getAttribute('data-full'), this.getAttribute('data-desc'));
+    };
+  });
+
   scope.querySelectorAll('.like-button').forEach(function (btn) {
     if (btn.getAttribute('data-like-bound') === '1') return;
     btn.setAttribute('data-like-bound', '1');
