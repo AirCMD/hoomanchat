@@ -4,59 +4,42 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Гуменчат — sakurai_agatsuma</title>
-<style>
-html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:14px;color:#222}
-*{box-sizing:border-box}
-#hoomenchat-site{display:block;width:100%;min-height:100vh;margin:0;padding:12px;background:#fff;border:1px solid #777}
-#hoomenchat-site a{color:#444}
-.hoomenchat-header{display:block;margin:0 0 10px;padding:5px 8px;background:linear-gradient(to bottom,#626262,#3b3b3b);border:1px solid #222;color:#fff;font-size:12px;line-height:14px;font-weight:bold;letter-spacing:1px;text-transform:uppercase}
-.site-layout{display:table;width:100%;border-collapse:separate;border-spacing:10px 0}
-.site-left{display:table-cell;width:165px;vertical-align:top}.site-right{display:table-cell;vertical-align:top}
-.left-box{padding:3px 7px;background:#f0f0f0;border:1px solid #999}
-.site-name{margin:1px 0 6px;padding:0 0 4px;border-bottom:1px solid #bcbcbc;color:#111;font-size:15px;line-height:17px;font-weight:bold;text-align:center;word-break:break-word}
-.main-avatar{display:block;width:100%;height:228px;margin:0 0 6px;object-fit:cover;object-position:center;background:#ddd;border:1px solid #888}
-.archat-button{display:block;width:100%;margin:0 0 5px;padding:4px 0;background:linear-gradient(to bottom,#fff176,#fbc02d);border:1px solid #a78119;color:#000;font-size:10px;line-height:13px;font-weight:bold;text-align:center;text-decoration:none;text-transform:uppercase}
-.nav-menu{display:block;margin:0;padding:0;border-top:1px solid #999}.nav-item{display:block;width:100%;margin:0;padding:3px 2px;border-bottom:1px solid #c7c7c7;color:#444;font-size:11px;line-height:13px;text-decoration:underline}.nav-item:hover{background:#e2e2e2;color:#000;text-decoration:none}
-.account-box{margin:8px 0 0;padding:5px 4px;border-top:1px solid #999;text-align:center}.account-text{margin:0 0 5px;color:#555;font-size:9px;line-height:12px}.account-link{display:block;margin:2px 0;color:#444;font-size:10px;line-height:12px;font-weight:bold;text-decoration:underline}
-.profile-box{margin:0 0 8px;padding:7px;background:#fff;border:1px solid #aaa}.profile-header{margin:0 0 7px;padding:5px 7px;background:#f0f0f0;border:1px solid #999;color:#222;font-size:12px;line-height:15px;font-weight:bold}.profile-info{padding:6px 7px;background:#f9f9f9;border:1px solid #aaa;color:#444;font-size:11px;line-height:15px}.profile-info strong{color:#222}.profile-status{margin-top:4px;color:#2e7d32;font-size:10px;line-height:12px;font-style:italic}
-.posts-header{margin:8px 0 5px;padding:4px 7px;background:#f0f0f0;border:1px solid #999;color:#333;font-size:11px;line-height:13px;font-weight:bold}.profile-post{margin:0 0 7px;background:#fff;border:1px solid #aaa}.profile-post-title{margin:0;padding:4px 7px;background:#f5f5f5;border-bottom:1px solid #aaa;color:#222;font-size:11px;line-height:14px;font-weight:bold}.profile-post-body{padding:6px 7px;color:#333;font-size:11px;line-height:15px;white-space:pre-wrap}.profile-post-date{padding:3px 7px;border-top:1px solid #ddd;color:#888;font-size:9px;line-height:11px}
-.post-actions{display:block;padding:4px 7px;border-top:1px solid #ddd;background:#fafafa}.like-button,.comment-button{display:inline-block;margin:0 8px 0 0;padding:1px 3px;border:0;background:transparent;color:#555;font-family:Arial,Helvetica,sans-serif;font-size:10px;line-height:13px;cursor:pointer}.like-button:hover,.comment-button:hover{color:#000;text-decoration:underline}.like-button.liked{color:#c62828;font-weight:bold}
-.comments-area{display:none;margin:0;padding:6px 7px;background:#f8f8f8;border-top:1px solid #ddd}.comments-area.open{display:block}.fake-comment{margin:0 0 5px;padding:4px 5px;background:#fff;border:1px solid #ccc;font-size:10px;line-height:13px}.fake-comment-name{margin-bottom:2px;color:#222;font-weight:bold}.comment-form{margin-top:6px}.comment-input{display:block;width:100%;min-height:45px;padding:4px 5px;resize:vertical;background:#fff;border:1px solid #aaa;color:#222;font:10px/13px Arial,sans-serif}.comment-send{margin-top:4px;padding:3px 8px;background:#eee;border:1px solid #999;color:#444;font-size:10px;line-height:12px;cursor:pointer}.comment-send:hover{background:#ddd;color:#000}.user-comment{margin:0 0 5px;padding:4px 5px;background:#fff;border:1px solid #aaa;font-size:10px;line-height:13px}
-.show-more{display:block;width:100%;margin:2px 0;padding:5px 7px;background:#f0f0f0;border:1px solid #999;color:#444;font:bold 10px/13px Arial,sans-serif;text-align:center;text-decoration:underline;cursor:pointer}.show-more:hover{background:#e1e1e1;color:#000}.show-more.hidden{display:none}
-.rules-box{margin:8px 0 0;padding:5px 8px;background:#fff;border:1px solid #aaa;color:#444;font-size:11px;line-height:14px}.rules-box a{color:#333;font-weight:bold;text-decoration:underline}.statistics-box{margin:8px 0 0;padding:5px 8px;background:#fff;border:1px solid #aaa;color:#555;font:10px/13px "Courier New",Courier,monospace}.statistics-title{margin:0 0 3px;color:#333;font:bold 10px/12px Arial,sans-serif}.statistics-number{color:#222;font-weight:bold}.statistics-online{color:#2e7d32;font-weight:bold}.footer-line{margin:7px 0 0;padding-top:4px;border-top:1px solid #ccc;color:#888;font-size:9px;line-height:11px;text-align:center}
-@media screen and (max-width:600px){#hoomenchat-site{padding:7px}.site-layout{display:block;border-spacing:0}.site-left,.site-right{display:block;width:100%}.site-left{margin-bottom:8px}}
-</style>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<link rel="stylesheet" href="../css/hoomenchat-profile.css">
+<link rel="stylesheet" href="../css/pm-popup.css">
 </head>
 <body>
 
 <div id="hoomenchat-site">
 
-<div class="hoomenchat-header">ГУМЕНЧАТ</div>
+<div class="hoomenchat-header">
+ГУМЕНЧАТ
+</div>
 
 <div class="site-layout">
 
 <div class="site-left">
 <div class="left-box">
 
-<div class="site-name">sakurai_agatsuma</div>
+<div class="site-name" id="profile-nickname">sakurai_agatsuma</div>
 
-<img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEg6F3ycnXu5A2gS5zM4p0-qELjeNz4oXvfJAwkLxSJnL4kELcGviUtPwYe-Oa8lV_ThO7h6iq0dwSnx2FeaHbkzG6HEC8S0HILQKiHh49eWl65LSGoj7RgeAYb7V5MV7b7Mu7Sxexq9LYM_7XPF6SkSjStcQO32x02IKUWdFlUck9z30GmMEJgH2OLM3YA" alt="sakurai_agatsuma">
+<img
+  class="main-avatar"
+  id="profile-avatar"
+  alt="sakurai_agatsuma"
+  src="https://blogger.googleusercontent.com/img/a/AVvXsEg6F3ycnXu5A2gS5zM4p0-qELjeNz4oXvfJAwkLxSJnL4kELcGviUtPwYe-Oa8lV_ThO7h6iq0dwSnx2FeaHbkzG6HEC8S0HILQKiHh49eWl65LSGoj7RgeAYb7V5MV7b7Mu7Sxexq9LYM_7XPF6SkSjStcQO32x02IKUWdFlUck9z30GmMEJgH2OLM3YA"
+>
 
 <a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
 
-<div class="nav-menu">
-<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
-<a class="nav-item" href="../profiles.html">Гумени</a>
-<a class="nav-item" href="../droomens.html">Друмени</a>
-<a class="nav-item" href="../activity.html">Стрічерчат</a>
-<a class="nav-item" href="../islands.html">Острови</a>
-<a class="nav-item" href="../rules.html">Правила</a>
+<div class="nav-menu" id="nav-menu">
+<!-- Наповнюється з конфігу -->
 </div>
 
 <div class="account-box">
-<div class="account-text">Немає гумгайла?</div>
-<a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
-<a class="account-link" href="../login.html">ВХІД</a>
+  <div class="account-text">Немає гумгайла?</div>
+  <a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
+  <a class="account-link" href="../login.html">ВХІД</a>
 </div>
 
 </div>
@@ -65,30 +48,671 @@ html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-se
 <div class="site-right">
 
 <div class="profile-box">
-<div class="profile-header">Профіль гумена: sakurai_agatsuma</div>
-<div class="profile-info">
-<strong>sakurai_agatsuma</strong>
-<div>Сімейка: шукайголова</div>
-<div>Статус: Люблю обговорювати ігри, проходження, персонажів та різні ігрові дрібниці.</div>
-<div class="profile-status">● онлайн</div>
+  <div class="profile-header" id="profile-header-title">Профіль гумена: sakurai_agatsuma</div>
+  <div class="profile-info">
+    <strong id="profile-info-name">sakurai_agatsuma</strong>
+    <div id="profile-family"></div>
+    <div id="profile-status-text"></div>
+    <div class="profile-status" id="profile-online-status"></div>
+  </div>
+</div>
+
+<div class="posts-header" id="posts-header">
+  Дописи sakurai_agatsuma — <span id="posts-count">0</span>
+</div>
+
+<!-- Сторонній персонаж: кнопки «Новий допис» немає -->
+
+<div id="profile-posts">
+<!-- ДОПИС 1 -->
+<div class="profile-post">
+<div class="profile-post-title">У що ви зараз граєте?</div>
+<div class="profile-post-body">Я останнім часом знову повернулася до старих ігор. Іноді вони чомусь набагато цікавіші за нові.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="24">♡ Подобається <span class="like-count">24</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Ні, не правда!
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="mandy-cherry.html">mandy_cherry</a></div>
+Гарні ідеї = старі ідеї.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">15 серпня</div>
+</div>
+
+<!-- ДОПИС 2 -->
+<div class="profile-post">
+<div class="profile-post-title">Найулюбленіші персонажі</div>
+<div class="profile-post-body">Є персонажі, яких можна зустріти через багато років і все одно памʼятати майже всі їхні репліки.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="26">♡ Подобається <span class="like-count">26</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Цікава думка. Я теж про таке думала.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">14 серпня</div>
+</div>
+
+<!-- ДОПИС 3 -->
+<div class="profile-post">
+<div class="profile-post-title">Гра, яку хочеться пройти вдруге</div>
+<div class="profile-post-body">Я люблю ігри, де після першого проходження знаходиш купу речей, які взагалі не помітив спочатку.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="28">♡ Подобається <span class="like-count">28</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Ні, фу. Взагалі не хочеться!
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">13 серпня</div>
+</div>
+
+<!-- ДОПИС 4 -->
+<div class="profile-post">
+<div class="profile-post-title">А як ви ставитеся до ремейків?</div>
+<div class="profile-post-body">Деякі ремейки справді покращують оригінал, але іноді старий варіант має набагато більше атмосфери.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="30">♡ Подобається <span class="like-count">30</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="pixel-heart.html">pixel_heart</a></div>
+Є щось таке ностальгійне.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Фу, нініні! НІ.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">12 серпня</div>
+</div>
+
+<!-- ДОПИС 5 -->
+<div class="profile-post">
+<div class="profile-post-title">Найкраща музика у грі</div>
+<div class="profile-post-body">Музика може зробити половину атмосфери. Особливо коли вона змінюється залежно від ситуації.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="32">♡ Подобається <span class="like-count">32</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+А з цим я мабуть вперше погоджусь.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">11 серпня</div>
+</div>
+
+<!-- ДОПИС 6 -->
+<div class="profile-post">
+<div class="profile-post-title">Ігри з відкритим світом</div>
+<div class="profile-post-body">Люблю просто ходити мапою і знаходити випадкові місця, які розробники заховали десь далеко.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="34">♡ Подобається <span class="like-count">34</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+А я не люблю. Це порожня витрата часу!
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">10 серпня</div>
+</div>
+
+<!-- ДОПИС 7 -->
+<div class="profile-post">
+<div class="profile-post-title">Чи важливий вам сюжет?</div>
+<div class="profile-post-body">Для мене залежить від жанру. У деяких іграх мені достатньо хорошого геймплею.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="36">♡ Подобається <span class="like-count">36</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Чим швидше закінчиться сюжет, тим краще!
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Йєєє.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">9 серпня</div>
+</div>
+
+<!-- ДОПИС 8 -->
+<div class="profile-post">
+<div class="profile-post-title">Старі консолі</div>
+<div class="profile-post-body">Є щось особливе в старих меню, звуках запуску та дивній графіці минулих поколінь.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="38">♡ Подобається <span class="like-count">38</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Ні, вони всі погані.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">8 серпня</div>
+</div>
+
+<!-- ДОПИС 9 -->
+<div class="profile-post">
+<div class="profile-post-title">Гра, яка здивувала мене</div>
+<div class="profile-post-body">Іноді запускаєш щось абсолютно випадкове, а потім проводиш там декілька вечорів поспіль.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="40">♡ Подобається <span class="like-count">40</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Мда.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">7 серпня</div>
+</div>
+
+<!-- ДОПИС 10 -->
+<div class="profile-post">
+<div class="profile-post-title">Які жанри вам набридли?</div>
+<div class="profile-post-body">Думаю, кожному гравцю рано чи пізно хочеться зробити перерву від звичного жанру.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="42">♡ Подобається <span class="like-count">42</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">7</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Всі окрім кровосісьних та комариних.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Коли я роблю перерву, то не повертаюсь до гри, котра на паузі.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="pixel-heart.html">pixel_heart</a></div>
+майже всі набридли
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="blue-comet.html">blue_comet</a></div>
+мені не набридають, я граю у все що пов'язано з космосом
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="paper-storm.html">paper_storm</a></div>
+Не розбираюсь у жанрах, просто граю коли є вільний від роботи час на пігулеті.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="night-fox.html">night_fox</a></div>
+Мій смак обмежений, граю в мморпг проти зомбі.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="rusty-robot.html">rusty_robot</a></div>
+Не набридає грати тільки в роботів і світи про роботів.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">6 серпня</div>
+</div>
+
+<!-- ДОПИС 11 -->
+<div class="profile-post">
+<div class="profile-post-title">Коли гра занадто довга</div>
+<div class="profile-post-body">Мені подобаються великі ігри, але іноді хочеться, щоб сюжет закінчувався трохи раніше.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="44">♡ Подобається <span class="like-count">44</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">3</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+А мені вони НЕ подобаються! Фу!
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="sakurai-agatsuma.html">sakurai_agatsuma</a></div>
+cherry_byte, та ти вже задрала мене.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+sakurai_agatsuma, я знаю 😁
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">5 серпня</div>
+</div>
+
+<!-- ДОПИС 12 -->
+<div class="profile-post">
+<div class="profile-post-title">Найкращі побічні завдання</div>
+<div class="profile-post-body">Найцікавіші квести часто взагалі не повʼязані з основною історією.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="46">♡ Подобається <span class="like-count">46</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Квести взагалі не цікаві та зайві. Краще щоб сюжет короткий був і швидкий.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">4 серпня</div>
+</div>
+
+<!-- ДОПИС 13 -->
+<div class="profile-post">
+<div class="profile-post-title">Чи читаєте ви ігрові енциклопедії?</div>
+<div class="profile-post-body">Якщо світ гри цікавий, я можу годинами читати описи персонажів, предметів і локацій.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="48">♡ Подобається <span class="like-count">48</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Ні, це даремна витрата твого життєвого часу на маячню.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Прикольно.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">3 серпня</div>
+</div>
+
+<!-- ДОПИС 14 -->
+<div class="profile-post">
+<div class="profile-post-title">Ностальгія за старими іграми</div>
+<div class="profile-post-body">Іноді хочеться повернутися саме до тієї версії, яку памʼятаєш з дитинства.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="50">♡ Подобається <span class="like-count">50</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Це просто НАЙГІРША думка. Повертатися до поганих ігор... що з тобою не так?
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="sakurai-agatsuma.html">sakurai_agatsuma</a></div>
+cherry_byte, жуй сраку з такими думками.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">2 серпня</div>
+</div>
+
+<!-- ДОПИС 15 -->
+<div class="profile-post">
+<div class="profile-post-title">Найдивніша механіка</div>
+<div class="profile-post-body">Обожнюю, коли розробники додають якусь абсолютно дивну механіку, яка більше ніде не повторюється.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="52">♡ Подобається <span class="like-count">52</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Лише про кровосисних персонажів.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">1 серпня</div>
+</div>
+
+<!-- ДОПИС 16 -->
+<div class="profile-post">
+<div class="profile-post-title">Ігри без швидкого переміщення</div>
+<div class="profile-post-body">Спочатку це дратує, а потім починаєш помічати, наскільки цікаво зроблений сам світ.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="54">♡ Подобається <span class="like-count">54</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Ніт. Це дратує і... дратує. Окрім роздратування воно нічого не викликає!
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Не знаю, не люлюблю коли їх немає.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">30 липня</div>
+</div>
+
+<!-- ДОПИС 17 -->
+<div class="profile-post">
+<div class="profile-post-title">Який фінал вам запамʼятався?</div>
+<div class="profile-post-body">Найкраще запамʼятовуються фінали, після яких ще декілька годин думаєш про те, що сталося.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="55">♡ Подобається <span class="like-count">55</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+У мене подібне бувало.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">29 липня</div>
+</div>
+
+<!-- ДОПИС 18 -->
+<div class="profile-post">
+<div class="profile-post-title">Коли DLC краще за основну гру</div>
+<div class="profile-post-body">Таке трапляється рідко, але коли трапляється — це дуже приємний сюрприз.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="58">♡ Подобається <span class="like-count">58</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Ніколи?
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">28 липня</div>
+</div>
+
+<!-- ДОПИС 19 -->
+<div class="profile-post">
+<div class="profile-post-title">Гра на один вечір</div>
+<div class="profile-post-body">Іноді саме маленькі ігри залишають після себе найбільше вражень.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="61">♡ Подобається <span class="like-count">61</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Ось воно, чиста правда.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Теж люлюблю коротеньку гру.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">27 липня</div>
+</div>
+
+<!-- ДОПИС 20 -->
+<div class="profile-post">
+<div class="profile-post-title">Чи потрібні іграм складні системи?</div>
+<div class="profile-post-body">Не завжди. Хороша проста механіка може бути цікавішою за десятки незрозумілих меню.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="62">♡ Подобається <span class="like-count">62</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Проста механіка треба.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">26 липня</div>
+</div>
+
+<!-- ДОПИС 21 -->
+<div class="profile-post">
+<div class="profile-post-title">Найкраща локація</div>
+<div class="profile-post-body">Я люблю локації, які мають власну атмосферу і не виглядають просто декорацією.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="74">♡ Подобається <span class="like-count">74</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Я теж.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">25 липня</div>
+</div>
+
+<!-- ДОПИС 22 -->
+<div class="profile-post">
+<div class="profile-post-title">Коли NPC запамʼятовується</div>
+<div class="profile-post-body">Навіть другорядний NPC може стати улюбленим, якщо йому дали нормальний характер.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="77">♡ Подобається <span class="like-count">77</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Коли це кровосисний Алукардіо.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Якщо ще й зовнішність файна...
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">24 липня</div>
+</div>
+
+<!-- ДОПИС 23 -->
+<div class="profile-post">
+<div class="profile-post-title">Гра, яку я недооцінила</div>
+<div class="profile-post-body">Іноді перше враження зовсім неправильне. Друга спроба може повністю змінити думку.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="71">♡ Подобається <span class="like-count">71</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Ні, не цікаво взагалі.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">23 липня</div>
+</div>
+
+<!-- ДОПИС 24 -->
+<div class="profile-post">
+<div class="profile-post-title">Чи граєте ви після проходження?</div>
+<div class="profile-post-body">Якщо світ добре зроблений, мені іноді цікавіше просто повернутися і досліджувати його без сюжету.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="70">♡ Подобається <span class="like-count">70</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">8</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Ні, я ж не дурненька.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="copy-pasta.html">copy_pasta</a></div>
+Трішки, потім закидую
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="pixel-heart.html">pixel_heart</a></div>
+якщо гра цікава, то так
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="night-fox.html">night_fox</a></div>
+Так. Я люблю збирати всі значки за гру щоб отримати рідкісний приз. Хто зна, мо поштою потім якусь річ розробники гри вишлють.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="rusty-robot.html">rusty_robot</a></div>
+cherry_byte, дурненька ще й яка. Бо ти ігри взагалі кидаєш.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="blue-comet.html">blue_comet</a></div>
+проходжу заради винагород...
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="paper-storm.html">paper_storm</a></div>
+рідко
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+rusty_robot, ні, я розумна. Кидаю, бо ігри нудні і взагалі фу!
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">22 липня</div>
+</div>
+
+<!-- ДОПИС 25 -->
+<div class="profile-post">
+<div class="profile-post-title">Яку гру ви могли б проходити безкінечно?</div>
+<div class="profile-post-body">Є ігри, які можна запускати знову через роки і вони все одно не набридають</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="72">♡ Подобається <span class="like-count">72</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">3</span></button>
+</div>
+<div class="comments-area">
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="cherry-byte.html">cherry_byte</a></div>
+Набридають.
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="rusty-robot.html">rusty_robot</a></div>
+cherry_byte, Чері, щось тебе забагато...
+</div>
+<div class="fake-comment">
+<div class="fake-comment-name"><a href="sakurai-agatsuma.html">sakurai_agatsuma</a></div>
+rusty_robot, її і в житті забагато. Це моя молодша сестра.
+</div>
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">21 липня</div>
 </div>
 </div>
 
-<div class="posts-header" id="posts-count-header">Дописи sakurai_agatsuma — 25</div>
-
-<div id="sakurai-posts"></div>
-
-<div id="show-more-posts" class="show-more">показати ще...</div>
+<div class="posts-pager" id="posts-pager">
+  <button class="show-more hidden" id="show-less-posts" type="button">показати менше...</button>
+  <button class="show-more hidden" id="show-more-posts" type="button">показати ще...</button>
+</div>
 
 <div class="rules-box">
-Памʼятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.
+  Пам'ятай та дотримуйся
+  <a href="../rules.html">ПРАВИЛ</a>
+  нашого ресурсу для приємного та друмнього часу разом з нами.
 </div>
 
 <div class="statistics-box">
-<div class="statistics-title">Статистика Гуменчату</div>
-<div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
-<div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
-<div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
+  <div class="statistics-title">Статистика Гуменчату</div>
+  <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
+  <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
+  <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
+</div>
+
+<div class="image-viewer" id="post-image-viewer">
+  <button class="image-viewer-close" id="post-image-viewer-close" type="button" aria-label="Закрити">✕</button>
+  <button class="image-viewer-prev" id="post-image-viewer-prev" type="button" aria-label="Попереднє зображення">‹</button>
+  <img class="image-viewer-image" id="post-image-viewer-image" src="" alt="Зображення допису">
+  <button class="image-viewer-next" id="post-image-viewer-next" type="button" aria-label="Наступне зображення">›</button>
 </div>
 
 <div class="footer-line">Гуменчат — місце для гуменів.</div>
@@ -98,400 +722,43 @@ html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-se
 </div>
 
 <script>
-(function(){
-
-var postsArray = [
-  {
-    title: "У що ви зараз граєте?",
-    body: "Я останнім часом знову повернулася до старих ігор. Іноді вони чомусь набагато цікавіші за нові.",
-    likes: 24,
-    comments: [
-      { name: "cherry_byte", text: "Ні, не правда!" },
-      { name: "mandy_cherry", text: "Гарні ідеї = старі ідеї." }
-    ],
-    date: "15 серпня"
+window.HOOMEN_PROFILE = {
+  nickname: "sakurai_agatsuma",
+  avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEg6F3ycnXu5A2gS5zM4p0-qELjeNz4oXvfJAwkLxSJnL4kELcGviUtPwYe-Oa8lV_ThO7h6iq0dwSnx2FeaHbkzG6HEC8S0HILQKiHh49eWl65LSGoj7RgeAYb7V5MV7b7Mu7Sxexq9LYM_7XPF6SkSjStcQO32x02IKUWdFlUck9z30GmMEJgH2OLM3YA",
+  isMainCharacter: false,
+  mainCharacterUrl: "copy-pasta.html",
+  statusText: "Люблю обговорювати ігри, проходження, персонажів та різні ігрові дрібниці.",
+  onlineStatus: "online",
+  schedule: [
+    { time: "08:00", status: "online" },
+    { time: "08:30", status: "away" },
+    { time: "10:00", status: "online" },
+    { time: "12:05", status: "away" },
+    { time: "17:00", status: "online" },
+    { time: "19:45", status: "away" },
+    { time: "20:15", status: "online" },
+    { time: "22:00", status: "offline" }
+  ],
+  gender: "female",
+  family: {
+      type: "seeking",
+      partnerName: "",
+      partnerUrl: ""
   },
-  {
-    title: "Найулюбленіші персонажі",
-    body: "Є персонажі, яких можна зустріти через багато років і все одно памʼятати майже всі їхні репліки.",
-    likes: 26,
-    comments: [
-      { name: "copy_pasta", text: "Цікава думка. Я теж про таке думала." }
-    ],
-    date: "14 серпня"
-  },
-  {
-    title: "Гра, яку хочеться пройти вдруге",
-    body: "Я люблю ігри, де після першого проходження знаходиш купу речей, які взагалі не помітив спочатку.",
-    likes: 28,
-    comments: [
-      { name: "cherry_byte", text: "Ні, фу. Взагалі не хочеться!" }
-    ],
-    date: "13 серпня"
-  },
-  {
-    title: "А як ви ставитеся до ремейків?",
-    body: "Деякі ремейки справді покращують оригінал, але іноді старий варіант має набагато більше атмосфери.",
-    likes: 30,
-    comments: [
-      { name: "velvet_moon", text: "Є щось таке ностальгійне." },
-      { name: "cherry_byte", text: "Фу, нініні! НІ." }
-    ],
-    date: "12 серпня"
-  },
-  {
-    title: "Найкраща музика у грі",
-    body: "Музика може зробити половину атмосфери. Особливо коли вона змінюється залежно від ситуації.",
-    likes: 32,
-    comments: [
-      { name: "cherry_byte", text: "А з цим я мабуть вперше погоджусь." }
-    ],
-    date: "11 серпня"
-  },
-  {
-    title: "Ігри з відкритим світом",
-    body: "Люблю просто ходити мапою і знаходити випадкові місця, які розробники заховали десь далеко.",
-    likes: 34,
-    comments: [
-      { name: "cherry_byte", text: "А я не люблю. Це порожня витрата часу!" }
-    ],
-    date: "10 серпня"
-  },
-  {
-    title: "Чи важливий вам сюжет?",
-    body: "Для мене залежить від жанру. У деяких іграх мені достатньо хорошого геймплею.",
-    likes: 36,
-    comments: [
-      { name: "cherry_byte", text: "Чим швидше закінчиться сюжет, тим краще!" },
-      { name: "copy_pasta", text: "Йєєє." }
-    ],
-    date: "9 серпня"
-  },
-  {
-    title: "Старі консолі",
-    body: "Є щось особливе в старих меню, звуках запуску та дивній графіці минулих поколінь.",
-    likes: 38,
-    comments: [
-      { name: "cherry_byte", text: "Ні, вони всі погані." }
-    ],
-    date: "8 серпня"
-  },
-  {
-    title: "Гра, яка здивувала мене",
-    body: "Іноді запускаєш щось абсолютно випадкове, а потім проводиш там декілька вечорів поспіль.",
-    likes: 40,
-    comments: [
-      { name: "cherry_byte", text: "Мда." }
-    ],
-    date: "7 серпня"
-  },
-  {
-    title: "Які жанри вам набридли?",
-    body: "Думаю, кожному гравцю рано чи пізно хочеться зробити перерву від звичного жанру.",
-    likes: 42,
-    comments: [
-      { name: "cherry_byte", text: "Всі окрім кровосісьних та комариних." },
-      { name: "copy_pasta", text: "Коли я роблю перерву, то не повертаюсь до гри, котра на паузі." }
-    ],
-    date: "6 серпня"
-  },
-  {
-    title: "Коли гра занадто довга",
-    body: "Мені подобаються великі ігри, але іноді хочеться, щоб сюжет закінчувався трохи раніше.",
-    likes: 44,
-    comments: [
-      { name: "cherry_byte", text: "А мені вони НЕ подобаються! Фу!" }
-    ],
-    date: "5 серпня"
-  },
-  {
-    title: "Найкращі побічні завдання",
-    body: "Найцікавіші квести часто взагалі не повʼязані з основною історією.",
-    likes: 46,
-    comments: [
-      { name: "cherry_byte", text: "Квести взагалі не цікаві та зайві. Краще щоб сюжет короткий був і швидкий." }
-    ],
-    date: "4 серпня"
-  },
-  {
-    title: "Чи читаєте ви ігрові енциклопедії?",
-    body: "Якщо світ гри цікавий, я можу годинами читати описи персонажів, предметів і локацій.",
-    likes: 48,
-    comments: [
-      { name: "cherry_byte", text: "Ні, це даремна витрата твого життєвого часу на маячню." },
-      { name: "copy_pasta", text: "Прикольно." }
-    ],
-    date: "3 серпня"
-  },
-  {
-    title: "Ностальгія за старими іграми",
-    body: "Іноді хочеться повернутися саме до тієї версії, яку памʼятаєш з дитинства.",
-    likes: 50,
-    comments: [
-      { name: "cherry_byte", text: "Це просто НАЙГІРША думка. Повертатися до поганих ігор... що з тобою не так?" }
-    ],
-    date: "2 серпня"
-  },
-  {
-    title: "Найдивніша механіка",
-    body: "Обожнюю, коли розробники додають якусь абсолютно дивну механіку, яка більше ніде не повторюється.",
-    likes: 52,
-    comments: [
-      { name: "cherry_byte", text: "Лише про кровосисних персонажів." }
-    ],
-    date: "1 серпня"
-  },
-  {
-    title: "Ігри без швидкого переміщення",
-    body: "Спочатку це дратує, а потім починаєш помічати, наскільки цікаво зроблений сам світ.",
-    likes: 54,
-    comments: [
-      { name: "cherry_byte", text: "Ніт. Це дратує і... дратує. Окрім роздратування воно нічого не викликає!" },
-      { name: "copy_pasta", text: "Не знаю, не люблю коли їх немає." }
-    ],
-    date: "30 липня"
-  },
-  {
-    title: "Який фінал вам запамʼятався?",
-    body: "Найкраще запамʼятовуються фінали, після яких ще декілька годин думаєш про те, що сталося.",
-    likes: 56,
-    comments: [
-      { name: "copy_pasta", text: "У мене подібне бувало." }
-    ],
-    date: "29 липня"
-  },
-  {
-    title: "Коли DLC краще за основну гру",
-    body: "Таке трапляється рідко, але коли трапляється — це дуже приємний сюрприз.",
-    likes: 58,
-    comments: [
-      { name: "cherry_byte", text: "Ніколи?" }
-    ],
-    date: "28 липня"
-  },
-  {
-    title: "Гра на один вечір",
-    body: "Іноді саме маленькі ігри залишають після себе найбільше вражень.",
-    likes: 60,
-    comments: [
-      { name: "cherry_byte", text: "Ось воно, чиста правда." },
-      { name: "copy_pasta", text: "Теж люблю коротеньку гру." }
-    ],
-    date: "27 липня"
-  },
-  {
-    title: "Чи потрібні іграм складні системи?",
-    body: "Не завжди. Хороша проста механіка може бути цікавішою за десятки незрозумілих меню.",
-    likes: 62,
-    comments: [
-      { name: "cherry_byte", text: "Проста механіка треба." }
-    ],
-    date: "26 липня"
-  },
-  {
-    title: "Найкраща локація",
-    body: "Я люблю локації, які мають власну атмосферу і не виглядають просто декорацією.",
-    likes: 64,
-    comments: [
-      { name: "cherry_byte", text: "Я теж." }
-    ],
-    date: "25 липня"
-  },
-  {
-    title: "Коли NPC запамʼятовується",
-    body: "Навіть другорядний NPC може стати улюбленим, якщо йому дали нормальний характер.",
-    likes: 66,
-    comments: [
-      { name: "cherry_byte", text: "Коли це кровосисний Алукардіо." },
-      { name: "copy_pasta", text: "Якщо ще й зовнішність." }
-    ],
-    date: "24 липня"
-  },
-  {
-    title: "Гра, яку я недооцінила",
-    body: "Іноді перше враження зовсім неправильне. Друга спроба може повністю змінити думку.",
-    likes: 61,
-    comments: [
-      { name: "cherry_byte", text: "Ні, не цікаво взагалі." }
-    ],
-    date: "23 липня"
-  },
-  {
-    title: "Чи граєте ви після проходження?",
-    body: "Якщо світ добре зроблений, мені іноді цікавіше просто повернутися і досліджувати його без сюжету.",
-    likes: 70,
-    comments: [
-      { name: "cherry_byte", text: "Ні, я ж не дурненька." }
-    ],
-    date: "22 липня"
-  },
-  {
-    title: "Яку гру ви могли б проходити безкінечно?",
-    body: "Є ігри, які можна запускати знову через роки і вони все одно не набридають.",
-    likes: 72,
-    comments: [
-      { name: "cherry_byte", text: "Набридають." },
-      { name: "velvet_moon", text: "Чері, щось тебе забагато..." }
-    ],
-    date: "21 липня"
+  navLinks: {
+    home: "../index.html",
+    profiles: "../profiles.html",
+    droomens: "../droomens.html",
+    activity: "../activity.html",
+    islands: "../islands.html",
+    rules: "../rules.html"
   }
-];
-
-var postsContainer = document.getElementById("sakurai-posts");
-var showMoreBtn = document.getElementById("show-more-posts");
-var postsHeader = document.getElementById("posts-count-header");
-
-var visibleCount = 3;
-var step = 5;
-
-postsHeader.textContent = "Дописи sakurai_agatsuma — " + postsArray.length;
-
-function renderPosts() {
-  postsContainer.innerHTML = "";
-  var limit = Math.min(visibleCount, postsArray.length);
-
-  for (var i = 0; i < limit; i++) {
-    var p = postsArray[i];
-
-    var postDiv = document.createElement("div");
-    postDiv.className = "profile-post";
-
-    var titleDiv = document.createElement("div");
-    titleDiv.className = "profile-post-title";
-    titleDiv.textContent = p.title;
-
-    var bodyDiv = document.createElement("div");
-    bodyDiv.className = "profile-post-body";
-    bodyDiv.textContent = p.body;
-
-    var actionsDiv = document.createElement("div");
-    actionsDiv.className = "post-actions";
-
-    var likeBtn = document.createElement("button");
-    likeBtn.className = "like-button";
-    likeBtn.type = "button";
-    likeBtn.innerHTML = '♡ Подобається <span class="like-count">' + p.likes.toLocaleString('uk-UA') + '</span>';
-
-    var commentBtn = document.createElement("button");
-    commentBtn.className = "comment-button";
-    commentBtn.type = "button";
-    commentBtn.innerHTML = '💬 Коментарі <span class="comment-count">' + p.comments.length + '</span>';
-
-    actionsDiv.appendChild(likeBtn);
-    actionsDiv.appendChild(commentBtn);
-
-    var commentsArea = document.createElement("div");
-    commentsArea.className = "comments-area";
-
-    p.comments.forEach(function(c) {
-      var fakeC = document.createElement("div");
-      fakeC.className = "fake-comment";
-      fakeC.innerHTML = '<div class="fake-comment-name">' + c.name + '</div>' + c.text;
-      commentsArea.appendChild(fakeC);
-    });
-
-    var formDiv = document.createElement("div");
-    formDiv.className = "comment-form";
-    formDiv.innerHTML = '<textarea class="comment-input" placeholder="Написати коментар..."></textarea><button class="comment-send" type="button">Відправити</button>';
-    commentsArea.appendChild(formDiv);
-
-    var dateDiv = document.createElement("div");
-    dateDiv.className = "profile-post-date";
-    dateDiv.textContent = p.date;
-
-    postDiv.appendChild(titleDiv);
-    postDiv.appendChild(bodyDiv);
-    postDiv.appendChild(actionsDiv);
-    postDiv.appendChild(commentsArea);
-    postDiv.appendChild(dateDiv);
-
-    postsContainer.appendChild(postDiv);
-  }
-
-  showMoreBtn.className = visibleCount >= postsArray.length ? "show-more hidden" : "show-more";
-  bindEvents();
-}
-
-function bindEvents() {
-  document.querySelectorAll('#sakurai-posts .like-button').forEach(function(button){
-    button.onclick = function(){
-      var c = button.querySelector('.like-count'), n = parseInt(c.textContent.replace(/\s/g, ''), 10);
-
-      if(button.classList.contains('liked')){
-        n--;
-        button.classList.remove('liked');
-        button.innerHTML = '♡ Подобається <span class="like-count">' + n.toLocaleString('uk-UA') + '</span>';
-      } else {
-        n++;
-        button.classList.add('liked');
-        button.innerHTML = '♥ Подобається <span class="like-count">' + n.toLocaleString('uk-UA') + '</span>';
-      }
-    };
-  });
-
-  document.querySelectorAll('#sakurai-posts .comment-button').forEach(function(button){
-    button.onclick = function(){
-      button.closest('.profile-post').querySelector('.comments-area').classList.toggle('open');
-    };
-  });
-
-  document.querySelectorAll('#sakurai-posts .comment-send').forEach(function(button){
-    button.onclick = function(){
-      var form = button.closest('.comment-form'),
-          input = form.querySelector('.comment-input'),
-          text = input.value.trim();
-
-      if(!text) return;
-
-      var c = document.createElement('div');
-      c.className = 'user-comment';
-      c.innerHTML = '<strong>ти:</strong> ' + text.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
-      form.parentNode.insertBefore(c, form);
-      input.value = '';
-
-      var count = button.closest('.profile-post').querySelector('.comment-count');
-      count.textContent = parseInt(count.textContent, 10) + 1;
-    };
-  });
-}
-
-showMoreBtn.addEventListener("click", function() {
-  visibleCount += step;
-  renderPosts();
-});
-
-function safeNumber(base, range) {
-  var value;
-
-  do {
-    value = base + Math.floor(Math.random() * range);
-  } while (/63|68|13|666/.test(String(value)));
-
-  return value;
-}
-
-function updateStatistics() {
-  document.getElementById("registered-hoomen").textContent =
-    safeNumber(8000000, 47001).toLocaleString("uk-UA");
-
-  document.getElementById("online-hoomen").textContent =
-    safeNumber(1000000, 76001).toLocaleString("uk-UA");
-
-  document.getElementById("today-hoomen").textContent =
-    safeNumber(2400000, 180001).toLocaleString("uk-UA");
-}
-
-renderPosts();
-updateStatistics();
-setInterval(updateStatistics, 30000);
-
-})();
+};
 </script>
+<script src="../js/hoomenchat-profile.js"></script>
+<script src="../js/pm-popup.js"></script>
 
 </body>
 </html>
-</script>
 
-</body>
-</html>
+<!-- Рекомендована назва файлу: profiles/sakurai-agatsuma.html -->
