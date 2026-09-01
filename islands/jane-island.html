@@ -94,10 +94,21 @@ const initialPostsData = [
 
 const container = document.getElementById('island-posts');
 
-function createPostElement(title, body, likes, date, comments) {
+function createPostElement(title, body, likes, date, comments, images) {
   comments = comments || [];
+  images = images || [];
   const post = document.createElement('div');
   post.className = 'profile-post';
+  
+  let imagesHtml = '';
+  if (images.length > 0) {
+    imagesHtml = '<div class="post-images" style="margin: 8px 0;">';
+    images.forEach(function(img) {
+      imagesHtml += '<img src="' + escapeHtml(img.data) + '" alt="' + escapeHtml(img.desc || '') + '" style="max-width:100%; height:auto; border-radius:4px; display:block; margin-top:5px;">';
+    });
+    imagesHtml += '</div>';
+  }
+
   let commentsHtml = '';
   comments.forEach(function (c) {
     var href = profileUrl(c.name);
@@ -109,12 +120,14 @@ function createPostElement(title, body, likes, date, comments) {
         escapeHtml(c.text) +
       '</div>';
   });
+
   post.innerHTML =
     '<div class="profile-post-title">' +
       '<span>' + escapeHtml(title) + '</span>' +
       '<span class="post-author-link">острів: <a href="jane-island.html">' + "JANEDUST" + '</a></span>' +
     '</div>' +
     '<div class="profile-post-body">' + escapeHtml(body) + '</div>' +
+    imagesHtml +
     '<div class="post-actions">' +
       '<button class="like-button" type="button" data-base-likes="' + likes + '">♡ Подобається <span class="like-count">' + likes + '</span></button>' +
       '<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">' + comments.length + '</span></button>' +
@@ -133,7 +146,7 @@ function createPostElement(title, body, likes, date, comments) {
 if (container) {
   initialPostsData.forEach(function (item) {
     container.appendChild(
-      createPostElement(item.title, item.body, item.likes, item.date, item.comments)
+      createPostElement(item.title, item.body, item.likes, item.date, item.comments, item.images)
     );
   });
 }
@@ -175,7 +188,7 @@ document.getElementById('submit-post-btn').onclick = function () {
   const title = titleInput.value.trim();
   const text = textInput.value.trim();
   if (!title || !text) return;
-  const newPost = createPostElement(title, text, 0, 'щойно', []);
+  const newPost = createPostElement(title, text, 0, 'щойно', [], []);
   container.insertBefore(newPost, container.firstChild);
   titleInput.value = '';
   textInput.value = '';
