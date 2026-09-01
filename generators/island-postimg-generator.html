@@ -85,10 +85,10 @@ input[type="file"] {
   font-family: "Courier New", monospace; font-size: 11px; line-height: 14px;
 }
 .ok { color: #2e7d32; font-weight: bold; margin-left: 8px; }
-.tabs { margin: 0 0 10px; }
+.tabs { margin: 0 0 6px; }
 .tab {
-  display: inline-block; padding: 5px 10px; margin-right: 4px;
-  border: 1px solid #999; background: #eee; cursor: pointer; font-weight: bold;
+  display: inline-block; padding: 3px 8px; margin-right: 4px;
+  border: 1px solid #999; background: #eee; cursor: pointer; font-size: 10px; font-weight: bold;
 }
 .tab.active {
   background: linear-gradient(to bottom, #fff176, #fbc02d);
@@ -292,7 +292,16 @@ input[type="file"] {
       "</div>" +
       '<div class="images-section">' +
       '<label>Зображення (необовʼязково)</label>' +
+      '<div class="tabs">' +
+      '<span class="tab active p-tab-file">Файл</span>' +
+      '<span class="tab p-tab-url">URL</span>' +
+      '</div>' +
+      '<div class="p-input-file-wrap">' +
       '<input type="file" class="p-image-input" accept="image/*" style="margin-bottom: 6px;">' +
+      '</div>' +
+      '<div class="p-input-url-wrap" style="display:none; margin-bottom: 6px;">' +
+      '<input type="text" class="p-image-url" placeholder="https://example.com/image.jpg">' +
+      '</div>' +
       '<div class="field"><label>Опис до зображення</label>' +
       '<input type="text" class="p-image-desc" placeholder="Опис для перегляду у попапі">' +
       '</div>' +
@@ -305,10 +314,33 @@ input[type="file"] {
     
     var wrap = box.querySelector(".comments-wrap");
     var likesEl = box.querySelector(".p-likes");
+    var tabFile = box.querySelector(".p-tab-file");
+    var tabUrl = box.querySelector(".p-tab-url");
+    var fileWrap = box.querySelector(".p-input-file-wrap");
+    var urlWrap = box.querySelector(".p-input-url-wrap");
     var imageInput = box.querySelector(".p-image-input");
+    var imageUrlInput = box.querySelector(".p-image-url");
     var imageDesc = box.querySelector(".p-image-desc");
     var addImgBtn = box.querySelector(".p-add-img");
     var imagesWrap = box.querySelector(".p-images-wrap");
+
+    var currentImgMode = "file";
+
+    tabFile.onclick = function() {
+      currentImgMode = "file";
+      tabFile.classList.add("active");
+      tabUrl.classList.remove("active");
+      fileWrap.style.display = "block";
+      urlWrap.style.display = "none";
+    };
+
+    tabUrl.onclick = function() {
+      currentImgMode = "url";
+      tabUrl.classList.add("active");
+      tabFile.classList.remove("active");
+      urlWrap.style.display = "block";
+      fileWrap.style.display = "none";
+    };
 
     likesEl.addEventListener("change", function () { clampLikes(likesEl); });
     likesEl.addEventListener("blur", function () { clampLikes(likesEl); });
@@ -318,17 +350,25 @@ input[type="file"] {
     });
 
     addImgBtn.onclick = function () {
-      if (imageInput.files && imageInput.files[0]) {
-        var file = imageInput.files[0];
-        var reader = new FileReader();
-        reader.onload = function (e) {
-          var base64 = e.target.result;
-          var desc = imageDesc.value.trim();
-          addImage(imagesWrap, base64, desc);
-          imageInput.value = "";
+      var desc = imageDesc.value.trim();
+      if (currentImgMode === "file") {
+        if (imageInput.files && imageInput.files[0]) {
+          var file = imageInput.files[0];
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            addImage(imagesWrap, e.target.result, desc);
+            imageInput.value = "";
+            imageDesc.value = "";
+          };
+          reader.readAsDataURL(file);
+        }
+      } else {
+        var url = imageUrlInput.value.trim();
+        if (url) {
+          addImage(imagesWrap, url, desc);
+          imageUrlInput.value = "";
           imageDesc.value = "";
-        };
-        reader.readAsDataURL(file);
+        }
       }
     };
 
