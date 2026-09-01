@@ -95,6 +95,11 @@
      * Для сторонніх персонажів: 1 випадковий допис з пулу, коли вони «онлайн».
      * Перезавантаження сторінки = інший допис / зникнення.
      *
+     * ВАЖЛИВО для сторонніх персонажів (isMainCharacter: false):
+     *   - Завжди вказуй конкретні comments та reactions з іменами!
+     *   - Якщо reactions не вказані, автоматична відповідь не буде показана
+     *   - Це запобігає показу avatar/nickname основного персонажа
+     *
      * liveFeed: {
      *   enabled: true,
      *   onlyWhenOnline: true,   // за schedule / onlineStatus
@@ -102,7 +107,7 @@
      *     { title: "Тема", body: "Текст" },
      *     { title: "…", body: "…" }
      *   ],
-     *   comments: [             // авто-коментарі з часом
+     *   comments: [             // авто-коментарі з часом (вказуй імена!)
      *     { name: "terry_rex", text: "лол" },
      *     { name: "jamie_duke", text: "…" }
      *   ],
@@ -1364,12 +1369,17 @@
         ? feed.reactions
         : null;
       if (!reactions || !reactions.length) {
-        /* fallback: сам власник профілю коротко відповідає */
-        reactions = [
-          { name: PROFILE_CONFIG.nickname || "гумен", text: "…" },
-          { name: PROFILE_CONFIG.nickname || "гумен", text: "ок" },
-          { name: PROFILE_CONFIG.nickname || "гумен", text: "привіт" }
-        ];
+        /* fallback: сам власник профілю коротко відповідає (тільки для основного персонажа) */
+        if (PROFILE_CONFIG.isMainCharacter !== false) {
+          reactions = [
+            { name: PROFILE_CONFIG.nickname || "гумен", text: "…" },
+            { name: PROFILE_CONFIG.nickname || "гумен", text: "ок" },
+            { name: PROFILE_CONFIG.nickname || "гумен", text: "привіт" }
+          ];
+        } else {
+          /* для сторонніх персон без reactions — не показуємо автоматичну відповідь */
+          return;
+        }
       }
 
       reactionUsed = true;
