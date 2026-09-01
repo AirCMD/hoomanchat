@@ -87,7 +87,39 @@
       activity: "https://aircmd.github.io/hoomanchat/activity.html",
       islands: "https://aircmd.github.io/hoomanchat/islands.html",
       rules: "https://aircmd.github.io/hoomanchat/rules.html"
-    }
+    },
+
+    /**
+     * Живий допис (лише в памʼяті сесії, без localStorage).
+     * Увімкни на сторінці персонажа через window.HOOMEN_PROFILE.liveFeed = { ... }
+     * Для сторонніх персонажів: 1 випадковий допис з пулу, коли вони «онлайн».
+     * Перезавантаження сторінки = інший допис / зникнення.
+     *
+     * liveFeed: {
+     *   enabled: true,
+     *   onlyWhenOnline: true,   // за schedule / onlineStatus
+     *   posts: [
+     *     { title: "Тема", body: "Текст" },
+     *     { title: "…", body: "…" }
+     *   ],
+     *   comments: [             // авто-коментарі з часом
+     *     { name: "terry_rex", text: "лол" },
+     *     { name: "jamie_duke", text: "…" }
+     *   ],
+     *   reactions: [            // відповідь, якщо відвідувач залишив коментар
+     *     { name: "nasty_emogirl", text: "привіт" },
+     *     { name: "terry_rex", text: "йо" }
+     *   ],
+     *   // опційно:
+     *   startLikes: 0,
+     *   maxExtraLikes: 12,
+     *   maxAutoComments: 4,
+     *   likeIntervalMs: [10000, 28000],
+     *   commentIntervalMs: [14000, 40000],
+     *   reactionDelayMs: [2500, 7000]
+     * }
+     */
+    /* liveFeed: null */
   };
 
   /* Перевизначення з сторінки персонажа */
@@ -312,11 +344,15 @@
         html = "Сімейка: " + (isFemale ? "не шлюбна" : "не шлюбний");
         break;
       case "relationship":
-        if (family.partnerName && family.partnerName.trim()) {
+        if (family.partnerName && String(family.partnerName).trim()) {
           html = "Сімейка: у стуснах з ";
           if (family.partnerUrl) {
-            html += '<a href="' + escapeAttr(family.partnerUrl) + '">' +
-                    escapeHtml(family.partnerName) + "</a>";
+            html +=
+              '<a href="' +
+              escapeAttr(family.partnerUrl) +
+              '">' +
+              escapeHtml(family.partnerName) +
+              "</a>";
           } else {
             html += escapeHtml(family.partnerName);
           }
@@ -325,16 +361,24 @@
         }
         break;
       case "married":
-        if (family.partnerName && family.partnerName.trim()) {
-          html = "Сімейка: " + (isFemale ? "шлюбна" : "шлюбний") + " з ";
+        if (family.partnerName && String(family.partnerName).trim()) {
+          html =
+            "Сімейка: " +
+            (isFemale ? "шлюбна" : "шлюбний") +
+            " з ";
           if (family.partnerUrl) {
-            html += '<a href="' + escapeAttr(family.partnerUrl) + '">' +
-                    escapeHtml(family.partnerName) + "</a>";
+            html +=
+              '<a href="' +
+              escapeAttr(family.partnerUrl) +
+              '">' +
+              escapeHtml(family.partnerName) +
+              "</a>";
           } else {
             html += escapeHtml(family.partnerName);
           }
         } else {
-          html = "Сімейка: " + (isFemale ? "шлюбна" : "шлюбний");
+          html =
+            "Сімейка: " + (isFemale ? "шлюбна" : "шлюбний");
         }
         break;
       default:
@@ -577,6 +621,10 @@
         if (count) {
           var number = parseInt(count.textContent, 10) || 0;
           count.textContent = number + 1;
+        }
+        /* Реакція на коментар відвідувача (живий допис) */
+        if (typeof window.__hoomenLiveFeedOnVisitorComment === "function") {
+          window.__hoomenLiveFeedOnVisitorComment(post, text);
         }
       }
     });
@@ -1106,6 +1154,238 @@
 
 
   /* =====================================================
+     ЖИВИЙ ДОПИС (ефемерний, без кешу)
+     ===================================================== */
+
+  function liveRand(min, max) {
+    return min + Math.floor(Math.random() * (max - min + 1));
+  }
+
+  function livePick(arr) {
+    if (!arr || !arr.length) return null;
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function liveShuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i];
+      a[i] = a[j];
+      a[j] = t;
+    }
+    return a;
+  }
+
+  function nickToProfileHref(name) {
+    var slug = String(name || "")
+      .trim()
+      .replace(/^@/, "")
+      .replace(/_/g, "-")
+      .replace(/\s+/g, "-");
+    if (!slug) return "#";
+    return slug + ".html";
+  }
+
+  function isProfileCurrentlyOnline() {
+    var info = resolveOnlineInfo(PROFILE_CONFIG);
+    return info && info.className === "online";
+  }
+
+  function formatJustNowDate() {
+    var d = new Date();
+    var hh = d.getHours();
+    var mm = d.getMinutes();
+    var h = hh < 10 ? "0" + hh : String(hh);
+    var m = mm < 10 ? "0" + mm : String(mm);
+    return "Опубліковано щойно · " + h + ":" + m;
+  }
+
+  function createLiveCommentEl(name, text) {
+    var el = document.createElement("div");
+    el.className = "fake-comment";
+    el.setAttribute("data-live-comment", "1");
+    var nameRow = document.createElement("div");
+    nameRow.className = "fake-comment-name";
+    var a = document.createElement("a");
+    a.href = nickToProfileHref(name);
+    a.textContent = name;
+    nameRow.appendChild(a);
+    el.appendChild(nameRow);
+    el.appendChild(document.createTextNode(text));
+    return el;
+  }
+
+  function appendLiveComment(post, name, text) {
+    if (!post) return;
+    var area = post.querySelector(".comments-area");
+    if (!area) return;
+    var form = area.querySelector(".comment-form");
+    var node = createLiveCommentEl(name, text);
+    if (form) form.parentNode.insertBefore(node, form);
+    else area.appendChild(node);
+
+    var count = post.querySelector(".comment-count");
+    if (count) {
+      var n = parseInt(count.textContent, 10) || 0;
+      count.textContent = n + 1;
+    }
+    /* трохи «життя» — відкрити коментарі, якщо вже були */
+    if (area.classList.contains("open") === false && (parseInt(count && count.textContent, 10) || 0) <= 2) {
+      /* не форсуємо open завжди — лише якщо користувач уже дивився */
+    }
+  }
+
+  function bumpLiveLikes(post) {
+    var btn = post.querySelector(".like-button");
+    if (!btn) return;
+    var span = btn.querySelector(".like-count");
+    if (!span) return;
+    var n = parseInt(String(span.textContent).replace(/\s/g, ""), 10) || 0;
+    n += 1;
+    span.textContent = n.toLocaleString("uk-UA");
+    var base = parseInt(btn.getAttribute("data-base-likes"), 10);
+    if (!isNaN(base)) btn.setAttribute("data-base-likes", String(n));
+  }
+
+  function createLivePostElement(title, body, startLikes) {
+    var post = document.createElement("div");
+    post.className = "profile-post";
+    post.setAttribute("data-live-post", "1");
+
+    var likes = typeof startLikes === "number" ? startLikes : 0;
+
+    post.innerHTML =
+      '<div class="profile-post-title"></div>' +
+      '<div class="profile-post-body"></div>' +
+      '<div class="post-actions">' +
+      '<button class="like-button" type="button" data-base-likes="' +
+      likes +
+      '">♡ Подобається <span class="like-count">' +
+      likes +
+      "</span></button>" +
+      '<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>' +
+      "</div>" +
+      '<div class="comments-area">' +
+      '<div class="comment-form">' +
+      '<textarea class="comment-input" placeholder="Написати коментар..."></textarea>' +
+      '<button class="comment-send" type="button">Відправити</button>' +
+      "</div>" +
+      "</div>" +
+      '<div class="profile-post-date"></div>';
+
+    post.querySelector(".profile-post-title").textContent = title || "";
+    post.querySelector(".profile-post-body").textContent = body || "";
+    post.querySelector(".profile-post-date").textContent = formatJustNowDate();
+
+    return post;
+  }
+
+  function initLiveFeed() {
+    var feed = PROFILE_CONFIG.liveFeed;
+    if (!feed || !feed.enabled) return;
+    if (!feed.posts || !feed.posts.length) return;
+
+    var onlyOnline = feed.onlyWhenOnline !== false;
+    if (onlyOnline && !isProfileCurrentlyOnline()) return;
+
+    var container =
+      document.getElementById("profile-posts") ||
+      document.getElementById("copy-posts");
+    if (!container) return;
+
+    var picked = livePick(feed.posts);
+    if (!picked) return;
+
+    var startLikes =
+      typeof feed.startLikes === "number" ? Math.max(0, feed.startLikes) : liveRand(0, 3);
+    var post = createLivePostElement(picked.title || "", picked.body || "", startLikes);
+
+    /* на початок стрічки */
+    if (container.firstChild) container.insertBefore(post, container.firstChild);
+    else container.appendChild(post);
+
+    bindAllLikeButtons();
+    bindAllCommentButtons();
+    updatePostVisibility();
+
+    var likeRange = feed.likeIntervalMs || [10000, 28000];
+    var commentRange = feed.commentIntervalMs || [14000, 40000];
+    var reactionRange = feed.reactionDelayMs || [2500, 7000];
+    var maxExtraLikes =
+      typeof feed.maxExtraLikes === "number" ? feed.maxExtraLikes : 12;
+    var maxAutoComments =
+      typeof feed.maxAutoComments === "number" ? feed.maxAutoComments : 4;
+
+    var likesLeft = maxExtraLikes;
+    var commentPool = liveShuffle(feed.comments || []);
+    var commentsLeft = Math.min(maxAutoComments, commentPool.length);
+    var commentIndex = 0;
+    var reactionUsed = false;
+    var timers = [];
+
+    function scheduleLike() {
+      if (likesLeft <= 0) return;
+      var delay = liveRand(likeRange[0], likeRange[1]);
+      var t = setTimeout(function () {
+        if (!post.parentNode) return;
+        bumpLiveLikes(post);
+        likesLeft -= 1;
+        scheduleLike();
+      }, delay);
+      timers.push(t);
+    }
+
+    function scheduleComment() {
+      if (commentsLeft <= 0 || commentIndex >= commentPool.length) return;
+      var delay = liveRand(commentRange[0], commentRange[1]);
+      var t = setTimeout(function () {
+        if (!post.parentNode) return;
+        var c = commentPool[commentIndex++];
+        if (c && (c.name || c.text)) {
+          appendLiveComment(post, c.name || "гумен", c.text || "");
+          commentsLeft -= 1;
+        }
+        scheduleComment();
+      }, delay);
+      timers.push(t);
+    }
+
+    scheduleLike();
+    scheduleComment();
+
+    /* реакція на коментар відвідувача — один раз на цей живий допис */
+    window.__hoomenLiveFeedOnVisitorComment = function (targetPost, visitorText) {
+      if (reactionUsed) return;
+      if (!targetPost || targetPost.getAttribute("data-live-post") !== "1") return;
+      if (targetPost !== post) return;
+
+      var reactions = feed.reactions && feed.reactions.length
+        ? feed.reactions
+        : null;
+      if (!reactions || !reactions.length) {
+        /* fallback: сам власник профілю коротко відповідає */
+        reactions = [
+          { name: PROFILE_CONFIG.nickname || "гумен", text: "…" },
+          { name: PROFILE_CONFIG.nickname || "гумен", text: "ок" },
+          { name: PROFILE_CONFIG.nickname || "гумен", text: "привіт" }
+        ];
+      }
+
+      reactionUsed = true;
+      var delay = liveRand(reactionRange[0], reactionRange[1]);
+      var t = setTimeout(function () {
+        if (!post.parentNode) return;
+        var r = livePick(reactions);
+        if (r) appendLiveComment(post, r.name || PROFILE_CONFIG.nickname || "гумен", r.text || "…");
+      }, delay);
+      timers.push(t);
+    };
+
+    /* якщо сторінка вивантажується — таймери не критичні (і так зникнуть) */
+  }
+
+  /* =====================================================
      ЗАПУСК
      ===================================================== */
 
@@ -1115,9 +1395,9 @@
   bindExistingPostImageViewers();
   updatePostVisibility();
   initStatistics();
+  initLiveFeed();
 
   /* Оновлення статусу за розкладом раз на хвилину */
   setInterval(updateOnlineStatusDisplay, 60000);
 
 })();
-
