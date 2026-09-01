@@ -28,14 +28,25 @@ h2 {
   font-size: 12px;
 }
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-@media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+@media (max-width: 700px) {
+  .grid, .grid3 { grid-template-columns: 1fr; }
+}
 label { display: block; margin: 0 0 2px 0; color: #444; font-weight: bold; font-size: 11px; }
-input[type="text"], input[type="url"], select, textarea {
+input[type="text"], input[type="url"], input[type="number"], select, textarea {
   width: 100%; padding: 7px 8px;
   border: 1px solid #999; background: #fff; font: inherit; color: #222;
 }
-textarea { min-height: 72px; resize: vertical; }
+textarea { min-height: 64px; resize: vertical; }
 .field { margin-bottom: 8px; }
+.box {
+  margin: 0 0 10px 0; padding: 8px;
+  border: 1px solid #888; background: #fff;
+}
+.comment-box {
+  margin: 6px 0; padding: 6px;
+  background: #f4f4f4; border: 1px solid #ccc;
+}
 .btn {
   display: inline-block; margin: 2px 4px 2px 0; padding: 7px 12px;
   border: 1px solid #999; background: #eee; color: #222;
@@ -47,6 +58,8 @@ textarea { min-height: 72px; resize: vertical; }
   border-color: #a78119; color: #000;
 }
 .btn-main:hover { background: linear-gradient(to bottom, #fff59d, #fdd835); }
+.btn-danger { background: #f5e0e0; border-color: #a66; color: #600; }
+.btn-soft { background: #e8f0fe; border-color: #6a8cbf; }
 .hint { color: #777; font-size: 10px; margin: 2px 0 6px; }
 #output {
   width: 100%; min-height: 320px; font-family: "Courier New", monospace;
@@ -64,20 +77,19 @@ textarea { min-height: 72px; resize: vertical; }
   <h1>Генератор острова</h1>
   <p class="hint">
     Заповни поля → «Згенерувати» → скопіюй HTML у файл, напр.
-    <code>islands/template-island.html</code>.
-    Пости потім можна додати через <code>island-posts-generator.html</code>.
+    <code>islands/airtiger-island.html</code>.
   </p>
 
   <h2>1. Основне</h2>
   <div class="grid">
     <div class="field">
       <label>Назва острова</label>
-      <input type="text" id="islandName" placeholder="TEMPLATE" value="">
+      <input type="text" id="islandName" placeholder="AIRTIGER" value="">
     </div>
     <div class="field">
       <label>Імʼя файлу (без .html)</label>
-      <input type="text" id="filename" placeholder="template-island">
-      <div class="hint">Якщо порожньо — з назви: пробіли → -, великі літери лишаються в title</div>
+      <input type="text" id="filename" placeholder="airtiger-island">
+      <div class="hint">Якщо порожньо — з назви: пробіли → -</div>
     </div>
     <div class="field" style="grid-column: 1 / -1;">
       <label>URL аватарки</label>
@@ -121,18 +133,13 @@ textarea { min-height: 72px; resize: vertical; }
     </div>
   </div>
 
-  <h2>2. Пости (стартові)</h2>
-  <div class="field">
-    <label>Що покласти в initialPostsData</label>
-    <select id="postsMode">
-      <option value="empty">порожній масив []</option>
-      <option value="one">один приклад-допис</option>
-      <option value="placeholders">3 заглушки (Заголовок #1…)</option>
-    </select>
-    <div class="hint">Повноцінне наповнення — окремо в island-posts-generator.html</div>
-  </div>
+  <h2>2. Дописи спільноти</h2>
+  <p class="hint">Додай скільки треба дописів і коментарів до них. Вони потраплять у <code>initialPostsData</code>.</p>
+  <div id="posts"></div>
+  <button type="button" class="btn" id="add-post">+ Допис</button>
+  <button type="button" class="btn btn-soft" id="add-empty-pack">+ 5 порожніх</button>
 
-  <div class="actions" style="margin: 12px 0;">
+  <div class="actions" style="margin: 14px 0 8px;">
     <button type="button" class="btn btn-main" id="generate">Згенерувати HTML</button>
     <button type="button" class="btn" id="copy">Копіювати</button>
     <span class="ok" id="copy-ok" hidden>Скопійовано</span>
@@ -157,7 +164,17 @@ textarea { min-height: 72px; resize: vertical; }
     return String(s == null ? "" : s)
       .replace(/\\/g, "\\\\")
       .replace(/'/g, "\\'")
-      .replace(/\r?\n/g, "\\n");
+      .replace(/\r?\n/g, "\\n")
+      .replace(/\u2028/g, "\\u2028")
+      .replace(/\u2029/g, "\\u2029");
+  }
+
+  function escHtmlAttr(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
   }
 
   function slugify(name) {
@@ -171,11 +188,20 @@ textarea { min-height: 72px; resize: vertical; }
       .replace(/^-|-$/g, "") || "island";
   }
 
+  function clampLikes(input) {
+    var v = parseInt(input.value, 10);
+    if (isNaN(v) || v < 0) v = 0;
+    input.value = String(v);
+    return v;
+  }
+
   var nameEl = document.getElementById("islandName");
   var fileEl = document.getElementById("filename");
   var avatarEl = document.getElementById("avatar");
   var preview = document.getElementById("avatarPreview");
   var hintFile = document.getElementById("hintFile");
+  var postsEl = document.getElementById("posts");
+  var seq = 0;
 
   nameEl.addEventListener("input", function () {
     if (!fileEl.dataset.touched) {
@@ -197,6 +223,70 @@ textarea { min-height: 72px; resize: vertical; }
     }
   });
 
+  function addComment(wrap, nick, text) {
+    var c = document.createElement("div");
+    c.className = "comment-box";
+    c.innerHTML =
+      '<div class="grid">' +
+      '<div class="field"><label>Нік автора</label>' +
+      '<input type="text" class="c-nick" placeholder="terry_rex" value="' + escHtmlAttr(nick || "") + '"></div>' +
+      '<div class="field"><label>Текст</label>' +
+      '<input type="text" class="c-text" placeholder="Текст коментаря..." value="' + escHtmlAttr(text || "") + '"></div>' +
+      "</div>" +
+      '<button type="button" class="btn btn-danger c-del">Видалити коментар</button>';
+    c.querySelector(".c-del").onclick = function () { c.remove(); };
+    wrap.appendChild(c);
+  }
+
+  function addPost(prefill) {
+    prefill = prefill || {};
+    seq++;
+    var box = document.createElement("div");
+    box.className = "box";
+    box.innerHTML =
+      "<strong>Допис #" + seq + "</strong>" +
+      '<div class="field"><label>Заголовок</label>' +
+      '<input type="text" class="p-title" placeholder="Заголовок допису" value="' + escHtmlAttr(prefill.title || "") + '"></div>' +
+      '<div class="field"><label>Текст</label>' +
+      '<textarea class="p-body" placeholder="Текст допису...">' + escHtmlAttr(prefill.body || "") + "</textarea></div>" +
+      '<div class="grid3">' +
+      '<div class="field"><label>Дата</label>' +
+      '<input type="text" class="p-date" placeholder="22 червня" value="' + escHtmlAttr(prefill.date || "") + '"></div>' +
+      '<div class="field"><label>Вподобайки (≥ 0)</label>' +
+      '<input type="number" class="p-likes" min="0" step="1" value="' + (prefill.likes != null ? prefill.likes : 0) + '"></div>' +
+      '<div class="field"><label>&nbsp;</label><span class="hint" style="display:block;padding-top:8px">лайки ≥ 0</span></div>' +
+      "</div>" +
+      '<div class="comments-wrap"><div class="hint">Коментарі</div></div>' +
+      '<button type="button" class="btn p-add-c">+ Коментар</button> ' +
+      '<button type="button" class="btn btn-danger p-del">Видалити допис</button>';
+
+    var wrap = box.querySelector(".comments-wrap");
+    var likesEl = box.querySelector(".p-likes");
+    likesEl.addEventListener("change", function () { clampLikes(likesEl); });
+    likesEl.addEventListener("blur", function () { clampLikes(likesEl); });
+    likesEl.addEventListener("input", function () {
+      if (likesEl.value === "") return;
+      if (/^-/.test(likesEl.value)) likesEl.value = "0";
+    });
+
+    box.querySelector(".p-add-c").onclick = function () { addComment(wrap, "", ""); };
+    box.querySelector(".p-del").onclick = function () { box.remove(); };
+
+    if (Array.isArray(prefill.comments)) {
+      prefill.comments.forEach(function (cm) {
+        addComment(wrap, cm.name || cm.nick || "", cm.text || "");
+      });
+    }
+
+    postsEl.appendChild(box);
+  }
+
+  document.getElementById("add-post").onclick = function () { addPost(); };
+  document.getElementById("add-empty-pack").onclick = function () {
+    for (var i = 0; i < 5; i++) addPost();
+  };
+  addPost();
+
   function statusText() {
     var t = document.getElementById("statusType").value;
     if (t === "open") return "Статус: відкритий острів";
@@ -205,35 +295,55 @@ textarea { min-height: 72px; resize: vertical; }
     return (document.getElementById("statusCustom").value || "Статус: —").trim();
   }
 
-  function statusColor() {
-    return document.getElementById("statusColor").value || "green";
+  function collectPosts() {
+    var items = [];
+    postsEl.querySelectorAll(".box").forEach(function (box) {
+      var title = (box.querySelector(".p-title").value || "").trim();
+      var body = (box.querySelector(".p-body").value || "").trim();
+      var date = (box.querySelector(".p-date").value || "").trim() || "—";
+      var likes = clampLikes(box.querySelector(".p-likes"));
+      if (!title && !body) return;
+
+      var comments = [];
+      box.querySelectorAll(".comment-box").forEach(function (c) {
+        var cn = (c.querySelector(".c-nick").value || "").trim();
+        var ct = (c.querySelector(".c-text").value || "").trim();
+        if (!cn && !ct) return;
+        comments.push({ name: cn, text: ct });
+      });
+
+      items.push({ title: title, body: body, likes: likes, date: date, comments: comments });
+    });
+    return items;
   }
 
-  function postsBlock(fileName, islandName) {
-    var mode = document.getElementById("postsMode").value;
-    if (mode === "empty") {
-      return "const initialPostsData = [];";
-    }
-    if (mode === "one") {
-      return (
-        "const initialPostsData = [\n" +
+  function postsJsArray(items) {
+    if (!items.length) return "const initialPostsData = [];";
+
+    var lines = ["const initialPostsData = ["];
+    items.forEach(function (item, idx) {
+      var comma = idx < items.length - 1 ? "," : "";
+      var cLines = item.comments.map(function (c) {
+        return "      { name: '" + escJs(c.name) + "', text: '" + escJs(c.text) + "' }";
+      });
+      var commentsBlock;
+      if (!cLines.length) {
+        commentsBlock = "[]";
+      } else {
+        commentsBlock = "[\n" + cLines.join(",\n") + "\n    ]";
+      }
+      lines.push(
         "  {\n" +
-        "    title: 'Ласкаво просимо на острів',\n" +
-        "    body: 'Перший допис спільноти. Правила — у описі острова.',\n" +
-        "    likes: 0,\n" +
-        "    date: 'щойно',\n" +
-        "    comments: []\n" +
-        "  }\n" +
-        "];"
+        "    title: '" + escJs(item.title) + "',\n" +
+        "    body: '" + escJs(item.body) + "',\n" +
+        "    likes: " + item.likes + ",\n" +
+        "    date: '" + escJs(item.date) + "',\n" +
+        "    comments: " + commentsBlock + "\n" +
+        "  }" + comma
       );
-    }
-    return (
-      "const initialPostsData = [\n" +
-      "  {title: 'Заголовок допису #1', body: 'Текст допису #1', likes: 0, date: '—', comments: []},\n" +
-      "  {title: 'Заголовок допису #2', body: 'Текст допису #2', likes: 0, date: '—', comments: []},\n" +
-      "  {title: 'Заголовок допису #3', body: 'Текст допису #3', likes: 0, date: '—', comments: []}\n" +
-      "];"
-    );
+    });
+    lines.push("];");
+    return lines.join("\n");
   }
 
   function build() {
@@ -249,8 +359,9 @@ textarea { min-height: 72px; resize: vertical; }
     var desc = (document.getElementById("description").value || "").trim() || "Опис острова.";
     var theme = document.getElementById("theme").value;
     var st = statusText();
-    var sc = statusColor();
+    var sc = document.getElementById("statusColor").value || "green";
     var title = "ОСТРІВ: " + name;
+    var items = collectPosts();
 
     var html = [];
     html.push("<!doctype html>");
@@ -268,9 +379,7 @@ textarea { min-height: 72px; resize: vertical; }
     html.push('<div class="site-layout">');
     html.push('<div class="site-left"><div class="left-box">');
     html.push('<div class="site-name">' + esc(name) + "</div>");
-    html.push(
-      '<img class="main-avatar" src="' + esc(avatar) + '" alt="' + esc(name) + '">'
-    );
+    html.push('<img class="main-avatar" src="' + esc(avatar) + '" alt="' + esc(name) + '">');
     html.push('<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>');
     html.push('<div class="nav-menu">');
     html.push('<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>');
@@ -292,11 +401,8 @@ textarea { min-height: 72px; resize: vertical; }
     html.push('<div class="profile-info">');
     html.push("<div>" + esc(desc) + "</div>");
     html.push(
-      '<div class="profile-status" style="color:' +
-        esc(sc) +
-        '; font-style:normal;">' +
-        esc(st) +
-        "</div>"
+      '<div class="profile-status" style="color:' + esc(sc) + '; font-style:normal;">' +
+      esc(st) + "</div>"
     );
     html.push("</div>");
     html.push("</div>");
@@ -342,7 +448,7 @@ textarea { min-height: 72px; resize: vertical; }
     html.push('    .replace(/"/g, "&quot;");');
     html.push("}");
     html.push("");
-    html.push(postsBlock(fileHtml, name));
+    html.push(postsJsArray(items));
     html.push("");
     html.push("const container = document.getElementById('island-posts');");
     html.push("");
@@ -401,6 +507,8 @@ textarea { min-height: 72px; resize: vertical; }
     html.push("    p.style.display = i < visible ? 'block' : 'none';");
     html.push("  });");
     html.push("  const showBtn = document.getElementById('show-more-posts');");
+    html.push("  if (!posts.length) { showBtn.style.display = 'none'; return; }");
+    html.push("  showBtn.style.display = '';");
     html.push("  if (visible >= posts.length) {");
     html.push("    showBtn.textContent = 'показати менше...';");
     html.push("  } else {");
