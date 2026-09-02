@@ -551,6 +551,10 @@ botScript +
       previewFrame.srcdoc = "<!doctype html><html><body style='font-family:Arial;padding:20px;color:#666'>Вкажи нік, щоб побачити превʼю.</body></html>";
       return;
     }
+    // srcdoc inherits the iframe viewport; this meta makes responsive CSS use its actual width.
+    if (page.indexOf('<meta name="viewport"') === -1) {
+      page = page.replace('<head>', '<head><meta name="viewport" content="width=device-width, initial-scale=1">');
+    }
     previewFrame.srcdoc = page;
   }
 
@@ -569,12 +573,25 @@ botScript +
   document.querySelectorAll(".preview-mode").forEach(function (button) {
     button.onclick = function () {
       var mode = button.dataset.mode;
+      var frame = document.getElementById("preview-frame");
+      var wrap = document.getElementById("preview-wrap");
+
       document.querySelectorAll(".preview-mode").forEach(function (b) {
         b.classList.remove("preview-active");
       });
       button.classList.add("preview-active");
-      document.getElementById("preview-frame").classList.toggle("preview-mobile", mode === "mobile");
-      document.getElementById("preview-frame").classList.toggle("preview-desktop", mode !== "mobile");
+
+      if (mode === "mobile") {
+        frame.classList.add("preview-mobile");
+        wrap.classList.add("preview-phone");
+      } else {
+        frame.classList.remove("preview-mobile");
+        wrap.classList.remove("preview-phone");
+        frame.style.width = "100%";
+      }
+
+      // Give the browser a moment to apply the new viewport size.
+      setTimeout(updatePreview, 50);
     };
   });
 
