@@ -1,11 +1,11 @@
 /* =====================================================
-   СРІБЛЯСТА ОБ'ЄМНА ТЕМА (GRADIENT SILVER)
+   СРІБЛЯСТА ОБ'ЄМНА ТЕМА + БІЛІ ВІДБЛИСКИ (GLOSSY SILVER)
    ===================================================== */
 
 html, body {
   margin: 0;
   padding: 0;
-  background: #d0d5db;
+  background: #c8ced6;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 12px;
   line-height: 14px;
@@ -20,19 +20,22 @@ html, body {
   min-height: 100vh;
   margin: 0;
   padding: 12px;
-  background: linear-gradient(145deg, #d9dee4, #b8bfc7);
+  background: linear-gradient(145deg, #e8edf2, #bcc4ce);
   border: 1px solid #a8b2bd;
-  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.6),
-              inset 0 -2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    inset 0 4px 12px rgba(255, 255, 255, 0.8),
+    inset 0 -4px 12px rgba(0, 0, 0, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 #hoomenchat-site a { color: #2c3e50; }
 
+/* ===== ХЕДЕР З ВІДБЛИСКОМ ===== */
 .hoomenchat-header {
   display: block;
   margin: 0 0 10px;
   padding: 5px 8px;
-  background: linear-gradient(180deg, #d0d7df, #aab3be);
+  background: linear-gradient(180deg, #e8eef4, #bcc5d0);
   border: 1px solid #8f9aa7;
   border-radius: 4px;
   color: #1a212a;
@@ -41,10 +44,12 @@ html, body {
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
-  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.8),
-              inset 0 -2px 4px rgba(0, 0, 0, 0.1),
-              0 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  box-shadow: 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+    inset 0 4px 8px rgba(255, 255, 255, 0.5),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .site-layout {
@@ -65,13 +70,16 @@ html, body {
   vertical-align: top;
 }
 
+/* ===== ЛІВА КОЛОНКА З ВІДБЛИСКОМ ===== */
 .left-box {
   padding: 3px 7px;
-  background: linear-gradient(160deg, #e2e8ef, #c6ced7);
+  background: linear-gradient(160deg, #edf2f7, #cbd3dd);
   border: 1px solid #a8b2bd;
   border-radius: 4px;
-  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.7),
-              inset 0 -2px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8),
+    inset 0 4px 10px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .site-name {
@@ -84,9 +92,10 @@ html, body {
   font-weight: bold;
   text-align: center;
   word-break: break-word;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
+/* ===== АВАТАР З ВІДБЛИСКОМ ===== */
 .main-avatar {
   display: block;
   width: 100%;
@@ -98,16 +107,19 @@ html, body {
   background: #c2cad4;
   border: 1px solid #9aa6b3;
   border-radius: 4px;
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.15),
-              0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 2px 6px rgba(0, 0, 0, 0.12),
+    inset 0 2px 6px rgba(255, 255, 255, 0.7),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.08);
 }
 
+/* ===== КНОПКИ З ВІДБЛИСКОМ ===== */
 .archat-button {
   display: block;
   width: 100%;
   margin: 0 0 5px;
   padding: 4px 0;
-  background: linear-gradient(180deg, #d5dce4, #b7c0cb);
+  background: linear-gradient(180deg, #e2e9f0, #bcc5d0);
   border: 1px solid #8f9aa7;
   border-radius: 4px;
   color: #1a212a !important;
@@ -117,16 +129,20 @@ html, body {
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.7),
-              inset 0 -2px 4px rgba(0, 0, 0, 0.08),
-              0 2px 3px rgba(0, 0, 0, 0.08);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  box-shadow: 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+    inset 0 4px 8px rgba(255, 255, 255, 0.5),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 .archat-button:hover {
-  background: linear-gradient(180deg, #c8d0da, #a8b2bd);
-  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.5),
-              inset 0 -2px 4px rgba(0, 0, 0, 0.12);
+  background: linear-gradient(180deg, #d2dae4, #aeb8c4);
+  box-shadow: 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+    inset 0 4px 8px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .nav-menu {
@@ -150,13 +166,13 @@ html, body {
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.35);
   color: #0f1a26 !important;
   text-decoration: none;
 }
 
 .nav-item.current {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.5);
   color: #0f1a26 !important;
   font-weight: bold;
   text-decoration: none;
@@ -193,40 +209,45 @@ html, body {
 }
 
 /* =====================================================
-   ОСНОВНИЙ КОНТЕНТ — СРІБЛЯСТИЙ
+   ОСНОВНИЙ КОНТЕНТ — З ВІДБЛИСКАМИ
    ===================================================== */
 
+/* ===== ПРОФІЛЬ ===== */
 .profile-box {
   margin: 0 0 8px;
   padding: 7px;
-  background: linear-gradient(160deg, #e8edf2, #d0d7df);
+  background: linear-gradient(160deg, #edf2f7, #d0d7df);
   border: 1px solid #a8b2bd;
   border-radius: 4px;
-  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.7),
-              inset 0 -2px 4px rgba(0, 0, 0, 0.06);
+  box-shadow: 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8),
+    inset 0 4px 10px rgba(255, 255, 255, 0.5),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .profile-header {
   margin: 0 0 7px;
   padding: 4px 7px;
-  background: linear-gradient(180deg, #d0d7df, #b8c1cc);
+  background: linear-gradient(180deg, #dce3eb, #bcc5d0);
   border: 1px solid #9aa6b3;
   border-radius: 3px;
   color: #1a212a;
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.4);
 }
 
 .profile-info {
   padding: 6px 7px;
-  background: #f2f5f8;
+  background: #f5f8fa;
   border: 1px solid #b2bdc9;
   border-radius: 3px;
   color: #1e242b;
   font-size: 11px;
   line-height: 15px;
+  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.6);
 }
 
 .profile-status {
@@ -237,25 +258,30 @@ html, body {
   font-style: italic;
 }
 
+/* ===== ЗАГОЛОВКИ ПОСТІВ ===== */
 .posts-header {
   margin: 8px 0 5px;
   padding: 4px 7px;
-  background: linear-gradient(180deg, #d0d7df, #b8c1cc);
+  background: linear-gradient(180deg, #dce3eb, #bcc5d0);
   border: 1px solid #9aa6b3;
   border-radius: 3px;
   color: #1a212a;
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.4);
 }
 
+/* ===== КАРТКА ПОСТА ===== */
 .profile-post {
   margin: 0 0 7px;
-  background: #f2f5f8;
+  background: #f5f8fa;
   border: 1px solid #a8b2bd;
   border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-shadow: 
+    0 1px 4px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .profile-post-title {
@@ -264,14 +290,15 @@ html, body {
   align-items: center;
   gap: 8px;
   padding: 4px 7px;
-  background: linear-gradient(180deg, #dde3ea, #c8d0da);
+  background: linear-gradient(180deg, #e4eaf1, #ccd4de);
   border-bottom: 1px solid #9aa6b3;
   border-radius: 4px 4px 0 0;
   color: #1a212a;
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.5);
 }
 
 .post-author-link {
@@ -308,6 +335,7 @@ html, body {
   border-top: 1px solid #cbd3dd;
   background: #e8edf2;
   border-radius: 0 0 4px 4px;
+  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.6);
 }
 
 .like-button,
@@ -354,6 +382,7 @@ html, body {
   font-size: 10px;
   line-height: 13px;
   overflow-wrap: anywhere;
+  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.5);
 }
 
 .fake-comment-name {
@@ -376,34 +405,37 @@ html, body {
   background: #ffffff;
   color: #1e242b;
   font: 10px/13px Arial, Helvetica, sans-serif;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
 .comment-input:focus {
   outline: none;
   border-color: #7f8c9b;
-  box-shadow: 0 0 4px rgba(100, 115, 130, 0.2);
+  box-shadow: 0 0 6px rgba(100, 115, 130, 0.15), inset 0 1px 4px rgba(255, 255, 255, 0.5);
 }
 
 .comment-send,
 .show-more,
 .create-post-btn {
   padding: 3px 8px;
-  background: linear-gradient(180deg, #d5dce4, #b7c0cb);
+  background: linear-gradient(180deg, #dce3eb, #bcc5d0);
   border: 1px solid #8f9aa7;
   border-radius: 3px;
   color: #1a212a;
   font-size: 10px;
   line-height: 13px;
   cursor: pointer;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
-  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.6),
-              inset 0 -1px 3px rgba(0, 0, 0, 0.05);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+    inset 0 3px 6px rgba(255, 255, 255, 0.4),
+    inset 0 -1px 4px rgba(0, 0, 0, 0.04);
 }
 
 .comment-send:hover,
 .show-more:hover,
 .create-post-btn:hover {
-  background: linear-gradient(180deg, #c8d0da, #a8b2bd);
+  background: linear-gradient(180deg, #ccd4de, #aeb8c4);
 }
 
 .create-post-btn {
@@ -418,10 +450,12 @@ html, body {
   display: none;
   margin: 0 0 8px;
   padding: 7px;
-  background: linear-gradient(160deg, #e8edf2, #d0d7df);
+  background: linear-gradient(160deg, #edf2f7, #d0d7df);
   border: 1px solid #a8b2bd;
   border-radius: 4px;
-  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.6);
+  box-shadow: 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8),
+    inset 0 4px 10px rgba(255, 255, 255, 0.5);
 }
 
 .create-post-form.open {
@@ -445,13 +479,15 @@ html, body {
 .rules-box {
   margin: 8px 0 0;
   padding: 5px 8px;
-  background: linear-gradient(160deg, #e8edf2, #d0d7df);
+  background: linear-gradient(160deg, #edf2f7, #d0d7df);
   border: 1px solid #a8b2bd;
   border-radius: 4px;
   color: #1a212a;
   font-size: 11px;
   line-height: 14px;
-  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8),
+    inset 0 4px 10px rgba(255, 255, 255, 0.4);
 }
 
 .rules-box a {
@@ -463,12 +499,14 @@ html, body {
 .statistics-box {
   margin: 8px 0 0;
   padding: 5px 8px;
-  background: linear-gradient(160deg, #e8edf2, #d0d7df);
+  background: linear-gradient(160deg, #edf2f7, #d0d7df);
   border: 1px solid #a8b2bd;
   border-radius: 4px;
   color: #1e242b;
   font: 10px/13px "Courier New", Courier, monospace;
-  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8),
+    inset 0 4px 10px rgba(255, 255, 255, 0.4);
 }
 
 .statistics-title {
