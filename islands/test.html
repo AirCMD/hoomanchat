@@ -69,6 +69,48 @@ textarea { min-height: 64px; resize: vertical; }
 #preview-frame { display:block; width:100%; height:700px; border:1px solid #444; background:#fff; margin:0 auto; transition:width .2s ease; }
 #preview-frame.mobile { width:390px; max-width:100%; }
 .preview-active { background:#cfcfcf; border-color:#666; }
+
+  /* ---- LIVE PREVIEW ---- */
+  .preview-toolbar {
+    margin: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: center;
+  }
+  .preview-toolbar .preview-title { font-weight: bold; margin-left: 8px; }
+  .preview-mode.active { background: #ccc; border-color: #555; }
+  .preview-shell {
+    width: 100%;
+    min-height: 760px;
+    overflow: auto;
+    padding: 12px;
+    border: 1px solid #999;
+    background: #e5e5e5;
+  }
+  .preview-shell.mobile-mode {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  #preview-frame {
+    display: block;
+    width: 100%;
+    height: 740px;
+    border: 1px solid #666;
+    background: #fff;
+    margin: 0 auto;
+  }
+  #preview-frame.mobile {
+    width: 390px !important;
+    min-width: 390px !important;
+    max-width: none !important;
+    height: 740px;
+    border: 8px solid #333;
+    border-radius: 24px;
+    flex: 0 0 390px;
+  }
+
 </style>
 </head>
 <body>
@@ -172,6 +214,17 @@ textarea { min-height: 64px; resize: vertical; }
     <span class="ok" id="copy-ok" hidden>Скопійовано</span>
   </div>
   <textarea id="output" readonly placeholder="Тут зʼявиться готовий код сторінки..."></textarea>
+
+  <h2>6. Живе прев’ю</h2>
+  <div class="preview-toolbar">
+    <button type="button" class="btn btn-main" id="preview-update">👁 Оновити прев’ю</button>
+    <span class="preview-title">Режим:</span>
+    <button type="button" class="btn preview-mode active" data-preview-mode="desktop">🖥 ПК</button>
+    <button type="button" class="btn preview-mode" data-preview-mode="mobile">📱 Мобільна</button>
+  </div>
+  <div class="preview-shell" id="preview-shell">
+    <iframe id="preview-frame" title="Прев’ю профілю"></iframe>
+  </div>
 
   <h2>6. Превʼю сторінки</h2>
   <div class="preview-toolbar">
@@ -509,7 +562,12 @@ botScript +
   var output = document.getElementById("output");
   document.getElementById("generate").onclick = function () {
     var page = buildPage();
-    if (page) output.value = page;
+    if (page) {
+      output.value = page;
+      if (document.getElementById("preview-frame")) {
+        document.getElementById("preview-frame").srcdoc = page;
+      }
+    }
   };
   document.getElementById("copy").onclick = function () {
     if (!output.value) {
@@ -540,72 +598,63 @@ botScript +
     URL.revokeObjectURL(a.href);
   };
 
-  /* ---- preview ---- */
+  /* ---- live preview ---- */
   var previewFrame = document.getElementById("preview-frame");
+  var previewShell = document.getElementById("preview-shell");
   var previewTimer = null;
 
-  function updatePreview() {
+  function renderPreview() {
     if (!previewFrame) return;
     var page = buildPage();
+
     if (!page) {
-      previewFrame.srcdoc = "<!doctype html><html><body style='font-family:Arial;padding:20px;color:#666'>Вкажи нік, щоб побачити превʼю.</body></html>";
+      previewFrame.srcdoc =
+        '<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head>' +
+        '<body style="font-family:Arial,sans-serif;padding:20px;color:#666">Введи нік, щоб побачити прев’ю.</body></html>';
       return;
     }
-    // srcdoc inherits the iframe viewport; this meta makes responsive CSS use its actual width.
-    if (page.indexOf('<meta name="viewport"') === -1) {
-      page = page.replace('<head>', '<head><meta name="viewport" content="width=device-width, initial-scale=1">');
-    }
+
+    // Do not rely on a second build or the output textarea.
     previewFrame.srcdoc = page;
   }
 
-  function schedulePreview() {
-    clearTimeout(previewTimer);
-    previewTimer = setTimeout(updatePreview, 350);
-  }
+  document.getElementById("preview-update").onclick = renderPreview;
 
-  document.getElementById("preview").onclick = updatePreview;
-
-  document.querySelectorAll("input, textarea, select").forEach(function (field) {
-    field.addEventListener("input", schedulePreview);
-    field.addEventListener("change", schedulePreview);
+  document.querySelectorAll("input, textarea, select").forEach(function (node) {
+    node.addEventListener("input", function () {
+      clearTimeout(previewTimer);
+      previewTimer = setTimeout(renderPreview, 300);
+    });
+    node.addEventListener("change", function () {
+      clearTimeout(previewTimer);
+      previewTimer = setTimeout(renderPreview, 300);
+    });
   });
 
   document.querySelectorAll(".preview-mode").forEach(function (button) {
     button.onclick = function () {
-      var mode = button.dataset.mode;
-      var frame = document.getElementById("preview-frame");
-      var wrap = document.getElementById("preview-wrap");
+      var mobile = button.dataset.previewMode === "mobile";
 
       document.querySelectorAll(".preview-mode").forEach(function (b) {
-        b.classList.remove("preview-active");
+        b.classList.toggle("active", b === button);
       });
-      button.classList.add("preview-active");
 
-      if (mode === "mobile") {
-        frame.classList.add("preview-mobile");
-        wrap.classList.add("preview-phone");
-      } else {
-        frame.classList.remove("preview-mobile");
-        wrap.classList.remove("preview-phone");
-        frame.style.width = "100%";
-      }
+      previewFrame.classList.toggle("mobile", mobile);
+      previewShell.classList.toggle("mobile-mode", mobile);
 
-      // Give the browser a moment to apply the new viewport size.
-      setTimeout(updatePreview, 50);
+      // Reassigning srcdoc forces the generated page to recalculate responsive layout
+      // against the new iframe viewport.
+      setTimeout(renderPreview, 50);
     };
   });
 
-  var originalGenerate = document.getElementById("generate").onclick;
-  document.getElementById("generate").onclick = function () {
-    var page = buildPage();
-    if (page) {
-      output.value = page;
-      if (previewFrame) previewFrame.srcdoc = page;
+  // Also preview when adding dynamic schedule/posts/comments.
+  document.addEventListener("click", function (event) {
+    if (event.target.matches("#add-schedule, #add-post, .p-add-c, .sch-del, .c-del, .p-del")) {
+      setTimeout(renderPreview, 50);
     }
-  };
+  });
 
-  // Initial preview
-  updatePreview();
 })();
 </script>
 </body>
