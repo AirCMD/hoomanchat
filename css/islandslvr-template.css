@@ -1,57 +1,57 @@
 /* =====================================================
-   СРІБЛЯСТА ОБ'ЄМНА ТЕМА + БІЛІ ВІДБЛИСКИ (GLOSSY SILVER)
+   WINAMP5 CLASSIFIED v5.5 — CSS ТЕМА
+   Кольори: #1C3D7D (фон), #6788C9 (виділення),
+            #FFFFFF (текст), #BBD2FF (активний текст)
    ===================================================== */
 
 html, body {
   margin: 0;
   padding: 0;
-  background: #c8ced6;
-  font-family: Arial, Helvetica, sans-serif;
+  background: #1C3D7D;
+  font-family: 'Segoe UI', Tahoma, Arial, Helvetica, sans-serif;
   font-size: 12px;
   line-height: 14px;
-  color: #1e242b;
+  color: #FFFFFF;
 }
 
 * { box-sizing: border-box; }
 
+/* ===== ОСНОВНИЙ КОНТЕЙНЕР ===== */
 #hoomenchat-site {
   display: block;
   width: 100%;
   min-height: 100vh;
   margin: 0;
   padding: 12px;
-  background: linear-gradient(145deg, #e8edf2, #bcc4ce);
-  border: 1px solid #a8b2bd;
-  box-shadow: 
-    inset 0 4px 12px rgba(255, 255, 255, 0.8),
-    inset 0 -4px 12px rgba(0, 0, 0, 0.08),
-    0 2px 8px rgba(0, 0, 0, 0.06);
+  background: #1C3D7D;
+  border: 2px solid #6788C9;
 }
 
-#hoomenchat-site a { color: #2c3e50; }
+#hoomenchat-site a {
+  color: #BBD2FF;
+}
+#hoomenchat-site a:hover {
+  color: #FFFFFF;
+}
 
-/* ===== ХЕДЕР З ВІДБЛИСКОМ ===== */
+/* ===== ХЕДЕР ===== */
 .hoomenchat-header {
   display: block;
   margin: 0 0 10px;
-  padding: 5px 8px;
-  background: linear-gradient(180deg, #e8eef4, #bcc5d0);
-  border: 1px solid #8f9aa7;
-  border-radius: 4px;
-  color: #1a212a;
+  padding: 6px 10px;
+  background: linear-gradient(180deg, #2A4F8F, #1A3570);
+  border: 1px solid #6788C9;
+  border-bottom-width: 2px;
+  color: #BBD2FF;
   font-size: 12px;
   line-height: 14px;
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
-  box-shadow: 
-    inset 0 0 0 1px rgba(255, 255, 255, 0.7),
-    inset 0 4px 8px rgba(255, 255, 255, 0.5),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.08),
-    0 2px 4px rgba(0, 0, 0, 0.08);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
+/* ===== LAYOUT ===== */
 .site-layout {
   display: table;
   width: 100%;
@@ -70,32 +70,28 @@ html, body {
   vertical-align: top;
 }
 
-/* ===== ЛІВА КОЛОНКА З ВІДБЛИСКОМ ===== */
+/* ===== ЛІВА КОЛОНКА ===== */
 .left-box {
-  padding: 3px 7px;
-  background: linear-gradient(160deg, #edf2f7, #cbd3dd);
-  border: 1px solid #a8b2bd;
-  border-radius: 4px;
-  box-shadow: 
-    inset 0 0 0 1px rgba(255, 255, 255, 0.8),
-    inset 0 4px 10px rgba(255, 255, 255, 0.6),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.06);
+  padding: 4px 8px;
+  background: linear-gradient(180deg, #234785, #163366);
+  border: 1px solid #6788C9;
+  border-bottom-width: 2px;
 }
 
 .site-name {
   margin: 1px 0 6px;
-  padding: 0 0 4px;
-  border-bottom: 1px solid #9aa6b3;
-  color: #1e2b3a;
+  padding: 0 0 5px;
+  border-bottom: 1px solid #6788C9;
+  color: #FFFFFF;
   font-size: 15px;
   line-height: 17px;
   font-weight: bold;
   text-align: center;
   word-break: break-word;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
-/* ===== АВАТАР З ВІДБЛИСКОМ ===== */
+/* ===== АВАТАР ===== */
 .main-avatar {
   display: block;
   width: 100%;
@@ -104,52 +100,41 @@ html, body {
   margin: 0 0 6px;
   object-fit: cover;
   object-position: center;
-  background: #c2cad4;
-  border: 1px solid #9aa6b3;
-  border-radius: 4px;
-  box-shadow: 
-    0 2px 6px rgba(0, 0, 0, 0.12),
-    inset 0 2px 6px rgba(255, 255, 255, 0.7),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.08);
+  background: #0F274F;
+  border: 1px solid #6788C9;
+  border-bottom-width: 2px;
 }
 
-/* ===== КНОПКИ З ВІДБЛИСКОМ ===== */
+/* ===== КНОПКИ ===== */
 .archat-button {
   display: block;
   width: 100%;
   margin: 0 0 5px;
-  padding: 4px 0;
-  background: linear-gradient(180deg, #e2e9f0, #bcc5d0);
-  border: 1px solid #8f9aa7;
-  border-radius: 4px;
-  color: #1a212a !important;
+  padding: 5px 0;
+  background: linear-gradient(180deg, #2A4F8F, #1A3570);
+  border: 1px solid #6788C9;
+  border-bottom-width: 2px;
+  color: #BBD2FF !important;
   font-size: 10px;
   line-height: 13px;
   font-weight: bold;
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
-  box-shadow: 
-    inset 0 0 0 1px rgba(255, 255, 255, 0.7),
-    inset 0 4px 8px rgba(255, 255, 255, 0.5),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.06),
-    0 2px 4px rgba(0, 0, 0, 0.06);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 .archat-button:hover {
-  background: linear-gradient(180deg, #d2dae4, #aeb8c4);
-  box-shadow: 
-    inset 0 0 0 1px rgba(255, 255, 255, 0.5),
-    inset 0 4px 8px rgba(255, 255, 255, 0.3),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(180deg, #3B64A8, #1F3F7A);
+  color: #FFFFFF !important;
 }
 
+/* ===== НАВІГАЦІЯ ===== */
 .nav-menu {
   display: block;
   margin: 0;
   padding: 0;
-  border-top: 1px solid #9aa6b3;
+  border-top: 1px solid #6788C9;
 }
 
 .nav-item {
@@ -157,38 +142,37 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 3px 2px;
-  border-bottom: 1px solid #b2bdc9;
-  color: #1e2b3a !important;
+  border-bottom: 1px solid #2A4F8F;
+  color: #BBD2FF !important;
   font-size: 11px;
   line-height: 13px;
   text-decoration: underline;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.35);
-  color: #0f1a26 !important;
+  background: #2A4F8F;
+  color: #FFFFFF !important;
   text-decoration: none;
 }
 
 .nav-item.current {
-  background: rgba(255, 255, 255, 0.5);
-  color: #0f1a26 !important;
+  background: #6788C9;
+  color: #FFFFFF !important;
   font-weight: bold;
   text-decoration: none;
-  border-radius: 2px;
 }
 
+/* ===== АКАУНТ ===== */
 .account-box {
   margin: 8px 0 0;
   padding: 5px 4px;
-  border-top: 1px solid #9aa6b3;
+  border-top: 1px solid #6788C9;
   text-align: center;
 }
 
 .account-text {
   margin: 0 0 5px;
-  color: #2c3e50;
+  color: #BBD2FF;
   font-size: 9px;
   line-height: 12px;
 }
@@ -196,7 +180,7 @@ html, body {
 .account-link {
   display: block;
   margin: 2px 0;
-  color: #1e2b3a !important;
+  color: #BBD2FF !important;
   font-size: 10px;
   line-height: 12px;
   font-weight: bold;
@@ -204,84 +188,72 @@ html, body {
 }
 
 .account-link:hover {
-  color: #0f1a26 !important;
+  color: #FFFFFF !important;
   text-decoration: none;
 }
 
 /* =====================================================
-   ОСНОВНИЙ КОНТЕНТ — З ВІДБЛИСКАМИ
+   ОСНОВНИЙ КОНТЕНТ
    ===================================================== */
 
 /* ===== ПРОФІЛЬ ===== */
 .profile-box {
   margin: 0 0 8px;
   padding: 7px;
-  background: linear-gradient(160deg, #edf2f7, #d0d7df);
-  border: 1px solid #a8b2bd;
-  border-radius: 4px;
-  box-shadow: 
-    inset 0 0 0 1px rgba(255, 255, 255, 0.8),
-    inset 0 4px 10px rgba(255, 255, 255, 0.5),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.05);
+  background: #163366;
+  border: 1px solid #6788C9;
+  border-bottom-width: 2px;
 }
 
 .profile-header {
   margin: 0 0 7px;
   padding: 4px 7px;
-  background: linear-gradient(180deg, #dce3eb, #bcc5d0);
-  border: 1px solid #9aa6b3;
-  border-radius: 3px;
-  color: #1a212a;
+  background: linear-gradient(180deg, #234785, #122D5A);
+  border: 1px solid #6788C9;
+  border-bottom-width: 2px;
+  color: #BBD2FF;
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
-  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 .profile-info {
   padding: 6px 7px;
-  background: #f5f8fa;
-  border: 1px solid #b2bdc9;
-  border-radius: 3px;
-  color: #1e242b;
+  background: #0F274F;
+  border: 1px solid #2A4F8F;
+  color: #FFFFFF;
   font-size: 11px;
   line-height: 15px;
-  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.6);
 }
 
 .profile-status {
   margin-top: 4px;
-  color: #2d6a4f;
+  color: #7FBF7F;
   font-size: 10px;
   line-height: 13px;
   font-style: italic;
 }
 
-/* ===== ЗАГОЛОВКИ ПОСТІВ ===== */
+/* ===== ПОСТИ ===== */
 .posts-header {
   margin: 8px 0 5px;
   padding: 4px 7px;
-  background: linear-gradient(180deg, #dce3eb, #bcc5d0);
-  border: 1px solid #9aa6b3;
-  border-radius: 3px;
-  color: #1a212a;
+  background: linear-gradient(180deg, #234785, #122D5A);
+  border: 1px solid #6788C9;
+  border-bottom-width: 2px;
+  color: #BBD2FF;
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
-  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
-/* ===== КАРТКА ПОСТА ===== */
 .profile-post {
   margin: 0 0 7px;
-  background: #f5f8fa;
-  border: 1px solid #a8b2bd;
-  border-radius: 4px;
-  box-shadow: 
-    0 1px 4px rgba(0, 0, 0, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  background: #0F274F;
+  border: 1px solid #6788C9;
+  border-bottom-width: 2px;
 }
 
 .profile-post-title {
@@ -290,15 +262,13 @@ html, body {
   align-items: center;
   gap: 8px;
   padding: 4px 7px;
-  background: linear-gradient(180deg, #e4eaf1, #ccd4de);
-  border-bottom: 1px solid #9aa6b3;
-  border-radius: 4px 4px 0 0;
-  color: #1a212a;
+  background: linear-gradient(180deg, #234785, #122D5A);
+  border-bottom: 1px solid #6788C9;
+  color: #BBD2FF;
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 .post-author-link {
@@ -310,13 +280,16 @@ html, body {
 }
 
 .post-author-link a {
-  color: #1e2b3a !important;
+  color: #BBD2FF !important;
   text-decoration: underline;
+}
+.post-author-link a:hover {
+  color: #FFFFFF !important;
 }
 
 .profile-post-body {
   padding: 6px 7px;
-  color: #1e242b;
+  color: #FFFFFF;
   font-size: 11px;
   line-height: 15px;
   overflow-wrap: anywhere;
@@ -324,18 +297,16 @@ html, body {
 
 .profile-post-date {
   padding: 3px 7px;
-  border-top: 1px solid #cbd3dd;
-  color: #3d4e5e;
+  border-top: 1px solid #2A4F8F;
+  color: #BBD2FF;
   font-size: 9px;
   line-height: 11px;
 }
 
 .post-actions {
   padding: 4px 7px;
-  border-top: 1px solid #cbd3dd;
-  background: #e8edf2;
-  border-radius: 0 0 4px 4px;
-  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.6);
+  border-top: 1px solid #2A4F8F;
+  background: #122D5A;
 }
 
 .like-button,
@@ -344,27 +315,27 @@ html, body {
   padding: 1px 3px;
   border: 0;
   background: transparent;
-  color: #2c3e50;
-  font: 10px/13px Arial, Helvetica, sans-serif;
+  color: #BBD2FF;
+  font: 10px/13px 'Segoe UI', Arial, Helvetica, sans-serif;
   cursor: pointer;
 }
 
 .like-button:hover,
 .comment-button:hover {
-  color: #0f1a26;
+  color: #FFFFFF;
 }
 
 .like-button.liked {
-  color: #b33c3c;
+  color: #FF6B6B;
   font-weight: bold;
 }
 
+/* ===== КОМЕНТАРІ ===== */
 .comments-area {
   display: none;
   padding: 6px 7px;
-  background: #eef2f6;
-  border-top: 1px solid #cbd3dd;
-  border-radius: 0 0 4px 4px;
+  background: #0F274F;
+  border-top: 1px solid #2A4F8F;
 }
 
 .comments-area.open {
@@ -375,18 +346,17 @@ html, body {
 .user-comment {
   margin: 0 0 5px;
   padding: 4px 5px;
-  background: #ffffff;
-  border: 1px solid #b8c1cc;
-  border-radius: 3px;
-  color: #1e242b;
+  background: #163366;
+  border: 1px solid #2A4F8F;
+  color: #FFFFFF;
   font-size: 10px;
   line-height: 13px;
   overflow-wrap: anywhere;
-  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.5);
 }
 
 .fake-comment-name {
   margin-bottom: 2px;
+  color: #BBD2FF;
   font-weight: bold;
 }
 
@@ -400,42 +370,42 @@ html, body {
   min-height: 45px;
   padding: 4px 5px;
   resize: vertical;
-  border: 1px solid #9aa6b3;
-  border-radius: 3px;
-  background: #ffffff;
-  color: #1e242b;
-  font: 10px/13px Arial, Helvetica, sans-serif;
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.04);
+  border: 1px solid #6788C9;
+  background: #0F274F;
+  color: #FFFFFF;
+  font: 10px/13px 'Segoe UI', Arial, Helvetica, sans-serif;
 }
 
 .comment-input:focus {
   outline: none;
-  border-color: #7f8c9b;
-  box-shadow: 0 0 6px rgba(100, 115, 130, 0.15), inset 0 1px 4px rgba(255, 255, 255, 0.5);
+  border-color: #BBD2FF;
+  background: #1A3570;
 }
 
+.comment-input::placeholder {
+  color: #6788C9;
+}
+
+/* ===== КНОПКИ ДІЙ ===== */
 .comment-send,
 .show-more,
 .create-post-btn {
   padding: 3px 8px;
-  background: linear-gradient(180deg, #dce3eb, #bcc5d0);
-  border: 1px solid #8f9aa7;
-  border-radius: 3px;
-  color: #1a212a;
+  background: linear-gradient(180deg, #2A4F8F, #1A3570);
+  border: 1px solid #6788C9;
+  border-bottom-width: 2px;
+  color: #BBD2FF;
   font-size: 10px;
   line-height: 13px;
   cursor: pointer;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
-  box-shadow: 
-    inset 0 0 0 1px rgba(255, 255, 255, 0.7),
-    inset 0 3px 6px rgba(255, 255, 255, 0.4),
-    inset 0 -1px 4px rgba(0, 0, 0, 0.04);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 .comment-send:hover,
 .show-more:hover,
 .create-post-btn:hover {
-  background: linear-gradient(180deg, #ccd4de, #aeb8c4);
+  background: linear-gradient(180deg, #3B64A8, #1F3F7A);
+  color: #FFFFFF;
 }
 
 .create-post-btn {
@@ -450,12 +420,9 @@ html, body {
   display: none;
   margin: 0 0 8px;
   padding: 7px;
-  background: linear-gradient(160deg, #edf2f7, #d0d7df);
-  border: 1px solid #a8b2bd;
-  border-radius: 4px;
-  box-shadow: 
-    inset 0 0 0 1px rgba(255, 255, 255, 0.8),
-    inset 0 4px 10px rgba(255, 255, 255, 0.5);
+  background: #163366;
+  border: 1px solid #6788C9;
+  border-bottom-width: 2px;
 }
 
 .create-post-form.open {
@@ -476,67 +443,67 @@ html, body {
   display: none;
 }
 
+/* ===== ПРАВИЛА ===== */
 .rules-box {
   margin: 8px 0 0;
   padding: 5px 8px;
-  background: linear-gradient(160deg, #edf2f7, #d0d7df);
-  border: 1px solid #a8b2bd;
-  border-radius: 4px;
-  color: #1a212a;
+  background: #163366;
+  border: 1px solid #6788C9;
+  border-bottom-width: 2px;
+  color: #BBD2FF;
   font-size: 11px;
   line-height: 14px;
-  box-shadow: 
-    inset 0 0 0 1px rgba(255, 255, 255, 0.8),
-    inset 0 4px 10px rgba(255, 255, 255, 0.4);
 }
 
 .rules-box a {
-  color: #1a212a;
+  color: #FFFFFF;
   font-weight: bold;
   text-decoration: underline;
 }
+.rules-box a:hover {
+  color: #BBD2FF;
+}
 
+/* ===== СТАТИСТИКА ===== */
 .statistics-box {
   margin: 8px 0 0;
   padding: 5px 8px;
-  background: linear-gradient(160deg, #edf2f7, #d0d7df);
-  border: 1px solid #a8b2bd;
-  border-radius: 4px;
-  color: #1e242b;
-  font: 10px/13px "Courier New", Courier, monospace;
-  box-shadow: 
-    inset 0 0 0 1px rgba(255, 255, 255, 0.8),
-    inset 0 4px 10px rgba(255, 255, 255, 0.4);
+  background: #163366;
+  border: 1px solid #6788C9;
+  border-bottom-width: 2px;
+  color: #BBD2FF;
+  font: 10px/13px 'Courier New', Courier, monospace;
 }
 
 .statistics-title {
   margin: 0 0 3px;
-  color: #1a212a;
-  font: bold 10px/12px Arial, Helvetica, sans-serif;
+  color: #FFFFFF;
+  font: bold 10px/12px 'Segoe UI', Arial, Helvetica, sans-serif;
 }
 
 .statistics-number {
-  color: #1a212a;
+  color: #FFFFFF;
   font-weight: bold;
 }
 
 .statistics-online {
-  color: #2d6a4f;
+  color: #7FBF7F;
   font-weight: bold;
 }
 
+/* ===== ФУТЕР ===== */
 .footer-line {
   margin: 7px 0 0;
   padding-top: 4px;
-  border-top: 1px solid #b2bdc9;
-  color: #3d4e5e;
+  border-top: 1px solid #6788C9;
+  color: #6788C9;
   font-size: 9px;
   line-height: 11px;
   text-align: center;
 }
 
 /* =====================================================
-   МОБІЛЬНА АДАПТАЦІЯ (збережена)
+   МОБІЛЬНА АДАПТАЦІЯ
    ===================================================== */
 
 @media screen and (max-width: 900px) {
