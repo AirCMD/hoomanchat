@@ -31,18 +31,18 @@
 <div class="profile-info">
 <div>Місце для гуменів, які працюють моряками, морячками, капітанами морських суден. Будемо раді морським вівкам, історіям про медуз, китів, мордівчат, сирен, пошукам Ельдорадо та іншим морським пригодам!
 Велике прохання... якщо ви не збираєтесь працювати у наших командах, не плануєте поїздок та й взагалі не маєте нічого спільного з нами проходьте повз! Адміністрація не приймає до спільноти гуменів, які не працюють в нашій професії.</div>
-<div class="profile-status" style="color:green; font-style:normal;">Статус: відкритий острів</div>
+<div class="profile-status" style="color:red; font-style:normal;">Статус: закритий острів</div>
 </div>
+</div>
+<div id="join-box" class="rules-box" style="border-color:#a66;">
+<button type="button" id="join-btn" class="create-post-btn" style="width:auto;display:inline-block;">Подати заявку на вступ</button>
+<div id="join-status" style="margin-top:6px;display:none;color:#a60;font-weight:bold;">Заявка на огляді модератора</div>
 </div>
 <div class="posts-header">Дописи спільноти</div>
-<button id="toggle-create-btn" class="create-post-btn">Створити публікацію</button>
-<div id="create-post-box" class="create-post-form">
-  <input type="text" id="new-post-title" class="comment-input" style="min-height:24px; margin-bottom:5px;" placeholder="Заголовок допису...">
-  <textarea id="new-post-text" class="comment-input" placeholder="Текст допису..."></textarea>
-  <button id="submit-post-btn" class="comment-send" style="margin-top:5px;">Опублікувати</button>
-</div>
-<div id="island-posts"></div>
-<div id="show-more-posts" class="show-more">показати ще...</div>
+<div class="hint" style="margin:6px 0;color:#888;">Публікації доступні лише учасникам острова.</div>
+<div id="island-posts-locked" class="rules-box">Дописи цієї спільноти бачать лише учасники. Подай заявку на вступ.</div>
+<div id="island-posts" style="display:none;"></div>
+<div id="show-more-posts" class="show-more" style="display:none;">показати ще...</div>
 <div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
 <div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span id="today-hoomen"></span></div></div>
 <div class="footer-line">Гуменчат — місце для гуменів.</div>
@@ -146,23 +146,12 @@ if (showMoreBtn) showMoreBtn.onclick = function () {
   }
   update();
 };
-document.getElementById('toggle-create-btn').onclick = function () {
-  document.getElementById('create-post-box').classList.toggle('open');
-};
-document.getElementById('submit-post-btn').onclick = function () {
-  const titleInput = document.getElementById('new-post-title');
-  const textInput = document.getElementById('new-post-text');
-  const title = titleInput.value.trim();
-  const text = textInput.value.trim();
-  if (!title || !text) return;
-  const newPost = createPostElement(title, text, 0, 'щойно', []);
-  container.insertBefore(newPost, container.firstChild);
-  titleInput.value = '';
-  textInput.value = '';
-  document.getElementById('create-post-box').classList.remove('open');
-  bindEvents(newPost);
-  visible = Math.max(visible, 1);
-  update();
+var joinBtn = document.getElementById('join-btn');
+if (joinBtn) joinBtn.onclick = function () {
+  joinBtn.disabled = true;
+  joinBtn.textContent = 'Заявку подано';
+  var st = document.getElementById('join-status');
+  if (st) st.style.display = 'block';
 };
 function bindEvents(scope) {
   if (!scope) return;
