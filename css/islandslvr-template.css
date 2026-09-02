@@ -1,12 +1,12 @@
 /* =====================================================
    WINAMP CLASSIFIED + GLOSSY SILVER — ГІБРИДНА ТЕМА
-   ТЕМНО-СИНЯ БАЗА + СРІБЛЯСТІ ВІДБЛИСКИ ТА ГРАДІЄНТИ
+   ТЕМНО-СИНЯ БАЗА + СРІБЛЯСТО-СІРІ ЕЛЕМЕНТИ З ВІДБЛИСКАМИ
    ===================================================== */
 
 html, body {
   margin: 0;
   padding: 0;
-  background: #1C3D7D;
+  background: linear-gradient(180deg, #1C3D7D, #122D5A);
   font-family: 'Segoe UI', Tahoma, Arial, Helvetica, sans-serif;
   font-size: 12px;
   line-height: 14px;
@@ -15,18 +15,20 @@ html, body {
 
 * { box-sizing: border-box; }
 
-/* ===== ОСНОВНИЙ КОНТЕЙНЕР (з відблиском) ===== */
+/* ===== ОСНОВНИЙ КОНТЕЙНЕР (СРІБЛЯСТА ОБВОДКА) ===== */
 #hoomenchat-site {
   display: block;
   width: 100%;
   min-height: 100vh;
   margin: 0;
   padding: 12px;
-  background: linear-gradient(160deg, #234785, #163366);
-  border: 1px solid #6788C9;
+  background: linear-gradient(160deg, #1C3D7D, #0F274F);
+  border: 2px solid #A8B2BD;
+  border-radius: 6px;
   box-shadow: 
-    inset 0 2px 8px rgba(255, 255, 255, 0.08),
-    inset 0 -2px 8px rgba(0, 0, 0, 0.3);
+    inset 0 2px 12px rgba(255, 255, 255, 0.06),
+    inset 0 -2px 12px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
 }
 
 #hoomenchat-site a {
@@ -37,25 +39,26 @@ html, body {
   color: #FFFFFF;
 }
 
-/* ===== ХЕДЕР (глянцевий) ===== */
+/* ===== ХЕДЕР — СРІБЛЯСТИЙ МЕТАЛІК ===== */
 .hoomenchat-header {
   display: block;
   margin: 0 0 10px;
   padding: 6px 10px;
-  background: linear-gradient(180deg, #3B64A8, #1A3570);
-  border: 1px solid #8FACD9;
+  background: linear-gradient(180deg, #E8EEF4, #BCC5D0);
+  border: 1px solid #8F9AA7;
   border-radius: 4px;
-  color: #FFFFFF;
+  color: #1A212A;
   font-size: 12px;
   line-height: 14px;
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 3px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.2),
-    0 2px 4px rgba(0, 0, 0, 0.15);
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 4px 10px rgba(255, 255, 255, 0.4),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 /* ===== LAYOUT ===== */
@@ -77,31 +80,31 @@ html, body {
   vertical-align: top;
 }
 
-/* ===== ЛІВА КОЛОНКА (з відблиском) ===== */
+/* ===== ЛІВА КОЛОНКА — СРІБЛЯСТА ===== */
 .left-box {
   padding: 4px 8px;
-  background: linear-gradient(160deg, #2A4F8F, #122D5A);
-  border: 1px solid #6788C9;
+  background: linear-gradient(160deg, #E2E9F0, #C6CED7);
+  border: 1px solid #9AA6B3;
   border-radius: 4px;
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.2);
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .site-name {
   margin: 1px 0 6px;
   padding: 0 0 5px;
-  border-bottom: 1px solid #6788C9;
-  color: #FFFFFF;
+  border-bottom: 1px solid #9AA6B3;
+  color: #1A212A;
   font-size: 15px;
   line-height: 17px;
   font-weight: bold;
   text-align: center;
   word-break: break-word;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 0 4px rgba(187, 210, 255, 0.1);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-/* ===== АВАТАР (з відблиском) ===== */
+/* ===== АВАТАР — СРІБЛЯСТА РАМКА ===== */
 .main-avatar {
   display: block;
   width: 100%;
@@ -110,51 +113,53 @@ html, body {
   margin: 0 0 6px;
   object-fit: cover;
   object-position: center;
-  background: #0F274F;
-  border: 1px solid #6788C9;
+  background: linear-gradient(160deg, #D5DCE4, #B8C1CC);
+  border: 2px solid #9AA6B3;
   border-radius: 4px;
   box-shadow: 
-    inset 0 2px 8px rgba(255, 255, 255, 0.06),
-    0 2px 6px rgba(0, 0, 0, 0.3);
+    inset 0 2px 8px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 8px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
-/* ===== КНОПКИ (з відблиском) ===== */
+/* ===== КНОПКИ — СРІБЛЯСТІ З ВІДБЛИСКАМИ ===== */
 .archat-button {
   display: block;
   width: 100%;
   margin: 0 0 5px;
   padding: 5px 0;
-  background: linear-gradient(180deg, #3B64A8, #1A3570);
-  border: 1px solid #6788C9;
+  background: linear-gradient(180deg, #DCE4EC, #B7C0CB);
+  border: 1px solid #8F9AA7;
   border-radius: 4px;
-  color: #BBD2FF !important;
+  color: #1A212A !important;
   font-size: 10px;
   line-height: 13px;
   font-weight: bold;
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 4px rgba(187, 210, 255, 0.05);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.15),
-    0 2px 4px rgba(0, 0, 0, 0.1);
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 4px 8px rgba(255, 255, 255, 0.4),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.06),
+    0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .archat-button:hover {
-  background: linear-gradient(180deg, #4F76B8, #234785);
-  color: #FFFFFF !important;
+  background: linear-gradient(180deg, #CDD6E0, #A8B2BD);
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 4px 8px rgba(255, 255, 255, 0.2),
     inset 0 -2px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* ===== НАВІГАЦІЯ ===== */
+/* ===== НАВІГАЦІЯ — СРІБЛЯСТА ===== */
 .nav-menu {
   display: block;
   margin: 0;
   padding: 0;
-  border-top: 1px solid #6788C9;
+  border-top: 1px solid #9AA6B3;
 }
 
 .nav-item {
@@ -162,50 +167,50 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 3px 2px;
-  border-bottom: 1px solid #2A4F8F;
-  color: #BBD2FF !important;
+  border-bottom: 1px solid #B2BDC9;
+  color: #1A212A !important;
   font-size: 11px;
   line-height: 13px;
   text-decoration: underline;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #FFFFFF !important;
+  background: rgba(255, 255, 255, 0.3);
+  color: #0F1A26 !important;
   text-decoration: none;
   border-radius: 2px;
 }
 
 .nav-item.current {
-  background: linear-gradient(160deg, #6788C9, #4F76B8);
-  color: #FFFFFF !important;
+  background: linear-gradient(160deg, #CDD6E0, #A8B2BD);
+  color: #0F1A26 !important;
   font-weight: bold;
   text-decoration: none;
   border-radius: 2px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 /* ===== АКАУНТ ===== */
 .account-box {
   margin: 8px 0 0;
   padding: 5px 4px;
-  border-top: 1px solid #6788C9;
+  border-top: 1px solid #9AA6B3;
   text-align: center;
 }
 
 .account-text {
   margin: 0 0 5px;
-  color: #BBD2FF;
+  color: #1A212A;
   font-size: 9px;
   line-height: 12px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .account-link {
   display: block;
   margin: 2px 0;
-  color: #BBD2FF !important;
+  color: #1A212A !important;
   font-size: 10px;
   line-height: 12px;
   font-weight: bold;
@@ -213,24 +218,25 @@ html, body {
 }
 
 .account-link:hover {
-  color: #FFFFFF !important;
+  color: #0F1A26 !important;
   text-decoration: none;
 }
 
 /* =====================================================
-   ОСНОВНИЙ КОНТЕНТ — ГЛЯНЦЕВИЙ WINAMP
+   ОСНОВНИЙ КОНТЕНТ — ТЕМНО-СИНІЙ WINAMP
    ===================================================== */
 
-/* ===== ПРОФІЛЬ ===== */
+/* ===== ПРОФІЛЬ — СРІБЛЯСТА РАМКА ===== */
 .profile-box {
   margin: 0 0 8px;
   padding: 7px;
-  background: linear-gradient(160deg, #234785, #122D5A);
-  border: 1px solid #6788C9;
+  background: linear-gradient(160deg, #163366, #0F274F);
+  border: 1px solid #9AA6B3;
   border-radius: 4px;
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.2);
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
 .profile-header {
@@ -243,15 +249,15 @@ html, body {
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 4px rgba(187, 210, 255, 0.05);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
     inset 0 -2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .profile-info {
   padding: 6px 7px;
-  background: linear-gradient(160deg, #163366, #0F274F);
+  background: linear-gradient(160deg, #1A3570, #0F274F);
   border: 1px solid #2A4F8F;
   border-radius: 3px;
   color: #FFFFFF;
@@ -282,7 +288,7 @@ html, body {
   font-weight: bold;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
     inset 0 -2px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -310,7 +316,7 @@ html, body {
   line-height: 13px;
   font-weight: bold;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .post-author-link {
@@ -432,37 +438,37 @@ html, body {
   outline: none;
   border-color: #BBD2FF;
   background: linear-gradient(160deg, #1A3570, #0F274F);
-  box-shadow: 0 0 12px rgba(187, 210, 255, 0.06), inset 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .comment-input::placeholder {
   color: #6788C9;
 }
 
-/* ===== КНОПКИ ДІЙ (глянцеві) ===== */
+/* ===== КНОПКИ — СРІБЛЯСТІ ===== */
 .comment-send,
 .show-more,
 .create-post-btn {
   padding: 3px 8px;
-  background: linear-gradient(180deg, #3B64A8, #1A3570);
-  border: 1px solid #6788C9;
+  background: linear-gradient(180deg, #DCE4EC, #B7C0CB);
+  border: 1px solid #8F9AA7;
   border-radius: 3px;
-  color: #BBD2FF;
+  color: #1A212A;
   font-size: 10px;
   line-height: 13px;
   cursor: pointer;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.1),
-    0 2px 4px rgba(0, 0, 0, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 3px 8px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.04),
+    0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 .comment-send:hover,
 .show-more:hover,
 .create-post-btn:hover {
-  background: linear-gradient(180deg, #4F76B8, #234785);
-  color: #FFFFFF;
+  background: linear-gradient(180deg, #CDD6E0, #A8B2BD);
+  color: #0F1A26;
 }
 
 .create-post-btn {
@@ -477,11 +483,11 @@ html, body {
   display: none;
   margin: 0 0 8px;
   padding: 7px;
-  background: linear-gradient(160deg, #234785, #122D5A);
+  background: linear-gradient(160deg, #163366, #0F274F);
   border: 1px solid #6788C9;
   border-radius: 4px;
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
     inset 0 -2px 6px rgba(0, 0, 0, 0.2);
 }
 
@@ -503,18 +509,18 @@ html, body {
   display: none;
 }
 
-/* ===== ПРАВИЛА (з відблиском) ===== */
+/* ===== ПРАВИЛА — СРІБЛЯСТА РАМКА ===== */
 .rules-box {
   margin: 8px 0 0;
   padding: 5px 8px;
-  background: linear-gradient(160deg, #234785, #122D5A);
-  border: 1px solid #6788C9;
+  background: linear-gradient(160deg, #163366, #0F274F);
+  border: 1px solid #9AA6B3;
   border-radius: 4px;
   color: #BBD2FF;
   font-size: 11px;
   line-height: 14px;
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
     inset 0 -2px 6px rgba(0, 0, 0, 0.2);
 }
 
@@ -527,17 +533,17 @@ html, body {
   color: #BBD2FF;
 }
 
-/* ===== СТАТИСТИКА (з відблиском) ===== */
+/* ===== СТАТИСТИКА — СРІБЛЯСТА РАМКА ===== */
 .statistics-box {
   margin: 8px 0 0;
   padding: 5px 8px;
-  background: linear-gradient(160deg, #234785, #122D5A);
-  border: 1px solid #6788C9;
+  background: linear-gradient(160deg, #163366, #0F274F);
+  border: 1px solid #9AA6B3;
   border-radius: 4px;
   color: #BBD2FF;
   font: 10px/13px 'Courier New', Courier, monospace;
   box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
     inset 0 -2px 6px rgba(0, 0, 0, 0.2);
 }
 
@@ -559,12 +565,12 @@ html, body {
   text-shadow: 0 0 6px rgba(127, 191, 127, 0.1);
 }
 
-/* ===== ФУТЕР ===== */
+/* ===== ФУТЕР — СРІБЛЯСТИЙ ===== */
 .footer-line {
   margin: 7px 0 0;
   padding-top: 4px;
-  border-top: 1px solid #6788C9;
-  color: #6788C9;
+  border-top: 1px solid #9AA6B3;
+  color: #9AA6B3;
   font-size: 9px;
   line-height: 11px;
   text-align: center;
@@ -592,6 +598,7 @@ html, body {
     padding: 8px;
     padding-bottom: max(12px, env(safe-area-inset-bottom));
     border: none;
+    border-radius: 0;
     min-height: 100vh;
     min-height: 100dvh;
   }
