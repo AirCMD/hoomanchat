@@ -169,32 +169,15 @@
 </div>
 </div>
 
+<script src="../js/status-data.js"></script>
+<script src="../js/status-engine.js"></script>
 <script>
 window.HOOMEN_PROFILE = {
   nickname: "vira_yang",
   avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhhMMjqhsS4Mpi5-fz7qWcwEJOyClPNjjKcmq13O_YINFMWGvZ8Uu0tnsr7540Xh8VJErf4KvWn4jslRZZ72T6KbfVLr6ZlnTTBvcFaK-AdgzOAyhS-e8CvbxGJ2-5R_GHDW0ciJCOQgBPswhemy-ynijduSIGI2g1PvSpLiEPuQqRPy5obPBW7LGvrBR0",
   isMainCharacter: false,
   mainCharacterUrl: "copy-pasta.html",
-  statusText: "Вірянка, шаную Повітряного Тигра.",
-  onlineStatus: "online",
-  schedule: [
-    { time: "09:01", status: "online" },
-    { time: "09:15", status: "away" },
-    { time: "14:12", status: "online" },
-    { time: "14:25", status: "away" },
-    { time: "14:52", status: "online" },
-    { time: "15:02", status: "away" },
-    { time: "15:13", status: "online" },
-    { time: "17:01", status: "away" },
-    { time: "17:12", status: "online" },
-    { time: "22:00", status: "offline" }
-  ],
-  gender: "female",
-  family: {
-      type: "seeking",
-      partnerName: "",
-      partnerUrl: ""
-  },
+  /* statusText, family, schedule, gender — ставить status-engine */
   navLinks: {
     home: "../index.html",
     profiles: "../profiles.html",
@@ -203,7 +186,9 @@ window.HOOMEN_PROFILE = {
     islands: "../islands.html",
     rules: "../rules.html"
   }
+  // liveFeed повністю видалено
 };
+if (window.HoomenStatusEngine) window.HoomenStatusEngine.apply();
 </script>
 <script src="../js/hoomenchat-profile.js"></script>
 <script src="../js/pm-popup.js"></script>
