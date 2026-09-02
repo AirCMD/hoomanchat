@@ -191,32 +191,15 @@
 </div>
 </div>
 
+<script src="../js/status-data.js"></script>
+<script src="../js/status-engine.js"></script>
 <script>
 window.HOOMEN_PROFILE = {
   nickname: "nazar_dai",
   avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhU1OO7BqQ245kW938TOTVqAOET9yTWCcFriwdNLG91XvcJjDbC9-uky6kJDew07JPiOju4A4OETBJbc2FLlHbY2Z_uZnPBPhAdBm2afWXos8paEyEpqmjNF2bt9Cnb_-gPoohOWc_nKVu4hZUFMJlr8ZfhCmtj4hDNSByCPlPUuWAaHWa18RvWjUHibao",
   isMainCharacter: false,
   mainCharacterUrl: "copy-pasta.html",
-  statusText: "Власник цілої бібліотеки книжок, частина з них мені дісталися від пращурів.",
-  onlineStatus: "online",
-  schedule: [
-    { time: "09:00", status: "online" },
-    { time: "09:30", status: "away" },
-    { time: "12:34", status: "online" },
-    { time: "15:01", status: "away" },
-    { time: "15:32", status: "online" },
-    { time: "16:02", status: "away" },
-    { time: "16:13", status: "online" },
-    { time: "17:01", status: "away" },
-    { time: "17:12", status: "online" },
-    { time: "01:00", status: "offline" }
-  ],
-  gender: "male",
-  family: {
-      type: "single",
-      partnerName: "",
-      partnerUrl: ""
-  },
+  /* statusText, family, schedule, gender — ставить status-engine */
   navLinks: {
     home: "../index.html",
     profiles: "../profiles.html",
@@ -225,7 +208,9 @@ window.HOOMEN_PROFILE = {
     islands: "../islands.html",
     rules: "../rules.html"
   }
+  // liveFeed повністю видалено
 };
+if (window.HoomenStatusEngine) window.HoomenStatusEngine.apply();
 </script>
 <script src="../js/hoomenchat-profile.js"></script>
 <script src="../js/pm-popup.js"></script>
