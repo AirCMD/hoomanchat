@@ -1,7 +1,6 @@
 /* =====================================================
-   WINAMP5 CLASSIFIED v5.5 — CSS ТЕМА
-   Кольори: #1C3D7D (фон), #6788C9 (виділення),
-            #FFFFFF (текст), #BBD2FF (активний текст)
+   WINAMP CLASSIFIED + GLOSSY SILVER — ГІБРИДНА ТЕМА
+   ТЕМНО-СИНЯ БАЗА + СРІБЛЯСТІ ВІДБЛИСКИ ТА ГРАДІЄНТИ
    ===================================================== */
 
 html, body {
@@ -16,39 +15,47 @@ html, body {
 
 * { box-sizing: border-box; }
 
-/* ===== ОСНОВНИЙ КОНТЕЙНЕР ===== */
+/* ===== ОСНОВНИЙ КОНТЕЙНЕР (з відблиском) ===== */
 #hoomenchat-site {
   display: block;
   width: 100%;
   min-height: 100vh;
   margin: 0;
   padding: 12px;
-  background: #1C3D7D;
-  border: 2px solid #6788C9;
+  background: linear-gradient(160deg, #234785, #163366);
+  border: 1px solid #6788C9;
+  box-shadow: 
+    inset 0 2px 8px rgba(255, 255, 255, 0.08),
+    inset 0 -2px 8px rgba(0, 0, 0, 0.3);
 }
 
 #hoomenchat-site a {
   color: #BBD2FF;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 #hoomenchat-site a:hover {
   color: #FFFFFF;
 }
 
-/* ===== ХЕДЕР ===== */
+/* ===== ХЕДЕР (глянцевий) ===== */
 .hoomenchat-header {
   display: block;
   margin: 0 0 10px;
   padding: 6px 10px;
-  background: linear-gradient(180deg, #2A4F8F, #1A3570);
-  border: 1px solid #6788C9;
-  border-bottom-width: 2px;
-  color: #BBD2FF;
+  background: linear-gradient(180deg, #3B64A8, #1A3570);
+  border: 1px solid #8FACD9;
+  border-radius: 4px;
+  color: #FFFFFF;
   font-size: 12px;
   line-height: 14px;
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 3px rgba(0, 0, 0, 0.5);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 /* ===== LAYOUT ===== */
@@ -70,12 +77,15 @@ html, body {
   vertical-align: top;
 }
 
-/* ===== ЛІВА КОЛОНКА ===== */
+/* ===== ЛІВА КОЛОНКА (з відблиском) ===== */
 .left-box {
   padding: 4px 8px;
-  background: linear-gradient(180deg, #234785, #163366);
+  background: linear-gradient(160deg, #2A4F8F, #122D5A);
   border: 1px solid #6788C9;
-  border-bottom-width: 2px;
+  border-radius: 4px;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .site-name {
@@ -88,10 +98,10 @@ html, body {
   font-weight: bold;
   text-align: center;
   word-break: break-word;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 0 4px rgba(187, 210, 255, 0.1);
 }
 
-/* ===== АВАТАР ===== */
+/* ===== АВАТАР (з відблиском) ===== */
 .main-avatar {
   display: block;
   width: 100%;
@@ -102,18 +112,21 @@ html, body {
   object-position: center;
   background: #0F274F;
   border: 1px solid #6788C9;
-  border-bottom-width: 2px;
+  border-radius: 4px;
+  box-shadow: 
+    inset 0 2px 8px rgba(255, 255, 255, 0.06),
+    0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* ===== КНОПКИ ===== */
+/* ===== КНОПКИ (з відблиском) ===== */
 .archat-button {
   display: block;
   width: 100%;
   margin: 0 0 5px;
   padding: 5px 0;
-  background: linear-gradient(180deg, #2A4F8F, #1A3570);
+  background: linear-gradient(180deg, #3B64A8, #1A3570);
   border: 1px solid #6788C9;
-  border-bottom-width: 2px;
+  border-radius: 4px;
   color: #BBD2FF !important;
   font-size: 10px;
   line-height: 13px;
@@ -121,12 +134,19 @@ html, body {
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 4px rgba(187, 210, 255, 0.05);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .archat-button:hover {
-  background: linear-gradient(180deg, #3B64A8, #1F3F7A);
+  background: linear-gradient(180deg, #4F76B8, #234785);
   color: #FFFFFF !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* ===== НАВІГАЦІЯ ===== */
@@ -147,19 +167,23 @@ html, body {
   font-size: 11px;
   line-height: 13px;
   text-decoration: underline;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .nav-item:hover {
-  background: #2A4F8F;
+  background: rgba(255, 255, 255, 0.06);
   color: #FFFFFF !important;
   text-decoration: none;
+  border-radius: 2px;
 }
 
 .nav-item.current {
-  background: #6788C9;
+  background: linear-gradient(160deg, #6788C9, #4F76B8);
   color: #FFFFFF !important;
   font-weight: bold;
   text-decoration: none;
+  border-radius: 2px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 /* ===== АКАУНТ ===== */
@@ -175,6 +199,7 @@ html, body {
   color: #BBD2FF;
   font-size: 9px;
   line-height: 12px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .account-link {
@@ -193,38 +218,46 @@ html, body {
 }
 
 /* =====================================================
-   ОСНОВНИЙ КОНТЕНТ
+   ОСНОВНИЙ КОНТЕНТ — ГЛЯНЦЕВИЙ WINAMP
    ===================================================== */
 
 /* ===== ПРОФІЛЬ ===== */
 .profile-box {
   margin: 0 0 8px;
   padding: 7px;
-  background: #163366;
+  background: linear-gradient(160deg, #234785, #122D5A);
   border: 1px solid #6788C9;
-  border-bottom-width: 2px;
+  border-radius: 4px;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .profile-header {
   margin: 0 0 7px;
   padding: 4px 7px;
-  background: linear-gradient(180deg, #234785, #122D5A);
+  background: linear-gradient(180deg, #2A4F8F, #1A3570);
   border: 1px solid #6788C9;
-  border-bottom-width: 2px;
-  color: #BBD2FF;
+  border-radius: 3px;
+  color: #FFFFFF;
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 4px rgba(187, 210, 255, 0.05);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .profile-info {
   padding: 6px 7px;
-  background: #0F274F;
+  background: linear-gradient(160deg, #163366, #0F274F);
   border: 1px solid #2A4F8F;
+  border-radius: 3px;
   color: #FFFFFF;
   font-size: 11px;
   line-height: 15px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .profile-status {
@@ -233,27 +266,34 @@ html, body {
   font-size: 10px;
   line-height: 13px;
   font-style: italic;
+  text-shadow: 0 0 6px rgba(127, 191, 127, 0.1);
 }
 
 /* ===== ПОСТИ ===== */
 .posts-header {
   margin: 8px 0 5px;
   padding: 4px 7px;
-  background: linear-gradient(180deg, #234785, #122D5A);
+  background: linear-gradient(180deg, #2A4F8F, #1A3570);
   border: 1px solid #6788C9;
-  border-bottom-width: 2px;
-  color: #BBD2FF;
+  border-radius: 3px;
+  color: #FFFFFF;
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .profile-post {
   margin: 0 0 7px;
-  background: #0F274F;
+  background: linear-gradient(160deg, #163366, #0F274F);
   border: 1px solid #6788C9;
-  border-bottom-width: 2px;
+  border-radius: 4px;
+  box-shadow: 
+    0 1px 4px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .profile-post-title {
@@ -262,13 +302,15 @@ html, body {
   align-items: center;
   gap: 8px;
   padding: 4px 7px;
-  background: linear-gradient(180deg, #234785, #122D5A);
+  background: linear-gradient(180deg, #2A4F8F, #1A3570);
   border-bottom: 1px solid #6788C9;
-  color: #BBD2FF;
+  border-radius: 4px 4px 0 0;
+  color: #FFFFFF;
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .post-author-link {
@@ -293,6 +335,7 @@ html, body {
   font-size: 11px;
   line-height: 15px;
   overflow-wrap: anywhere;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .profile-post-date {
@@ -306,7 +349,9 @@ html, body {
 .post-actions {
   padding: 4px 7px;
   border-top: 1px solid #2A4F8F;
-  background: #122D5A;
+  background: linear-gradient(180deg, #1A3570, #122D5A);
+  border-radius: 0 0 4px 4px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .like-button,
@@ -318,6 +363,7 @@ html, body {
   color: #BBD2FF;
   font: 10px/13px 'Segoe UI', Arial, Helvetica, sans-serif;
   cursor: pointer;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .like-button:hover,
@@ -328,6 +374,7 @@ html, body {
 .like-button.liked {
   color: #FF6B6B;
   font-weight: bold;
+  text-shadow: 0 0 8px rgba(255, 107, 107, 0.2);
 }
 
 /* ===== КОМЕНТАРІ ===== */
@@ -336,6 +383,7 @@ html, body {
   padding: 6px 7px;
   background: #0F274F;
   border-top: 1px solid #2A4F8F;
+  border-radius: 0 0 4px 4px;
 }
 
 .comments-area.open {
@@ -346,12 +394,14 @@ html, body {
 .user-comment {
   margin: 0 0 5px;
   padding: 4px 5px;
-  background: #163366;
+  background: linear-gradient(160deg, #1A3570, #122D5A);
   border: 1px solid #2A4F8F;
+  border-radius: 3px;
   color: #FFFFFF;
   font-size: 10px;
   line-height: 13px;
   overflow-wrap: anywhere;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .fake-comment-name {
@@ -371,40 +421,47 @@ html, body {
   padding: 4px 5px;
   resize: vertical;
   border: 1px solid #6788C9;
-  background: #0F274F;
+  border-radius: 3px;
+  background: linear-gradient(160deg, #163366, #0F274F);
   color: #FFFFFF;
   font: 10px/13px 'Segoe UI', Arial, Helvetica, sans-serif;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .comment-input:focus {
   outline: none;
   border-color: #BBD2FF;
-  background: #1A3570;
+  background: linear-gradient(160deg, #1A3570, #0F274F);
+  box-shadow: 0 0 12px rgba(187, 210, 255, 0.06), inset 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .comment-input::placeholder {
   color: #6788C9;
 }
 
-/* ===== КНОПКИ ДІЙ ===== */
+/* ===== КНОПКИ ДІЙ (глянцеві) ===== */
 .comment-send,
 .show-more,
 .create-post-btn {
   padding: 3px 8px;
-  background: linear-gradient(180deg, #2A4F8F, #1A3570);
+  background: linear-gradient(180deg, #3B64A8, #1A3570);
   border: 1px solid #6788C9;
-  border-bottom-width: 2px;
+  border-radius: 3px;
   color: #BBD2FF;
   font-size: 10px;
   line-height: 13px;
   cursor: pointer;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .comment-send:hover,
 .show-more:hover,
 .create-post-btn:hover {
-  background: linear-gradient(180deg, #3B64A8, #1F3F7A);
+  background: linear-gradient(180deg, #4F76B8, #234785);
   color: #FFFFFF;
 }
 
@@ -420,9 +477,12 @@ html, body {
   display: none;
   margin: 0 0 8px;
   padding: 7px;
-  background: #163366;
+  background: linear-gradient(160deg, #234785, #122D5A);
   border: 1px solid #6788C9;
-  border-bottom-width: 2px;
+  border-radius: 4px;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .create-post-form.open {
@@ -443,16 +503,19 @@ html, body {
   display: none;
 }
 
-/* ===== ПРАВИЛА ===== */
+/* ===== ПРАВИЛА (з відблиском) ===== */
 .rules-box {
   margin: 8px 0 0;
   padding: 5px 8px;
-  background: #163366;
+  background: linear-gradient(160deg, #234785, #122D5A);
   border: 1px solid #6788C9;
-  border-bottom-width: 2px;
+  border-radius: 4px;
   color: #BBD2FF;
   font-size: 11px;
   line-height: 14px;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .rules-box a {
@@ -464,21 +527,25 @@ html, body {
   color: #BBD2FF;
 }
 
-/* ===== СТАТИСТИКА ===== */
+/* ===== СТАТИСТИКА (з відблиском) ===== */
 .statistics-box {
   margin: 8px 0 0;
   padding: 5px 8px;
-  background: #163366;
+  background: linear-gradient(160deg, #234785, #122D5A);
   border: 1px solid #6788C9;
-  border-bottom-width: 2px;
+  border-radius: 4px;
   color: #BBD2FF;
   font: 10px/13px 'Courier New', Courier, monospace;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .statistics-title {
   margin: 0 0 3px;
   color: #FFFFFF;
   font: bold 10px/12px 'Segoe UI', Arial, Helvetica, sans-serif;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .statistics-number {
@@ -489,6 +556,7 @@ html, body {
 .statistics-online {
   color: #7FBF7F;
   font-weight: bold;
+  text-shadow: 0 0 6px rgba(127, 191, 127, 0.1);
 }
 
 /* ===== ФУТЕР ===== */
@@ -500,6 +568,7 @@ html, body {
   font-size: 9px;
   line-height: 11px;
   text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* =====================================================
