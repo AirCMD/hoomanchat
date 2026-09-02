@@ -539,6 +539,56 @@ botScript +
     a.click();
     URL.revokeObjectURL(a.href);
   };
+
+  /* ---- preview ---- */
+  var previewFrame = document.getElementById("preview-frame");
+  var previewTimer = null;
+
+  function updatePreview() {
+    if (!previewFrame) return;
+    var page = buildPage();
+    if (!page) {
+      previewFrame.srcdoc = "<!doctype html><html><body style='font-family:Arial;padding:20px;color:#666'>Вкажи нік, щоб побачити превʼю.</body></html>";
+      return;
+    }
+    previewFrame.srcdoc = page;
+  }
+
+  function schedulePreview() {
+    clearTimeout(previewTimer);
+    previewTimer = setTimeout(updatePreview, 350);
+  }
+
+  document.getElementById("preview").onclick = updatePreview;
+
+  document.querySelectorAll("input, textarea, select").forEach(function (field) {
+    field.addEventListener("input", schedulePreview);
+    field.addEventListener("change", schedulePreview);
+  });
+
+  document.querySelectorAll(".preview-mode").forEach(function (button) {
+    button.onclick = function () {
+      var mode = button.dataset.mode;
+      document.querySelectorAll(".preview-mode").forEach(function (b) {
+        b.classList.remove("preview-active");
+      });
+      button.classList.add("preview-active");
+      document.getElementById("preview-frame").classList.toggle("preview-mobile", mode === "mobile");
+      document.getElementById("preview-frame").classList.toggle("preview-desktop", mode !== "mobile");
+    };
+  });
+
+  var originalGenerate = document.getElementById("generate").onclick;
+  document.getElementById("generate").onclick = function () {
+    var page = buildPage();
+    if (page) {
+      output.value = page;
+      if (previewFrame) previewFrame.srcdoc = page;
+    }
+  };
+
+  // Initial preview
+  updatePreview();
 })();
 </script>
 </body>
