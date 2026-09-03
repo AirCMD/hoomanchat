@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Гуменчат — taras_jd</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<link rel="stylesheet" href="../css/hoomenchat-profile.css">
+<link rel="stylesheet" href="../css/pm-popup.css">
+</head>
+<body>
+
+<div id="hoomenchat-site">
+
+<div class="hoomenchat-header">
+ГУМЕНЧАТ
+</div>
+
+<div class="site-layout">
+
+<div class="site-left">
+<div class="left-box">
+
+<div class="site-name" id="profile-nickname">taras_jd</div>
+
+<img
+  class="main-avatar"
+  id="profile-avatar"
+  alt="taras_jd"
+  src="https://blogger.googleusercontent.com/img/a/AVvXsEjoWGq8O6gcgapUgyWjF-zQSnbo-vi2yg8c0P9dVKTH7z7hXvnZpX4O0wz1B23u5XH9DAYqFdrONPBQkv2XoqpCduDbBek2GaxQ7DkqVvK0QRi62pYNPzTkQ3f5Msf4ya4VJyJY-w_AG-Q36ulOCaU_AAKIMAw_NUStInX6bg8Enaz8F_Kn7_m30toTHmo"
+>
+
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+
+<div class="nav-menu" id="nav-menu">
+<!-- Наповнюється з конфігу -->
+</div>
+
+<div class="account-box">
+  <div class="account-text">Немає гумгайла?</div>
+  <a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
+  <a class="account-link" href="../login.html">ВХІД</a>
+</div>
+
+</div>
+</div>
+
+<div class="site-right">
+
+<div class="profile-box">
+  <div class="profile-header" id="profile-header-title">Профіль гумена: taras_jd</div>
+  <div class="profile-info">
+    <strong id="profile-info-name">taras_jd</strong>
+    <div id="profile-family"></div>
+    <div id="profile-status-text"></div>
+    <div class="profile-status" id="profile-online-status"></div>
+  </div>
+</div>
+
+<div class="posts-header" id="posts-header">
+  Дописи taras_jd — <span id="posts-count">0</span>
+</div>
+
+<!-- Сторонній персонаж: кнопки «Новий допис» немає -->
+
+<div id="profile-posts">
+<!-- ДОПИС 1 -->
+<div class="profile-post">
+<div class="profile-post-title">Здійснення мрій</div>
+<div class="profile-post-body">Шановне гуменство, з вами на зв'язку Тарас Джейді. Мені подобається подорожувати світом та бачити інші країни, знаходити нових друменів та з користю проводити час. В цьому й полягає моя робота, збирати знання про традиції та культури інших гуменів, та й багато хто мріяв би бути на моєму місці. У мене є прекрасна пропозиція. Ви можете писати мені в арчат, якщо я буду відвідувати певну країну, то зможу придбати речі, які складно знайти в інтернеті та за символічну плату надіслати вам. З вас оплата за річ, перевізників + за мою роботу. Тому якщо є щось таке чого ви сильно жадаєте, пишіть. Все інше в секреті.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="88234">♡ Подобається <span class="like-count">88234</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">9 січня</div>
+</div>
+</div>
+
+<div class="posts-pager" id="posts-pager">
+  <button class="show-more hidden" id="show-less-posts" type="button">показати менше...</button>
+  <button class="show-more hidden" id="show-more-posts" type="button">показати ще...</button>
+</div>
+
+<div class="rules-box">
+  Пам'ятай та дотримуйся
+  <a href="../rules.html">ПРАВИЛ</a>
+  нашого ресурсу для приємного та друмнього часу разом з нами.
+</div>
+
+<div class="statistics-box">
+  <div class="statistics-title">Статистика Гуменчату</div>
+  <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
+  <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
+  <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
+</div>
+
+<div class="image-viewer" id="post-image-viewer">
+  <button class="image-viewer-close" id="post-image-viewer-close" type="button" aria-label="Закрити">✕</button>
+  <button class="image-viewer-prev" id="post-image-viewer-prev" type="button" aria-label="Попереднє зображення">‹</button>
+  <img class="image-viewer-image" id="post-image-viewer-image" src="" alt="Зображення допису">
+  <button class="image-viewer-next" id="post-image-viewer-next" type="button" aria-label="Наступне зображення">›</button>
+</div>
+
+<div class="footer-line">Гуменчат — місце для гуменів.</div>
+
+</div>
+</div>
+</div>
+
+<script>
+window.HOOMEN_PROFILE = {
+  nickname: "taras_jd",
+  avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEjoWGq8O6gcgapUgyWjF-zQSnbo-vi2yg8c0P9dVKTH7z7hXvnZpX4O0wz1B23u5XH9DAYqFdrONPBQkv2XoqpCduDbBek2GaxQ7DkqVvK0QRi62pYNPzTkQ3f5Msf4ya4VJyJY-w_AG-Q36ulOCaU_AAKIMAw_NUStInX6bg8Enaz8F_Kn7_m30toTHmo",
+  isMainCharacter: false,
+  mainCharacterUrl: "copy-pasta.html",
+  statusText: "Подорожую світом, відкриваючи для себе нові культури, країни.",
+  onlineStatus: "online",
+  schedule: [
+    { time: "09:00", status: "online" },
+    { time: "14:00", status: "offline" }
+  ],
+  gender: "male",
+  family: {
+      type: "relationship",
+      partnerName: "",
+      partnerUrl: ""
+  },
+  navLinks: {
+    home: "../index.html",
+    profiles: "../profiles.html",
+    droomens: "../droomens.html",
+    activity: "../activity.html",
+    islands: "../islands.html",
+    rules: "../rules.html"
+  }
+};
+</script>
+<script src="../js/hoomenchat-profile.js"></script>
+<script src="../js/pm-popup.js"></script>
+
+</body>
+</html>
+
+<!-- Рекомендована назва файлу: profiles/taras-jd.html -->
