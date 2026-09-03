@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Гуменчат — anon_hoomen</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<link rel="stylesheet" href="../css/hoomenchat-profile.css">
+<link rel="stylesheet" href="../css/pm-popup.css">
+</head>
+<body>
+
+<div id="hoomenchat-site">
+
+<div class="hoomenchat-header">
+ГУМЕНЧАТ
+</div>
+
+<div class="site-layout">
+
+<div class="site-left">
+<div class="left-box">
+
+<div class="site-name" id="profile-nickname">anon_hoomen</div>
+
+<img
+  class="main-avatar"
+  id="profile-avatar"
+  alt="anon_hoomen"
+  src="https://blogger.googleusercontent.com/img/a/AVvXsEgUzp3yxhj3nWnsna6Ybl7Uwzp-f4Cacnf5AjsKQsZO2LhdhVF30nxETgUSMQoQVPzoD3qDDLFgPybcAfH9uQU8Xwmt0XR8vGJG58q224EoTuqSGZxf5CNtSGXQoSZfoAoy_oe52IlI5JB0WLbPQ_1e3xPY7tLC6QX8Y9-gg124AgDi-YgrB0c0M_i8rXQ"
+>
+
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+
+<div class="nav-menu" id="nav-menu">
+<!-- Наповнюється з конфігу -->
+</div>
+
+<div class="account-box">
+  <div class="account-text">Немає гумгайла?</div>
+  <a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
+  <a class="account-link" href="../login.html">ВХІД</a>
+</div>
+
+</div>
+</div>
+
+<div class="site-right">
+
+<div class="profile-box">
+  <div class="profile-header" id="profile-header-title">Профіль гумена: anon_hoomen</div>
+  <div class="profile-info">
+    <strong id="profile-info-name">anon_hoomen</strong>
+    <div id="profile-family"></div>
+    <div id="profile-status-text"></div>
+    <div class="profile-status" id="profile-online-status"></div>
+  </div>
+</div>
+
+<div class="posts-header" id="posts-header">
+  Дописи anon_hoomen — <span id="posts-count">0</span>
+</div>
+
+<!-- Сторонній персонаж: кнопки «Новий допис» немає -->
+
+<div id="profile-posts">
+<!-- ДОПИС 1 -->
+<div class="profile-post">
+<div class="profile-post-title">Запрошую у світ снів</div>
+<div class="profile-post-body">Ви бачите безліч снів, але не можете їх вхопити, торкнутися до них. Ваші сни ніколи не виходять за межі вашої свідомості, світ здається вам значно ширним та цікавішим у світі снів? Ви б хотіли торкнутися хоч на секунду до снів у реальному світі, побачити як розмивається межа між сном та життям. Ви хочете не просто відпочити від вашої реальності, а торкнутися світу снів, відчути його дію з вашою повсякденністю. Ви хочете КРИЧАТИ уві сні, ЛІТАТИ, ви хочете побачити ті дивні ситуації тут і зараз. Вам необхідно це так само як повітря вашим легеням, як сон, їжа та вода. Вам потрібно це як одяг на вашому тілі, всі базові потреби, такі як кухня, туалет, кімната для відпочинку. Саме тому я пропоную ТОРКНУТИСЯ до іншої реальності просто ЗАРАЗ. Якщо вас цікавить <a href="https://aircmd.github.io/insomnia/">тема снів</a>, ви знаєте що робити.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="12777">♡ Подобається <span class="like-count">12777</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">3 вересня</div>
+</div>
+</div>
+
+<div class="posts-pager" id="posts-pager">
+  <button class="show-more hidden" id="show-less-posts" type="button">показати менше...</button>
+  <button class="show-more hidden" id="show-more-posts" type="button">показати ще...</button>
+</div>
+
+<div class="rules-box">
+  Пам'ятай та дотримуйся
+  <a href="../rules.html">ПРАВИЛ</a>
+  нашого ресурсу для приємного та друмнього часу разом з нами.
+</div>
+
+<div class="statistics-box">
+  <div class="statistics-title">Статистика Гуменчату</div>
+  <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
+  <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
+  <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
+</div>
+
+<div class="image-viewer" id="post-image-viewer">
+  <button class="image-viewer-close" id="post-image-viewer-close" type="button" aria-label="Закрити">✕</button>
+  <button class="image-viewer-prev" id="post-image-viewer-prev" type="button" aria-label="Попереднє зображення">‹</button>
+  <img class="image-viewer-image" id="post-image-viewer-image" src="" alt="Зображення допису">
+  <button class="image-viewer-next" id="post-image-viewer-next" type="button" aria-label="Наступне зображення">›</button>
+</div>
+
+<div class="footer-line">Гуменчат — місце для гуменів.</div>
+
+</div>
+</div>
+</div>
+
+<script>
+window.HOOMEN_PROFILE = {
+  nickname: "anon_hoomen",
+  avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEgUzp3yxhj3nWnsna6Ybl7Uwzp-f4Cacnf5AjsKQsZO2LhdhVF30nxETgUSMQoQVPzoD3qDDLFgPybcAfH9uQU8Xwmt0XR8vGJG58q224EoTuqSGZxf5CNtSGXQoSZfoAoy_oe52IlI5JB0WLbPQ_1e3xPY7tLC6QX8Y9-gg124AgDi-YgrB0c0M_i8rXQ",
+  isMainCharacter: false,
+  mainCharacterUrl: "copy-pasta.html",
+  statusText: "Не важливо хто я, важливіше ким є ти.",
+  onlineStatus: "online",
+  schedule: [
+    { time: "09:00", status: "online" },
+    { time: "23:00", status: "offline" }
+  ],
+  gender: "female",
+  family: {
+      type: "married",
+      partnerName: "",
+      partnerUrl: ""
+  },
+  navLinks: {
+    home: "../index.html",
+    profiles: "../profiles.html",
+    droomens: "../droomens.html",
+    activity: "../activity.html",
+    islands: "../islands.html",
+    rules: "../rules.html"
+  }
+};
+</script>
+<script src="../js/hoomenchat-profile.js"></script>
+<script src="../js/pm-popup.js"></script>
+
+</body>
+</html>
+
+<!-- Рекомендована назва файлу: profiles/anon_hoomen.html -->
