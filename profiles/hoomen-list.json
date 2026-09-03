@@ -1,5 +1,13 @@
 [
   {
+    "name": "agatha_cheng",
+    "file": "agatha-cheng.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEgAuU9OrKHkOm5e67KQhTq0zX4dSFJQzZbOt0qnKuiQAw0VufdrQNXwvvKsmcG2L3xspDC--r_x4w3NFpQeamn1d548zdkA08SBp_FiwbksYjddxSEbC0rscCFrMSEQrlkvESkRhws3JeQC1LyVzv8NQPna1eCiyPDppuvN8xsm4aLTlXn4v9CuVFk0iGc",
+    "status": "online",
+    "gender": "female",
+    "description": "Сімейка: у стуснах · Статус: Ші-дроїд зі СтарДек."
+   },
+  {
     "name": "ai_ta",
     "file": "ai-ta.html",
     "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEiL6thgUlIrDQGm3nc01Mnoc9gYjNY80-ozxGc7K_qASeopokJU66ij96w3upFRNP52KE0PWVmrnmZ4tQLC09T3mMrROn6Ahv2CnHSMW0nu64JsE_u9rlDes4ukK8QpNM6IooLn2Vldk1MGa56fVUafBnijVgkUIpwA1KGF5UZcl6yudcprY7l4LQjcvCI",
@@ -251,6 +259,14 @@
     "name": "maru_candy",
     "file": "maruna-candy.html",
     "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEitxSq0XcAjzwWu-O3SrMVODQK3sdWcXSBRX4AROL32pHGW2ash5fd1glChZdDAV6RpBmSiQOdNApUfOdBZOuEscVsFbs3hqJ2Wt0LqW6rhd7DJOj5SYAbjxiIrkEX8m1espSuS0BP4W6DKPMIbXn4ojTqjXc_-DsO26F6Doo-tCmtygLlPFGvA5bem9Ko",
+    "status": "online",
+    "gender": "female",
+    "description": ""
+  },
+  {
+    "name": "masha_dino",
+    "file": "masha-dino.html",
+    "avatar": "https://blogger.googleusercontent.com/img/a/AVvXsEjV1JWEk3UcC91Baehf-02X1IJ5JYtU_KKmSBWxGaqcFP7SnsArcFa7X9CGws-ExcLI3hsmyMHy6sSndF1FK5LuSSwtYaUopyQPA8VSwmCecXEwSOHO3Zyvw0KrPuzWlESeD-rJPj7bun3l29l69NPNXvOJ1lR6QfqcVhCv5ofWcC5DqVDeSv_z-2i4g_k",
     "status": "online",
     "gender": "female",
     "description": ""
