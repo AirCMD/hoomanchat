@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Гуменчат — la_cyber</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<link rel="stylesheet" href="../css/hoomenchat-profile.css">
+<link rel="stylesheet" href="../css/pm-popup.css">
+</head>
+<body>
+
+<div id="hoomenchat-site">
+
+<div class="hoomenchat-header">
+ГУМЕНЧАТ
+</div>
+
+<div class="site-layout">
+
+<div class="site-left">
+<div class="left-box">
+
+<div class="site-name" id="profile-nickname">la_cyber</div>
+
+<img
+  class="main-avatar"
+  id="profile-avatar"
+  alt="la_cyber"
+  src="https://blogger.googleusercontent.com/img/a/AVvXsEhdk-75gfVmzOc3hKB5iZhuWl1Gnq3lYjzX7qDmmQXhh_Anhy5_6JIWmnGr-y1hplD80Xpv0cuO68yhXC6t2jtqaZ9f6SWL-pT6nIf5lDHx853IKYh81sbg2jzAGmnOwYuAtT-89T6cczL0H9TGOdQ_DxHlIwvdWuxBbGCslRVElK87HnBPHcS3bgRbPL8"
+>
+
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+
+<div class="nav-menu" id="nav-menu">
+<!-- Наповнюється з конфігу -->
+</div>
+
+<div class="account-box">
+  <div class="account-text">Немає гумгайла?</div>
+  <a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
+  <a class="account-link" href="../login.html">ВХІД</a>
+</div>
+
+</div>
+</div>
+
+<div class="site-right">
+
+<div class="profile-box">
+  <div class="profile-header" id="profile-header-title">Профіль гумена: la_cyber</div>
+  <div class="profile-info">
+    <strong id="profile-info-name">la_cyber</strong>
+    <div id="profile-family"></div>
+    <div id="profile-status-text"></div>
+    <div class="profile-status" id="profile-online-status"></div>
+  </div>
+</div>
+
+<div class="posts-header" id="posts-header">
+  Дописи la_cyber — <span id="posts-count">0</span>
+</div>
+
+<!-- Сторонній персонаж: кнопки «Новий допис» немає -->
+
+<div id="profile-posts">
+<!-- ДОПИС 1 -->
+<div class="profile-post">
+<div class="profile-post-title">Йо</div>
+<div class="profile-post-body">Мене звати Юля. Один із моїх інтересів тама-чі. Інші інтереси знайомі моїм друменам. Зареєструвалась тут щоб дивитись на новинки тама-чі.</div>
+<div class="post-actions">
+<button class="like-button" type="button" data-base-likes="1792">♡ Подобається <span class="like-count">1792</span></button>
+<button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+</div>
+<div class="comments-area">
+<div class="comment-form">
+<textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+<button class="comment-send" type="button">Відправити</button>
+</div>
+</div>
+<div class="profile-post-date">3 травня</div>
+</div>
+</div>
+
+<div class="posts-pager" id="posts-pager">
+  <button class="show-more hidden" id="show-less-posts" type="button">показати менше...</button>
+  <button class="show-more hidden" id="show-more-posts" type="button">показати ще...</button>
+</div>
+
+<div class="rules-box">
+  Пам'ятай та дотримуйся
+  <a href="../rules.html">ПРАВИЛ</a>
+  нашого ресурсу для приємного та друмнього часу разом з нами.
+</div>
+
+<div class="statistics-box">
+  <div class="statistics-title">Статистика Гуменчату</div>
+  <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
+  <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
+  <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
+</div>
+
+<div class="image-viewer" id="post-image-viewer">
+  <button class="image-viewer-close" id="post-image-viewer-close" type="button" aria-label="Закрити">✕</button>
+  <button class="image-viewer-prev" id="post-image-viewer-prev" type="button" aria-label="Попереднє зображення">‹</button>
+  <img class="image-viewer-image" id="post-image-viewer-image" src="" alt="Зображення допису">
+  <button class="image-viewer-next" id="post-image-viewer-next" type="button" aria-label="Наступне зображення">›</button>
+</div>
+
+<div class="footer-line">Гуменчат — місце для гуменів.</div>
+
+</div>
+</div>
+</div>
+
+<script>
+window.HOOMEN_PROFILE = {
+  nickname: "la_cyber",
+  avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEhdk-75gfVmzOc3hKB5iZhuWl1Gnq3lYjzX7qDmmQXhh_Anhy5_6JIWmnGr-y1hplD80Xpv0cuO68yhXC6t2jtqaZ9f6SWL-pT6nIf5lDHx853IKYh81sbg2jzAGmnOwYuAtT-89T6cczL0H9TGOdQ_DxHlIwvdWuxBbGCslRVElK87HnBPHcS3bgRbPL8",
+  isMainCharacter: false,
+  mainCharacterUrl: "copy-pasta.html",
+  statusText: "Моє особисте не для соцмереж.",
+  onlineStatus: "online",
+  schedule: [
+    { time: "09:00", status: "online" },
+    { time: "14:00", status: "away" },
+    { time: "23:00", status: "offline" }
+  ],
+  gender: "female",
+  family: {
+      type: "seeking",
+      partnerName: "",
+      partnerUrl: ""
+  },
+  navLinks: {
+    home: "../index.html",
+    profiles: "../profiles.html",
+    droomens: "../droomens.html",
+    activity: "../activity.html",
+    islands: "../islands.html",
+    rules: "../rules.html"
+  }
+};
+</script>
+<script src="../js/hoomenchat-profile.js"></script>
+<script src="../js/pm-popup.js"></script>
+
+</body>
+</html>
+
+<!-- Рекомендована назва файлу: profiles/la-cyber.html -->
