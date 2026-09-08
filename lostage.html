@@ -212,7 +212,7 @@
       <div class="status" id="status">в мережі</div>
     </div>
     <div class="header-actions">
-      <button id="friendBtn" title="Додати в друзі">➕</button>
+      <button id="friendBtn" title="Додати в друмени">➕</button>
       <button id="blockBtn" title="Заблокувати">🔒</button>
     </div>
   </div>
@@ -420,8 +420,8 @@ async function sendMyMessage(text) {
 
 async function specialT9(type) {
   if (type === 't9_1') {
-    // Набирає "Я одружена"
-    await typeInInput('Я одружена', 50);
+    // Набирає "Я шлюбна"
+    await typeInInput('Я шлюбна', 50);
     await sleep(600);
     // Т9 замінює на "зайнята" — зтирає і пише нове
     for (let i = 0; i < 8; i++) {
@@ -434,18 +434,18 @@ async function specialT9(type) {
     // просто очищаємо поле (вона не встигла)
     inputBox.value = '';
   } else {
-    // Другий раз: Т9 дає "начальниця", вона виправляє всередині
-    await typeInInput('Я начальниця', 45);
+    // Другий раз: Т9 дає "адмінка", вона виправляє всередині
+    await typeInInput('Я адмінка', 45);
     await sleep(700);
     // Виправляє літери всередині слова
-    const target = 'Я одружена';
+    const target = 'Я шлюбна';
     for (let i = 2; i < target.length; i++) {
       inputBox.value = target.slice(0, i + 1);
       await sleep(85);
     }
     await sleep(400);
     await flashSend();
-    addMessage('Я одружена', 'me');
+    addMessage('Я шлюбна', 'me');
     inputBox.value = '';
   }
 }
@@ -532,7 +532,7 @@ friendBtn.onclick = () => {
         showTyping(true);
         await sleep(1300);
         showTyping(false);
-        addMessage('о, чудово що ми знову друзі!', 'them');
+        addMessage('о, чудово що ми знову друмени!', 'them');
         isPaused = false;
       }, 500);
     }
