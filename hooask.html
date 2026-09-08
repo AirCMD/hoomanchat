@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Фоксі — Запитай мене</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #e8eef3;
+      color: #14171a;
+      min-height: 100vh;
+      padding: 20px 12px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .ask-container {
+      width: 100%;
+      max-width: 680px;
+      background: #f4f7f9;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid #e1e8ed;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      position: relative;
+    }
+
+    /* ===== Header ===== */
+    .ask-header-bg {
+      height: 180px;
+      background: url('https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;
+      filter: blur(8px) brightness(0.85);
+      transform: scale(1.05);
+    }
+
+    .ask-top-bar {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      z-index: 10;
+    }
+
+    .ask-action-btn {
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(6px);
+      border: none;
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      transition: background 0.2s;
+    }
+
+    .ask-action-btn:hover {
+      background: rgba(0, 0, 0, 0.65);
+    }
+
+    /* ===== Profile ===== */
+    .ask-profile-section {
+      text-align: center;
+      margin-top: -65px;
+      position: relative;
+      z-index: 5;
+      padding: 0 20px 20px;
+    }
+
+    .ask-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 5px solid #ffffff;
+      object-fit: cover;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+      background: #e1e8ed;
+    }
+
+    .ask-name {
+      font-size: 24px;
+      font-weight: 800;
+      margin: 12px 0 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .ask-vip-badge {
+      background: linear-gradient(45deg, #FFD700, #FFA500);
+      color: #000;
+      font-size: 12px;
+      font-weight: 900;
+      padding: 3px 9px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+      letter-spacing: 0.5px;
+    }
+
+    .ask-handle {
+      color: #657786;
+      font-size: 15px;
+    }
+
+    .ask-followers {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #657786;
+      font-weight: 600;
+    }
+
+    /* ===== Navigation ===== */
+    .ask-nav-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #ffffff;
+      border-top: 1px solid #e1e8ed;
+      border-bottom: 1px solid #e1e8ed;
+    }
+
+    .ask-tab-btn {
+      background: none;
+      border: none;
+      padding: 14px 6px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      font-size: 13px;
+    }
+
+    .ask-tab-btn:hover {
+      background: #f8fafc;
+    }
+
+    .ask-tab-btn.active {
+      border-bottom-color: #ec5252;
+    }
+
+    .ask-tab-btn.active .ask-tab-icon {
+      transform: scale(1.15);
+    }
+
+    .ask-tab-icon {
+      font-size: 20px;
+      transition: transform 0.2s;
+    }
+
+    .ask-tab-count {
+      font-size: 13px;
+      font-weight: 700;
+      color: #4b5563;
+    }
+
+    /* ===== Content ===== */
+    .ask-tab-content {
+      display: none;
+      padding: 20px;
+    }
+
+    .ask-tab-content.active {
+      display: block;
+    }
+
+    .ask-box-main {
+      background: #ffffff;
+      padding: 28px 24px;
+      border-radius: 14px;
+      border: 1px solid #e1e8ed;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+    }
+
+    .ask-box-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .ask-box-sub {
+      font-size: 14px;
+      color: #657786;
+      margin-bottom: 20px;
+    }
+
+    .ask-main-button {
+      width: 100%;
+      max-width: 320px;
+      background: #ec5252;
+      color: #ffffff;
+      border: none;
+      padding: 15px 24px;
+      border-radius: 28px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 5px 15px rgba(236, 82, 82, 0.35);
+    }
+
+    .ask-main-button:hover {
+      background: #d93d3d;
+    }
+
+    .ask-main-button:active {
+      transform: scale(0.98);
+    }
+
+    /* Cards */
+    .ask-card {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e1e8ed;
+      margin-bottom: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      transition: box-shadow 0.2s;
+    }
+
+    .ask-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+
+    .ask-q-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #ec5252;
+      margin-bottom: 5px;
+      letter-spacing: 0.3px;
+    }
+
+    .ask-q-text {
+      font-size: 15.5px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.35;
+    }
+
+    .ask-a-text {
+      font-size: 14.5px;
+      color: #292f33;
+      line-height: 1.5;
+    }
+
+    .ask-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid #f0f4f8;
+      font-size: 13px;
+      color: #8899a6;
+    }
+
+    .ask-like-btn {
+      color: #ec5252;
+      font-weight: 600;
+      background: #fff0f0;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+
+    /* About / Likes */
+    .ask-about-box {
+      background: #ffffff;
+      padding: 28px 24px;
+      border-radius: 14px;
+      border: 1px solid #e1e8ed;
+      font-size: 16px;
+      line-height: 1.65;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+    }
+
+    /* Modal */
+    .ask-modal-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .ask-modal-overlay.active {
+      display: flex;
+    }
+
+    .ask-modal-content {
+      background: #ffffff;
+      padding: 28px 24px;
+      border-radius: 18px;
+      max-width: 340px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+      animation: askPopIn 0.22s ease-out;
+    }
+
+    @keyframes askPopIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .ask-modal-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin: 8px 0;
+    }
+
+    .ask-modal-text {
+      font-size: 14.5px;
+      color: #657786;
+      margin-bottom: 20px;
+      line-height: 1.45;
+    }
+
+    .ask-modal-close {
+      background: #eceff1;
+      color: #14171a;
+      border: none;
+      padding: 10px 26px;
+      border-radius: 20px;
+      font-size: 14.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .ask-modal-close:hover {
+      background: #e1e8ed;
+    }
+
+    /* ========== Desktop / Tablet improvements ========== */
+    @media (min-width: 768px) {
+      body {
+        padding: 40px 20px;
+        background: linear-gradient(160deg, #e0e7ef 0%, #f0f4f8 100%);
+      }
+
+      .ask-container {
+        max-width: 760px;
+        border-radius: 24px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.14);
+      }
+
+      .ask-header-bg {
+        height: 220px;
+      }
+
+      .ask-avatar {
+        width: 140px;
+        height: 140px;
+        border-width: 6px;
+      }
+
+      .ask-name {
+        font-size: 28px;
+      }
+
+      .ask-tab-btn {
+        padding: 16px 8px;
+        font-size: 14px;
+      }
+
+      .ask-tab-icon {
+        font-size: 22px;
+      }
+
+      .ask-tab-content {
+        padding: 28px;
+      }
+
+      .ask-box-main {
+        padding: 36px 32px;
+      }
+
+      .ask-box-title {
+        font-size: 20px;
+      }
+
+      .ask-main-button {
+        max-width: 360px;
+        padding: 16px 28px;
+        font-size: 17px;
+      }
+
+      .ask-card {
+        padding: 18px 22px;
+      }
+
+      .ask-q-text {
+        font-size: 16px;
+      }
+
+      .ask-a-text {
+        font-size: 15px;
+      }
+
+      /* Красива сітка карток на десктопі */
+      #tab-messages {
+        display: none;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      #tab-messages.active {
+        display: grid;
+      }
+
+      #tab-messages .ask-card {
+        margin-bottom: 0;
+        height: 100%;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .ask-container {
+        max-width: 900px;
+      }
+
+      #tab-messages {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ask-container">
+  <!-- Top bar -->
+  <div class="ask-top-bar">
+    <button class="ask-action-btn" title="Налаштування">⚙️</button>
+    <button class="ask-action-btn" title="Зберегти">💾</button>
+  </div>
+
+  <!-- Header background -->
+  <div class="ask-header-bg"></div>
+
+  <!-- Profile -->
+  <div class="ask-profile-section">
+    <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=400&auto=format&fit=crop" 
+         alt="Фоксі" class="ask-avatar">
+    <div>
+      <h2 class="ask-name">
+        Фоксі <span class="ask-vip-badge">VIP</span>
+      </h2>
+      <div class="ask-handle">@foxy_stylish</div>
+      <div class="ask-followers">5 487 підписників</div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="ask-nav-bar">
+    <button class="ask-tab-btn active" onclick="switchAskTab(event, 'tab-main')">
+      <span class="ask-tab-icon">✏️</span>
+      <span class="ask-tab-count">Запитати</span>
+    </button>
+    <button class="ask-tab-btn" onclick="switchAskTab(event, 'tab-messages')">
+      <span class="ask-tab-icon">💬</span>
+      <span class="ask-tab-count">1 277</span>
+    </button>
+    <button class="ask-tab-btn" onclick="switchAskTab(event, 'tab-likes')">
+      <span class="ask-tab-icon">❤️</span>
+      <span class="ask-tab-count">18 793</span>
+    </button>
+    <button class="ask-tab-btn" onclick="switchAskTab(event, 'tab-about')">
+      <span class="ask-tab-icon">ℹ️</span>
+      <span class="ask-tab-count">Про себе</span>
+    </button>
+  </div>
+
+  <!-- Tab: Ask -->
+  <div id="tab-main" class="ask-tab-content active">
+    <div class="ask-box-main">
+      <div class="ask-box-title">Хочеш щось запитати у Фоксі?</div>
+      <div class="ask-box-sub">Постав анонімне або публічне запитання прямо зараз</div>
+      <button class="ask-main-button" onclick="showAskModal()">Запитай мене</button>
+    </div>
+  </div>
+
+  <!-- Tab: Messages -->
+  <div id="tab-messages" class="ask-tab-content">
+    <div class="ask-card">
+      <div class="ask-q-label">Питання</div>
+      <div class="ask-q-text">Яке твоє улюблене аніме всіх часів?</div>
+      <div class="ask-a-text">Однозначно «Steins;Gate»! Історія, атмосфера та персонажі просто 10/10. Передивлялася кілька разів.</div>
+      <div class="ask-card-footer"><span>10 хвилин тому</span><span class="ask-like-btn">❤️ 42</span></div>
+    </div>
+    <div class="ask-card">
+      <div class="ask-q-label">Питання</div>
+      <div class="ask-q-text">Як часто готуєш яблучне смузі?</div>
+      <div class="ask-a-text">Майже щодня! Яблуко + трохи кориці та льоду — ідеальний рецепт для перезавантаження :3</div>
+      <div class="ask-card-footer"><span>35 хвилин тому</span><span class="ask-like-btn">❤️ 19</span></div>
+    </div>
+    <div class="ask-card">
+      <div class="ask-q-label">Питання</div>
+      <div class="ask-q-text">У що зараз граєш вечорами?</div>
+      <div class="ask-a-text">Зараз проходжу затишні інді-ігри та іноді залітаю в Co-op з друзями.</div>
+      <div class="ask-card-footer"><span>2 години тому</span><span class="ask-like-btn">❤️ 88</span></div>
+    </div>
+    <div class="ask-card">
+      <div class="ask-q-label">Питання дня</div>
+      <div class="ask-q-text">Яку книжку порадиш почитати для затишного вечора?</div>
+      <div class="ask-a-text">Якщо любиш фентезі — спробуй щось із класики або затишний детектив. Головне плед і гарячий чай!</div>
+      <div class="ask-card-footer"><span>4 години тому</span><span class="ask-like-btn">❤️ 54</span></div>
+    </div>
+    <div class="ask-card">
+      <div class="ask-q-label">Питання</div>
+      <div class="ask-q-text">Звідки такий крутий нікнейм?</div>
+      <div class="ask-a-text">Лисички — мої улюблені тварини, а стильний — бо любила збирати естетичні луки в іграх)</div>
+      <div class="ask-card-footer"><span>6 годин тому</span><span class="ask-like-btn">❤️ 31</span></div>
+    </div>
+    <div class="ask-card">
+      <div class="ask-q-label">Питання</div>
+      <div class="ask-q-text">Скільки часу витрачаєш на читання за день?</div>
+      <div class="ask-a-text">Стабільно хоча б годину перед сном. Найкращий спосіб відпочити від монітора.</div>
+      <div class="ask-card-footer"><span>9 годин тому</span><span class="ask-like-btn">❤️ 27</span></div>
+    </div>
+    <div class="ask-card">
+      <div class="ask-q-label">Питання</div>
+      <div class="ask-q-text">Солоне чи солодке?</div>
+      <div class="ask-a-text">Солодке! Особливо якщо це фрукти або яблучний десерт 🍏</div>
+      <div class="ask-card-footer"><span>12 годин тому</span><span class="ask-like-btn">❤️ 61</span></div>
+    </div>
+    <div class="ask-card">
+      <div class="ask-q-label">Питання</div>
+      <div class="ask-q-text">Ти більше геймер чи анімешниця?</div>
+      <div class="ask-a-text">50 на 50, це ідеальний баланс мого вільного часу.</div>
+      <div class="ask-card-footer"><span>15 годин тому</span><span class="ask-like-btn">❤️ 102</span></div>
+    </div>
+    <div class="ask-card">
+      <div class="ask-q-label">Питання</div>
+      <div class="ask-q-text">Яку суперздібність хотіла б мати?</div>
+      <div class="ask-a-text">З зупинки часу, щоб встигати і прочитати всі книжки, і закрити всі тайтли)</div>
+      <div class="ask-card-footer"><span>1 день тому</span><span class="ask-like-btn">❤️ 76</span></div>
+    </div>
+    <div class="ask-card">
+      <div class="ask-q-label">Питання</div>
+      <div class="ask-q-text">Задавай питання, ми відповімо!</div>
+      <div class="ask-a-text">Дякую усім за активність! Чекаю ваших нових цікавих питань :3</div>
+      <div class="ask-card-footer"><span>1 день тому</span><span class="ask-like-btn">❤️ 115</span></div>
+    </div>
+  </div>
+
+  <!-- Tab: Likes -->
+  <div id="tab-likes" class="ask-tab-content">
+    <div class="ask-about-box">
+      <div style="font-size: 36px; margin-bottom: 10px;">❤️</div>
+      <strong style="font-size: 22px;">18 793 вподобайок</strong>
+      <p style="color: #657786; font-size: 15px; margin-top: 8px;">
+        Користувачі оцінили відповіді Фоксі 18 793 разів!
+      </p>
+    </div>
+  </div>
+
+  <!-- Tab: About -->
+  <div id="tab-about" class="ask-tab-content">
+    <div class="ask-about-box">
+      Gamer, анімешка, обожнюю яблучне смузі, люблю читати книжки.<br>
+      Чекаю питань :3
+      <div style="margin-top: 18px; font-weight: 700; color: #ff9800; font-size: 18px;">
+        🔥 Бали активності: 178 000
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="askModal" class="ask-modal-overlay" onclick="closeAskModal(event)">
+    <div class="ask-modal-content" onclick="event.stopPropagation()">
+      <div style="font-size: 36px; margin-bottom: 6px;">🔒</div>
+      <div class="ask-modal-title">Помилка доступу</div>
+      <div class="ask-modal-text">Вибачте, ви не зареєстровані на цій платформі.</div>
+      <button class="ask-modal-close" onclick="closeAskModal()">Зрозуміло</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchAskTab(evt, tabName) {
+    const container = evt.currentTarget.closest('.ask-container');
+    const contents = container.querySelectorAll('.ask-tab-content');
+    const buttons = container.querySelectorAll('.ask-tab-btn');
+
+    contents.forEach(c => c.classList.remove('active'));
+    buttons.forEach(b => b.classList.remove('active'));
+
+    container.querySelector('#' + tabName).classList.add('active');
+    evt.currentTarget.classList.add('active');
+  }
+
+  function showAskModal() {
+    document.getElementById('askModal').classList.add('active');
+  }
+
+  function closeAskModal(evt) {
+    if (!evt || evt.target.id === 'askModal' || evt.target.classList.contains('ask-modal-close')) {
+      document.getElementById('askModal').classList.remove('active');
+    }
+  }
+</script>
+
+</body>
+</html>
