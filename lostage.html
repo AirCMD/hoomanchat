@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Чат • ginger_wolf</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #e5ddd5;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .chat-container {
+    width: 100%;
+    max-width: 420px;
+    height: 100%;
+    max-height: 780px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .header {
+    background: #075e54;
+    color: white;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .header .info { flex: 1; }
+  .header .name { font-weight: 600; font-size: 16px; }
+  .header .status { font-size: 12px; opacity: 0.85; }
+  .header-actions {
+    display: flex;
+    gap: 10px;
+    font-size: 20px;
+  }
+  .header-actions button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 20px;
+    opacity: 0.9;
+  }
+  .header-actions button:hover { opacity: 1; }
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 12px;
+    background: #e5ddd5;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4cfc7' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .msg {
+    max-width: 78%;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+  }
+  .msg.them { align-self: flex-start; }
+  .msg.me { align-self: flex-end; }
+  .bubble {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    line-height: 1.4;
+    position: relative;
+    word-wrap: break-word;
+  }
+  .them .bubble {
+    background: white;
+    border-top-left-radius: 0;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.08);
+  }
+  .me .bubble {
+    background: #dcf8c6;
+    border-top-right-radius: 0;
+  }
+  .time {
+    font-size: 11px;
+    color: #667781;
+    margin-top: 2px;
+    align-self: flex-end;
+  }
+  .them .time { align-self: flex-start; }
+  .photo-thumb {
+    max-width: 180px;
+    border-radius: 8px;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    cursor: pointer;
+    margin-top: 4px;
+    display: block;
+  }
+  .typing {
+    font-size: 13px;
+    color: #667781;
+    padding: 4px 12px;
+    display: none;
+  }
+  .typing.visible { display: block; }
+  .dots span {
+    animation: blink 1.4s infinite both;
+  }
+  .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink {
+    0%, 80%, 100% { opacity: 0.2; }
+    40% { opacity: 1; }
+  }
+  .input-area {
+    background: #f0f0f0;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .input-area button {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    opacity: 0.6;
+  }
+  .input-area button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .input-box {
+    flex: 1;
+    background: white;
+    border-radius: 20px;
+    padding: 10px 16px;
+    font-size: 15px;
+    border: none;
+    outline: none;
+    color: #111;
+  }
+  .input-box:disabled {
+    color: #111;
+    background: white;
+  }
+  .send-btn {
+    background: #075e54 !important;
+    color: white !important;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px !important;
+    opacity: 0.35 !important;
+    transition: opacity 0.25s;
+    border: none;
+  }
+  .send-btn.active {
+    opacity: 1 !important;
+  }
+  .popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  .popup-overlay.show { display: flex; }
+  .popup-img {
+    max-width: 90%;
+    max-height: 80%;
+    border-radius: 8px;
+  }
+  .popup-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+  }
+  .blocked-banner {
+    background: #ffebee;
+    color: #c62828;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+<div class="chat-container">
+  <div class="header">
+    <img src="https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA" alt="avatar">
+    <div class="info">
+      <div class="name">dreaming_romance</div>
+      <div class="status" id="status">в мережі</div>
+    </div>
+    <div class="header-actions">
+      <button id="friendBtn" title="Додати в друзі">➕</button>
+      <button id="blockBtn" title="Заблокувати">🔒</button>
+    </div>
+  </div>
+
+  <div class="blocked-banner" id="blockedBanner">ви заблокували dreaming_romance</div>
+
+  <div class="messages" id="messages"></div>
+  <div class="typing" id="typing">dreaming_romance друкує текст<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+
+  <div class="input-area">
+    <button disabled title="Медіа">📎</button>
+    <input class="input-box" id="inputBox" type="text" placeholder="Повідомлення" disabled>
+    <button class="send-btn" id="sendBtn" disabled>➤</button>
+  </div>
+</div>
+
+<div class="popup-overlay" id="popup">
+  <span class="popup-close" id="popupClose">×</span>
+  <img class="popup-img" id="popupImg" src="">
+</div>
+
+<script>
+const messagesEl = document.getElementById('messages');
+const typingEl = document.getElementById('typing');
+const inputBox = document.getElementById('inputBox');
+const sendBtn = document.getElementById('sendBtn');
+const blockBtn = document.getElementById('blockBtn');
+const friendBtn = document.getElementById('friendBtn');
+const blockedBanner = document.getElementById('blockedBanner');
+const statusEl = document.getElementById('status');
+const popup = document.getElementById('popup');
+const popupImg = document.getElementById('popupImg');
+const popupClose = document.getElementById('popupClose');
+
+const PHOTO_URL = "https://blogger.googleusercontent.com/img/a/AVvXsEgXBrLe-Jbhhwp23DQDFUhruHfExI9AstKzZ_Ytv8SRAPb6gBKTIA-kFQOOs5RKDoEMkDFL_XPhU7FaaEtiyAvWH2hxJw7HV-doDuHKMEZD47H3ZGblnsipLcLXcObXPfhth1I8xlOhVZxz3-sKZ6C6W82tCbYjWayKMwbq6pja4S5aWwNTRXVNA0HcwZc";
+
+let blocked = false;
+let isFriend = false;
+let friendReacted = false;
+let blockReacted = false;
+let currentIndex = 0;
+let isPaused = false;
+let messageTimes = [];
+
+const script = [
+  { from: "them", text: "Ня, привіт)" },
+  { from: "me", text: "?" },
+  { from: "them", text: "Давно не бачились, не листувались) Багато років пройшло." },
+  { from: "me", text: "Ми знайомі?" },
+  { from: "them", text: "Це ж ти copy_pasta? Тебе легко впізнати)" },
+  { from: "them", text: "Я тут в сусіднє місто приїхав, неподалік від твого. Планую потім у твоє місто їхати) Що на це скажеш?" },
+  { from: "me", text: "В моє? Ти впевнений що знаєш де я живу? Це розіграш якийсь, так? Ти ж хтось інший чи навіть інша людина?" },
+  { from: "them", text: "Так, розумію чому у тебе склалося таке враження. Я не інша людина. Тримай доказ", photo: true },
+  { from: "me", text: "Звідки мені знати що це фото не взяте з соцмереж людини, якою ти прикидаєшся?" },
+  { from: "them", text: "Бо фото зроблене в реальному часі, просто зараз." },
+  { from: "me", text: "Ок, зрозуміло." },
+  { from: "them", text: "Я розумію, пройшло дуже багато часу з того моменту як я останній раз тобі писав." },
+  { from: "them", text: "Ми розбіглись на не дуже приємній ноті." },
+  { from: "me", text: "Ще й якій ноті. З твого боку." },
+  { from: "them", text: "Почекай..." },
+  { from: "them", text: "Я тебе дуже прошу, тільки не блокуй мене)" },
+  { from: "them", text: "Я довго думав над тим що між нами було, думав навіть про те що все могло скластися зовсім інакше..." },
+  { from: "them", text: "Я навіть власною творчістю зайнявся)" },
+  { from: "them", text: "Почав малювати, але не знаю куди викладати свої малюнки." },
+  { from: "them", text: "Можливо на якийсь форум чи в художню соцмережу для творчих людей." },
+  { from: "me", text: "Ну, ти можеш просто створити новий акаунт там, де ми були колись раніше. Я також почала вести сторінку з чистого аркуша паперу, бо мені набрид мій попередній стиль." },
+  { from: "them", text: "А це непогана ідея)" },
+  { from: "them", text: "Я думав над тим що був інколи не правий. В минулому трішки проблем тобі створював." },
+  { from: "them", text: "Зараз я це розумію, все могло скластися інакше." },
+  { from: "them", text: "І я тут щоб виправити наше спільне минуле." },
+  { from: "me", text: "Виправити?" },
+  { from: "them", text: "Так, я довго все аналізував, зрозумівши де допустився помилок у наших відносинах." },
+  { from: "me", text: "А ти я бачу сміливий." },
+  { from: "them", text: "Не те щоб сміливий, я вже маю план наперед)" },
+  { from: "me", text: "Сміливий аж настільки щоб пертися як баран в зачинену браму." },
+  { from: "them", text: "Ню, все не так вже й погано)" },
+  { from: "them", text: "Я продовжую дивитися різні аніме тайли." },
+  { from: "them", text: "І мені здається я вже все сучасне аніме передивився яке тільки можна." },
+  { from: "them", text: "Але є ще чимало аніме, які можливо я не бачив, не починав дивитися." },
+  { from: "them", text: "Можливо ти щось підкажеш як зустрінемось)" },
+  { from: "me", text: "Ті рідкісні моменти зустрічей завжди були проявом моєї ініціативи, куди піти, що подивитись." },
+  { from: "me", text: "І ти кожну мою спробу просто зіпсував." },
+  { from: "them", text: "Про це я також думав, повір)" },
+  { from: "me", text: "Ми так і не сходили разом нікуди, ти просто розвертався та йшов назад. У нас не було жодного нормального побачення як пари." },
+  { from: "me", text: "Твоя ініціатива була в тому що ти просто розвертався й мовчки йшов собі, ти навіть не думав як я почувалась в такі моменти." },
+  { from: "me", text: "А почувалась ганебно." },
+  { from: "me", text: "А потім я побачила просто випадково як ти на концерті з дівчиною, заради якої кинув мене. Заради якої готовий був викинути роки наших стосунків, де ініціатива була лише з мого боку." },
+  { from: "me", text: "Ти не цінував наші стосунки, а з нею все було організовано, концерти." },
+  { from: "me", text: "Що ж пішло не так? Що саме трапилось?" },
+  { from: "them", text: "Не зійшлось(" },
+  { from: "me", text: "Вона ж була такою красивою." },
+  { from: "them", text: "Тааак...." },
+  { from: "me", text: "Не те що я, чи стосунки зі мною." },
+  { from: "them", text: "Повір, ти себе недооцінюєш) Ми все можемо почати з самого початку." },
+  { from: "me", text: "Ти навіть зараз не зрозумів." },
+  { from: "me", text: "Ти недооцінював мене. Ти жодного разу не сказав що я красива." },
+  { from: "them", text: "Не те щоб не красива..." },
+  { from: "me", text: "Ти настільки мене уникав що ігнорував дедлайн нашого шлюбу. Ти вирішив погуляти. Але гуляти з іншою." },
+  { from: "them", text: "Нуу...." },
+  { from: "me", text: "Ти тягнув з цим до своїх майже 40 років." },
+  { from: "them", text: "Ну, мені все ще 30) Але з роками. Тому ще немає 40)" },
+  { from: "me", text: "Я одружена", special: "t9_1" },
+  { from: "them", text: "Я тут щоб виправити помилки минулого і зробити твоє життя кращим." },
+  { from: "me", text: "Я одружена", special: "t9_2" },
+  { from: "them", text: "Ти одружена? Коли ти встигла?" },
+  { from: "me", text: "Ти дуже довго до цього йшов і не дійшов, та й тобі не так того й хотілося. Навряд чи ти хотів одружитись." },
+  { from: "them", text: "Почекай, а як так сталося? Він тобі подобається?" },
+  { from: "me", text: "Він так сказати мій соулмейт, ми й зовні з ним маємо схожі риси обличчя." },
+  { from: "them", text: "Ок." },
+  { from: "me", text: "Із аніме я можу порадити тобі класику серед тайлів, яку чимало людей обожнюють." },
+  { from: "me", text: "Якщо хочеш, то можемо трохи поспілкуватися. Але якщо я дізнаюсь що мій партнер проти, то спілкування закінчиться." },
+  { from: "them", text: "][{][[...[[][]-]=+[" },
+  { from: "me", text: "Це що?" },
+  { from: "them", text: "Це хтось від мене відправив. Але вже не зможе відправити, я забрав свій телефон назад." },
+  { from: "me", text: "Ок" }
+];
+
+function scrollToBottom() {
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function formatTime(secondsAgo) {
+  if (secondsAgo < 25) return "надіслано щойно";
+  if (secondsAgo < 60) return "надіслано кілька сек. назад";
+  const mins = Math.floor(secondsAgo / 60);
+  if (mins === 1) return "надіслано 1 хв назад";
+  return `надіслано ${mins} хв назад`;
+}
+
+function updateTimes() {
+  const now = Date.now();
+  document.querySelectorAll('.msg').forEach((el, i) => {
+    const timeEl = el.querySelector('.time');
+    if (timeEl && messageTimes[i]) {
+      const sec = Math.floor((now - messageTimes[i]) / 1000);
+      timeEl.textContent = formatTime(sec);
+    }
+  });
+}
+setInterval(updateTimes, 12000);
+
+function showTyping(show) {
+  typingEl.classList.toggle('visible', show);
+  if (show) scrollToBottom();
+}
+
+function addMessage(text, from, hasPhoto = false) {
+  const div = document.createElement('div');
+  div.className = `msg ${from}`;
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.textContent = text;
+
+  if (hasPhoto) {
+    const img = document.createElement('img');
+    img.src = PHOTO_URL;
+    img.className = 'photo-thumb';
+    img.onclick = () => {
+      popupImg.src = PHOTO_URL;
+      popup.classList.add('show');
+    };
+    bubble.appendChild(document.createElement('br'));
+    bubble.appendChild(img);
+  }
+
+  div.appendChild(bubble);
+  const time = document.createElement('div');
+  time.className = 'time';
+  time.textContent = 'надіслано щойно';
+  div.appendChild(time);
+
+  messagesEl.appendChild(div);
+  messageTimes.push(Date.now());
+  scrollToBottom();
+}
+
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+async function flashSend() {
+  sendBtn.classList.add('active');
+  await sleep(550);
+  sendBtn.classList.remove('active');
+}
+
+async function typeInInput(text, speed = 45) {
+  inputBox.value = '';
+  for (let i = 0; i < text.length; i++) {
+    if (blocked || isPaused) return false;
+    inputBox.value += text[i];
+    await sleep(speed + Math.random() * 25);
+  }
+  return true;
+}
+
+async function sendMyMessage(text) {
+  const ok = await typeInInput(text);
+  if (!ok) return;
+  await sleep(300);
+  await flashSend();
+  addMessage(text, 'me');
+  inputBox.value = '';
+}
+
+async function specialT9(type) {
+  if (type === 't9_1') {
+    // Набирає "Я одружена"
+    await typeInInput('Я одружена', 50);
+    await sleep(600);
+    // Т9 замінює на "зайнята" — зтирає і пише нове
+    for (let i = 0; i < 8; i++) {
+      inputBox.value = inputBox.value.slice(0, -1);
+      await sleep(70);
+    }
+    await typeInInput('зайнята', 40);
+    await sleep(400);
+    // Не встигає відправити — приходить повідомлення від нього
+    // просто очищаємо поле (вона не встигла)
+    inputBox.value = '';
+  } else {
+    // Другий раз: Т9 дає "начальниця", вона виправляє всередині
+    await typeInInput('Я начальниця', 45);
+    await sleep(700);
+    // Виправляє літери всередині слова
+    const target = 'Я одружена';
+    for (let i = 2; i < target.length; i++) {
+      inputBox.value = target.slice(0, i + 1);
+      await sleep(85);
+    }
+    await sleep(400);
+    await flashSend();
+    addMessage('Я одружена', 'me');
+    inputBox.value = '';
+  }
+}
+
+async function runScript() {
+  while (currentIndex < script.length) {
+    if (blocked || isPaused) {
+      await sleep(400);
+      continue;
+    }
+
+    const item = script[currentIndex];
+
+    if (item.from === 'them') {
+      const pause = 900 + Math.random() * 1600;
+      await sleep(pause);
+
+      showTyping(true);
+
+      // Іноді робить паузу в друкуванні (ніби виправляє)
+      if (item.text.length > 55 && Math.random() > 0.45) {
+        await sleep(1100 + Math.random() * 1400);
+        showTyping(false);
+        await sleep(800 + Math.random() * 1100);
+        showTyping(true);
+      }
+
+      const typingDuration = Math.min(item.text.length * 38, 3200) + Math.random() * 900;
+      await sleep(typingDuration);
+      showTyping(false);
+
+      addMessage(item.text, 'them', item.photo);
+    } else {
+      // ginger_wolf набирає в полі вводу
+      await sleep(700 + Math.random() * 1000);
+
+      if (item.special) {
+        await specialT9(item.special);
+      } else {
+        await sendMyMessage(item.text);
+      }
+    }
+
+    currentIndex++;
+    await sleep(350 + Math.random() * 500);
+  }
+}
+
+// Блокування
+blockBtn.onclick = () => {
+  if (!blocked) {
+    blocked = true;
+    blockedBanner.style.display = 'block';
+    showTyping(false);
+    statusEl.textContent = 'заблоковано';
+    inputBox.value = '';
+  } else {
+    blocked = false;
+    blockedBanner.style.display = 'none';
+    statusEl.textContent = 'в мережі';
+    if (blockReacted === false) {
+      blockReacted = true;
+      isPaused = true;
+      setTimeout(async () => {
+        showTyping(true);
+        await sleep(1600);
+        showTyping(false);
+        addMessage('Навіщо ти мене блокувала?( я продовжу', 'them');
+        isPaused = false;
+      }, 700);
+    }
+  }
+};
+
+// Друзі
+friendBtn.onclick = () => {
+  if (!isFriend) {
+    isFriend = true;
+    friendBtn.textContent = '✓';
+    if (!friendReacted) {
+      friendReacted = true;
+      isPaused = true;
+      setTimeout(async () => {
+        showTyping(true);
+        await sleep(1300);
+        showTyping(false);
+        addMessage('о, чудово що ми знову друзі!', 'them');
+        isPaused = false;
+      }, 500);
+    }
+  } else {
+    isFriend = false;
+    friendBtn.textContent = '➕';
+    if (friendReacted) {
+      isPaused = true;
+      setTimeout(async () => {
+        showTyping(true);
+        await sleep(1000);
+        showTyping(false);
+        addMessage('ок, як скажеш', 'them');
+        isPaused = false;
+        friendReacted = false;
+      }, 400);
+    }
+  }
+};
+
+popupClose.onclick = () => popup.classList.remove('show');
+popup.onclick = e => { if (e.target === popup) popup.classList.remove('show'); };
+
+// Старт
+setTimeout(runScript, 1400);
+</script>
+</body>
+</html>
