@@ -555,7 +555,6 @@
   ];
 
   var PASSWORD = "Jane842";
-  var STORAGE_KEY = "music-island-unlocked-v1";
 
   /* ========== STATE ========== */
   var unlocked = false;
@@ -645,7 +644,6 @@
   /* ========== LOCK ========== */
   function doUnlock() {
     unlocked = true;
-    try { localStorage.setItem(STORAGE_KEY, "1"); } catch (e) {}
     lockOverlay.classList.add("hidden");
     vizLocked.style.display = "none";
     seekBar.disabled = false;
@@ -659,12 +657,7 @@
   }
 
   function checkLock() {
-    var saved = false;
-    try { saved = localStorage.getItem(STORAGE_KEY) === "1"; } catch (e) {}
-    if (saved) {
-      doUnlock();
-      return;
-    }
+    // Пароль НЕ запам'ятовується — кожен захід на сторінку вимагає введення знову
     unlocked = false;
     vizLocked.style.display = "flex";
     seekBar.disabled = true;
@@ -996,9 +989,6 @@
   renderPlaylist();
   stats();
   setInterval(stats, 30000);
-
-  // if already unlocked from previous visit, start viz
-  if (unlocked) startViz();
 })();
 </script>
 </body>
