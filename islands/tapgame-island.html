@@ -110,6 +110,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
   padding: 5px 7px;
   background: #f7f3fb;
   border: 1px solid #e3d7f0;
@@ -123,6 +125,26 @@
   font-size: 14px;
 }
 .score-bar .target-label { color: #8c7b9e; }
+.combo-label {
+  font-size: 11px;
+  font-weight: bold;
+  color: #c06080;
+  min-width: 70px;
+  text-align: center;
+}
+.combo-label.on {
+  color: #e02060;
+  text-shadow: 0 0 4px rgba(224, 32, 96, 0.35);
+}
+.gain-pop {
+  position: absolute;
+  pointer-events: none;
+  font-weight: bold;
+  font-size: 14px;
+  color: #e02060;
+  animation: floatUp 0.7s ease-out forwards;
+  z-index: 6;
+}
 
 .tap-zone {
   position: relative;
@@ -335,8 +357,9 @@
   <div class="tg-box">
     <div class="tg-header">♥ TAPGAME — клікер-кімната</div>
     <div class="tg-note">
-      Рівень складності обирається <b>лише на початку</b>. Прогрес між заходами не зберігається (щоб не засмічувати пам’ять).
-      Мета — першим набрати потрібну кількість кліків. Максимум 5 суперників у кімнаті.
+      Рівень складності обирається <b>лише на початку</b>. Прогрес між заходами не зберігається.
+      Мета — першим набрати потрібну кількість <b>очок</b>. Сердечка дають 1–5 очок, комбо множить нагороду.
+      Максимум 5 суперників. Можна писати в чат.
     </div>
 
     <!-- SCREEN: difficulty -->
@@ -359,7 +382,8 @@
     <div id="screen-game" class="hidden">
       <div class="score-bar">
         <span><span id="lvl-name">—</span> · ціль: <span id="lvl-target">0</span></span>
-        <span class="you-score">Ти: <span id="you-score">0</span></span>
+        <span class="combo-label" id="combo-label">комбо ×1</span>
+        <span class="you-score">Очки: <span id="you-score">0</span></span>
       </div>
       <div class="game-layout">
         <div class="game-main">
@@ -425,19 +449,19 @@
   */
   var BOTS = {
     ai_ta: {
-      name: "ai_ta", tier: "strongest", rate: 9.5, rare: true,
+      name: "ai_ta", tier: "strongest", rate: 6.2, rare: true,
       greet: ["Привіт, я з вами пограю.", "Вітаю, шановні пані та панове.", "Гуменське вітання."],
       lead: [],
       leave: ["З вами весело, але мене чекають справи."]
     },
     anon_hoomen: {
-      name: "anon_hoomen", tier: "strong", rate: 7.2, gender: "f",
+      name: "anon_hoomen", tier: "strong", rate: 5.1, gender: "f",
       greet: ["привіт"],
       lead: [],
       leave: [] // silent leave, can rejoin
     },
     dreaming_romance: {
-      name: "dreaming_romance", tier: "strong", rate: 7.0, gender: "m",
+      name: "dreaming_romance", tier: "strong", rate: 5.0, gender: "m",
       greet: ["Няя, привіт всім)", "Ня, і ти тут copy_pasta.", "Йо", "Мм... привіт)", "Ня"],
       lead: [
         "Приємно вигравати, ще трішки і я переможець)",
@@ -453,13 +477,13 @@
       rejoin: ["Інтернет вилетів, я знову у грі"]
     },
     la_cyber: {
-      name: "la_cyber", tier: "strong", rate: 6.8, gender: "f",
+      name: "la_cyber", tier: "strong", rate: 4.9, gender: "f",
       greet: null, // time-based
       lead: ["Га! Викусили? Хто найкраще грає? Я!", "Бугага!", "Мені знову щастить!"],
       leave: [] // sudden permanent leave
     },
     lexy_lel: {
-      name: "lexy_lel", tier: "medium", rate: 4.5, gender: "m",
+      name: "lexy_lel", tier: "medium", rate: 3.4, gender: "m",
       greet: ["Доброго часу сутінок, шановні гравці.", "Привітався."],
       mid: [
         "Мені набридло, я пішов",
@@ -471,19 +495,19 @@
       leave: ["Мені набридло, я пішов"]
     },
     sakurai_agatsuma: {
-      name: "sakurai_agatsuma", tier: "medium", rate: 4.8, gender: "f",
+      name: "sakurai_agatsuma", tier: "medium", rate: 3.6, gender: "f",
       greet: ["Привітики, copy_pasta та всім іншим!", "Йой, copy_pasta, вітаю! Всіх вас також вітаю звісно ж :)"],
       lead: ["Йой, copy_pasta, що ж так слабенько?", "Не будь равликом"],
       leave: ["Шкода покидати таку компанію, але мені вже час.", "Зайнята, пішла.", "До зустрічі!"]
     },
     anton_wolf: {
-      name: "anton_wolf", tier: "medium", rate: 4.3, gender: "m",
+      name: "anton_wolf", tier: "medium", rate: 3.3, gender: "m",
       greet: ["Сьогодні у мене вихідний, вирішив пограти трішки з вами", "Тимчасово відволікатимусь тут. Привіт!", "Йо!"],
       mid: ["Прикольна гра", "Вайбово...", "Стрьом!"],
       leave: ["Сорі, покликали працювати.", "Я пішов дивитись кіно.", "Я слухати музику. Всім удачі!"]
     },
     ihor_romashka: {
-      name: "ihor_romashka", tier: "medium", rate: 5.5, gender: "m", kid: true,
+      name: "ihor_romashka", tier: "medium", rate: 4.0, gender: "m", kid: true,
       greet: ["Привіт, невдахи!", "Вітаю, старі пердуни!!!", "Пахне нафталіном)))"],
       toxic: [
         "Йоууу... дебіки! Я краще за вас всіх граю!",
@@ -500,14 +524,14 @@
       leave: []
     },
     jane_dust: {
-      name: "jane_dust", tier: "medium", rate: 4.0, gender: "f", rare: true,
+      name: "jane_dust", tier: "medium", rate: 3.1, gender: "f", rare: true,
       greet: ["Вітаю...", "Усім привіт", "Гей..."],
       mid: ["Мені подобається інколи грати разом з вами тут, відволікає."],
       leave: ["Мені вже час по справам, удачі..."],
       rejoin: ["Інтернет вилетів трішки"]
     },
     fedir_tkch: {
-      name: "fedir_tkch", tier: "medium", rate: 3.8, gender: "m",
+      name: "fedir_tkch", tier: "medium", rate: 2.9, gender: "m",
       greet: ["Ок, і ви тут."],
       mid: [
         "У мене вже пальці болять...", "Хочу їсти.", "Спина болить!",
@@ -518,7 +542,7 @@
       leave: [] // silent
     },
     inna_king: {
-      name: "inna_king", tier: "medium", rate: 3.6, gender: "f", stick: true,
+      name: "inna_king", tier: "medium", rate: 2.8, gender: "f", stick: true,
       greet: ["?", "І що?", "Ок, і що?"],
       mid: [
         "Ну граю я в вашу гру. І що?",
@@ -528,31 +552,31 @@
       leave: []
     },
     den_chik: {
-      name: "den_chik", tier: "lowmed", rate: 3.0, gender: "m",
+      name: "den_chik", tier: "lowmed", rate: 2.3, gender: "m",
       greet: ["Йо!", "Йоу-йоу!", "Гайз, я з вами!!"],
       mid: ["Йоу-йоу-йоу!"],
       leave: ["Я пішов грати в тама-чі"]
     },
     night_fox: {
-      name: "night_fox", tier: "lowmed", rate: 2.8, gender: "m",
+      name: "night_fox", tier: "lowmed", rate: 2.1, gender: "m",
       greet: ["Привіт."],
       mid: ["Норм.", "Окей.", "Добре"],
       leave: []
     },
     rusty_robot: {
-      name: "rusty_robot", tier: "lowmed", rate: 2.6, gender: "m",
+      name: "rusty_robot", tier: "lowmed", rate: 2.0, gender: "m",
       greet: ["П91В1Т."],
       mid: [],
       leave: []
     },
     pixel_heart: {
-      name: "pixel_heart", tier: "weak", rate: 1.6, gender: "f",
+      name: "pixel_heart", tier: "weak", rate: 1.2, gender: "f",
       greet: ["Привіт?"],
       mid: ["Ця гра для малих.", "Гра не дуже для дорослих, якась вона інфантильна."],
       leave: ["Ця гра для малих."]
     },
     paper_storm: {
-      name: "paper_storm", tier: "weak", rate: 1.4, gender: "m",
+      name: "paper_storm", tier: "weak", rate: 1.0, gender: "m",
       greet: ["Привіт, якщо мене хоч хтось помітив.", "Я тут, сподіваюсь мене видно."],
       lose: [
         "Ну так, я ж невидимий.",
@@ -562,13 +586,13 @@
       leave: []
     },
     soft_static: {
-      name: "soft_static", tier: "weak", rate: 1.5, gender: "f",
+      name: "soft_static", tier: "weak", rate: 1.1, gender: "f",
       greet: ["Привіт..."],
       mid: [],
       leave: []
     },
     petro_ivanchuk: {
-      name: "petro_ivanchuk", tier: "weak", rate: 1.8, gender: "m", old: true,
+      name: "petro_ivanchuk", tier: "weak", rate: 1.3, gender: "m", old: true,
       greet: ["🌹🌹🌹"],
       toxicM: ["ДУРЕНЬ!"],
       toxicF: ["ДУРА!!!"],
@@ -582,13 +606,48 @@
   var state = "diff"; // diff | mm | game | result
   var currentLevel = null;
   var playerScore = 0;
-  var opponents = []; // { key, score, active, banned, usedLines:{} }
+  var playerTaps = 0;
+  var combo = 0;
+  var comboTimer = null;
+  var opponents = []; // { key, score, active, banned, used, pauseUntil, leadSaid, toxicDone }
   var mmTimer = null;
   var mmLeft = 30;
   var gameLoop = null;
-  var lastLeadCheck = 0;
   var gameStartTs = 0;
   var winner = null;
+  var gameEnded = false;
+
+  // типи сердець → очки (рідкість впливає на шанс)
+  var HEART_TYPES = [
+    { icon: "♡", points: 1, weight: 50, color: "#c06080" },
+    { icon: "♥", points: 1, weight: 28, color: "#e02060" },
+    { icon: "💖", points: 2, weight: 12, color: "#ff5090" },
+    { icon: "💗", points: 2, weight: 6, color: "#ff70a8" },
+    { icon: "💕", points: 3, weight: 2.5, color: "#ff40a0" },
+    { icon: "💞", points: 3, weight: 1, color: "#e01070" },
+    { icon: "💘", points: 5, weight: 0.4, color: "#ffd040" },
+    { icon: "💜", points: 4, weight: 0.1, color: "#a040e0" }
+  ];
+
+  function pickHeart() {
+    var total = 0;
+    for (var i = 0; i < HEART_TYPES.length; i++) total += HEART_TYPES[i].weight;
+    var r = Math.random() * total;
+    for (var j = 0; j < HEART_TYPES.length; j++) {
+      r -= HEART_TYPES[j].weight;
+      if (r <= 0) return HEART_TYPES[j];
+    }
+    return HEART_TYPES[0];
+  }
+
+  function difficultyRateMult(level) {
+    // на легких боти трохи повільніші, на хелкорі — агресивніші
+    if (!level) return 1;
+    if (level.tier === "easy") return 0.85;
+    if (level.tier === "hard") return 1.05;
+    if (level.tier === "hell") return 1.18;
+    return 1;
+  }
 
   /* ========== DOM ========== */
   var screenDiff = document.getElementById("screen-diff");
@@ -601,6 +660,7 @@
   var tapZone = document.getElementById("tap-zone");
   var tapHeart = document.getElementById("tap-heart");
   var youScoreEl = document.getElementById("you-score");
+  var comboLabel = document.getElementById("combo-label");
   var lvlNameEl = document.getElementById("lvl-name");
   var lvlTargetEl = document.getElementById("lvl-target");
   var oppList = document.getElementById("opp-list");
@@ -608,6 +668,12 @@
   var resultTitle = document.getElementById("result-title");
   var resultMsg = document.getElementById("result-msg");
   var resultScore = document.getElementById("result-score");
+
+  function updateComboUI() {
+    if (!comboLabel) return;
+    comboLabel.textContent = "комбо ×" + Math.max(1, combo);
+    comboLabel.classList.toggle("on", combo >= 5);
+  }
 
   /* ========== HELPERS ========== */
   function rnd(arr) {
@@ -812,7 +878,8 @@
       banned: false,
       used: {},
       leadSaid: false,
-      toxicDone: false
+      toxicDone: false,
+      pauseUntil: 0
     };
     opponents.push(o);
     if (isJoin) {
@@ -907,97 +974,140 @@
   function startGame() {
     showScreen("game");
     playerScore = 0;
+    playerTaps = 0;
+    combo = 0;
+    gameEnded = false;
+    updateComboUI();
     youScoreEl.textContent = "0";
     lvlNameEl.textContent = currentLevel.name;
     lvlTargetEl.textContent = currentLevel.target.toLocaleString("uk-UA");
-    feedLog.innerHTML = "";
-    sys("Гра почалась! Перший до " + currentLevel.target.toLocaleString("uk-UA") + " кліків перемагає.");
+    // не чистимо весь чат — залишаємо підбір, лише системне
+    sys("Гра почалась! Перший до " + currentLevel.target.toLocaleString("uk-UA") + " очок перемагає.");
+    sys("Сердечка дають 1–5 очок. Комбо множить нагороду. Тапай!");
     gameStartTs = Date.now();
-    lastLeadCheck = 0;
+
+    // скинути паузи ботів
+    opponents.forEach(function (o) {
+      o.pauseUntil = 0;
+      o.score = Math.floor(o.score * 0); // start from 0 at game start
+      o.leadSaid = false;
+    });
+
     renderOpponents();
 
     if (gameLoop) clearInterval(gameLoop);
     gameLoop = setInterval(tick, 200);
   }
 
-  function tick() {
-    if (state !== "game") return;
-    var dt = 0.2; // seconds
+  function botEffectiveRate(o) {
+    var b = BOTS[o.key];
+    var base = b.rate * difficultyRateMult(currentLevel);
+    // втома / мікропаузи
     var now = Date.now();
+    if (o.pauseUntil && now < o.pauseUntil) return 0;
+    // випадкова пауза (імітація людини)
+    if (chance(0.015)) {
+      o.pauseUntil = now + 400 + Math.random() * 1600;
+      return 0;
+    }
+    // слабкі іноді «туплять» довше
+    if (b.tier === "weak" && chance(0.02)) {
+      o.pauseUntil = now + 800 + Math.random() * 2200;
+      return 0;
+    }
+    return base;
+  }
+
+  function tick() {
+    if (state !== "game" || gameEnded) return;
+    var dt = 0.2;
+    var now = Date.now();
+    var elapsed = (now - gameStartTs) / 1000;
 
     opponents.forEach(function (o) {
       if (!o.active || o.banned) return;
       var b = BOTS[o.key];
-      // variance
-      var mult = 0.7 + Math.random() * 0.6;
-      // strong bots slightly slower if player is far behind on easy? keep fair
-      var gain = b.rate * mult * dt;
-      // occasional burst
-      if (chance(0.04)) gain *= 1.8;
+      var rate = botEffectiveRate(o);
+      if (rate <= 0) return;
+
+      var mult = 0.75 + Math.random() * 0.5;
+      var gain = rate * mult * dt;
+      // рідкісні сплески
+      if (chance(0.03)) gain *= 1.55;
+      // на довгих іграх сильні трохи прискорюються
+      if (elapsed > 60 && (b.tier === "strong" || b.tier === "strongest")) {
+        gain *= 1.08;
+      }
       o.score += gain;
 
-      // toxic / ban logic
-      if (o.key === "ihor_romashka" && !o.toxicDone && o.score > 80 && chance(0.012)) {
-        var line = pickUnused(o, "toxic", b.toxic);
-        if (line) {
-          say(b.name, line);
+      // —— toxic / ban ——
+      if (o.key === "ihor_romashka" && !o.toxicDone && o.score > 60 && chance(0.014)) {
+        var tline = pickUnused(o, "toxic", b.toxic);
+        if (tline) {
+          say(b.name, tline);
           o.toxicDone = true;
           setTimeout(function () {
-            if (!o.active) return;
-            banPlayer(o);
+            if (o.active && !o.banned) banPlayer(o);
           }, 900);
         }
       }
-      if (o.key === "petro_ivanchuk" && !o.toxicDone && chance(0.01)) {
-        // compare with random other
-        var others = opponents.filter(function (x) { return x.active && x.key !== o.key; });
-        if (playerScore > o.score && chance(0.5)) {
-          // vs player (copy_pasta is f-ish character name but treat neutral - use toxicM/F randomly)
-          // user said: less than girl -> ДУРА, less than boy -> ДУРЕНЬ
-          // we'll pick a living opponent of known gender
-        }
-        var target = null;
-        var living = opponents.filter(function (x) { return x.active && x.key !== "petro_ivanchuk"; });
-        living.push({ key: "__player", score: playerScore, gender: "f" }); // copy_pasta as girl-ish for flavor
-        living.forEach(function (x) {
-          if (x.score > o.score) target = x;
+
+      if (o.key === "petro_ivanchuk" && !o.toxicDone && chance(0.012)) {
+        var living = opponents.filter(function (x) {
+          return x.active && !x.banned && x.key !== "petro_ivanchuk";
         });
-        if (target && target.score > o.score + 30) {
-          var g = target.key === "__player" ? "f" : (BOTS[target.key] && BOTS[target.key].gender);
-          var tline = (g === "f") ? rnd(b.toxicF) : rnd(b.toxicM);
-          if (tline) {
-            say(b.name, tline);
+        // copy_pasta як дівчина для реплік
+        living.push({ key: "__player", score: playerScore, gender: "f" });
+        var worse = living.filter(function (x) { return x.score > o.score + 25; });
+        if (worse.length) {
+          var target = rnd(worse);
+          var g = target.key === "__player" ? "f" : (BOTS[target.key] && BOTS[target.key].gender) || "m";
+          var insult = (g === "f") ? rnd(b.toxicF) : rnd(b.toxicM);
+          if (insult) {
+            say(b.name, insult);
             o.toxicDone = true;
-            setTimeout(function () { if (o.active) banPlayer(o); }, 800);
+            setTimeout(function () {
+              if (o.active && !o.banned) banPlayer(o);
+            }, 750);
           }
         }
       }
 
-      // leave logic (higher on long games / high targets)
-      var elapsed = (now - gameStartTs) / 1000;
-      var leaveChance = 0.0015;
-      if (currentLevel.target >= 5000) leaveChance = 0.003;
-      if (currentLevel.target >= 25000) leaveChance = 0.0045;
-      if (b.stick) leaveChance *= 0.15;
-      if (b.tier === "strongest") leaveChance *= 0.5;
-      if (elapsed > 40 && chance(leaveChance)) {
+      // —— leave ——
+      var leaveChance = 0.0012;
+      if (currentLevel.target >= 5000) leaveChance = 0.0025;
+      if (currentLevel.target >= 25000) leaveChance = 0.004;
+      if (currentLevel.target >= 100000) leaveChance = 0.0055;
+      if (b.stick) leaveChance *= 0.12;
+      if (b.tier === "strongest") leaveChance *= 0.45;
+      if (b.tier === "strong") leaveChance *= 0.7;
+      if (elapsed > 35 && chance(leaveChance)) {
         leaveOpponent(o);
+        return;
       }
 
-      // mid lines
-      if (b.mid && b.mid.length && chance(0.008)) {
+      // mid-lines
+      if (b.mid && b.mid.length && chance(0.007)) {
         var ml = pickUnused(o, "mid", b.mid);
         if (ml) {
           say(b.name, ml);
-          // some mid lines are leave
           if (b.leave && b.leave.indexOf(ml) >= 0) {
-            setTimeout(function () { if (o.active) leaveOpponent(o, true); }, 600);
+            setTimeout(function () {
+              if (o.active && !o.banned) leaveOpponent(o, true);
+            }, 500);
           }
         }
       }
 
-      // lead taunt when ahead of player
-      if (b.lead && b.lead.length && o.score > playerScore + 40 && !o.leadSaid && chance(0.02)) {
+      // lead taunt
+      if (b.lead && b.lead.length && o.score > playerScore + 35 && !o.leadSaid && chance(0.018)) {
+        // la_cyber лідирує лише без ai_ta
+        if (o.key === "la_cyber") {
+          var hasAi = opponents.some(function (x) {
+            return x.key === "ai_ta" && x.active && !x.banned;
+          });
+          if (hasAi) return;
+        }
         var ll = pickUnused(o, "lead", b.lead);
         if (ll) {
           say(b.name, ll);
@@ -1006,11 +1116,11 @@
       }
     });
 
-    // weak bots leave early if losing badly
+    // слабкі тікають, якщо сильно відстають
     opponents.forEach(function (o) {
-      if (!o.active) return;
+      if (!o.active || o.banned) return;
       var b = BOTS[o.key];
-      if (b.tier === "weak" && playerScore > o.score + 120 && chance(0.01)) {
+      if (b.tier === "weak" && playerScore > o.score + 100 && chance(0.012)) {
         var line = pickUnused(o, "leave", b.leave || b.mid || []);
         if (line) say(b.name, line);
         leaveOpponent(o, true);
@@ -1022,15 +1132,15 @@
   }
 
   function banPlayer(o) {
+    if (!o || o.banned) return;
     o.active = false;
     o.banned = true;
     banLine(BOTS[o.key].name);
-    // score freezes
     renderOpponents();
   }
 
   function leaveOpponent(o, silent) {
-    if (!o.active) return;
+    if (!o || !o.active) return;
     o.active = false;
     var b = BOTS[o.key];
     if (!silent) {
@@ -1040,11 +1150,17 @@
     } else {
       sys(b.name + " вийшов із кімнати.");
     }
-    // possible rejoin later for some
-    if ((o.key === "dreaming_romance" || o.key === "jane_dust" || o.key === "anon_hoomen" || o.key === "rusty_robot") && chance(0.4)) {
+    // можливе повернення
+    var canRejoin = (
+      o.key === "dreaming_romance" ||
+      o.key === "jane_dust" ||
+      o.key === "anon_hoomen" ||
+      o.key === "rusty_robot"
+    );
+    if (canRejoin && chance(0.42)) {
       setTimeout(function () {
-        if (state !== "game") return;
-        if (opponents.filter(function (x) { return x.active; }).length >= 5) return;
+        if (state !== "game" || gameEnded) return;
+        if (opponents.filter(function (x) { return x.active && !x.banned; }).length >= 5) return;
         o.active = true;
         o.banned = false;
         sys(b.name + " приєднався до кімнати.");
@@ -1053,15 +1169,19 @@
           if (rj) say(b.name, rj);
         }
         renderOpponents();
-      }, 8000 + Math.random() * 15000);
+      }, 7000 + Math.random() * 14000);
     }
     renderOpponents();
   }
 
   function renderOpponents() {
     var rows = [];
-    // player first
-    rows.push({ name: "copy_pasta (ти)", score: playerScore, cls: "you", active: true });
+    rows.push({
+      name: "copy_pasta (ти)",
+      score: Math.floor(playerScore),
+      cls: "you",
+      active: true
+    });
     opponents.forEach(function (o) {
       var cls = "";
       if (o.banned) cls = "banned";
@@ -1073,7 +1193,6 @@
         active: o.active && !o.banned
       });
     });
-    // sort by score desc
     rows.sort(function (a, b) { return b.score - a.score; });
     oppList.innerHTML = rows.map(function (r) {
       return '<div class="opp-row ' + r.cls + '"><span class="opp-name">' + r.name +
@@ -1082,6 +1201,7 @@
   }
 
   function checkWin() {
+    if (gameEnded || !currentLevel) return;
     var target = currentLevel.target;
     if (playerScore >= target) {
       endGame("win");
@@ -1096,23 +1216,45 @@
     }
   }
 
+  function calcReward(won) {
+    // очки нагороди за бій (окремо від ігрового рахунку)
+    var base = Math.floor(currentLevel.target / 50);
+    var tapBonus = Math.min(200, Math.floor(playerTaps / 10));
+    var comboBonus = Math.min(100, combo * 2);
+    if (won) return base + tapBonus + comboBonus + 50;
+    return Math.floor((base + tapBonus) * 0.25);
+  }
+
   function endGame(result, winnerName) {
+    if (gameEnded) return;
+    gameEnded = true;
     if (gameLoop) {
       clearInterval(gameLoop);
       gameLoop = null;
     }
+    if (comboTimer) {
+      clearTimeout(comboTimer);
+      comboTimer = null;
+    }
+    var reward = calcReward(result === "win");
     showScreen("result");
     resultScore.textContent = Math.floor(playerScore).toLocaleString("uk-UA");
     if (result === "win") {
       resultTitle.textContent = "Перемога!";
-      resultMsg.textContent = "copy_pasta першою набрала " + currentLevel.target.toLocaleString("uk-UA") + " кліків на рівні «" + currentLevel.name + "».";
-      sys("copy_pasta перемогла!");
+      resultMsg.innerHTML =
+        "copy_pasta першою набрала " + currentLevel.target.toLocaleString("uk-UA") +
+        " очок на рівні «" + currentLevel.name + "».<br>" +
+        "Тапів: " + playerTaps + " · нагорода: +" + reward + " ★";
+      sys("copy_pasta перемогла! (+" + reward + " ★)");
     } else {
       resultTitle.textContent = "Поразка";
-      resultMsg.textContent = (winnerName || "Суперник") + " першим(а) набрав(ла) " + currentLevel.target.toLocaleString("uk-UA") + " кліків.";
-      // paper_storm lose lines
+      resultMsg.innerHTML =
+        (winnerName || "Суперник") + " першим(а) набрав(ла) " +
+        currentLevel.target.toLocaleString("uk-UA") + " очок.<br>" +
+        "Твої очки: " + Math.floor(playerScore).toLocaleString("uk-UA") +
+        " · втішний приз: +" + reward + " ★";
       opponents.forEach(function (o) {
-        if (o.key === "paper_storm" && o.active) {
+        if (o.key === "paper_storm" && o.active && !o.banned) {
           var line = pickUnused(o, "lose", BOTS.paper_storm.lose || []);
           if (line) say("paper_storm", line);
         }
@@ -1120,26 +1262,36 @@
     }
   }
 
-  /* ========== PLAYER TAP ========== */
-  var HEARTS = ["♥", "💖", "💗", "💕", "💞", "💘", "🧡", "💜"];
-
+  /* ========== PLAYER TAP + POINTS ========== */
   function doTap(e) {
-    if (state !== "game") return;
-    if (e) e.preventDefault();
-    playerScore += 1;
+    if (state !== "game" || gameEnded) return;
+    if (e) {
+      e.preventDefault();
+    }
+
+    var heart = pickHeart();
+    combo = Math.min(combo + 1, 25);
+    updateComboUI();
+    if (comboTimer) clearTimeout(comboTimer);
+    comboTimer = setTimeout(function () {
+      combo = 0;
+      updateComboUI();
+    }, 900);
+
+    var mult = 1 + Math.floor((combo - 1) / 5) * 0.25; // кожні 5 комбо +0.25x
+    if (mult < 1) mult = 1;
+    var gain = Math.max(1, Math.round(heart.points * mult));
+    playerScore += gain;
+    playerTaps += 1;
     youScoreEl.textContent = Math.floor(playerScore).toLocaleString("uk-UA");
 
-    // visual
+    // pulse
     tapZone.classList.add("pulse");
-    setTimeout(function () { tapZone.classList.remove("pulse"); }, 80);
+    setTimeout(function () { tapZone.classList.remove("pulse"); }, 70);
 
-    // floating heart
-    var h = document.createElement("div");
-    h.className = "float-heart";
-    h.textContent = rnd(HEARTS);
     var rect = tapZone.getBoundingClientRect();
-    var x = 40 + Math.random() * (rect.width - 80);
-    var y = 60 + Math.random() * 60;
+    var x = 40 + Math.random() * Math.max(40, rect.width - 80);
+    var y = 50 + Math.random() * 70;
     if (e && e.clientX) {
       x = e.clientX - rect.left;
       y = e.clientY - rect.top;
@@ -1147,11 +1299,27 @@
       x = e.touches[0].clientX - rect.left;
       y = e.touches[0].clientY - rect.top;
     }
+
+    // floating heart
+    var h = document.createElement("div");
+    h.className = "float-heart";
+    h.textContent = heart.icon;
     h.style.left = x + "px";
     h.style.top = y + "px";
-    h.style.fontSize = (14 + Math.random() * 12) + "px";
+    h.style.fontSize = (16 + Math.random() * 14) + "px";
+    h.style.color = heart.color;
     tapZone.appendChild(h);
-    setTimeout(function () { h.remove(); }, 900);
+    setTimeout(function () { if (h.parentNode) h.remove(); }, 900);
+
+    // +N pop
+    var g = document.createElement("div");
+    g.className = "gain-pop";
+    g.textContent = "+" + gain;
+    g.style.left = (x + 10) + "px";
+    g.style.top = (y - 8) + "px";
+    g.style.color = heart.color;
+    tapZone.appendChild(g);
+    setTimeout(function () { if (g.parentNode) g.remove(); }, 700);
 
     renderOpponents();
     checkWin();
