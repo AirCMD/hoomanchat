@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/islands-template.css">
+<title>ОСТРІВ: MUSIC</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<style>
+/* ===== Winamp-inspired Music Player ===== */
+.music-player-wrap {
+  margin: 0 0 10px;
+  font-family: "Courier New", Courier, monospace;
+  user-select: none;
+}
+
+.winamp-frame {
+  background: linear-gradient(180deg, #c8c8d0 0%, #a0a0b0 40%, #787888 100%);
+  border: 2px solid #e8e8f0;
+  border-bottom-color: #505060;
+  border-right-color: #505060;
+  box-shadow:
+    inset 1px 1px 0 #f0f0f8,
+    inset -1px -1px 0 #404050,
+    0 4px 14px rgba(0,0,0,0.25);
+  padding: 6px;
+  border-radius: 2px;
+}
+
+.winamp-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(90deg, #000080, #1084d0);
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 3px 6px;
+  margin-bottom: 5px;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.winamp-titlebar .winamp-btns {
+  display: flex;
+  gap: 3px;
+}
+.winamp-titlebar .wbtn {
+  width: 14px;
+  height: 12px;
+  background: #c0c0c0;
+  border: 1px solid #fff;
+  border-bottom-color: #404040;
+  border-right-color: #404040;
+  font-size: 9px;
+  line-height: 10px;
+  text-align: center;
+  color: #000;
+  cursor: default;
+}
+
+.player-main {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Left: display + visualizer + controls */
+.player-left {
+  flex: 1 1 260px;
+  min-width: 220px;
+}
+
+.display-panel {
+  background: #000;
+  border: 2px solid #808090;
+  border-top-color: #404050;
+  border-left-color: #404050;
+  padding: 6px 8px;
+  margin-bottom: 5px;
+  min-height: 52px;
+}
+
+.now-track {
+  color: #00ff41;
+  font-size: 12px;
+  line-height: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 0 4px #00ff41;
+}
+.now-status {
+  color: #00cc33;
+  font-size: 10px;
+  margin-top: 3px;
+  opacity: 0.9;
+}
+.now-time {
+  color: #00ff41;
+  font-size: 11px;
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Visualizer */
+.viz-box {
+  background: #0a0a0a;
+  border: 2px solid #808090;
+  border-top-color: #404050;
+  border-left-color: #404050;
+  height: 48px;
+  margin-bottom: 5px;
+  position: relative;
+  overflow: hidden;
+}
+.viz-box canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.viz-locked {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #004400;
+  font-size: 10px;
+  background: rgba(0,0,0,0.7);
+}
+
+/* Controls row */
+.controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.wamp-btn {
+  background: linear-gradient(180deg, #d8d8e0, #9090a0);
+  border: 2px solid #e8e8f0;
+  border-bottom-color: #404050;
+  border-right-color: #404050;
+  color: #101018;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 8px;
+  cursor: pointer;
+  min-width: 36px;
+  text-align: center;
+  box-shadow: inset 1px 1px 0 #f8f8ff;
+}
+.wamp-btn:active,
+.wamp-btn.active {
+  background: linear-gradient(180deg, #707080, #a0a0b0);
+  border-color: #303040;
+  border-top-color: #101018;
+  border-left-color: #101018;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.4);
+}
+.wamp-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.wamp-btn.repeat-on {
+  color: #006600;
+  background: linear-gradient(180deg, #b0e0b0, #70a070);
+}
+
+/* Seek bar */
+.seek-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 5px;
+}
+.seek-bar {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  background: #202028;
+  border: 1px solid #606070;
+  border-radius: 0;
+  outline: none;
+}
+.seek-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 14px;
+  background: linear-gradient(180deg, #e0e0e8, #9090a0);
+  border: 1px solid #404050;
+  cursor: pointer;
+}
+.seek-bar::-moz-range-thumb {
+  width: 12px;
+  height: 14px;
+  background: linear-gradient(180deg, #e0e0e8, #9090a0);
+  border: 1px solid #404050;
+  cursor: pointer;
+}
+
+/* Volume */
+.vol-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+.vol-label {
+  color: #202028;
+  font-size: 10px;
+  font-weight: bold;
+  min-width: 28px;
+}
+.vol-bar {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  background: #303038;
+  border: 1px solid #606070;
+}
+.vol-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 11px;
+  height: 13px;
+  background: linear-gradient(180deg, #e0e0e8, #9090a0);
+  border: 1px solid #404050;
+  cursor: pointer;
+}
+.vol-bar::-moz-range-thumb {
+  width: 11px;
+  height: 13px;
+  background: linear-gradient(180deg, #e0e0e8, #9090a0);
+  border: 1px solid #404050;
+  cursor: pointer;
+}
+
+/* Right: playlist */
+.player-right {
+  flex: 0 0 220px;
+  width: 220px;
+  max-width: 100%;
+}
+
+.playlist-frame {
+  background: #000;
+  border: 2px solid #a0a0b0;
+  border-top-color: #606070;
+  border-left-color: #606070;
+  height: 168px;
+  display: flex;
+  flex-direction: column;
+}
+
+.playlist-header {
+  background: #1a1a22;
+  color: #00cc33;
+  font-size: 10px;
+  padding: 3px 6px;
+  border-bottom: 1px solid #303038;
+  flex-shrink: 0;
+}
+
+.playlist-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #a0a0b0 #101018;
+}
+.playlist-scroll::-webkit-scrollbar {
+  width: 14px;
+}
+.playlist-scroll::-webkit-scrollbar-track {
+  background: #101018;
+  border-left: 1px solid #404050;
+}
+.playlist-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #c0c0c8, #808090);
+  border: 1px solid #e0e0e8;
+  border-bottom-color: #404050;
+  border-right-color: #404050;
+}
+
+.track-item {
+  padding: 3px 6px;
+  color: #00ff41;
+  font-size: 11px;
+  line-height: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid #0a1a0a;
+}
+.track-item:hover {
+  background: #002200;
+}
+.track-item.selected {
+  background: #003300;
+  color: #a0ffa0;
+  outline: 1px solid #00aa33;
+}
+.track-item.playing {
+  color: #ffff66;
+  text-shadow: 0 0 3px #aaaa00;
+}
+.track-item.locked-text {
+  color: #006600;
+}
+
+/* Password lock overlay */
+.lock-overlay {
+  background: #0a0a12;
+  border: 2px solid #808090;
+  padding: 14px 12px;
+  margin-bottom: 6px;
+  text-align: center;
+}
+.lock-overlay.hidden { display: none; }
+.lock-title {
+  color: #00ff41;
+  font-size: 12px;
+  margin-bottom: 8px;
+  text-shadow: 0 0 4px #00ff41;
+}
+.lock-input {
+  width: 100%;
+  max-width: 200px;
+  background: #000;
+  border: 1px solid #00aa33;
+  color: #00ff41;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  padding: 5px 8px;
+  text-align: center;
+  outline: none;
+}
+.lock-input:focus {
+  box-shadow: 0 0 6px #00ff41;
+}
+.lock-btn {
+  margin-top: 8px;
+  background: linear-gradient(180deg, #d0d0d8, #808090);
+  border: 2px solid #e0e0e8;
+  border-bottom-color: #404050;
+  border-right-color: #404050;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 14px;
+  cursor: pointer;
+  color: #101018;
+}
+.lock-msg {
+  margin-top: 6px;
+  font-size: 10px;
+  color: #ff4444;
+  min-height: 14px;
+}
+.lock-hint {
+  margin-top: 6px;
+  font-size: 9px;
+  color: #006600;
+}
+
+/* Hidden YT host */
+#yt-host {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Footer bits under player */
+.player-footer-note {
+  margin-top: 6px;
+  font-size: 10px;
+  color: #6b5b95;
+  text-align: center;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .player-main {
+    flex-direction: column;
+  }
+  .player-right {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+  .playlist-frame {
+    height: 196px;
+  }
+  .controls-row {
+    justify-content: center;
+  }
+  .wamp-btn {
+    min-width: 42px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .display-panel {
+    min-height: 60px;
+  }
+  .now-track { font-size: 13px; }
+}
+
+@media (max-width: 420px) {
+  .winamp-frame { padding: 4px; }
+  .wamp-btn { min-width: 34px; padding: 5px 7px; font-size: 11px; }
+}
+</style>
+</head>
+<body>
+<div id="hoomenchat-site">
+<div class="hoomenchat-header">ГУМЕНЧАТ</div>
+<div class="site-layout">
+<div class="site-left"><div class="left-box">
+<div class="site-name">MUSIC</div>
+<img class="main-avatar" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c4c3bf95-7dbb-45e6-a48e-75f20684221e/dmrc7or-797f859b-53af-49eb-b6c6-0969425bcb21.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9jNGMzYmY5NS03ZGJiLTQ1ZTYtYTQ4ZS03NWYyMDY4NDIyMWUvZG1yYzdvci03OTdmODU5Yi01M2FmLTQ5ZWItYjZjNi0wOTY5NDI1YmNiMjEuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.ukmiyas8D6Mh_gykIRW4Yys_0P2O6k4CzV3FM4CCKD4" alt="MUSIC">
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+<div class="nav-menu">
+<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
+<a class="nav-item" href="../profiles.html">Гумени</a>
+<a class="nav-item" href="../droomens.html">Друмени</a>
+<a class="nav-item" href="../activity.html">Стрічерчат</a>
+<a class="nav-item current" href="../islands.html">Острови</a>
+<a class="nav-item" href="../rules.html">Правила</a>
+</div>
+<div class="account-box"><div class="account-text">Немає гумгайла?</div><a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a><a class="account-link" href="../login.html">ВХІД</a></div>
+</div></div>
+
+<div class="site-right">
+<div class="profile-box">
+<div class="profile-header">MUSIC — острів</div>
+<div class="profile-info">
+<div>Острів музики</div>
+<div class="profile-status" style="color:green; font-style:normal;">Статус: відкритий острів</div>
+</div>
+</div>
+
+<!-- ===== MUSIC PLAYER ===== -->
+<div class="music-player-wrap">
+  <div class="winamp-frame">
+    <div class="winamp-titlebar">
+      <span>MUSIC — Winamp-style Player</span>
+      <div class="winamp-btns">
+        <span class="wbtn">_</span>
+        <span class="wbtn">□</span>
+        <span class="wbtn">×</span>
+      </div>
+    </div>
+
+    <!-- Password lock -->
+    <div class="lock-overlay" id="lock-overlay">
+      <div class="lock-title">🔒 ДОСТУП ЗАБЛОКОВАНО</div>
+      <div style="color:#00aa33;font-size:10px;margin-bottom:8px;">Введіть пароль, щоб розблокувати плейлист і візуалізатор</div>
+      <input type="password" class="lock-input" id="lock-input" placeholder="••••••••" autocomplete="off" maxlength="32">
+      <div>
+        <button type="button" class="lock-btn" id="lock-btn">РОЗБЛОКУВАТИ</button>
+      </div>
+      <div class="lock-msg" id="lock-msg"></div>
+      <div class="lock-hint">Після розблокування назви треків стануть видимими</div>
+    </div>
+
+    <div class="player-main" id="player-main">
+      <div class="player-left">
+        <div class="display-panel">
+          <div class="now-track" id="now-track">— виберіть трек —</div>
+          <div class="now-status" id="now-status">STOPPED</div>
+          <div class="now-time" id="now-time">00:00 / 00:00</div>
+        </div>
+
+        <div class="viz-box">
+          <canvas id="viz-canvas" width="400" height="48"></canvas>
+          <div class="viz-locked" id="viz-locked">ВІЗУАЛІЗАТОР ЗАБЛОКОВАНО</div>
+        </div>
+
+        <div class="controls-row">
+          <button type="button" class="wamp-btn" id="btn-prev" title="Попередня">⏮</button>
+          <button type="button" class="wamp-btn" id="btn-play" title="Play / Pause">▶</button>
+          <button type="button" class="wamp-btn" id="btn-stop" title="Stop">⏹</button>
+          <button type="button" class="wamp-btn" id="btn-next" title="Наступна">⏭</button>
+          <button type="button" class="wamp-btn" id="btn-rew" title="Назад 10с">⏪</button>
+          <button type="button" class="wamp-btn" id="btn-ff" title="Вперед 10с">⏩</button>
+          <button type="button" class="wamp-btn" id="btn-repeat" title="Повтор треку">🔁</button>
+        </div>
+
+        <div class="seek-row">
+          <input type="range" class="seek-bar" id="seek-bar" min="0" max="1000" value="0" disabled>
+        </div>
+
+        <div class="vol-row">
+          <span class="vol-label">VOL</span>
+          <input type="range" class="vol-bar" id="vol-bar" min="0" max="100" value="70">
+          <span class="vol-label" id="vol-val">70</span>
+        </div>
+      </div>
+
+      <div class="player-right">
+        <div class="playlist-frame">
+          <div class="playlist-header" id="playlist-header">PLAYLIST (0)</div>
+          <div class="playlist-scroll" id="playlist"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="player-footer-note">Острів MUSIC · класичний вайб Winamp · пароль потрібен один раз</div>
+</div>
+
+<div id="yt-host"></div>
+
+<div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
+<div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span id="today-hoomen"></span></div></div>
+<div class="footer-line">Гуменчат — місце для гуменів.</div>
+</div></div></div>
+
+<script>
+(function () {
+  /* ========== TRACK LIST ========== */
+  var TRACKS = [
+    { id: "pJMs6cNp5so", title: "Bloody Mary", artist: "Lady Gaga" },
+    { id: "OGA3yVz_h0E", title: "Little Dark Age", artist: "MGMT" },
+    { id: "t6zhuFAoC6Y", title: "Black Star", artist: "Radiohead" },
+    { id: "MrFkLDsgRcE", title: "Televators", artist: "The Mars Volta" },
+    { id: "pT_Y-eodTv4", title: "Lift Me Up", artist: "Rihanna" },
+    { id: "oW0JVT43Ngs", title: "One More Time", artist: "Daft Punk" },
+    { id: "hozUUwkB7xQ", title: "Elegy of Fairies", artist: "Yasunori Mitsuda" },
+    { id: "OYB1rbL8EHo", title: "You Don't Own Me", artist: "Lesley Gore" },
+    { id: "evJ6gX1lp2o", title: "I like the way", artist: "Unknown" },
+    { id: "K3JGxj2rvAs", title: "I Follow Rivers", artist: "Lykke Li" },
+    { id: "8pVEdiRAQeg", title: "Fineday", artist: "Unknown" },
+    { id: "SjATgaXc73M", title: "Vielleicht", artist: "Unknown" },
+    { id: "PDd-180FQ8U", title: "Que Sera Sera", artist: "Doris Day" },
+    { id: "G-jMWzfj9gM", title: "My Secret Friend", artist: "Unknown" },
+    { id: "Z0NGdLr4img", title: "Suffocation", artist: "Unknown" },
+    { id: "FQStbwNCl2Y", title: "Transgender", artist: "Crystal Castles" },
+    { id: "tzqw_Dqa0SU", title: "Beautiful Lies", artist: "Unknown" },
+    { id: "M_IiOlU61uE", title: "Study in Insanity", artist: "Unknown" },
+    { id: "tf_ieWnu-SE", title: "Eple", artist: "Röyksopp" },
+    { id: "rH6eXjRjjlk", title: "Eternal Infamy", artist: "Unknown" },
+    { id: "1lyu1KKwC74", title: "Bitter Sweet Symphony", artist: "The Verve" },
+    { id: "ZlQGgDE9NNk", title: "Monster", artist: "Unknown" },
+    { id: "9WLGdeyAFvk", title: "Meow Meow", artist: "Unknown" },
+    { id: "RgTDnwYJjfM", title: "Flying Waters", artist: "Unknown" }
+  ];
+
+  var PASSWORD = "Jane842";
+  var STORAGE_KEY = "music-island-unlocked-v1";
+
+  /* ========== STATE ========== */
+  var unlocked = false;
+  var selectedIndex = -1;
+  var playingIndex = -1;
+  var isPlaying = false;
+  var isRepeat = false;
+  var ytPlayer = null;
+  var ytReady = false;
+  var progressTimer = null;
+  var vizAnim = null;
+  var bars = [];
+
+  /* ========== DOM ========== */
+  var lockOverlay = document.getElementById("lock-overlay");
+  var lockInput = document.getElementById("lock-input");
+  var lockBtn = document.getElementById("lock-btn");
+  var lockMsg = document.getElementById("lock-msg");
+  var playlistEl = document.getElementById("playlist");
+  var playlistHeader = document.getElementById("playlist-header");
+  var nowTrack = document.getElementById("now-track");
+  var nowStatus = document.getElementById("now-status");
+  var nowTime = document.getElementById("now-time");
+  var vizCanvas = document.getElementById("viz-canvas");
+  var vizLocked = document.getElementById("viz-locked");
+  var seekBar = document.getElementById("seek-bar");
+  var volBar = document.getElementById("vol-bar");
+  var volVal = document.getElementById("vol-val");
+
+  var btnPlay = document.getElementById("btn-play");
+  var btnStop = document.getElementById("btn-stop");
+  var btnPrev = document.getElementById("btn-prev");
+  var btnNext = document.getElementById("btn-next");
+  var btnRew = document.getElementById("btn-rew");
+  var btnFf = document.getElementById("btn-ff");
+  var btnRepeat = document.getElementById("btn-repeat");
+
+  /* ========== HELPERS ========== */
+  function fmtTime(sec) {
+    if (!isFinite(sec) || sec < 0) return "00:00";
+    sec = Math.floor(sec);
+    var m = Math.floor(sec / 60);
+    var s = sec % 60;
+    return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  function displayTitle(i) {
+    if (!unlocked) return "Виконавець - Пісня";
+    var t = TRACKS[i];
+    return t.artist + " - " + t.title;
+  }
+
+  function setStatus(txt) {
+    nowStatus.textContent = txt;
+  }
+
+  function updateNowDisplay() {
+    if (selectedIndex < 0) {
+      nowTrack.textContent = unlocked ? "— виберіть трек —" : "🔒 ЗАБЛОКОВАНО";
+      return;
+    }
+    nowTrack.textContent = displayTitle(selectedIndex);
+  }
+
+  /* ========== PLAYLIST RENDER ========== */
+  function renderPlaylist() {
+    playlistEl.innerHTML = "";
+    playlistHeader.textContent = "PLAYLIST (" + TRACKS.length + ")" + (unlocked ? "" : " 🔒");
+    TRACKS.forEach(function (t, i) {
+      var div = document.createElement("div");
+      div.className = "track-item";
+      if (!unlocked) div.classList.add("locked-text");
+      if (i === selectedIndex) div.classList.add("selected");
+      if (i === playingIndex && isPlaying) div.classList.add("playing");
+      div.textContent = (i + 1) + ". " + displayTitle(i);
+      div.dataset.index = i;
+      div.onclick = function () {
+        if (!unlocked) return;
+        selectedIndex = i;
+        renderPlaylist();
+        updateNowDisplay();
+      };
+      playlistEl.appendChild(div);
+    });
+  }
+
+  /* ========== LOCK ========== */
+  function doUnlock() {
+    unlocked = true;
+    try { localStorage.setItem(STORAGE_KEY, "1"); } catch (e) {}
+    lockOverlay.classList.add("hidden");
+    vizLocked.style.display = "none";
+    seekBar.disabled = false;
+    [btnPlay, btnStop, btnPrev, btnNext, btnRew, btnFf, btnRepeat].forEach(function (b) {
+      b.disabled = false;
+    });
+    renderPlaylist();
+    updateNowDisplay();
+    setStatus("READY");
+    startViz();
+  }
+
+  function checkLock() {
+    var saved = false;
+    try { saved = localStorage.getItem(STORAGE_KEY) === "1"; } catch (e) {}
+    if (saved) {
+      doUnlock();
+      return;
+    }
+    unlocked = false;
+    vizLocked.style.display = "flex";
+    seekBar.disabled = true;
+    [btnPlay, btnStop, btnPrev, btnNext, btnRew, btnFf, btnRepeat].forEach(function (b) {
+      b.disabled = true;
+    });
+    renderPlaylist();
+    updateNowDisplay();
+    setStatus("LOCKED");
+  }
+
+  lockBtn.onclick = function () {
+    var val = (lockInput.value || "").trim();
+    if (val === PASSWORD) {
+      lockMsg.textContent = "";
+      lockInput.value = "";
+      doUnlock();
+    } else {
+      lockMsg.textContent = "Невірний пароль";
+      lockInput.select();
+    }
+  };
+  lockInput.onkeydown = function (e) {
+    if (e.key === "Enter") lockBtn.click();
+  };
+
+  /* ========== YOUTUBE API ========== */
+  function onYouTubeIframeAPIReady() {
+    ytPlayer = new YT.Player("yt-host", {
+      height: "1",
+      width: "1",
+      playerVars: {
+        autoplay: 0,
+        controls: 0,
+        disablekb: 1,
+        fs: 0,
+        modestbranding: 1,
+        rel: 0,
+        playsinline: 1
+      },
+      events: {
+        onReady: function () {
+          ytReady = true;
+          ytPlayer.setVolume(parseInt(volBar.value, 10) || 70);
+        },
+        onStateChange: function (e) {
+          // -1 unstarted, 0 ended, 1 playing, 2 paused, 3 buffering, 5 cued
+          if (e.data === 1) {
+            isPlaying = true;
+            playingIndex = selectedIndex;
+            btnPlay.textContent = "⏸";
+            setStatus("PLAYING");
+            startProgress();
+            renderPlaylist();
+          } else if (e.data === 2) {
+            isPlaying = false;
+            btnPlay.textContent = "▶";
+            setStatus("PAUSED");
+            stopProgress();
+            renderPlaylist();
+          } else if (e.data === 0) {
+            // ended
+            if (isRepeat && selectedIndex >= 0) {
+              ytPlayer.seekTo(0);
+              ytPlayer.playVideo();
+            } else {
+              // auto next
+              if (selectedIndex < TRACKS.length - 1) {
+                selectedIndex++;
+                playSelected();
+              } else {
+                isPlaying = false;
+                playingIndex = -1;
+                btnPlay.textContent = "▶";
+                setStatus("STOPPED");
+                stopProgress();
+                seekBar.value = 0;
+                nowTime.textContent = "00:00 / 00:00";
+                renderPlaylist();
+              }
+            }
+          } else if (e.data === 3) {
+            setStatus("BUFFERING...");
+          }
+        },
+        onError: function () {
+          setStatus("ERROR — спробуй інший трек");
+          isPlaying = false;
+          btnPlay.textContent = "▶";
+        }
+      }
+    });
+  }
+
+  // Load YT API
+  var tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
+  window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+  /* ========== PLAYBACK CONTROLS ========== */
+  function playSelected() {
+    if (!unlocked || !ytReady || selectedIndex < 0) return;
+    var t = TRACKS[selectedIndex];
+    updateNowDisplay();
+    ytPlayer.loadVideoById(t.id);
+    // play will be triggered by state change mostly; force:
+    setTimeout(function () {
+      try { ytPlayer.playVideo(); } catch (e) {}
+    }, 300);
+    playingIndex = selectedIndex;
+    isPlaying = true;
+    btnPlay.textContent = "⏸";
+    setStatus("PLAYING");
+    renderPlaylist();
+  }
+
+  function togglePlay() {
+    if (!unlocked || !ytReady) return;
+    if (selectedIndex < 0) {
+      selectedIndex = 0;
+      renderPlaylist();
+      playSelected();
+      return;
+    }
+    if (isPlaying) {
+      ytPlayer.pauseVideo();
+    } else {
+      // if same track already loaded
+      if (playingIndex === selectedIndex) {
+        ytPlayer.playVideo();
+      } else {
+        playSelected();
+      }
+    }
+  }
+
+  function stopPlay() {
+    if (!ytReady) return;
+    try { ytPlayer.stopVideo(); } catch (e) {}
+    isPlaying = false;
+    playingIndex = -1;
+    btnPlay.textContent = "▶";
+    setStatus("STOPPED");
+    stopProgress();
+    seekBar.value = 0;
+    nowTime.textContent = "00:00 / 00:00";
+    renderPlaylist();
+  }
+
+  btnPlay.onclick = togglePlay;
+  btnStop.onclick = stopPlay;
+
+  btnPrev.onclick = function () {
+    if (!unlocked) return;
+    if (selectedIndex <= 0) selectedIndex = TRACKS.length - 1;
+    else selectedIndex--;
+    renderPlaylist();
+    updateNowDisplay();
+    if (isPlaying) playSelected();
+  };
+
+  btnNext.onclick = function () {
+    if (!unlocked) return;
+    if (selectedIndex >= TRACKS.length - 1) selectedIndex = 0;
+    else selectedIndex++;
+    renderPlaylist();
+    updateNowDisplay();
+    if (isPlaying) playSelected();
+  };
+
+  btnRew.onclick = function () {
+    if (!ytReady || !isPlaying) return;
+    var t = ytPlayer.getCurrentTime() || 0;
+    ytPlayer.seekTo(Math.max(0, t - 10), true);
+  };
+
+  btnFf.onclick = function () {
+    if (!ytReady || !isPlaying) return;
+    var t = ytPlayer.getCurrentTime() || 0;
+    var d = ytPlayer.getDuration() || 0;
+    ytPlayer.seekTo(Math.min(d, t + 10), true);
+  };
+
+  btnRepeat.onclick = function () {
+    isRepeat = !isRepeat;
+    btnRepeat.classList.toggle("repeat-on", isRepeat);
+    btnRepeat.title = isRepeat ? "Повтор увімкнено" : "Повтор вимкнено";
+  };
+
+  /* Seek */
+  var seeking = false;
+  seekBar.oninput = function () {
+    seeking = true;
+  };
+  seekBar.onchange = function () {
+    if (!ytReady) return;
+    var d = ytPlayer.getDuration() || 0;
+    if (d > 0) {
+      var sec = (parseInt(seekBar.value, 10) / 1000) * d;
+      ytPlayer.seekTo(sec, true);
+    }
+    seeking = false;
+  };
+
+  function startProgress() {
+    stopProgress();
+    progressTimer = setInterval(function () {
+      if (!ytReady || seeking) return;
+      try {
+        var cur = ytPlayer.getCurrentTime() || 0;
+        var dur = ytPlayer.getDuration() || 0;
+        nowTime.textContent = fmtTime(cur) + " / " + fmtTime(dur);
+        if (dur > 0) {
+          seekBar.value = Math.round((cur / dur) * 1000);
+        }
+      } catch (e) {}
+    }, 400);
+  }
+  function stopProgress() {
+    if (progressTimer) {
+      clearInterval(progressTimer);
+      progressTimer = null;
+    }
+  }
+
+  /* Volume */
+  volBar.oninput = function () {
+    var v = parseInt(volBar.value, 10) || 0;
+    volVal.textContent = v;
+    if (ytReady) {
+      ytPlayer.setVolume(v);
+      if (v === 0) ytPlayer.mute();
+      else ytPlayer.unMute();
+    }
+  };
+
+  /* ========== VISUALIZER (fake bars, looks like classic EQ) ========== */
+  var ctx = vizCanvas.getContext("2d");
+  var BAR_COUNT = 32;
+
+  function initBars() {
+    bars = [];
+    for (var i = 0; i < BAR_COUNT; i++) {
+      bars.push({ h: 0, target: 0, speed: 0.15 + Math.random() * 0.25 });
+    }
+  }
+
+  function drawViz() {
+    var w = vizCanvas.width;
+    var h = vizCanvas.height;
+    ctx.fillStyle = "#050508";
+    ctx.fillRect(0, 0, w, h);
+
+    if (!unlocked) return;
+
+    var gap = 2;
+    var barW = (w - gap * (BAR_COUNT + 1)) / BAR_COUNT;
+
+    for (var i = 0; i < BAR_COUNT; i++) {
+      var b = bars[i];
+      if (isPlaying) {
+        // more energy in mid frequencies
+        var mid = 1 - Math.abs(i - BAR_COUNT / 2) / (BAR_COUNT / 2);
+        b.target = (0.15 + Math.random() * 0.85) * (0.4 + mid * 0.6) * h * 0.92;
+      } else {
+        b.target = 2 + Math.random() * 4;
+      }
+      b.h += (b.target - b.h) * b.speed;
+
+      var x = gap + i * (barW + gap);
+      var bh = Math.max(2, b.h);
+      var y = h - bh;
+
+      // green gradient
+      var grad = ctx.createLinearGradient(0, y, 0, h);
+      grad.addColorStop(0, "#80ff80");
+      grad.addColorStop(0.5, "#00cc33");
+      grad.addColorStop(1, "#006610");
+      ctx.fillStyle = grad;
+      ctx.fillRect(x, y, barW, bh);
+
+      // peak cap
+      ctx.fillStyle = "#a0ffa0";
+      ctx.fillRect(x, y, barW, 2);
+    }
+  }
+
+  function vizLoop() {
+    drawViz();
+    vizAnim = requestAnimationFrame(vizLoop);
+  }
+
+  function startViz() {
+    if (vizAnim) return;
+    initBars();
+    // fix canvas resolution for sharpness
+    var rect = vizCanvas.parentElement.getBoundingClientRect();
+    vizCanvas.width = Math.max(200, Math.floor(rect.width) || 400);
+    vizCanvas.height = 48;
+    vizLoop();
+  }
+
+  window.addEventListener("resize", function () {
+    if (!unlocked) return;
+    var rect = vizCanvas.parentElement.getBoundingClientRect();
+    vizCanvas.width = Math.max(200, Math.floor(rect.width) || 400);
+    vizCanvas.height = 48;
+  });
+
+  /* ========== STATS (same as other islands) ========== */
+  function safe(base, range) {
+    var v;
+    do { v = base + Math.floor(Math.random() * range); }
+    while (/63|68|13|666/.test(String(v)));
+    return v;
+  }
+  function stats() {
+    var r = document.getElementById("registered-hoomen");
+    var o = document.getElementById("online-hoomen");
+    var t = document.getElementById("today-hoomen");
+    if (r) r.textContent = (8012457).toLocaleString("uk-UA");
+    if (o) o.textContent = safe(1000000, 76001).toLocaleString("uk-UA");
+    if (t) t.textContent = safe(2400000, 180001).toLocaleString("uk-UA");
+  }
+
+  /* ========== INIT ========== */
+  checkLock();
+  renderPlaylist();
+  stats();
+  setInterval(stats, 30000);
+
+  // if already unlocked from previous visit, start viz
+  if (unlocked) startViz();
+})();
+</script>
+</body>
+</html>
