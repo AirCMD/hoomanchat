@@ -1,0 +1,1067 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<link rel="stylesheet" href="../css/islands-template.css">
+<title>ОСТРІВ: TAPGAME</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<style>
+/* ===== TAPGAME styles ===== */
+.tg-wrap { margin: 0 0 10px; font-family: Arial, Helvetica, sans-serif; }
+.tg-box {
+  background: #fff;
+  border: 1px solid #e3d7f0;
+  padding: 8px;
+}
+.tg-header {
+  margin: 0 0 8px;
+  padding: 5px 8px;
+  background: linear-gradient(90deg, #ffb7b2, #ffd3b6, #dcedc1);
+  border: 1px solid #e2c0d8;
+  color: #4a3e56;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+.tg-note {
+  font-size: 10px;
+  color: #6b5b95;
+  margin: 0 0 8px;
+  line-height: 14px;
+  padding: 4px 6px;
+  background: #f7f3fb;
+  border: 1px solid #e3d7f0;
+}
+
+/* Difficulty select */
+.diff-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+@media (min-width: 520px) {
+  .diff-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+.diff-btn {
+  display: block;
+  width: 100%;
+  padding: 10px 8px;
+  background: linear-gradient(180deg, #faf6ff, #ebe3f5);
+  border: 1px solid #d0c0e0;
+  color: #4a4063;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  line-height: 15px;
+}
+.diff-btn:hover { background: linear-gradient(180deg, #fff, #f0e8fa); }
+.diff-btn .diff-target {
+  display: block;
+  font-size: 10px;
+  font-weight: normal;
+  color: #8c7b9e;
+  margin-top: 3px;
+}
+.diff-btn.hard { border-color: #e0a0a0; background: linear-gradient(180deg, #fff5f5, #f8e0e0); }
+.diff-btn.hell { border-color: #c06060; background: linear-gradient(180deg, #ffe8e8, #f0c0c0); color: #5a2020; }
+
+/* Matchmaking */
+.mm-box { text-align: center; padding: 12px 8px; }
+.mm-timer {
+  font-size: 28px;
+  font-weight: bold;
+  color: #6b5b95;
+  margin: 8px 0;
+  font-variant-numeric: tabular-nums;
+}
+.mm-list {
+  text-align: left;
+  max-width: 320px;
+  margin: 8px auto 0;
+  font-size: 11px;
+  line-height: 16px;
+}
+.mm-list div { padding: 2px 0; color: #4a4063; }
+.mm-list .you { color: #2a7a4a; font-weight: bold; }
+
+/* Game layout */
+.game-layout {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.game-main {
+  flex: 1 1 200px;
+  min-width: 180px;
+}
+.game-side {
+  flex: 0 0 160px;
+  width: 160px;
+  max-width: 100%;
+}
+@media (max-width: 520px) {
+  .game-side { flex: 1 1 100%; width: 100%; }
+}
+
+.score-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 7px;
+  background: #f7f3fb;
+  border: 1px solid #e3d7f0;
+  margin-bottom: 6px;
+  font-size: 11px;
+  color: #4a4063;
+}
+.score-bar .you-score {
+  font-weight: bold;
+  color: #2a7a4a;
+  font-size: 14px;
+}
+.score-bar .target-label { color: #8c7b9e; }
+
+.tap-zone {
+  position: relative;
+  height: 180px;
+  background: linear-gradient(180deg, #fff0f5, #f8e8f0);
+  border: 2px solid #e0b0c8;
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+.tap-zone:active { background: linear-gradient(180deg, #ffe0ec, #f0d0e0); }
+.tap-heart-big {
+  font-size: 64px;
+  line-height: 1;
+  pointer-events: none;
+  transition: transform 0.08s;
+  filter: drop-shadow(0 2px 4px rgba(180,80,120,0.35));
+}
+.tap-zone.pulse .tap-heart-big { transform: scale(1.12); }
+.tap-hint {
+  position: absolute;
+  bottom: 6px;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: 10px;
+  color: #b08098;
+  pointer-events: none;
+}
+
+/* floating hearts */
+.float-heart {
+  position: absolute;
+  pointer-events: none;
+  font-size: 18px;
+  animation: floatUp 0.85s ease-out forwards;
+  z-index: 5;
+}
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-70px) scale(1.3); }
+}
+
+/* Opponents panel */
+.opp-panel {
+  background: #faf8fc;
+  border: 1px solid #e3d7f0;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+}
+.opp-title {
+  padding: 4px 6px;
+  background: #eadef7;
+  border-bottom: 1px solid #e3d7f0;
+  font-size: 10px;
+  font-weight: bold;
+  color: #4a3e56;
+  flex-shrink: 0;
+}
+.opp-list {
+  flex: 1;
+  overflow-y: auto;
+  font-size: 11px;
+  line-height: 15px;
+}
+.opp-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 6px;
+  border-bottom: 1px solid #f0eaf6;
+  color: #4a4063;
+}
+.opp-row.you {
+  background: #e8f5ec;
+  font-weight: bold;
+  color: #2a7a4a;
+}
+.opp-row.left { opacity: 0.45; text-decoration: line-through; }
+.opp-row.banned { opacity: 0.4; color: #a04040; }
+.opp-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 95px; }
+.opp-score { font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
+/* Live feed */
+.feed-box {
+  margin-top: 8px;
+  background: #fff;
+  border: 1px solid #e3d7f0;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+}
+.feed-title {
+  padding: 3px 6px;
+  background: #f0eaf6;
+  border-bottom: 1px solid #e3d7f0;
+  font-size: 10px;
+  font-weight: bold;
+  color: #6b5b95;
+  flex-shrink: 0;
+}
+.feed-log {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 6px;
+  font-size: 11px;
+  line-height: 15px;
+  color: #4a4063;
+}
+.feed-line { margin-bottom: 3px; }
+.feed-line .sys { color: #8c7b9e; font-style: italic; }
+.feed-line .name { color: #6b5b95; font-weight: bold; }
+.feed-line .ban { color: #a04040; font-style: italic; }
+
+/* Result */
+.result-box {
+  text-align: center;
+  padding: 16px 10px;
+}
+.result-box h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: #4a3e56;
+}
+.result-box p { margin: 0 0 6px; font-size: 12px; color: #4a4063; }
+.result-btns { margin-top: 12px; }
+.result-btns button {
+  margin: 0 4px;
+  padding: 7px 14px;
+  background: linear-gradient(180deg, #faf6ff, #ebe3f5);
+  border: 1px solid #d0c0e0;
+  color: #4a4063;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div id="hoomenchat-site">
+<div class="hoomenchat-header">ГУМЕНЧАТ</div>
+<div class="site-layout">
+<div class="site-left"><div class="left-box">
+<div class="site-name">TAPGAME</div>
+<img class="main-avatar" src="https://api.dicebear.com/7.x/shapes/svg?seed=tapgame&backgroundColor=ffd5ec" alt="TAPGAME">
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+<div class="nav-menu">
+<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
+<a class="nav-item" href="../profiles.html">Гумени</a>
+<a class="nav-item" href="../droomens.html">Друмени</a>
+<a class="nav-item" href="../activity.html">Стрічерчат</a>
+<a class="nav-item current" href="../islands.html">Острови</a>
+<a class="nav-item" href="../rules.html">Правила</a>
+</div>
+<div class="account-box"><div class="account-text">Немає гумгайла?</div><a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a><a class="account-link" href="../login.html">ВХІД</a></div>
+</div></div>
+
+<div class="site-right">
+<div class="profile-box">
+<div class="profile-header">TAPGAME — острів</div>
+<div class="profile-info">
+<div>Гра в кліки / тапи. Ти граєш від імені <b>copy_pasta</b>.</div>
+<div class="profile-status" style="color:green; font-style:normal;">Статус: відкритий острів</div>
+<div style="margin-top:5px;font-size:10px;color:#6b5b95;">Поважайте одне одного, інакше система заблокує вас.</div>
+</div>
+</div>
+
+<div class="tg-wrap">
+  <div class="tg-box">
+    <div class="tg-header">♥ TAPGAME — клікер-кімната</div>
+    <div class="tg-note">
+      Рівень складності обирається <b>лише на початку</b>. Прогрес між заходами не зберігається (щоб не засмічувати пам’ять).
+      Мета — першим набрати потрібну кількість кліків. Максимум 5 суперників у кімнаті.
+    </div>
+
+    <!-- SCREEN: difficulty -->
+    <div id="screen-diff">
+      <div style="font-size:11px;margin-bottom:6px;color:#4a4063;font-weight:bold;">Обери рівень складності:</div>
+      <div class="diff-grid" id="diff-grid"></div>
+    </div>
+
+    <!-- SCREEN: matchmaking -->
+    <div id="screen-mm" class="hidden">
+      <div class="mm-box">
+        <div style="font-size:12px;color:#4a4063;">Підбір суперників…</div>
+        <div class="mm-timer" id="mm-timer">30</div>
+        <div style="font-size:10px;color:#8c7b9e;">Максимум 5 душ · сильні гравці не заходять на легкі рівні</div>
+        <div class="mm-list" id="mm-list"></div>
+      </div>
+    </div>
+
+    <!-- SCREEN: game -->
+    <div id="screen-game" class="hidden">
+      <div class="score-bar">
+        <span><span id="lvl-name">—</span> · ціль: <span id="lvl-target">0</span></span>
+        <span class="you-score">Ти: <span id="you-score">0</span></span>
+      </div>
+      <div class="game-layout">
+        <div class="game-main">
+          <div class="tap-zone" id="tap-zone">
+            <div class="tap-heart-big" id="tap-heart">♥</div>
+            <div class="tap-hint">тицяй / тапай сюди</div>
+          </div>
+        </div>
+        <div class="game-side">
+          <div class="opp-panel">
+            <div class="opp-title">ГРАВЦІ В КІМНАТІ</div>
+            <div class="opp-list" id="opp-list"></div>
+          </div>
+        </div>
+      </div>
+      <div class="feed-box">
+        <div class="feed-title">ЧАТ КІМНАТИ (лайв)</div>
+        <div class="feed-log" id="feed-log"></div>
+      </div>
+    </div>
+
+    <!-- SCREEN: result -->
+    <div id="screen-result" class="hidden">
+      <div class="result-box">
+        <h3 id="result-title">—</h3>
+        <p id="result-msg"></p>
+        <p style="font-size:11px;color:#8c7b9e;">Твої кліки: <span id="result-score">0</span></p>
+        <div class="result-btns">
+          <button type="button" id="btn-again">Ще раз</button>
+          <button type="button" id="btn-menu">До вибору рівня</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
+<div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span id="today-hoomen"></span></div></div>
+<div class="footer-line">Гуменчат — місце для гуменів.</div>
+</div></div></div>
+
+<script>
+(function () {
+  /* ========== LEVELS ========== */
+  var LEVELS = [
+    { id: 0, name: "Новачок", target: 500, tier: "easy" },
+    { id: 1, name: "Середнячок", target: 1000, tier: "easy" },
+    { id: 2, name: "Майстер", target: 2500, tier: "easy" },
+    { id: 3, name: "Хард", target: 5000, tier: "hard" },
+    { id: 4, name: "Хардкор", target: 25000, tier: "hard" },
+    { id: 5, name: "Хелкор", target: 100000, tier: "hell" }
+  ];
+
+  /* ========== BOT DEFINITIONS ========== */
+  /*
+    tier: strongest | strong | medium | lowmed | weak
+    rate: base clicks per second (simulated)
+    gender: for some lines
+  */
+  var BOTS = {
+    ai_ta: {
+      name: "ai_ta", tier: "strongest", rate: 9.5, rare: true,
+      greet: ["Привіт, я з вами пограю.", "Вітаю, шановні пані та панове.", "Гуменське вітання."],
+      lead: [],
+      leave: ["З вами весело, але мене чекають справи."]
+    },
+    anon_hoomen: {
+      name: "anon_hoomen", tier: "strong", rate: 7.2, gender: "f",
+      greet: ["привіт"],
+      lead: [],
+      leave: [] // silent leave, can rejoin
+    },
+    dreaming_romance: {
+      name: "dreaming_romance", tier: "strong", rate: 7.0, gender: "m",
+      greet: ["Няя, привіт всім)", "Ня, і ти тут copy_pasta.", "Йо", "Мм... привіт)", "Ня"],
+      lead: [
+        "Приємно вигравати, ще трішки і я переможець)",
+        "Ну, так нудно) Давай піднатисни.",
+        "Кайф)",
+        "Я майстер у цій грі",
+        "Приємно розважитись"
+      ],
+      leave: [
+        "Ня, я пішов по справам. Можливо прийду пізніше)",
+        "Ня, я в афк."
+      ],
+      rejoin: ["Інтернет вилетів, я знову у грі"]
+    },
+    la_cyber: {
+      name: "la_cyber", tier: "strong", rate: 6.8, gender: "f",
+      greet: null, // time-based
+      lead: ["Га! Викусили? Хто найкраще грає? Я!", "Бугага!", "Мені знову щастить!"],
+      leave: [] // sudden permanent leave
+    },
+    lexy_lel: {
+      name: "lexy_lel", tier: "medium", rate: 4.5, gender: "m",
+      greet: ["Доброго часу сутінок, шановні гравці.", "Привітався."],
+      mid: [
+        "Мені набридло, я пішов",
+        "Ця гра ніби безкінечна.",
+        "Добре що я тренувався на цих іграх.",
+        "Не прикольно...",
+        "Нудно."
+      ],
+      leave: ["Мені набридло, я пішов"]
+    },
+    sakurai_agatsuma: {
+      name: "sakurai_agatsuma", tier: "medium", rate: 4.8, gender: "f",
+      greet: ["Привітики, copy_pasta та всім іншим!", "Йой, copy_pasta, вітаю! Всіх вас також вітаю звісно ж :)"],
+      lead: ["Йой, copy_pasta, що ж так слабенько?", "Не будь равликом"],
+      leave: ["Шкода покидати таку компанію, але мені вже час.", "Зайнята, пішла.", "До зустрічі!"]
+    },
+    anton_wolf: {
+      name: "anton_wolf", tier: "medium", rate: 4.3, gender: "m",
+      greet: ["Сьогодні у мене вихідний, вирішив пограти трішки з вами", "Тимчасово відволікатимусь тут. Привіт!", "Йо!"],
+      mid: ["Прикольна гра", "Вайбово...", "Стрьом!"],
+      leave: ["Сорі, покликали працювати.", "Я пішов дивитись кіно.", "Я слухати музику. Всім удачі!"]
+    },
+    ihor_romashka: {
+      name: "ihor_romashka", tier: "medium", rate: 5.5, gender: "m", kid: true,
+      greet: ["Привіт, невдахи!", "Вітаю, старі пердуни!!!", "Пахне нафталіном)))"],
+      toxic: [
+        "Йоууу... дебіки! Я краще за вас всіх граю!",
+        "Старі тутанхамони ніколи мене не обіграють. Міль та воші заважають))",
+        "Гиги, муха накакала))",
+        "Дід нігтів відсипав ))))))",
+        "Миші насерли ...",
+        "Я зараз використаю чити, тому готуйтесь програти!",
+        "Старі серуни ніколи не виграють цю гру у мене.",
+        "Моя собака грає краще!",
+        "Лошки!",
+        "Лузери на ніжках!"
+      ],
+      leave: []
+    },
+    jane_dust: {
+      name: "jane_dust", tier: "medium", rate: 4.0, gender: "f", rare: true,
+      greet: ["Вітаю...", "Усім привіт", "Гей..."],
+      mid: ["Мені подобається інколи грати разом з вами тут, відволікає."],
+      leave: ["Мені вже час по справам, удачі..."],
+      rejoin: ["Інтернет вилетів трішки"]
+    },
+    fedir_tkch: {
+      name: "fedir_tkch", tier: "medium", rate: 3.8, gender: "m",
+      greet: ["Ок, і ви тут."],
+      mid: [
+        "У мене вже пальці болять...", "Хочу їсти.", "Спина болить!",
+        "Вже мої ноги заніміли.", "Ну скільки можна? Коли вже гра закінчиться??",
+        "Ця гра ніби цілу вічність триває...", "Задовбало...", "Мамка зве.",
+        "До туалету хочу.", "Важко блін!"
+      ],
+      leave: [] // silent
+    },
+    inna_king: {
+      name: "inna_king", tier: "medium", rate: 3.6, gender: "f", stick: true,
+      greet: ["?", "І що?", "Ок, і що?"],
+      mid: [
+        "Ну граю я в вашу гру. І що?",
+        "Я тапаю чи клікаю, не знаю як це називається. І що далі мені з цим робити?",
+        "Ну і?"
+      ],
+      leave: []
+    },
+    den_chik: {
+      name: "den_chik", tier: "lowmed", rate: 3.0, gender: "m",
+      greet: ["Йо!", "Йоу-йоу!", "Гайз, я з вами!!"],
+      mid: ["Йоу-йоу-йоу!"],
+      leave: ["Я пішов грати в тама-чі"]
+    },
+    night_fox: {
+      name: "night_fox", tier: "lowmed", rate: 2.8, gender: "m",
+      greet: ["Привіт."],
+      mid: ["Норм.", "Окей.", "Добре"],
+      leave: []
+    },
+    rusty_robot: {
+      name: "rusty_robot", tier: "lowmed", rate: 2.6, gender: "m",
+      greet: ["П91В1Т."],
+      mid: [],
+      leave: []
+    },
+    pixel_heart: {
+      name: "pixel_heart", tier: "weak", rate: 1.6, gender: "f",
+      greet: ["Привіт?"],
+      mid: ["Ця гра для малих.", "Гра не дуже для дорослих, якась вона інфантильна."],
+      leave: ["Ця гра для малих."]
+    },
+    paper_storm: {
+      name: "paper_storm", tier: "weak", rate: 1.4, gender: "m",
+      greet: ["Привіт, якщо мене хоч хтось помітив.", "Я тут, сподіваюсь мене видно."],
+      lose: [
+        "Ну так, я ж невидимий.",
+        "Пішли мої чуття за двері, звичайно ж.",
+        "Хоч комусь цікаво може як я? Що у мене? Як почуваюсь, ні? Що ж..."
+      ],
+      leave: []
+    },
+    soft_static: {
+      name: "soft_static", tier: "weak", rate: 1.5, gender: "f",
+      greet: ["Привіт..."],
+      mid: [],
+      leave: []
+    },
+    petro_ivanchuk: {
+      name: "petro_ivanchuk", tier: "weak", rate: 1.8, gender: "m", old: true,
+      greet: ["🌹🌹🌹"],
+      toxicM: ["ДУРЕНЬ!"],
+      toxicF: ["ДУРА!!!"],
+      leave: []
+    }
+  };
+
+  var TIER_ORDER = { strongest: 5, strong: 4, medium: 3, lowmed: 2, weak: 1 };
+
+  /* ========== STATE ========== */
+  var state = "diff"; // diff | mm | game | result
+  var currentLevel = null;
+  var playerScore = 0;
+  var opponents = []; // { key, score, active, banned, usedLines:{} }
+  var mmTimer = null;
+  var mmLeft = 30;
+  var gameLoop = null;
+  var lastLeadCheck = 0;
+  var gameStartTs = 0;
+  var winner = null;
+
+  /* ========== DOM ========== */
+  var screenDiff = document.getElementById("screen-diff");
+  var screenMm = document.getElementById("screen-mm");
+  var screenGame = document.getElementById("screen-game");
+  var screenResult = document.getElementById("screen-result");
+  var diffGrid = document.getElementById("diff-grid");
+  var mmTimerEl = document.getElementById("mm-timer");
+  var mmList = document.getElementById("mm-list");
+  var tapZone = document.getElementById("tap-zone");
+  var tapHeart = document.getElementById("tap-heart");
+  var youScoreEl = document.getElementById("you-score");
+  var lvlNameEl = document.getElementById("lvl-name");
+  var lvlTargetEl = document.getElementById("lvl-target");
+  var oppList = document.getElementById("opp-list");
+  var feedLog = document.getElementById("feed-log");
+  var resultTitle = document.getElementById("result-title");
+  var resultMsg = document.getElementById("result-msg");
+  var resultScore = document.getElementById("result-score");
+
+  /* ========== HELPERS ========== */
+  function rnd(arr) {
+    if (!arr || !arr.length) return null;
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+  function chance(p) { return Math.random() < p; }
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function timeGreeting() {
+    var h = new Date().getHours();
+    if (h >= 5 && h < 12) return "Добранок";
+    if (h >= 12 && h < 18) return "Добридень";
+    return "Добрвечір";
+  }
+  function showScreen(name) {
+    state = name;
+    screenDiff.classList.toggle("hidden", name !== "diff");
+    screenMm.classList.toggle("hidden", name !== "mm");
+    screenGame.classList.toggle("hidden", name !== "game");
+    screenResult.classList.toggle("hidden", name !== "result");
+  }
+  function feed(html) {
+    var d = document.createElement("div");
+    d.className = "feed-line";
+    d.innerHTML = html;
+    feedLog.appendChild(d);
+    feedLog.scrollTop = feedLog.scrollHeight;
+  }
+  function sys(msg) {
+    feed('<span class="sys">' + msg + "</span>");
+  }
+  function say(name, text) {
+    feed('<span class="name">' + name + ":</span> " + text);
+  }
+  function banLine(name) {
+    feed('<span class="ban"><i>' + name + " був заблокований системою за неналежну поведінку в арчаті.</i></span>");
+  }
+
+  /* ========== DIFFICULTY UI ========== */
+  LEVELS.forEach(function (lv) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "diff-btn" + (lv.tier === "hard" ? " hard" : lv.tier === "hell" ? " hell" : "");
+    b.innerHTML = lv.name + '<span class="diff-target">' + lv.target.toLocaleString("uk-UA") + " кліків</span>";
+    b.onclick = function () { startMatchmaking(lv); };
+    diffGrid.appendChild(b);
+  });
+
+  /* ========== MATCHMAKING ========== */
+  function allowedTiers(level) {
+    // easy levels: no strong / strongest
+    if (level.tier === "easy") return ["medium", "lowmed", "weak"];
+    // hard+: everyone, but strongest is rare
+    return ["strongest", "strong", "medium", "lowmed", "weak"];
+  }
+
+  function pickOpponents(level) {
+    var tiers = allowedTiers(level);
+    var pool = Object.keys(BOTS).filter(function (k) {
+      var b = BOTS[k];
+      if (tiers.indexOf(b.tier) < 0) return false;
+      if (b.rare && !chance(level.tier === "hell" ? 0.35 : level.tier === "hard" ? 0.18 : 0.08)) return false;
+      return true;
+    });
+    shuffle(pool);
+    var max = 5;
+    var count = 2 + Math.floor(Math.random() * 4); // 2..5
+    if (count > max) count = max;
+    return pool.slice(0, count);
+  }
+
+  function startMatchmaking(level) {
+    currentLevel = level;
+    playerScore = 0;
+    opponents = [];
+    feedLog.innerHTML = "";
+    winner = null;
+    showScreen("mm");
+    mmLeft = 30;
+    mmTimerEl.textContent = mmLeft;
+    mmList.innerHTML = '<div class="you">copy_pasta (ти)</div>';
+
+    var planned = pickOpponents(level);
+    var joinSchedule = [];
+    planned.forEach(function (key, i) {
+      joinSchedule.push({
+        key: key,
+        at: 3 + Math.floor(Math.random() * 22) + i * 2
+      });
+    });
+
+    if (mmTimer) clearInterval(mmTimer);
+    mmTimer = setInterval(function () {
+      mmLeft--;
+      mmTimerEl.textContent = Math.max(0, mmLeft);
+
+      // join bots
+      joinSchedule.forEach(function (j) {
+        if (j.done) return;
+        if (30 - mmLeft >= j.at && opponents.length < 5) {
+          j.done = true;
+          addOpponent(j.key, true);
+        }
+      });
+
+      if (mmLeft <= 0) {
+        clearInterval(mmTimer);
+        mmTimer = null;
+        // ensure at least 1 opponent
+        if (opponents.length === 0 && planned.length) {
+          addOpponent(planned[0], true);
+        }
+        startGame();
+      }
+    }, 1000);
+  }
+
+  function addOpponent(key, isJoin) {
+    if (opponents.some(function (o) { return o.key === key && o.active; })) return;
+    // allow rejoin of silent leavers
+    var existing = opponents.find(function (o) { return o.key === key; });
+    if (existing) {
+      existing.active = true;
+      existing.banned = false;
+      if (isJoin) {
+        sys(BOTS[key].name + " приєднався до кімнати.");
+        greetBot(existing);
+      }
+      renderOpponents();
+      return;
+    }
+    var o = {
+      key: key,
+      score: 0,
+      active: true,
+      banned: false,
+      used: {},
+      leadSaid: false,
+      toxicDone: false
+    };
+    opponents.push(o);
+    if (isJoin) {
+      sys(BOTS[key].name + " приєднався до кімнати.");
+      greetBot(o);
+    }
+    renderOpponents();
+    renderMmList();
+  }
+
+  function greetBot(o) {
+    var b = BOTS[o.key];
+    var line = null;
+    if (b.greet === null && o.key === "la_cyber") {
+      var opts = ["Йо!", "Вітаннячко.", timeGreeting()];
+      line = rnd(opts);
+    } else if (b.greet && b.greet.length) {
+      line = pickUnused(o, "greet", b.greet);
+    }
+    if (line) {
+      setTimeout(function () {
+        if (!o.active) return;
+        say(b.name, line);
+        // room replies sometimes
+        if (chance(0.45)) {
+          setTimeout(function () {
+            var repliers = opponents.filter(function (x) { return x.active && x.key !== o.key; });
+            if (repliers.length && chance(0.6)) {
+              var r = rnd(repliers);
+              var rb = BOTS[r.key];
+              var short = rnd(["Привіт.", "Йо", "Ня", "Вітаю", "Привітик"]);
+              if (rb.tier === "weak") short = rnd(["Привіт...", "Привіт?"]);
+              say(rb.name, short);
+            }
+          }, 400 + Math.random() * 800);
+        }
+      }, 300 + Math.random() * 600);
+    }
+  }
+
+  function pickUnused(o, cat, arr) {
+    if (!arr || !arr.length) return null;
+    var key = cat + ":";
+    var available = arr.filter(function (line) {
+      return !o.used[key + line];
+    });
+    if (!available.length) return null;
+    var line = rnd(available);
+    o.used[key + line] = true;
+    return line;
+  }
+
+  function renderMmList() {
+    var html = '<div class="you">copy_pasta (ти)</div>';
+    opponents.forEach(function (o) {
+      if (o.active) html += "<div>" + BOTS[o.key].name + "</div>";
+    });
+    mmList.innerHTML = html;
+  }
+
+  /* ========== GAME ========== */
+  function startGame() {
+    showScreen("game");
+    playerScore = 0;
+    youScoreEl.textContent = "0";
+    lvlNameEl.textContent = currentLevel.name;
+    lvlTargetEl.textContent = currentLevel.target.toLocaleString("uk-UA");
+    feedLog.innerHTML = "";
+    sys("Гра почалась! Перший до " + currentLevel.target.toLocaleString("uk-UA") + " кліків перемагає.");
+    gameStartTs = Date.now();
+    lastLeadCheck = 0;
+    renderOpponents();
+
+    if (gameLoop) clearInterval(gameLoop);
+    gameLoop = setInterval(tick, 200);
+  }
+
+  function tick() {
+    if (state !== "game") return;
+    var dt = 0.2; // seconds
+    var now = Date.now();
+
+    opponents.forEach(function (o) {
+      if (!o.active || o.banned) return;
+      var b = BOTS[o.key];
+      // variance
+      var mult = 0.7 + Math.random() * 0.6;
+      // strong bots slightly slower if player is far behind on easy? keep fair
+      var gain = b.rate * mult * dt;
+      // occasional burst
+      if (chance(0.04)) gain *= 1.8;
+      o.score += gain;
+
+      // toxic / ban logic
+      if (o.key === "ihor_romashka" && !o.toxicDone && o.score > 80 && chance(0.012)) {
+        var line = pickUnused(o, "toxic", b.toxic);
+        if (line) {
+          say(b.name, line);
+          o.toxicDone = true;
+          setTimeout(function () {
+            if (!o.active) return;
+            banPlayer(o);
+          }, 900);
+        }
+      }
+      if (o.key === "petro_ivanchuk" && !o.toxicDone && chance(0.01)) {
+        // compare with random other
+        var others = opponents.filter(function (x) { return x.active && x.key !== o.key; });
+        if (playerScore > o.score && chance(0.5)) {
+          // vs player (copy_pasta is f-ish character name but treat neutral - use toxicM/F randomly)
+          // user said: less than girl -> ДУРА, less than boy -> ДУРЕНЬ
+          // we'll pick a living opponent of known gender
+        }
+        var target = null;
+        var living = opponents.filter(function (x) { return x.active && x.key !== "petro_ivanchuk"; });
+        living.push({ key: "__player", score: playerScore, gender: "f" }); // copy_pasta as girl-ish for flavor
+        living.forEach(function (x) {
+          if (x.score > o.score) target = x;
+        });
+        if (target && target.score > o.score + 30) {
+          var g = target.key === "__player" ? "f" : (BOTS[target.key] && BOTS[target.key].gender);
+          var tline = (g === "f") ? rnd(b.toxicF) : rnd(b.toxicM);
+          if (tline) {
+            say(b.name, tline);
+            o.toxicDone = true;
+            setTimeout(function () { if (o.active) banPlayer(o); }, 800);
+          }
+        }
+      }
+
+      // leave logic (higher on long games / high targets)
+      var elapsed = (now - gameStartTs) / 1000;
+      var leaveChance = 0.0015;
+      if (currentLevel.target >= 5000) leaveChance = 0.003;
+      if (currentLevel.target >= 25000) leaveChance = 0.0045;
+      if (b.stick) leaveChance *= 0.15;
+      if (b.tier === "strongest") leaveChance *= 0.5;
+      if (elapsed > 40 && chance(leaveChance)) {
+        leaveOpponent(o);
+      }
+
+      // mid lines
+      if (b.mid && b.mid.length && chance(0.008)) {
+        var ml = pickUnused(o, "mid", b.mid);
+        if (ml) {
+          say(b.name, ml);
+          // some mid lines are leave
+          if (b.leave && b.leave.indexOf(ml) >= 0) {
+            setTimeout(function () { if (o.active) leaveOpponent(o, true); }, 600);
+          }
+        }
+      }
+
+      // lead taunt when ahead of player
+      if (b.lead && b.lead.length && o.score > playerScore + 40 && !o.leadSaid && chance(0.02)) {
+        var ll = pickUnused(o, "lead", b.lead);
+        if (ll) {
+          say(b.name, ll);
+          o.leadSaid = true;
+        }
+      }
+    });
+
+    // weak bots leave early if losing badly
+    opponents.forEach(function (o) {
+      if (!o.active) return;
+      var b = BOTS[o.key];
+      if (b.tier === "weak" && playerScore > o.score + 120 && chance(0.01)) {
+        var line = pickUnused(o, "leave", b.leave || b.mid || []);
+        if (line) say(b.name, line);
+        leaveOpponent(o, true);
+      }
+    });
+
+    renderOpponents();
+    checkWin();
+  }
+
+  function banPlayer(o) {
+    o.active = false;
+    o.banned = true;
+    banLine(BOTS[o.key].name);
+    // score freezes
+    renderOpponents();
+  }
+
+  function leaveOpponent(o, silent) {
+    if (!o.active) return;
+    o.active = false;
+    var b = BOTS[o.key];
+    if (!silent) {
+      var line = pickUnused(o, "leave", b.leave || []);
+      if (line) say(b.name, line);
+      else sys(b.name + " вийшов із кімнати.");
+    } else {
+      sys(b.name + " вийшов із кімнати.");
+    }
+    // possible rejoin later for some
+    if ((o.key === "dreaming_romance" || o.key === "jane_dust" || o.key === "anon_hoomen" || o.key === "rusty_robot") && chance(0.4)) {
+      setTimeout(function () {
+        if (state !== "game") return;
+        if (opponents.filter(function (x) { return x.active; }).length >= 5) return;
+        o.active = true;
+        o.banned = false;
+        sys(b.name + " приєднався до кімнати.");
+        if (b.rejoin) {
+          var rj = pickUnused(o, "rejoin", b.rejoin);
+          if (rj) say(b.name, rj);
+        }
+        renderOpponents();
+      }, 8000 + Math.random() * 15000);
+    }
+    renderOpponents();
+  }
+
+  function renderOpponents() {
+    var rows = [];
+    // player first
+    rows.push({ name: "copy_pasta (ти)", score: playerScore, cls: "you", active: true });
+    opponents.forEach(function (o) {
+      var cls = "";
+      if (o.banned) cls = "banned";
+      else if (!o.active) cls = "left";
+      rows.push({
+        name: BOTS[o.key].name + (o.banned ? " 🚫" : !o.active ? " (вийшов)" : ""),
+        score: Math.floor(o.score),
+        cls: cls,
+        active: o.active && !o.banned
+      });
+    });
+    // sort by score desc
+    rows.sort(function (a, b) { return b.score - a.score; });
+    oppList.innerHTML = rows.map(function (r) {
+      return '<div class="opp-row ' + r.cls + '"><span class="opp-name">' + r.name +
+        '</span><span class="opp-score">' + r.score.toLocaleString("uk-UA") + "</span></div>";
+    }).join("");
+  }
+
+  function checkWin() {
+    var target = currentLevel.target;
+    if (playerScore >= target) {
+      endGame("win");
+      return;
+    }
+    for (var i = 0; i < opponents.length; i++) {
+      var o = opponents[i];
+      if (o.active && !o.banned && o.score >= target) {
+        endGame("lose", BOTS[o.key].name);
+        return;
+      }
+    }
+  }
+
+  function endGame(result, winnerName) {
+    if (gameLoop) {
+      clearInterval(gameLoop);
+      gameLoop = null;
+    }
+    showScreen("result");
+    resultScore.textContent = Math.floor(playerScore).toLocaleString("uk-UA");
+    if (result === "win") {
+      resultTitle.textContent = "Перемога!";
+      resultMsg.textContent = "copy_pasta першою набрала " + currentLevel.target.toLocaleString("uk-UA") + " кліків на рівні «" + currentLevel.name + "».";
+      sys("copy_pasta перемогла!");
+    } else {
+      resultTitle.textContent = "Поразка";
+      resultMsg.textContent = (winnerName || "Суперник") + " першим(а) набрав(ла) " + currentLevel.target.toLocaleString("uk-UA") + " кліків.";
+      // paper_storm lose lines
+      opponents.forEach(function (o) {
+        if (o.key === "paper_storm" && o.active) {
+          var line = pickUnused(o, "lose", BOTS.paper_storm.lose || []);
+          if (line) say("paper_storm", line);
+        }
+      });
+    }
+  }
+
+  /* ========== PLAYER TAP ========== */
+  var HEARTS = ["♥", "💖", "💗", "💕", "💞", "💘", "🧡", "💜"];
+
+  function doTap(e) {
+    if (state !== "game") return;
+    if (e) e.preventDefault();
+    playerScore += 1;
+    youScoreEl.textContent = Math.floor(playerScore).toLocaleString("uk-UA");
+
+    // visual
+    tapZone.classList.add("pulse");
+    setTimeout(function () { tapZone.classList.remove("pulse"); }, 80);
+
+    // floating heart
+    var h = document.createElement("div");
+    h.className = "float-heart";
+    h.textContent = rnd(HEARTS);
+    var rect = tapZone.getBoundingClientRect();
+    var x = 40 + Math.random() * (rect.width - 80);
+    var y = 60 + Math.random() * 60;
+    if (e && e.clientX) {
+      x = e.clientX - rect.left;
+      y = e.clientY - rect.top;
+    } else if (e && e.touches && e.touches[0]) {
+      x = e.touches[0].clientX - rect.left;
+      y = e.touches[0].clientY - rect.top;
+    }
+    h.style.left = x + "px";
+    h.style.top = y + "px";
+    h.style.fontSize = (14 + Math.random() * 12) + "px";
+    tapZone.appendChild(h);
+    setTimeout(function () { h.remove(); }, 900);
+
+    renderOpponents();
+    checkWin();
+  }
+
+  tapZone.addEventListener("click", doTap);
+  tapZone.addEventListener("touchstart", function (e) {
+    doTap(e);
+  }, { passive: false });
+
+  /* ========== RESULT BUTTONS ========== */
+  document.getElementById("btn-again").onclick = function () {
+    if (currentLevel) startMatchmaking(currentLevel);
+  };
+  document.getElementById("btn-menu").onclick = function () {
+    if (gameLoop) { clearInterval(gameLoop); gameLoop = null; }
+    if (mmTimer) { clearInterval(mmTimer); mmTimer = null; }
+    showScreen("diff");
+  };
+
+  /* ========== STATS ========== */
+  function safe(base, range) {
+    var v;
+    do { v = base + Math.floor(Math.random() * range); }
+    while (/63|68|13|666/.test(String(v)));
+    return v;
+  }
+  function stats() {
+    var r = document.getElementById("registered-hoomen");
+    var o = document.getElementById("online-hoomen");
+    var t = document.getElementById("today-hoomen");
+    if (r) r.textContent = (8012457).toLocaleString("uk-UA");
+    if (o) o.textContent = safe(1000000, 76001).toLocaleString("uk-UA");
+    if (t) t.textContent = safe(2400000, 180001).toLocaleString("uk-UA");
+  }
+  stats();
+  setInterval(stats, 30000);
+})();
+</script>
+</body>
+</html>
