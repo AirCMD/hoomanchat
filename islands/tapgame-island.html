@@ -383,13 +383,13 @@
       <div class="score-bar">
         <span><span id="lvl-name">—</span> · ціль: <span id="lvl-target">0</span></span>
         <span class="combo-label" id="combo-label">комбо ×1</span>
-        <span class="you-score">Очки: <span id="you-score">0</span></span>
+        <span class="you-score">Бали: <span id="you-score">0</span></span>
       </div>
       <div class="game-layout">
         <div class="game-main">
           <div class="tap-zone" id="tap-zone">
             <div class="tap-heart-big" id="tap-heart">♥</div>
-            <div class="tap-hint">тицяй / тапай сюди</div>
+            <div class="tap-hint">тицяй / тапай тут</div>
           </div>
         </div>
         <div class="game-side">
@@ -613,7 +613,7 @@
       mid: [
         "Гиги)",
         "Я і без читів краще",
-        "Де ваші очки??? ",
+        "Де ваші бали??? ",
         "Слабаки тапають як черепахи"
       ],
       lead: [
@@ -707,10 +707,10 @@
       greet: ["?", "І що?", "Ок, і що?"],
       mid: [
         "Ну граю я в вашу гру. І що?",
-        "Я тапаю чи клікаю, не знаю як це називається. І що далі мені з цим робити?",
+        "Я тапаю чи клікаю, не знаю як це зветься. І що далі мені з цим робити?",
         "Ну і?",
         "Сижу. Тапаю. Далі що?",
-        "Очки ростуть. І що з того?"
+        "Бали ростуть. І що з того?"
       ],
       lead: [
         "Я попереду. І що?",
@@ -730,7 +730,7 @@
         "Йоу-йоу-йоу!",
         "Гайз це імба",
         "Тапаю як не в себе!!",
-        "Хто на тама-чі потім?"
+        "Хто в тама-чі потім?"
       ],
       lead: [
         "ЙОУ Я ПОПЕРЕДУ!!",
@@ -825,7 +825,7 @@
         "Тихо тут...",
         "Я просто сиджу...",
         "Мм...",
-        "Очки... повільно."
+        "Бали... повільно."
       ],
       lead: ["Я... попереду? Дивно..."],
       behind: ["Нічого...", "Буває..."],
@@ -878,7 +878,7 @@
   var winner = null;
   var gameEnded = false;
 
-  // типи сердець → очки (рідкість впливає на шанс)
+  // типи сердець → бали (рідкість впливає на шанс)
   var HEART_TYPES = [
     { icon: "♡", points: 1, weight: 50, color: "#c06080" },
     { icon: "♥", points: 1, weight: 28, color: "#e02060" },
@@ -1506,7 +1506,7 @@
   }
 
   function calcReward(won) {
-    // очки нагороди за бій (окремо від ігрового рахунку)
+    // бали нагороди за бій (окремо від ігрового рахунку)
     var base = Math.floor(currentLevel.target / 50);
     var tapBonus = Math.min(200, Math.floor(playerTaps / 10));
     var comboBonus = Math.min(100, combo * 2);
@@ -1540,7 +1540,7 @@
       resultMsg.innerHTML =
         (winnerName || "Суперник") + " першим(а) набрав(ла) " +
         currentLevel.target.toLocaleString("uk-UA") + " очок.<br>" +
-        "Твої очки: " + Math.floor(playerScore).toLocaleString("uk-UA") +
+        "Твої бали: " + Math.floor(playerScore).toLocaleString("uk-UA") +
         " · втішний приз: +" + reward + " ★";
       opponents.forEach(function (o) {
         if (o.key === "paper_storm" && o.active && !o.banned) {
