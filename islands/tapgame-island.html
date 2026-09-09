@@ -216,7 +216,7 @@
   margin-top: 8px;
   background: #fff;
   border: 1px solid #e3d7f0;
-  height: 140px;
+  height: 190px;
   display: flex;
   flex-direction: column;
 }
@@ -240,7 +240,41 @@
 .feed-line { margin-bottom: 3px; }
 .feed-line .sys { color: #8c7b9e; font-style: italic; }
 .feed-line .name { color: #6b5b95; font-weight: bold; }
+.feed-line .you-name { color: #2a7a4a; font-weight: bold; }
 .feed-line .ban { color: #a04040; font-style: italic; }
+.feed-compose {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-top: 1px solid #e3d7f0;
+  flex-shrink: 0;
+  background: #faf8fc;
+}
+.feed-compose input {
+  flex: 1;
+  border: 1px solid #d0c0e0;
+  padding: 5px 7px;
+  font-size: 11px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #4a4063;
+  outline: none;
+  min-width: 0;
+}
+.feed-compose input:focus { border-color: #b090d0; }
+.feed-compose button {
+  border: 1px solid #d0c0e0;
+  background: linear-gradient(180deg, #faf6ff, #ebe3f5);
+  color: #4a4063;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 5px 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.feed-compose button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
 
 /* Result */
 .result-box {
@@ -344,6 +378,10 @@
       <div class="feed-box">
         <div class="feed-title">ЧАТ КІМНАТИ (лайв)</div>
         <div class="feed-log" id="feed-log"></div>
+        <div class="feed-compose">
+          <input type="text" id="chat-input" placeholder="Написати в чат як copy_pasta..." maxlength="120" autocomplete="off">
+          <button type="button" id="chat-send">Надіслати</button>
+        </div>
       </div>
     </div>
 
@@ -610,8 +648,68 @@
   function say(name, text) {
     feed('<span class="name">' + name + ":</span> " + text);
   }
+  function sayYou(text) {
+    feed('<span class="you-name">copy_pasta:</span> ' + text);
+  }
   function banLine(name) {
     feed('<span class="ban"><i>' + name + " був заблокований системою за неналежну поведінку в арчаті.</i></span>");
+  }
+
+  // простий фільтр образ (гравець теж може «отримати бан» у чаті як попередження)
+  var BAD_RE = /дебіл|дур[аеньіл]|серун|лох\b|лузер|тутанхамон|насерл|накакал| comp\b|чорт|сука|бля/i;
+
+  function reactToPlayerMessage(text) {
+    var lower = text.toLowerCase();
+    var isGreet = /привіт|вітаю|добр|йо\b|ня\b|хай|hello|hi\b|здраст/i.test(lower);
+    var active = opponents.filter(function (o) { return o.active && !o.banned; });
+    if (!active.length) return;
+
+    if (isGreet) {
+      // всі (або майже всі) вітаються у відповідь
+      setTimeout(function () {
+        roomGreetBack(null);
+      }, 250);
+      return;
+    }
+
+    // інколи хтось коротко відповідає
+    if (chance(0.4)) {
+      setTimeout(function () {
+        var o = rnd(active);
+        if (!o || !o.active) return;
+        var b = BOTS[o.key];
+        var reply = null;
+        if (b.tier === "weak") reply = rnd(["Ок...", "Угу", "Привіт..."]);
+        else if (o.key === "inna_king") reply = rnd(["І що?", "Ну і?", "Ок"]);
+        else if (o.key === "dreaming_romance") reply = rnd(["Ня)", "Ок)", "Кайф)"]);
+        else if (o.key === "la_cyber") reply = rnd(["Йо!", "Ок", "Га"]);
+        else if (o.key === "night_fox") reply = rnd(["Норм.", "Окей.", "Добре"]);
+        else if (o.key === "rusty_robot") reply = "ОК.";
+        else if (o.key === "fedir_tkch") reply = rnd(["Ок", "Важко блін!", "Угу"]);
+        else reply = rnd(["Ок", "Ага", "Угу", "Йо", "Зрозумів"]);
+        if (reply) say(b.name, reply);
+      }, 400 + Math.random() * 900);
+    }
+  }
+
+  function playerSendChat() {
+    if (state !== "game" && state !== "mm") return;
+    var input = document.getElementById("chat-input");
+    if (!input) return;
+    var text = (input.value || "").trim();
+    if (!text) return;
+    input.value = "";
+
+    if (BAD_RE.test(text)) {
+      sayYou(text);
+      setTimeout(function () {
+        feed('<span class="ban"><i>copy_pasta отримала попередження від системи за неналежну поведінку в чаті. Поважайте одне одного.</i></span>');
+      }, 400);
+      return;
+    }
+
+    sayYou(text);
+    reactToPlayerMessage(text);
   }
 
   /* ========== DIFFICULTY UI ========== */
@@ -725,6 +823,45 @@
     renderMmList();
   }
 
+  function shortGreetFor(bot) {
+    if (!bot) return "Привіт";
+    if (bot.tier === "weak") return rnd(["Привіт...", "Привіт?", "Привіт"]);
+    if (bot.tier === "strongest") return rnd(["Вітаю.", "Привіт.", "Гуменське вітання."]);
+    if (bot.tier === "strong") {
+      if (bot.name === "dreaming_romance") return rnd(["Ня", "Привіт)", "Йо"]);
+      if (bot.name === "anon_hoomen") return "привіт";
+      if (bot.name === "la_cyber") return rnd(["Йо!", "Вітаннячко."]);
+      return rnd(["Привіт", "Йо", "Вітаю"]);
+    }
+    if (bot.name === "rusty_robot") return "П91В1Т.";
+    if (bot.name === "petro_ivanchuk") return "🌹";
+    if (bot.name === "ihor_romashka") return rnd(["Привіт, невдахи!", "Йо"]);
+    if (bot.name === "lexy_lel") return rnd(["Привітався.", "Вітаю."]);
+    if (bot.name === "inna_king") return rnd(["?", "Ок"]);
+    return rnd(["Привіт.", "Йо", "Вітаю", "Привітик", "Ня"]);
+  }
+
+  function roomGreetBack(exceptKey) {
+    var repliers = opponents.filter(function (x) {
+      return x.active && !x.banned && x.key !== exceptKey;
+    });
+    if (!repliers.length) return;
+    shuffle(repliers);
+    // 2–4 people reply to a greeting
+    var count = Math.min(repliers.length, 2 + Math.floor(Math.random() * 3));
+    var delay = 350;
+    for (var i = 0; i < count; i++) {
+      (function (r, d) {
+        setTimeout(function () {
+          if (state !== "game" && state !== "mm") return;
+          if (!r.active || r.banned) return;
+          say(BOTS[r.key].name, shortGreetFor(BOTS[r.key]));
+        }, d);
+      })(repliers[i], delay);
+      delay += 280 + Math.floor(Math.random() * 420);
+    }
+  }
+
   function greetBot(o) {
     var b = BOTS[o.key];
     var line = null;
@@ -738,19 +875,10 @@
       setTimeout(function () {
         if (!o.active) return;
         say(b.name, line);
-        // room replies sometimes
-        if (chance(0.45)) {
-          setTimeout(function () {
-            var repliers = opponents.filter(function (x) { return x.active && x.key !== o.key; });
-            if (repliers.length && chance(0.6)) {
-              var r = rnd(repliers);
-              var rb = BOTS[r.key];
-              var short = rnd(["Привіт.", "Йо", "Ня", "Вітаю", "Привітик"]);
-              if (rb.tier === "weak") short = rnd(["Привіт...", "Привіт?"]);
-              say(rb.name, short);
-            }
-          }, 400 + Math.random() * 800);
-        }
+        // інші в кімнаті вітаються у відповідь
+        setTimeout(function () {
+          roomGreetBack(o.key);
+        }, 200 + Math.random() * 300);
       }, 300 + Math.random() * 600);
     }
   }
@@ -1043,6 +1171,14 @@
     if (mmTimer) { clearInterval(mmTimer); mmTimer = null; }
     showScreen("diff");
   };
+
+  document.getElementById("chat-send").onclick = playerSendChat;
+  document.getElementById("chat-input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      playerSendChat();
+    }
+  });
 
   /* ========== STATS ========== */
   function safe(base, range) {
