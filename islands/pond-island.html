@@ -55,39 +55,21 @@
   border-radius: 16px;
   border: 2px solid rgba(255,255,255,0.75);
   overflow: hidden;
-  background:
-    radial-gradient(ellipse 120% 80% at 88% -5%, #fff6dc 0%, transparent 42%),
-    radial-gradient(ellipse 55% 35% at 12% 8%, rgba(255,255,255,0.55), transparent 50%),
-    linear-gradient(180deg,
-      #5eb4e8 0%,
-      #8ecff0 11%,
-      #b8e0f4 20%,
-      #d2eeb8 32%,
-      #9ed872 42%,
-      #6db84e 50%,
-      #5aa844 58%,
-      #4e943c 100%);
+  background-color: #6a9a78;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
   margin-bottom: 8px;
   box-shadow:
-    inset 0 2px 14px rgba(255,255,255,0.45),
+    inset 0 2px 14px rgba(255,255,255,0.25),
     0 8px 22px rgba(40,120,160,0.22);
   contain: layout style;
 }
 .pond-stage.night {
-  background:
-    radial-gradient(ellipse 30% 25% at 80% 10%, rgba(255,255,200,0.4), transparent 50%),
-    radial-gradient(ellipse 20% 15% at 30% 12%, rgba(200,220,255,0.15), transparent 60%),
-    linear-gradient(180deg, #0e1830 0%, #1a2848 18%, #1e3028 36%, #152818 55%, #0e2010 100%);
-  border-color: rgba(100,140,180,0.4);
+  border-color: rgba(100,140,180,0.45);
 }
-.pond-stage.winter {
-  background:
-    radial-gradient(ellipse 90% 50% at 50% 0%, #ffffff 0%, transparent 50%),
-    linear-gradient(180deg, #b8d8f0 0%, #e0eef8 22%, #d0dce8 40%, #c0ccd8 100%);
-}
-.pond-stage.night.winter {
-  background: linear-gradient(180deg, #0c1420 0%, #182030 40%, #141c24 100%);
-}
+.pond-stage.winter { /* сезон з фото */ }
+.pond-stage.night.winter { }
 
 /* сонце / місяць */
 .pond-sun {
@@ -372,6 +354,25 @@
   .pond-house { animation: none !important; }
 }
 
+
+/* фото-краєвиди */
+.pond-stage {
+  background-color: #6a9a78;
+  background-repeat: no-repeat !important;
+  transition: background-image 0.6s ease;
+}
+.pond-stage.night { border-color: rgba(80,100,140,0.5); }
+.pond-sun, .pond-sky-deco, .pond-hills, .pond-trees, .pond-house,
+.pond-flowers, .pond-path, .pond-grass-top, .pond-bank { display: none !important; }
+.pond-water {
+  background: radial-gradient(ellipse at 30% 25%, rgba(255,255,255,0.12), transparent 50%),
+    rgba(30, 100, 120, 0.12) !important;
+  box-shadow: inset 0 0 20px rgba(255,255,255,0.08) !important;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.pond-stage.heater .pond-water {
+  box-shadow: inset 0 0 24px rgba(255,160,80,0.3), 0 0 12px rgba(255,140,60,0.15) !important;
+}
 #bubble-canvas {
   pointer-events: none;
   position: absolute;
@@ -790,26 +791,6 @@
     </div>
 
     <div class="pond-stage" id="pond-stage">
-      <div class="pond-sun" aria-hidden="true"></div>
-      <div class="pond-sky-deco" aria-hidden="true">
-        <span class="cloud c1">☁️</span>
-        <span class="cloud c2">☁️</span>
-        <span class="cloud c3">☁</span>
-        <span class="cloud c4">☁️</span>
-      </div>
-      <div class="pond-hills" aria-hidden="true">
-        <div class="h h1"></div>
-        <div class="h h2"></div>
-        <div class="h h3"></div>
-      </div>
-      <div class="pond-trees" aria-hidden="true"><span>🌲</span><span>🌳</span><span>🌲</span></div>
-      <div class="pond-house" aria-hidden="true">
-        <span class="body">🏠</span>
-        <span class="label">copy_pasta</span>
-      </div>
-      <div class="pond-flowers" aria-hidden="true">🌸 🌼 🌷</div>
-      <div class="pond-path" aria-hidden="true"></div>
-      <div class="pond-grass-top" aria-hidden="true"></div>
       <div class="pond-water" id="pond-water">
         <canvas id="bubble-canvas" width="400" height="160" aria-hidden="true"></canvas>
         <div class="pond-shimmer"></div>
@@ -819,7 +800,6 @@
         <span class="pond-sparkle s4"></span>
         <span class="pond-sparkle s5"></span>
       </div>
-      <div class="pond-bank"></div>
       <div class="toast" id="toast"></div>
       <div class="cat-sprite" id="cat-sprite" style="display:none;">🐱</div>
       <div class="dog-sprite" id="dog-sprite" style="display:none;">🐕</div>
@@ -893,6 +873,20 @@
 (function () {
   var SAVE_KEY = "pond-island-v1";
   var MAX_LEVEL = 25;
+
+  var SEASON_NAMES = ["Весна", "Літо", "Осінь", "Зима"];
+  var SEASON_ICONS = ["🌱", "☀️", "🍂", "❄️"];
+  var SCENE_BG = {
+    "Весна|day": "https://blogger.googleusercontent.com/img/a/AVvXsEhGbqwX5uByD44lY951eNd6eb8bk63W2sBeGFAQLKFx0-c_hAwWWU2JSMgkpF7lvT2TbUhVVLPtQOOpWYWFFn4RKnui4d2Ooz0F1wYRD5Vyyzo6vMSWCHe7aT5Az2Hb-0aHVYg67B2hpilgDjj_3hTtf93kvEqizWn_VfI7fuowbtTnQ3BUEcHXldMJaTg",
+    "Весна|night": "https://blogger.googleusercontent.com/img/a/AVvXsEhz4mrzx3QjhcPlpIpop22b88QK2naiFQBsqZcOXZT0zDEVqvFYw8EpUvW8kzZJjh7Qw5KAWjCUZ026aLIy9_DQykupb_15cbR8bHhJLKHPuZFDdXPLwiYHWJZyTV9xeujder7D2SWu1khhJRv6iBLT5CGZWnFgCjSCTpdV6IItFotOeMJ4L4kh8SYSycY",
+    "Літо|day": "https://blogger.googleusercontent.com/img/a/AVvXsEgaQ9-DnN_LMciOgZxKS5BX6KyPQ5xep5P0iEhsp0FlgMx-_Z77l2luww0rTqWbCWpREU1S9S4DZfbJ-X0jr7CRk357BTZ5mz8tILJGglJXASwk11esnibdp6l-h4GogX7T419pQpyCnXI5cVzpocpFDB5hJy9et4Xuxe4MeHYNzUWq6tON-PumZMIkWMI",
+    "Літо|night": "https://blogger.googleusercontent.com/img/a/AVvXsEgwY4TmsPsiMDKxR3bFjuqugrXMEz6KwfdPz10f_L4_GsodPZS_iewPSSqfBK4x2-DE3IvJLIi7eRBEox0rcMM2dDM0z7V7ETe09VmeVE2P0Pvevl7uIEz0sz8VEsB1R7XLsu0I_lHVOrzYupoCKlS-9F8_v7o5KGZP7h0Iakq_uPZ-0PYE8f0P-Kf9WKQ",
+    "Осінь|day": "https://blogger.googleusercontent.com/img/a/AVvXsEi5gvlTt4a_nGFUX-yOx9FtKLpSAmSLA4oT8PLkGVAF2DD0nX_ym_zaSPzdnObttBUAdt3FGp2T10ggN1pRf31cTS4MGHyLqnv0xFoaiJlTfGppX1IFbT8x3zWxmWP_7wvhkms735Mtge811gI45Md-mV9CkbcuYib-buJc7V2Sa1UPc7byDOfrL7-KIMs",
+    "Осінь|night": "https://blogger.googleusercontent.com/img/a/AVvXsEhxOiUhBfZU-hym_RVlCaU4OV2jRA3rMz5fOwRvE8I4wbYH7fGm3kqpSxdQsmdmP8DNRANCj8b4sat0mvTbHoUfA0r_E5QMpyCaug_DzScXAjWr3wKQj2CVHgBL__0nMEKd-8UPiTCI_Ey7cHG05q-kT4bvL-N21B-Kura34ztNp6j1ho1A2DH5-fZCc8I",
+    "Зима|day": "https://blogger.googleusercontent.com/img/a/AVvXsEgAgCHF1AwuMG3MWE5VlFTNysWpimKnl93kz_OfO23QSsZz3qJ7vpm4_ybYlxmK44YyrdMdzGrYWDrtHWu6X9JfkCISPXQLhaWxibhYuGoYSwm3g_w3yLv_pBSsn6KLakQOt4ATskKRB1M1FqIMfdlaur4KCjbgERuNOBSbA9uK9RoE0IAp438Vp8g-VMI",
+    "Зима|night": "https://blogger.googleusercontent.com/img/a/AVvXsEhjA9UtPm3xZWspuXHVtrQ6h6Gl9LSzOwe41XCnFZXm5HiN72OypyNAvFJ0t99Zev8VD0QgNBkOVvoDYn-RW_F91mJuiJShRbFUyVjtecg_UTFQuEIU_cCreDkwN7KUFYuZRtWvyTdSd4y3CxHlNwNg8SiotjB_ITolbz5YPknMimMh7c2Smno7YddDVFk"
+  };
+
 
   /* ===== DATA ===== */
   /* Ціни продажу: ікра дешевша за продаж → є прибуток, але з урахуванням часу */
@@ -1034,6 +1028,8 @@
       lastPriceDay: "",
       lastSeen: Date.now(),
       tutorialDone: false,
+      seasonIdx: 0,
+      seasonPlays: 0,
       achievements: {}, // id -> { at, claimedReward }
       stats: {
         collected: 0,
@@ -1093,29 +1089,65 @@
     return Math.floor(20 + (lv - 1) * 18 + Math.pow(lv, 1.35) * 4);
   }
 
-  function seasonInfo(ts) {
-    var d = new Date(ts || Date.now());
-    var m = d.getMonth(); // 0-11
-    var h = d.getHours();
-    var season, mult, icon;
-    if (m >= 2 && m <= 4) { season = "Весна"; mult = 1.0; icon = "🌱"; }
-    else if (m >= 5 && m <= 7) { season = "Літо"; mult = 0.9; icon = "☀️"; }
-    else if (m >= 8 && m <= 10) { season = "Осінь"; mult = 1.05; icon = "🍂"; }
-    else { season = "Зима"; mult = 1.45; icon = "❄️"; }
+  function seasonInfo() {
+    ensureSeason();
+    var idx = S.seasonIdx || 0;
+    if (idx < 0 || idx > 3) idx = 0;
+    var season = SEASON_NAMES[idx];
+    var icon = SEASON_ICONS[idx];
+    var mult = [1.0, 0.9, 1.05, 1.45][idx];
+    var h = new Date().getHours();
     var night = h < 6 || h >= 21;
-    return { season: season, mult: mult, icon: icon, night: night, label: icon + " " + season + " · " + (night ? "ніч" : "день") };
+    return {
+      season: season,
+      mult: mult,
+      icon: icon,
+      night: night,
+      idx: idx,
+      label: icon + " " + season + " · " + (night ? "ніч" : "день")
+    };
+  }
+
+  function ensureSeason() {
+    if (typeof S.seasonIdx !== "number") S.seasonIdx = 0;
+    if (typeof S.seasonPlays !== "number") S.seasonPlays = 0;
+  }
+
+  function advanceSeasonMaybe() {
+    ensureSeason();
+    S.seasonPlays++;
+    // кожні 8 зборів / продажів-еквівалентів змінюємо сезон у грі (не календар)
+    if (S.seasonPlays >= 8) {
+      S.seasonPlays = 0;
+      S.seasonIdx = (S.seasonIdx + 1) % 4;
+      toast(SEASON_ICONS[S.seasonIdx] + " Настав сезон: " + SEASON_NAMES[S.seasonIdx]);
+    }
+  }
+
+  function applySceneBackground() {
+    var s = seasonInfo();
+    var key = s.season + "|" + (s.night ? "night" : "day");
+    var url = SCENE_BG[key];
+    var stage = document.getElementById("pond-stage");
+    if (!stage || !url) return;
+    stage.style.backgroundImage = "url('" + url + "')";
+    stage.style.backgroundSize = "cover";
+    stage.style.backgroundPosition = "center center";
+    stage.classList.toggle("night", s.night);
+    stage.classList.toggle("winter", s.season === "Зима");
+    stage.classList.toggle("heater", !!S.heater);
   }
 
   function growMultiplier() {
     var s = seasonInfo();
     var m = s.mult;
     if (s.season === "Зима" && S.heater) m = 1.0;
-    // early game faster
     if (S.level <= 2) m *= 0.35;
     else if (S.level <= 4) m *= 0.55;
     else if (S.level <= 8) m *= 0.75;
     return m;
   }
+
 
   /* ===== SAVE / LOAD ===== */
   function save() {
@@ -1324,6 +1356,7 @@
     ensureStats();
     S.stats.collected++;
     S.stats.bySpecies[sid] = (S.stats.bySpecies[sid] || 0) + 1;
+    advanceSeasonMaybe();
     addXp(2 + (sp.rare || 0) * 3);
     toast("Зібрано: " + sp.icon + " " + sp.name);
     checkAchievements();
@@ -1653,10 +1686,7 @@
     document.getElementById("hud-xp-max").textContent = xpForLevel(S.level);
     document.getElementById("hud-season").textContent = s.label;
     document.getElementById("hud-buffs").textContent = buffs.join(" ");
-    var stage = document.getElementById("pond-stage");
-    stage.classList.toggle("night", s.night);
-    stage.classList.toggle("winter", s.season === "Зима");
-    stage.classList.toggle("heater", !!S.heater);
+    applySceneBackground();
     document.getElementById("dog-sprite").style.display = S.dog > 0 ? "block" : "none";
   }
 
