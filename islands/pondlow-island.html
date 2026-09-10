@@ -14,12 +14,7 @@
   border: 1px solid rgba(120, 190, 220, 0.65);
   border-radius: 14px;
   padding: 10px;
-  box-shadow:
-    0 1px 0 rgba(255,255,255,0.9) inset,
-    0 8px 24px rgba(80, 160, 200, 0.18),
-    0 2px 6px rgba(40, 100, 140, 0.08);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(40, 100, 140, 0.12);
 }
 .pond-title {
   margin: 0 0 8px;
@@ -65,10 +60,8 @@
   background-position: center top;
   background-repeat: no-repeat;
   margin-bottom: 8px;
-  box-shadow:
-    inset 0 2px 14px rgba(255,255,255,0.25),
-    0 8px 22px rgba(40,120,160,0.22);
-  contain: layout style;
+  box-shadow: 0 4px 12px rgba(40,120,160,0.15);
+  contain: strict;
 }
 .pond-stage.night {
   border-color: rgba(100,140,180,0.45);
@@ -88,7 +81,7 @@
   box-shadow: 0 0 24px 8px rgba(255,200,80,0.45), 0 0 48px 16px rgba(255,180,60,0.2);
   z-index: 1;
   pointer-events: none;
-  animation: sunPulse 10s ease-in-out infinite;
+  animation: none;
 }
 .pond-stage.night .pond-sun {
   background: radial-gradient(circle at 40% 40%, #f8f4d8, #e0d8a0 50%, transparent 70%);
@@ -138,8 +131,7 @@
   position: absolute;
   opacity: 0.9;
   filter: drop-shadow(0 2px 3px rgba(255,255,255,0.4));
-  will-change: transform;
-  animation: cloudDrift linear infinite;
+    animation: none;
 }
 .pond-sky-deco .c1 { left: -15%; top: 10px; font-size: 22px; animation-duration: 48s; }
 .pond-sky-deco .c2 { left: 20%; top: 4px; font-size: 16px; animation-duration: 62s; animation-delay: -12s; }
@@ -160,7 +152,7 @@
   text-align: center;
   line-height: 1;
   filter: drop-shadow(0 4px 6px rgba(0,0,0,0.22));
-  animation: houseBob 5s ease-in-out infinite;
+  animation: none;
 }
 @keyframes houseBob {
   0%, 100% { transform: translateY(0); }
@@ -175,7 +167,6 @@
   border-radius: 6px;
   margin-top: 2px;
   display: inline-block;
-  backdrop-filter: blur(2px);
 }
 .pond-stage.night .pond-house .label { background: rgba(20,30,50,0.7); }
 
@@ -192,7 +183,7 @@
 .pond-trees span {
   display: inline-block;
   margin-right: -6px;
-  animation: treeSway 4s ease-in-out infinite;
+  animation: none;
 }
 .pond-trees span:nth-child(2) { animation-delay: -1.2s; font-size: 32px; }
 .pond-trees span:nth-child(3) { animation-delay: -2.4s; }
@@ -286,8 +277,8 @@
       transparent 62%,
       transparent 100%);
   background-size: 220% 100%;
-  animation: shimmerMove 9s ease-in-out infinite;
-  mix-blend-mode: soft-light;
+  animation: none;
+  /* mix-blend disabled */
 }
 .pond-sparkle {
   position: absolute;
@@ -298,7 +289,7 @@
   box-shadow: 0 0 6px 2px rgba(255,255,255,0.8);
   z-index: 3;
   pointer-events: none;
-  animation: sparkleBlink ease-in-out infinite;
+  animation: none; display: none;
   opacity: 0;
 }
 .pond-sparkle.s1 { left: 22%; top: 28%; animation-duration: 3.2s; }
@@ -357,7 +348,7 @@
 .pond-stage {
   background-color: #6a9a78;
   background-repeat: no-repeat !important;
-  transition: background-image 0.6s ease;
+  transition: none;
 }
 .pond-stage.night { border-color: rgba(80,100,140,0.5); }
 .pond-sun, .pond-sky-deco, .pond-hills, .pond-trees, .pond-house,
@@ -419,9 +410,10 @@
   transform: translate(-50%, -50%);
 }
 .fish-slot:hover { z-index: 4; }
-.fish-slot:hover .fish-body { transform: scale(1.12); }
+.fish-slot:hover .fish-body { opacity: 0.9; }
 .fish-slot.ready .fish-body {
-  filter: drop-shadow(0 0 6px rgba(255,240,120,0.95));
+  outline: 2px solid rgba(255, 230, 80, 0.95);
+  border-radius: 40%;
 }
 .fish-slot.growing .fish-body { opacity: 0.95; }
 .fish-slot.empty {
@@ -437,10 +429,10 @@
 .fish-body {
   display: inline-block;
   transform-origin: center center;
-  transition: transform 0.15s ease;
   font-size: 26px;
   line-height: 1;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.35));
+  /* без animation/will-change — дешевше на слабкому GPU */
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
 }
 @keyframes swimA {
   0%, 100% { transform: translate(0, 0) rotate(-2deg); }
@@ -484,12 +476,11 @@
   z-index: 6;
   transition: opacity 0.35s, left 0.5s, top 0.5s;
   pointer-events: none;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.35));
   line-height: 1;
   margin: 0;
   transform: translate(-50%, -50%);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
 }
-/* координати кадру 1312×816 → % */
 .dog-sprite {
   left: 25.38%;
   top: 37.50%;
@@ -738,7 +729,6 @@
   align-items: center;
   justify-content: center;
   padding: 12px;
-  backdrop-filter: blur(4px);
 }
 .modal-bg.open { display: flex; }
 .modal {
@@ -816,6 +806,29 @@
   }
 }
 
+
+/* ===== performance overrides (weak hardware) ===== */
+.pond-shimmer,
+.pond-sparkle,
+.pond-sun,
+.pond-sky-deco .cloud,
+.pond-trees span,
+.pond-house,
+.fish-body {
+  animation: none !important;
+}
+.pond-sparkle { display: none !important; }
+#bubble-canvas {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.pond-panel, .toast, .dock-btn, .sheet, .modal, .row-item img {
+  /* lighter composites */
+}
+@media (max-width: 720px) {
+  .pond-shimmer { display: none !important; }
+}
+
 </style>
 </head>
 <body>
@@ -859,15 +872,7 @@
 
     <div class="pond-stage" id="pond-stage">
       <img id="pond-bg" class="pond-bg" alt="" decoding="async" fetchpriority="high" draggable="false">
-      <div class="pond-water" id="pond-water">
-        <canvas id="bubble-canvas" width="400" height="160" aria-hidden="true"></canvas>
-        <div class="pond-shimmer"></div>
-        <span class="pond-sparkle s1"></span>
-        <span class="pond-sparkle s2"></span>
-        <span class="pond-sparkle s3"></span>
-        <span class="pond-sparkle s4"></span>
-        <span class="pond-sparkle s5"></span>
-      </div>
+      <div class="pond-water" id="pond-water"></div>
       <div class="toast" id="toast"></div>
       <div class="cat-sprite" id="cat-sprite" style="display:none;">🐈</div>
       <div class="dog-sprite" id="dog-sprite" style="display:none;">🐕</div>
@@ -1203,9 +1208,6 @@
       if (img.getAttribute("src") !== url) {
         img.src = url;
       }
-      // object-fit / object-position задаються CSS (адаптив по брейкпоінтах)
-      img.style.objectFit = "fill";
-      img.style.objectPosition = "center center";
     } else {
       stage.style.backgroundImage = "url('" + url + "')";
       stage.style.backgroundSize = "cover";
@@ -1792,7 +1794,7 @@
     setTimeout(function () {
       saveQueued = false;
       save();
-    }, 800);
+    }, 1500);
   }
 
   function markPondDirty() {
@@ -2119,99 +2121,18 @@
   maybeRollDailyPrice();
   maybeBotGifts();
   renderAll();
-  /* ===== BUBBLE SHADERS (WebGL + Canvas2D fallback) ===== */
-  var bubbleRaf = 0;
-  var bubblePaused = false;
+  /* bubbles disabled for weak hardware */
 
-  function initBubbles() {
-    var canvas = document.getElementById("bubble-canvas");
-    if (!canvas) return;
-    var stage = document.getElementById("pond-stage");
-    function resize() {
-      var r = stage.getBoundingClientRect();
-      /* dpr=1: менше пікселів на слабкому залізі */
-      var dpr = 1;
-      canvas.width = Math.max(1, Math.floor(r.width * dpr));
-      canvas.height = Math.max(1, Math.floor(r.height * dpr));
-    }
-    resize();
-    var resizeT = 0;
-    window.addEventListener("resize", function () {
-      clearTimeout(resizeT);
-      resizeT = setTimeout(resize, 200);
-    });
-    /* WebGL-шейдер (Gerstner/caustics) важкий — лише легкий Canvas2D */
-    startCanvas2DBubbles(canvas);
-  }
-
-  function startWebGLBubbles(canvas, gl) {
-    /* disabled: too heavy for weak hardware */
-    startCanvas2DBubbles(canvas);
-  }
-
-  function startCanvas2DBubbles(canvas) {
-    var ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    var bubbles = [];
-    for (var i = 0; i < 8; i++) {
-      bubbles.push({
-        x: Math.random(),
-        y: Math.random(),
-        r: 0.012 + Math.random() * 0.02,
-        sp: 0.025 + Math.random() * 0.04,
-        ph: Math.random() * Math.PI * 2
-      });
-    }
-    var last = performance.now();
-    var frameSkip = 0;
-    function frame(now) {
-      bubbleRaf = requestAnimationFrame(frame);
-      if (bubblePaused || document.hidden) return;
-      /* ~20 fps замість 60 — менше навантаження */
-      frameSkip++;
-      if (frameSkip < 3) return;
-      frameSkip = 0;
-      var dt = Math.min(0.08, (now - last) / 1000);
-      last = now;
-      var w = canvas.width, h = canvas.height;
-      ctx.clearRect(0, 0, w, h);
-      for (var i = 0; i < bubbles.length; i++) {
-        var b = bubbles[i];
-        b.y -= b.sp * dt;
-        b.x += Math.sin(now / 1000 + b.ph) * 0.015 * dt;
-        if (b.y < -0.05) { b.y = 1.05; b.x = Math.random(); }
-        var px = b.x * w, py = b.y * h, pr = b.r * h;
-        ctx.beginPath();
-        ctx.arc(px, py, pr, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(200,235,255,0.45)";
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(px - pr * 0.25, py - pr * 0.25, pr * 0.35, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(255,255,255,0.55)";
-        ctx.fill();
-      }
-    }
-    bubbleRaf = requestAnimationFrame(frame);
-  }
-
-  document.addEventListener("visibilitychange", function () {
-    bubblePaused = document.hidden;
-    if (document.hidden) {
-      queueSave();
-    }
-  });
-
-  initBubbles();
 
   tickTimer = setInterval(function () {
     if (document.hidden) return;
     tick();
-  }, 1500);
+  }, 2000);
   catTimer = setInterval(function () {
     if (!document.hidden) tryCatVisit();
-  }, 60000);
-  setTimeout(function () { if (!document.hidden) tryCatVisit(); }, 20000);
-  setInterval(function () { queueSave(); }, 12000);
+  }, 90000);
+  setTimeout(function () { if (!document.hidden) tryCatVisit(); }, 45000);
+  setInterval(function () { queueSave(); }, 25000);
 
   window.addEventListener("beforeunload", save);
 
@@ -2230,7 +2151,7 @@
     if (t) t.textContent = safe(2400000, 180001).toLocaleString("uk-UA");
   }
   stats();
-  setInterval(stats, 30000);
+  setInterval(stats, 60000);
 })();
 </script>
 </body>
