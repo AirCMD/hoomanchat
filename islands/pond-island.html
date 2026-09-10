@@ -7,219 +7,298 @@
 <title>ОСТРІВ: СТАВОК</title>
 <link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
 <style>
+/* ===== Frutiger Aero pond UI ===== */
 .pond-wrap { margin: 0 0 10px; }
 .pond-panel {
-  background: #fff;
-  border: 1px solid #e3d7f0;
-  padding: 8px;
+  background: linear-gradient(165deg, rgba(255,255,255,0.92) 0%, rgba(210,240,255,0.88) 45%, rgba(200,245,220,0.9) 100%);
+  border: 1px solid rgba(120, 190, 220, 0.65);
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.9) inset,
+    0 8px 24px rgba(80, 160, 200, 0.18),
+    0 2px 6px rgba(40, 100, 140, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .pond-title {
-  margin: 0 0 6px;
-  padding: 5px 8px;
-  background: linear-gradient(90deg, #a8e6cf, #b5ead7, #c5e3bd);
-  border: 1px solid #a3ded0;
-  color: #2e594d;
+  margin: 0 0 8px;
+  padding: 7px 12px;
+  background: linear-gradient(180deg, #f0fbff 0%, #b8e8f8 40%, #7ec8e8 100%);
+  border: 1px solid #7ec0e0;
+  border-radius: 10px;
+  color: #1a5a78;
   font-size: 12px;
   font-weight: bold;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+  box-shadow: inset 0 1px 0 #fff, 0 2px 6px rgba(60,140,180,0.2);
 }
 .hud {
   display: flex;
   flex-wrap: wrap;
   gap: 6px 10px;
   font-size: 11px;
-  color: #4a4063;
-  margin-bottom: 6px;
-  padding: 4px 6px;
-  background: #f7f3fb;
-  border: 1px solid #e3d7f0;
+  color: #1e4a5c;
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(200,235,250,0.55));
+  border: 1px solid rgba(140,200,230,0.5);
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
 }
-.hud b { color: #2a7a4a; }
-.hud .season { color: #6b5b95; }
+.hud b { color: #0a7a4a; text-shadow: 0 0 8px rgba(80,220,140,0.35); }
+.hud .season { color: #2a6a90; }
 
 .pond-stage {
   position: relative;
-  height: 220px;
-  border-radius: 12px;
-  border: 2px solid #8ec8b0;
+  height: 230px;
+  border-radius: 16px;
+  border: 2px solid rgba(255,255,255,0.65);
   overflow: hidden;
-  background: linear-gradient(180deg, #c8eef5 0%, #7ec8d8 40%, #4a9e8e 100%);
-  margin-bottom: 6px;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 20%, rgba(255,255,255,0.55), transparent 60%),
+    linear-gradient(180deg, #a8e4f8 0%, #5ec4e0 35%, #3a9eb0 70%, #2a8a78 100%);
+  margin-bottom: 8px;
+  box-shadow:
+    inset 0 2px 12px rgba(255,255,255,0.45),
+    inset 0 -8px 20px rgba(20,80,100,0.2),
+    0 6px 18px rgba(40,120,160,0.25);
+  contain: layout style;
 }
 .pond-stage.night {
-  background: linear-gradient(180deg, #1a2a4a 0%, #2a4060 40%, #1a3a40 100%);
-  border-color: #3a5a70;
+  background:
+    radial-gradient(ellipse 40% 30% at 75% 18%, rgba(255,255,220,0.25), transparent 50%),
+    linear-gradient(180deg, #1a2a4a 0%, #2a4868 40%, #1a3a48 100%);
+  border-color: rgba(100,140,180,0.4);
 }
 .pond-stage.winter {
-  background: linear-gradient(180deg, #d8e8f0 0%, #b0d0e0 45%, #90b8c8 100%);
-  border-color: #90b0c0;
+  background:
+    radial-gradient(ellipse 70% 40% at 50% 15%, rgba(255,255,255,0.7), transparent 55%),
+    linear-gradient(180deg, #e8f4fc 0%, #b8d8ec 45%, #88b8c8 100%);
 }
 .pond-stage.night.winter {
   background: linear-gradient(180deg, #1a2838 0%, #2a3848 50%, #203040 100%);
 }
 .pond-water {
   position: absolute;
-  inset: 28% 6% 8% 6%;
-  border-radius: 50% 50% 40% 40%;
-  background: rgba(80, 180, 200, 0.45);
-  box-shadow: inset 0 0 20px rgba(40, 120, 140, 0.3);
+  inset: 26% 5% 10% 5%;
+  border-radius: 50% 50% 42% 42%;
+  background:
+    radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.4), transparent 45%),
+    linear-gradient(180deg, rgba(120,210,230,0.5), rgba(40,140,160,0.55));
+  box-shadow:
+    inset 0 0 24px rgba(255,255,255,0.25),
+    inset 0 -10px 20px rgba(20,80,100,0.25);
+  will-change: auto;
 }
-.pond-stage.night .pond-water { background: rgba(40, 80, 120, 0.5); }
+.pond-stage.night .pond-water {
+  background: linear-gradient(180deg, rgba(50,90,140,0.45), rgba(20,50,80,0.55));
+}
 .pond-stage.heater .pond-water {
-  box-shadow: inset 0 0 24px rgba(255, 160, 80, 0.35), 0 0 12px rgba(255, 140, 60, 0.25);
+  box-shadow: inset 0 0 28px rgba(255,180,100,0.4), 0 0 16px rgba(255,150,70,0.2);
 }
 .pond-bank {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 22%;
-  background: linear-gradient(180deg, #c8b070, #a89050);
+  height: 20%;
+  background: linear-gradient(180deg, #d4c078 0%, #b8a050 50%, #9a8840 100%);
+  box-shadow: inset 0 2px 0 rgba(255,255,255,0.25);
 }
-.pond-stage.winter .pond-bank { background: linear-gradient(180deg, #e0e8f0, #c0d0e0); }
+.pond-stage.winter .pond-bank {
+  background: linear-gradient(180deg, #e8f0f8, #c0d0e0);
+}
+.pond-bubbles {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+.pond-bubbles span {
+  position: absolute;
+  bottom: 15%;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, rgba(180,230,255,0.3));
+  opacity: 0.45;
+  animation: bubbleUp 6s ease-in infinite;
+}
+@keyframes bubbleUp {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  15% { opacity: 0.5; }
+  100% { transform: translateY(-120px) scale(1.1); opacity: 0; }
+}
 
 .fish-slot {
   position: absolute;
-  width: 44px;
-  height: 36px;
+  width: 48px;
+  height: 40px;
   cursor: pointer;
   z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  transition: transform 0.15s;
+  font-size: 24px;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
-.fish-slot:hover { transform: scale(1.12); }
-.fish-slot.ready { filter: drop-shadow(0 0 4px #ffe080); animation: bob 1.2s ease-in-out infinite; }
-.fish-slot.growing { opacity: 0.85; }
+.fish-slot:hover { transform: scale(1.1); }
+.fish-slot.ready {
+  filter: drop-shadow(0 0 6px rgba(255,240,120,0.9));
+  animation: bob 1.4s ease-in-out infinite;
+}
+.fish-slot.growing { opacity: 0.9; }
 .fish-slot.empty {
-  width: 36px; height: 28px;
-  border: 1px dashed rgba(255,255,255,0.5);
+  width: 34px; height: 26px;
+  border: 1.5px dashed rgba(255,255,255,0.55);
   border-radius: 50%;
-  font-size: 14px;
-  color: rgba(255,255,255,0.7);
-  background: rgba(255,255,255,0.1);
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
+  background: rgba(255,255,255,0.12);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
 }
 @keyframes bob {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+  50% { transform: translateY(-5px); }
 }
 .fish-label {
   position: absolute;
-  bottom: -12px;
+  bottom: -13px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 8px;
   white-space: nowrap;
-  background: rgba(0,0,0,0.45);
-  color: #fff;
-  padding: 1px 4px;
-  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(30,80,100,0.75), rgba(20,50,70,0.85));
+  color: #e8f8ff;
+  padding: 1px 5px;
+  border-radius: 6px;
   pointer-events: none;
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 .cat-sprite, .dog-sprite {
   position: absolute;
   font-size: 28px;
   z-index: 5;
-  transition: left 0.8s, bottom 0.8s, opacity 0.4s;
+  transition: opacity 0.35s;
   pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
 }
 .toast {
   position: absolute;
   left: 50%;
-  top: 10px;
+  top: 12px;
   transform: translateX(-50%);
-  background: rgba(40, 30, 50, 0.88);
-  color: #fff;
+  background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(200,235,250,0.9));
+  color: #1a4a60;
   font-size: 11px;
-  padding: 5px 10px;
-  border-radius: 6px;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 12px;
   z-index: 10;
-  max-width: 90%;
+  max-width: 92%;
   text-align: center;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.25s;
+  transition: opacity 0.2s;
+  border: 1px solid rgba(120,190,220,0.6);
+  box-shadow: 0 4px 14px rgba(40,120,160,0.25), inset 0 1px 0 #fff;
 }
 .toast.show { opacity: 1; }
 
 .dock {
   display: flex;
-  gap: 4px;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 5px;
   margin-top: 4px;
 }
 .dock-btn {
-  flex: 1;
+  flex: 1 1 18%;
   min-width: 0;
-  padding: 7px 2px;
-  background: linear-gradient(180deg, #faf6ff, #ebe3f5);
-  border: 1px solid #d0c0e0;
-  color: #4a4063;
+  padding: 8px 2px;
+  background: linear-gradient(180deg, #ffffff 0%, #d0eef8 48%, #a8d8ec 100%);
+  border: 1px solid #7eb8d0;
+  color: #1a5070;
   font-size: 9px;
   line-height: 12px;
   cursor: pointer;
   text-align: center;
-  border-radius: 4px;
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 #fff, 0 2px 5px rgba(60,140,180,0.2);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.7);
 }
-.dock-btn .ico { display: block; font-size: 16px; margin-bottom: 2px; }
-.dock-btn:hover { background: #fff; }
-.dock-btn.active { background: #eadef7; border-color: #b090d0; font-weight: bold; }
+.dock-btn .ico { display: block; font-size: 16px; margin-bottom: 2px; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.12)); }
+.dock-btn:hover {
+  background: linear-gradient(180deg, #fff 0%, #e0f6fc 50%, #b8e4f4 100%);
+}
+.dock-btn.active {
+  background: linear-gradient(180deg, #e8fff4 0%, #a8e8d0 50%, #70d0b0 100%);
+  border-color: #50b090;
+  font-weight: bold;
+  color: #0a5a40;
+}
 .dock-btn .badge {
   display: inline-block;
-  background: #e05070;
+  background: linear-gradient(180deg, #ff8098, #e04060);
   color: #fff;
   font-size: 8px;
-  padding: 0 4px;
+  padding: 0 5px;
   border-radius: 8px;
   margin-left: 2px;
+  box-shadow: 0 1px 3px rgba(200,40,80,0.35);
 }
 
 .sheet {
   display: none;
   margin-top: 8px;
-  border: 1px solid #e3d7f0;
-  background: #faf8fc;
+  border: 1px solid rgba(120,190,220,0.55);
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(220,242,250,0.85));
   max-height: 280px;
   overflow-y: auto;
-  padding: 6px;
+  padding: 8px;
   font-size: 11px;
-  color: #4a4063;
+  color: #1e4a5c;
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 #fff;
 }
 .sheet.open { display: block; }
 .sheet h4 {
   margin: 0 0 6px;
   font-size: 12px;
-  color: #4a3e56;
+  color: #1a5a78;
+  text-shadow: 0 1px 0 #fff;
 }
 .row-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 5px 4px;
-  border-bottom: 1px solid #eee4f5;
+  padding: 6px 4px;
+  border-bottom: 1px solid rgba(160,210,230,0.35);
 }
 .row-item:last-child { border-bottom: none; }
 .row-item img {
   width: 36px; height: 36px;
   object-fit: cover;
   border-radius: 50%;
-  border: 1px solid #e3d7f0;
-  background: #f0eaf6;
+  border: 2px solid rgba(255,255,255,0.9);
+  background: #d0eef8;
   flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(40,120,160,0.2);
 }
 .row-item .meta { flex: 1; min-width: 0; }
-.row-item .meta .name { font-weight: bold; font-size: 11px; }
-.row-item .meta .sub { font-size: 9px; color: #8c7b9e; }
+.row-item .meta .name { font-weight: bold; font-size: 11px; color: #1a5070; }
+.row-item .meta .sub { font-size: 9px; color: #4a7a90; }
 .row-item button, .shop-btn {
   flex-shrink: 0;
-  padding: 4px 8px;
+  padding: 5px 10px;
   font-size: 10px;
-  background: linear-gradient(180deg, #faf6ff, #ebe3f5);
-  border: 1px solid #d0c0e0;
-  color: #4a4063;
+  background: linear-gradient(180deg, #fff, #b8e0f0);
+  border: 1px solid #70b0c8;
+  color: #1a5070;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 0 #fff, 0 1px 3px rgba(40,120,160,0.15);
 }
 .row-item button:disabled, .shop-btn:disabled {
   opacity: 0.4;
@@ -228,46 +307,51 @@
 .shop-btn { margin-left: auto; }
 .hint {
   font-size: 10px;
-  color: #8c7b9e;
+  color: #4a7a90;
   margin: 0 0 6px;
   line-height: 13px;
 }
-.empty-msg { font-size: 11px; color: #8c7b9e; padding: 8px; text-align: center; }
+.empty-msg { font-size: 11px; color: #5a8a9e; padding: 8px; text-align: center; }
 
 .modal-bg {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(30, 80, 110, 0.4);
   z-index: 1000;
   align-items: center;
   justify-content: center;
   padding: 12px;
+  backdrop-filter: blur(4px);
 }
 .modal-bg.open { display: flex; }
 .modal {
-  background: #fff;
-  border: 1px solid #c0b0d0;
+  background: linear-gradient(165deg, #fff 0%, #e0f4fc 100%);
+  border: 1px solid #80c0d8;
+  border-radius: 14px;
   max-width: 320px;
   width: 100%;
   max-height: 80vh;
   overflow-y: auto;
-  padding: 10px;
+  padding: 12px;
   font-size: 11px;
-  color: #4a4063;
+  color: #1e4a5c;
+  box-shadow: 0 12px 40px rgba(30,100,140,0.3), inset 0 1px 0 #fff;
 }
-.modal h4 { margin: 0 0 8px; }
+.modal h4 { margin: 0 0 8px; color: #1a5a78; }
 .modal .close-x {
   float: right;
-  border: none;
-  background: #eee;
+  border: 1px solid #90c0d8;
+  background: linear-gradient(180deg, #fff, #d0eaf4);
+  border-radius: 8px;
   cursor: pointer;
   padding: 2px 8px;
+  color: #1a5070;
 }
 
 @media (max-width: 420px) {
-  .pond-stage { height: 190px; }
-  .dock-btn { font-size: 8px; padding: 6px 1px; }
+  .pond-stage { height: 200px; }
+  .dock-btn { font-size: 8px; padding: 6px 1px; flex: 1 1 22%; }
   .dock-btn .ico { font-size: 14px; }
 }
 </style>
@@ -313,10 +397,18 @@
 
     <div class="pond-stage" id="pond-stage">
       <div class="pond-water" id="pond-water"></div>
+      <div class="pond-bubbles" id="pond-bubbles" aria-hidden="true">
+        <span style="left:12%;animation-delay:0s"></span>
+        <span style="left:28%;animation-delay:1.5s;width:6px;height:6px"></span>
+        <span style="left:55%;animation-delay:0.8s"></span>
+        <span style="left:72%;animation-delay:2.2s;width:5px;height:5px"></span>
+        <span style="left:40%;animation-delay:3s;width:7px;height:7px"></span>
+      </div>
       <div class="pond-bank"></div>
       <div class="toast" id="toast"></div>
       <div class="cat-sprite" id="cat-sprite" style="display:none; bottom:18%; left:8%;">🐱</div>
       <div class="dog-sprite" id="dog-sprite" style="display:none; bottom:14%; right:10%;">🐕</div>
+      <div id="fish-layer"></div>
     </div>
 
     <div class="dock">
@@ -326,6 +418,7 @@
       <button type="button" class="dock-btn" data-sheet="inbox"><span class="ico">🎁</span>Вхідні<span class="badge hidden" id="badge-inbox"></span></button>
       <button type="button" class="dock-btn" data-sheet="fish"><span class="ico">🐠</span>Улов</button>
       <button type="button" class="dock-btn" data-sheet="daily"><span class="ico">📅</span>Щоденне</button>
+      <button type="button" class="dock-btn" data-sheet="achievements"><span class="ico">🏆</span>Успіхи<span class="badge hidden" id="badge-ach"></span></button>
     </div>
 
     <div class="sheet" id="sheet-friends">
@@ -360,6 +453,11 @@
       <p class="hint">Раз на ігровий день — монети або дрібний предмет.</p>
       <div id="daily-box"></div>
     </div>
+    <div class="sheet" id="sheet-achievements">
+      <h4>Досягнення</h4>
+      <p class="hint">Відкривай успіхи — одразу отримуєш монети. Прогрес у сейві.</p>
+      <div id="ach-list"></div>
+    </div>
   </div>
 </div>
 
@@ -382,31 +480,57 @@
   var MAX_LEVEL = 25;
 
   /* ===== DATA ===== */
+  /* Ціни продажу: ікра дешевша за продаж → є прибуток, але з урахуванням часу */
   var SPECIES = {
-    guppy:   { id: "guppy",   name: "Гупі",     icon: "🐠", growMs: 3000,  sell: 4,  unlock: 1,  rare: 0 },
-    carp:    { id: "carp",    name: "Карась",   icon: "🐟", growMs: 8000,  sell: 10, unlock: 2,  rare: 0 },
-    frog:    { id: "frog",    name: "Жаба",     icon: "🐸", growMs: 12000, sell: 14, unlock: 4,  rare: 0 },
-    koi:     { id: "koi",     name: "Кої",      icon: "🐡", growMs: 20000, sell: 28, unlock: 7,  rare: 1 },
-    eel:     { id: "eel",     name: "Вугор",    icon: "🐍", growMs: 28000, sell: 36, unlock: 10, rare: 1 },
-    angelf:  { id: "angelf",  name: "Скалярія", icon: "🕊️", growMs: 35000, sell: 55, unlock: 14, rare: 2 },
-    crystal: { id: "crystal", name: "Кришталь", icon: "✨", growMs: 50000, sell: 90, unlock: 18, rare: 3 }
+    guppy:   { id: "guppy",   name: "Гупі",     icon: "🐠", growMs: 2500,  sell: 5,   unlock: 1,  rare: 0 },
+    carp:    { id: "carp",    name: "Карась",   icon: "🐟", growMs: 7000,  sell: 12,  unlock: 2,  rare: 0 },
+    frog:    { id: "frog",    name: "Жаба",     icon: "🐸", growMs: 11000, sell: 18,  unlock: 4,  rare: 0 },
+    koi:     { id: "koi",     name: "Кої",      icon: "🐡", growMs: 18000, sell: 35,  unlock: 7,  rare: 1 },
+    eel:     { id: "eel",     name: "Вугор",    icon: "🐍", growMs: 26000, sell: 48,  unlock: 10, rare: 1 },
+    angelf:  { id: "angelf",  name: "Скалярія", icon: "🕊️", growMs: 34000, sell: 72,  unlock: 14, rare: 2 },
+    crystal: { id: "crystal", name: "Кришталь", icon: "✨", growMs: 48000, sell: 120, unlock: 18, rare: 3 }
   };
 
+  /* Магазин: ікра ≈ 55–70% від sell, апгрейди — чіткі пороги */
   var SHOP = [
-    { id: "roe_guppy",  name: "Ікра гупі",     icon: "🟠", cost: 6,   kind: "roe", species: "guppy",  unlock: 1 },
-    { id: "roe_carp",   name: "Ікра карася",   icon: "🟡", cost: 14,  kind: "roe", species: "carp",   unlock: 2 },
-    { id: "roe_frog",   name: "Ікра жаби",     icon: "🟢", cost: 20,  kind: "roe", species: "frog",   unlock: 4 },
-    { id: "roe_koi",    name: "Ікра кої",      icon: "🔴", cost: 40,  kind: "roe", species: "koi",    unlock: 7 },
-    { id: "roe_eel",    name: "Ікра вугра",    icon: "🟣", cost: 55,  kind: "roe", species: "eel",    unlock: 10 },
-    { id: "roe_angelf", name: "Ікра скалярії", icon: "⚪", cost: 80,  kind: "roe", species: "angelf", unlock: 14 },
-    { id: "roe_crystal",name: "Ікра кришталю",icon: "💎", cost: 140, kind: "roe", species: "crystal",unlock: 18 },
-    { id: "fertilizer", name: "Добриво",       icon: "🌿", cost: 25,  kind: "item", unlock: 1, desc: "−30% часу росту (1 риба)" },
-    { id: "rare_boost", name: "Буст рідкості", icon: "🍀", cost: 60,  kind: "item", unlock: 5, desc: "Більший шанс рідкісного при зборі" },
-    { id: "dog_basic",  name: "Собака (звичайна)", icon: "🐕", cost: 120, kind: "upgrade", unlock: 5, desc: "Відлякує кота ~65% візитів" },
-    { id: "dog_pro",    name: "Собака (вартова)", icon: "🦮", cost: 350, kind: "upgrade", unlock: 8, desc: "Кіт більше ніколи не вкраде" },
-    { id: "heater",     name: "Обігрів ставка", icon: "🔥", cost: 200, kind: "upgrade", unlock: 6, desc: "Зимовий штраф росту знято (назавжди)" },
-    { id: "auto_collect", name: "Автозбір",    icon: "⚙️", cost: 500, kind: "upgrade", unlock: 12, desc: "Сама збирає готову рибу" },
-    { id: "slot",       name: "Додатковий слот", icon: "➕", cost: 80, kind: "upgrade", unlock: 3, desc: "Ще одне місце у ставку (макс 8)" }
+    { id: "roe_guppy",   name: "Ікра гупі",        icon: "🟠", cost: 3,   kind: "roe", species: "guppy",   unlock: 1 },
+    { id: "roe_carp",    name: "Ікра карася",      icon: "🟡", cost: 7,   kind: "roe", species: "carp",    unlock: 2 },
+    { id: "roe_frog",    name: "Ікра жаби",        icon: "🟢", cost: 11,  kind: "roe", species: "frog",    unlock: 4 },
+    { id: "roe_koi",     name: "Ікра кої",         icon: "🔴", cost: 22,  kind: "roe", species: "koi",     unlock: 7 },
+    { id: "roe_eel",     name: "Ікра вугра",       icon: "🟣", cost: 32,  kind: "roe", species: "eel",     unlock: 10 },
+    { id: "roe_angelf",  name: "Ікра скалярії",    icon: "⚪", cost: 48,  kind: "roe", species: "angelf",  unlock: 14 },
+    { id: "roe_crystal", name: "Ікра кришталю",    icon: "💎", cost: 75,  kind: "roe", species: "crystal", unlock: 18 },
+    { id: "fertilizer",  name: "Добриво",          icon: "🌿", cost: 15,  kind: "item", unlock: 1, desc: "−30% часу росту (1 риба)" },
+    { id: "rare_boost",  name: "Буст рідкості",    icon: "🍀", cost: 40,  kind: "item", unlock: 5, desc: "Більший шанс рідкісного при зборі" },
+    { id: "dog_basic",   name: "Собака (звичайна)",icon: "🐕", cost: 90,  kind: "upgrade", unlock: 5, desc: "Відлякує кота ~65% візитів" },
+    { id: "dog_pro",     name: "Собака (вартова)", icon: "🦮", cost: 280, kind: "upgrade", unlock: 8, desc: "Кіт більше ніколи не вкраде" },
+    { id: "heater",      name: "Обігрів ставка",   icon: "🔥", cost: 150, kind: "upgrade", unlock: 6, desc: "Зимовий штраф росту знято (назавжди)" },
+    { id: "auto_collect",name: "Автозбір",         icon: "⚙️", cost: 400, kind: "upgrade", unlock: 12, desc: "Сама збирає готову рибу" },
+    { id: "slot",        name: "Додатковий слот",  icon: "➕", cost: 55,  kind: "upgrade", unlock: 3, desc: "Ще одне місце у ставку (макс 8)" }
+  ];
+
+  /* Нагороди: ранні — скромні, пізні / рідкісні — відчутні, без ламання економіки */
+  var ACHIEVEMENTS = [
+    { id: "first_catch",  icon: "🎣", name: "Перший улов",        desc: "Зібери першу рибу",              check: function (s) { return s.stats.collected >= 1; }, reward: 8 },
+    { id: "catch_25",     icon: "🐠", name: "Рибалка",             desc: "Зібери 25 рибин",                check: function (s) { return s.stats.collected >= 25; }, reward: 35 },
+    { id: "catch_100",    icon: "🌊", name: "Хазяїн ставка",       desc: "Зібери 100 рибин",               check: function (s) { return s.stats.collected >= 100; }, reward: 120 },
+    { id: "sell_50",      icon: "💰", name: "Торговець",           desc: "Продай 50 одиниць улову",        check: function (s) { return s.stats.sold >= 50; }, reward: 50 },
+    { id: "coins_500",    icon: "🪙", name: "Скарбничка",          desc: "Зароби сумарно 500 монет",       check: function (s) { return s.stats.coinsEarned >= 500; }, reward: 40 },
+    { id: "coins_2000",   icon: "💎", name: "Багатій ставка",      desc: "Зароби сумарно 2000 монет",      check: function (s) { return s.stats.coinsEarned >= 2000; }, reward: 150 },
+    { id: "level_5",      icon: "⭐", name: "Учень",               desc: "Досягни 5 рівня",                check: function (s) { return s.level >= 5; }, reward: 25 },
+    { id: "level_10",     icon: "🌟", name: "Досвідчений",         desc: "Досягни 10 рівня",               check: function (s) { return s.level >= 10; }, reward: 70 },
+    { id: "level_25",     icon: "👑", name: "Легенда ставка",      desc: "Досягни 25 рівня",               check: function (s) { return s.level >= 25; }, reward: 300 },
+    { id: "dog_basic",    icon: "🐕", name: "Охорона",             desc: "Купи звичайну собаку",           check: function (s) { return s.dog >= 1; }, reward: 20 },
+    { id: "dog_pro",      icon: "🦮", name: "Фортеця",             desc: "Купи вартову собаку",            check: function (s) { return s.dog >= 2; }, reward: 55 },
+    { id: "heater",       icon: "🔥", name: "Теплий дім",          desc: "Встанови обігрів",               check: function (s) { return s.heater; }, reward: 30 },
+    { id: "auto",         icon: "⚙️", name: "Автопілот",           desc: "Купи автозбір",                  check: function (s) { return s.autoCollect; }, reward: 80 },
+    { id: "slots_8",      icon: "➕", name: "Повний ставок",       desc: "Відкрий 8 слотів",               check: function (s) { return s.slots >= 8; }, reward: 45 },
+    { id: "gift_1",       icon: "🎁", name: "Щедрість",            desc: "Подаруй щось друменю",           check: function (s) { return s.stats.giftsSent >= 1; }, reward: 12 },
+    { id: "gift_10",      icon: "💝", name: "Дружба",              desc: "Надішли 10 подарунків",          check: function (s) { return s.stats.giftsSent >= 10; }, reward: 60 },
+    { id: "cat_victim",   icon: "🐱", name: "Урок від кота",       desc: "Втрать рибу через кота",         check: function (s) { return s.stats.catStolen >= 1; }, reward: 15 },
+    { id: "rare_koi",     icon: "🐡", name: "Кої в колекції",      desc: "Зібери кої хоч раз",             check: function (s) { return (s.stats.bySpecies.koi || 0) >= 1; }, reward: 40 },
+    { id: "rare_crystal", icon: "✨", name: "Кришталева мрія",     desc: "Зібери кришталеву рибу",         check: function (s) { return (s.stats.bySpecies.crystal || 0) >= 1; }, reward: 100 },
+    { id: "daily_3",      icon: "📅", name: "Постійність",         desc: "Забери 3 щоденні нагороди",      check: function (s) { return s.stats.dailies >= 3; }, reward: 45 }
   ];
 
   var FRIENDS = [
@@ -470,8 +594,8 @@
 
   function defaultState() {
     return {
-      version: 1,
-      coins: 20,
+      version: 2,
+      coins: 25,
       level: 1,
       xp: 0,
       slots: 3,
@@ -480,10 +604,10 @@
       autoCollect: false,
       rareBoostCharges: 0,
       fertilizerCharges: 0,
-      pond: [], // {id, species, startedAt, growMs, ready}
-      items: {}, // itemId -> count
-      catch: {}, // speciesId -> count
-      giftsGiven: {}, // friendId -> dayKey
+      pond: [],
+      items: {},
+      catch: {},
+      giftsGiven: {},
       inbox: [],
       lastBotGiftDay: "",
       lastDailyDay: "",
@@ -491,8 +615,55 @@
       priceMod: 1,
       lastPriceDay: "",
       lastSeen: Date.now(),
-      tutorialDone: false
+      tutorialDone: false,
+      achievements: {}, // id -> { at, claimedReward }
+      stats: {
+        collected: 0,
+        sold: 0,
+        coinsEarned: 0,
+        giftsSent: 0,
+        catStolen: 0,
+        dailies: 0,
+        bySpecies: {}
+      }
     };
+  }
+
+  function ensureStats() {
+    if (!S.stats) {
+      S.stats = { collected: 0, sold: 0, coinsEarned: 0, giftsSent: 0, catStolen: 0, dailies: 0, bySpecies: {} };
+    }
+    if (!S.stats.bySpecies) S.stats.bySpecies = {};
+    if (!S.achievements) S.achievements = {};
+  }
+
+  function unlockAchievement(id) {
+    ensureStats();
+    if (S.achievements[id]) return;
+    var def = null;
+    for (var i = 0; i < ACHIEVEMENTS.length; i++) {
+      if (ACHIEVEMENTS[i].id === id) def = ACHIEVEMENTS[i];
+    }
+    if (!def) return;
+    S.achievements[id] = { at: Date.now(), rewarded: false };
+    var bonus = def.reward || 0;
+    if (bonus > 0) {
+      S.coins += bonus;
+      S.stats.coinsEarned += bonus;
+      S.achievements[id].rewarded = true;
+    }
+    toast("🏆 " + def.name + (bonus ? " · +" + bonus + "💰" : ""));
+    save();
+  }
+
+  function checkAchievements() {
+    ensureStats();
+    ACHIEVEMENTS.forEach(function (a) {
+      if (S.achievements[a.id]) return;
+      try {
+        if (a.check(S)) unlockAchievement(a.id);
+      } catch (e) {}
+    });
   }
 
   function dayKey(ts) {
@@ -539,7 +710,6 @@
     try { raw = localStorage.getItem(SAVE_KEY); } catch (e) {}
     if (!raw) {
       S = defaultState();
-      // starter fish
       plantFish("guppy", true);
       plantFish("guppy", true);
       toast("Вітаємо у ставку! Дві гупі вже ростуть.");
@@ -552,7 +722,9 @@
       S = defaultState();
     }
     if (!S.version) S = defaultState();
+    ensureStats();
     applyOfflineProgress();
+    checkAchievements();
   }
 
   function applyOfflineProgress() {
@@ -591,8 +763,9 @@
       growMs: ms,
       fertilized: false
     });
-    save();
-    renderPond();
+    markPondDirty();
+    queueSave();
+    renderPond(true);
     return true;
   }
 
@@ -635,9 +808,14 @@
     }
     S.catch[sid] = (S.catch[sid] || 0) + 1;
     S.pond.splice(idx, 1);
+    ensureStats();
+    S.stats.collected++;
+    S.stats.bySpecies[sid] = (S.stats.bySpecies[sid] || 0) + 1;
     addXp(2 + (sp.rare || 0) * 3);
     toast("Зібрано: " + sp.icon + " " + sp.name);
-    save();
+    checkAchievements();
+    markPondDirty();
+    queueSave();
     renderAll();
   }
 
@@ -648,6 +826,7 @@
       S.level++;
       toast("⭐ Рівень " + S.level + "!");
       if (S.level === 5) toast("З 5 рівня інколи приходить кіт…");
+      checkAchievements();
     }
     if (S.level >= MAX_LEVEL) S.xp = Math.min(S.xp, xpForLevel(MAX_LEVEL) - 1);
   }
@@ -682,9 +861,13 @@
     // steal one ready fish
     var victim = ready[Math.floor(Math.random() * ready.length)];
     S.pond = S.pond.filter(function (f) { return f.uid !== victim.uid; });
+    ensureStats();
+    S.stats.catStolen++;
     toast("🐱 Кіт вкрав " + SPECIES[victim.species].name + "!");
-    save();
-    renderPond();
+    checkAchievements();
+    markPondDirty();
+    queueSave();
+    renderPond(true);
     setTimeout(hideCat, 2500);
   }
 
@@ -724,31 +907,37 @@
         S.coins -= item.cost;
         S.dog = 1;
         toast("🐕 Собака охороняє ставок (~65%)");
+        checkAchievements();
       } else if (item.id === "dog_pro") {
         if (S.dog >= 2) { toast("Вартова вже є"); return; }
         var price = item.cost;
-        if (S.dog === 1) price = Math.max(50, item.cost - 120); // upgrade discount
+        if (S.dog === 1) price = Math.max(40, item.cost - 90); // upgrade discount
         if (S.coins < price) { toast("Недостатньо монет"); return; }
         S.coins -= price;
         S.dog = 2;
         toast("🦮 Вартова собака — кіт більше не вкраде");
+        checkAchievements();
       } else if (item.id === "heater") {
         if (S.heater) { toast("Обігрів уже стоїть"); return; }
         S.coins -= item.cost;
         S.heater = true;
         toast("🔥 Обігрів встановлено");
+        checkAchievements();
       } else if (item.id === "auto_collect") {
         if (S.autoCollect) { toast("Уже куплено"); return; }
         S.coins -= item.cost;
         S.autoCollect = true;
         toast("⚙️ Автозбір увімкнено");
+        checkAchievements();
       } else if (item.id === "slot") {
         if (S.slots >= 8) { toast("Максимум 8 слотів"); return; }
         S.coins -= item.cost;
         S.slots++;
         toast("Слотів: " + S.slots);
+        checkAchievements();
       }
     }
+    checkAchievements();
     save();
     renderAll();
   }
@@ -793,24 +982,34 @@
     S.catch[sid] -= count;
     if (S.catch[sid] <= 0) delete S.catch[sid];
     S.coins += gain;
+    ensureStats();
+    S.stats.sold += count;
+    S.stats.coinsEarned += gain;
     addXp(count);
     toast("+" + gain + "💰 за " + sp.name);
+    checkAchievements();
     save();
     renderAll();
   }
 
   function sellAll() {
     var total = 0;
+    var units = 0;
     Object.keys(S.catch).forEach(function (sid) {
       var n = S.catch[sid];
       var sp = SPECIES[sid];
       total += Math.round(sp.sell * S.priceMod * n);
+      units += n;
     });
     if (!total) { toast("Немає улову"); return; }
     S.coins += total;
+    ensureStats();
+    S.stats.sold += units;
+    S.stats.coinsEarned += total;
     S.catch = {};
     addXp(3);
     toast("Продано все: +" + total + "💰");
+    checkAchievements();
     save();
     renderAll();
   }
@@ -842,10 +1041,14 @@
 
     S.giftsGiven[fid] = dayKey();
     var liked = friend.likes.indexOf(payload.id) >= 0;
-    var bonus = liked ? 15 + Math.floor(Math.random() * 20) : 5 + Math.floor(Math.random() * 8);
+    var bonus = liked ? 12 + Math.floor(Math.random() * 16) : 4 + Math.floor(Math.random() * 7);
     S.coins += bonus;
+    ensureStats();
+    S.stats.giftsSent++;
+    S.stats.coinsEarned += bonus;
     addXp(liked ? 5 : 2);
     toast((liked ? "😍 " : "") + friend.name + " отримав(ла) подарунок · +" + bonus + "💰");
+    checkAchievements();
     save();
     renderAll();
   }
@@ -892,25 +1095,21 @@
     var dk = dayKey();
     if (S.lastDailyDay === dk) { toast("Сьогодні вже отримано"); return; }
     S.lastDailyDay = dk;
+    ensureStats();
+    S.stats.dailies++;
     if (Math.random() < 0.55) {
-      var c = 10 + S.level * 2 + Math.floor(Math.random() * 15);
+      var c = 12 + S.level * 2 + Math.floor(Math.random() * 12);
       S.coins += c;
+      S.stats.coinsEarned += c;
       toast("Щоденна нагорода: +" + c + "💰");
     } else {
       var opts = ["fertilizer", "roe_guppy", "rare_boost"];
       var it = opts[Math.floor(Math.random() * opts.length)];
-      if (it.indexOf("roe_") === 0) {
-        // plant if space else item as catch? give as item key in items as pending roe use — simplify: coins fallback if no slot logic
-        S.items["fertilizer"] = (S.items["fertilizer"] || 0) + (it === "fertilizer" ? 1 : 0);
-        if (it !== "fertilizer") {
-          S.items[it] = (S.items[it] || 0) + 1;
-        }
-      } else {
-        S.items[it] = (S.items[it] || 0) + 1;
-      }
+      S.items[it] = (S.items[it] || 0) + 1;
       toast("Щоденна нагорода: предмет!");
     }
     addXp(3);
+    checkAchievements();
     save();
     renderAll();
   }
@@ -924,21 +1123,24 @@
     toast._t = setTimeout(function () { el.classList.remove("show"); }, 2800);
   }
 
-  function renderHud() {
-    document.getElementById("hud-coins").textContent = S.coins;
-    document.getElementById("hud-level").textContent = S.level;
-    document.getElementById("hud-xp").textContent = S.xp;
-    document.getElementById("hud-xp-max").textContent = xpForLevel(S.level);
-    document.getElementById("hud-season").textContent = seasonInfo().label;
+  function renderHud(force) {
+    var s = seasonInfo();
     var buffs = [];
     if (S.dog === 1) buffs.push("🐕");
     if (S.dog === 2) buffs.push("🦮");
     if (S.heater) buffs.push("🔥");
     if (S.autoCollect) buffs.push("⚙️");
     if (S.rareBoostCharges > 0) buffs.push("🍀×" + S.rareBoostCharges);
+    var key = S.coins + "|" + S.level + "|" + S.xp + "|" + s.label + "|" + buffs.join("") + "|" + S.dog + "|" + S.heater;
+    if (!force && key === lastHudKey) return;
+    lastHudKey = key;
+    document.getElementById("hud-coins").textContent = S.coins;
+    document.getElementById("hud-level").textContent = S.level;
+    document.getElementById("hud-xp").textContent = S.xp;
+    document.getElementById("hud-xp-max").textContent = xpForLevel(S.level);
+    document.getElementById("hud-season").textContent = s.label;
     document.getElementById("hud-buffs").textContent = buffs.join(" ");
     var stage = document.getElementById("pond-stage");
-    var s = seasonInfo();
     stage.classList.toggle("night", s.night);
     stage.classList.toggle("winter", s.season === "Зима");
     stage.classList.toggle("heater", !!S.heater);
@@ -950,46 +1152,125 @@
     [25, 55], [48, 58], [65, 55], [40, 48]
   ];
 
-  function renderPond() {
-    var stage = document.getElementById("pond-stage");
-    stage.querySelectorAll(".fish-slot").forEach(function (n) { n.remove(); });
+  var fishLayer = null;
+  var pondDirty = true;
+  var lastHudKey = "";
+  var saveQueued = false;
+  var autoCollectLock = false;
 
-    // empty slots markers
+  function getFishLayer() {
+    if (!fishLayer) fishLayer = document.getElementById("fish-layer");
+    return fishLayer;
+  }
+
+  function queueSave() {
+    if (saveQueued) return;
+    saveQueued = true;
+    setTimeout(function () {
+      saveQueued = false;
+      save();
+    }, 800);
+  }
+
+  function markPondDirty() {
+    pondDirty = true;
+  }
+
+  function renderPond(force) {
+    if (!force && !pondDirty) {
+      // light update: only labels / ready class
+      updatePondLabels();
+      return;
+    }
+    pondDirty = false;
+    var layer = getFishLayer();
+    if (!layer) return;
+    layer.textContent = "";
+
+    var occupied = S.pond.length;
     for (var s = 0; s < S.slots; s++) {
-      if (S.pond[s]) continue;
+      if (s < occupied) continue;
       var pos = SLOT_POS[s] || [50, 50];
       var empty = document.createElement("div");
       empty.className = "fish-slot empty";
       empty.style.left = pos[0] + "%";
       empty.style.top = pos[1] + "%";
       empty.textContent = "+";
-      empty.title = "Вільний слот — купи ікру в магазині";
+      empty.title = "Вільний слот";
       empty.onclick = function () {
         openSheet("shop");
         toast("Купи ікру в магазині, щоб посадити рибу");
       };
-      stage.appendChild(empty);
+      layer.appendChild(empty);
     }
 
-    S.pond.forEach(function (f, i) {
+    var readyList = [];
+    for (var i = 0; i < S.pond.length; i++) {
+      var f = S.pond[i];
       var sp = SPECIES[f.species];
-      var pos = SLOT_POS[i % SLOT_POS.length];
-      var el = document.createElement("div");
+      var p = SLOT_POS[i % SLOT_POS.length];
       var ready = isReady(f);
+      var el = document.createElement("div");
       el.className = "fish-slot " + (ready ? "ready" : "growing");
-      el.style.left = pos[0] + "%";
-      el.style.top = pos[1] + "%";
-      el.innerHTML = sp.icon + '<span class="fish-label">' +
-        (ready ? "готово" : Math.ceil((1 - fishProgress(f)) * f.growMs / 1000) + "с") +
-        "</span>";
+      el.style.left = p[0] + "%";
+      el.style.top = p[1] + "%";
+      el.setAttribute("data-uid", f.uid);
+      var label = document.createElement("span");
+      label.className = "fish-label";
+      label.textContent = ready ? "готово" : Math.ceil((1 - fishProgress(f)) * f.growMs / 1000) + "с";
+      el.appendChild(document.createTextNode(sp.icon));
+      el.appendChild(label);
       el.title = sp.name;
-      el.onclick = function () { collectFish(f.uid); };
-      stage.appendChild(el);
+      el.onclick = (function (uid) {
+        return function () { collectFish(uid); };
+      })(f.uid);
+      layer.appendChild(el);
+      if (ready) readyList.push(f.uid);
+    }
 
-      if (ready && S.autoCollect) {
-        setTimeout(function () { collectFish(f.uid); }, 400);
-      }
-    });
+    if (S.autoCollect && readyList.length && !autoCollectLock) {
+      autoCollectLock = true;
+      var uid0 = readyList[0];
+      setTimeout(function () {
+        autoCollectLock = false;
+        collectFish(uid0);
+      }, 300);
+    }
+  }
+
+  function updatePondLabels() {
+    var layer = getFishLayer();
+    if (!layer) return;
+    var nodes = layer.querySelectorAll(".fish-slot[data-uid]");
+    var map = {};
+    for (var i = 0; i < S.pond.length; i++) map[S.pond[i].uid] = S.pond[i];
+    var needFull = false;
+    var readyUid = null;
+    for (var n = 0; n < nodes.length; n++) {
+      var el = nodes[n];
+      var uid = el.getAttribute("data-uid");
+      var f = map[uid];
+      if (!f) { needFull = true; break; }
+      var ready = isReady(f);
+      var lab = el.querySelector(".fish-label");
+      if (lab) lab.textContent = ready ? "готово" : Math.ceil((1 - fishProgress(f)) * f.growMs / 1000) + "с";
+      var cls = "fish-slot " + (ready ? "ready" : "growing");
+      if (el.className !== cls) el.className = cls;
+      if (ready) readyUid = uid;
+    }
+    if (nodes.length !== S.pond.length) needFull = true;
+    if (needFull) {
+      pondDirty = true;
+      renderPond(true);
+      return;
+    }
+    if (S.autoCollect && readyUid && !autoCollectLock) {
+      autoCollectLock = true;
+      setTimeout(function () {
+        autoCollectLock = false;
+        collectFish(readyUid);
+      }, 300);
+    }
   }
 
   function openSheet(name) {
@@ -1005,6 +1286,22 @@
     if (name === "inbox") renderInbox();
     if (name === "fish") renderCatch();
     if (name === "daily") renderDaily();
+    if (name === "achievements") renderAchievements();
+  }
+
+  function renderAchievements() {
+    ensureStats();
+    var box = document.getElementById("ach-list");
+    var done = 0;
+    box.innerHTML = ACHIEVEMENTS.map(function (a) {
+      var got = !!S.achievements[a.id];
+      if (got) done++;
+      return '<div class="row-item" style="' + (got ? "" : "opacity:0.55;") + '">' +
+        '<div style="font-size:20px;width:32px;text-align:center;">' + a.icon + "</div>" +
+        '<div class="meta"><div class="name">' + a.name + (got ? " ✓" : "") + "</div>" +
+        '<div class="sub">' + a.desc + " · +" + a.reward + "💰</div></div></div>";
+    }).join("") +
+      '<div class="hint" style="margin-top:6px;">Відкрито: ' + done + " / " + ACHIEVEMENTS.length + "</div>";
   }
 
   function renderFriends() {
@@ -1065,7 +1362,7 @@
         (it.id === "heater" && S.heater) ||
         (it.id === "auto_collect" && S.autoCollect);
       var price = it.cost;
-      if (it.id === "dog_pro" && S.dog === 1) price = Math.max(50, it.cost - 120);
+      if (it.id === "dog_pro" && S.dog === 1) price = Math.max(40, it.cost - 90);
       return '<div class="row-item">' +
         '<div style="font-size:22px;width:36px;text-align:center;">' + it.icon + "</div>" +
         '<div class="meta"><div class="name">' + it.name + "</div>" +
@@ -1159,21 +1456,18 @@
   }
 
   function renderAll() {
-    renderHud();
-    renderPond();
+    renderHud(true);
+    markPondDirty();
+    renderPond(true);
     renderBadges();
-    // refresh open sheet
     var active = document.querySelector(".dock-btn.active");
     if (active) openSheet(active.getAttribute("data-sheet"));
   }
 
   /* ===== LOOP ===== */
   function tick() {
-    renderPond();
-    renderHud();
-    if (S.autoCollect) {
-      S.pond.filter(isReady).forEach(function (f) { collectFish(f.uid); });
-    }
+    renderPond(false);
+    renderHud(false);
   }
 
   /* ===== INIT ===== */
@@ -1198,12 +1492,11 @@
   maybeRollDailyPrice();
   maybeBotGifts();
   renderAll();
-  tickTimer = setInterval(function () {
-    tick();
-    save();
-  }, 1000);
-  catTimer = setInterval(tryCatVisit, 28000);
-  setTimeout(tryCatVisit, 15000);
+  tickTimer = setInterval(tick, 1000);
+  catTimer = setInterval(tryCatVisit, 45000);
+  setTimeout(tryCatVisit, 20000);
+  // autosave every 12s (not every tick)
+  setInterval(function () { queueSave(); }, 12000);
 
   window.addEventListener("beforeunload", save);
 
