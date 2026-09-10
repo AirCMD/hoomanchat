@@ -965,31 +965,31 @@
   /* Ціни продажу: ікра дешевша за продаж → є прибуток, але з урахуванням часу */
   /* evolvesTo — наступна форма; evolveCost — монети за еволюцію готової риби */
   var SPECIES = {
-    guppy:   { id: "guppy",   name: "Гупі",     icon: "🐠", growMs: 2500,  sell: 5,   unlock: 1,  rare: 0, evolvesTo: "carp",    evolveCost: 8  },
-    carp:    { id: "carp",    name: "Карась",   icon: "🐟", growMs: 7000,  sell: 12,  unlock: 2,  rare: 0, evolvesTo: "frog",    evolveCost: 14 },
-    frog:    { id: "frog",    name: "Жаба",     icon: "🐸", growMs: 11000, sell: 18,  unlock: 4,  rare: 0, evolvesTo: "koi",     evolveCost: 28 },
-    koi:     { id: "koi",     name: "Кої",      icon: "🐡", growMs: 18000, sell: 35,  unlock: 7,  rare: 1, evolvesTo: "eel",     evolveCost: 40 },
-    eel:     { id: "eel",     name: "Вугор",    icon: "🐍", growMs: 26000, sell: 48,  unlock: 10, rare: 1, evolvesTo: "angelf",  evolveCost: 55 },
-    angelf:  { id: "angelf",  name: "Скалярія", icon: "🕊️", growMs: 34000, sell: 72,  unlock: 14, rare: 2, evolvesTo: "crystal", evolveCost: 90 },
-    crystal: { id: "crystal", name: "Кришталь", icon: "✨", growMs: 48000, sell: 120, unlock: 18, rare: 3, evolvesTo: null,      evolveCost: 0  }
+    guppy:   { id: "guppy",   name: "Гупі",     icon: "🐠", growMs: 8000,  sell: 6,   unlock: 1,  rare: 0, evolvesTo: "carp",    evolveCost: 6  },
+    carp:    { id: "carp",    name: "Карась",   icon: "🐟", growMs: 14000, sell: 14,  unlock: 2,  rare: 0, evolvesTo: "frog",    evolveCost: 12 },
+    frog:    { id: "frog",    name: "Жаба",     icon: "🐸", growMs: 20000, sell: 22,  unlock: 4,  rare: 0, evolvesTo: "koi",     evolveCost: 24 },
+    koi:     { id: "koi",     name: "Кої",      icon: "🐡", growMs: 28000, sell: 40,  unlock: 7,  rare: 1, evolvesTo: "eel",     evolveCost: 36 },
+    eel:     { id: "eel",     name: "Вугор",    icon: "🐍", growMs: 36000, sell: 55,  unlock: 10, rare: 1, evolvesTo: "angelf",  evolveCost: 50 },
+    angelf:  { id: "angelf",  name: "Скалярія", icon: "🕊️", growMs: 48000, sell: 80,  unlock: 14, rare: 2, evolvesTo: "crystal", evolveCost: 80 },
+    crystal: { id: "crystal", name: "Кришталь", icon: "✨", growMs: 60000, sell: 130, unlock: 18, rare: 3, evolvesTo: null,      evolveCost: 0  }
   };
 
   /* Магазин: ікра ≈ 55–70% від sell, апгрейди — чіткі пороги */
   var SHOP = [
     { id: "roe_guppy",   name: "Ікра гупі",        icon: "🟠", cost: 3,   kind: "roe", species: "guppy",   unlock: 1 },
-    { id: "roe_carp",    name: "Ікра карася",      icon: "🟡", cost: 7,   kind: "roe", species: "carp",    unlock: 2 },
-    { id: "roe_frog",    name: "Ікра жаби",        icon: "🟢", cost: 11,  kind: "roe", species: "frog",    unlock: 4 },
-    { id: "roe_koi",     name: "Ікра кої",         icon: "🔴", cost: 22,  kind: "roe", species: "koi",     unlock: 7 },
-    { id: "roe_eel",     name: "Ікра вугра",       icon: "🟣", cost: 32,  kind: "roe", species: "eel",     unlock: 10 },
-    { id: "roe_angelf",  name: "Ікра скалярії",    icon: "⚪", cost: 48,  kind: "roe", species: "angelf",  unlock: 14 },
-    { id: "roe_crystal", name: "Ікра кришталю",    icon: "💎", cost: 75,  kind: "roe", species: "crystal", unlock: 18 },
+    { id: "roe_carp",    name: "Ікра карася",      icon: "🟡", cost: 6,   kind: "roe", species: "carp",    unlock: 2 },
+    { id: "roe_frog",    name: "Ікра жаби",        icon: "🟢", cost: 10,  kind: "roe", species: "frog",    unlock: 4 },
+    { id: "roe_koi",     name: "Ікра кої",         icon: "🔴", cost: 20,  kind: "roe", species: "koi",     unlock: 7 },
+    { id: "roe_eel",     name: "Ікра вугра",       icon: "🟣", cost: 30,  kind: "roe", species: "eel",     unlock: 10 },
+    { id: "roe_angelf",  name: "Ікра скалярії",    icon: "⚪", cost: 45,  kind: "roe", species: "angelf",  unlock: 14 },
+    { id: "roe_crystal", name: "Ікра кришталю",    icon: "💎", cost: 70,  kind: "roe", species: "crystal", unlock: 18 },
     { id: "fertilizer",  name: "Добриво",          icon: "🌿", cost: 15,  kind: "item", unlock: 1, desc: "−30% часу росту (1 риба)" },
     { id: "rare_boost",  name: "Буст рідкості",    icon: "🍀", cost: 40,  kind: "item", unlock: 5, desc: "Більший шанс рідкісного при зборі" },
     { id: "dog_basic",   name: "Собака (звичайна)",icon: "🐩", cost: 90,  kind: "upgrade", unlock: 5, desc: "Відлякує кота ~65% візитів" },
     { id: "dog_pro",     name: "Собака (вартова)", icon: "🐕", cost: 280, kind: "upgrade", unlock: 8, desc: "Кіт більше ніколи не вкраде" },
     { id: "heater",      name: "Обігрів ставка",   icon: "🔥", cost: 150, kind: "upgrade", unlock: 6, desc: "Зимовий штраф росту знято (назавжди)" },
     { id: "auto_collect",name: "Автозбір",         icon: "⚙️", cost: 400, kind: "upgrade", unlock: 12, desc: "Сама збирає готову рибу" },
-    { id: "slot",        name: "Додатковий слот",  icon: "➕", cost: 55,  kind: "upgrade", unlock: 3, desc: "Ще одне місце у ставку (макс 8)" }
+    { id: "slot",        name: "Додатковий слот",  icon: "➕", cost: 40,  kind: "upgrade", unlock: 3, desc: "Ще одне місце у ставку (макс 8; ціна росте)" }
   ];
 
   /* Нагороди: ранні — скромні, пізні / рідкісні — відчутні, без ламання економіки */
@@ -1079,7 +1079,7 @@
 
   function defaultState() {
     return {
-      version: 2,
+      version: 3,
       coins: 25,
       level: 1,
       xp: 0,
@@ -1101,6 +1101,8 @@
       lastPriceDay: "",
       lastSeen: Date.now(),
       tutorialDone: false,
+      dailyStreak: 0,
+      catWarned: false,
       seasonIdx: 0,
       seasonPlays: 0,
       achievements: {}, // id -> { at, claimedReward }
@@ -1118,10 +1120,14 @@
 
   function ensureStats() {
     if (!S.stats) {
-      S.stats = { collected: 0, sold: 0, coinsEarned: 0, giftsSent: 0, catStolen: 0, dailies: 0, bySpecies: {} };
+      S.stats = { collected: 0, sold: 0, coinsEarned: 0, giftsSent: 0, catStolen: 0, dailies: 0, bySpecies: {}, evolved: 0 };
     }
     if (!S.stats.bySpecies) S.stats.bySpecies = {};
+    if (typeof S.stats.evolved !== "number") S.stats.evolved = S.stats.evolved || 0;
     if (!S.achievements) S.achievements = {};
+    if (typeof S.dailyStreak !== "number") S.dailyStreak = 0;
+    if (typeof S.catWarned !== "boolean") S.catWarned = false;
+    if (S.version < 3) S.version = 3;
   }
 
   function unlockAchievement(id) {
@@ -1222,9 +1228,11 @@
     var s = seasonInfo();
     var m = s.mult;
     if (s.season === "Зима" && S.heater) m = 1.0;
-    if (S.level <= 2) m *= 0.35;
-    else if (S.level <= 4) m *= 0.55;
-    else if (S.level <= 8) m *= 0.75;
+    /* ранні рівні швидші, далі плавно до норми */
+    if (S.level <= 2) m *= 0.4;
+    else if (S.level <= 5) m *= 0.55;
+    else if (S.level <= 10) m *= 0.75;
+    else if (S.level <= 15) m *= 0.9;
     return m;
   }
 
@@ -1242,7 +1250,11 @@
       S = defaultState();
       plantFish("guppy", true);
       plantFish("guppy", true);
+      S.tutorialDone = true;
       toast("Вітаємо у ставку! Дві гупі вже ростуть.");
+      setTimeout(function () {
+        toast("Коли риба «готово» — натисни на неї. Продавай у «Улов».");
+      }, 3200);
       save();
       return;
     }
@@ -1260,11 +1272,43 @@
   function applyOfflineProgress() {
     var now = Date.now();
     var elapsed = Math.max(0, now - (S.lastSeen || now));
-    // cap 12h offline growth credit
     var cap = 12 * 3600 * 1000;
     if (elapsed > cap) elapsed = cap;
-    // pond already uses startedAt — just recompute ready on render
-    // bot gifts / daily for missed days handled on open sheets
+    /* ріст уже від startedAt; якщо є автозбір — забираємо готову рибу офлайн */
+    if (S.autoCollect && elapsed > 2000) {
+      var kept = [];
+      var grabbed = 0;
+      for (var i = 0; i < S.pond.length; i++) {
+        var f = S.pond[i];
+        if (isReady(f) || (now - f.startedAt) >= f.growMs) {
+          var sid = f.species;
+          if (!SPECIES[sid]) sid = "guppy";
+          S.catch[sid] = (S.catch[sid] || 0) + 1;
+          ensureStats();
+          S.stats.collected++;
+          S.stats.bySpecies[sid] = (S.stats.bySpecies[sid] || 0) + 1;
+          grabbed++;
+        } else {
+          kept.push(f);
+        }
+      }
+      S.pond = kept;
+      if (grabbed > 0) {
+        addXp(grabbed);
+        toast("⚙️ Офлайн-автозбір: " + grabbed + " риб");
+      }
+    }
+    /* дрібний офлайн-бонус за час відсутності (макс ~40) */
+    if (elapsed >= 30 * 60 * 1000 && S.level >= 3) {
+      var hours = Math.min(8, elapsed / 3600000);
+      var bonus = Math.floor(2 + hours * (2 + S.level * 0.4));
+      if (bonus > 0) {
+        S.coins += bonus;
+        ensureStats();
+        S.stats.coinsEarned += bonus;
+        toast("💤 Повернення: +" + bonus + "💰 за офлайн");
+      }
+    }
     S.lastSeen = now;
     maybeRollDailyPrice();
     maybeBotGifts();
@@ -1283,9 +1327,8 @@
       return false;
     }
     var ms = Math.round(sp.growMs * growMultiplier());
-    // min 1s max soft cap for UX early
-    if (ms < 1000) ms = 1000;
-    if (S.level === 1 && speciesId === "guppy") ms = Math.min(ms, 15000);
+    if (ms < 3000) ms = 3000;
+    if (S.level === 1 && speciesId === "guppy") ms = Math.min(ms, 10000);
     S.pond.push({
       uid: "f" + Date.now() + Math.random().toString(36).slice(2, 6),
       species: speciesId,
@@ -1315,7 +1358,10 @@
     }
     if (!f) return;
     if (!isReady(f)) {
-      toast("Ще росте… " + Math.ceil((1 - fishProgress(f)) * f.growMs / 1000) + "с");
+      var leftSec = Math.ceil((1 - fishProgress(f)) * f.growMs / 1000);
+      var hint = "";
+      if (!f.fertilized && S.items.fertilizer > 0) hint = " · є добриво в інвентарі";
+      toast("Ще росте… " + leftSec + "с" + hint);
       return;
     }
     var sp = SPECIES[f.species];
@@ -1411,25 +1457,30 @@
     if (idx < 0) return;
     var f = S.pond[idx];
     if (!isReady(f)) {
-      toast("Ще росте… " + Math.ceil((1 - fishProgress(f)) * f.growMs / 1000) + "с");
+      var leftSec = Math.ceil((1 - fishProgress(f)) * f.growMs / 1000);
+      var hint = "";
+      if (!f.fertilized && S.items.fertilizer > 0) hint = " · є добриво в інвентарі";
+      toast("Ще росте… " + leftSec + "с" + hint);
       return;
     }
-    var sp = SPECIES[f.species];
+    var sp = SPECIES[f.species] || SPECIES.guppy;
     var sid = f.species;
-    // rare boost chance to upgrade
-    if (S.rareBoostCharges > 0 && Math.random() < 0.35) {
-      var upgrades = ["koi", "eel", "angelf", "crystal"];
-      for (var u = 0; u < upgrades.length; u++) {
-        if (SPECIES[upgrades[u]].unlock <= S.level + 2) {
-          if (Math.random() < 0.4) {
-            sid = upgrades[u];
-            sp = SPECIES[sid];
-            toast("🍀 Рідкісний улов: " + sp.name + "!");
-            break;
-          }
+    if (!SPECIES[sid]) sid = "guppy";
+    /* буст рідкості: один заряд → шанс апгрейду до вищої доступної риби */
+    if (S.rareBoostCharges > 0) {
+      S.rareBoostCharges--;
+      if (Math.random() < 0.45) {
+        var upgrades = ["koi", "eel", "angelf", "crystal"];
+        var candidates = [];
+        for (var u = 0; u < upgrades.length; u++) {
+          if (SPECIES[upgrades[u]].unlock <= S.level + 2) candidates.push(upgrades[u]);
+        }
+        if (candidates.length) {
+          sid = candidates[Math.floor(Math.random() * candidates.length)];
+          sp = SPECIES[sid];
+          toast("🍀 Рідкісний улов: " + sp.icon + " " + sp.name + "!");
         }
       }
-      S.rareBoostCharges--;
     }
     S.catch[sid] = (S.catch[sid] || 0) + 1;
     S.pond.splice(idx, 1);
@@ -1446,12 +1497,20 @@
   }
 
   function addXp(n) {
+    if (!n || n < 0) return;
     S.xp += n;
     while (S.level < MAX_LEVEL && S.xp >= xpForLevel(S.level)) {
       S.xp -= xpForLevel(S.level);
       S.level++;
-      toast("⭐ Рівень " + S.level + "!");
-      if (S.level === 5) toast("З 5 рівня інколи приходить кіт…");
+      var lvlBonus = 5 + S.level * 2;
+      S.coins += lvlBonus;
+      ensureStats();
+      S.stats.coinsEarned += lvlBonus;
+      toast("⭐ Рівень " + S.level + "! · +" + lvlBonus + "💰");
+      if (S.level === 3) toast("Можна купити додатковий слот у магазині");
+      if (S.level === 5) toast("З 5 рівня інколи приходить кіт — купи собаку");
+      if (S.level === 6) toast("Доступний обігрів ставка (зима)");
+      if (S.level === 7) toast("Відкрито ікру кої 🔴");
       checkAchievements();
     }
     if (S.level >= MAX_LEVEL) S.xp = Math.min(S.xp, xpForLevel(MAX_LEVEL) - 1);
@@ -1463,33 +1522,40 @@
     var ready = S.pond.filter(isReady);
     if (!ready.length) return;
 
-    // dog pro = never steal
     if (S.dog >= 2) {
-      showCat(false);
+      if (Math.random() < 0.08) {
+        showCat(true);
+        toast("🐕 Вартова собака: кіт лише глянув і втік");
+        setTimeout(hideCat, 1800);
+      }
       return;
     }
-    // chance of visit
     var season = seasonInfo();
-    var chance = season.night ? 0.22 : 0.12;
+    var chance = season.night ? 0.2 : 0.1;
+    if (S.dog === 1) chance *= 0.7;
     if (Math.random() > chance) return;
 
     showCat(true);
-    var scared = false;
-    if (S.dog === 1) {
-      // basic dog scares ~65%
-      scared = Math.random() < 0.65;
+    /* перший візит — попередження без крадіжки */
+    if (!S.catWarned) {
+      S.catWarned = true;
+      toast("🐱 Кіт придивився до ставка… Купи собаку в магазині!");
+      queueSave();
+      setTimeout(hideCat, 2500);
+      return;
     }
+    var scared = S.dog === 1 && Math.random() < 0.65;
     if (scared) {
       toast("🐕 Собака відлякала кота!");
       setTimeout(hideCat, 2000);
       return;
     }
-    // steal one ready fish
     var victim = ready[Math.floor(Math.random() * ready.length)];
     S.pond = S.pond.filter(function (f) { return f.uid !== victim.uid; });
     ensureStats();
     S.stats.catStolen++;
-    toast("🐱 Кіт вкрав " + SPECIES[victim.species].name + "!");
+    var vname = (SPECIES[victim.species] || SPECIES.guppy).name;
+    toast("🐱 Кіт вкрав " + vname + "!");
     checkAchievements();
     markPondDirty();
     queueSave();
@@ -1558,9 +1624,11 @@
         checkAchievements();
       } else if (item.id === "slot") {
         if (S.slots >= 8) { toast("Максимум 8 слотів"); return; }
-        S.coins -= item.cost;
+        var slotPrice = item.cost + (S.slots - 3) * 25;
+        if (S.coins < slotPrice) { toast("Потрібно " + slotPrice + "💰"); return; }
+        S.coins -= slotPrice;
         S.slots++;
-        toast("Слотів: " + S.slots);
+        toast("Слотів: " + S.slots + " (−" + slotPrice + "💰)");
         checkAchievements();
       }
     }
@@ -1574,12 +1642,15 @@
     if (itemId === "fertilizer") {
       var growing = S.pond.filter(function (f) { return !isReady(f) && !f.fertilized; });
       if (!growing.length) { toast("Немає риби для добрива"); return; }
+      /* спочатку майже готова */
+      growing.sort(function (a, b) { return fishProgress(b) - fishProgress(a); });
       var f = growing[0];
       var left = f.growMs - (Date.now() - f.startedAt);
-      f.growMs = Date.now() - f.startedAt + Math.max(500, Math.floor(left * 0.7));
+      f.growMs = Date.now() - f.startedAt + Math.max(800, Math.floor(left * 0.65));
       f.fertilized = true;
       S.items[itemId]--;
-      toast("🌿 Добриво застосовано");
+      var spn = (SPECIES[f.species] || {}).name || "риба";
+      toast("🌿 Добриво на " + spn + " (−35% часу)");
     } else if (itemId === "rare_boost") {
       S.rareBoostCharges = (S.rareBoostCharges || 0) + 1;
       S.items[itemId]--;
@@ -1598,7 +1669,7 @@
     var dk = dayKey();
     if (S.lastPriceDay === dk) return;
     S.lastPriceDay = dk;
-    S.priceMod = 0.8 + Math.random() * 0.5; // 0.8–1.3
+    S.priceMod = 0.9 + Math.random() * 0.35; // 0.9–1.25, без збиткових днів
   }
 
   function sellSpecies(sid, count) {
@@ -1668,7 +1739,7 @@
 
     S.giftsGiven[fid] = dayKey();
     var liked = friend.likes.indexOf(payload.id) >= 0;
-    var bonus = liked ? 12 + Math.floor(Math.random() * 16) : 4 + Math.floor(Math.random() * 7);
+    var bonus = liked ? 15 + Math.floor(Math.random() * 18) : 5 + Math.floor(Math.random() * 8);
     S.coins += bonus;
     ensureStats();
     S.stats.giftsSent++;
@@ -1721,21 +1792,34 @@
   function claimDaily() {
     var dk = dayKey();
     if (S.lastDailyDay === dk) { toast("Сьогодні вже отримано"); return; }
+    /* серія днів */
+    var yest = new Date();
+    yest.setDate(yest.getDate() - 1);
+    var yk = dayKey(yest.getTime());
+    if (S.lastDailyDay === yk) S.dailyStreak = (S.dailyStreak || 0) + 1;
+    else S.dailyStreak = 1;
     S.lastDailyDay = dk;
     ensureStats();
     S.stats.dailies++;
-    if (Math.random() < 0.55) {
-      var c = 12 + S.level * 2 + Math.floor(Math.random() * 12);
+    var streak = S.dailyStreak || 1;
+    var streakBonus = Math.min(25, (streak - 1) * 3);
+    if (Math.random() < 0.6) {
+      var c = 12 + S.level * 2 + Math.floor(Math.random() * 12) + streakBonus;
       S.coins += c;
       S.stats.coinsEarned += c;
-      toast("Щоденна нагорода: +" + c + "💰");
+      toast("Щоденне: +" + c + "💰" + (streak > 1 ? " · серія ×" + streak : ""));
     } else {
       var opts = ["fertilizer", "roe_guppy", "rare_boost"];
+      if (streak >= 3) opts.push("roe_carp");
       var it = opts[Math.floor(Math.random() * opts.length)];
       S.items[it] = (S.items[it] || 0) + 1;
-      toast("Щоденна нагорода: предмет!");
+      if (streakBonus > 0) {
+        S.coins += streakBonus;
+        S.stats.coinsEarned += streakBonus;
+      }
+      toast("Щоденне: предмет!" + (streak > 1 ? " · серія ×" + streak + " (+" + streakBonus + "💰)" : ""));
     }
-    addXp(3);
+    addXp(3 + Math.min(5, streak - 1));
     checkAchievements();
     save();
     renderAll();
@@ -1863,7 +1947,8 @@
       setTimeout(function () {
         autoCollectLock = false;
         collectFish(uid0);
-      }, 300);
+        /* наступні готові підхопить наступний render */
+      }, 400);
     }
   }
 
@@ -1992,6 +2077,7 @@
         (it.id === "auto_collect" && S.autoCollect);
       var price = it.cost;
       if (it.id === "dog_pro" && S.dog === 1) price = Math.max(40, it.cost - 90);
+      if (it.id === "slot") price = it.cost + (S.slots - 3) * 25;
       return '<div class="row-item">' +
         '<div class="shop-ico">' + it.icon + "</div>" +
         '<div class="meta"><div class="name">' + it.name + "</div>" +
@@ -2067,10 +2153,14 @@
   function renderDaily() {
     var box = document.getElementById("daily-box");
     var dk = dayKey();
+    var streak = S.dailyStreak || 0;
     if (S.lastDailyDay === dk) {
-      box.innerHTML = '<div class="empty-msg">Сьогоднішню нагороду вже отримано. Завтра буде нова.</div>';
+      box.innerHTML = '<div class="empty-msg">Сьогодні вже отримано.' +
+        (streak > 1 ? ' Серія: ' + streak + ' дн.' : '') +
+        ' Завтра буде нова.</div>';
     } else {
-      box.innerHTML = '<button type="button" class="shop-btn" id="btn-daily">Забрати щоденне</button>';
+      box.innerHTML = (streak > 0 ? '<p class="hint">Поточна серія: ' + streak + ' дн. (бонус росте)</p>' : '') +
+        '<button type="button" class="shop-btn" id="btn-daily">Забрати щоденне</button>';
       document.getElementById("btn-daily").onclick = claimDaily;
     }
   }
