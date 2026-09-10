@@ -51,159 +51,327 @@
 
 .pond-stage {
   position: relative;
-  height: 260px;
+  height: 280px;
   border-radius: 16px;
-  border: 2px solid rgba(255,255,255,0.7);
+  border: 2px solid rgba(255,255,255,0.75);
   overflow: hidden;
   background:
-    radial-gradient(ellipse 90% 55% at 70% 8%, rgba(255,255,255,0.65), transparent 55%),
+    radial-gradient(ellipse 120% 80% at 88% -5%, #fff6dc 0%, transparent 42%),
+    radial-gradient(ellipse 55% 35% at 12% 8%, rgba(255,255,255,0.55), transparent 50%),
     linear-gradient(180deg,
-      #7ec8f0 0%,
-      #a8daf8 18%,
-      #c5e8bc 32%,
-      #8bc96a 42%,
-      #6db050 48%,
-      #5a9a48 100%);
+      #5eb4e8 0%,
+      #8ecff0 11%,
+      #b8e0f4 20%,
+      #d2eeb8 32%,
+      #9ed872 42%,
+      #6db84e 50%,
+      #5aa844 58%,
+      #4e943c 100%);
   margin-bottom: 8px;
   box-shadow:
-    inset 0 2px 12px rgba(255,255,255,0.4),
-    0 6px 18px rgba(40,120,160,0.22);
+    inset 0 2px 14px rgba(255,255,255,0.45),
+    0 8px 22px rgba(40,120,160,0.22);
   contain: layout style;
 }
 .pond-stage.night {
   background:
-    radial-gradient(ellipse 35% 28% at 78% 12%, rgba(255,255,210,0.35), transparent 50%),
-    linear-gradient(180deg, #152038 0%, #1e2a48 22%, #243820 38%, #1a3020 100%);
+    radial-gradient(ellipse 30% 25% at 80% 10%, rgba(255,255,200,0.4), transparent 50%),
+    radial-gradient(ellipse 20% 15% at 30% 12%, rgba(200,220,255,0.15), transparent 60%),
+    linear-gradient(180deg, #0e1830 0%, #1a2848 18%, #1e3028 36%, #152818 55%, #0e2010 100%);
   border-color: rgba(100,140,180,0.4);
 }
 .pond-stage.winter {
   background:
-    radial-gradient(ellipse 80% 45% at 50% 10%, rgba(255,255,255,0.85), transparent 55%),
-    linear-gradient(180deg, #c8e4f8 0%, #e8f2fa 28%, #d0e0e8 45%, #b8c8d0 100%);
+    radial-gradient(ellipse 90% 50% at 50% 0%, #ffffff 0%, transparent 50%),
+    linear-gradient(180deg, #b8d8f0 0%, #e0eef8 22%, #d0dce8 40%, #c0ccd8 100%);
 }
 .pond-stage.night.winter {
-  background: linear-gradient(180deg, #121c28 0%, #1a2838 40%, #182028 100%);
+  background: linear-gradient(180deg, #0c1420 0%, #182030 40%, #141c24 100%);
 }
+
+/* сонце / місяць */
+.pond-sun {
+  position: absolute;
+  top: 4%;
+  right: 18%;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff9e0, #ffd060 45%, #ffb020 70%, transparent 72%);
+  box-shadow: 0 0 24px 8px rgba(255,200,80,0.45), 0 0 48px 16px rgba(255,180,60,0.2);
+  z-index: 1;
+  pointer-events: none;
+  animation: sunPulse 6s ease-in-out infinite;
+}
+.pond-stage.night .pond-sun {
+  background: radial-gradient(circle at 40% 40%, #f8f4d8, #e0d8a0 50%, transparent 70%);
+  box-shadow: 0 0 16px 4px rgba(220,220,180,0.35);
+  width: 28px;
+  height: 28px;
+  right: 22%;
+}
+@keyframes sunPulse {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.06); filter: brightness(1.08); }
+}
+
+/* пагорби */
+.pond-hills {
+  position: absolute;
+  left: 0; right: 0;
+  top: 18%;
+  height: 28%;
+  z-index: 1;
+  pointer-events: none;
+}
+.pond-hills .h {
+  position: absolute;
+  bottom: 0;
+  border-radius: 50% 50% 0 0;
+  background: linear-gradient(180deg, #8ed060 0%, #5aa040 100%);
+  opacity: 0.9;
+}
+.pond-hills .h1 { left: -8%; width: 48%; height: 85%; background: linear-gradient(180deg, #9ad868, #4e9838); }
+.pond-hills .h2 { left: 28%; width: 55%; height: 100%; background: linear-gradient(180deg, #7ec858, #3e8830); }
+.pond-hills .h3 { right: -10%; width: 42%; height: 70%; background: linear-gradient(180deg, #a0e070, #589848); }
+.pond-stage.night .pond-hills .h { filter: brightness(0.45) saturate(0.7); }
+.pond-stage.winter .pond-hills .h {
+  background: linear-gradient(180deg, #e8f0f8, #c0d0dc) !important;
+}
+
 .pond-sky-deco {
   position: absolute;
-  top: 4px; left: 0; right: 0;
-  height: 28%;
+  top: 0; left: 0; right: 0;
+  height: 36%;
   pointer-events: none;
-  z-index: 1;
-  font-size: 14px;
-  opacity: 0.9;
+  z-index: 2;
+  overflow: hidden;
 }
 .pond-sky-deco .cloud {
   position: absolute;
-  opacity: 0.85;
-  filter: drop-shadow(0 1px 2px rgba(255,255,255,0.5));
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 3px rgba(255,255,255,0.4));
+  will-change: transform;
+  animation: cloudDrift linear infinite;
 }
+.pond-sky-deco .c1 { left: -15%; top: 10px; font-size: 22px; animation-duration: 48s; }
+.pond-sky-deco .c2 { left: 20%; top: 4px; font-size: 16px; animation-duration: 62s; animation-delay: -12s; }
+.pond-sky-deco .c3 { left: 45%; top: 14px; font-size: 20px; animation-duration: 55s; animation-delay: -28s; }
+.pond-sky-deco .c4 { left: 70%; top: 6px; font-size: 14px; animation-duration: 70s; animation-delay: -40s; }
+@keyframes cloudDrift {
+  0% { transform: translateX(-20%); }
+  100% { transform: translateX(320%); }
+}
+.pond-stage.night .pond-sky-deco .cloud { opacity: 0.35; filter: grayscale(0.4); }
+
 .pond-house {
   position: absolute;
-  top: 6%;
-  right: 6%;
-  z-index: 2;
+  top: 8%;
+  right: 5%;
+  z-index: 3;
   pointer-events: none;
   text-align: center;
   line-height: 1;
-  filter: drop-shadow(0 3px 4px rgba(0,0,0,0.2));
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.22));
+  animation: houseBob 5s ease-in-out infinite;
 }
-.pond-house .body { font-size: 32px; display: block; }
+@keyframes houseBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+.pond-house .body { font-size: 34px; display: block; }
 .pond-house .label {
   font-size: 7px;
   color: #fff;
-  background: rgba(40,80,40,0.55);
-  padding: 1px 5px;
+  background: rgba(40,90,40,0.6);
+  padding: 1px 6px;
   border-radius: 6px;
   margin-top: 2px;
   display: inline-block;
+  backdrop-filter: blur(2px);
 }
-.pond-stage.night .pond-house .label { background: rgba(20,30,50,0.65); }
+.pond-stage.night .pond-house .label { background: rgba(20,30,50,0.7); }
+
 .pond-trees {
   position: absolute;
-  top: 14%;
-  left: 3%;
-  z-index: 2;
-  font-size: 26px;
+  top: 16%;
+  left: 2%;
+  z-index: 3;
+  font-size: 28px;
   pointer-events: none;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+  filter: drop-shadow(0 3px 4px rgba(0,0,0,0.18));
   line-height: 1;
 }
-.pond-trees span { display: inline-block; margin-right: -4px; }
+.pond-trees span {
+  display: inline-block;
+  margin-right: -6px;
+  animation: treeSway 4s ease-in-out infinite;
+}
+.pond-trees span:nth-child(2) { animation-delay: -1.2s; font-size: 32px; }
+.pond-trees span:nth-child(3) { animation-delay: -2.4s; }
+@keyframes treeSway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+.pond-flowers {
+  position: absolute;
+  top: 30%;
+  left: 8%;
+  right: 28%;
+  z-index: 3;
+  pointer-events: none;
+  font-size: 11px;
+  letter-spacing: 8px;
+  opacity: 0.9;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+
+.pond-path {
+  position: absolute;
+  top: 34%;
+  right: 12%;
+  width: 28px;
+  height: 18%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(196,168,96,0.55) 30%, rgba(180,150,80,0.7));
+  border-radius: 40%;
+  transform: skewX(-8deg);
+}
+
 .pond-grass-top {
   position: absolute;
-  top: 28%;
+  top: 30%;
   left: 0; right: 0;
-  height: 14%;
+  height: 12%;
   z-index: 2;
   pointer-events: none;
   background:
-    repeating-linear-gradient(90deg,
-      transparent 0 7px,
-      rgba(40,120,40,0.12) 7px 8px),
-    linear-gradient(180deg, transparent 0%, rgba(80,160,60,0.35) 40%, rgba(60,130,50,0.5) 100%);
-  border-radius: 40% 40% 0 0 / 20px;
+    linear-gradient(180deg, transparent 0%, rgba(90,170,60,0.25) 50%, rgba(60,130,45,0.4) 100%);
 }
 .pond-grass-top::before {
-  content: "🌿  🌱   🌾  ☘️   🌿";
+  content: "🌿   🌱  🌾  ☘️  🌷  🌿  🌼  🌱";
   position: absolute;
-  left: 4%; right: 4%;
-  bottom: 0;
-  font-size: 11px;
-  letter-spacing: 6px;
-  opacity: 0.85;
+  left: 2%; right: 2%;
+  bottom: -2px;
+  font-size: 12px;
+  letter-spacing: 5px;
+  opacity: 0.9;
   text-align: center;
 }
+
 .pond-water {
   position: absolute;
-  left: 6%;
-  right: 6%;
-  top: 38%;
-  bottom: 18%;
-  border-radius: 48% 48% 42% 42% / 55% 55% 40% 40%;
+  left: 7%;
+  right: 7%;
+  top: 40%;
+  bottom: 17%;
+  border-radius: 48% 48% 42% 42% / 58% 58% 40% 40%;
   background:
-    radial-gradient(ellipse at 28% 25%, rgba(255,255,255,0.45), transparent 42%),
-    radial-gradient(ellipse at 70% 60%, rgba(40,140,160,0.25), transparent 50%),
-    linear-gradient(180deg, rgba(140,220,235,0.75) 0%, rgba(50,150,170,0.8) 55%, rgba(30,110,130,0.85) 100%);
+    radial-gradient(ellipse at 25% 20%, rgba(255,255,255,0.5), transparent 40%),
+    radial-gradient(ellipse at 75% 55%, rgba(30,130,150,0.3), transparent 45%),
+    linear-gradient(185deg, rgba(150,225,240,0.85) 0%, rgba(55,155,175,0.88) 50%, rgba(25,100,125,0.9) 100%);
   box-shadow:
-    inset 0 2px 16px rgba(255,255,255,0.35),
-    inset 0 -12px 22px rgba(15,70,90,0.35),
-    0 4px 12px rgba(30,100,120,0.2);
+    inset 0 3px 18px rgba(255,255,255,0.4),
+    inset 0 -14px 24px rgba(10,60,80,0.4),
+    0 6px 14px rgba(20,90,110,0.25);
   z-index: 3;
   overflow: hidden;
 }
 .pond-stage.night .pond-water {
   background:
-    radial-gradient(ellipse at 30% 25%, rgba(120,160,220,0.25), transparent 45%),
-    linear-gradient(180deg, rgba(40,70,110,0.7), rgba(15,40,70,0.85));
+    radial-gradient(ellipse at 30% 25%, rgba(140,180,255,0.2), transparent 45%),
+    linear-gradient(180deg, rgba(35,65,110,0.75), rgba(12,35,65,0.9));
 }
 .pond-stage.heater .pond-water {
-  box-shadow: inset 0 0 28px rgba(255,180,100,0.4), 0 0 16px rgba(255,150,70,0.2);
+  box-shadow: inset 0 0 30px rgba(255,170,90,0.45), 0 0 18px rgba(255,140,60,0.25);
 }
+
+/* відблиски на воді */
+.pond-shimmer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  overflow: hidden;
+  background:
+    linear-gradient(115deg,
+      transparent 0%,
+      transparent 40%,
+      rgba(255,255,255,0.15) 45%,
+      rgba(255,255,255,0.45) 50%,
+      rgba(255,255,255,0.12) 55%,
+      transparent 62%,
+      transparent 100%);
+  background-size: 220% 100%;
+  animation: shimmerMove 5.5s ease-in-out infinite;
+  mix-blend-mode: soft-light;
+}
+.pond-sparkle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 6px 2px rgba(255,255,255,0.8);
+  z-index: 3;
+  pointer-events: none;
+  animation: sparkleBlink ease-in-out infinite;
+  opacity: 0;
+}
+.pond-sparkle.s1 { left: 22%; top: 28%; animation-duration: 3.2s; }
+.pond-sparkle.s2 { left: 48%; top: 18%; animation-duration: 2.6s; animation-delay: -0.8s; }
+.pond-sparkle.s3 { left: 68%; top: 35%; animation-duration: 3.8s; animation-delay: -1.5s; }
+.pond-sparkle.s4 { left: 38%; top: 55%; animation-duration: 2.9s; animation-delay: -0.4s; }
+.pond-sparkle.s5 { left: 78%; top: 48%; animation-duration: 3.4s; animation-delay: -2s; }
+@keyframes shimmerMove {
+  0% { background-position: 100% 0; opacity: 0.5; }
+  50% { background-position: 0% 0; opacity: 0.95; }
+  100% { background-position: -100% 0; opacity: 0.5; }
+}
+@keyframes sparkleBlink {
+  0%, 100% { opacity: 0; transform: scale(0.4); }
+  40%, 55% { opacity: 1; transform: scale(1.15); }
+  70% { opacity: 0.3; transform: scale(0.7); }
+}
+
 .pond-bank {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 20%;
+  height: 18%;
   z-index: 4;
   background:
-    linear-gradient(180deg, #7cbc58 0%, #5a9a40 35%, #c4a860 70%, #a89048 100%);
-  box-shadow: inset 0 3px 0 rgba(255,255,255,0.15);
+    linear-gradient(180deg, #7cbc58 0%, #5a9a40 28%, #c4a860 65%, #a89048 100%);
+  box-shadow: inset 0 3px 0 rgba(255,255,255,0.18);
 }
 .pond-bank::before {
-  content: "🌿🌿  🌱  🌾  ☘️  🌿  🌱🌿";
+  content: "🌿  🌱  🌾  ☘️  🌿  🌱  🌼  🌿";
   position: absolute;
-  top: -8px; left: 0; right: 0;
+  top: -10px; left: 0; right: 0;
   text-align: center;
   font-size: 12px;
-  letter-spacing: 3px;
-  opacity: 0.9;
+  letter-spacing: 4px;
+  opacity: 0.95;
   pointer-events: none;
 }
 .pond-stage.winter .pond-bank {
   background: linear-gradient(180deg, #d8e4ec 0%, #c0d0dc 40%, #e8eef4 100%);
 }
 .pond-stage.winter .pond-bank::before,
-.pond-stage.winter .pond-grass-top::before { content: "❄️  ⛄  ❄️  🌨️  ❄️"; }
+.pond-stage.winter .pond-grass-top::before { content: "❄️  ⛄  ❄️  🌨️  ❄️  ⛄"; }
+.pond-stage.winter .pond-flowers { opacity: 0.25; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pond-sky-deco .cloud,
+  .pond-shimmer,
+  .pond-sparkle,
+  .pond-sun,
+  .pond-trees span,
+  .pond-house { animation: none !important; }
+}
+
 #bubble-canvas {
   pointer-events: none;
   position: absolute;
@@ -576,7 +744,7 @@
 }
 
 @media (max-width: 420px) {
-  .pond-stage { height: 200px; }
+  .pond-stage { height: 240px; }
   .dock-btn { font-size: 7px; padding: 5px 0 4px; }
   .dock-btn .ico { font-size: 13px; height: 16px; }
 }
@@ -622,19 +790,34 @@
     </div>
 
     <div class="pond-stage" id="pond-stage">
+      <div class="pond-sun" aria-hidden="true"></div>
       <div class="pond-sky-deco" aria-hidden="true">
-        <span class="cloud" style="left:8%;top:8px;font-size:18px">☁️</span>
-        <span class="cloud" style="left:22%;top:2px;font-size:14px">☁️</span>
-        <span class="cloud" style="left:48%;top:10px;font-size:16px">☁</span>
+        <span class="cloud c1">☁️</span>
+        <span class="cloud c2">☁️</span>
+        <span class="cloud c3">☁</span>
+        <span class="cloud c4">☁️</span>
+      </div>
+      <div class="pond-hills" aria-hidden="true">
+        <div class="h h1"></div>
+        <div class="h h2"></div>
+        <div class="h h3"></div>
       </div>
       <div class="pond-trees" aria-hidden="true"><span>🌲</span><span>🌳</span><span>🌲</span></div>
       <div class="pond-house" aria-hidden="true">
         <span class="body">🏠</span>
         <span class="label">copy_pasta</span>
       </div>
+      <div class="pond-flowers" aria-hidden="true">🌸 🌼 🌷</div>
+      <div class="pond-path" aria-hidden="true"></div>
       <div class="pond-grass-top" aria-hidden="true"></div>
       <div class="pond-water" id="pond-water">
         <canvas id="bubble-canvas" width="400" height="160" aria-hidden="true"></canvas>
+        <div class="pond-shimmer"></div>
+        <span class="pond-sparkle s1"></span>
+        <span class="pond-sparkle s2"></span>
+        <span class="pond-sparkle s3"></span>
+        <span class="pond-sparkle s4"></span>
+        <span class="pond-sparkle s5"></span>
       </div>
       <div class="pond-bank"></div>
       <div class="toast" id="toast"></div>
@@ -2047,4 +2230,3 @@
 </script>
 </body>
 </html>
-
