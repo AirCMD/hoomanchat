@@ -254,15 +254,12 @@
   left: 28%;
   right: 37%;
   top: 62%;
-  bottom: 6%;
-  border-radius: 48% 48% 42% 42% / 58% 58% 40% 40%;
-  /* майже прозора — видно фото-краєвид і будинок зверху */
-  background:
-    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.14), transparent 55%),
-    rgba(40, 120, 140, 0.10);
-  box-shadow:
-    inset 0 2px 12px rgba(255,255,255,0.12),
-    inset 0 -8px 16px rgba(10,60,80,0.12);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
   z-index: 3;
   overflow: hidden;
   pointer-events: none;
@@ -1786,10 +1783,10 @@
     document.getElementById("dog-sprite").style.display = S.dog > 0 ? "block" : "none";
   }
 
-  /* ставки на всю ширину кадру 1312px; висота слотів без змін */
+  /* ставок на фото: x≈29–62% (380–812px), низ кадру під водою */
   var SLOT_POS = [
-    [3, 70], [16.5, 68], [30, 72], [43.5, 69],
-    [57, 78], [70.5, 82], [84, 80], [97, 76]
+    [32, 70], [40, 68], [48, 72], [56, 69],
+    [36, 78], [44, 82], [52, 80], [48, 76]
   ];
 
   var fishLayer = null;
