@@ -401,7 +401,100 @@
 .pond-stage > #fish-layer {
   z-index: 2;
 }
-#fish-layer { z-index: 5 !important; }
+#fish-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 5 !important;
+  pointer-events: none;
+  overflow: visible;
+}
+#fish-layer .fish-slot {
+  pointer-events: auto;
+}
+.fish-slot {
+  position: absolute;
+  width: 48px;
+  height: 42px;
+  cursor: pointer;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transform: translate(-50%, -50%);
+}
+.fish-slot:hover { z-index: 4; }
+.fish-slot:hover .fish-body { transform: scale(1.12); }
+.fish-slot.ready .fish-body {
+  filter: drop-shadow(0 0 6px rgba(255,240,120,0.95));
+}
+.fish-slot.growing .fish-body { opacity: 0.95; }
+.fish-slot.empty {
+  width: 34px;
+  height: 26px;
+  border: 1.5px dashed rgba(255,255,255,0.75);
+  border-radius: 50%;
+  font-size: 14px;
+  color: rgba(255,255,255,0.9);
+  background: rgba(0,40,60,0.25);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.fish-body {
+  display: inline-block;
+  transform-origin: center center;
+  animation: swimA 4.5s ease-in-out infinite;
+  transition: transform 0.15s ease;
+  will-change: transform;
+  font-size: 26px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.35));
+}
+.fish-slot.swim-1 .fish-body { animation-name: swimB; animation-duration: 5.2s; animation-delay: -1.1s; }
+.fish-slot.swim-2 .fish-body { animation-name: swimC; animation-duration: 3.8s; animation-delay: -0.6s; }
+.fish-slot.swim-3 .fish-body { animation-name: swimA; animation-duration: 6s; animation-delay: -2.4s; }
+.fish-slot.swim-4 .fish-body { animation-name: swimB; animation-duration: 4.2s; animation-delay: -0.3s; }
+.fish-slot.swim-5 .fish-body { animation-name: swimC; animation-duration: 5.6s; animation-delay: -1.8s; }
+.fish-slot.swim-6 .fish-body { animation-name: swimA; animation-duration: 3.5s; animation-delay: -0.9s; }
+.fish-slot.swim-7 .fish-body { animation-name: swimB; animation-duration: 4.8s; animation-delay: -2s; }
+@keyframes swimA {
+  0%, 100% { transform: translate(0, 0) rotate(-2deg); }
+  20% { transform: translate(6px, -4px) rotate(3deg); }
+  40% { transform: translate(3px, 2px) rotate(-1deg); }
+  60% { transform: translate(-5px, -3px) rotate(2deg); }
+  80% { transform: translate(-3px, 2px) rotate(-2deg); }
+}
+@keyframes swimB {
+  0%, 100% { transform: translate(0, 0) rotate(1deg); }
+  25% { transform: translate(-7px, 3px) rotate(-3deg); }
+  50% { transform: translate(5px, -5px) rotate(2deg); }
+  75% { transform: translate(2px, 2px) rotate(-1deg); }
+}
+@keyframes swimC {
+  0%, 100% { transform: translate(0, 1px) rotate(0deg); }
+  33% { transform: translate(5px, -5px) rotate(4deg); }
+  66% { transform: translate(-6px, -2px) rotate(-4deg); }
+}
+.fish-label {
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  white-space: nowrap;
+  background: linear-gradient(180deg, rgba(20,60,80,0.8), rgba(10,40,60,0.9));
+  color: #e8f8ff;
+  padding: 1px 5px;
+  border-radius: 6px;
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fish-body { animation: none !important; }
+}
+
 .cat-sprite, .dog-sprite {
   position: absolute;
   font-size: clamp(22px, 3.2vw, 34px);
@@ -1754,8 +1847,9 @@
     var readyList = [];
     for (var i = 0; i < S.pond.length; i++) {
       var f = S.pond[i];
-      var sp = SPECIES[f.species];
-      var p = SLOT_POS[i % SLOT_POS.length];
+      var sp = SPECIES[f.species] || SPECIES.guppy;
+      if (!SPECIES[f.species]) f.species = "guppy";
+      var p = SLOT_POS[i % SLOT_POS.length] || [44, 75];
       var ready = isReady(f);
       var el = document.createElement("div");
       el.className = "fish-slot " + (ready ? "ready" : "growing") + " swim-" + (i % 8);
