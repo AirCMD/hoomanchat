@@ -228,26 +228,51 @@
 
 .dock {
   display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+  flex-wrap: nowrap;
+  gap: 4px;
   margin-top: 4px;
+  width: 100%;
+  align-items: stretch;
 }
 .dock-btn {
-  flex: 1 1 18%;
+  flex: 1 1 0;
   min-width: 0;
-  padding: 8px 2px;
+  padding: 6px 1px 5px;
   background: linear-gradient(180deg, #ffffff 0%, #d0eef8 48%, #a8d8ec 100%);
   border: 1px solid #7eb8d0;
   color: #1a5070;
-  font-size: 9px;
-  line-height: 12px;
+  font-size: 8px;
+  line-height: 1.15;
   cursor: pointer;
   text-align: center;
   border-radius: 10px;
   box-shadow: inset 0 1px 0 #fff, 0 2px 5px rgba(60,140,180,0.2);
   text-shadow: 0 1px 0 rgba(255,255,255,0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
 }
-.dock-btn .ico { display: block; font-size: 16px; margin-bottom: 2px; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.12)); }
+.dock-btn .ico {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 18px;
+  font-size: 15px;
+  line-height: 1;
+  margin: 0;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.12));
+}
+.dock-btn .lbl {
+  display: block;
+  width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .dock-btn:hover {
   background: linear-gradient(180deg, #fff 0%, #e0f6fc 50%, #b8e4f4 100%);
 }
@@ -261,10 +286,11 @@
   display: inline-block;
   background: linear-gradient(180deg, #ff8098, #e04060);
   color: #fff;
-  font-size: 8px;
-  padding: 0 5px;
+  font-size: 7px;
+  padding: 0 4px;
   border-radius: 8px;
-  margin-left: 2px;
+  margin-left: 1px;
+  vertical-align: middle;
   box-shadow: 0 1px 3px rgba(200,40,80,0.35);
 }
 
@@ -288,26 +314,67 @@
   color: #1a5a78;
   text-shadow: 0 1px 0 #fff;
 }
+#friends-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+#friends-list .row-item {
+  width: 100%;
+  box-sizing: border-box;
+}
 .row-item {
   display: flex;
+  flex-direction: row;
   align-items: center;
+  justify-content: flex-start;
   gap: 8px;
-  padding: 6px 4px;
+  padding: 7px 4px;
   border-bottom: 1px solid rgba(160,210,230,0.35);
+  width: 100%;
+  box-sizing: border-box;
 }
 .row-item:last-child { border-bottom: none; }
+.row-item > .ico-slot,
+.row-item > img,
+.row-item > .shop-ico {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1;
+  font-size: 20px;
+}
 .row-item img {
-  width: 36px; height: 36px;
+  width: 36px;
+  height: 36px;
   object-fit: cover;
   border-radius: 50%;
   border: 2px solid rgba(255,255,255,0.9);
   background: #d0eef8;
-  flex-shrink: 0;
+  flex: 0 0 36px;
   box-shadow: 0 2px 6px rgba(40,120,160,0.2);
 }
-.row-item .meta { flex: 1; min-width: 0; }
-.row-item .meta .name { font-weight: bold; font-size: 11px; color: #1a5070; }
-.row-item .meta .sub { font-size: 9px; color: #4a7a90; }
+.row-item .meta {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+}
+.row-item .meta .name {
+  font-weight: bold;
+  font-size: 11px;
+  color: #1a5070;
+  line-height: 1.25;
+}
+.row-item .meta .sub {
+  font-size: 9px;
+  color: #4a7a90;
+  line-height: 1.25;
+}
 .row-item button, .shop-btn {
   flex-shrink: 0;
   padding: 5px 10px;
@@ -370,8 +437,8 @@
 
 @media (max-width: 420px) {
   .pond-stage { height: 200px; }
-  .dock-btn { font-size: 8px; padding: 6px 1px; flex: 1 1 22%; }
-  .dock-btn .ico { font-size: 14px; }
+  .dock-btn { font-size: 7px; padding: 5px 0 4px; }
+  .dock-btn .ico { font-size: 13px; height: 16px; }
 }
 </style>
 </head>
@@ -425,13 +492,13 @@
     </div>
 
     <div class="dock">
-      <button type="button" class="dock-btn" data-sheet="friends"><span class="ico">👥</span>Друмени</button>
-      <button type="button" class="dock-btn" data-sheet="shop"><span class="ico">🛒</span>Магазин</button>
-      <button type="button" class="dock-btn" data-sheet="items"><span class="ico">🎒</span>Речі<span class="badge hidden" id="badge-items"></span></button>
-      <button type="button" class="dock-btn" data-sheet="inbox"><span class="ico">🎁</span>Вхідні<span class="badge hidden" id="badge-inbox"></span></button>
-      <button type="button" class="dock-btn" data-sheet="fish"><span class="ico">🐠</span>Улов</button>
-      <button type="button" class="dock-btn" data-sheet="daily"><span class="ico">📅</span>Щоденне</button>
-      <button type="button" class="dock-btn" data-sheet="achievements"><span class="ico">🏆</span>Успіхи<span class="badge hidden" id="badge-ach"></span></button>
+      <button type="button" class="dock-btn" data-sheet="friends"><span class="ico">👥</span><span class="lbl">Друмени</span></button>
+      <button type="button" class="dock-btn" data-sheet="shop"><span class="ico">🛒</span><span class="lbl">Магазин</span></button>
+      <button type="button" class="dock-btn" data-sheet="items"><span class="ico">🎒</span><span class="lbl">Речі<span class="badge hidden" id="badge-items"></span></span></button>
+      <button type="button" class="dock-btn" data-sheet="inbox"><span class="ico">🎁</span><span class="lbl">Вхідні<span class="badge hidden" id="badge-inbox"></span></span></button>
+      <button type="button" class="dock-btn" data-sheet="fish"><span class="ico">🐠</span><span class="lbl">Улов</span></button>
+      <button type="button" class="dock-btn" data-sheet="daily"><span class="ico">📅</span><span class="lbl">Щоденне</span></button>
+      <button type="button" class="dock-btn" data-sheet="achievements"><span class="ico">🏆</span><span class="lbl">Успіхи<span class="badge hidden" id="badge-ach"></span></span></button>
     </div>
 
     <div class="sheet" id="sheet-friends">
@@ -1415,7 +1482,7 @@
       var got = !!S.achievements[a.id];
       if (got) done++;
       return '<div class="row-item" style="' + (got ? "" : "opacity:0.55;") + '">' +
-        '<div style="font-size:20px;width:32px;text-align:center;">' + a.icon + "</div>" +
+        '<div class="shop-ico">' + a.icon + "</div>" +
         '<div class="meta"><div class="name">' + a.name + (got ? " ✓" : "") + "</div>" +
         '<div class="sub">' + a.desc + " · +" + a.reward + "💰</div></div></div>";
     }).join("") +
@@ -1482,7 +1549,7 @@
       var price = it.cost;
       if (it.id === "dog_pro" && S.dog === 1) price = Math.max(40, it.cost - 90);
       return '<div class="row-item">' +
-        '<div style="font-size:22px;width:36px;text-align:center;">' + it.icon + "</div>" +
+        '<div class="shop-ico">' + it.icon + "</div>" +
         '<div class="meta"><div class="name">' + it.name + "</div>" +
         '<div class="sub">' + (it.desc || (it.species ? "Посадити у ставок" : "")) +
         (locked ? " · з " + it.unlock + " рівня" : "") +
@@ -1543,7 +1610,7 @@
     box.innerHTML = keys.map(function (id) {
       var sp = SPECIES[id];
       var unit = Math.round(sp.sell * S.priceMod);
-      return '<div class="row-item"><div style="font-size:22px;">' + sp.icon + "</div>" +
+      return '<div class="row-item"><div class="shop-ico">' + sp.icon + "</div>" +
         '<div class="meta"><div class="name">' + sp.name + " ×" + S.catch[id] + "</div>" +
         '<div class="sub">' + unit + "💰 / шт</div></div>" +
         '<button type="button" data-sell="' + id + '">Продати 1</button></div>';
@@ -1640,43 +1707,66 @@
 
   function startWebGLBubbles(canvas, gl) {
     var vs = "attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}";
-    /* Бульбашки + легкі caustics (інтерференція sin-хвиль, без важкого raymarch) */
+    /* Gerstner-наближення + caustics + volumetric light scatter (Henyey–Greenstein-like) */
     var fs = [
       "precision mediump float;",
       "uniform float u_t;",
       "uniform vec2 u_res;",
       "float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}",
+      // θ = k·(D·xz) − ωt ; n ≈ (−D.x·A·k·sinθ, 1, −D.y·A·k·sinθ)
+      "vec3 gerstnerN(vec2 xz, vec2 D, float A, float k, float omega, float phi){",
+      " float th=k*dot(D,xz)-omega*u_t+phi;",
+      " float s=sin(th);",
+      " float ak=A*k;",
+      " return vec3(-D.x*ak*s, 1.0, -D.y*ak*s);",
+      "}",
       "void main(){",
       " vec2 uv=gl_FragCoord.xy/u_res;",
       " float asp=u_res.x/max(u_res.y,1.0);",
       " vec2 p=uv; p.x*=asp;",
-      " vec3 col=vec3(0.0);",
-      " float alpha=0.0;",
-      // soft caustic shimmer (wave interference → Frutiger water sparkle)
+      " vec2 xz=(uv-0.5)*vec2(asp,1.0)*4.0;",
+      " vec3 n=vec3(0.0,1.0,0.0);",
+      " n+=gerstnerN(xz, normalize(vec2(1.0,0.6)), 0.12, 2.2, 1.6, 0.0);",
+      " n+=gerstnerN(xz, normalize(vec2(-0.7,1.0)), 0.08, 3.4, 2.1, 1.3);",
+      " n+=gerstnerN(xz, normalize(vec2(0.4,-1.0)), 0.05, 5.0, 2.8, 2.7);",
+      " n=normalize(n);",
+      " vec3 L=normalize(vec3(0.35,0.9,0.25));",
+      " vec3 V=normalize(vec3(0.0,0.6,1.0));",
+      " float ndl=max(dot(n,L),0.0);",
+      // Schlick fresnel
+      " float F=0.04+0.96*pow(1.0-max(dot(n,V),0.0),5.0);",
+      // caustics from wave interference
       " float caus=0.0;",
       " for(float f=1.0;f<=3.0;f+=1.0){",
-      "  caus+=sin(p.x*f*6.0+p.y*f*4.0+u_t*1.1);",
-      "  caus+=sin(p.x*f*3.5-p.y*f*5.5-u_t*0.85);",
+      "  caus+=sin(p.x*f*5.5+p.y*f*3.8+u_t*1.05+n.x*2.0);",
+      "  caus+=sin(p.x*f*3.2-p.y*f*5.0-u_t*0.9+n.z*2.0);",
       " }",
-      " caus=pow(clamp(caus/6.0*0.5+0.5,0.0,1.0),3.0);",
-      " col+=vec3(0.45,0.85,1.0)*caus*0.12;",
-      " alpha=max(alpha,caus*0.08);",
-      // rising bubbles with specular highlight + rim
-      " for(float i=0.0;i<12.0;i+=1.0){",
+      " caus=pow(clamp(caus/6.0*0.5+0.5,0.0,1.0),2.8);",
+      // light scatter (phase ≈ forward-biased HG with g=0.45)
+      " float cosT=dot(V,L);",
+      " float g=0.45; float g2=g*g;",
+      " float hg=(1.0-g2)/pow(max(1.0+g2-2.0*g*cosT,0.001),1.5);",
+      " float scatter=hg*0.045*(0.55+0.45*caus);",
+      " vec3 col=vec3(0.35,0.75,0.95)*caus*0.14;",
+      " col+=vec3(0.7,0.92,1.0)*scatter;",
+      " col+=vec3(0.55,0.85,1.0)*F*ndl*0.08;",
+      " float alpha=caus*0.1+scatter*1.2+F*0.04;",
+      // bubbles
+      " for(float i=0.0;i<11.0;i+=1.0){",
       "  float fi=i+1.0;",
       "  vec2 c=vec2(hash(vec2(fi,1.3)),hash(vec2(fi,4.7)));",
       "  c.y=fract(c.y+u_t*(0.035+hash(vec2(fi,2.0))*0.055));",
-      "  c.x=c.x*asp+sin(u_t*0.7+fi)*0.01;",
-      "  float rad=0.016+hash(vec2(fi,9.0))*0.028;",
+      "  c.x=c.x*asp+sin(u_t*0.7+fi)*0.012;",
+      "  float rad=0.015+hash(vec2(fi,9.0))*0.026;",
       "  float d=length(p-c);",
       "  float b=smoothstep(rad,rad*0.28,d);",
       "  float hi=smoothstep(rad*0.48,0.0,length(p-(c+vec2(-rad*0.28,rad*0.3))));",
       "  float ring=smoothstep(rad*1.1,rad,d)*smoothstep(rad*0.62,rad,d);",
-      "  vec3 aqua=vec3(0.7,0.93,1.0);",
-      "  col+=aqua*(b*0.3+hi*0.55+ring*0.2);",
-      "  alpha=max(alpha,b*0.38+hi*0.32);",
+      "  vec3 aqua=vec3(0.72,0.94,1.0);",
+      "  col+=aqua*(b*0.28+hi*0.5+ring*0.18);",
+      "  alpha=max(alpha,b*0.36+hi*0.3);",
       " }",
-      " gl_FragColor=vec4(col,clamp(alpha,0.0,0.85));",
+      " gl_FragColor=vec4(col,clamp(alpha,0.0,0.88));",
       "}"
     ].join("\n");
 
@@ -1805,3 +1895,4 @@
 </script>
 </body>
 </html>
+
