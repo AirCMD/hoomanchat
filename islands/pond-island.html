@@ -878,7 +878,7 @@
         <span class="pond-sparkle s5"></span>
       </div>
       <div class="toast" id="toast"></div>
-      <div class="cat-sprite" id="cat-sprite" style="display:none;">🐱</div>
+      <div class="cat-sprite" id="cat-sprite" style="display:none;">🐈</div>
       <div class="dog-sprite" id="dog-sprite" style="display:none;">🐕</div>
       <div id="fish-layer"></div>
     </div>
@@ -989,8 +989,8 @@
     { id: "roe_crystal", name: "Ікра кришталю",    icon: "💎", cost: 75,  kind: "roe", species: "crystal", unlock: 18 },
     { id: "fertilizer",  name: "Добриво",          icon: "🌿", cost: 15,  kind: "item", unlock: 1, desc: "−30% часу росту (1 риба)" },
     { id: "rare_boost",  name: "Буст рідкості",    icon: "🍀", cost: 40,  kind: "item", unlock: 5, desc: "Більший шанс рідкісного при зборі" },
-    { id: "dog_basic",   name: "Собака (звичайна)",icon: "🐕", cost: 90,  kind: "upgrade", unlock: 5, desc: "Відлякує кота ~65% візитів" },
-    { id: "dog_pro",     name: "Собака (вартова)", icon: "🦮", cost: 280, kind: "upgrade", unlock: 8, desc: "Кіт більше ніколи не вкраде" },
+    { id: "dog_basic",   name: "Собака (звичайна)",icon: "🐩", cost: 90,  kind: "upgrade", unlock: 5, desc: "Відлякує кота ~65% візитів" },
+    { id: "dog_pro",     name: "Собака (вартова)", icon: "🐕", cost: 280, kind: "upgrade", unlock: 8, desc: "Кіт більше ніколи не вкраде" },
     { id: "heater",      name: "Обігрів ставка",   icon: "🔥", cost: 150, kind: "upgrade", unlock: 6, desc: "Зимовий штраф росту знято (назавжди)" },
     { id: "auto_collect",name: "Автозбір",         icon: "⚙️", cost: 400, kind: "upgrade", unlock: 12, desc: "Сама збирає готову рибу" },
     { id: "slot",        name: "Додатковий слот",  icon: "➕", cost: 55,  kind: "upgrade", unlock: 3, desc: "Ще одне місце у ставку (макс 8)" }
@@ -1007,14 +1007,14 @@
     { id: "level_5",      icon: "⭐", name: "Учень",               desc: "Досягни 5 рівня",                check: function (s) { return s.level >= 5; }, reward: 25 },
     { id: "level_10",     icon: "🌟", name: "Досвідчений",         desc: "Досягни 10 рівня",               check: function (s) { return s.level >= 10; }, reward: 70 },
     { id: "level_25",     icon: "👑", name: "Легенда ставка",      desc: "Досягни 25 рівня",               check: function (s) { return s.level >= 25; }, reward: 300 },
-    { id: "dog_basic",    icon: "🐕", name: "Охорона",             desc: "Купи звичайну собаку",           check: function (s) { return s.dog >= 1; }, reward: 20 },
-    { id: "dog_pro",      icon: "🦮", name: "Фортеця",             desc: "Купи вартову собаку",            check: function (s) { return s.dog >= 2; }, reward: 55 },
+    { id: "dog_basic",    icon: "🐩", name: "Охорона",             desc: "Купи звичайну собаку",           check: function (s) { return s.dog >= 1; }, reward: 20 },
+    { id: "dog_pro",      icon: "🐕", name: "Фортеця",             desc: "Купи вартову собаку",            check: function (s) { return s.dog >= 2; }, reward: 55 },
     { id: "heater",       icon: "🔥", name: "Теплий дім",          desc: "Встанови обігрів",               check: function (s) { return s.heater; }, reward: 30 },
     { id: "auto",         icon: "⚙️", name: "Автопілот",           desc: "Купи автозбір",                  check: function (s) { return s.autoCollect; }, reward: 80 },
     { id: "slots_8",      icon: "➕", name: "Повний ставок",       desc: "Відкрий 8 слотів",               check: function (s) { return s.slots >= 8; }, reward: 45 },
     { id: "gift_1",       icon: "🎁", name: "Щедрість",            desc: "Подаруй щось друменю",           check: function (s) { return s.stats.giftsSent >= 1; }, reward: 12 },
     { id: "gift_10",      icon: "💝", name: "Дружба",              desc: "Надішли 10 подарунків",          check: function (s) { return s.stats.giftsSent >= 10; }, reward: 60 },
-    { id: "cat_victim",   icon: "🐱", name: "Урок від кота",       desc: "Втрать рибу через кота",         check: function (s) { return s.stats.catStolen >= 1; }, reward: 15 },
+    { id: "cat_victim",   icon: "🐈", name: "Урок від кота",       desc: "Втрать рибу через кота",         check: function (s) { return s.stats.catStolen >= 1; }, reward: 15 },
     { id: "rare_koi",     icon: "🐡", name: "Кої в колекції",      desc: "Зібери кої хоч раз",             check: function (s) { return (s.stats.bySpecies.koi || 0) >= 1; }, reward: 40 },
     { id: "rare_crystal", icon: "✨", name: "Кришталева мрія",     desc: "Зібери кришталеву рибу",         check: function (s) { return (s.stats.bySpecies.crystal || 0) >= 1; }, reward: 100 },
     { id: "daily_3",      icon: "📅", name: "Постійність",         desc: "Забери 3 щоденні нагороди",      check: function (s) { return s.stats.dailies >= 3; }, reward: 45 },
@@ -1760,8 +1760,8 @@
   function renderHud(force) {
     var s = seasonInfo();
     var buffs = [];
-    if (S.dog === 1) buffs.push("🐕");
-    if (S.dog === 2) buffs.push("🦮");
+    if (S.dog === 1) buffs.push("🐩");
+    if (S.dog === 2) buffs.push("🐕");
     if (S.heater) buffs.push("🔥");
     if (S.autoCollect) buffs.push("⚙️");
     if (S.rareBoostCharges > 0) buffs.push("🍀×" + S.rareBoostCharges);
