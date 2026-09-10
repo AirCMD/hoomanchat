@@ -51,48 +51,131 @@
 
 .pond-stage {
   position: relative;
-  height: 230px;
+  height: 260px;
   border-radius: 16px;
-  border: 2px solid rgba(255,255,255,0.65);
+  border: 2px solid rgba(255,255,255,0.7);
   overflow: hidden;
   background:
-    radial-gradient(ellipse 80% 50% at 50% 20%, rgba(255,255,255,0.55), transparent 60%),
-    linear-gradient(180deg, #a8e4f8 0%, #5ec4e0 35%, #3a9eb0 70%, #2a8a78 100%);
+    radial-gradient(ellipse 90% 55% at 70% 8%, rgba(255,255,255,0.65), transparent 55%),
+    linear-gradient(180deg,
+      #7ec8f0 0%,
+      #a8daf8 18%,
+      #c5e8bc 32%,
+      #8bc96a 42%,
+      #6db050 48%,
+      #5a9a48 100%);
   margin-bottom: 8px;
   box-shadow:
-    inset 0 2px 12px rgba(255,255,255,0.45),
-    inset 0 -8px 20px rgba(20,80,100,0.2),
-    0 6px 18px rgba(40,120,160,0.25);
+    inset 0 2px 12px rgba(255,255,255,0.4),
+    0 6px 18px rgba(40,120,160,0.22);
   contain: layout style;
 }
 .pond-stage.night {
   background:
-    radial-gradient(ellipse 40% 30% at 75% 18%, rgba(255,255,220,0.25), transparent 50%),
-    linear-gradient(180deg, #1a2a4a 0%, #2a4868 40%, #1a3a48 100%);
+    radial-gradient(ellipse 35% 28% at 78% 12%, rgba(255,255,210,0.35), transparent 50%),
+    linear-gradient(180deg, #152038 0%, #1e2a48 22%, #243820 38%, #1a3020 100%);
   border-color: rgba(100,140,180,0.4);
 }
 .pond-stage.winter {
   background:
-    radial-gradient(ellipse 70% 40% at 50% 15%, rgba(255,255,255,0.7), transparent 55%),
-    linear-gradient(180deg, #e8f4fc 0%, #b8d8ec 45%, #88b8c8 100%);
+    radial-gradient(ellipse 80% 45% at 50% 10%, rgba(255,255,255,0.85), transparent 55%),
+    linear-gradient(180deg, #c8e4f8 0%, #e8f2fa 28%, #d0e0e8 45%, #b8c8d0 100%);
 }
 .pond-stage.night.winter {
-  background: linear-gradient(180deg, #1a2838 0%, #2a3848 50%, #203040 100%);
+  background: linear-gradient(180deg, #121c28 0%, #1a2838 40%, #182028 100%);
+}
+.pond-sky-deco {
+  position: absolute;
+  top: 4px; left: 0; right: 0;
+  height: 28%;
+  pointer-events: none;
+  z-index: 1;
+  font-size: 14px;
+  opacity: 0.9;
+}
+.pond-sky-deco .cloud {
+  position: absolute;
+  opacity: 0.85;
+  filter: drop-shadow(0 1px 2px rgba(255,255,255,0.5));
+}
+.pond-house {
+  position: absolute;
+  top: 6%;
+  right: 6%;
+  z-index: 2;
+  pointer-events: none;
+  text-align: center;
+  line-height: 1;
+  filter: drop-shadow(0 3px 4px rgba(0,0,0,0.2));
+}
+.pond-house .body { font-size: 32px; display: block; }
+.pond-house .label {
+  font-size: 7px;
+  color: #fff;
+  background: rgba(40,80,40,0.55);
+  padding: 1px 5px;
+  border-radius: 6px;
+  margin-top: 2px;
+  display: inline-block;
+}
+.pond-stage.night .pond-house .label { background: rgba(20,30,50,0.65); }
+.pond-trees {
+  position: absolute;
+  top: 14%;
+  left: 3%;
+  z-index: 2;
+  font-size: 26px;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15));
+  line-height: 1;
+}
+.pond-trees span { display: inline-block; margin-right: -4px; }
+.pond-grass-top {
+  position: absolute;
+  top: 28%;
+  left: 0; right: 0;
+  height: 14%;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg,
+      transparent 0 7px,
+      rgba(40,120,40,0.12) 7px 8px),
+    linear-gradient(180deg, transparent 0%, rgba(80,160,60,0.35) 40%, rgba(60,130,50,0.5) 100%);
+  border-radius: 40% 40% 0 0 / 20px;
+}
+.pond-grass-top::before {
+  content: "🌿  🌱   🌾  ☘️   🌿";
+  position: absolute;
+  left: 4%; right: 4%;
+  bottom: 0;
+  font-size: 11px;
+  letter-spacing: 6px;
+  opacity: 0.85;
+  text-align: center;
 }
 .pond-water {
   position: absolute;
-  inset: 26% 5% 10% 5%;
-  border-radius: 50% 50% 42% 42%;
+  left: 6%;
+  right: 6%;
+  top: 38%;
+  bottom: 18%;
+  border-radius: 48% 48% 42% 42% / 55% 55% 40% 40%;
   background:
-    radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.4), transparent 45%),
-    linear-gradient(180deg, rgba(120,210,230,0.5), rgba(40,140,160,0.55));
+    radial-gradient(ellipse at 28% 25%, rgba(255,255,255,0.45), transparent 42%),
+    radial-gradient(ellipse at 70% 60%, rgba(40,140,160,0.25), transparent 50%),
+    linear-gradient(180deg, rgba(140,220,235,0.75) 0%, rgba(50,150,170,0.8) 55%, rgba(30,110,130,0.85) 100%);
   box-shadow:
-    inset 0 0 24px rgba(255,255,255,0.25),
-    inset 0 -10px 20px rgba(20,80,100,0.25);
-  will-change: auto;
+    inset 0 2px 16px rgba(255,255,255,0.35),
+    inset 0 -12px 22px rgba(15,70,90,0.35),
+    0 4px 12px rgba(30,100,120,0.2);
+  z-index: 3;
+  overflow: hidden;
 }
 .pond-stage.night .pond-water {
-  background: linear-gradient(180deg, rgba(50,90,140,0.45), rgba(20,50,80,0.55));
+  background:
+    radial-gradient(ellipse at 30% 25%, rgba(120,160,220,0.25), transparent 45%),
+    linear-gradient(180deg, rgba(40,70,110,0.7), rgba(15,40,70,0.85));
 }
 .pond-stage.heater .pond-water {
   box-shadow: inset 0 0 28px rgba(255,180,100,0.4), 0 0 16px rgba(255,150,70,0.2);
@@ -101,12 +184,26 @@
   position: absolute;
   bottom: 0; left: 0; right: 0;
   height: 20%;
-  background: linear-gradient(180deg, #d4c078 0%, #b8a050 50%, #9a8840 100%);
-  box-shadow: inset 0 2px 0 rgba(255,255,255,0.25);
+  z-index: 4;
+  background:
+    linear-gradient(180deg, #7cbc58 0%, #5a9a40 35%, #c4a860 70%, #a89048 100%);
+  box-shadow: inset 0 3px 0 rgba(255,255,255,0.15);
+}
+.pond-bank::before {
+  content: "🌿🌿  🌱  🌾  ☘️  🌿  🌱🌿";
+  position: absolute;
+  top: -8px; left: 0; right: 0;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 3px;
+  opacity: 0.9;
+  pointer-events: none;
 }
 .pond-stage.winter .pond-bank {
-  background: linear-gradient(180deg, #e8f0f8, #c0d0e0);
+  background: linear-gradient(180deg, #d8e4ec 0%, #c0d0dc 40%, #e8eef4 100%);
 }
+.pond-stage.winter .pond-bank::before,
+.pond-stage.winter .pond-grass-top::before { content: "❄️  ⛄  ❄️  🌨️  ❄️"; }
 #bubble-canvas {
   pointer-events: none;
   position: absolute;
@@ -116,6 +213,14 @@
   height: 100%;
   display: block;
 }
+#fish-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+#fish-layer .fish-slot { pointer-events: auto; }
+
 
 .fish-slot {
   position: absolute;
@@ -198,12 +303,16 @@
 
 .cat-sprite, .dog-sprite {
   position: absolute;
-  font-size: 28px;
-  z-index: 5;
-  transition: opacity 0.35s;
+  font-size: 26px;
+  z-index: 6;
+  transition: opacity 0.35s, left 0.6s;
   pointer-events: none;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+  bottom: 3%;
+  line-height: 1;
 }
+.cat-sprite { left: 10%; }
+.dog-sprite { right: 10%; left: auto; }
 .toast {
   position: absolute;
   left: 50%;
@@ -316,13 +425,44 @@
 }
 #friends-list {
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 8px;
   width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
 }
 #friends-list .row-item {
-  width: 100%;
+  flex: 0 0 auto;
+  width: 148px;
   box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 8px 6px;
+  border: 1px solid rgba(120,190,220,0.45);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(210,240,250,0.7));
+  border-bottom: 1px solid rgba(120,190,220,0.45);
+  scroll-snap-align: start;
+}
+#friends-list .row-item .meta {
+  text-align: center;
+  width: 100%;
+}
+#friends-list .row-item .meta .sub {
+  white-space: normal;
+  font-size: 8px;
+}
+#friends-list .row-item img {
+  margin: 0 auto;
+}
+#friends-list .row-item button {
+  margin-top: 4px;
+  width: 100%;
 }
 .row-item {
   display: flex;
@@ -482,12 +622,24 @@
     </div>
 
     <div class="pond-stage" id="pond-stage">
-      <div class="pond-water" id="pond-water"></div>
-      <canvas id="bubble-canvas" width="400" height="230" aria-hidden="true"></canvas>
+      <div class="pond-sky-deco" aria-hidden="true">
+        <span class="cloud" style="left:8%;top:8px;font-size:18px">☁️</span>
+        <span class="cloud" style="left:22%;top:2px;font-size:14px">☁️</span>
+        <span class="cloud" style="left:48%;top:10px;font-size:16px">☁</span>
+      </div>
+      <div class="pond-trees" aria-hidden="true"><span>🌲</span><span>🌳</span><span>🌲</span></div>
+      <div class="pond-house" aria-hidden="true">
+        <span class="body">🏠</span>
+        <span class="label">copy_pasta</span>
+      </div>
+      <div class="pond-grass-top" aria-hidden="true"></div>
+      <div class="pond-water" id="pond-water">
+        <canvas id="bubble-canvas" width="400" height="160" aria-hidden="true"></canvas>
+      </div>
       <div class="pond-bank"></div>
       <div class="toast" id="toast"></div>
-      <div class="cat-sprite" id="cat-sprite" style="display:none; bottom:18%; left:8%;">🐱</div>
-      <div class="dog-sprite" id="dog-sprite" style="display:none; bottom:14%; right:10%;">🐕</div>
+      <div class="cat-sprite" id="cat-sprite" style="display:none;">🐱</div>
+      <div class="dog-sprite" id="dog-sprite" style="display:none;">🐕</div>
       <div id="fish-layer"></div>
     </div>
 
@@ -1326,8 +1478,8 @@
   }
 
   var SLOT_POS = [
-    [18, 42], [38, 38], [55, 44], [70, 40],
-    [25, 55], [48, 58], [65, 55], [40, 48]
+    [20, 48], [38, 46], [55, 50], [70, 47],
+    [28, 58], [48, 60], [65, 57], [42, 54]
   ];
 
   var fishLayer = null;
