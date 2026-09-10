@@ -1,0 +1,1229 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<link rel="stylesheet" href="../css/islands-template.css">
+<title>ОСТРІВ: СТАВОК</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<style>
+.pond-wrap { margin: 0 0 10px; }
+.pond-panel {
+  background: #fff;
+  border: 1px solid #e3d7f0;
+  padding: 8px;
+}
+.pond-title {
+  margin: 0 0 6px;
+  padding: 5px 8px;
+  background: linear-gradient(90deg, #a8e6cf, #b5ead7, #c5e3bd);
+  border: 1px solid #a3ded0;
+  color: #2e594d;
+  font-size: 12px;
+  font-weight: bold;
+}
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  font-size: 11px;
+  color: #4a4063;
+  margin-bottom: 6px;
+  padding: 4px 6px;
+  background: #f7f3fb;
+  border: 1px solid #e3d7f0;
+}
+.hud b { color: #2a7a4a; }
+.hud .season { color: #6b5b95; }
+
+.pond-stage {
+  position: relative;
+  height: 220px;
+  border-radius: 12px;
+  border: 2px solid #8ec8b0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #c8eef5 0%, #7ec8d8 40%, #4a9e8e 100%);
+  margin-bottom: 6px;
+}
+.pond-stage.night {
+  background: linear-gradient(180deg, #1a2a4a 0%, #2a4060 40%, #1a3a40 100%);
+  border-color: #3a5a70;
+}
+.pond-stage.winter {
+  background: linear-gradient(180deg, #d8e8f0 0%, #b0d0e0 45%, #90b8c8 100%);
+  border-color: #90b0c0;
+}
+.pond-stage.night.winter {
+  background: linear-gradient(180deg, #1a2838 0%, #2a3848 50%, #203040 100%);
+}
+.pond-water {
+  position: absolute;
+  inset: 28% 6% 8% 6%;
+  border-radius: 50% 50% 40% 40%;
+  background: rgba(80, 180, 200, 0.45);
+  box-shadow: inset 0 0 20px rgba(40, 120, 140, 0.3);
+}
+.pond-stage.night .pond-water { background: rgba(40, 80, 120, 0.5); }
+.pond-stage.heater .pond-water {
+  box-shadow: inset 0 0 24px rgba(255, 160, 80, 0.35), 0 0 12px rgba(255, 140, 60, 0.25);
+}
+.pond-bank {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 22%;
+  background: linear-gradient(180deg, #c8b070, #a89050);
+}
+.pond-stage.winter .pond-bank { background: linear-gradient(180deg, #e0e8f0, #c0d0e0); }
+
+.fish-slot {
+  position: absolute;
+  width: 44px;
+  height: 36px;
+  cursor: pointer;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  transition: transform 0.15s;
+  user-select: none;
+}
+.fish-slot:hover { transform: scale(1.12); }
+.fish-slot.ready { filter: drop-shadow(0 0 4px #ffe080); animation: bob 1.2s ease-in-out infinite; }
+.fish-slot.growing { opacity: 0.85; }
+.fish-slot.empty {
+  width: 36px; height: 28px;
+  border: 1px dashed rgba(255,255,255,0.5);
+  border-radius: 50%;
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.1);
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.fish-label {
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  white-space: nowrap;
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  padding: 1px 4px;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.cat-sprite, .dog-sprite {
+  position: absolute;
+  font-size: 28px;
+  z-index: 5;
+  transition: left 0.8s, bottom 0.8s, opacity 0.4s;
+  pointer-events: none;
+}
+.toast {
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  transform: translateX(-50%);
+  background: rgba(40, 30, 50, 0.88);
+  color: #fff;
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  z-index: 10;
+  max-width: 90%;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.toast.show { opacity: 1; }
+
+.dock {
+  display: flex;
+  gap: 4px;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+.dock-btn {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 2px;
+  background: linear-gradient(180deg, #faf6ff, #ebe3f5);
+  border: 1px solid #d0c0e0;
+  color: #4a4063;
+  font-size: 9px;
+  line-height: 12px;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 4px;
+}
+.dock-btn .ico { display: block; font-size: 16px; margin-bottom: 2px; }
+.dock-btn:hover { background: #fff; }
+.dock-btn.active { background: #eadef7; border-color: #b090d0; font-weight: bold; }
+.dock-btn .badge {
+  display: inline-block;
+  background: #e05070;
+  color: #fff;
+  font-size: 8px;
+  padding: 0 4px;
+  border-radius: 8px;
+  margin-left: 2px;
+}
+
+.sheet {
+  display: none;
+  margin-top: 8px;
+  border: 1px solid #e3d7f0;
+  background: #faf8fc;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 6px;
+  font-size: 11px;
+  color: #4a4063;
+}
+.sheet.open { display: block; }
+.sheet h4 {
+  margin: 0 0 6px;
+  font-size: 12px;
+  color: #4a3e56;
+}
+.row-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 4px;
+  border-bottom: 1px solid #eee4f5;
+}
+.row-item:last-child { border-bottom: none; }
+.row-item img {
+  width: 36px; height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid #e3d7f0;
+  background: #f0eaf6;
+  flex-shrink: 0;
+}
+.row-item .meta { flex: 1; min-width: 0; }
+.row-item .meta .name { font-weight: bold; font-size: 11px; }
+.row-item .meta .sub { font-size: 9px; color: #8c7b9e; }
+.row-item button, .shop-btn {
+  flex-shrink: 0;
+  padding: 4px 8px;
+  font-size: 10px;
+  background: linear-gradient(180deg, #faf6ff, #ebe3f5);
+  border: 1px solid #d0c0e0;
+  color: #4a4063;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.row-item button:disabled, .shop-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.shop-btn { margin-left: auto; }
+.hint {
+  font-size: 10px;
+  color: #8c7b9e;
+  margin: 0 0 6px;
+  line-height: 13px;
+}
+.empty-msg { font-size: 11px; color: #8c7b9e; padding: 8px; text-align: center; }
+
+.modal-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: #fff;
+  border: 1px solid #c0b0d0;
+  max-width: 320px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 10px;
+  font-size: 11px;
+  color: #4a4063;
+}
+.modal h4 { margin: 0 0 8px; }
+.modal .close-x {
+  float: right;
+  border: none;
+  background: #eee;
+  cursor: pointer;
+  padding: 2px 8px;
+}
+
+@media (max-width: 420px) {
+  .pond-stage { height: 190px; }
+  .dock-btn { font-size: 8px; padding: 6px 1px; }
+  .dock-btn .ico { font-size: 14px; }
+}
+</style>
+</head>
+<body>
+<div id="hoomenchat-site">
+<div class="hoomenchat-header">ГУМЕНЧАТ</div>
+<div class="site-layout">
+<div class="site-left"><div class="left-box">
+<div class="site-name">СТАВОК</div>
+<img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEiNU5aLNwKBZvNgLsvxfKYA0hduyABhvfQrHryVIrw1Q2WVFne8Aop849IRmthJlGuRphRDtjX_d-pvH8gcUtCoAL-zkhXAP0utpiVidiXL57SIMaMBjeaXnGhTZ_j2wQj1RZxI-V5TsjxtARZSpoxZ8UGuDX_9t9hmiL6k1OyP6ilE8WmYwfKmHTQFvFg" alt="СТАВОК">
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+<div class="nav-menu">
+<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
+<a class="nav-item" href="../profiles.html">Гумени</a>
+<a class="nav-item" href="../droomens.html">Друмени</a>
+<a class="nav-item" href="../activity.html">Стрічерчат</a>
+<a class="nav-item current" href="../islands.html">Острови</a>
+<a class="nav-item" href="../rules.html">Правила</a>
+</div>
+<div class="account-box"><div class="account-text">Немає гумгайла?</div><a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a><a class="account-link" href="../login.html">ВХІД</a></div>
+</div></div>
+
+<div class="site-right">
+<div class="profile-box">
+<div class="profile-header">СТАВОК — острів</div>
+<div class="profile-info">
+<div>Вирощуй рибу й ікру, продавай, даруй друменям. Ти граєш як <b>copy_pasta</b>.</div>
+<div class="profile-status" style="color:green; font-style:normal;">Статус: відкритий острів · сейв у браузері</div>
+</div>
+</div>
+
+<div class="pond-wrap">
+  <div class="pond-panel">
+    <div class="pond-title">🐟 Ставок copy_pasta</div>
+    <div class="hud">
+      <span>💰 <b id="hud-coins">0</b></span>
+      <span>⭐ Рівень <b id="hud-level">1</b></span>
+      <span>XP <b id="hud-xp">0</b>/<span id="hud-xp-max">20</span></span>
+      <span class="season" id="hud-season">🌱 Весна · день</span>
+      <span id="hud-buffs"></span>
+    </div>
+
+    <div class="pond-stage" id="pond-stage">
+      <div class="pond-water" id="pond-water"></div>
+      <div class="pond-bank"></div>
+      <div class="toast" id="toast"></div>
+      <div class="cat-sprite" id="cat-sprite" style="display:none; bottom:18%; left:8%;">🐱</div>
+      <div class="dog-sprite" id="dog-sprite" style="display:none; bottom:14%; right:10%;">🐕</div>
+    </div>
+
+    <div class="dock">
+      <button type="button" class="dock-btn" data-sheet="friends"><span class="ico">👥</span>Друмени</button>
+      <button type="button" class="dock-btn" data-sheet="shop"><span class="ico">🛒</span>Магазин</button>
+      <button type="button" class="dock-btn" data-sheet="items"><span class="ico">🎒</span>Речі<span class="badge hidden" id="badge-items"></span></button>
+      <button type="button" class="dock-btn" data-sheet="inbox"><span class="ico">🎁</span>Вхідні<span class="badge hidden" id="badge-inbox"></span></button>
+      <button type="button" class="dock-btn" data-sheet="fish"><span class="ico">🐠</span>Улов</button>
+      <button type="button" class="dock-btn" data-sheet="daily"><span class="ico">📅</span>Щоденне</button>
+    </div>
+
+    <div class="sheet" id="sheet-friends">
+      <h4>Друмени</h4>
+      <p class="hint">1 подарунок на друмена на ігровий день. Обери річ в інвентарі, потім натисни «Подарувати».</p>
+      <div id="friends-list"></div>
+    </div>
+    <div class="sheet" id="sheet-shop">
+      <h4>Магазин</h4>
+      <div id="shop-list"></div>
+    </div>
+    <div class="sheet" id="sheet-items">
+      <h4>Інвентар речей</h4>
+      <p class="hint">Натисни «Використати» або відкрий Друмени щоб подарувати.</p>
+      <div id="items-list"></div>
+    </div>
+    <div class="sheet" id="sheet-inbox">
+      <h4>Вхідні подарунки</h4>
+      <p class="hint">Боти інколи щось надсилають раз на день.</p>
+      <div id="inbox-list"></div>
+    </div>
+    <div class="sheet" id="sheet-fish">
+      <h4>Улов (на продаж)</h4>
+      <p class="hint">Продай рибу/жаб скупнику. Ціна дня змінюється.</p>
+      <div id="fish-list"></div>
+      <div style="margin-top:6px;">
+        <button type="button" class="shop-btn" id="btn-sell-all">Продати все</button>
+      </div>
+    </div>
+    <div class="sheet" id="sheet-daily">
+      <h4>Щоденна нагорода</h4>
+      <p class="hint">Раз на ігровий день — монети або дрібний предмет.</p>
+      <div id="daily-box"></div>
+    </div>
+  </div>
+</div>
+
+<div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
+<div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span id="today-hoomen"></span></div></div>
+<div class="footer-line">Гуменчат — місце для гуменів.</div>
+</div></div></div>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <button type="button" class="close-x" id="modal-close">×</button>
+    <h4 id="modal-title">—</h4>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var SAVE_KEY = "pond-island-v1";
+  var MAX_LEVEL = 25;
+
+  /* ===== DATA ===== */
+  var SPECIES = {
+    guppy:   { id: "guppy",   name: "Гупі",     icon: "🐠", growMs: 3000,  sell: 4,  unlock: 1,  rare: 0 },
+    carp:    { id: "carp",    name: "Карась",   icon: "🐟", growMs: 8000,  sell: 10, unlock: 2,  rare: 0 },
+    frog:    { id: "frog",    name: "Жаба",     icon: "🐸", growMs: 12000, sell: 14, unlock: 4,  rare: 0 },
+    koi:     { id: "koi",     name: "Кої",      icon: "🐡", growMs: 20000, sell: 28, unlock: 7,  rare: 1 },
+    eel:     { id: "eel",     name: "Вугор",    icon: "🐍", growMs: 28000, sell: 36, unlock: 10, rare: 1 },
+    angelf:  { id: "angelf",  name: "Скалярія", icon: "🕊️", growMs: 35000, sell: 55, unlock: 14, rare: 2 },
+    crystal: { id: "crystal", name: "Кришталь", icon: "✨", growMs: 50000, sell: 90, unlock: 18, rare: 3 }
+  };
+
+  var SHOP = [
+    { id: "roe_guppy",  name: "Ікра гупі",     icon: "🟠", cost: 6,   kind: "roe", species: "guppy",  unlock: 1 },
+    { id: "roe_carp",   name: "Ікра карася",   icon: "🟡", cost: 14,  kind: "roe", species: "carp",   unlock: 2 },
+    { id: "roe_frog",   name: "Ікра жаби",     icon: "🟢", cost: 20,  kind: "roe", species: "frog",   unlock: 4 },
+    { id: "roe_koi",    name: "Ікра кої",      icon: "🔴", cost: 40,  kind: "roe", species: "koi",    unlock: 7 },
+    { id: "roe_eel",    name: "Ікра вугра",    icon: "🟣", cost: 55,  kind: "roe", species: "eel",    unlock: 10 },
+    { id: "roe_angelf", name: "Ікра скалярії", icon: "⚪", cost: 80,  kind: "roe", species: "angelf", unlock: 14 },
+    { id: "roe_crystal",name: "Ікра кришталю",icon: "💎", cost: 140, kind: "roe", species: "crystal",unlock: 18 },
+    { id: "fertilizer", name: "Добриво",       icon: "🌿", cost: 25,  kind: "item", unlock: 1, desc: "−30% часу росту (1 риба)" },
+    { id: "rare_boost", name: "Буст рідкості", icon: "🍀", cost: 60,  kind: "item", unlock: 5, desc: "Більший шанс рідкісного при зборі" },
+    { id: "dog_basic",  name: "Собака (звичайна)", icon: "🐕", cost: 120, kind: "upgrade", unlock: 5, desc: "Відлякує кота ~65% візитів" },
+    { id: "dog_pro",    name: "Собака (вартова)", icon: "🦮", cost: 350, kind: "upgrade", unlock: 8, desc: "Кіт більше ніколи не вкраде" },
+    { id: "heater",     name: "Обігрів ставка", icon: "🔥", cost: 200, kind: "upgrade", unlock: 6, desc: "Зимовий штраф росту знято (назавжди)" },
+    { id: "auto_collect", name: "Автозбір",    icon: "⚙️", cost: 500, kind: "upgrade", unlock: 12, desc: "Сама збирає готову рибу" },
+    { id: "slot",       name: "Додатковий слот", icon: "➕", cost: 80, kind: "upgrade", unlock: 3, desc: "Ще одне місце у ставку (макс 8)" }
+  ];
+
+  var FRIENDS = [
+    {
+      id: "dreaming_romance",
+      name: "dreaming_romance",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiwgFN7p9c9WH9CraPn7ugEzY-xBBTLiqJDwF7Ky1uXupxbTsG8gG9zGOCcniw56afn5TGoSC3nL8SIsPxfIuPiIInXj9GHTwrJhCahp7vpW1mc2m6vS9vp-FQ-wumommCYwiiL-872HrCARoujqE89l7W7LUuz1vNlms03_PWg26Is4H_E81MZShMIjUA",
+      likes: ["koi", "crystal", "rare_boost"],
+      giftPool: ["fertilizer", "roe_guppy", "carp"]
+    },
+    {
+      id: "jane_dust",
+      name: "jane_dust",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEiVCE_Q5OFGoHPjU-uQQ5ObqjPfR08TpvULv3M9bFrUHwYqKsUTkzNfFxtHVMvREzYBcFpsarfwbmGLCynddW8DS8wYJH3hvybjHHR03MU76__UpPeiHU31E5KxGWk-2aAZUiUNMqmctEvdMtPd-hm_i-zmhXatCv5kuzKFXsMEVFsExqR9yhS3HBFnPDQ",
+      likes: ["fertilizer", "frog"],
+      giftPool: ["fertilizer", "guppy", "roe_carp"]
+    },
+    {
+      id: "cherry_byte",
+      name: "cherry_byte",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEi_V3-i5gqAEgl0UEqmujNCZgYVFD0iZ1-4pEQZls0WpjMDTkeOMRhk_wzB3_jQZSylary26k6cH7mqk7edNro_gxIDMN1vnwKwqeGZ-zwRnObVwL79CzOydbmlivp0DSZy6mJGyiJ5KgoxYNr4GmuxxrLibqLgyE0IPzfmQ92xNe8LP6GEt8b35K8PJQA",
+      likes: ["rare_boost", "eel", "angelf"],
+      giftPool: ["rare_boost", "roe_koi", "coins"]
+    },
+    {
+      id: "night_fox",
+      name: "night_fox",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEj47FGZQVZBpkxQBYQVVcANFRW4_ROFwYhkBiqqCUFbbQtDk9Nqm0OngJgQOlTWNh-K08KO-CKHy6rimZeZtt_jyPlntD35r-YBcNtLEjBkvqs-iL8sXLFEitu-rgnzmJMcyP1RzjG0eb2nurjONGAqFUi41djo5xmB91hTHfclMBote_EQNB5CXbG6ZYg",
+      likes: ["carp", "eel"],
+      giftPool: ["carp", "guppy", "coins"]
+    },
+    {
+      id: "sakurai_agatsuma",
+      name: "sakurai_agatsuma",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEg6F3ycnXu5A2gS5zM4p0-qELjeNz4oXvfJAwkLxSJnL4kELcGviUtPwYe-Oa8lV_ThO7h6iq0dwSnx2FeaHbkzG6HEC8S0HILQKiHh49eWl65LSGoj7RgeAYb7V5MV7b7Mu7Sxexq9LYM_7XPF6SkSjStcQO32x02IKUWdFlUck9z30GmMEJgH2OLM3YA",
+      likes: ["frog", "koi", "angelf"],
+      giftPool: ["frog", "roe_frog", "fertilizer"]
+    },
+    {
+      id: "soft_static",
+      name: "soft_static",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEi0-IQ6-y_L-kVYfUNnPzMXCO39DUxNV17N6cCoYPBfkwL08hMaGfNvtzmJnDdKjC08FH_jIcq00ddIhr5z0vI5JhnQY7RuqAeyUvDOpge242fUwO5Wx0lZR18YxbOStWLTMlj6nRSfmA074mfgW2oLCxZxVNerdKr-7l8desFoDExHYFwJiXxn603G53o",
+      likes: ["guppy", "fertilizer"],
+      giftPool: ["guppy", "roe_guppy", "coins"]
+    },
+    {
+      id: "rusty_robot",
+      name: "rusty_robot",
+      avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEj0p973limLEfJtZBHR1CdP2waLt6VGEJJ9u013brvFnzMn1DD1rwthHcUQEBUzv2LvNhyanexQak7w8U5zsYJ5FCItvw5aAnxoRuG4AHD9jV2yhECUEtI4We-Gvp3RKqIG1vwx5YqwFEtuO5mgQp9XjIleeKXMRN0maO5ZFo5qexFW4U94mJj20pQa208",
+      likes: ["rare_boost", "crystal"],
+      giftPool: ["roe_carp", "coins", "fertilizer"]
+    }
+  ];
+
+  var PLAYER_AVATAR = "https://blogger.googleusercontent.com/img/a/AVvXsEiNU5aLNwKBZvNgLsvxfKYA0hduyABhvfQrHryVIrw1Q2WVFne8Aop849IRmthJlGuRphRDtjX_d-pvH8gcUtCoAL-zkhXAP0utpiVidiXL57SIMaMBjeaXnGhTZ_j2wQj1RZxI-V5TsjxtARZSpoxZ8UGuDX_9t9hmiL6k1OyP6ilE8WmYwfKmHTQFvFg";
+
+  /* ===== STATE ===== */
+  var S = null;
+  var tickTimer = null;
+  var catTimer = null;
+
+  function defaultState() {
+    return {
+      version: 1,
+      coins: 20,
+      level: 1,
+      xp: 0,
+      slots: 3,
+      dog: 0, // 0 none, 1 basic, 2 pro
+      heater: false,
+      autoCollect: false,
+      rareBoostCharges: 0,
+      fertilizerCharges: 0,
+      pond: [], // {id, species, startedAt, growMs, ready}
+      items: {}, // itemId -> count
+      catch: {}, // speciesId -> count
+      giftsGiven: {}, // friendId -> dayKey
+      inbox: [],
+      lastBotGiftDay: "",
+      lastDailyDay: "",
+      dailyClaimed: false,
+      priceMod: 1,
+      lastPriceDay: "",
+      lastSeen: Date.now(),
+      tutorialDone: false
+    };
+  }
+
+  function dayKey(ts) {
+    var d = new Date(ts || Date.now());
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  }
+
+  function xpForLevel(lv) {
+    return Math.floor(20 + (lv - 1) * 18 + Math.pow(lv, 1.35) * 4);
+  }
+
+  function seasonInfo(ts) {
+    var d = new Date(ts || Date.now());
+    var m = d.getMonth(); // 0-11
+    var h = d.getHours();
+    var season, mult, icon;
+    if (m >= 2 && m <= 4) { season = "Весна"; mult = 1.0; icon = "🌱"; }
+    else if (m >= 5 && m <= 7) { season = "Літо"; mult = 0.9; icon = "☀️"; }
+    else if (m >= 8 && m <= 10) { season = "Осінь"; mult = 1.05; icon = "🍂"; }
+    else { season = "Зима"; mult = 1.45; icon = "❄️"; }
+    var night = h < 6 || h >= 21;
+    return { season: season, mult: mult, icon: icon, night: night, label: icon + " " + season + " · " + (night ? "ніч" : "день") };
+  }
+
+  function growMultiplier() {
+    var s = seasonInfo();
+    var m = s.mult;
+    if (s.season === "Зима" && S.heater) m = 1.0;
+    // early game faster
+    if (S.level <= 2) m *= 0.35;
+    else if (S.level <= 4) m *= 0.55;
+    else if (S.level <= 8) m *= 0.75;
+    return m;
+  }
+
+  /* ===== SAVE / LOAD ===== */
+  function save() {
+    S.lastSeen = Date.now();
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {}
+  }
+
+  function load() {
+    var raw = null;
+    try { raw = localStorage.getItem(SAVE_KEY); } catch (e) {}
+    if (!raw) {
+      S = defaultState();
+      // starter fish
+      plantFish("guppy", true);
+      plantFish("guppy", true);
+      toast("Вітаємо у ставку! Дві гупі вже ростуть.");
+      save();
+      return;
+    }
+    try {
+      S = JSON.parse(raw);
+    } catch (e) {
+      S = defaultState();
+    }
+    if (!S.version) S = defaultState();
+    applyOfflineProgress();
+  }
+
+  function applyOfflineProgress() {
+    var now = Date.now();
+    var elapsed = Math.max(0, now - (S.lastSeen || now));
+    // cap 12h offline growth credit
+    var cap = 12 * 3600 * 1000;
+    if (elapsed > cap) elapsed = cap;
+    // pond already uses startedAt — just recompute ready on render
+    // bot gifts / daily for missed days handled on open sheets
+    S.lastSeen = now;
+    maybeRollDailyPrice();
+    maybeBotGifts();
+  }
+
+  /* ===== POND ===== */
+  function plantFish(speciesId, free) {
+    if (S.pond.length >= S.slots) {
+      toast("Немає вільних слотів");
+      return false;
+    }
+    var sp = SPECIES[speciesId];
+    if (!sp) return false;
+    if (!free && S.level < sp.unlock) {
+      toast("Потрібен рівень " + sp.unlock);
+      return false;
+    }
+    var ms = Math.round(sp.growMs * growMultiplier());
+    // min 1s max soft cap for UX early
+    if (ms < 1000) ms = 1000;
+    if (S.level === 1 && speciesId === "guppy") ms = Math.min(ms, 15000);
+    S.pond.push({
+      uid: "f" + Date.now() + Math.random().toString(36).slice(2, 6),
+      species: speciesId,
+      startedAt: Date.now(),
+      growMs: ms,
+      fertilized: false
+    });
+    save();
+    renderPond();
+    return true;
+  }
+
+  function fishProgress(f) {
+    var t = Date.now() - f.startedAt;
+    return Math.min(1, t / f.growMs);
+  }
+
+  function isReady(f) {
+    return fishProgress(f) >= 1;
+  }
+
+  function collectFish(uid) {
+    var idx = -1;
+    for (var i = 0; i < S.pond.length; i++) {
+      if (S.pond[i].uid === uid) { idx = i; break; }
+    }
+    if (idx < 0) return;
+    var f = S.pond[idx];
+    if (!isReady(f)) {
+      toast("Ще росте… " + Math.ceil((1 - fishProgress(f)) * f.growMs / 1000) + "с");
+      return;
+    }
+    var sp = SPECIES[f.species];
+    var sid = f.species;
+    // rare boost chance to upgrade
+    if (S.rareBoostCharges > 0 && Math.random() < 0.35) {
+      var upgrades = ["koi", "eel", "angelf", "crystal"];
+      for (var u = 0; u < upgrades.length; u++) {
+        if (SPECIES[upgrades[u]].unlock <= S.level + 2) {
+          if (Math.random() < 0.4) {
+            sid = upgrades[u];
+            sp = SPECIES[sid];
+            toast("🍀 Рідкісний улов: " + sp.name + "!");
+            break;
+          }
+        }
+      }
+      S.rareBoostCharges--;
+    }
+    S.catch[sid] = (S.catch[sid] || 0) + 1;
+    S.pond.splice(idx, 1);
+    addXp(2 + (sp.rare || 0) * 3);
+    toast("Зібрано: " + sp.icon + " " + sp.name);
+    save();
+    renderAll();
+  }
+
+  function addXp(n) {
+    S.xp += n;
+    while (S.level < MAX_LEVEL && S.xp >= xpForLevel(S.level)) {
+      S.xp -= xpForLevel(S.level);
+      S.level++;
+      toast("⭐ Рівень " + S.level + "!");
+      if (S.level === 5) toast("З 5 рівня інколи приходить кіт…");
+    }
+    if (S.level >= MAX_LEVEL) S.xp = Math.min(S.xp, xpForLevel(MAX_LEVEL) - 1);
+  }
+
+  /* ===== CAT / DOG ===== */
+  function tryCatVisit() {
+    if (S.level < 5) return;
+    var ready = S.pond.filter(isReady);
+    if (!ready.length) return;
+
+    // dog pro = never steal
+    if (S.dog >= 2) {
+      showCat(false);
+      return;
+    }
+    // chance of visit
+    var season = seasonInfo();
+    var chance = season.night ? 0.22 : 0.12;
+    if (Math.random() > chance) return;
+
+    showCat(true);
+    var scared = false;
+    if (S.dog === 1) {
+      // basic dog scares ~65%
+      scared = Math.random() < 0.65;
+    }
+    if (scared) {
+      toast("🐕 Собака відлякала кота!");
+      setTimeout(hideCat, 2000);
+      return;
+    }
+    // steal one ready fish
+    var victim = ready[Math.floor(Math.random() * ready.length)];
+    S.pond = S.pond.filter(function (f) { return f.uid !== victim.uid; });
+    toast("🐱 Кіт вкрав " + SPECIES[victim.species].name + "!");
+    save();
+    renderPond();
+    setTimeout(hideCat, 2500);
+  }
+
+  function showCat(steal) {
+    var el = document.getElementById("cat-sprite");
+    el.style.display = "block";
+    el.style.opacity = "1";
+    el.style.left = "10%";
+  }
+  function hideCat() {
+    var el = document.getElementById("cat-sprite");
+    el.style.opacity = "0";
+    setTimeout(function () { el.style.display = "none"; }, 400);
+  }
+
+  /* ===== SHOP ===== */
+  function buy(shopId) {
+    var item = null;
+    for (var i = 0; i < SHOP.length; i++) if (SHOP[i].id === shopId) item = SHOP[i];
+    if (!item) return;
+    if (S.level < item.unlock) { toast("Потрібен рівень " + item.unlock); return; }
+    if (S.coins < item.cost) { toast("Недостатньо монет"); return; }
+
+    if (item.kind === "roe") {
+      if (S.pond.length >= S.slots) { toast("Немає слотів — спочатку звільни ставок"); return; }
+      S.coins -= item.cost;
+      plantFish(item.species, true);
+      toast("Посаджено: " + SPECIES[item.species].name);
+    } else if (item.kind === "item") {
+      S.coins -= item.cost;
+      S.items[item.id] = (S.items[item.id] || 0) + 1;
+      if (item.id === "fertilizer") S.fertilizerCharges = (S.fertilizerCharges || 0); // tracked in items
+      toast("Куплено: " + item.name);
+    } else if (item.kind === "upgrade") {
+      if (item.id === "dog_basic") {
+        if (S.dog >= 1) { toast("Уже є собака"); return; }
+        S.coins -= item.cost;
+        S.dog = 1;
+        toast("🐕 Собака охороняє ставок (~65%)");
+      } else if (item.id === "dog_pro") {
+        if (S.dog >= 2) { toast("Вартова вже є"); return; }
+        var price = item.cost;
+        if (S.dog === 1) price = Math.max(50, item.cost - 120); // upgrade discount
+        if (S.coins < price) { toast("Недостатньо монет"); return; }
+        S.coins -= price;
+        S.dog = 2;
+        toast("🦮 Вартова собака — кіт більше не вкраде");
+      } else if (item.id === "heater") {
+        if (S.heater) { toast("Обігрів уже стоїть"); return; }
+        S.coins -= item.cost;
+        S.heater = true;
+        toast("🔥 Обігрів встановлено");
+      } else if (item.id === "auto_collect") {
+        if (S.autoCollect) { toast("Уже куплено"); return; }
+        S.coins -= item.cost;
+        S.autoCollect = true;
+        toast("⚙️ Автозбір увімкнено");
+      } else if (item.id === "slot") {
+        if (S.slots >= 8) { toast("Максимум 8 слотів"); return; }
+        S.coins -= item.cost;
+        S.slots++;
+        toast("Слотів: " + S.slots);
+      }
+    }
+    save();
+    renderAll();
+  }
+
+  function useItem(itemId) {
+    if (!S.items[itemId] || S.items[itemId] <= 0) return;
+    if (itemId === "fertilizer") {
+      var growing = S.pond.filter(function (f) { return !isReady(f) && !f.fertilized; });
+      if (!growing.length) { toast("Немає риби для добрива"); return; }
+      var f = growing[0];
+      var left = f.growMs - (Date.now() - f.startedAt);
+      f.growMs = Date.now() - f.startedAt + Math.max(500, Math.floor(left * 0.7));
+      f.fertilized = true;
+      S.items[itemId]--;
+      toast("🌿 Добриво застосовано");
+    } else if (itemId === "rare_boost") {
+      S.rareBoostCharges = (S.rareBoostCharges || 0) + 1;
+      S.items[itemId]--;
+      toast("🍀 Буст рідкості активний на наступні збори");
+    } else {
+      toast("Цю річ можна подарувати друменю");
+      return;
+    }
+    if (S.items[itemId] <= 0) delete S.items[itemId];
+    save();
+    renderAll();
+  }
+
+  /* ===== SELL ===== */
+  function maybeRollDailyPrice() {
+    var dk = dayKey();
+    if (S.lastPriceDay === dk) return;
+    S.lastPriceDay = dk;
+    S.priceMod = 0.8 + Math.random() * 0.5; // 0.8–1.3
+  }
+
+  function sellSpecies(sid, count) {
+    count = count || 1;
+    if (!S.catch[sid] || S.catch[sid] < count) return;
+    var sp = SPECIES[sid];
+    var gain = Math.round(sp.sell * S.priceMod * count);
+    S.catch[sid] -= count;
+    if (S.catch[sid] <= 0) delete S.catch[sid];
+    S.coins += gain;
+    addXp(count);
+    toast("+" + gain + "💰 за " + sp.name);
+    save();
+    renderAll();
+  }
+
+  function sellAll() {
+    var total = 0;
+    Object.keys(S.catch).forEach(function (sid) {
+      var n = S.catch[sid];
+      var sp = SPECIES[sid];
+      total += Math.round(sp.sell * S.priceMod * n);
+    });
+    if (!total) { toast("Немає улову"); return; }
+    S.coins += total;
+    S.catch = {};
+    addXp(3);
+    toast("Продано все: +" + total + "💰");
+    save();
+    renderAll();
+  }
+
+  /* ===== FRIENDS / GIFTS ===== */
+  function canGift(fid) {
+    return S.giftsGiven[fid] !== dayKey();
+  }
+
+  function giftToFriend(fid, payload) {
+    // payload: {type:'item', id} or {type:'fish', id}
+    if (!canGift(fid)) { toast("Сьогодні цьому друменю вже дарували"); return; }
+    var friend = null;
+    for (var i = 0; i < FRIENDS.length; i++) if (FRIENDS[i].id === fid) friend = FRIENDS[i];
+    if (!friend) return;
+
+    var label = "";
+    if (payload.type === "item") {
+      if (!S.items[payload.id] || S.items[payload.id] <= 0) { toast("Немає речі"); return; }
+      S.items[payload.id]--;
+      if (S.items[payload.id] <= 0) delete S.items[payload.id];
+      label = payload.id;
+    } else if (payload.type === "fish") {
+      if (!S.catch[payload.id] || S.catch[payload.id] <= 0) { toast("Немає риби"); return; }
+      S.catch[payload.id]--;
+      if (S.catch[payload.id] <= 0) delete S.catch[payload.id];
+      label = payload.id;
+    } else return;
+
+    S.giftsGiven[fid] = dayKey();
+    var liked = friend.likes.indexOf(payload.id) >= 0;
+    var bonus = liked ? 15 + Math.floor(Math.random() * 20) : 5 + Math.floor(Math.random() * 8);
+    S.coins += bonus;
+    addXp(liked ? 5 : 2);
+    toast((liked ? "😍 " : "") + friend.name + " отримав(ла) подарунок · +" + bonus + "💰");
+    save();
+    renderAll();
+  }
+
+  function maybeBotGifts() {
+    var dk = dayKey();
+    if (S.lastBotGiftDay === dk) return;
+    S.lastBotGiftDay = dk;
+    // each friend has chance to send something
+    FRIENDS.forEach(function (f) {
+      if (Math.random() > 0.4) return;
+      var pool = f.giftPool;
+      var g = pool[Math.floor(Math.random() * pool.length)];
+      S.inbox.push({
+        from: f.id,
+        at: Date.now(),
+        gift: g,
+        day: dk
+      });
+    });
+    save();
+  }
+
+  function claimInbox(index) {
+    var g = S.inbox[index];
+    if (!g) return;
+    if (g.gift === "coins") {
+      var c = 8 + Math.floor(Math.random() * 18);
+      S.coins += c;
+      toast("Від " + g.from + ": +" + c + "💰");
+    } else if (SPECIES[g.gift]) {
+      S.catch[g.gift] = (S.catch[g.gift] || 0) + 1;
+      toast("Від " + g.from + ": " + SPECIES[g.gift].icon + " " + SPECIES[g.gift].name);
+    } else {
+      S.items[g.gift] = (S.items[g.gift] || 0) + 1;
+      toast("Від " + g.from + ": " + g.gift);
+    }
+    S.inbox.splice(index, 1);
+    save();
+    renderAll();
+  }
+
+  function claimDaily() {
+    var dk = dayKey();
+    if (S.lastDailyDay === dk) { toast("Сьогодні вже отримано"); return; }
+    S.lastDailyDay = dk;
+    if (Math.random() < 0.55) {
+      var c = 10 + S.level * 2 + Math.floor(Math.random() * 15);
+      S.coins += c;
+      toast("Щоденна нагорода: +" + c + "💰");
+    } else {
+      var opts = ["fertilizer", "roe_guppy", "rare_boost"];
+      var it = opts[Math.floor(Math.random() * opts.length)];
+      if (it.indexOf("roe_") === 0) {
+        // plant if space else item as catch? give as item key in items as pending roe use — simplify: coins fallback if no slot logic
+        S.items["fertilizer"] = (S.items["fertilizer"] || 0) + (it === "fertilizer" ? 1 : 0);
+        if (it !== "fertilizer") {
+          S.items[it] = (S.items[it] || 0) + 1;
+        }
+      } else {
+        S.items[it] = (S.items[it] || 0) + 1;
+      }
+      toast("Щоденна нагорода: предмет!");
+    }
+    addXp(3);
+    save();
+    renderAll();
+  }
+
+  /* ===== RENDER ===== */
+  function toast(msg) {
+    var el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { el.classList.remove("show"); }, 2800);
+  }
+
+  function renderHud() {
+    document.getElementById("hud-coins").textContent = S.coins;
+    document.getElementById("hud-level").textContent = S.level;
+    document.getElementById("hud-xp").textContent = S.xp;
+    document.getElementById("hud-xp-max").textContent = xpForLevel(S.level);
+    document.getElementById("hud-season").textContent = seasonInfo().label;
+    var buffs = [];
+    if (S.dog === 1) buffs.push("🐕");
+    if (S.dog === 2) buffs.push("🦮");
+    if (S.heater) buffs.push("🔥");
+    if (S.autoCollect) buffs.push("⚙️");
+    if (S.rareBoostCharges > 0) buffs.push("🍀×" + S.rareBoostCharges);
+    document.getElementById("hud-buffs").textContent = buffs.join(" ");
+    var stage = document.getElementById("pond-stage");
+    var s = seasonInfo();
+    stage.classList.toggle("night", s.night);
+    stage.classList.toggle("winter", s.season === "Зима");
+    stage.classList.toggle("heater", !!S.heater);
+    document.getElementById("dog-sprite").style.display = S.dog > 0 ? "block" : "none";
+  }
+
+  var SLOT_POS = [
+    [18, 42], [38, 38], [55, 44], [70, 40],
+    [25, 55], [48, 58], [65, 55], [40, 48]
+  ];
+
+  function renderPond() {
+    var stage = document.getElementById("pond-stage");
+    stage.querySelectorAll(".fish-slot").forEach(function (n) { n.remove(); });
+
+    // empty slots markers
+    for (var s = 0; s < S.slots; s++) {
+      if (S.pond[s]) continue;
+      var pos = SLOT_POS[s] || [50, 50];
+      var empty = document.createElement("div");
+      empty.className = "fish-slot empty";
+      empty.style.left = pos[0] + "%";
+      empty.style.top = pos[1] + "%";
+      empty.textContent = "+";
+      empty.title = "Вільний слот — купи ікру в магазині";
+      empty.onclick = function () {
+        openSheet("shop");
+        toast("Купи ікру в магазині, щоб посадити рибу");
+      };
+      stage.appendChild(empty);
+    }
+
+    S.pond.forEach(function (f, i) {
+      var sp = SPECIES[f.species];
+      var pos = SLOT_POS[i % SLOT_POS.length];
+      var el = document.createElement("div");
+      var ready = isReady(f);
+      el.className = "fish-slot " + (ready ? "ready" : "growing");
+      el.style.left = pos[0] + "%";
+      el.style.top = pos[1] + "%";
+      el.innerHTML = sp.icon + '<span class="fish-label">' +
+        (ready ? "готово" : Math.ceil((1 - fishProgress(f)) * f.growMs / 1000) + "с") +
+        "</span>";
+      el.title = sp.name;
+      el.onclick = function () { collectFish(f.uid); };
+      stage.appendChild(el);
+
+      if (ready && S.autoCollect) {
+        setTimeout(function () { collectFish(f.uid); }, 400);
+      }
+    });
+  }
+
+  function openSheet(name) {
+    document.querySelectorAll(".sheet").forEach(function (s) { s.classList.remove("open"); });
+    document.querySelectorAll(".dock-btn").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-sheet") === name);
+    });
+    var el = document.getElementById("sheet-" + name);
+    if (el) el.classList.add("open");
+    if (name === "friends") renderFriends();
+    if (name === "shop") renderShop();
+    if (name === "items") renderItems();
+    if (name === "inbox") renderInbox();
+    if (name === "fish") renderCatch();
+    if (name === "daily") renderDaily();
+  }
+
+  function renderFriends() {
+    var box = document.getElementById("friends-list");
+    var html = '<div class="row-item"><img src="' + PLAYER_AVATAR + '" alt=""><div class="meta"><div class="name">copy_pasta (ви)</div><div class="sub">господиня ставка</div></div></div>';
+    FRIENDS.forEach(function (f) {
+      var can = canGift(f.id);
+      html += '<div class="row-item">' +
+        '<img src="' + f.avatar + '" alt="">' +
+        '<div class="meta"><div class="name">' + f.name + '</div>' +
+        '<div class="sub">' + (can ? "можна подарувати сьогодні" : "сьогодні вже є подарунок") +
+        " · любить: " + f.likes.join(", ") + "</div></div>" +
+        '<button type="button" data-gift="' + f.id + '"' + (can ? "" : " disabled") + ">Подарувати</button></div>";
+    });
+    box.innerHTML = html;
+    box.querySelectorAll("[data-gift]").forEach(function (btn) {
+      btn.onclick = function () {
+        openGiftPicker(btn.getAttribute("data-gift"));
+      };
+    });
+  }
+
+  function openGiftPicker(fid) {
+    var body = document.getElementById("modal-body");
+    var title = document.getElementById("modal-title");
+    title.textContent = "Подарунок для " + fid;
+    var parts = [];
+    Object.keys(S.items).forEach(function (id) {
+      if (S.items[id] > 0) {
+        parts.push('<div class="row-item"><div class="meta"><div class="name">' + id + " ×" + S.items[id] +
+          '</div></div><button type="button" data-t="item" data-id="' + id + '">Надіслати</button></div>');
+      }
+    });
+    Object.keys(S.catch).forEach(function (id) {
+      if (S.catch[id] > 0) {
+        var sp = SPECIES[id];
+        parts.push('<div class="row-item"><div class="meta"><div class="name">' + sp.icon + " " + sp.name + " ×" + S.catch[id] +
+          '</div></div><button type="button" data-t="fish" data-id="' + id + '">Надіслати</button></div>');
+      }
+    });
+    if (!parts.length) parts.push('<div class="empty-msg">Немає що дарувати — зібери улов або купи речі</div>');
+    body.innerHTML = parts.join("");
+    document.getElementById("modal-bg").classList.add("open");
+    body.querySelectorAll("button[data-t]").forEach(function (b) {
+      b.onclick = function () {
+        giftToFriend(fid, { type: b.getAttribute("data-t"), id: b.getAttribute("data-id") });
+        document.getElementById("modal-bg").classList.remove("open");
+      };
+    });
+  }
+
+  function renderShop() {
+    var box = document.getElementById("shop-list");
+    box.innerHTML = SHOP.map(function (it) {
+      var locked = S.level < it.unlock;
+      var owned = (it.id === "dog_basic" && S.dog >= 1) ||
+        (it.id === "dog_pro" && S.dog >= 2) ||
+        (it.id === "heater" && S.heater) ||
+        (it.id === "auto_collect" && S.autoCollect);
+      var price = it.cost;
+      if (it.id === "dog_pro" && S.dog === 1) price = Math.max(50, it.cost - 120);
+      return '<div class="row-item">' +
+        '<div style="font-size:22px;width:36px;text-align:center;">' + it.icon + "</div>" +
+        '<div class="meta"><div class="name">' + it.name + "</div>" +
+        '<div class="sub">' + (it.desc || (it.species ? "Посадити у ставок" : "")) +
+        (locked ? " · з " + it.unlock + " рівня" : "") +
+        " · " + price + "💰</div></div>" +
+        '<button type="button" class="shop-btn" data-buy="' + it.id + '"' +
+        (locked || owned || S.coins < price ? " disabled" : "") + ">" +
+        (owned ? "є" : "Купити") + "</button></div>";
+    }).join("");
+    box.querySelectorAll("[data-buy]").forEach(function (b) {
+      b.onclick = function () { buy(b.getAttribute("data-buy")); };
+    });
+  }
+
+  function renderItems() {
+    var box = document.getElementById("items-list");
+    var keys = Object.keys(S.items).filter(function (k) { return S.items[k] > 0; });
+    if (!keys.length) {
+      box.innerHTML = '<div class="empty-msg">Порожньо</div>';
+      return;
+    }
+    box.innerHTML = keys.map(function (id) {
+      var usable = id === "fertilizer" || id === "rare_boost";
+      return '<div class="row-item"><div class="meta"><div class="name">' + id + "</div>" +
+        '<div class="sub">×' + S.items[id] + "</div></div>" +
+        (usable ? '<button type="button" data-use="' + id + '">Використати</button>' : '<span class="sub">для подарунка</span>') +
+        "</div>";
+    }).join("");
+    box.querySelectorAll("[data-use]").forEach(function (b) {
+      b.onclick = function () { useItem(b.getAttribute("data-use")); };
+    });
+  }
+
+  function renderInbox() {
+    var box = document.getElementById("inbox-list");
+    if (!S.inbox.length) {
+      box.innerHTML = '<div class="empty-msg">Порожньо — заглянь завтра</div>';
+      return;
+    }
+    box.innerHTML = S.inbox.map(function (g, i) {
+      return '<div class="row-item"><div class="meta"><div class="name">від ' + g.from + "</div>" +
+        '<div class="sub">' + g.gift + "</div></div>" +
+        '<button type="button" data-claim="' + i + '">Забрати</button></div>';
+    }).join("");
+    box.querySelectorAll("[data-claim]").forEach(function (b) {
+      b.onclick = function () { claimInbox(parseInt(b.getAttribute("data-claim"), 10)); };
+    });
+  }
+
+  function renderCatch() {
+    var box = document.getElementById("fish-list");
+    var keys = Object.keys(S.catch).filter(function (k) { return S.catch[k] > 0; });
+    document.querySelector("#sheet-fish .hint").textContent =
+      "Модифікатор ціни сьогодні: ×" + S.priceMod.toFixed(2);
+    if (!keys.length) {
+      box.innerHTML = '<div class="empty-msg">Улов порожній — збери рибу зі ставка</div>';
+      return;
+    }
+    box.innerHTML = keys.map(function (id) {
+      var sp = SPECIES[id];
+      var unit = Math.round(sp.sell * S.priceMod);
+      return '<div class="row-item"><div style="font-size:22px;">' + sp.icon + "</div>" +
+        '<div class="meta"><div class="name">' + sp.name + " ×" + S.catch[id] + "</div>" +
+        '<div class="sub">' + unit + "💰 / шт</div></div>" +
+        '<button type="button" data-sell="' + id + '">Продати 1</button></div>';
+    }).join("");
+    box.querySelectorAll("[data-sell]").forEach(function (b) {
+      b.onclick = function () { sellSpecies(b.getAttribute("data-sell"), 1); };
+    });
+  }
+
+  function renderDaily() {
+    var box = document.getElementById("daily-box");
+    var dk = dayKey();
+    if (S.lastDailyDay === dk) {
+      box.innerHTML = '<div class="empty-msg">Сьогоднішню нагороду вже отримано. Завтра буде нова.</div>';
+    } else {
+      box.innerHTML = '<button type="button" class="shop-btn" id="btn-daily">Забрати щоденне</button>';
+      document.getElementById("btn-daily").onclick = claimDaily;
+    }
+  }
+
+  function renderBadges() {
+    var inbox = S.inbox.length;
+    var badge = document.getElementById("badge-inbox");
+    if (inbox > 0) {
+      badge.textContent = String(inbox);
+      badge.classList.remove("hidden");
+    } else badge.classList.add("hidden");
+  }
+
+  function renderAll() {
+    renderHud();
+    renderPond();
+    renderBadges();
+    // refresh open sheet
+    var active = document.querySelector(".dock-btn.active");
+    if (active) openSheet(active.getAttribute("data-sheet"));
+  }
+
+  /* ===== LOOP ===== */
+  function tick() {
+    renderPond();
+    renderHud();
+    if (S.autoCollect) {
+      S.pond.filter(isReady).forEach(function (f) { collectFish(f.uid); });
+    }
+  }
+
+  /* ===== INIT ===== */
+  document.querySelectorAll(".dock-btn").forEach(function (btn) {
+    btn.onclick = function () {
+      var name = btn.getAttribute("data-sheet");
+      if (btn.classList.contains("active")) {
+        btn.classList.remove("active");
+        document.getElementById("sheet-" + name).classList.remove("open");
+      } else openSheet(name);
+    };
+  });
+  document.getElementById("btn-sell-all").onclick = sellAll;
+  document.getElementById("modal-close").onclick = function () {
+    document.getElementById("modal-bg").classList.remove("open");
+  };
+  document.getElementById("modal-bg").onclick = function (e) {
+    if (e.target.id === "modal-bg") e.target.classList.remove("open");
+  };
+
+  load();
+  maybeRollDailyPrice();
+  maybeBotGifts();
+  renderAll();
+  tickTimer = setInterval(function () {
+    tick();
+    save();
+  }, 1000);
+  catTimer = setInterval(tryCatVisit, 28000);
+  setTimeout(tryCatVisit, 15000);
+
+  window.addEventListener("beforeunload", save);
+
+  function safe(base, range) {
+    var v;
+    do { v = base + Math.floor(Math.random() * range); }
+    while (/63|68|13|666/.test(String(v)));
+    return v;
+  }
+  function stats() {
+    var r = document.getElementById("registered-hoomen");
+    var o = document.getElementById("online-hoomen");
+    var t = document.getElementById("today-hoomen");
+    if (r) r.textContent = (8012457).toLocaleString("uk-UA");
+    if (o) o.textContent = safe(1000000, 76001).toLocaleString("uk-UA");
+    if (t) t.textContent = safe(2400000, 180001).toLocaleString("uk-UA");
+  }
+  stats();
+  setInterval(stats, 30000);
+})();
+</script>
+</body>
+</html>
