@@ -51,13 +51,15 @@
 
 .pond-stage {
   position: relative;
-  height: 280px;
+  height: clamp(280px, 42vw, 420px);
+  min-height: 280px;
   border-radius: 16px;
   border: 2px solid rgba(255,255,255,0.75);
   overflow: hidden;
   background-color: #6a9a78;
+  /* фон через img.pond-bg + object-fit */
   background-size: cover;
-  background-position: center center;
+  background-position: center top;
   background-repeat: no-repeat;
   margin-bottom: 8px;
   box-shadow:
@@ -245,26 +247,26 @@
 
 .pond-water {
   position: absolute;
-  left: 7%;
-  right: 7%;
-  top: 40%;
-  bottom: 17%;
+  left: 8%;
+  right: 8%;
+  top: 48%;
+  bottom: 14%;
   border-radius: 48% 48% 42% 42% / 58% 58% 40% 40%;
+  /* майже прозора — видно фото-краєвид і будинок зверху */
   background:
-    radial-gradient(ellipse at 25% 20%, rgba(255,255,255,0.5), transparent 40%),
-    radial-gradient(ellipse at 75% 55%, rgba(30,130,150,0.3), transparent 45%),
-    linear-gradient(185deg, rgba(150,225,240,0.85) 0%, rgba(55,155,175,0.88) 50%, rgba(25,100,125,0.9) 100%);
+    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.14), transparent 55%),
+    rgba(40, 120, 140, 0.10);
   box-shadow:
-    inset 0 3px 18px rgba(255,255,255,0.4),
-    inset 0 -14px 24px rgba(10,60,80,0.4),
-    0 6px 14px rgba(20,90,110,0.25);
+    inset 0 2px 12px rgba(255,255,255,0.12),
+    inset 0 -8px 16px rgba(10,60,80,0.12);
   z-index: 3;
   overflow: hidden;
+  pointer-events: none;
 }
 .pond-stage.night .pond-water {
   background:
-    radial-gradient(ellipse at 30% 25%, rgba(140,180,255,0.2), transparent 45%),
-    linear-gradient(180deg, rgba(35,65,110,0.75), rgba(12,35,65,0.9));
+    radial-gradient(ellipse at 30% 25%, rgba(120,160,220,0.12), transparent 50%),
+    rgba(20, 40, 70, 0.12);
 }
 .pond-stage.heater .pond-water {
   box-shadow: inset 0 0 30px rgba(255,170,90,0.45), 0 0 18px rgba(255,140,60,0.25);
@@ -365,14 +367,38 @@
 .pond-sun, .pond-sky-deco, .pond-hills, .pond-trees, .pond-house,
 .pond-flowers, .pond-path, .pond-grass-top, .pond-bank { display: none !important; }
 .pond-water {
-  background: radial-gradient(ellipse at 30% 25%, rgba(255,255,255,0.12), transparent 50%),
-    rgba(30, 100, 120, 0.12) !important;
-  box-shadow: inset 0 0 20px rgba(255,255,255,0.08) !important;
-  border: 1px solid rgba(255,255,255,0.12);
+  background: radial-gradient(ellipse at 30% 25%, rgba(255,255,255,0.1), transparent 50%),
+    rgba(30, 100, 120, 0.08) !important;
+  box-shadow: inset 0 0 16px rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 .pond-stage.heater .pond-water {
   box-shadow: inset 0 0 24px rgba(255,160,80,0.3), 0 0 12px rgba(255,140,60,0.15) !important;
 }
+
+.pond-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  display: block;
+}
+.pond-stage > .pond-water,
+.pond-stage > .toast,
+.pond-stage > .cat-sprite,
+.pond-stage > .dog-sprite,
+.pond-stage > #fish-layer {
+  z-index: 2;
+}
+#fish-layer { z-index: 5 !important; }
+.cat-sprite, .dog-sprite { z-index: 6 !important; }
+.toast { z-index: 10 !important; }
 #bubble-canvas {
   pointer-events: none;
   position: absolute;
@@ -744,10 +770,79 @@
   color: #1a5070;
 }
 
+@media (max-width: 720px) {
+  .pond-stage {
+    height: clamp(220px, 58vw, 340px);
+    min-height: 220px;
+  }
+  .pond-bg {
+    object-fit: cover;
+    object-position: center 12%;
+  }
+  .pond-water {
+    left: 6%;
+    right: 6%;
+    top: 46%;
+    bottom: 12%;
+  }
+  .fish-slot {
+    width: 44px;
+    height: 38px;
+    font-size: 20px;
+  }
+  .fish-slot.empty {
+    width: 30px;
+    height: 24px;
+    font-size: 12px;
+  }
+  .fish-label { font-size: 7px; bottom: -11px; }
+  .dock {
+    gap: 3px;
+  }
+  .dock-btn {
+    font-size: 7px;
+    padding: 5px 0 4px;
+  }
+  .dock-btn .ico {
+    font-size: 13px;
+    height: 16px;
+  }
+  .hud {
+    font-size: 10px;
+    gap: 4px 8px;
+    padding: 5px 8px;
+  }
+  .sheet {
+    max-height: 240px;
+    font-size: 10px;
+  }
+  #friends-list .row-item {
+    width: 128px;
+  }
+  .cat-sprite, .dog-sprite {
+    font-size: 22px;
+    bottom: 2%;
+  }
+}
 @media (max-width: 420px) {
-  .pond-stage { height: 240px; }
-  .dock-btn { font-size: 7px; padding: 5px 0 4px; }
-  .dock-btn .ico { font-size: 13px; height: 16px; }
+  .pond-stage {
+    height: clamp(200px, 62vw, 280px);
+  }
+  .pond-bg {
+    object-position: center 8%;
+  }
+  .dock-btn { font-size: 6.5px; }
+  .dock-btn .ico { font-size: 12px; height: 14px; }
+  .pond-title { font-size: 11px; padding: 6px 10px; }
+}
+@media (min-width: 721px) {
+  .pond-stage {
+    height: clamp(300px, 38vw, 440px);
+  }
+  .pond-bg {
+    object-fit: cover;
+    object-position: center top;
+  }
 }
 </style>
 </head>
@@ -791,6 +886,7 @@
     </div>
 
     <div class="pond-stage" id="pond-stage">
+      <img id="pond-bg" class="pond-bg" alt="" decoding="async" fetchpriority="high" draggable="false">
       <div class="pond-water" id="pond-water">
         <canvas id="bubble-canvas" width="400" height="160" aria-hidden="true"></canvas>
         <div class="pond-shimmer"></div>
@@ -1129,10 +1225,19 @@
     var key = s.season + "|" + (s.night ? "night" : "day");
     var url = SCENE_BG[key];
     var stage = document.getElementById("pond-stage");
+    var img = document.getElementById("pond-bg");
     if (!stage || !url) return;
-    stage.style.backgroundImage = "url('" + url + "')";
-    stage.style.backgroundSize = "cover";
-    stage.style.backgroundPosition = "center center";
+    if (img) {
+      if (img.getAttribute("src") !== url) {
+        img.src = url;
+      }
+      // object-fit / object-position задаються CSS (адаптив по брейкпоінтах)
+      img.style.objectFit = "cover";
+    } else {
+      stage.style.backgroundImage = "url('" + url + "')";
+      stage.style.backgroundSize = "cover";
+      stage.style.backgroundPosition = "center top";
+    }
     stage.classList.toggle("night", s.night);
     stage.classList.toggle("winter", s.season === "Зима");
     stage.classList.toggle("heater", !!S.heater);
@@ -1691,8 +1796,8 @@
   }
 
   var SLOT_POS = [
-    [20, 48], [38, 46], [55, 50], [70, 47],
-    [28, 58], [48, 60], [65, 57], [42, 54]
+    [22, 54], [40, 52], [56, 56], [70, 53],
+    [30, 64], [48, 66], [64, 62], [44, 60]
   ];
 
   var fishLayer = null;
