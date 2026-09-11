@@ -65,13 +65,13 @@
   overflow: hidden;
 }
 .tools-col {
-  width: min-content; /* авто-ширина під 2 колонки */
+  display: grid;
+  grid-template-columns: repeat(2, 36px);
+  grid-template-rows: repeat(9, 36px);
+  grid-auto-flow: column;
+  gap: 4px;
   flex-shrink: 0;
-  display: flex;
-  flex-wrap: wrap; /* дозволяє кнопкам переноситися на другий ряд/колонку */
-  flex-direction: column; /* розташування зверху вниз */
-  max-height: 356px; /* обмежує висоту, щоб після 9-ї кнопки 10-та йшла у праву колонку */
-  gap: 4px; /* відстань 4px між кнопками як по вертикалі, так і між колонками */
+  align-content: start;
 }
 .canvas-col {
   flex: 1 1 auto;
