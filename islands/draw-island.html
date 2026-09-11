@@ -777,7 +777,23 @@
     hudLayer.textContent = (activeLayer + 1);
   }
 
+  function clampPan() {
+    // Не дозволяємо відсунути збільшене зображення так, щоб за межами
+    // канвасу з'являлося порожнє поле. При zoom = 1 позиція завжди 0,0.
+    if (zoom <= 1) {
+      panX = 0;
+      panY = 0;
+      return;
+    }
+
+    var minX = W - W * zoom;
+    var minY = H - H * zoom;
+    panX = Math.max(minX, Math.min(0, panX));
+    panY = Math.max(minY, Math.min(0, panY));
+  }
+
   function composite() {
+    clampPan();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#ffffff";
@@ -1119,8 +1135,13 @@
     if (tool === "pan") {
       var cx = e.clientX != null ? e.clientX : e.touches[0].clientX;
       var cy = e.clientY != null ? e.clientY : e.touches[0].clientY;
-      panX += (cx - lastX);
-      panY += (cy - lastY);
+      var rect = canvas.getBoundingClientRect();
+      // Переводимо рух миші з CSS-пікселів у внутрішні пікселі канвасу.
+      var dx = (cx - lastX) * (canvas.width / rect.width);
+      var dy = (cy - lastY) * (canvas.height / rect.height);
+      panX += dx;
+      panY += dy;
+      clampPan();
       lastX = cx;
       lastY = cy;
       composite();
@@ -1211,12 +1232,14 @@
       }
       if (t === "zoom-in") {
         zoom = Math.min(4, zoom * 1.25);
+        clampPan();
         composite();
         toast("Зум: " + (zoom * 100 | 0) + "%");
         return;
       }
       if (t === "zoom-out") {
         zoom = Math.max(1, zoom / 1.25);
+        clampPan();
         composite();
         toast("Зум: " + (zoom * 100 | 0) + "%");
         return;
