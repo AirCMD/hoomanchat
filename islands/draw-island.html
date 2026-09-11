@@ -597,8 +597,8 @@
 
     <!-- BOT LOCK (moved to the very bottom) -->
     <div class="botlock-panel">
-      <span class="lock-label" id="botlock-label">Замок для ботів: малювання дозволено</span>
-      <button type="button" class="lock-btn" id="draw-lock" title="Заблокувати малювання ботам" aria-pressed="false">🔓</button>
+      <span class="lock-label" id="botlock-label">Замок для гостів: малювання дозволено</span>
+      <button type="button" class="lock-btn" id="draw-lock" title="Заблокувати малювання гостям" aria-pressed="false">🔓</button>
     </div>
   </div>
 </div>
@@ -1729,11 +1729,11 @@
   drawLock.addEventListener("click", function () {
     drawingLocked = !drawingLocked;
     drawLock.textContent = drawingLocked ? "🔒" : "🔓";
-    drawLock.title = drawingLocked ? "Розблокувати малювання ботам" : "Заблокувати малювання ботам";
+    drawLock.title = drawingLocked ? "Розблокувати малювання гуменам" : "Заблокувати малювання гостям";
     drawLock.setAttribute("aria-pressed", drawingLocked ? "true" : "false");
     drawLock.classList.toggle("active", drawingLocked);
-    botlockLabel.textContent = drawingLocked ? "Замок для ботів: малювання заблоковано" : "Замок для ботів: малювання дозволено";
-    toast(drawingLocked ? "Боти заблоковані 🔒 (ти можеш малювати далі)" : "Боти розблоковані 🔓");
+    botlockLabel.textContent = drawingLocked ? "Замок для гостей: малювання заблоковано" : "Замок для гостей: малювання дозволено";
+    toast(drawingLocked ? "Гостям 🖌 заблоковано 🔒 (ти можеш малювати далі)" : "Гостям 🖌 розблоковано 🔓");
   });
 
   function getKeywordReply(bot, text) {
