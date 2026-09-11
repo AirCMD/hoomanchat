@@ -1,0 +1,1036 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<link rel="stylesheet" href="../css/islandsairtiger-template.css">
+<title>ОСТРІВ: ХО</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<style>
+/* ===== Frutiger Aero XO UI ===== */
+.xo-wrap { margin: 0 0 10px; }
+.xo-panel {
+  background: linear-gradient(165deg, rgba(255,255,255,0.92) 0%, rgba(210,240,255,0.88) 45%, rgba(220,230,255,0.9) 100%);
+  border: 1px solid rgba(120, 190, 220, 0.65);
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(40, 100, 140, 0.12);
+}
+.xo-title {
+  margin: 0 0 8px;
+  padding: 7px 12px;
+  background: linear-gradient(180deg, #f0fbff 0%, #b8e8f8 40%, #7ec8e8 100%);
+  border: 1px solid #7ec0e0;
+  border-radius: 10px;
+  color: #1a5a78;
+  font-size: 13px;
+  font-weight: bold;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+  box-shadow: inset 0 1px 0 #fff, 0 2px 6px rgba(60,140,180,0.2);
+  text-align: center;
+}
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  font-size: 11px;
+  color: #1e4a5c;
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(200,235,250,0.55));
+  border: 1px solid rgba(140,200,230,0.5);
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+  align-items: center;
+  justify-content: space-between;
+}
+.hud b { color: #0a7a4a; }
+.hud .turn-info { color: #2a6a90; font-weight: 600; }
+
+.xo-main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.board-col {
+  flex: 1 1 220px;
+  min-width: 200px;
+}
+.chat-col {
+  flex: 1 1 200px;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  max-height: 380px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  background: linear-gradient(160deg, #d8f0ff, #c8e8f8);
+  border: 2px solid rgba(120,180,210,0.7);
+  border-radius: 14px;
+  padding: 8px;
+  box-shadow: inset 0 1px 0 #fff, 0 4px 12px rgba(40,120,160,0.15);
+  aspect-ratio: 1;
+  max-width: 320px;
+  margin: 0 auto;
+}
+.cell {
+  background: linear-gradient(180deg, #fff 0%, #e8f6ff 100%);
+  border: 1px solid rgba(100,170,200,0.55);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(28px, 9vw, 42px);
+  font-weight: 800;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.08s, box-shadow 0.12s, background 0.15s;
+  box-shadow: 0 2px 4px rgba(60,120,160,0.12);
+  color: #1a4a60;
+  aspect-ratio: 1;
+}
+.cell:hover:not(.filled):not(.disabled) {
+  background: linear-gradient(180deg, #f8fcff, #d0eefc);
+  box-shadow: 0 3px 8px rgba(40,140,180,0.25);
+  transform: scale(1.03);
+}
+.cell:active:not(.filled):not(.disabled) { transform: scale(0.96); }
+.cell.filled { cursor: default; }
+.cell.disabled { cursor: default; opacity: 0.85; }
+.cell.x { color: #c02840; text-shadow: 0 0 10px rgba(220,60,80,0.35); }
+.cell.o { color: #1a6a9a; text-shadow: 0 0 10px rgba(40,140,200,0.35); }
+.cell.win {
+  background: linear-gradient(180deg, #e8ffe8, #b8f0c0) !important;
+  box-shadow: 0 0 12px rgba(40,180,80,0.45);
+  animation: winPulse 0.6s ease;
+}
+@keyframes winPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+.vs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 8px 0;
+  padding: 8px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(200,230,250,0.5));
+  border: 1px solid rgba(140,200,230,0.45);
+  border-radius: 12px;
+  font-size: 12px;
+  color: #1e4a5c;
+}
+.vs-bar .avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #7ec0e0;
+  background: #d0e8f8;
+}
+.vs-bar .name { font-weight: 700; color: #0a5a78; }
+.vs-bar .role { font-size: 10px; color: #4a7a90; }
+.vs-bar .vs { font-weight: 800; color: #c02840; font-size: 14px; }
+
+/* Chat */
+.chat-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(220,240,255,0.75));
+  border: 1px solid rgba(120,180,210,0.55);
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 200px;
+}
+.chat-head {
+  padding: 6px 10px;
+  background: linear-gradient(180deg, #e8f6ff, #b8e0f0);
+  border-bottom: 1px solid rgba(120,180,210,0.5);
+  font-size: 11px;
+  font-weight: 700;
+  color: #1a5a78;
+}
+.chat-log {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #1e3a4c;
+  max-height: 220px;
+}
+.chat-msg { margin-bottom: 6px; word-break: break-word; }
+.chat-msg .who { font-weight: 700; color: #0a6a8a; }
+.chat-msg.sys { color: #5a7a8a; font-style: italic; }
+.chat-msg.bot .who { color: #8a3a60; }
+.chat-msg.me .who { color: #0a7a4a; }
+.chat-input-row {
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  border-top: 1px solid rgba(120,180,210,0.4);
+  background: rgba(255,255,255,0.6);
+}
+.chat-input {
+  flex: 1;
+  border: 1px solid rgba(120,180,210,0.6);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 12px;
+  outline: none;
+  background: #fff;
+}
+.chat-input:focus { border-color: #5ab0d0; box-shadow: 0 0 0 2px rgba(90,180,220,0.25); }
+.chat-send {
+  border: 1px solid #5a9ab8;
+  background: linear-gradient(180deg, #e0f4ff, #a8d8f0);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a5a78;
+  cursor: pointer;
+}
+.chat-send:hover { filter: brightness(1.05); }
+.chat-send:disabled { opacity: 0.5; cursor: default; }
+
+/* Overlay selection / end */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 50, 70, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  border-radius: 14px;
+}
+.overlay-card {
+  background: linear-gradient(165deg, #f8fcff, #d8f0ff 60%, #e8f8f0);
+  border: 2px solid rgba(120,190,220,0.7);
+  border-radius: 16px;
+  padding: 18px 20px;
+  max-width: 320px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(20,60,90,0.25);
+  color: #1a4a60;
+}
+.overlay-card h3 { margin: 0 0 8px; font-size: 16px; color: #0a5a78; }
+.overlay-card p { margin: 0 0 10px; font-size: 12px; line-height: 1.4; }
+.sel-timer {
+  font-size: 28px;
+  font-weight: 800;
+  color: #c02840;
+  margin: 6px 0;
+  text-shadow: 0 0 12px rgba(220,60,80,0.3);
+}
+.sel-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0a6a4a;
+  min-height: 24px;
+  transition: opacity 0.15s;
+}
+.sel-role { font-size: 11px; color: #4a7a90; margin-bottom: 8px; }
+.btn-main {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 8px 18px;
+  border: 1px solid #4a9ab8;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #e8f8ff, #90d0e8);
+  color: #0a4a68;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(40,120,160,0.2);
+}
+.btn-main:hover { filter: brightness(1.06); }
+.btn-main:disabled { opacity: 0.5; cursor: default; }
+
+.stage-wrap {
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.toast {
+  position: absolute;
+  left: 50%;
+  top: 12%;
+  transform: translateX(-50%);
+  background: rgba(20,50,70,0.88);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s;
+  max-width: 90%;
+  text-align: center;
+}
+.toast.show { opacity: 1; }
+
+.kick-screen {
+  position: fixed;
+  inset: 0;
+  background: #1a2a38;
+  color: #e8f0f8;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 100;
+  font-size: 16px;
+  text-align: center;
+  padding: 20px;
+}
+.kick-screen h2 { color: #ff6a7a; margin-bottom: 12px; }
+
+@media (max-width: 520px) {
+  .xo-main { flex-direction: column; }
+  .board { max-width: 100%; }
+  .chat-log { max-height: 160px; }
+}
+</style>
+</head>
+<body>
+<div id="hoomenchat-site">
+<div class="hoomenchat-header">ГУМЕНЧАТ</div>
+<div class="site-layout">
+<div class="site-left"><div class="left-box">
+<div class="site-name">ХО</div>
+<img class="main-avatar" src="https://blogger.googleusercontent.com/img/a/AVvXsEjS2sFtj4bmliYWRi8ZR1nh2VZhFlEEFp8WcL4GaBWRNdd151Avc2ekr-h2d5b_XkalFJPVq9YGkCJVvZcv-_pC3X12t9QVSQosF537iaxTvJ6suyq7xov5HqAdu8UGES5gD74wvvfKBlpI2XoCJR_Fc8O0vEmkTWf7kB26MLFf4f_DsVBeynH4GF46dHo" alt="ХО">
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+<div class="nav-menu">
+<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
+<a class="nav-item" href="../profiles.html">Гумени</a>
+<a class="nav-item" href="../droomens.html">Друмени</a>
+<a class="nav-item" href="../activity.html">Стрічерчат</a>
+<a class="nav-item current" href="../islands.html">Острови</a>
+<a class="nav-item" href="../rules.html">Правила</a>
+</div>
+<div class="account-box"><div class="account-text">Немає гумгайла?</div><a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a><a class="account-link" href="../login.html">ВХІД</a></div>
+</div></div>
+
+<div class="site-right">
+<div class="profile-box">
+<div class="profile-header">ХО — острів</div>
+<div class="profile-info">
+<div>Класичні хрестики-нулики проти ботів. Думай, не поспішай… або поспішай. З поверненням, <b>copy_pasta</b>!</div>
+<div class="profile-status" style="color:green; font-style:normal;">Статус: відкритий острів</div>
+</div>
+</div>
+
+<div class="xo-wrap">
+  <div class="xo-panel">
+    <div class="xo-title">❌ ХО · острів copy_pasta ⭕</div>
+
+    <div class="hud" id="hud">
+      <span>Ти: <b id="hud-you">—</b></span>
+      <span class="turn-info" id="hud-turn">Очікування…</span>
+      <span>Рахунок <b id="hud-score">0:0</b></span>
+    </div>
+
+    <div class="stage-wrap">
+      <div class="vs-bar" id="vs-bar">
+        <div style="text-align:center">
+          <div class="name">copy_pasta</div>
+          <div class="role">ти</div>
+        </div>
+        <span class="vs">VS</span>
+        <div style="text-align:center">
+          <div class="name" id="opp-name">?</div>
+          <div class="role" id="opp-role">відбір…</div>
+        </div>
+      </div>
+
+      <div class="xo-main">
+        <div class="board-col">
+          <div class="board" id="board">
+            <div class="cell" data-i="0"></div>
+            <div class="cell" data-i="1"></div>
+            <div class="cell" data-i="2"></div>
+            <div class="cell" data-i="3"></div>
+            <div class="cell" data-i="4"></div>
+            <div class="cell" data-i="5"></div>
+            <div class="cell" data-i="6"></div>
+            <div class="cell" data-i="7"></div>
+            <div class="cell" data-i="8"></div>
+          </div>
+        </div>
+        <div class="chat-col">
+          <div class="chat-box">
+            <div class="chat-head">💬 Чат гри</div>
+            <div class="chat-log" id="chat-log"></div>
+            <div class="chat-input-row">
+              <input class="chat-input" id="chat-input" type="text" maxlength="120" placeholder="Написати…" autocomplete="off">
+              <button type="button" class="chat-send" id="chat-send">➤</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="toast"></div>
+
+      <!-- Selection overlay -->
+      <div class="overlay" id="sel-overlay">
+        <div class="overlay-card">
+          <h3>🔍 Відбір суперника</h3>
+          <p>Шукаємо гідного суперника серед ботів…</p>
+          <div class="sel-timer" id="sel-timer">15</div>
+          <div class="sel-name" id="sel-name">…</div>
+          <div class="sel-role" id="sel-role"></div>
+        </div>
+      </div>
+
+      <!-- End overlay -->
+      <div class="overlay" id="end-overlay" style="display:none;">
+        <div class="overlay-card">
+          <h3 id="end-title">Кінець гри</h3>
+          <p id="end-msg"></p>
+          <button type="button" class="btn-main" id="btn-again">Ще партія</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- site-right -->
+</div><!-- site-layout -->
+</div><!-- hoomenchat-site -->
+
+<div class="kick-screen" id="kick-screen">
+  <h2>🚫 Вилучено з гри</h2>
+  <p>Система зафіксувала неприпустимі слова.<br>Повертайся, коли будеш готові грати чемно.</p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ===== BOTS ===== */
+  var BOTS = [
+    { id: "ai_ta", name: "ai_ta", role: "ХОмейстер", skill: 0.97, gender: "m" },
+    { id: "la_cyber", name: "la_cyber", role: "ХОмейстерка", skill: 0.94, gender: "f" },
+    { id: "anon_hoomen", name: "anon_hoomen", role: "експертка", skill: 0.82, gender: "f" },
+    { id: "dreaming_romance", name: "dreaming_romance", role: "експерт", skill: 0.80, gender: "m" },
+    { id: "lexy_lel", name: "lexy_lel", role: "експерт", skill: 0.78, gender: "m" },
+    { id: "fedir_tkch", name: "fedir_tkch", role: "експерт", skill: 0.76, gender: "m" },
+    { id: "den_chik", name: "den_chik", role: "експерт", skill: 0.75, gender: "m" },
+    { id: "rusty_robot", name: "rusty_robot", role: "експерт", skill: 0.77, gender: "m" },
+    { id: "jane_dust", name: "jane_dust", role: "люлюбителька", skill: 0.48, gender: "f" },
+    { id: "inna_king", name: "inna_king", role: "люлюбителька", skill: 0.45, gender: "f" },
+    { id: "night_fox", name: "night_fox", role: "люлюбитель", skill: 0.50, gender: "m" },
+    { id: "pixel_heart", name: "pixel_heart", role: "люлюбителька", skill: 0.42, gender: "f" },
+    { id: "soft_static", name: "soft_static", role: "люлюбителька", skill: 0.46, gender: "f" },
+    { id: "petro_ivanchuk", name: "petro_ivanchuk", role: "люлюбитель", skill: 0.08, gender: "m", clueless: true },
+    { id: "paper_storm", name: "paper_storm", role: "люлюбитель", skill: 0.44, gender: "m" },
+    { id: "ihor_romashka", name: "ihor_romashka", role: "новачок", skill: 0.12, gender: "m", newbie: true }
+  ];
+
+  var PLAYER = "copy_pasta";
+
+  /* ===== STATE ===== */
+  var board = Array(9).fill(null); // 'X' | 'O' | null
+  var humanSym = null;
+  var botSym = null;
+  var current = null; // whose turn
+  var opponent = null;
+  var gameActive = false;
+  var score = { you: 0, bot: 0 };
+  var lastMoveAt = 0;
+  var afkAsked = []; // phrases already used this game
+  var afkTimer = null;
+  var botThinkTimer = null;
+  var selTimer = null;
+  var chatBusy = false;
+
+  var WIN_LINES = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+
+  /* ===== DOM ===== */
+  var cells = Array.prototype.slice.call(document.querySelectorAll(".cell"));
+  var chatLog = document.getElementById("chat-log");
+  var chatInput = document.getElementById("chat-input");
+  var chatSend = document.getElementById("chat-send");
+  var selOverlay = document.getElementById("sel-overlay");
+  var endOverlay = document.getElementById("end-overlay");
+  var toastEl = document.getElementById("toast");
+
+  /* ===== UTILS ===== */
+  function rnd(a, b) {
+    return a + Math.random() * (b - a);
+  }
+  function pick(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+  function toast(msg, ms) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    setTimeout(function () { toastEl.classList.remove("show"); }, ms || 2200);
+  }
+
+  /* ===== CHAT ===== */
+  function addChat(who, text, cls) {
+    var d = document.createElement("div");
+    d.className = "chat-msg " + (cls || "");
+    if (who) {
+      d.innerHTML = '<span class="who">' + who + ':</span> ' + escapeHtml(text);
+    } else {
+      d.className += " sys";
+      d.textContent = text;
+    }
+    chatLog.appendChild(d);
+    chatLog.scrollTop = chatLog.scrollHeight;
+  }
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  var GREETINGS = [
+    "Привіт, copy_pasta! Готова до бою? 🔥",
+    "О, copy_pasta зайшла! Давай зіграємо ✨",
+    "Йоу, copy_pasta! Не програй одразу 😏",
+    "Вітаю на острові ХО, copy_pasta!",
+    "copy_pasta, нарешті! Я вже чекав/чекала.",
+    "Хей! copy_pasta, покажи клас 💪",
+    "Здоров, copy_pasta. Готуйся думати.",
+    "Привіт-привіт! copy_pasta у грі 🎯"
+  ];
+  var GREET_F = [
+    "Привіт, copy_pasta! Готова до бою? 🔥",
+    "О, copy_pasta зайшла! Давай зіграємо ✨",
+    "Вітаю на острові ХО, copy_pasta!",
+    "Хей! copy_pasta, покажи клас 💪",
+    "Привіт-привіт! copy_pasta у грі 🎯",
+    "copy_pasta, рада бачити! Не здавайся легко 🌸"
+  ];
+  var GREET_M = [
+    "Привіт, copy_pasta! Готова до бою? 🔥",
+    "О, copy_pasta! Давай зіграємо ✨",
+    "Йоу, copy_pasta! Не програй одразу 😏",
+    "Вітаю на острові ХО, copy_pasta!",
+    "copy_pasta, нарешті! Я вже чекав.",
+    "Хей! copy_pasta, покажи клас 💪",
+    "Здоров, copy_pasta. Готуйся думати."
+  ];
+
+  var BOT_REPLIES = [
+    "хм… цікаво",
+    "таа",
+    "ок",
+    "думаю 🤔",
+    "не відволікай, граю",
+    "лол",
+    "серйозно?",
+    "ну давай",
+    "бачу",
+    "типу",
+    "клас",
+    "👀",
+    "може й так",
+    "не скажу",
+    "грай краще",
+    "я тут",
+    "чекай хід",
+    "фокус на дошці",
+    "nice try",
+    "ммм"
+  ];
+  var BOT_REPLY_KEYWORDS = [
+    { re: /привіт|здоров|хай|хел+о|вітаю/i, answers: ["і тобі привіт!", "здоров!", "хай 👋", "привіт-привіт"] },
+    { re: /як справи|шо там|як ти/i, answers: ["норм, граю", "фокус на ХО", "краще ніж у тебе 😏", "ок"] },
+    { re: /дякую|thanks|спасиб/i, answers: ["нема за що", "ок", "будь ласка"] },
+    { re: /лол|хаха|ахах|кек|ржу/i, answers: ["😄", "лол", "ахах", "смішно тобі"] },
+    { re: /пробач|вибач|соррі/i, answers: ["ок", "нічого", "давай далі"] },
+    { re: /ай|бля|блін|дідько/i, answers: ["обережніше зі словами", "грай спокійно", "👀"] },
+    { re: /переможеш|виграєш|здавайся/i, answers: ["побачимо", "спробуй", "не так швидко", "ха"] },
+    { re: /ти хто|хто ти/i, answers: ["твій суперник", "бот з острова ХО", "я " ] }
+  ];
+
+  /* Bad words (kick) — Ukrainian / mixed common */
+  var BAD = [
+    /п[іи]зд/i, /хуй/i, /ху[ієя]/i, /бля[дт]/i, /єба[нт]/i, /еба[нт]/i,
+    /сука/i, /мудак/i, /мудил/i, /дебіл/i, /ідіот/i, /гондон/i,
+    /шлюх/i, /курва/i, /підар/i, /педик/i, /чмо/i, /долбо/i,
+    /fuck/i, /shit/i, /bitch/i, /asshole/i, /cunt/i, /nigg/i,
+    /сучара/i, /падл[ао]/i, /гнид[ао]/i, /смерд/i
+  ];
+
+  function hasBadWords(text) {
+    var t = text.toLowerCase();
+    for (var i = 0; i < BAD.length; i++) {
+      if (BAD[i].test(t)) return true;
+    }
+    return false;
+  }
+
+  function kickPlayer() {
+    gameActive = false;
+    clearTimeout(afkTimer);
+    clearTimeout(botThinkTimer);
+    document.getElementById("kick-screen").style.display = "flex";
+    chatInput.disabled = true;
+    chatSend.disabled = true;
+    cells.forEach(function (c) { c.classList.add("disabled"); });
+  }
+
+  function botReplyToChat(text) {
+    if (!opponent || !gameActive) return;
+    var ans = null;
+    for (var i = 0; i < BOT_REPLY_KEYWORDS.length; i++) {
+      var k = BOT_REPLY_KEYWORDS[i];
+      if (k.re.test(text)) {
+        ans = pick(k.answers);
+        if (ans === "я ") ans = "я " + opponent.name;
+        break;
+      }
+    }
+    if (!ans) ans = pick(BOT_REPLIES);
+    chatBusy = true;
+    setTimeout(function () {
+      if (!gameActive) return;
+      addChat(opponent.name, ans, "bot");
+      chatBusy = false;
+    }, rnd(600, 1600));
+  }
+
+  function onChatSend() {
+    if (!gameActive) return;
+    var text = (chatInput.value || "").trim();
+    if (!text) return;
+    chatInput.value = "";
+    if (hasBadWords(text)) {
+      addChat(PLAYER, text, "me");
+      setTimeout(function () {
+        addChat(null, "⚠️ Система: неприпустима лексика. Вилучення…");
+        setTimeout(kickPlayer, 900);
+      }, 400);
+      return;
+    }
+    addChat(PLAYER, text, "me");
+    botReplyToChat(text);
+  }
+
+  chatSend.addEventListener("click", onChatSend);
+  chatInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") onChatSend();
+  });
+
+  /* ===== AFK ===== */
+  var AFK_PHRASES = [
+    "ти ще тут?",
+    "ти афк?",
+    "ну де ти?",
+    "чекаю на твій хід…",
+    "copy_pasta, ти тут?",
+    "не засинай",
+    "час йде, ходи вже",
+    "алло? 👀",
+    "ти зник/ла?",
+    "може розбудимось?"
+  ];
+
+  function scheduleAfkCheck() {
+    clearTimeout(afkTimer);
+    if (!gameActive || current !== humanSym) return;
+    afkTimer = setTimeout(function () {
+      if (!gameActive || current !== humanSym) return;
+      var available = AFK_PHRASES.filter(function (p) {
+        return afkAsked.indexOf(p) === -1;
+      });
+      if (!available.length) {
+        afkAsked = [];
+        available = AFK_PHRASES.slice();
+      }
+      var phrase = pick(available);
+      afkAsked.push(phrase);
+      if (opponent) addChat(opponent.name, phrase, "bot");
+      scheduleAfkCheck(); // next reminder later
+    }, rnd(18000, 28000));
+  }
+
+  /* ===== GAME LOGIC ===== */
+  function emptyCells() {
+    var e = [];
+    for (var i = 0; i < 9; i++) if (!board[i]) e.push(i);
+    return e;
+  }
+
+  function checkWinner(b) {
+    b = b || board;
+    for (var i = 0; i < WIN_LINES.length; i++) {
+      var L = WIN_LINES[i];
+      if (b[L[0]] && b[L[0]] === b[L[1]] && b[L[1]] === b[L[2]]) {
+        return { winner: b[L[0]], line: L };
+      }
+    }
+    if (emptyCells().length === 0 && b === board) return { winner: "draw" };
+    // for minimax board copy
+    var full = true;
+    for (var j = 0; j < 9; j++) if (!b[j]) { full = false; break; }
+    if (full) return { winner: "draw" };
+    return null;
+  }
+
+  function minimax(b, depth, isMax, alpha, beta, maxDepth) {
+    var res = checkWinner(b);
+    if (res) {
+      if (res.winner === botSym) return 10 - depth;
+      if (res.winner === humanSym) return depth - 10;
+      return 0;
+    }
+    if (depth >= maxDepth) return 0;
+
+    if (isMax) {
+      var best = -Infinity;
+      for (var i = 0; i < 9; i++) {
+        if (!b[i]) {
+          b[i] = botSym;
+          var s = minimax(b, depth + 1, false, alpha, beta, maxDepth);
+          b[i] = null;
+          best = Math.max(best, s);
+          alpha = Math.max(alpha, best);
+          if (beta <= alpha) break;
+        }
+      }
+      return best;
+    } else {
+      var best2 = Infinity;
+      for (var j = 0; j < 9; j++) {
+        if (!b[j]) {
+          b[j] = humanSym;
+          var s2 = minimax(b, depth + 1, true, alpha, beta, maxDepth);
+          b[j] = null;
+          best2 = Math.min(best2, s2);
+          beta = Math.min(beta, best2);
+          if (beta <= alpha) break;
+        }
+      }
+      return best2;
+    }
+  }
+
+  function findBestMove(skill) {
+    var empties = emptyCells();
+    if (!empties.length) return null;
+
+    // petro_ivanchuk / extreme clueless: almost always random or bad
+    if (opponent && opponent.clueless) {
+      // prefer edges, avoid center/corners sometimes
+      var badish = empties.filter(function (i) { return i !== 4; });
+      return pick(badish.length ? badish : empties);
+    }
+
+    // newbie: high chance of pure random, sometimes block, rarely good
+    if (opponent && opponent.newbie) {
+      if (Math.random() < 0.75) return pick(empties);
+      // sometimes take random corner/edge even if losing
+    }
+
+    // With probability (1 - skill) play suboptimal / random
+    if (Math.random() > skill) {
+      // medium: 50% random, else try simple heuristic
+      if (Math.random() < 0.45) return pick(empties);
+    }
+
+    // Try win immediately
+    for (var i = 0; i < empties.length; i++) {
+      var t = empties[i];
+      board[t] = botSym;
+      if (checkWinner() && checkWinner().winner === botSym) {
+        board[t] = null;
+        return t;
+      }
+      board[t] = null;
+    }
+    // Block human win
+    for (var j = 0; j < empties.length; j++) {
+      var t2 = empties[j];
+      board[t2] = humanSym;
+      if (checkWinner() && checkWinner().winner === humanSym) {
+        board[t2] = null;
+        return t2;
+      }
+      board[t2] = null;
+    }
+
+    // Depth based on skill
+    var depth = 9;
+    if (skill < 0.3) depth = 1;
+    else if (skill < 0.5) depth = 2;
+    else if (skill < 0.7) depth = 3;
+    else if (skill < 0.85) depth = 5;
+    else if (skill < 0.93) depth = 7;
+    // masters almost full
+
+    var bestScore = -Infinity;
+    var bestMoves = [];
+    var bCopy = board.slice();
+    for (var k = 0; k < empties.length; k++) {
+      var m = empties[k];
+      bCopy[m] = botSym;
+      var sc = minimax(bCopy, 0, false, -Infinity, Infinity, depth);
+      bCopy[m] = null;
+      if (sc > bestScore) {
+        bestScore = sc;
+        bestMoves = [m];
+      } else if (sc === bestScore) {
+        bestMoves.push(m);
+      }
+    }
+
+    // Slight noise for non-perfect: sometimes pick 2nd best
+    if (skill < 0.98 && bestMoves.length === 1 && empties.length > 1 && Math.random() > skill) {
+      var others = empties.filter(function (x) { return x !== bestMoves[0]; });
+      if (others.length) return pick(others);
+    }
+
+    return pick(bestMoves);
+  }
+
+  function renderBoard(winLine) {
+    cells.forEach(function (c, i) {
+      c.textContent = board[i] || "";
+      c.className = "cell" + (board[i] ? " filled " + board[i].toLowerCase() : "");
+      if (!gameActive) c.classList.add("disabled");
+      if (winLine && winLine.indexOf(i) !== -1) c.classList.add("win");
+    });
+  }
+
+  function updateHud() {
+    document.getElementById("hud-you").textContent = humanSym || "—";
+    document.getElementById("hud-score").textContent = score.you + ":" + score.bot;
+    var turnEl = document.getElementById("hud-turn");
+    if (!gameActive) {
+      turnEl.textContent = "Гра завершена";
+    } else if (current === humanSym) {
+      turnEl.textContent = "Твій хід (" + humanSym + ")";
+    } else {
+      turnEl.textContent = "Хід " + (opponent ? opponent.name : "бота") + "…";
+    }
+  }
+
+  function endGame(result) {
+    gameActive = false;
+    clearTimeout(afkTimer);
+    clearTimeout(botThinkTimer);
+    var title = "Кінець";
+    var msg = "";
+    if (result === "draw") {
+      title = "Нічия 🤝";
+      msg = "Ніхто не взяв гору. Повага.";
+      if (opponent) addChat(opponent.name, pick(["нічия…", "ок, нічия", "нічия 🤝", "ну майже"]), "bot");
+    } else if (result === humanSym) {
+      title = "Перемога! 🎉";
+      msg = "Ти обіграв " + (opponent ? opponent.name : "бота") + "!";
+      score.you++;
+      if (opponent) {
+        var loseLines = [
+          "от халепа…",
+          "молодець",
+          "гарна гра",
+          "наступного разу…",
+          "не очікував/ла",
+          "респект 👏"
+        ];
+        addChat(opponent.name, pick(loseLines), "bot");
+      }
+    } else {
+      title = "Поразка 😔";
+      msg = (opponent ? opponent.name : "Бот") + " переміг.";
+      score.bot++;
+      if (opponent) {
+        var winLines = [
+          "гарна спроба",
+          "ще раз?",
+          "я в формі сьогодні",
+          "не здавайся",
+          "було близько",
+          "реванш? 😏"
+        ];
+        addChat(opponent.name, pick(winLines), "bot");
+      }
+    }
+    document.getElementById("end-title").textContent = title;
+    document.getElementById("end-msg").textContent = msg;
+    endOverlay.style.display = "flex";
+    updateHud();
+    document.getElementById("hud-score").textContent = score.you + ":" + score.bot;
+  }
+
+  function afterMove() {
+    var res = checkWinner();
+    if (res) {
+      renderBoard(res.line || null);
+      setTimeout(function () { endGame(res.winner); }, 350);
+      return true;
+    }
+    return false;
+  }
+
+  function botMove() {
+    if (!gameActive || current !== botSym) return;
+    clearTimeout(botThinkTimer);
+    var think = rnd(450, 1400);
+    if (opponent && opponent.skill > 0.9) think = rnd(700, 1800); // masters "think"
+    botThinkTimer = setTimeout(function () {
+      if (!gameActive || current !== botSym) return;
+      var move = findBestMove(opponent.skill);
+      if (move == null) return;
+      board[move] = botSym;
+      lastMoveAt = Date.now();
+      renderBoard();
+      if (afterMove()) return;
+      current = humanSym;
+      updateHud();
+      scheduleAfkCheck();
+    }, think);
+  }
+
+  function humanMove(idx) {
+    if (!gameActive || current !== humanSym) return;
+    if (board[idx]) return;
+    board[idx] = humanSym;
+    lastMoveAt = Date.now();
+    clearTimeout(afkTimer);
+    renderBoard();
+    if (afterMove()) return;
+    current = botSym;
+    updateHud();
+    botMove();
+  }
+
+  cells.forEach(function (c) {
+    c.addEventListener("click", function () {
+      var i = +c.getAttribute("data-i");
+      humanMove(i);
+    });
+  });
+
+  /* ===== SELECTION 15s ===== */
+  function startSelection() {
+    selOverlay.style.display = "flex";
+    endOverlay.style.display = "none";
+    board = Array(9).fill(null);
+    gameActive = false;
+    opponent = null;
+    afkAsked = [];
+    chatLog.innerHTML = "";
+    renderBoard();
+    updateHud();
+    document.getElementById("opp-name").textContent = "?";
+    document.getElementById("opp-role").textContent = "відбір…";
+
+    var left = 15;
+    var nameEl = document.getElementById("sel-name");
+    var roleEl = document.getElementById("sel-role");
+    var timerEl = document.getElementById("sel-timer");
+    timerEl.textContent = left;
+
+    // rapid cycling names
+    var cycle = setInterval(function () {
+      var b = pick(BOTS);
+      nameEl.textContent = b.name;
+      roleEl.textContent = b.role;
+      nameEl.style.opacity = "0.55";
+      setTimeout(function () { nameEl.style.opacity = "1"; }, 80);
+    }, 180);
+
+    clearInterval(selTimer);
+    selTimer = setInterval(function () {
+      left--;
+      timerEl.textContent = left;
+      if (left <= 0) {
+        clearInterval(selTimer);
+        clearInterval(cycle);
+        // weighted: masters less frequent, newbies more? or pure random
+        // slight bias toward mid-tier for fun, but all possible
+        var weights = BOTS.map(function (b) {
+          if (b.skill > 0.9) return 0.7;
+          if (b.newbie || b.clueless) return 1.2;
+          return 1;
+        });
+        var sum = weights.reduce(function (a, c) { return a + c; }, 0);
+        var r = Math.random() * sum;
+        var chosen = BOTS[0];
+        for (var i = 0; i < BOTS.length; i++) {
+          r -= weights[i];
+          if (r <= 0) { chosen = BOTS[i]; break; }
+        }
+        opponent = chosen;
+        nameEl.textContent = chosen.name;
+        roleEl.textContent = chosen.role;
+        nameEl.style.opacity = "1";
+        document.getElementById("opp-name").textContent = chosen.name;
+        document.getElementById("opp-role").textContent = chosen.role;
+
+        setTimeout(function () {
+          selOverlay.style.display = "none";
+          beginMatch();
+        }, 900);
+      }
+    }, 1000);
+  }
+
+  function beginMatch() {
+    // random symbol
+    if (Math.random() < 0.5) {
+      humanSym = "X";
+      botSym = "O";
+    } else {
+      humanSym = "O";
+      botSym = "X";
+    }
+    board = Array(9).fill(null);
+    gameActive = true;
+    lastMoveAt = Date.now();
+    afkAsked = [];
+    current = "X"; // X always starts
+    renderBoard();
+    updateHud();
+
+    addChat(null, "Партія почалась. Ти граєш «" + humanSym + "», " + opponent.name + " — «" + botSym + "».");
+    // greeting
+    var greets = opponent.gender === "f" ? GREET_F : GREET_M;
+    setTimeout(function () {
+      if (!gameActive) return;
+      addChat(opponent.name, pick(greets), "bot");
+    }, rnd(400, 900));
+
+    if (current === botSym) {
+      botMove();
+    } else {
+      scheduleAfkCheck();
+    }
+  }
+
+  document.getElementById("btn-again").addEventListener("click", function () {
+    endOverlay.style.display = "none";
+    startSelection();
+  });
+
+  // boot
+  startSelection();
+})();
+</script>
+</body>
+</html>
