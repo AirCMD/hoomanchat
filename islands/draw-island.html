@@ -16,6 +16,15 @@
   padding: 10px;
   box-shadow: 0 2px 8px rgba(40, 100, 140, 0.12);
 }
+.draw-panel, .draw-panel * { box-sizing: border-box; }
+.draw-panel {
+  height: min(760px, calc(100vh - 20px));
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .draw-title {
   margin: 0 0 8px;
   padding: 7px 12px;
@@ -51,7 +60,9 @@
   display: flex;
   gap: 8px;
   margin-bottom: 8px;
-  min-height: 380px;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
 }
 .tools-col {
   width: 52px;
@@ -63,6 +74,7 @@
 .canvas-col {
   flex: 1 1 auto;
   min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -70,9 +82,12 @@
 .side-col {
   width: 148px;
   flex-shrink: 0;
+  min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow: hidden;
 }
 
 /* Tools */
@@ -198,9 +213,17 @@
   color: #1e4a5c;
 }
 .size-row input[type=range] {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 0;
+  max-width: 100%;
   accent-color: #5ab0d0;
 }
+.size-row {
+  min-width: 0;
+  overflow: hidden;
+}
+
 .size-val { min-width: 22px; text-align: right; font-weight: 600; }
 
 /* Layers */
@@ -318,7 +341,10 @@
   padding: 8px;
   display: flex;
   flex-direction: column;
-  max-height: 160px;
+  flex: 0 0 132px;
+  min-height: 132px;
+  max-height: 132px;
+  min-width: 0;
 }
 .chat-log {
   flex: 1;
@@ -381,6 +407,7 @@
 
 /* Mobile tweaks */
 @media (max-width: 640px) {
+  .draw-panel { height: auto; min-height: 0; overflow: visible; }
   .draw-main { flex-wrap: wrap; }
   .tools-col {
     width: 100%;
@@ -420,6 +447,7 @@
         <button type="button" class="tool-btn" data-tool="clear" title="Очистити все">🗑️</button>
         <button type="button" class="tool-btn" data-tool="eyedropper" title="Піпетка">💉</button>
         <button type="button" class="tool-btn active" data-tool="pencil" title="Олівець">✏️</button>
+        <button type="button" class="tool-btn" id="draw-lock" title="Заблокувати малювання" aria-pressed="false">🔓</button>
         <button type="button" class="tool-btn" data-tool="brush" title="Браш">🖌️</button>
         <button type="button" class="tool-btn" data-tool="line" title="Лінія">／</button>
         <button type="button" class="tool-btn" data-tool="fill" title="Заливка">⬛</button>
@@ -512,6 +540,7 @@
   var color = { r: 26, g: 74, b: 96, a: 1 };
   var size = 4;
   var mirror = false;
+  var drawingLocked = false;
   var zoom = 1;
   var panX = 0, panY = 0;
   var isDrawing = false;
@@ -551,6 +580,12 @@
         "малюю пацюка. він схожий на Сірі.",
         "тама-чі... вони теплі, навіть якщо пластикові."
       ],
+      keywords: [
+        { words: ["привіт", "здраст", "хай"], replies: ["привіт… я тут.", "привіт. тихий вечір сьогодні."] },
+        { words: ["дощ", "погода"], replies: ["дощу тут не видно. тільки туман.", "погода якась сіра…"] },
+        { words: ["кіт", "кот"], replies: ["кіт? Сірі б точно схвалив.", "намалюй кота. я подивлюся."] },
+        { words: ["пацюк", "щур"], replies: ["пацюки — мої старі знайомі.", "намалюй йому довгий хвіст."] }
+      ],
       drawStyle: "jane"
     },
     dreaming_romance: {
@@ -568,6 +603,12 @@
         "йо, колір цікавий",
         "мм… я просто поруч помалюю",
         "ня, не заважаю?"
+      ],
+      keywords: [
+        { words: ["привіт", "хай"], replies: ["ня, привіт ще раз!", "йо, я тут~"] },
+        { words: ["любов", "кохання", "романтика"], replies: ["ня… це вже моя тема.", "о, романтика! додай сердечко."] },
+        { words: ["кіт", "кот"], replies: ["ня, котик був би милий.", "кіт? так, однозначно."] },
+        { words: ["собака", "пес"], replies: ["собака теж ідеально пасує.", "ня, намалюй йому великі очі."] }
       ],
       drawStyle: "romance"
     },
@@ -588,6 +629,12 @@
         "о ні воно роз’їхалось",
         "ще одну лініюююю"
       ],
+      keywords: [
+        { words: ["привіт", "хай"], replies: ["ПРИВІІІТ!!!!", "хехе привіт!"] },
+        { words: ["кіт", "кот"], replies: ["ЦЕ КІТ!!!! чи знову собака????", "кіт!!!! я так і знав!!!!"] },
+        { words: ["собака", "пес"], replies: ["СОБАКА!!!! АБО КІТ!!!!", "гав-гав хехе"] },
+        { words: ["красиво", "гарно"], replies: ["Я Ж КАЗАВ що я художник!!!!", "хехе дякую!!!!"] }
+      ],
       drawStyle: "child"
     },
     ai_ta: {
@@ -605,6 +652,12 @@
         "Додам кілька деталей, якщо не заперечуєте.",
         "Аналізую штрихи…",
         "Готовий запропонувати варіант доповнення."
+      ],
+      keywords: [
+        { words: ["привіт", "хай"], replies: ["Вітаю. Зв'язок стабільний.", "Привіт. Я готовий до діалогу."] },
+        { words: ["допомож", "порад", "як"], replies: ["Опишіть задачу трохи детальніше — спробую допомогти.", "Можу підказати. Що саме потрібно зробити?"] },
+        { words: ["колір", "кольор"], replies: ["Для контрасту краще взяти колір, який помітно відрізняється від фону.", "Можу орієнтуватися на контраст і композицію."] },
+        { words: ["симетр", "дзеркал"], replies: ["Для симетрії скористайтеся режимом «Дзеркало».", "Симетрію зручно будувати через дзеркальне відображення."] }
       ],
       drawStyle: "smart"
     }
@@ -632,6 +685,7 @@
   var hudTool = document.getElementById("hud-tool");
   var hudBot = document.getElementById("hud-bot");
   var hudLayer = document.getElementById("hud-layer");
+  var drawLock = document.getElementById("draw-lock");
 
   var toolNames = {
     pencil: "Олівець", brush: "Браш", line: "Лінія", fill: "Заливка",
@@ -861,12 +915,24 @@
     startX = startX | 0;
     startY = startY | 0;
     if (startX < 0 || startY < 0 || startX >= W || startY >= H) return;
+
     var img = cx.getImageData(0, 0, W, H);
     var data = img.data;
-    var idx = (startY * W + startX) * 4;
-    var tr = data[idx], tg = data[idx + 1], tb = data[idx + 2], ta = data[idx + 3];
+    var startIdx = (startY * W + startX) * 4;
+    var tr = data[startIdx], tg = data[startIdx + 1], tb = data[startIdx + 2], ta = data[startIdx + 3];
     var fr = fillColor.r, fg = fillColor.g, fb = fillColor.b, fa = 255;
+
     if (tr === fr && tg === fg && tb === fb && ta === fa) return;
+
+    // A small tolerance closes anti-aliased edges so the fill does not leave
+    // white pinholes/halos around previously drawn strokes.
+    var tolerance = 18;
+    function matches(i) {
+      return Math.abs(data[i] - tr) <= tolerance &&
+             Math.abs(data[i + 1] - tg) <= tolerance &&
+             Math.abs(data[i + 2] - tb) <= tolerance &&
+             Math.abs(data[i + 3] - ta) <= tolerance;
+    }
 
     var stack = [[startX, startY]];
     var visited = new Uint8Array(W * H);
@@ -875,14 +941,43 @@
       var p = stack.pop();
       var x = p[0], y = p[1];
       if (x < 0 || y < 0 || x >= W || y >= H) continue;
+
       var i = y * W + x;
       if (visited[i]) continue;
       var di = i * 4;
-      if (data[di] !== tr || data[di + 1] !== tg || data[di + 2] !== tb || data[di + 3] !== ta) continue;
-      visited[i] = 1;
-      data[di] = fr; data[di + 1] = fg; data[di + 2] = fb; data[di + 3] = fa;
-      stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+      if (!matches(di)) continue;
+
+      // Fill a horizontal run at once. This avoids isolated pixels that can
+      // look like white circles when the source boundary is anti-aliased.
+      var left = x;
+      while (left > 0) {
+        var li = (y * W + (left - 1)) * 4;
+        if (visited[y * W + left - 1] || !matches(li)) break;
+        left--;
+      }
+
+      var right = x;
+      while (right < W - 1) {
+        var ri = (y * W + (right + 1)) * 4;
+        if (visited[y * W + right + 1] || !matches(ri)) break;
+        right++;
+      }
+
+      for (var xx = left; xx <= right; xx++) {
+        var pi = y * W + xx;
+        var pdi = pi * 4;
+        if (visited[pi]) continue;
+        visited[pi] = 1;
+        data[pdi] = fr;
+        data[pdi + 1] = fg;
+        data[pdi + 2] = fb;
+        data[pdi + 3] = fa;
+
+        if (y > 0) stack.push([xx, y - 1]);
+        if (y < H - 1) stack.push([xx, y + 1]);
+      }
     }
+
     cx.putImageData(img, 0, 0);
   }
 
@@ -912,6 +1007,12 @@
   /* ===== POINTER EVENTS ===== */
   function onDown(e) {
     e.preventDefault();
+
+    if (drawingLocked && tool !== "pan" && tool !== "eyedropper") {
+      toast("Малювання заблоковано 🔒");
+      return;
+    }
+
     var pos = getPos(e);
 
     if (tool === "pan") {
@@ -1035,6 +1136,11 @@
     btn.addEventListener("click", function () {
       var t = btn.getAttribute("data-tool");
 
+      if (drawingLocked && ["upload", "clear", "merge"].indexOf(t) !== -1) {
+        toast("Малювання заблоковано 🔒");
+        return;
+      }
+
       if (t === "undo") { undo(); return; }
       if (t === "clear") {
         if (!confirm("Очистити всі шари?")) return;
@@ -1070,7 +1176,7 @@
         return;
       }
       if (t === "zoom-out") {
-        zoom = Math.max(0.25, zoom / 1.25);
+        zoom = Math.max(1, zoom / 1.25);
         composite();
         toast("Зум: " + (zoom * 100 | 0) + "%");
         return;
@@ -1249,7 +1355,7 @@
   }
 
   function botDrawSomething() {
-    if (!currentBot) return;
+    if (!currentBot || drawingLocked) return;
     botBusy = true;
     pushUndo();
     var cx = getActiveCtx();
@@ -1376,6 +1482,30 @@
 
   btnInvite.addEventListener("click", inviteBot);
 
+  drawLock.addEventListener("click", function () {
+    drawingLocked = !drawingLocked;
+    drawLock.textContent = drawingLocked ? "🔒" : "🔓";
+    drawLock.title = drawingLocked ? "Розблокувати малювання" : "Заблокувати малювання";
+    drawLock.setAttribute("aria-pressed", drawingLocked ? "true" : "false");
+    drawLock.classList.toggle("active", drawingLocked);
+    toast(drawingLocked ? "Малювання заблоковано 🔒" : "Малювання розблоковано 🔓");
+  });
+
+  function getKeywordReply(bot, text) {
+    var msg = String(text || "").toLowerCase();
+    if (!bot || !bot.keywords) return "";
+
+    for (var i = 0; i < bot.keywords.length; i++) {
+      var rule = bot.keywords[i];
+      for (var j = 0; j < rule.words.length; j++) {
+        if (msg.indexOf(rule.words[j]) !== -1) {
+          return pickUnique(bot.name + "_kw_" + i, rule.replies);
+        }
+      }
+    }
+    return "";
+  }
+
   function onChatSend() {
     var text = chatInput.value.trim();
     if (!text || !currentBot) return;
@@ -1384,29 +1514,24 @@
     // simple reaction — also avoid repeating recent phrases
     setTimeout(function () {
       if (!currentBot) return;
-      var reply;
-      if (currentBot.name === "ai_ta") {
-        var aiExtra = [
-          "Зрозумів. Можу спробувати допомогти з цим.",
-          "Цікаво. Продовжуйте, я спостерігаю.",
-          "Можливо, варто додати контрастний колір."
-        ];
-        // mix extra replies with unique phrases
-        if (Math.random() < 0.45) {
+      var reply = getKeywordReply(currentBot, text);
+
+      if (!reply) {
+        if (currentBot.name === "ai_ta") {
+          var aiExtra = [
+            "Зрозумів. Можу спробувати допомогти з цим.",
+            "Цікаво. Продовжуйте, я спостерігаю.",
+            "Можливо, варто додати контрастний колір."
+          ];
           reply = pickUnique(currentBot.name, currentBot.phrases.concat(aiExtra));
+        } else if (currentBot.name === "ihor_romashka") {
+          var silly = ["хехе " + text.slice(0, 12), "ахах точно!!!!"];
+          reply = Math.random() < 0.4 ? pick(silly) : pickUnique(currentBot.name, currentBot.phrases);
         } else {
           reply = pickUnique(currentBot.name, currentBot.phrases);
         }
-      } else if (currentBot.name === "ihor_romashka") {
-        var silly = ["хехе " + text.slice(0, 12), "ахах точно!!!!"];
-        if (Math.random() < 0.4) {
-          reply = pick(silly);
-        } else {
-          reply = pickUnique(currentBot.name, currentBot.phrases);
-        }
-      } else {
-        reply = pickUnique(currentBot.name, currentBot.phrases);
       }
+
       addChat(currentBot.name, reply, "bot");
     }, 500 + Math.random() * 1200);
   }
