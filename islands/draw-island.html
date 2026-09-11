@@ -65,11 +65,13 @@
   overflow: hidden;
 }
 .tools-col {
-  width: 52px;
+  width: min-content; /* авто-ширина під 2 колонки */
   flex-shrink: 0;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-wrap: wrap; /* дозволяє кнопкам переноситися на другий ряд/колонку */
+  flex-direction: column; /* розташування зверху вниз */
+  max-height: 356px; /* обмежує висоту, щоб після 9-ї кнопки 10-та йшла у праву колонку */
+  gap: 4px; /* відстань 4px між кнопками як по вертикалі, так і між колонками */
 }
 .canvas-col {
   flex: 1 1 auto;
@@ -92,7 +94,7 @@
 
 /* Tools */
 .tool-btn {
-  width: 44px;
+  width: 36px;  /* зменшено ширину з 44px для компактності 2-х колонок */
   height: 36px;
   border: 1px solid rgba(100,170,200,0.55);
   border-radius: 8px;
