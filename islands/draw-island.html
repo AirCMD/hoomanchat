@@ -168,12 +168,26 @@
   padding: 8px;
 }
 .color-preview {
+  position: relative;
   width: 100%;
   height: 28px;
   border-radius: 6px;
   border: 1px solid rgba(100,160,190,0.5);
   margin-bottom: 6px;
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.08);
+  cursor: pointer;
+}
+.color-preview .shade-thumb {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 4px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.55);
+  box-shadow: 0 0 3px rgba(0,0,0,0.4);
+  pointer-events: none;
 }
 .hue-strip {
   width: 100%;
@@ -238,6 +252,7 @@
   min-width: 0;
   overflow: hidden;
 }
+.size-row + .size-row { margin-top: 4px; }
 
 .size-val { min-width: 22px; text-align: right; font-weight: 600; }
 
@@ -356,6 +371,43 @@
   cursor: default;
 }
 
+/* Bot-lock panel (moved to the very bottom) */
+.botlock-panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(210,235,250,0.7));
+  border: 1px solid rgba(140,200,230,0.55);
+  border-radius: 10px;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: #1e4a5c;
+  margin-top: 8px;
+}
+.botlock-panel .lock-label { flex: 1; }
+.botlock-panel .lock-btn {
+  width: 36px;
+  height: 30px;
+  border: 1px solid rgba(100,170,200,0.55);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #fff 0%, #e8f6ff 100%);
+  color: #1a4a60;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+}
+.botlock-panel .lock-btn.active {
+  background: linear-gradient(180deg, #b8e8f8 0%, #7ec8e8 100%);
+  border-color: #5aa0c0;
+  box-shadow: inset 0 1px 3px rgba(40,100,140,0.25);
+  color: #0a3a50;
+}
+
 /* Chat */
 .chat-box {
   background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(220,240,250,0.75));
@@ -470,7 +522,6 @@
         <button type="button" class="tool-btn" data-tool="clear" title="Очистити все">🗑️</button>
         <button type="button" class="tool-btn" data-tool="eyedropper" title="Піпетка">💉</button>
         <button type="button" class="tool-btn active" data-tool="pencil" title="Олівець">✏️</button>
-        <button type="button" class="tool-btn" id="draw-lock" title="Заблокувати малювання" aria-pressed="false">🔓</button>
         <button type="button" class="tool-btn" data-tool="brush" title="Браш">🖌️</button>
         <button type="button" class="tool-btn" data-tool="line" title="Лінія">／</button>
         <button type="button" class="tool-btn" data-tool="fill" title="Заливка">⬛</button>
@@ -492,7 +543,7 @@
       <!-- RIGHT SIDE -->
       <div class="side-col">
         <div class="color-panel">
-          <div class="color-preview" id="color-preview" style="background:#1a4a60;"></div>
+          <div class="color-preview" id="color-preview"><div class="shade-thumb" id="shade-thumb"></div></div>
           <div class="hue-strip" id="hue-strip"></div>
           <div class="rgb-row">
             <label>R</label><input type="number" id="rgb-r" min="0" max="255" value="26">
@@ -504,6 +555,11 @@
             <span>Розмір</span>
             <input type="range" id="size-range" min="1" max="60" value="4">
             <span class="size-val" id="size-val">4</span>
+          </div>
+          <div class="size-row">
+            <span>Прозорість</span>
+            <input type="range" id="opacity-range" min="1" max="100" value="100">
+            <span class="size-val" id="opacity-val">100</span>
           </div>
         </div>
 
@@ -538,6 +594,12 @@
         <button type="button" id="chat-send" disabled>➤</button>
       </div>
     </div>
+
+    <!-- BOT LOCK (moved to the very bottom) -->
+    <div class="botlock-panel">
+      <span class="lock-label" id="botlock-label">Замок для ботів: малювання дозволено</span>
+      <button type="button" class="lock-btn" id="draw-lock" title="Заблокувати малювання ботам" aria-pressed="false">🔓</button>
+    </div>
   </div>
 </div>
 
@@ -562,8 +624,9 @@
   var tool = "pencil";
   var color = { r: 26, g: 74, b: 96, a: 1 };
   var size = 4;
+  var opacity = 1;
   var mirror = false;
-  var drawingLocked = false;
+  var drawingLocked = false; // blocks BOTS only, never the human user
   var zoom = 1;
   var panX = 0, panY = 0;
   var isDrawing = false;
@@ -578,6 +641,9 @@
   var botBusy = false;
   var usedPhrases = {};   // botName -> array of recently used phrase texts
   var usedGreets = {};    // botName -> array of used greets
+
+  // Hue used to build the shade gradient in the color preview bar.
+  var currentHue = 200;
 
   var PALETTE = [
     "#1a4a60","#000000","#ffffff","#e74c3c","#e67e22",
@@ -692,12 +758,15 @@
   var canvas = document.getElementById("main-canvas");
   var ctx = canvas.getContext("2d");
   var colorPreview = document.getElementById("color-preview");
+  var shadeThumb = document.getElementById("shade-thumb");
   var hueStrip = document.getElementById("hue-strip");
   var rgbR = document.getElementById("rgb-r");
   var rgbG = document.getElementById("rgb-g");
   var rgbB = document.getElementById("rgb-b");
   var sizeRange = document.getElementById("size-range");
   var sizeVal = document.getElementById("size-val");
+  var opacityRange = document.getElementById("opacity-range");
+  var opacityVal = document.getElementById("opacity-val");
   var layerList = document.getElementById("layer-list");
   var chatLog = document.getElementById("chat-log");
   var chatInput = document.getElementById("chat-input");
@@ -710,6 +779,7 @@
   var hudBot = document.getElementById("hud-bot");
   var hudLayer = document.getElementById("hud-layer");
   var drawLock = document.getElementById("draw-lock");
+  var botlockLabel = document.getElementById("botlock-label");
 
   var toolNames = {
     pencil: "Олівець", brush: "Браш", line: "Лінія", fill: "Заливка",
@@ -840,18 +910,25 @@
   }
 
   /* ===== COLOR ===== */
-  function setColor(r, g, b) {
-    color.r = Math.max(0, Math.min(255, r | 0));
-    color.g = Math.max(0, Math.min(255, g | 0));
-    color.b = Math.max(0, Math.min(255, b | 0));
-    colorPreview.style.background = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
+  function clamp255(v) { return Math.max(0, Math.min(255, v | 0)); }
+
+  function setColor(r, g, b, skipShadeSync) {
+    color.r = clamp255(r);
+    color.g = clamp255(g);
+    color.b = clamp255(b);
     rgbR.value = color.r;
     rgbG.value = color.g;
     rgbB.value = color.b;
+    if (!skipShadeSync) {
+      var hsv = rgbToHsv(color.r, color.g, color.b);
+      currentHue = hsv[0];
+    }
+    renderShadeBar();
   }
 
   function colorStr(a) {
-    return "rgba(" + color.r + "," + color.g + "," + color.b + "," + (a != null ? a : color.a) + ")";
+    var alpha = a != null ? a : (color.a != null ? color.a : 1) * opacity;
+    return "rgba(" + color.r + "," + color.g + "," + color.b + "," + alpha + ")";
   }
 
   function initPalette() {
@@ -871,9 +948,10 @@
   hueStrip.addEventListener("click", function (e) {
     var rect = hueStrip.getBoundingClientRect();
     var t = (e.clientX - rect.left) / rect.width;
-    var h = t * 360;
-    var rgb = hsvToRgb(h, 0.85, 0.9);
-    setColor(rgb[0], rgb[1], rgb[2]);
+    t = Math.max(0, Math.min(1, t));
+    currentHue = t * 360;
+    var rgb = hsvToRgb(currentHue, 0.85, 0.9);
+    setColor(rgb[0], rgb[1], rgb[2], true);
   });
 
   function hsvToRgb(h, s, v) {
@@ -891,6 +969,82 @@
     return [(r + m) * 255 | 0, (g + m) * 255 | 0, (b + m) * 255 | 0];
   }
 
+  function rgbToHsv(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, d = max - min;
+    if (d === 0) h = 0;
+    else if (max === r) h = 60 * (((g - b) / d) % 6);
+    else if (max === g) h = 60 * ((b - r) / d + 2);
+    else h = 60 * ((r - g) / d + 4);
+    if (h < 0) h += 360;
+    var s = max === 0 ? 0 : d / max;
+    var v = max;
+    return [h, s, v];
+  }
+
+  /* ===== SHADE BAR (color preview) =====
+     Shows a gradient from white -> the selected hue -> black so the person
+     can pick a lighter/darker shade of the currently chosen color. */
+  function renderShadeBar() {
+    var pure = hsvToRgb(currentHue, 1, 1);
+    var pureStr = "rgb(" + pure[0] + "," + pure[1] + "," + pure[2] + ")";
+    colorPreview.style.background = "linear-gradient(to right, #ffffff 0%, " + pureStr + " 50%, #000000 100%)";
+
+    // Position the thumb to match the current r,g,b against the gradient.
+    var t = shadePositionFor(color.r, color.g, color.b, pure);
+    shadeThumb.style.left = (t * 100) + "%";
+  }
+
+  function shadePositionFor(r, g, b, pure) {
+    // Estimate the white<->pure<->black position that best matches r,g,b.
+    var bestT = 0.5, bestDist = Infinity;
+    for (var i = 0; i <= 100; i++) {
+      var t = i / 100;
+      var c = shadeAt(t, pure);
+      var dist = (c[0] - r) * (c[0] - r) + (c[1] - g) * (c[1] - g) + (c[2] - b) * (c[2] - b);
+      if (dist < bestDist) { bestDist = dist; bestT = t; }
+    }
+    return bestT;
+  }
+
+  function shadeAt(t, pure) {
+    if (t <= 0.5) {
+      var tt = t / 0.5;
+      return [
+        255 + (pure[0] - 255) * tt,
+        255 + (pure[1] - 255) * tt,
+        255 + (pure[2] - 255) * tt
+      ];
+    } else {
+      var tt2 = (t - 0.5) / 0.5;
+      return [
+        pure[0] * (1 - tt2),
+        pure[1] * (1 - tt2),
+        pure[2] * (1 - tt2)
+      ];
+    }
+  }
+
+  function shadeBarPick(e) {
+    var rect = colorPreview.getBoundingClientRect();
+    var clientX = e.clientX != null ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : rect.left);
+    var t = (clientX - rect.left) / rect.width;
+    t = Math.max(0, Math.min(1, t));
+    var pure = hsvToRgb(currentHue, 1, 1);
+    var c = shadeAt(t, pure);
+    setColor(c[0], c[1], c[2], true);
+    shadeThumb.style.left = (t * 100) + "%";
+  }
+
+  var shadeDragging = false;
+  colorPreview.addEventListener("mousedown", function (e) { shadeDragging = true; shadeBarPick(e); });
+  window.addEventListener("mousemove", function (e) { if (shadeDragging) shadeBarPick(e); });
+  window.addEventListener("mouseup", function () { shadeDragging = false; });
+  colorPreview.addEventListener("touchstart", function (e) { shadeDragging = true; shadeBarPick(e); }, { passive: true });
+  colorPreview.addEventListener("touchmove", function (e) { if (shadeDragging) shadeBarPick(e); }, { passive: true });
+  window.addEventListener("touchend", function () { shadeDragging = false; });
+
   rgbR.addEventListener("change", function () { setColor(+rgbR.value, color.g, color.b); });
   rgbG.addEventListener("change", function () { setColor(color.r, +rgbG.value, color.b); });
   rgbB.addEventListener("change", function () { setColor(color.r, color.g, +rgbB.value); });
@@ -898,6 +1052,11 @@
   sizeRange.addEventListener("input", function () {
     size = +sizeRange.value;
     sizeVal.textContent = size;
+  });
+
+  opacityRange.addEventListener("input", function () {
+    opacity = (+opacityRange.value) / 100;
+    opacityVal.textContent = opacityRange.value;
   });
 
   /* ===== COORDINATES ===== */
@@ -976,7 +1135,7 @@
     var data = img.data;
     var startIdx = (startY * W + startX) * 4;
     var tr = data[startIdx], tg = data[startIdx + 1], tb = data[startIdx + 2], ta = data[startIdx + 3];
-    var fr = fillColor.r, fg = fillColor.g, fb = fillColor.b, fa = 255;
+    var fr = fillColor.r, fg = fillColor.g, fb = fillColor.b, fa = Math.round(255 * opacity);
 
     if (tr === fr && tg === fg && tb === fb && ta === fa) return;
 
@@ -1064,11 +1223,8 @@
   function onDown(e) {
     e.preventDefault();
 
-    if (drawingLocked && tool !== "pan" && tool !== "eyedropper") {
-      toast("Малювання заблоковано 🔒");
-      return;
-    }
-
+    // The bot-lock only ever restricts bots (see botDrawSomething). The
+    // human user can always draw, regardless of the lock state.
     var pos = getPos(e);
 
     if (tool === "pan") {
@@ -1196,11 +1352,6 @@
   document.querySelectorAll(".tool-btn").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var t = btn.getAttribute("data-tool");
-
-      if (drawingLocked && ["upload", "clear", "merge"].indexOf(t) !== -1) {
-        toast("Малювання заблоковано 🔒");
-        return;
-      }
 
       if (t === "undo") { undo(); return; }
       if (t === "clear") {
@@ -1446,6 +1597,8 @@
   }
 
   function botDrawSomething() {
+    // The bot-lock blocks ONLY the bots from drawing — it never affects
+    // the human user, who can keep drawing at any time.
     if (!currentBot || drawingLocked) return;
     botBusy = true;
     pushUndo();
@@ -1576,10 +1729,11 @@
   drawLock.addEventListener("click", function () {
     drawingLocked = !drawingLocked;
     drawLock.textContent = drawingLocked ? "🔒" : "🔓";
-    drawLock.title = drawingLocked ? "Розблокувати малювання" : "Заблокувати малювання";
+    drawLock.title = drawingLocked ? "Розблокувати малювання ботам" : "Заблокувати малювання ботам";
     drawLock.setAttribute("aria-pressed", drawingLocked ? "true" : "false");
     drawLock.classList.toggle("active", drawingLocked);
-    toast(drawingLocked ? "Малювання заблоковано 🔒" : "Малювання розблоковано 🔓");
+    botlockLabel.textContent = drawingLocked ? "Замок для ботів: малювання заблоковано" : "Замок для ботів: малювання дозволено";
+    toast(drawingLocked ? "Боти заблоковані 🔒 (ти можеш малювати далі)" : "Боти розблоковані 🔓");
   });
 
   function getKeywordReply(bot, text) {
