@@ -18,11 +18,12 @@
 }
 .draw-panel, .draw-panel * { box-sizing: border-box; }
 .draw-panel {
-  height: min(760px, calc(100vh - 20px));
-  min-height: 520px;
+  height: auto;
+  min-height: 0;
+  max-height: none;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .draw-title {
@@ -61,17 +62,20 @@
   gap: 8px;
   margin-bottom: 8px;
   min-height: 0;
-  flex: 1 1 auto;
-  overflow: hidden;
+  flex: 0 0 auto;
+  overflow: visible;
+  align-items: flex-start;
 }
 .tools-col {
   display: grid;
-  grid-template-columns: repeat(2, 36px);
-  grid-template-rows: repeat(9, 36px);
+  grid-template-columns: repeat(2, 32px);
+  grid-template-rows: repeat(18, 30px);
   grid-auto-flow: column;
-  gap: 4px;
+  gap: 3px;
   flex-shrink: 0;
   align-content: start;
+  max-height: min(560px, 70vh);
+  overflow-y: auto;
 }
 .canvas-col {
   flex: 1 1 auto;
@@ -80,6 +84,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  align-items: center;
 }
 .side-col {
   width: 148px;
@@ -88,14 +93,16 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  overflow: hidden;
+  gap: 6px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* Tools */
 .tool-btn {
-  width: 36px;  /* зменшено ширину з 44px для компактності 2-х колонок */
-  height: 36px;
+  width: 30px;
+  height: 30px;
+  font-size: 13px;
   border: 1px solid rgba(100,170,200,0.55);
   border-radius: 8px;
   background: linear-gradient(180deg, #fff 0%, #e8f6ff 100%);
@@ -128,36 +135,28 @@
 /* Canvas stage */
 .canvas-stage {
   position: relative;
-  flex: 1;
-  background: #e8f0f4;
-  border: 2px solid rgba(120,180,210,0.7);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: inset 0 1px 0 #fff, 0 3px 10px rgba(40,120,160,0.12);
-  min-height: 280px;
-  touch-action: none;
-}
-#main-canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-width: 800px;
-  max-height: 500px;
-  aspect-ratio: 800 / 500;
-  cursor: crosshair;
-  background: #fff;
-}
-
-.canvas-stage {
   flex: 0 0 auto;
   width: min(800px, 100%);
   aspect-ratio: 800 / 500;
   height: auto;
   min-height: 0;
-  margin: auto;
+  margin: 0 auto;
+  background: #e8f0f4;
+  border: 2px solid rgba(120,180,210,0.7);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 #fff, 0 3px 10px rgba(40,120,160,0.12);
+  touch-action: none;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+#main-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  background: #fff;
 }
 .canvas-stage.panning #main-canvas { cursor: grab; }
 .canvas-stage.panning.dragging #main-canvas { cursor: grabbing; }
@@ -167,7 +166,8 @@
   background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(210,235,250,0.7));
   border: 1px solid rgba(140,200,230,0.55);
   border-radius: 10px;
-  padding: 8px;
+  padding: 6px;
+  flex: 0 0 auto;
 }
 .color-preview {
   position: relative;
@@ -226,7 +226,7 @@
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 3px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .palette-swatch {
   aspect-ratio: 1;
@@ -234,8 +234,31 @@
   border: 1px solid rgba(80,140,170,0.45);
   cursor: pointer;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+  position: relative;
+  background: repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%) 0 0 / 8px 8px;
 }
 .palette-swatch:hover { transform: scale(1.08); }
+.palette-swatch.filled { background-image: none; }
+.palette-swatch.active-slot {
+  outline: 2px solid #5aa0c0;
+  outline-offset: 1px;
+}
+.palette-hint {
+  font-size: 9px;
+  color: #5a7a8a;
+  margin-bottom: 4px;
+  line-height: 1.2;
+  text-align: center;
+}
+.gray-strip {
+  width: 100%;
+  height: 12px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #ffffff, #808080, #000000);
+  margin-bottom: 6px;
+  cursor: pointer;
+  border: 1px solid rgba(100,160,190,0.4);
+}
 .size-row {
   display: flex;
   align-items: center;
@@ -263,24 +286,26 @@
   background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(210,235,250,0.7));
   border: 1px solid rgba(140,200,230,0.55);
   border-radius: 10px;
-  padding: 8px;
-  flex: 1;
+  padding: 6px;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: 110px;
 }
 .layers-title {
   font-size: 11px;
   font-weight: 700;
   color: #1a5a78;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 .layer-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  flex: 1;
+  gap: 3px;
+  flex: 1 1 auto;
   overflow-y: auto;
+  min-height: 48px;
+  max-height: 120px;
 }
 .layer-item {
   display: flex;
@@ -342,7 +367,33 @@
   background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(210,235,250,0.7));
   border: 1px solid rgba(140,200,230,0.55);
   border-radius: 10px;
-  padding: 8px;
+  padding: 6px;
+  flex: 0 0 auto;
+}
+.filters-panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(210,235,250,0.7));
+  border: 1px solid rgba(140,200,230,0.55);
+  border-radius: 10px;
+  padding: 6px;
+  flex: 0 0 auto;
+}
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+}
+.filter-btn {
+  font-size: 10px;
+  padding: 4px 2px;
+  border: 1px solid rgba(100,170,200,0.55);
+  border-radius: 6px;
+  background: linear-gradient(180deg, #fff, #e8f6ff);
+  color: #1a4a60;
+  cursor: pointer;
+  font-weight: 600;
+}
+.filter-btn:hover {
+  background: linear-gradient(180deg, #f0faff, #d0eefc);
 }
 .bot-panel select {
   width: 100%;
@@ -483,18 +534,60 @@
 }
 
 /* Mobile tweaks */
-@media (max-width: 640px) {
-  .draw-panel { height: auto; min-height: 0; overflow: visible; }
-  .draw-main { flex-wrap: wrap; }
+@media (max-width: 720px) {
+  .draw-panel {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    padding: 8px;
+  }
+  .draw-main {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
   .tools-col {
     width: 100%;
+    display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+    grid-template-columns: none;
+    grid-template-rows: none;
+    gap: 4px;
   }
-  .side-col { width: 100%; flex-direction: row; flex-wrap: wrap; }
-  .side-col > * { flex: 1 1 140px; }
-  .canvas-stage { min-height: 240px; }
+  .tools-col .tool-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+  }
+  .canvas-col { order: -1; width: 100%; }
+  .canvas-stage {
+    width: 100%;
+    max-width: 100%;
+    min-height: 200px;
+    aspect-ratio: 800 / 500;
+  }
+  #main-canvas {
+    max-width: 100%;
+    max-height: none;
+  }
+  .side-col {
+    width: 100%;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .side-col > * { flex: none; width: 100%; }
+  .chat-box {
+    flex: 0 0 auto;
+    min-height: 110px;
+    max-height: 140px;
+  }
+  .hud {
+    font-size: 10px;
+    gap: 4px;
+    padding: 5px 8px;
+  }
 }
 </style>
 </head>
@@ -516,23 +609,40 @@
     <div class="draw-main">
       <!-- LEFT TOOLS -->
       <div class="tools-col" id="tools-col">
-        <button type="button" class="tool-btn" data-tool="upload" title="Завантажити малюнок">📂</button>
-        <button type="button" class="tool-btn" data-tool="undo" title="Відмінити">↩️</button>
-        <button type="button" class="tool-btn" data-tool="zoom-in" title="Приблизити">➕</button>
-        <button type="button" class="tool-btn" data-tool="zoom-out" title="Віддалити">➖</button>
-        <button type="button" class="tool-btn" data-tool="pan" title="Переміщення">✋</button>
-        <button type="button" class="tool-btn" data-tool="clear" title="Очистити все">🗑️</button>
-        <button type="button" class="tool-btn" data-tool="eyedropper" title="Піпетка">💉</button>
-        <button type="button" class="tool-btn active" data-tool="pencil" title="Олівець">✏️</button>
-        <button type="button" class="tool-btn" data-tool="brush" title="Браш">🖌️</button>
-        <button type="button" class="tool-btn" data-tool="line" title="Лінія">／</button>
-        <button type="button" class="tool-btn" data-tool="fill" title="Заливка">⬛</button>
+        <button type="button" class="tool-btn" data-tool="upload" title="Завантажити (U)">📂</button>
+        <button type="button" class="tool-btn" data-tool="undo" title="Відмінити (Ctrl+Z)">↩️</button>
+        <button type="button" class="tool-btn" data-tool="redo" title="Повторити (Ctrl+Y)">↪️</button>
+        <button type="button" class="tool-btn" data-tool="zoom-in" title="Зум + (+)">➕</button>
+        <button type="button" class="tool-btn" data-tool="zoom-out" title="Зум − (-)">➖</button>
+        <button type="button" class="tool-btn" data-tool="pan" title="Переміщення (Space)">✋</button>
+        <button type="button" class="tool-btn" data-tool="clear" title="Очистити (Delete)">🗑️</button>
+        <button type="button" class="tool-btn" data-tool="save" title="Зберегти PNG (Ctrl+S)">💾</button>
+        <button type="button" class="tool-btn" data-tool="eyedropper" title="Піпетка (I)">💉</button>
+        <button type="button" class="tool-btn active" data-tool="pencil" title="Олівець (B)">✏️</button>
+        <button type="button" class="tool-btn" data-tool="brush" title="Браш (P)">🖌️</button>
+        <button type="button" class="tool-btn" data-tool="watercolor" title="Акварель (W)">💧</button>
+        <button type="button" class="tool-btn" data-tool="spray" title="Аерограф (A)">💨</button>
+        <button type="button" class="tool-btn" data-tool="calligraphy" title="Каліграфія (C)">🖋️</button>
+        <button type="button" class="tool-btn" data-tool="noise" title="Шум / зерно (N)">░</button>
+        <button type="button" class="tool-btn" data-tool="line" title="Лінія (L)">／</button>
+        <button type="button" class="tool-btn" data-tool="rect" title="Прямокутник (R)">▭</button>
+        <button type="button" class="tool-btn" data-tool="ellipse" title="Еліпс (O)">⬭</button>
+        <button type="button" class="tool-btn" data-tool="gradient" title="Градієнт (H)">▬</button>
+        <button type="button" class="tool-btn" data-tool="fill" title="Заливка (G)">⬛</button>
         <button type="button" class="tool-btn" data-tool="circles" title="Кружечки">⭕</button>
+        <button type="button" class="tool-btn" data-tool="text" title="Текст (T)">T</button>
+        <button type="button" class="tool-btn" data-tool="select" title="Виділення (M)">⬚</button>
+        <button type="button" class="tool-btn" data-tool="clone" title="Штамп-клон (S, Alt=джерело)"> ⎘</button>
         <button type="button" class="tool-btn" data-tool="blur" title="Блюр">💦</button>
-        <button type="button" class="tool-btn" data-tool="eraser" title="Зтирачка">🧼</button>
-        <button type="button" class="tool-btn" data-tool="mirror" title="Дзеркало">🔘</button>
+        <button type="button" class="tool-btn" data-tool="dodge" title="Освітлення">☀</button>
+        <button type="button" class="tool-btn" data-tool="burn" title="Затемнення">☾</button>
+        <button type="button" class="tool-btn" data-tool="eraser" title="Гумка (E)">🧼</button>
+        <button type="button" class="tool-btn" data-tool="shape-fill" title="Заливка фігур (F)">▦</button>
+        <button type="button" class="tool-btn" data-tool="mirror" title="Дзеркало ↔ (X)">↔</button>
+        <button type="button" class="tool-btn" data-tool="mirror-v" title="Дзеркало ↕ (V)">↕</button>
+        <button type="button" class="tool-btn" data-tool="grid" title="Сітка (;">#</button>
+        <button type="button" class="tool-btn" data-tool="rotate" title="Поворот шару 90°">↻</button>
         <button type="button" class="tool-btn" data-tool="merge" title="Об'єднати шари">⧉</button>
-        <button type="button" class="tool-btn" data-tool="save" title="Зберегти PNG">💾</button>
       </div>
 
       <!-- CENTER CANVAS -->
@@ -547,12 +657,14 @@
         <div class="color-panel">
           <div class="color-preview" id="color-preview"><div class="shade-thumb" id="shade-thumb"></div></div>
           <div class="hue-strip" id="hue-strip"></div>
+          <div class="gray-strip" id="gray-strip" title="Монохром / сірі відтінки"></div>
           <div class="rgb-row">
             <label>R</label><input type="number" id="rgb-r" min="0" max="255" value="26">
             <label>G</label><input type="number" id="rgb-g" min="0" max="255" value="74">
             <label>B</label><input type="number" id="rgb-b" min="0" max="255" value="96">
           </div>
           <div class="palette" id="palette"></div>
+          <div class="palette-hint">клік — взяти · довге натискання — зберегти колір у слот</div>
           <div class="size-row">
             <span>Розмір</span>
             <input type="range" id="size-range" min="1" max="60" value="4">
@@ -562,6 +674,30 @@
             <span>Прозорість</span>
             <input type="range" id="opacity-range" min="1" max="100" value="100">
             <span class="size-val" id="opacity-val">100</span>
+          </div>
+          <div class="size-row" style="margin-top:4px;">
+            <span>Шрифт</span>
+            <select id="font-select" title="Шрифт для тексту" style="flex:1;min-width:0;font-size:10px;padding:2px 3px;border:1px solid rgba(120,180,210,0.6);border-radius:4px;background:#fff;color:#1a4a60;">
+              <option value="sans-serif">Sans</option>
+              <option value="serif">Serif</option>
+              <option value="monospace">Mono</option>
+              <option value="cursive">Cursive</option>
+              <option value="'Comic Sans MS', 'Comic Sans', cursive">Comic</option>
+              <option value="Georgia, serif">Georgia</option>
+              <option value="Impact, sans-serif">Impact</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filters-panel" id="filters-panel">
+          <div class="layers-title">Фільтри (активний шар)</div>
+          <div class="filters-grid">
+            <button type="button" class="filter-btn" data-filter="invert" title="Інверсія">Inv</button>
+            <button type="button" class="filter-btn" data-filter="posterize" title="Постеризація">Post</button>
+            <button type="button" class="filter-btn" data-filter="threshold" title="Поріг ч/б">BW</button>
+            <button type="button" class="filter-btn" data-filter="solarize" title="Соляризація">Sol</button>
+            <button type="button" class="filter-btn" data-filter="pixelate" title="Пікселізація (розмір=слайдер)">Pix</button>
+            <button type="button" class="filter-btn" data-filter="emboss" title="Рельєф">Emb</button>
           </div>
         </div>
 
@@ -621,23 +757,34 @@
   /* ===== CONSTANTS & STATE ===== */
   var W = 800, H = 500;
   var MAX_LAYERS = 4;
-  var MAX_UNDO = 25;
+  var MAX_UNDO = 18; // fewer full-canvas snapshots → less RAM / GC pressure
 
   var tool = "pencil";
   var color = { r: 26, g: 74, b: 96, a: 1 };
   var size = 4;
   var opacity = 1;
   var mirror = false;
+  var mirrorV = false;
+  var shapeFill = true; // fill rect/ellipse (stroke always drawn)
+  var textFont = "sans-serif";
+  var showGrid = false;
   var drawingLocked = false; // blocks BOTS only, never the human user
   var zoom = 1;
   var panX = 0, panY = 0;
   var isDrawing = false;
+  var strokeDirty = false; // in-progress stroke needs history commit
   var lastX = 0, lastY = 0;
   var lineStart = null;
+  var linePreviewEnd = null; // live preview end point for line tool
+  var selection = null; // {x,y,w,h} in canvas coords
+  var selectDrag = null;
+  var clipboard = null; // offscreen canvas
+  var cloneSource = null; // {x,y}
+  var spacePan = false;
+  var prevToolBeforeSpace = null;
   var activeLayer = 0;
   var selectedLayers = [];
   var layers = [];
-  var undoStack = [];
   var currentBot = null;
   var botTimer = null;
   var botBusy = false;
@@ -647,12 +794,9 @@
   // Hue used to build the shade gradient in the color preview bar.
   var currentHue = 200;
 
-  var PALETTE = [
-    "#000000","#ffffff","#00bcd4","#8bc34a","#f1c40f"
-    // "#f1c40f","#2ecc71","#3498db","#9b59b6","#e91e63",
-    // "#795548","#607d8b","#ff5722","#00bcd4","#8bc34a"
-    // змінена палітра "#1a4a60","#000000","#ffffff","#e74c3c","#e67e22"
-  ];
+  // 5 user swatch slots (null = empty). Click = pick, long-press = save current color.
+  var userSwatches = [null, null, null, null, null];
+  var activeSwatchSlot = -1;
 
   var BOTS = {
     jane_dust: {
@@ -679,7 +823,8 @@
         { words: ["я теж", "і я"], replies: ["ок.", "окей."] },
         { words: ["дощ", "погода"], replies: ["дощу тут не видно. тільки туман.", "погода якась сіра…"] },
         { words: ["кіт", "кот"], replies: ["кіт? Сірі б точно схвалив.", "намалюй кота. я подивлюся."] },
-        { words: ["пацюк", "щур"], replies: ["пацюки — мої старі знайомі.", "намалюй йому довгий хвіст."] }
+        { words: ["пацюк", "щур"], replies: ["пацюки — мої старі знайомі.", "намалюй йому довгий хвіст."] },
+        { words: ["намалюй", "малюй", "намалювати"], replies: ["добре… намалюю.", "зараз щось з’явиться на полотні."] }
       ],
       drawStyle: "jane"
     },
@@ -703,7 +848,9 @@
         { words: ["привіт", "хай"], replies: ["ня, привіт ще раз!", "йо, я тут~"] },
         { words: ["любов", "кохання", "романтика"], replies: ["ня… це вже моя тема.", "о, романтика! додай сердечко."] },
         { words: ["кіт", "кот"], replies: ["ня, котик був би милий.", "кіт? так, однозначно."] },
-        { words: ["собака", "пес"], replies: ["собака теж ідеально пасує.", "ня, намалюй йому великі очі."] }
+        { words: ["собака", "пес"], replies: ["собака теж ідеально пасує.", "ня, намалюй йому великі очі."] },
+        { words: ["намалюй", "малюй", "намалювати"], replies: ["ня, зараз щось намалюю~", "йо, малюю!"] },
+        { words: ["дівчин", "мрі"], replies: ["ня… дівчина мрії.", "довге волосся обов'язково."] }
       ],
       drawStyle: "romance"
     },
@@ -728,7 +875,8 @@
         { words: ["привіт", "хай"], replies: ["ПРИВІІІТ!!!!", "хехе привіт!"] },
         { words: ["кіт", "кот"], replies: ["ЦЕ КІТ!!!! чи знову собака????", "кіт!!!! я так і знав!!!!"] },
         { words: ["собака", "пес"], replies: ["СОБАКА!!!! АБО КІТ!!!!", "гав-гав хехе"] },
-        { words: ["красиво", "гарно"], replies: ["Я Ж КАЗАВ що я художник!!!!", "хехе дякую!!!!"] }
+        { words: ["красиво", "гарно"], replies: ["Я Ж КАЗАВ що я художник!!!!", "хехе дякую!!!!"] },
+        { words: ["намалюй", "малюй", "намалювати"], replies: ["ЗАРАЗ НАМАЛЮЮ!!!!", "хехе малюююю"] }
       ],
       drawStyle: "child"
     },
@@ -752,7 +900,8 @@
         { words: ["привіт", "хай"], replies: ["Вітаю. Зв'язок стабільний.", "Привіт. Я готовий до діалогу."] },
         { words: ["допомож", "порад", "як"], replies: ["Опишіть задачу трохи детальніше — спробую допомогти.", "Можу підказати. Що саме потрібно зробити?"] },
         { words: ["колір", "кольор"], replies: ["Для контрасту краще взяти колір, який помітно відрізняється від фону.", "Можу орієнтуватися на контраст і композицію."] },
-        { words: ["симетр", "дзеркал"], replies: ["Для симетрії скористайтеся режимом «Дзеркало».", "Симетрію зручно будувати через дзеркальне відображення."] }
+        { words: ["симетр", "дзеркал"], replies: ["Для симетрії скористайтеся режимом «Дзеркало».", "Симетрію зручно будувати через дзеркальне відображення."] },
+        { words: ["намалюй", "малюй", "намалювати"], replies: ["Виконую запит на малювання.", "Малюю композицію на активному шарі."] }
       ],
       drawStyle: "smart"
     }
@@ -787,10 +936,16 @@
   var botlockLabel = document.getElementById("botlock-label");
 
   var toolNames = {
-    pencil: "Олівець", brush: "Браш", line: "Лінія", fill: "Заливка",
-    circles: "Кружечки", blur: "Блюр", eraser: "Зтирачка", eyedropper: "Піпетка",
-    pan: "Переміщення", mirror: "Дзеркало", upload: "Завантаження",
-    undo: "Відміна", clear: "Очистка", save: "Збереження", merge: "Об'єднання",
+    pencil: "Олівець", brush: "Браш", watercolor: "Акварель", spray: "Аерограф",
+    calligraphy: "Каліграфія", noise: "Шум", line: "Лінія",
+    rect: "Прямокутник", ellipse: "Еліпс", gradient: "Градієнт", fill: "Заливка",
+    circles: "Кружечки", text: "Текст", select: "Виділення", clone: "Штамп",
+    blur: "Блюр", dodge: "Освітлення", burn: "Затемнення", eraser: "Гумка",
+    eyedropper: "Піпетка", pan: "Переміщення",
+    mirror: "Дзеркало ↔", "mirror-v": "Дзеркало ↕",
+    "shape-fill": "Заливка фігур", grid: "Сітка", rotate: "Поворот 90°",
+    upload: "Завантаження", undo: "Відміна", redo: "Повтор",
+    clear: "Очистка", save: "Збереження", merge: "Об'єднання",
     "zoom-in": "Зум +", "zoom-out": "Зум −"
   };
 
@@ -799,7 +954,8 @@
     var c = document.createElement("canvas");
     c.width = W;
     c.height = H;
-    var cx = c.getContext("2d");
+    // willReadFrequently speeds up repeated getImageData (blur/dodge/clone/filters)
+    var cx = c.getContext("2d", { willReadFrequently: true });
     cx.clearRect(0, 0, W, H);
     return { canvas: c, ctx: cx, visible: true, name: name || ("Шар " + (layers.length + 1)) };
   }
@@ -867,6 +1023,29 @@
     panY = Math.max(minY, Math.min(0, panY));
   }
 
+  /* RAF-batched redraw: many mousemove events → at most one paint per frame */
+  var compositeRaf = 0;
+  var compositePending = false;
+
+  function scheduleComposite() {
+    if (compositePending) return;
+    compositePending = true;
+    compositeRaf = requestAnimationFrame(function () {
+      compositePending = false;
+      compositeRaf = 0;
+      composite();
+    });
+  }
+
+  function flushComposite() {
+    if (compositeRaf) {
+      cancelAnimationFrame(compositeRaf);
+      compositeRaf = 0;
+      compositePending = false;
+    }
+    composite();
+  }
+
   function composite() {
     clampPan();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -883,7 +1062,139 @@
         ctx.drawImage(layers[i].canvas, 0, 0);
       }
     }
+
+    // Semi-transparent preview for shape / gradient tools
+    if (isDrawing && lineStart && linePreviewEnd &&
+        (tool === "line" || tool === "rect" || tool === "ellipse" || tool === "gradient" || tool === "select")) {
+      ctx.save();
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      if (tool === "gradient") {
+        var grd = ctx.createLinearGradient(lineStart.x, lineStart.y, linePreviewEnd.x, linePreviewEnd.y);
+        grd.addColorStop(0, "rgba(" + color.r + "," + color.g + "," + color.b + "," + opacity + ")");
+        grd.addColorStop(1, "rgba(" + color.r + "," + color.g + "," + color.b + ",0)");
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, W, H);
+        ctx.strokeStyle = "rgba(30,80,120,0.7)";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(lineStart.x, lineStart.y);
+        ctx.lineTo(linePreviewEnd.x, linePreviewEnd.y);
+        ctx.stroke();
+      } else if (tool === "select") {
+        var sx = Math.min(lineStart.x, linePreviewEnd.x);
+        var sy = Math.min(lineStart.y, linePreviewEnd.y);
+        var sw = Math.abs(linePreviewEnd.x - lineStart.x);
+        var sh = Math.abs(linePreviewEnd.y - lineStart.y);
+        ctx.strokeStyle = "rgba(20,120,200,0.9)";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([5, 4]);
+        ctx.strokeRect(sx + 0.5, sy + 0.5, sw, sh);
+        ctx.fillStyle = "rgba(80,160,220,0.12)";
+        ctx.fillRect(sx, sy, sw, sh);
+      } else {
+        var prevAlpha = 0.35 * opacity;
+        ctx.strokeStyle = "rgba(" + color.r + "," + color.g + "," + color.b + "," + Math.max(0.2, prevAlpha + 0.15) + ")";
+        ctx.fillStyle = "rgba(" + color.r + "," + color.g + "," + color.b + "," + prevAlpha + ")";
+        ctx.lineWidth = Math.max(1, size);
+        ctx.setLineDash([Math.max(4, size * 1.2), Math.max(3, size * 0.8)]);
+        function previewOne(a, b, c, d) {
+          drawShapePath(ctx, tool, a, b, c, d);
+          if (shapeFill && tool !== "line") ctx.fill();
+          drawShapePath(ctx, tool, a, b, c, d);
+          ctx.stroke();
+        }
+        previewOne(lineStart.x, lineStart.y, linePreviewEnd.x, linePreviewEnd.y);
+        if (mirror) previewOne(W - lineStart.x, lineStart.y, W - linePreviewEnd.x, linePreviewEnd.y);
+        if (mirrorV) previewOne(lineStart.x, H - lineStart.y, linePreviewEnd.x, H - linePreviewEnd.y);
+      }
+      ctx.restore();
+    }
+
+    // Persistent selection outline
+    if (selection && tool === "select" && !isDrawing) {
+      ctx.save();
+      ctx.strokeStyle = "rgba(20,120,200,0.95)";
+      ctx.lineWidth = 1;
+      ctx.setLineDash([5, 4]);
+      ctx.strokeRect(selection.x + 0.5, selection.y + 0.5, selection.w, selection.h);
+      ctx.restore();
+    }
+
+    // Grid overlay
+    if (showGrid) {
+      ctx.save();
+      ctx.strokeStyle = "rgba(40,100,140,0.18)";
+      ctx.lineWidth = 1;
+      var step = 25;
+      for (var gx = step; gx < W; gx += step) {
+        ctx.beginPath(); ctx.moveTo(gx + 0.5, 0); ctx.lineTo(gx + 0.5, H); ctx.stroke();
+      }
+      for (var gy = step; gy < H; gy += step) {
+        ctx.beginPath(); ctx.moveTo(0, gy + 0.5); ctx.lineTo(W, gy + 0.5); ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Clone source marker
+    if (cloneSource && tool === "clone") {
+      ctx.save();
+      ctx.strokeStyle = "rgba(220,60,80,0.85)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(cloneSource.x, cloneSource.y, 5, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
     ctx.restore();
+  }
+
+  function drawShapePath(cx, kind, x0, y0, x1, y1) {
+    cx.beginPath();
+    if (kind === "line") {
+      cx.moveTo(x0, y0);
+      cx.lineTo(x1, y1);
+    } else if (kind === "rect") {
+      cx.rect(
+        Math.min(x0, x1), Math.min(y0, y1),
+        Math.abs(x1 - x0), Math.abs(y1 - y0)
+      );
+    } else if (kind === "ellipse") {
+      var cx0 = (x0 + x1) / 2;
+      var cy0 = (y0 + y1) / 2;
+      var rx = Math.abs(x1 - x0) / 2;
+      var ry = Math.abs(y1 - y0) / 2;
+      cx.ellipse(cx0, cy0, Math.max(0.5, rx), Math.max(0.5, ry), 0, 0, Math.PI * 2);
+    }
+  }
+
+  function commitShape(kind, x0, y0, x1, y1) {
+    var cx = getActiveCtx();
+    function paint(a, b, c, d) {
+      cx.save();
+      cx.lineCap = "round";
+      cx.lineJoin = "round";
+      cx.strokeStyle = "rgba(" + color.r + "," + color.g + "," + color.b + "," + opacity + ")";
+      cx.fillStyle = "rgba(" + color.r + "," + color.g + "," + color.b + "," + opacity + ")";
+      cx.lineWidth = Math.max(1, size);
+      drawShapePath(cx, kind, a, b, c, d);
+      if (shapeFill && kind !== "line") {
+        cx.fill();
+        // light outline on top so edges stay crisp
+        cx.globalAlpha = Math.min(1, opacity + 0.15);
+        drawShapePath(cx, kind, a, b, c, d);
+        cx.stroke();
+      } else {
+        cx.stroke();
+      }
+      cx.restore();
+    }
+    paint(x0, y0, x1, y1);
+    if (mirror) paint(W - x0, y0, W - x1, y1);
+    if (mirrorV) paint(x0, H - y0, x1, H - y1);
+    if (mirror && mirrorV) paint(W - x0, H - y0, W - x1, H - y1);
   }
 
   function getActiveCtx() {
@@ -891,26 +1202,86 @@
   }
 
   /* ===== UNDO ===== */
-  function pushUndo() {
-    var snaps = layers.map(function (L) {
-      return L.ctx.getImageData(0, 0, W, H);
+  /**
+   * History uses full offscreen canvas clones per layer (not ImageData),
+   * so eraser / filters can never mutate past entries.
+   * history[histStep] is always the current image.
+   * saveHistory() must be called AFTER each completed action.
+   */
+  var history = [];
+  var histStep = -1;
+
+  function cloneLayerCanvases() {
+    // Snapshot only current layers; reuse 2d context options for speed
+    return layers.map(function (L) {
+      var c = document.createElement("canvas");
+      c.width = W;
+      c.height = H;
+      var cctx = c.getContext("2d", { alpha: true });
+      cctx.drawImage(L.canvas, 0, 0);
+      return c;
     });
-    undoStack.push({ snaps: snaps, active: activeLayer });
-    if (undoStack.length > MAX_UNDO) undoStack.shift();
+  }
+
+  function restoreHistoryEntry(entry) {
+    if (!entry) return;
+    while (layers.length < entry.canvases.length) {
+      layers.push(createLayer());
+    }
+    while (layers.length > entry.canvases.length && layers.length > 1) {
+      layers.pop();
+    }
+    for (var i = 0; i < layers.length && i < entry.canvases.length; i++) {
+      layers[i].ctx.clearRect(0, 0, W, H);
+      layers[i].ctx.drawImage(entry.canvases[i], 0, 0);
+    }
+    activeLayer = Math.min(entry.active, layers.length - 1);
+    selectedLayers = [];
+    renderLayersUI();
+    composite();
+  }
+
+  function pushUndo() {
+    // discard any "redo" tail
+    if (histStep < history.length - 1) {
+      history = history.slice(0, histStep + 1);
+    }
+    history.push({ canvases: cloneLayerCanvases(), active: activeLayer });
+    histStep = history.length - 1;
+    while (history.length > MAX_UNDO) {
+      history.shift();
+      histStep--;
+    }
   }
 
   function undo() {
-    if (undoStack.length < 2) {
+    // Finish any in-progress stroke so it becomes its own history step first
+    finalizeStrokeIfNeeded();
+    if (histStep <= 0) {
       toast("Немає що відміняти");
       return;
     }
-    undoStack.pop();
-    var state = undoStack[undoStack.length - 1];
-    for (var i = 0; i < layers.length && i < state.snaps.length; i++) {
-      layers[i].ctx.putImageData(state.snaps[i], 0, 0);
+    histStep--;
+    restoreHistoryEntry(history[histStep]);
+  }
+
+  function redo() {
+    finalizeStrokeIfNeeded();
+    if (histStep >= history.length - 1) {
+      toast("Немає що повторити");
+      return;
     }
-    activeLayer = Math.min(state.active, layers.length - 1);
-    renderLayersUI();
+    histStep++;
+    restoreHistoryEntry(history[histStep]);
+  }
+
+  function finalizeStrokeIfNeeded() {
+    if (!strokeDirty) return;
+    strokeDirty = false;
+    isDrawing = false;
+    lineStart = null;
+    linePreviewEnd = null;
+    pushUndo();
     composite();
   }
 
@@ -936,18 +1307,64 @@
     return "rgba(" + color.r + "," + color.g + "," + color.b + "," + alpha + ")";
   }
 
-  function initPalette() {
+  function swatchToCss(c) {
+    if (!c) return "";
+    return "rgb(" + c.r + "," + c.g + "," + c.b + ")";
+  }
+
+  function renderPalette() {
     var box = document.getElementById("palette");
-    PALETTE.forEach(function (hex) {
-      var s = document.createElement("div");
-      s.className = "palette-swatch";
-      s.style.background = hex;
-      s.addEventListener("click", function () {
-        var m = hex.match(/#(..)(..)(..)/);
-        if (m) setColor(parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16));
-      });
-      box.appendChild(s);
-    });
+    box.innerHTML = "";
+    for (var i = 0; i < 5; i++) {
+      (function (idx) {
+        var s = document.createElement("div");
+        s.className = "palette-swatch" + (userSwatches[idx] ? " filled" : "") + (activeSwatchSlot === idx ? " active-slot" : "");
+        s.title = userSwatches[idx]
+          ? "Клік — обрати · довге натискання — перезаписати"
+          : "Довге натискання — зберегти поточний колір";
+        if (userSwatches[idx]) {
+          s.style.background = swatchToCss(userSwatches[idx]);
+        }
+        var pressTimer = null;
+        var longPressed = false;
+        function startPress(e) {
+          longPressed = false;
+          pressTimer = setTimeout(function () {
+            longPressed = true;
+            userSwatches[idx] = { r: color.r, g: color.g, b: color.b };
+            activeSwatchSlot = idx;
+            renderPalette();
+            toast("Колір збережено в слот " + (idx + 1));
+          }, 450);
+        }
+        function endPress(e) {
+          if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+          if (longPressed) return;
+          // short click — pick color if slot filled
+          if (userSwatches[idx]) {
+            setColor(userSwatches[idx].r, userSwatches[idx].g, userSwatches[idx].b);
+            activeSwatchSlot = idx;
+            renderPalette();
+          } else {
+            toast("Утримуй, щоб зберегти колір у цей слот");
+          }
+        }
+        function cancelPress() {
+          if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+        }
+        s.addEventListener("mousedown", startPress);
+        s.addEventListener("mouseup", endPress);
+        s.addEventListener("mouseleave", cancelPress);
+        s.addEventListener("touchstart", function (e) { e.preventDefault(); startPress(e); }, { passive: false });
+        s.addEventListener("touchend", function (e) { e.preventDefault(); endPress(e); });
+        s.addEventListener("touchcancel", cancelPress);
+        box.appendChild(s);
+      })(i);
+    }
+  }
+
+  function initPalette() {
+    renderPalette();
   }
 
   hueStrip.addEventListener("click", function (e) {
@@ -957,6 +1374,19 @@
     currentHue = t * 360;
     var rgb = hsvToRgb(currentHue, 0.85, 0.9);
     setColor(rgb[0], rgb[1], rgb[2], true);
+    activeSwatchSlot = -1;
+    renderPalette();
+  });
+
+  var grayStrip = document.getElementById("gray-strip");
+  grayStrip.addEventListener("click", function (e) {
+    var rect = grayStrip.getBoundingClientRect();
+    var t = (e.clientX - rect.left) / rect.width;
+    t = Math.max(0, Math.min(1, t));
+    var v = Math.round((1 - t) * 255);
+    setColor(v, v, v);
+    activeSwatchSlot = -1;
+    renderPalette();
   });
 
   function hsvToRgb(h, s, v) {
@@ -1040,6 +1470,8 @@
     var c = shadeAt(t, pure);
     setColor(c[0], c[1], c[2], true);
     shadeThumb.style.left = (t * 100) + "%";
+    activeSwatchSlot = -1;
+    renderPalette();
   }
 
   var shadeDragging = false;
@@ -1050,9 +1482,9 @@
   colorPreview.addEventListener("touchmove", function (e) { if (shadeDragging) shadeBarPick(e); }, { passive: true });
   window.addEventListener("touchend", function () { shadeDragging = false; });
 
-  rgbR.addEventListener("change", function () { setColor(+rgbR.value, color.g, color.b); });
-  rgbG.addEventListener("change", function () { setColor(color.r, +rgbG.value, color.b); });
-  rgbB.addEventListener("change", function () { setColor(color.r, color.g, +rgbB.value); });
+  rgbR.addEventListener("change", function () { setColor(+rgbR.value, color.g, color.b); activeSwatchSlot = -1; renderPalette(); });
+  rgbG.addEventListener("change", function () { setColor(color.r, +rgbG.value, color.b); activeSwatchSlot = -1; renderPalette(); });
+  rgbB.addEventListener("change", function () { setColor(color.r, color.g, +rgbB.value); activeSwatchSlot = -1; renderPalette(); });
 
   sizeRange.addEventListener("input", function () {
     size = +sizeRange.value;
@@ -1083,52 +1515,463 @@
   function drawStroke(cx, x0, y0, x1, y1, opts) {
     opts = opts || {};
     var s = opts.size != null ? opts.size : size;
-    var col = opts.color || colorStr();
+    var baseAlpha = opacity;
+    if (opts.alpha != null) baseAlpha = opts.alpha;
     cx.save();
     cx.lineCap = "round";
     cx.lineJoin = "round";
-    cx.strokeStyle = col;
-    cx.fillStyle = col;
-    cx.lineWidth = s;
 
     if (opts.eraser) {
       cx.globalCompositeOperation = "destination-out";
-      cx.strokeStyle = "rgba(0,0,0,1)";
-    }
-
-    if (opts.brush) {
-      // soft brush approximation: multiple passes
-      cx.globalAlpha = 0.25;
-      for (var i = 0; i < 3; i++) {
+      cx.strokeStyle = "rgba(0,0,0," + baseAlpha + ")";
+      cx.fillStyle = "rgba(0,0,0," + baseAlpha + ")";
+      cx.lineWidth = s;
+      cx.beginPath();
+      cx.moveTo(x0, y0);
+      cx.lineTo(x1, y1);
+      cx.stroke();
+    } else if (opts.watercolor) {
+      var distW = Math.hypot(x1 - x0, y1 - y0);
+      // larger step → fewer gradients per segment (big perf win)
+      var stepW = Math.max(2, s * 0.55);
+      var stepsW = Math.max(1, Math.ceil(distW / stepW));
+      if (stepsW > 12) stepsW = 12;
+      for (var iw = 0; iw <= stepsW; iw++) {
+        var tw = iw / stepsW;
+        var pwx = x0 + (x1 - x0) * tw + (Math.random() - 0.5) * s * 0.25;
+        var pwy = y0 + (y1 - y0) * tw + (Math.random() - 0.5) * s * 0.25;
+        var rw = s * (0.7 + Math.random() * 0.6);
+        var gw = cx.createRadialGradient(pwx, pwy, 0, pwx, pwy, rw);
+        var a0 = baseAlpha * (0.12 + Math.random() * 0.12);
+        gw.addColorStop(0, "rgba(" + color.r + "," + color.g + "," + color.b + "," + a0 + ")");
+        gw.addColorStop(1, "rgba(" + color.r + "," + color.g + "," + color.b + ",0)");
+        cx.fillStyle = gw;
         cx.beginPath();
-        cx.moveTo(x0, y0);
-        cx.lineTo(x1, y1);
-        cx.stroke();
+        cx.arc(pwx, pwy, rw, 0, Math.PI * 2);
+        cx.fill();
       }
-      cx.globalAlpha = 1;
-    } else if (opts.circles) {
+    } else if (opts.calligraphy) {
+      var ang = Math.atan2(y1 - y0, x1 - x0);
+      var thick = s * (0.35 + Math.abs(Math.sin(ang + 0.6)) * 0.9);
+      cx.strokeStyle = "rgba(" + color.r + "," + color.g + "," + color.b + "," + baseAlpha + ")";
+      cx.lineWidth = Math.max(1, thick);
+      cx.beginPath();
+      cx.moveTo(x0, y0);
+      cx.lineTo(x1, y1);
+      cx.stroke();
+    } else if (opts.noise) {
+      var distN = Math.hypot(x1 - x0, y1 - y0);
+      var stepN = Math.max(1, s * 0.3);
+      var stepsN = Math.max(1, Math.ceil(distN / stepN));
+      for (var inoise = 0; inoise <= stepsN; inoise++) {
+        var tn = inoise / stepsN;
+        var cnx = x0 + (x1 - x0) * tn;
+        var cny = y0 + (y1 - y0) * tn;
+        var dots = Math.max(4, (s * s * 0.08) | 0);
+        for (var d = 0; d < dots; d++) {
+          var nx = cnx + (Math.random() - 0.5) * s;
+          var ny = cny + (Math.random() - 0.5) * s;
+          var na = baseAlpha * (0.2 + Math.random() * 0.5);
+          cx.fillStyle = "rgba(" + color.r + "," + color.g + "," + color.b + "," + na + ")";
+          cx.fillRect(nx, ny, 1 + Math.random() * 1.5, 1 + Math.random() * 1.5);
+        }
+      }
+    } else if (opts.brush) {
       var dist = Math.hypot(x1 - x0, y1 - y0);
-      var steps = Math.max(1, dist / (s * 0.6) | 0);
-      for (var j = 0; j <= steps; j++) {
-        var t = j / steps;
+      // fewer stamps per segment keeps soft brush smooth enough but much cheaper
+      var step = Math.max(2, s * 0.4);
+      var steps = Math.max(1, Math.ceil(dist / step));
+      if (steps > 10) steps = 10;
+      var r = s / 2;
+      for (var i = 0; i <= steps; i++) {
+        var t = i / steps;
         var px = x0 + (x1 - x0) * t;
         var py = y0 + (y1 - y0) * t;
+        var g = cx.createRadialGradient(px, py, 0, px, py, r);
+        g.addColorStop(0, "rgba(" + color.r + "," + color.g + "," + color.b + "," + (baseAlpha * 0.45) + ")");
+        g.addColorStop(0.55, "rgba(" + color.r + "," + color.g + "," + color.b + "," + (baseAlpha * 0.18) + ")");
+        g.addColorStop(1, "rgba(" + color.r + "," + color.g + "," + color.b + ",0)");
+        cx.fillStyle = g;
         cx.beginPath();
-        cx.arc(px, py, s / 2, 0, Math.PI * 2);
+        cx.arc(px, py, r, 0, Math.PI * 2);
+        cx.fill();
+      }
+    } else if (opts.circles) {
+      var dist2 = Math.hypot(x1 - x0, y1 - y0);
+      var gap = Math.max(s * 1.15, 2);
+      var steps2 = Math.max(1, Math.ceil(dist2 / gap));
+      cx.fillStyle = "rgba(" + color.r + "," + color.g + "," + color.b + "," + baseAlpha + ")";
+      for (var j = 0; j <= steps2; j++) {
+        var t2 = j / steps2;
+        var px2 = x0 + (x1 - x0) * t2;
+        var py2 = y0 + (y1 - y0) * t2;
+        cx.beginPath();
+        cx.arc(px2, py2, s / 2, 0, Math.PI * 2);
         cx.fill();
       }
     } else {
+      cx.strokeStyle = "rgba(" + color.r + "," + color.g + "," + color.b + "," + baseAlpha + ")";
+      cx.lineWidth = s;
       cx.beginPath();
       cx.moveTo(x0, y0);
       cx.lineTo(x1, y1);
       cx.stroke();
     }
 
-    if (mirror && !opts.noMirror) {
-      var mx0 = W - x0, mx1 = W - x1;
-      drawStroke(cx, mx0, y0, mx1, y1, Object.assign({}, opts, { noMirror: true }));
+    if (!opts.noMirror) {
+      if (mirror) {
+        drawStroke(cx, W - x0, y0, W - x1, y1, Object.assign({}, opts, { noMirror: true }));
+      }
+      if (mirrorV) {
+        drawStroke(cx, x0, H - y0, x1, H - y1, Object.assign({}, opts, { noMirror: true }));
+      }
+      if (mirror && mirrorV) {
+        drawStroke(cx, W - x0, H - y0, W - x1, H - y1, Object.assign({}, opts, { noMirror: true }));
+      }
     }
     cx.restore();
+  }
+
+  function cloneStampAt(cx, x, y, radius) {
+    if (!cloneSource) return;
+    radius = Math.max(2, radius | 0);
+    var dx = x - (cloneStrokeOrigin ? cloneStrokeOrigin.x : x);
+    var dy = y - (cloneStrokeOrigin ? cloneStrokeOrigin.y : y);
+    var sx = (cloneSource.x + dx) | 0;
+    var sy = (cloneSource.y + dy) | 0;
+    try {
+      var img = cx.getImageData(
+        Math.max(0, sx - radius),
+        Math.max(0, sy - radius),
+        radius * 2,
+        radius * 2
+      );
+      // soft circular mask
+      var data = img.data;
+      var rr = radius * radius;
+      for (var py = 0; py < radius * 2; py++) {
+        for (var px = 0; px < radius * 2; px++) {
+          var ddx = px - radius, ddy = py - radius;
+          if (ddx * ddx + ddy * ddy > rr) {
+            data[(py * radius * 2 + px) * 4 + 3] = 0;
+          } else {
+            data[(py * radius * 2 + px) * 4 + 3] = Math.min(255, data[(py * radius * 2 + px) * 4 + 3] * opacity);
+          }
+        }
+      }
+      cx.putImageData(img, (x - radius) | 0, (y - radius) | 0);
+    } catch (err) { /* edge of canvas */ }
+  }
+
+  var cloneStrokeOrigin = null;
+
+  function commitGradient(x0, y0, x1, y1) {
+    var cx = getActiveCtx();
+    cx.save();
+    var grd = cx.createLinearGradient(x0, y0, x1, y1);
+    grd.addColorStop(0, "rgba(" + color.r + "," + color.g + "," + color.b + "," + opacity + ")");
+    grd.addColorStop(1, "rgba(" + color.r + "," + color.g + "," + color.b + ",0)");
+    cx.fillStyle = grd;
+    if (selection) {
+      cx.beginPath();
+      cx.rect(selection.x, selection.y, selection.w, selection.h);
+      cx.clip();
+    }
+    cx.fillRect(0, 0, W, H);
+    cx.restore();
+  }
+
+  function rotateActiveLayer90() {
+    finalizeStrokeIfNeeded();
+    var src = layers[activeLayer].canvas;
+    var tmp = document.createElement("canvas");
+    tmp.width = H;
+    tmp.height = W;
+    // Our canvas is fixed W×H — rotate content 90° CW inside same bounds (centered crop/fit)
+    var out = document.createElement("canvas");
+    out.width = W;
+    out.height = H;
+    var octx = out.getContext("2d");
+    octx.translate(W / 2, H / 2);
+    octx.rotate(Math.PI / 2);
+    octx.drawImage(src, -W / 2, -H / 2);
+    layers[activeLayer].ctx.clearRect(0, 0, W, H);
+    layers[activeLayer].ctx.drawImage(out, 0, 0);
+    composite();
+    pushUndo();
+    toast("Шар повернуто на 90°");
+  }
+
+  function deleteSelection() {
+    if (!selection) { toast("Немає виділення"); return; }
+    finalizeStrokeIfNeeded();
+    var cx = getActiveCtx();
+    cx.clearRect(selection.x, selection.y, selection.w, selection.h);
+    composite();
+    pushUndo();
+    toast("Виділення очищено");
+  }
+
+  function copySelection() {
+    if (!selection || selection.w < 1 || selection.h < 1) { toast("Немає виділення"); return; }
+    var c = document.createElement("canvas");
+    c.width = selection.w;
+    c.height = selection.h;
+    c.getContext("2d").drawImage(
+      layers[activeLayer].canvas,
+      selection.x, selection.y, selection.w, selection.h,
+      0, 0, selection.w, selection.h
+    );
+    clipboard = c;
+    toast("Скопійовано");
+  }
+
+  function pasteClipboard() {
+    if (!clipboard) { toast("Буфер порожній"); return; }
+    finalizeStrokeIfNeeded();
+    var cx = getActiveCtx();
+    var px = selection ? selection.x : 20;
+    var py = selection ? selection.y : 20;
+    cx.drawImage(clipboard, px, py);
+    selection = { x: px, y: py, w: clipboard.width, h: clipboard.height };
+    composite();
+    pushUndo();
+    toast("Вставлено");
+  }
+
+  /** Local blur under the cursor (for blur tool as a brush). */
+  function blurAt(cx, x, y, radius) {
+    radius = Math.max(2, Math.min(24, radius | 0));
+    var x0 = Math.max(0, (x - radius) | 0);
+    var y0 = Math.max(0, (y - radius) | 0);
+    var x1 = Math.min(W, (x + radius + 1) | 0);
+    var y1 = Math.min(H, (y + radius + 1) | 0);
+    var bw = x1 - x0, bh = y1 - y0;
+    if (bw < 3 || bh < 3) return;
+
+    var img = cx.getImageData(x0, y0, bw, bh);
+    var data = img.data;
+    var copy = new Uint8ClampedArray(data);
+    var k = Math.max(1, Math.min(4, (radius / 4) | 0));
+    for (var py = k; py < bh - k; py++) {
+      for (var px = k; px < bw - k; px++) {
+        // only blur inside the circular brush
+        var dx = (x0 + px) - x;
+        var dy = (y0 + py) - y;
+        if (dx * dx + dy * dy > radius * radius) continue;
+        var r = 0, g = 0, b = 0, a = 0, count = 0;
+        for (var dy2 = -k; dy2 <= k; dy2++) {
+          for (var dx2 = -k; dx2 <= k; dx2++) {
+            var i = ((py + dy2) * bw + (px + dx2)) * 4;
+            r += copy[i]; g += copy[i + 1]; b += copy[i + 2]; a += copy[i + 3];
+            count++;
+          }
+        }
+        var oi = (py * bw + px) * 4;
+        data[oi] = r / count;
+        data[oi + 1] = g / count;
+        data[oi + 2] = b / count;
+        data[oi + 3] = a / count;
+      }
+    }
+    cx.putImageData(img, x0, y0);
+  }
+
+  /** Airbrush / spray: random soft dots in a radius. */
+  function sprayAt(cx, x, y, radius) {
+    radius = Math.max(3, radius);
+    var density = Math.max(6, (radius * radius * 0.12) | 0);
+    cx.save();
+    for (var i = 0; i < density; i++) {
+      var ang = Math.random() * Math.PI * 2;
+      var rad = Math.random() * radius;
+      // bias toward center
+      rad = rad * Math.random();
+      var px = x + Math.cos(ang) * rad;
+      var py = y + Math.sin(ang) * rad;
+      var a = opacity * (0.15 + Math.random() * 0.35) * (1 - rad / radius);
+      var dot = 0.6 + Math.random() * Math.max(1, radius * 0.08);
+      cx.fillStyle = "rgba(" + color.r + "," + color.g + "," + color.b + "," + a + ")";
+      cx.beginPath();
+      cx.arc(px, py, dot, 0, Math.PI * 2);
+      cx.fill();
+    }
+    if (mirror) {
+      for (var j = 0; j < density; j++) {
+        var ang2 = Math.random() * Math.PI * 2;
+        var rad2 = Math.random() * radius * Math.random();
+        var px2 = (W - x) + Math.cos(ang2) * rad2;
+        var py2 = y + Math.sin(ang2) * rad2;
+        var a2 = opacity * (0.15 + Math.random() * 0.35) * (1 - rad2 / radius);
+        var dot2 = 0.6 + Math.random() * Math.max(1, radius * 0.08);
+        cx.fillStyle = "rgba(" + color.r + "," + color.g + "," + color.b + "," + a2 + ")";
+        cx.beginPath();
+        cx.arc(px2, py2, dot2, 0, Math.PI * 2);
+        cx.fill();
+      }
+    }
+    cx.restore();
+  }
+
+  /** Dodge (lighten) / burn (darken) under cursor. */
+  function toneAt(cx, x, y, radius, mode) {
+    radius = Math.max(2, Math.min(40, radius | 0));
+    var x0 = Math.max(0, (x - radius) | 0);
+    var y0 = Math.max(0, (y - radius) | 0);
+    var x1 = Math.min(W, (x + radius + 1) | 0);
+    var y1 = Math.min(H, (y + radius + 1) | 0);
+    var bw = x1 - x0, bh = y1 - y0;
+    if (bw < 1 || bh < 1) return;
+
+    var img = cx.getImageData(x0, y0, bw, bh);
+    var data = img.data;
+    var strength = 0.08 + opacity * 0.22;
+    var r2 = radius * radius;
+
+    for (var py = 0; py < bh; py++) {
+      for (var px = 0; px < bw; px++) {
+        var dx = (x0 + px) - x;
+        var dy = (y0 + py) - y;
+        var d2 = dx * dx + dy * dy;
+        if (d2 > r2) continue;
+        var fall = 1 - Math.sqrt(d2) / radius;
+        fall *= fall;
+        var k = strength * fall;
+        var i = (py * bw + px) * 4;
+        if (data[i + 3] < 1) continue;
+        if (mode === "dodge") {
+          data[i] = Math.min(255, data[i] + (255 - data[i]) * k);
+          data[i + 1] = Math.min(255, data[i + 1] + (255 - data[i + 1]) * k);
+          data[i + 2] = Math.min(255, data[i + 2] + (255 - data[i + 2]) * k);
+        } else {
+          data[i] = Math.max(0, data[i] * (1 - k));
+          data[i + 1] = Math.max(0, data[i + 1] * (1 - k));
+          data[i + 2] = Math.max(0, data[i + 2] * (1 - k));
+        }
+      }
+    }
+    cx.putImageData(img, x0, y0);
+  }
+
+  function placeText(x, y) {
+    var txt = window.prompt("Текст (до 40 символів):", "");
+    if (txt == null) return;
+    txt = String(txt).trim().slice(0, 40);
+    if (!txt) return;
+    finalizeStrokeIfNeeded();
+    var cx = getActiveCtx();
+    var fontSize = Math.max(10, Math.min(96, size * 3));
+    var fontFamily = textFont || "sans-serif";
+    cx.save();
+    cx.font = "bold " + fontSize + "px " + fontFamily;
+    cx.fillStyle = "rgba(" + color.r + "," + color.g + "," + color.b + "," + opacity + ")";
+    cx.textBaseline = "middle";
+    cx.fillText(txt, x, y);
+    if (mirror) {
+      cx.save();
+      cx.translate(W, 0);
+      cx.scale(-1, 1);
+      cx.fillText(txt, W - x, y);
+      cx.restore();
+    }
+    cx.restore();
+    composite();
+    pushUndo(); // commit after text is drawn
+    toast("Текст додано");
+  }
+
+  function applyFilterToActive(kind) {
+    var cx = getActiveCtx();
+    var img = cx.getImageData(0, 0, W, H);
+    var data = img.data;
+    var n = data.length;
+
+    if (kind === "invert") {
+      for (var i = 0; i < n; i += 4) {
+        if (data[i + 3] < 1) continue;
+        data[i] = 255 - data[i];
+        data[i + 1] = 255 - data[i + 1];
+        data[i + 2] = 255 - data[i + 2];
+      }
+    } else if (kind === "posterize") {
+      var levels = 4;
+      var step = 255 / (levels - 1);
+      for (var i2 = 0; i2 < n; i2 += 4) {
+        if (data[i2 + 3] < 1) continue;
+        data[i2] = Math.round(data[i2] / step) * step;
+        data[i2 + 1] = Math.round(data[i2 + 1] / step) * step;
+        data[i2 + 2] = Math.round(data[i2 + 2] / step) * step;
+      }
+    } else if (kind === "threshold") {
+      for (var i3 = 0; i3 < n; i3 += 4) {
+        if (data[i3 + 3] < 1) continue;
+        var g = data[i3] * 0.299 + data[i3 + 1] * 0.587 + data[i3 + 2] * 0.114;
+        var v = g >= 128 ? 255 : 0;
+        data[i3] = data[i3 + 1] = data[i3 + 2] = v;
+      }
+    } else if (kind === "solarize") {
+      for (var i4 = 0; i4 < n; i4 += 4) {
+        if (data[i4 + 3] < 1) continue;
+        for (var c = 0; c < 3; c++) {
+          data[i4 + c] = data[i4 + c] < 128 ? data[i4 + c] * 2 : 255 - (data[i4 + c] - 128) * 2;
+        }
+      }
+    } else if (kind === "pixelate") {
+      var block = Math.max(4, Math.min(24, size | 0));
+      var src = new Uint8ClampedArray(data);
+      for (var y = 0; y < H; y += block) {
+        for (var x = 0; x < W; x += block) {
+          var rs = 0, gs = 0, bs = 0, as = 0, cnt = 0;
+          var y2max = Math.min(H, y + block);
+          var x2max = Math.min(W, x + block);
+          for (var y2 = y; y2 < y2max; y2++) {
+            for (var x2 = x; x2 < x2max; x2++) {
+              var pi = (y2 * W + x2) * 4;
+              rs += src[pi]; gs += src[pi + 1]; bs += src[pi + 2]; as += src[pi + 3];
+              cnt++;
+            }
+          }
+          rs = (rs / cnt) | 0; gs = (gs / cnt) | 0; bs = (bs / cnt) | 0; as = (as / cnt) | 0;
+          for (var y3 = y; y3 < y2max; y3++) {
+            for (var x3 = x; x3 < x2max; x3++) {
+              var qi = (y3 * W + x3) * 4;
+              data[qi] = rs; data[qi + 1] = gs; data[qi + 2] = bs; data[qi + 3] = as;
+            }
+          }
+        }
+      }
+    } else if (kind === "emboss") {
+      var src2 = new Uint8ClampedArray(data);
+      for (var ey = 1; ey < H - 1; ey++) {
+        for (var ex = 1; ex < W - 1; ex++) {
+          var ti = (ey * W + ex) * 4;
+          var ul = ((ey - 1) * W + (ex - 1)) * 4;
+          var lr = ((ey + 1) * W + (ex + 1)) * 4;
+          for (var ch = 0; ch < 3; ch++) {
+            data[ti + ch] = Math.max(0, Math.min(255, src2[lr + ch] - src2[ul + ch] + 128));
+          }
+        }
+      }
+    } else {
+      return false;
+    }
+
+    cx.putImageData(img, 0, 0);
+    return true;
+  }
+
+  function runFilter(kind) {
+    if (!kind) return;
+    finalizeStrokeIfNeeded();
+    if (applyFilterToActive(kind)) {
+      composite();
+      pushUndo(); // commit after filter
+      var labels = {
+        invert: "Інверсія", posterize: "Постеризація", threshold: "Поріг",
+        solarize: "Соляризація", pixelate: "Пікселізація", emboss: "Рельєф"
+      };
+      toast("Фільтр: " + (labels[kind] || kind));
+    }
   }
 
   function floodFill(cx, startX, startY, fillColor) {
@@ -1225,11 +2068,21 @@
   }
 
   /* ===== POINTER EVENTS ===== */
+  var lastTouchTs = 0;
+
   function onDown(e) {
     e.preventDefault();
 
-    // The bot-lock only ever restricts bots (see botDrawSomething). The
-    // human user can always draw, regardless of the lock state.
+    // Avoid double-firing: browsers often emit mouse events after touch
+    if (e.type === "touchstart" || e.type === "touchmove" || e.type === "touchend") {
+      lastTouchTs = Date.now();
+    } else if (e.type === "mousedown" || e.type === "mousemove" || e.type === "mouseup") {
+      if (Date.now() - lastTouchTs < 700) return;
+    }
+
+    // If previous stroke never got mouseup, commit it now so eraser isn't lost
+    finalizeStrokeIfNeeded();
+
     var pos = getPos(e);
 
     if (tool === "pan") {
@@ -1243,7 +2096,6 @@
     if (tool === "eyedropper") {
       var lx = Math.max(0, Math.min(W - 1, pos.x | 0));
       var ly = Math.max(0, Math.min(H - 1, pos.y | 0));
-      // sample from composite
       var tmp = document.createElement("canvas");
       tmp.width = W; tmp.height = H;
       var tctx = tmp.getContext("2d");
@@ -1252,22 +2104,29 @@
       layers.forEach(function (L) { if (L.visible) tctx.drawImage(L.canvas, 0, 0); });
       var pix = tctx.getImageData(lx, ly, 1, 1).data;
       setColor(pix[0], pix[1], pix[2]);
+      activeSwatchSlot = -1;
+      renderPalette();
       toast("Колір взято");
       return;
     }
 
     if (tool === "fill") {
-      pushUndo();
       floodFill(getActiveCtx(), pos.x, pos.y, color);
       composite();
+      pushUndo(); // commit after action
       return;
     }
 
-    if (tool === "blur") {
-      pushUndo();
-      applyBlur(getActiveCtx(), Math.max(2, size / 4 | 0));
+    if (tool === "text") {
+      placeText(pos.x, pos.y);
+      return;
+    }
+
+    // Clone: Alt/Option click sets source point
+    if (tool === "clone" && (e.altKey || e.metaKey)) {
+      cloneSource = { x: pos.x, y: pos.y };
+      toast("Джерело клону встановлено");
       composite();
-      toast("Блюр застосовано");
       return;
     }
 
@@ -1275,16 +2134,44 @@
     lastX = pos.x;
     lastY = pos.y;
     lineStart = { x: pos.x, y: pos.y };
+    linePreviewEnd = (tool === "line" || tool === "rect" || tool === "ellipse" || tool === "gradient" || tool === "select")
+      ? { x: pos.x, y: pos.y } : null;
 
-    if (tool === "pencil" || tool === "brush" || tool === "eraser" || tool === "circles") {
-      pushUndo();
+    if (tool === "pencil" || tool === "brush" || tool === "eraser" || tool === "circles" ||
+        tool === "watercolor" || tool === "calligraphy" || tool === "noise") {
+      strokeDirty = true;
       var opts = {
         size: size,
         brush: tool === "brush",
         eraser: tool === "eraser",
-        circles: tool === "circles"
+        circles: tool === "circles",
+        watercolor: tool === "watercolor",
+        calligraphy: tool === "calligraphy",
+        noise: tool === "noise"
       };
       drawStroke(getActiveCtx(), pos.x, pos.y, pos.x, pos.y, opts);
+      composite();
+    } else if (tool === "clone") {
+      if (!cloneSource) {
+        toast("Alt+клік — обрати джерело клону");
+        isDrawing = false;
+        return;
+      }
+      strokeDirty = true;
+      cloneStrokeOrigin = { x: pos.x, y: pos.y };
+      cloneStampAt(getActiveCtx(), pos.x, pos.y, Math.max(2, size / 2 | 0));
+      composite();
+    } else if (tool === "spray") {
+      strokeDirty = true;
+      sprayAt(getActiveCtx(), pos.x, pos.y, Math.max(4, size));
+      composite();
+    } else if (tool === "blur") {
+      strokeDirty = true;
+      blurAt(getActiveCtx(), pos.x, pos.y, Math.max(4, size));
+      composite();
+    } else if (tool === "dodge" || tool === "burn") {
+      strokeDirty = true;
+      toneAt(getActiveCtx(), pos.x, pos.y, Math.max(4, size), tool);
       composite();
     }
   }
@@ -1292,12 +2179,16 @@
   function onMove(e) {
     if (!isDrawing) return;
     e.preventDefault();
+    if (e.type === "touchmove") {
+      lastTouchTs = Date.now();
+    } else if (e.type === "mousemove") {
+      if (Date.now() - lastTouchTs < 700) return;
+    }
 
     if (tool === "pan") {
       var cx = e.clientX != null ? e.clientX : e.touches[0].clientX;
       var cy = e.clientY != null ? e.clientY : e.touches[0].clientY;
       var rect = canvas.getBoundingClientRect();
-      // Переводимо рух миші з CSS-пікселів у внутрішні пікселі канвасу.
       var dx = (cx - lastX) * (canvas.width / rect.width);
       var dy = (cy - lastY) * (canvas.height / rect.height);
       panX += dx;
@@ -1305,45 +2196,115 @@
       clampPan();
       lastX = cx;
       lastY = cy;
-      composite();
+      scheduleComposite();
       return;
     }
 
     var pos = getPos(e);
 
-    if (tool === "line") {
-      // preview would need extra layer; for simplicity draw on up only
+    if (tool === "line" || tool === "rect" || tool === "ellipse" || tool === "gradient" || tool === "select") {
       lastX = pos.x;
       lastY = pos.y;
+      linePreviewEnd = { x: pos.x, y: pos.y };
+      scheduleComposite();
       return;
     }
 
-    if (tool === "pencil" || tool === "brush" || tool === "eraser" || tool === "circles") {
+    if (tool === "pencil" || tool === "brush" || tool === "eraser" || tool === "circles" ||
+        tool === "watercolor" || tool === "calligraphy" || tool === "noise") {
       var opts = {
         size: size,
         brush: tool === "brush",
         eraser: tool === "eraser",
-        circles: tool === "circles"
+        circles: tool === "circles",
+        watercolor: tool === "watercolor",
+        calligraphy: tool === "calligraphy",
+        noise: tool === "noise"
       };
       drawStroke(getActiveCtx(), lastX, lastY, pos.x, pos.y, opts);
       lastX = pos.x;
       lastY = pos.y;
-      composite();
+      scheduleComposite();
+    } else if (tool === "clone") {
+      cloneStampAt(getActiveCtx(), pos.x, pos.y, Math.max(2, size / 2 | 0));
+      lastX = pos.x;
+      lastY = pos.y;
+      scheduleComposite();
+    } else if (tool === "spray") {
+      sprayAt(getActiveCtx(), pos.x, pos.y, Math.max(4, size));
+      lastX = pos.x;
+      lastY = pos.y;
+      scheduleComposite();
+    } else if (tool === "blur") {
+      var dist = Math.hypot(pos.x - lastX, pos.y - lastY);
+      var step = Math.max(3, size * 0.5);
+      var n = Math.max(1, Math.ceil(dist / step));
+      if (n > 6) n = 6; // cap pixel reads per move event
+      for (var i = 1; i <= n; i++) {
+        var t = i / n;
+        blurAt(getActiveCtx(), lastX + (pos.x - lastX) * t, lastY + (pos.y - lastY) * t, Math.max(4, size));
+      }
+      lastX = pos.x;
+      lastY = pos.y;
+      scheduleComposite();
+    } else if (tool === "dodge" || tool === "burn") {
+      var dist2 = Math.hypot(pos.x - lastX, pos.y - lastY);
+      var step2 = Math.max(3, size * 0.55);
+      var n2 = Math.max(1, Math.ceil(dist2 / step2));
+      if (n2 > 6) n2 = 6;
+      for (var j = 1; j <= n2; j++) {
+        var t2 = j / n2;
+        toneAt(
+          getActiveCtx(),
+          lastX + (pos.x - lastX) * t2,
+          lastY + (pos.y - lastY) * t2,
+          Math.max(4, size),
+          tool
+        );
+      }
+      lastX = pos.x;
+      lastY = pos.y;
+      scheduleComposite();
     }
   }
 
   function onUp(e) {
-    if (!isDrawing) return;
+    if (e.type === "touchend" || e.type === "touchcancel" || e.type === "pointerup") {
+      if (e.type !== "pointerup" || e.pointerType === "touch") {
+        lastTouchTs = Date.now();
+      }
+    } else if (e.type === "mouseup") {
+      if (Date.now() - lastTouchTs < 700) return;
+    }
+    if (!isDrawing && !strokeDirty) return;
     isDrawing = false;
     stage.classList.remove("dragging");
 
-    if (tool === "line" && lineStart) {
+    if (lineStart && (tool === "line" || tool === "rect" || tool === "ellipse")) {
       var pos = getPos(e);
-      pushUndo();
-      drawStroke(getActiveCtx(), lineStart.x, lineStart.y, pos.x, pos.y, { size: size });
-      composite();
+      commitShape(tool, lineStart.x, lineStart.y, pos.x, pos.y);
+      strokeDirty = true;
+    } else if (lineStart && tool === "gradient") {
+      var posG = getPos(e);
+      commitGradient(lineStart.x, lineStart.y, posG.x, posG.y);
+      strokeDirty = true;
+    } else if (lineStart && tool === "select") {
+      var posS = getPos(e);
+      var sx = Math.min(lineStart.x, posS.x);
+      var sy = Math.min(lineStart.y, posS.y);
+      var sw = Math.abs(posS.x - lineStart.x);
+      var sh = Math.abs(posS.y - lineStart.y);
+      selection = (sw > 2 && sh > 2) ? { x: sx, y: sy, w: sw, h: sh } : null;
+      strokeDirty = false; // selection itself is not a paint action
     }
     lineStart = null;
+    linePreviewEnd = null;
+    cloneStrokeOrigin = null;
+    flushComposite();
+    if (strokeDirty && tool !== "pan") {
+      pushUndo();
+    }
+    strokeDirty = false;
   }
 
   canvas.addEventListener("mousedown", onDown);
@@ -1352,18 +2313,52 @@
   canvas.addEventListener("touchstart", onDown, { passive: false });
   canvas.addEventListener("touchmove", onMove, { passive: false });
   window.addEventListener("touchend", onUp);
+  window.addEventListener("pointerup", onUp);
+  // Safety: if pointer leaves the window mid-stroke, still commit history
+  window.addEventListener("blur", function () { finalizeStrokeIfNeeded(); });
 
   /* ===== TOOL BUTTONS ===== */
   document.querySelectorAll(".tool-btn").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var t = btn.getAttribute("data-tool");
 
-      if (t === "undo") { undo(); return; }
+      if (t === "undo") {
+        undo();
+        return;
+      }
+      if (t === "redo") {
+        redo();
+        return;
+      }
+      if (t === "shape-fill") {
+        shapeFill = !shapeFill;
+        btn.classList.toggle("active", shapeFill);
+        toast(shapeFill ? "Заливка фігур увімкнена" : "Лише контур фігур");
+        return;
+      }
+      if (t === "mirror-v") {
+        mirrorV = !mirrorV;
+        btn.classList.toggle("active", mirrorV);
+        toast(mirrorV ? "Дзеркало ↕ увімкнено" : "Дзеркало ↕ вимкнено");
+        return;
+      }
+      if (t === "grid") {
+        showGrid = !showGrid;
+        btn.classList.toggle("active", showGrid);
+        composite();
+        toast(showGrid ? "Сітка увімкнена" : "Сітка вимкнена");
+        return;
+      }
+      if (t === "rotate") {
+        rotateActiveLayer90();
+        return;
+      }
       if (t === "clear") {
         if (!confirm("Очистити всі шари?")) return;
-        pushUndo();
+        finalizeStrokeIfNeeded();
         layers.forEach(function (L) { L.ctx.clearRect(0, 0, W, H); });
         composite();
+        pushUndo();
         toast("Очищено");
         return;
       }
@@ -1379,7 +2374,7 @@
         a.download = "malyunok-" + Date.now() + ".png";
         a.href = tmp.toDataURL("image/png");
         a.click();
-        toast("Збережено PNG");
+        toast("Збережено PNG (" + W + "×" + H + ")");
         return;
       }
       if (t === "upload") {
@@ -1411,8 +2406,6 @@
         var bottom = Math.min(first, second);
         var top = Math.max(first, second);
 
-        pushUndo();
-
         // Об'єднуємо саме два обрані шари.
         layers[bottom].ctx.drawImage(layers[top].canvas, 0, 0);
         layers.splice(top, 1);
@@ -1428,25 +2421,28 @@
         selectedLayers = [];
         renderLayersUI();
         composite();
+        pushUndo();
         toast("Обрані шари об'єднано");
         return;
       }
       if (t === "mirror") {
         mirror = !mirror;
         btn.classList.toggle("active", mirror);
-        toast(mirror ? "Дзеркало увімкнено" : "Дзеркало вимкнено");
+        toast(mirror ? "Дзеркало ↔ увімкнено" : "Дзеркало ↔ вимкнено");
         return;
       }
 
       // regular tool select
+      var toggles = { mirror: 1, "mirror-v": 1, "shape-fill": 1, grid: 1 };
       document.querySelectorAll(".tool-btn").forEach(function (b) {
-        if (b.getAttribute("data-tool") !== "mirror") b.classList.remove("active");
+        var dt = b.getAttribute("data-tool");
+        if (!toggles[dt]) b.classList.remove("active");
       });
-      if (t !== "mirror") btn.classList.add("active");
+      if (!toggles[t]) btn.classList.add("active");
       tool = t;
       hudTool.textContent = toolNames[t] || t;
       stage.classList.toggle("panning", t === "pan");
-      canvas.style.cursor = t === "pan" ? "grab" : (t === "eyedropper" ? "copy" : "crosshair");
+      canvas.style.cursor = t === "pan" ? "grab" : (t === "eyedropper" ? "copy" : (t === "select" ? "crosshair" : "crosshair"));
     });
   });
 
@@ -1455,13 +2451,13 @@
     if (!f) return;
     var img = new Image();
     img.onload = function () {
-      pushUndo();
       var cx = getActiveCtx();
       cx.clearRect(0, 0, W, H);
       var scale = Math.min(W / img.width, H / img.height);
       var dw = img.width * scale, dh = img.height * scale;
       cx.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
       composite();
+      pushUndo();
       toast("Зображення завантажено");
     };
     img.src = URL.createObjectURL(f);
@@ -1470,15 +2466,14 @@
 
   document.getElementById("btn-layer-add").addEventListener("click", function () {
     if (layers.length >= MAX_LAYERS) { toast("Максимум " + MAX_LAYERS + " шари"); return; }
-    pushUndo();
     layers.push(createLayer());
     activeLayer = layers.length - 1;
     renderLayersUI();
     composite();
+    pushUndo();
   });
   document.getElementById("btn-layer-up").addEventListener("click", function () {
     if (activeLayer >= layers.length - 1) return;
-    pushUndo();
     var tmp = layers[activeLayer];
     layers[activeLayer] = layers[activeLayer + 1];
     layers[activeLayer + 1] = tmp;
@@ -1490,10 +2485,10 @@
     activeLayer++;
     renderLayersUI();
     composite();
+    pushUndo();
   });
   document.getElementById("btn-layer-down").addEventListener("click", function () {
     if (activeLayer <= 0) return;
-    pushUndo();
     var tmp = layers[activeLayer];
     layers[activeLayer] = layers[activeLayer - 1];
     layers[activeLayer - 1] = tmp;
@@ -1505,6 +2500,7 @@
     activeLayer--;
     renderLayersUI();
     composite();
+    pushUndo();
   });
 
   /* ===== CHAT & BOTS ===== */
@@ -1601,128 +2597,805 @@
     }, 4000 + Math.random() * 5000);
   }
 
-  function botDrawSomething() {
+  /* —— geometric “stickers” the bots assemble into theme drawings —— */
+  function botStroke(cx, style, width) {
+    cx.strokeStyle = style;
+    cx.fillStyle = style;
+    cx.lineWidth = width || 2;
+  }
+  function botOval(cx, x, y, rx, ry, fill) {
+    cx.beginPath();
+    cx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+    if (fill) cx.fill(); else cx.stroke();
+  }
+  function botCircle(cx, x, y, r, fill) {
+    cx.beginPath();
+    cx.arc(x, y, r, 0, Math.PI * 2);
+    if (fill) cx.fill(); else cx.stroke();
+  }
+  function botRect(cx, x, y, w, h, fill) {
+    if (fill) cx.fillRect(x, y, w, h);
+    else cx.strokeRect(x, y, w, h);
+  }
+  function botPoly(cx, pts, close, fill) {
+    cx.beginPath();
+    cx.moveTo(pts[0][0], pts[0][1]);
+    for (var i = 1; i < pts.length; i++) cx.lineTo(pts[i][0], pts[i][1]);
+    if (close) cx.closePath();
+    if (fill) cx.fill(); else cx.stroke();
+  }
+
+  function botDrawJane(cx, x, y) {
+    var ink = pick(["rgba(70,70,78,0.9)", "rgba(95,88,78,0.88)", "rgba(58,64,74,0.9)"]);
+    var soft = "rgba(130,128,132,0.55)";
+    var mid = "rgba(100,98,102,0.75)";
+    var kind = Math.random();
+
+    // rats / scenes / ruins / tamagotchi
+    if (kind < 0.42) {
+      var ratType = Math.random();
+      botStroke(cx, ink, 2);
+
+      if (ratType < 0.25) {
+        // 1) Grey — long profile, low to ground (S-curves)
+        cx.beginPath();
+        cx.moveTo(x - 36, y + 2);
+        cx.bezierCurveTo(x - 40, y - 10, x - 20, y - 16, x - 8, y - 10);
+        cx.bezierCurveTo(x + 10, y - 18, x + 32, y - 8, x + 36, y + 4);
+        cx.bezierCurveTo(x + 30, y + 16, x + 8, y + 18, x - 12, y + 14);
+        cx.bezierCurveTo(x - 28, y + 14, x - 34, y + 8, x - 36, y + 2);
+        cx.stroke();
+        cx.beginPath();
+        cx.moveTo(x - 28, y - 2);
+        cx.quadraticCurveTo(x - 48, y + 1, x - 30, y + 8);
+        cx.stroke();
+        cx.beginPath();
+        cx.moveTo(x - 18, y - 10);
+        cx.quadraticCurveTo(x - 14, y - 24, x - 6, y - 12);
+        cx.quadraticCurveTo(x - 12, y - 10, x - 18, y - 10);
+        cx.stroke();
+        botCircle(cx, x - 24, y - 2, 1.8, true);
+        botCircle(cx, x - 46, y + 1, 1.4, true);
+        cx.beginPath();
+        cx.moveTo(x - 16, y + 12); cx.quadraticCurveTo(x - 14, y + 20, x - 20, y + 20);
+        cx.moveTo(x - 2, y + 14); cx.quadraticCurveTo(x + 2, y + 22, x - 4, y + 22);
+        cx.moveTo(x + 14, y + 12); cx.quadraticCurveTo(x + 18, y + 20, x + 10, y + 20);
+        cx.stroke();
+        cx.beginPath();
+        cx.moveTo(x + 34, y + 2);
+        cx.bezierCurveTo(x + 55, y - 12, x + 62, y + 20, x + 48, y + 24);
+        cx.stroke();
+        botStroke(cx, soft, 1);
+        cx.beginPath();
+        cx.moveTo(x - 32, y); cx.lineTo(x - 50, y - 6);
+        cx.moveTo(x - 32, y + 4); cx.lineTo(x - 52, y + 4);
+        cx.moveTo(x - 32, y + 8); cx.lineTo(x - 48, y + 12);
+        cx.stroke();
+      } else if (ratType < 0.5) {
+        // 2) Sitting rat — round body, tail in a loop
+        cx.beginPath();
+        cx.moveTo(x - 8, y + 16);
+        cx.bezierCurveTo(x - 28, y + 16, x - 30, y - 8, x - 10, y - 18);
+        cx.bezierCurveTo(x + 8, y - 26, x + 28, y - 10, x + 22, y + 10);
+        cx.bezierCurveTo(x + 18, y + 22, x + 4, y + 24, x - 8, y + 16);
+        cx.stroke();
+        cx.beginPath();
+        cx.moveTo(x - 12, y - 12);
+        cx.bezierCurveTo(x - 20, y - 28, x + 6, y - 30, x + 4, y - 12);
+        cx.stroke();
+        cx.beginPath();
+        cx.moveTo(x - 10, y - 22); cx.quadraticCurveTo(x - 8, y - 34, x + 2, y - 24);
+        cx.moveTo(x + 2, y - 22); cx.quadraticCurveTo(x + 10, y - 34, x + 12, y - 20);
+        cx.stroke();
+        botCircle(cx, x - 4, y - 18, 2, true);
+        botCircle(cx, x + 6, y - 18, 2, true);
+        botCircle(cx, x, y - 10, 1.5, true);
+        cx.beginPath();
+        cx.moveTo(x + 20, y + 8);
+        cx.bezierCurveTo(x + 40, y + 4, x + 36, y + 28, x + 18, y + 22);
+        cx.bezierCurveTo(x + 10, y + 20, x + 14, y + 12, x + 20, y + 10);
+        cx.stroke();
+        cx.beginPath();
+        cx.moveTo(x - 6, y + 8); cx.lineTo(x - 4, y + 16);
+        cx.moveTo(x + 4, y + 8); cx.lineTo(x + 6, y + 16);
+        cx.stroke();
+      } else if (ratType < 0.75) {
+        // 3) Brown near rubble — stockier + brick
+        botStroke(cx, ink, 2.4);
+        cx.beginPath();
+        cx.moveTo(x - 30, y + 6);
+        cx.bezierCurveTo(x - 34, y - 8, x - 12, y - 20, x + 8, y - 12);
+        cx.bezierCurveTo(x + 28, y - 6, x + 34, y + 8, x + 24, y + 16);
+        cx.bezierCurveTo(x + 8, y + 22, x - 16, y + 20, x - 30, y + 6);
+        cx.stroke();
+        cx.beginPath();
+        cx.moveTo(x - 22, y - 4);
+        cx.bezierCurveTo(x - 38, y - 8, x - 44, y + 6, x - 26, y + 10);
+        cx.stroke();
+        cx.beginPath();
+        cx.moveTo(x - 20, y - 10);
+        cx.quadraticCurveTo(x - 18, y - 22, x - 8, y - 12);
+        cx.stroke();
+        botCircle(cx, x - 28, y - 2, 2, true);
+        botStroke(cx, mid, 1.5);
+        botRect(cx, x - 8, y + 10, 14, 8, false);
+        cx.beginPath();
+        cx.moveTo(x - 8, y + 14); cx.lineTo(x + 6, y + 14);
+        cx.moveTo(x - 1, y + 10); cx.lineTo(x - 1, y + 18);
+        cx.stroke();
+        botStroke(cx, ink, 2);
+        cx.beginPath();
+        cx.moveTo(x + 26, y + 10);
+        cx.bezierCurveTo(x + 44, y + 18, x + 40, y + 32, x + 22, y + 28);
+        cx.stroke();
+      } else {
+        // 4) Adult + pup
+        cx.beginPath();
+        cx.moveTo(x - 8, y);
+        cx.bezierCurveTo(x - 10, y - 10, x + 8, y - 12, x + 16, y - 2);
+        cx.bezierCurveTo(x + 14, y + 10, x - 4, y + 10, x - 8, y);
+        cx.stroke();
+        cx.beginPath();
+        cx.moveTo(x - 6, y - 4); cx.quadraticCurveTo(x - 18, y - 2, x - 8, y + 2);
+        cx.stroke();
+        botCircle(cx, x - 10, y - 4, 1.3, true);
+        cx.beginPath();
+        cx.moveTo(x + 14, y); cx.quadraticCurveTo(x + 28, y - 8, x + 30, y + 6);
+        cx.stroke();
+        botStroke(cx, mid, 1.6);
+        cx.beginPath();
+        cx.moveTo(x - 28, y + 12);
+        cx.bezierCurveTo(x - 30, y + 4, x - 18, y + 2, x - 14, y + 10);
+        cx.bezierCurveTo(x - 16, y + 16, x - 26, y + 16, x - 28, y + 12);
+        cx.stroke();
+        botCircle(cx, x - 24, y + 8, 1, true);
+        cx.beginPath();
+        cx.moveTo(x - 14, y + 10); cx.quadraticCurveTo(x - 6, y + 6, x - 4, y + 14);
+        cx.stroke();
+      }
+    } else if (kind < 0.62) {
+      // —— сцени: пацюк на цеглі / у тумані / біля Signal-кафе ——
+      var scene = Math.random();
+      botStroke(cx, ink, 2);
+
+      // shared small rat silhouette (profile)
+      function janeSceneRat(ox, oy, sc) {
+        sc = sc || 1;
+        cx.beginPath();
+        cx.moveTo(ox - 22 * sc, oy);
+        cx.bezierCurveTo(ox - 24 * sc, oy - 8 * sc, ox - 8 * sc, oy - 12 * sc, ox + 6 * sc, oy - 6 * sc);
+        cx.bezierCurveTo(ox + 18 * sc, oy - 2 * sc, ox + 22 * sc, oy + 6 * sc, ox + 12 * sc, oy + 10 * sc);
+        cx.bezierCurveTo(ox - 2 * sc, oy + 12 * sc, ox - 18 * sc, oy + 8 * sc, ox - 22 * sc, oy);
+        cx.stroke();
+        cx.beginPath();
+        cx.moveTo(ox - 16 * sc, oy - 2 * sc);
+        cx.quadraticCurveTo(ox - 28 * sc, oy, ox - 18 * sc, oy + 4 * sc);
+        cx.stroke();
+        cx.beginPath();
+        cx.moveTo(ox - 12 * sc, oy - 8 * sc);
+        cx.quadraticCurveTo(ox - 10 * sc, oy - 16 * sc, ox - 4 * sc, oy - 8 * sc);
+        cx.stroke();
+        botCircle(cx, ox - 14 * sc, oy - 2 * sc, 1.4 * sc, true);
+        cx.beginPath();
+        cx.moveTo(ox + 18 * sc, oy + 2 * sc);
+        cx.bezierCurveTo(ox + 32 * sc, oy - 6 * sc, ox + 36 * sc, oy + 12 * sc, ox + 24 * sc, oy + 12 * sc);
+        cx.stroke();
+      }
+
+      if (scene < 0.34) {
+        // пацюк на стосі цегли
+        botStroke(cx, mid, 1.6);
+        // brick pile
+        botRect(cx, x - 28, y + 12, 18, 10, false);
+        botRect(cx, x - 8, y + 12, 18, 10, false);
+        botRect(cx, x + 12, y + 12, 16, 10, false);
+        botRect(cx, x - 18, y + 2, 18, 10, false);
+        botRect(cx, x + 2, y + 2, 18, 10, false);
+        botRect(cx, x - 8, y - 8, 18, 10, false);
+        // mortar lines
+        botStroke(cx, soft, 1);
+        cx.beginPath();
+        cx.moveTo(x - 28, y + 17); cx.lineTo(x - 10, y + 17);
+        cx.moveTo(x - 8, y + 17); cx.lineTo(x + 10, y + 17);
+        cx.moveTo(x - 18, y + 7); cx.lineTo(x, y + 7);
+        cx.stroke();
+        botStroke(cx, ink, 2);
+        janeSceneRat(x + 2, y - 18, 0.95);
+      } else if (scene < 0.67) {
+        // пацюк у тумані
+        botStroke(cx, "rgba(150,152,158,0.35)", 1.4);
+        botOval(cx, x - 30, y + 20, 50, 10, false);
+        botOval(cx, x + 20, y + 28, 45, 12, false);
+        botOval(cx, x - 10, y + 36, 55, 9, false);
+        botOval(cx, x + 25, y + 8, 30, 8, false);
+        botStroke(cx, "rgba(90,90,96,0.55)", 1.8);
+        janeSceneRat(x, y, 1);
+        // faint second rat in fog
+        botStroke(cx, "rgba(120,120,125,0.35)", 1.3);
+        janeSceneRat(x + 40, y + 14, 0.65);
+      } else {
+        // біля кафе Signal
+        // cafe body
+        botStroke(cx, ink, 2);
+        botRect(cx, x - 20, y - 18, 70, 48, false);
+        // striped awning
+        botPoly(cx, [[x - 24, y - 18], [x - 16, y - 32], [x + 58, y - 32], [x + 54, y - 18]], true, false);
+        botStroke(cx, mid, 1.3);
+        for (var aw = x - 12; aw < x + 50; aw += 10) {
+          cx.beginPath();
+          cx.moveTo(aw, y - 18); cx.lineTo(aw + 4, y - 32);
+          cx.stroke();
+        }
+        // window + door
+        botStroke(cx, ink, 1.8);
+        botRect(cx, x - 8, y - 8, 22, 18, false);
+        botRect(cx, x + 24, y + 2, 14, 28, false);
+        // sign "S" (Signal)
+        botStroke(cx, ink, 2);
+        cx.beginPath();
+        cx.arc(x + 16, y - 40, 8, 0.3, Math.PI + 0.8);
+        cx.stroke();
+        cx.beginPath();
+        cx.arc(x + 16, y - 40, 8, Math.PI + 0.3, 0.8);
+        cx.stroke();
+        // warm window glow hint
+        botStroke(cx, "rgba(200,180,120,0.35)", 1);
+        botRect(cx, x - 6, y - 6, 18, 14, true);
+        // rat near entrance
+        botStroke(cx, ink, 2);
+        janeSceneRat(x - 36, y + 20, 0.85);
+        // ground
+        botStroke(cx, soft, 1.2);
+        cx.beginPath();
+        cx.moveTo(x - 50, y + 32); cx.lineTo(x + 60, y + 32);
+        cx.stroke();
+      }
+    } else if (kind < 0.84) {
+      // Detailed unfinished / abandoned building
+      botStroke(cx, ink, 2);
+      cx.beginPath();
+      cx.moveTo(x - 70, y + 40);
+      cx.lineTo(x - 40, y + 36);
+      cx.lineTo(x + 10, y + 38);
+      cx.lineTo(x + 55, y + 34);
+      cx.lineTo(x + 80, y + 40);
+      cx.stroke();
+
+      botPoly(cx, [[x - 36, y + 36], [x - 40, y - 18], [x + 8, y - 22], [x + 12, y + 36]], true, false);
+      botPoly(cx, [[x + 8, y + 36], [x + 6, y - 40], [x + 48, y - 36], [x + 50, y + 36]], true, false);
+
+      botStroke(cx, mid, 1.5);
+      cx.beginPath();
+      cx.moveTo(x - 38, y); cx.lineTo(x + 10, y - 2);
+      cx.moveTo(x - 36, y + 16); cx.lineTo(x + 12, y + 16);
+      cx.moveTo(x + 8, y - 12); cx.lineTo(x + 48, y - 10);
+      cx.moveTo(x + 8, y + 10); cx.lineTo(x + 48, y + 12);
+      cx.moveTo(x + 18, y - 38); cx.lineTo(x + 18, y + 36);
+      cx.moveTo(x + 34, y - 36); cx.lineTo(x + 34, y + 36);
+      cx.stroke();
+
+      botStroke(cx, ink, 2);
+      cx.beginPath();
+      cx.moveTo(x - 44, y - 16); cx.lineTo(x - 20, y - 44); cx.lineTo(x + 4, y - 20);
+      cx.stroke();
+      cx.beginPath();
+      cx.moveTo(x + 4, y - 38); cx.lineTo(x + 28, y - 52); cx.lineTo(x + 52, y - 34);
+      cx.stroke();
+      cx.beginPath();
+      cx.moveTo(x + 28, y - 48); cx.lineTo(x + 22, y - 20);
+      cx.stroke();
+
+      botRect(cx, x - 28, y - 10, 11, 14, false);
+      cx.beginPath();
+      cx.moveTo(x - 28, y - 3); cx.lineTo(x - 17, y - 3);
+      cx.moveTo(x - 22.5, y - 10); cx.lineTo(x - 22.5, y + 4);
+      cx.stroke();
+      botRect(cx, x - 28, y + 12, 11, 14, false);
+      cx.beginPath();
+      cx.moveTo(x - 28, y + 12); cx.lineTo(x - 17, y + 26);
+      cx.moveTo(x - 17, y + 12); cx.lineTo(x - 25, y + 22);
+      cx.stroke();
+      botRect(cx, x + 22, y - 28, 10, 12, false);
+      botRect(cx, x + 36, y - 26, 10, 12, false);
+
+      botRect(cx, x - 8, y + 14, 14, 22, false);
+      botStroke(cx, "rgba(40,40,45,0.45)", 1);
+      botRect(cx, x - 6, y + 16, 10, 18, true);
+
+      botStroke(cx, soft, 1);
+      for (var by = y + 20; by < y + 34; by += 5) {
+        cx.beginPath();
+        cx.moveTo(x + 20, by); cx.lineTo(x + 46, by);
+        cx.stroke();
+      }
+      cx.beginPath();
+      cx.moveTo(x + 28, y + 20); cx.lineTo(x + 28, y + 34);
+      cx.moveTo(x + 38, y + 22); cx.lineTo(x + 38, y + 34);
+      cx.moveTo(x - 30, y - 14); cx.lineTo(x - 24, y + 2); cx.lineTo(x - 32, y + 18);
+      cx.moveTo(x + 40, y - 8); cx.lineTo(x + 44, y + 14);
+      cx.stroke();
+
+      botStroke(cx, mid, 1.4);
+      cx.beginPath();
+      cx.moveTo(x + 10, y - 22); cx.lineTo(x + 6, y - 34);
+      cx.moveTo(x + 14, y - 22); cx.lineTo(x + 18, y - 36);
+      cx.moveTo(x - 16, y - 20); cx.lineTo(x - 12, y - 32);
+      cx.stroke();
+
+      botStroke(cx, "rgba(155,158,160,0.4)", 1.3);
+      botOval(cx, x - 10, y + 48, 40, 8, false);
+      botOval(cx, x + 40, y + 52, 32, 7, false);
+
+      botStroke(cx, soft, 1.4);
+      botRect(cx, x - 72, y + 8, 16, 28, false);
+      botPoly(cx, [[x - 74, y + 8], [x - 64, y - 6], [x - 54, y + 8]], true, false);
+      botRect(cx, x - 58, y + 18, 8, 10, false);
+    } else {
+      // tamagotchi + antenna
+      botStroke(cx, ink, 2);
+      botOval(cx, x, y, 20, 28, false);
+      botOval(cx, x, y - 2, 15, 20, false);
+      botRect(cx, x - 11, y - 14, 22, 16, false);
+      botCircle(cx, x - 4, y - 8, 1.6, true);
+      botCircle(cx, x + 5, y - 8, 1.6, true);
+      cx.beginPath();
+      cx.arc(x, y - 2, 5, 0.15, Math.PI - 0.15);
+      cx.stroke();
+      cx.beginPath();
+      cx.moveTo(x + 6, y - 28); cx.lineTo(x + 14, y - 40);
+      cx.stroke();
+      botCircle(cx, x + 14, y - 40, 2.5, false);
+      botCircle(cx, x - 9, y + 12, 3.2, false);
+      botCircle(cx, x + 9, y + 12, 3.2, false);
+      botCircle(cx, x, y + 19, 3.2, false);
+    }
+  }
+
+  function botDrawRomance(cx, x, y) {
+    var palette = ["rgba(255,140,175,0.85)", "rgba(170,130,220,0.8)", "rgba(90,170,255,0.75)", "rgba(40,40,55,0.85)"];
+    var ink = pick(palette);
+    var hairCol = pick(["rgba(40,40,55,0.9)", "rgba(90,50,120,0.88)", "rgba(30,30,40,0.9)", "rgba(180,100,140,0.85)"]);
+    botStroke(cx, ink, 2);
+    var kind = Math.random();
+    if (kind < 0.28) {
+      // anime face + geometric hair (spikes / bangs / twin-ish)
+      var hairStyle = Math.random();
+      // hair behind head first
+      botStroke(cx, hairCol, 2);
+      if (hairStyle < 0.34) {
+        // long side locks + bang triangles
+        botPoly(cx, [[x - 22, y - 20], [x - 34, y + 8], [x - 24, y + 10], [x - 18, y - 8]], true, false);
+        botPoly(cx, [[x + 22, y - 20], [x + 34, y + 8], [x + 24, y + 10], [x + 18, y - 8]], true, false);
+        botPoly(cx, [[x - 16, y - 28], [x - 8, y - 40], [x - 2, y - 26]], true, false);
+        botPoly(cx, [[x - 2, y - 28], [x + 6, y - 42], [x + 12, y - 26]], true, false);
+        botPoly(cx, [[x + 8, y - 26], [x + 16, y - 38], [x + 20, y - 22]], true, false);
+      } else if (hairStyle < 0.67) {
+        // short spiky
+        for (var sp = -3; sp <= 3; sp++) {
+          botPoly(cx, [
+            [x + sp * 7 - 3, y - 22],
+            [x + sp * 7, y - 38 - Math.abs(sp) * 2],
+            [x + sp * 7 + 3, y - 22]
+          ], true, false);
+        }
+        botPoly(cx, [[x - 26, y - 10], [x - 36, y + 4], [x - 22, y + 2]], true, false);
+        botPoly(cx, [[x + 26, y - 10], [x + 36, y + 4], [x + 22, y + 2]], true, false);
+      } else {
+        // twin tails
+        botPoly(cx, [[x - 18, y - 18], [x - 40, y - 8], [x - 36, y + 20], [x - 22, y - 6]], true, false);
+        botPoly(cx, [[x + 18, y - 18], [x + 40, y - 8], [x + 36, y + 20], [x + 22, y - 6]], true, false);
+        botOval(cx, x - 38, y + 22, 6, 8, false);
+        botOval(cx, x + 38, y + 22, 6, 8, false);
+        // crown
+        botOval(cx, x, y - 26, 20, 10, false);
+      }
+      // face
+      botStroke(cx, ink, 2);
+      botOval(cx, x, y, 26, 32, false);
+      // bangs over forehead
+      botStroke(cx, hairCol, 2);
+      botPoly(cx, [[x - 18, y - 18], [x - 10, y - 6], [x - 4, y - 16]], true, false);
+      botPoly(cx, [[x - 4, y - 18], [x + 2, y - 4], [x + 8, y - 16]], true, false);
+      botPoly(cx, [[x + 6, y - 18], [x + 14, y - 6], [x + 18, y - 16]], true, false);
+      // big eyes
+      botStroke(cx, ink, 2);
+      botOval(cx, x - 9, y - 4, 7, 10, false);
+      botOval(cx, x + 9, y - 4, 7, 10, false);
+      botCircle(cx, x - 9, y - 2, 3, true);
+      botCircle(cx, x + 9, y - 2, 3, true);
+      botStroke(cx, "rgba(255,255,255,0.9)", 1);
+      botCircle(cx, x - 11, y - 6, 1.5, true);
+      botCircle(cx, x + 7, y - 6, 1.5, true);
+      botStroke(cx, ink, 2);
+      cx.beginPath();
+      cx.arc(x, y + 12, 5, 0.15, Math.PI - 0.15);
+      cx.stroke();
+      botStroke(cx, "rgba(255,150,170,0.45)", 1);
+      botOval(cx, x - 16, y + 6, 5, 3, true);
+      botOval(cx, x + 16, y + 6, 5, 3, true);
+    } else if (kind < 0.50) {
+      // NEW: anime face 3/4 + long geometric hair
+      botStroke(cx, hairCol, 2);
+      botPoly(cx, [[x - 10, y - 30], [x + 8, y - 44], [x + 28, y - 28], [x + 32, y + 8], [x + 18, y + 20], [x + 22, y - 10]], true, false);
+      botPoly(cx, [[x - 8, y - 20], [x - 28, y - 8], [x - 24, y + 24], [x - 10, y + 8]], true, false);
+      botStroke(cx, ink, 2);
+      botOval(cx, x, y, 24, 30, false);
+      botStroke(cx, hairCol, 2);
+      botPoly(cx, [[x - 14, y - 16], [x - 4, y - 2], [x + 2, y - 14]], true, false);
+      botPoly(cx, [[x + 2, y - 16], [x + 10, y - 2], [x + 16, y - 14]], true, false);
+      botStroke(cx, ink, 2);
+      botOval(cx, x - 6, y - 2, 6, 9, false);
+      botOval(cx, x + 10, y - 2, 5, 8, false);
+      botCircle(cx, x - 6, y, 2.5, true);
+      botCircle(cx, x + 10, y, 2, true);
+      botStroke(cx, "rgba(255,255,255,0.9)", 1);
+      botCircle(cx, x - 8, y - 4, 1.2, true);
+      botStroke(cx, ink, 1.5);
+      cx.beginPath();
+      cx.moveTo(x + 2, y + 10); cx.quadraticCurveTo(x + 6, y + 14, x + 12, y + 10);
+      cx.stroke();
+    } else if (kind < 0.55) {
+      // dog (cute) — без змін логіки
+      botOval(cx, x, y + 6, 28, 18, false);
+      botCircle(cx, x - 22, y - 6, 14, false);
+      botPoly(cx, [[x - 30, y - 14], [x - 34, y - 28], [x - 22, y - 16]], true, false);
+      botPoly(cx, [[x - 16, y - 16], [x - 10, y - 28], [x - 8, y - 12]], true, false);
+      botOval(cx, x - 30, y - 2, 8, 6, false);
+      botCircle(cx, x - 34, y - 2, 2, true);
+      botCircle(cx, x - 26, y - 10, 2, true);
+      botCircle(cx, x - 18, y - 10, 2, true);
+      cx.beginPath();
+      cx.moveTo(x + 26, y + 2);
+      cx.quadraticCurveTo(x + 40, y - 16, x + 36, y + 10);
+      cx.stroke();
+      botRect(cx, x - 14, y + 18, 5, 14, false);
+      botRect(cx, x + 6, y + 18, 5, 14, false);
+    } else if (kind < 0.68) {
+      // heart + sparkles — без змін
+      cx.beginPath();
+      cx.moveTo(x, y + 16);
+      cx.bezierCurveTo(x - 28, y + 2, x - 22, y - 22, x, y - 8);
+      cx.bezierCurveTo(x + 22, y - 22, x + 28, y + 2, x, y + 16);
+      cx.stroke();
+      botCircle(cx, x + 22, y - 18, 2, true);
+      botCircle(cx, x - 24, y - 10, 1.5, true);
+      botCircle(cx, x + 18, y + 14, 1.5, true);
+      botPoly(cx, [[x + 30, y], [x + 32, y + 6], [x + 38, y + 8], [x + 32, y + 10], [x + 30, y + 16], [x + 28, y + 10], [x + 22, y + 8], [x + 28, y + 6]], true, false);
+    } else if (kind < 0.86) {
+      // дівчина мрії — довге волосся, плечі, бант
+      botStroke(cx, hairCol, 2);
+      // long hair mass behind
+      botPoly(cx, [[x - 16, y - 28], [x - 40, y - 10], [x - 44, y + 50], [x - 20, y + 36], [x - 18, y + 8]], true, false);
+      botPoly(cx, [[x + 16, y - 28], [x + 40, y - 10], [x + 44, y + 50], [x + 20, y + 36], [x + 18, y + 8]], true, false);
+      botOval(cx, x, y - 30, 22, 12, false);
+      // face
+      botStroke(cx, ink, 2);
+      botOval(cx, x, y, 22, 28, false);
+      // bangs
+      botStroke(cx, hairCol, 2);
+      botPoly(cx, [[x - 16, y - 16], [x - 8, y - 2], [x - 2, y - 14]], true, false);
+      botPoly(cx, [[x - 2, y - 16], [x + 4, y + 0], [x + 10, y - 14]], true, false);
+      botPoly(cx, [[x + 6, y - 16], [x + 14, y - 2], [x + 18, y - 14]], true, false);
+      // eyes
+      botStroke(cx, ink, 2);
+      botOval(cx, x - 7, y - 2, 6, 8, false);
+      botOval(cx, x + 8, y - 2, 6, 8, false);
+      botCircle(cx, x - 7, y, 2.5, true);
+      botCircle(cx, x + 8, y, 2.5, true);
+      botStroke(cx, "rgba(255,255,255,0.9)", 1);
+      botCircle(cx, x - 9, y - 4, 1.2, true);
+      botCircle(cx, x + 6, y - 4, 1.2, true);
+      botStroke(cx, ink, 1.5);
+      cx.beginPath();
+      cx.arc(x + 1, y + 12, 4, 0.2, Math.PI - 0.2);
+      cx.stroke();
+      // shoulders / dress neckline
+      botStroke(cx, pick(["rgba(255,160,190,0.7)", "rgba(180,150,220,0.7)"]), 2);
+      cx.beginPath();
+      cx.moveTo(x - 28, y + 40);
+      cx.quadraticCurveTo(x - 18, y + 22, x - 10, y + 28);
+      cx.quadraticCurveTo(x, y + 34, x + 10, y + 28);
+      cx.quadraticCurveTo(x + 18, y + 22, x + 28, y + 40);
+      cx.stroke();
+      // hair ribbon
+      botStroke(cx, "rgba(255,120,160,0.85)", 1.8);
+      botPoly(cx, [[x + 12, y - 34], [x + 28, y - 40], [x + 22, y - 28]], true, false);
+      botPoly(cx, [[x + 12, y - 34], [x + 26, y - 22], [x + 14, y - 26]], true, false);
+    } else {
+      // смайли що цілуються
+      var left = x - 28, right = x + 28;
+      // left face
+      botStroke(cx, ink, 2);
+      botCircle(cx, left, y, 22, false);
+      botCircle(cx, left - 6, y - 4, 2.5, true);
+      botCircle(cx, left + 6, y - 4, 2.5, true);
+      cx.beginPath();
+      cx.arc(left, y + 6, 8, 0.15, Math.PI - 0.15);
+      cx.stroke();
+      // right face
+      botCircle(cx, right, y, 22, false);
+      botCircle(cx, right - 6, y - 4, 2.5, true);
+      botCircle(cx, right + 6, y - 4, 2.5, true);
+      cx.beginPath();
+      cx.arc(right, y + 6, 8, 0.15, Math.PI - 0.15);
+      cx.stroke();
+      // kiss marks between them
+      botStroke(cx, "rgba(255,100,140,0.85)", 2);
+      function tinyHeart(hx, hy, s) {
+        cx.beginPath();
+        cx.moveTo(hx, hy + 4 * s);
+        cx.bezierCurveTo(hx - 8 * s, hy - 2 * s, hx - 4 * s, hy - 8 * s, hx, hy - 2 * s);
+        cx.bezierCurveTo(hx + 4 * s, hy - 8 * s, hx + 8 * s, hy - 2 * s, hx, hy + 4 * s);
+        cx.stroke();
+      }
+      tinyHeart(x, y - 6, 0.7);
+      tinyHeart(x - 8, y + 14, 0.45);
+      tinyHeart(x + 10, y + 10, 0.4);
+      // blush
+      botStroke(cx, "rgba(255,150,170,0.4)", 1);
+      botOval(cx, left + 10, y + 4, 4, 2.5, true);
+      botOval(cx, right - 10, y + 4, 4, 2.5, true);
+    }
+  }
+
+  function botDrawChild(cx, x, y) {
+    var r = 40 + Math.random() * 180 | 0;
+    var g = 40 + Math.random() * 180 | 0;
+    var b = 40 + Math.random() * 180 | 0;
+    var ink = "rgba(" + r + "," + g + "," + b + ",0.9)";
+    botStroke(cx, ink, 3 + Math.random() * 4);
+    var kind = Math.random();
+    if (kind < 0.4) {
+      // cat (wobbly geometry)
+      botCircle(cx, x, y, 20, false);
+      botPoly(cx, [[x - 16, y - 12], [x - 22, y - 32], [x - 4, y - 16]], true, false);
+      botPoly(cx, [[x + 16, y - 12], [x + 22, y - 32], [x + 4, y - 16]], true, false);
+      botCircle(cx, x - 7, y - 2, 3, true);
+      botCircle(cx, x + 7, y - 2, 3, true);
+      botPoly(cx, [[x, y + 2], [x - 3, y + 8], [x + 3, y + 8]], true, true);
+      // whiskers
+      cx.beginPath();
+      cx.moveTo(x - 8, y + 6); cx.lineTo(x - 28, y + 2);
+      cx.moveTo(x - 8, y + 10); cx.lineTo(x - 26, y + 12);
+      cx.moveTo(x + 8, y + 6); cx.lineTo(x + 28, y + 2);
+      cx.moveTo(x + 8, y + 10); cx.lineTo(x + 26, y + 12);
+      cx.stroke();
+      // body scribble
+      botOval(cx, x, y + 32, 18, 14, false);
+    } else if (kind < 0.75) {
+      // dog or "maybe cat"
+      botCircle(cx, x, y, 18, false);
+      botOval(cx, x, y + 28, 22, 16, false);
+      botOval(cx, x - 18, y - 4, 8, 12, false);
+      botOval(cx, x + 18, y - 4, 8, 12, false);
+      botCircle(cx, x - 6, y - 2, 2.5, true);
+      botCircle(cx, x + 6, y - 2, 2.5, true);
+      botOval(cx, x, y + 6, 6, 4, false);
+      // shaky legs
+      cx.beginPath();
+      cx.moveTo(x - 10, y + 40); cx.lineTo(x - 12, y + 55);
+      cx.moveTo(x + 10, y + 40); cx.lineTo(x + 14, y + 54);
+      cx.stroke();
+    } else {
+      // sun + house doodle
+      botCircle(cx, x - 40, y - 30, 14, false);
+      for (var ray = 0; ray < 8; ray++) {
+        var a = (ray / 8) * Math.PI * 2;
+        cx.beginPath();
+        cx.moveTo(x - 40 + Math.cos(a) * 16, y - 30 + Math.sin(a) * 16);
+        cx.lineTo(x - 40 + Math.cos(a) * 24, y - 30 + Math.sin(a) * 24);
+        cx.stroke();
+      }
+      botRect(cx, x, y, 40, 30, false);
+      botPoly(cx, [[x - 6, y], [x + 20, y - 22], [x + 46, y]], true, false);
+      botRect(cx, x + 14, y + 12, 12, 18, false);
+    }
+  }
+
+  function botDrawSmart(cx, x, y) {
+    var ink = "rgba(50,110,175,0.85)";
+    botStroke(cx, ink, 2);
+    var kind = Math.random();
+    if (kind < 0.25) {
+      // isometric-ish cube suggestion
+      var s = 28;
+      botPoly(cx, [[x, y - s], [x + s, y - s / 2], [x + s, y + s / 2], [x, y + s], [x - s, y + s / 2], [x - s, y - s / 2]], true, false);
+      cx.beginPath();
+      cx.moveTo(x, y - s); cx.lineTo(x, y + s / 6);
+      cx.moveTo(x, y + s / 6); cx.lineTo(x + s, y - s / 2);
+      cx.moveTo(x, y + s / 6); cx.lineTo(x - s, y - s / 2);
+      cx.stroke();
+    } else if (kind < 0.5) {
+      // tree: circle crown + rectangle trunk + ground line
+      botCircle(cx, x, y - 10, 22, false);
+      botCircle(cx, x - 12, y - 4, 14, false);
+      botCircle(cx, x + 12, y - 4, 14, false);
+      botRect(cx, x - 5, y + 10, 10, 28, false);
+      cx.beginPath();
+      cx.moveTo(x - 40, y + 38); cx.lineTo(x + 40, y + 38);
+      cx.stroke();
+    } else if (kind < 0.75) {
+      // face helper: circle + guidelines (like construction drawing)
+      botCircle(cx, x, y, 30, false);
+      cx.setLineDash([4, 3]);
+      cx.beginPath();
+      cx.moveTo(x - 30, y); cx.lineTo(x + 30, y);
+      cx.moveTo(x, y - 30); cx.lineTo(x, y + 30);
+      cx.stroke();
+      cx.setLineDash([]);
+      botOval(cx, x - 10, y - 4, 6, 4, false);
+      botOval(cx, x + 10, y - 4, 6, 4, false);
+      cx.beginPath();
+      cx.arc(x, y + 8, 10, 0.2, Math.PI - 0.2);
+      cx.stroke();
+    } else {
+      // star / compass rose
+      var pts = [];
+      for (var i = 0; i < 10; i++) {
+        var ang = -Math.PI / 2 + i * Math.PI / 5;
+        var rad = i % 2 === 0 ? 28 : 12;
+        pts.push([x + Math.cos(ang) * rad, y + Math.sin(ang) * rad]);
+      }
+      botPoly(cx, pts, true, false);
+      botCircle(cx, x, y, 4, false);
+    }
+  }
+
+  /** Compose a full scene with fixed slots so elements don't stack on each other. */
+  function botDrawScene(cx, style) {
+    if (style === "jane") {
+      var janeScene = Math.random();
+      if (janeScene < 0.5) {
+        // перехрестя + кафе + пацюки
+        // road cross
+        botStroke(cx, "rgba(90,90,95,0.55)", 3);
+        cx.beginPath();
+        cx.moveTo(40, H * 0.62); cx.lineTo(W - 40, H * 0.62);
+        cx.moveTo(W * 0.45, 80); cx.lineTo(W * 0.45, H - 40);
+        cx.stroke();
+        botStroke(cx, "rgba(200,200,120,0.5)", 2);
+        for (var d = 100; d < W - 80; d += 28) {
+          cx.beginPath();
+          cx.moveTo(d, H * 0.62); cx.lineTo(d + 14, H * 0.62);
+          cx.stroke();
+        }
+        // cafe left
+        botStroke(cx, "rgba(75,75,82,0.9)", 2);
+        botRect(cx, 50, 120, 90, 70, false);
+        botPoly(cx, [[46, 120], [55, 100], [140, 100], [145, 120]], true, false);
+        botRect(cx, 65, 140, 28, 22, false);
+        botStroke(cx, "rgba(200,180,120,0.35)", 1);
+        botRect(cx, 67, 142, 24, 18, true);
+        botStroke(cx, "rgba(75,75,82,0.9)", 2);
+        botRect(cx, 105, 150, 18, 40, false);
+        // Signal-ish S
+        cx.beginPath();
+        cx.arc(95, 90, 10, 0.4, Math.PI + 0.7);
+        cx.stroke();
+        // building right
+        botRect(cx, W - 160, 100, 70, 100, false);
+        botRect(cx, W - 145, 120, 16, 16, false);
+        botRect(cx, W - 120, 120, 16, 16, false);
+        botRect(cx, W - 145, 150, 16, 16, false);
+        // rats in free slots (bottom corners / roadside)
+        botDrawJane(cx, 120, H - 90);
+        botDrawJane(cx, W - 120, H - 100);
+        // fog
+        botStroke(cx, "rgba(150,152,158,0.3)", 1.5);
+        botOval(cx, W * 0.5, H - 50, 120, 14, false);
+      } else {
+        // вулиця + тамагочі + один пацюк
+        botStroke(cx, "rgba(90,90,95,0.5)", 2);
+        cx.beginPath();
+        cx.moveTo(30, H - 80); cx.lineTo(W - 30, H - 80);
+        cx.stroke();
+        // row of simple facades
+        var bx;
+        for (bx = 40; bx < W - 100; bx += 110) {
+          botStroke(cx, "rgba(80,80,88,0.85)", 1.8);
+          botRect(cx, bx, 140, 90, 110, false);
+          botRect(cx, bx + 12, 160, 20, 18, false);
+          botRect(cx, bx + 50, 160, 20, 18, false);
+          botRect(cx, bx + 35, 200, 22, 50, false);
+        }
+        // tamagotchi center-bottom, rat side
+        botDrawJane(cx, W * 0.5, H - 140);
+        botDrawJane(cx, 100, H - 100);
+      }
+      return;
+    }
+
+    if (style === "romance") {
+      // фантастичний світ: місяць, пагорби, дівчина/серце, зірки
+      // sky wash (soft filled circles)
+      botStroke(cx, "rgba(120,100,180,0.12)", 1);
+      botCircle(cx, W * 0.5, 0, 200, true);
+      botStroke(cx, "rgba(255,200,220,0.15)", 1);
+      botCircle(cx, W * 0.2, 40, 80, true);
+      // moon
+      botStroke(cx, "rgba(230,220,255,0.85)", 2);
+      botCircle(cx, W - 100, 80, 28, false);
+      botStroke(cx, "rgba(40,40,60,0.3)", 1);
+      botCircle(cx, W - 90, 75, 20, true);
+      // hills
+      botStroke(cx, "rgba(80,60,120,0.7)", 2);
+      cx.beginPath();
+      cx.moveTo(20, H - 60);
+      cx.quadraticCurveTo(W * 0.25, H - 140, W * 0.5, H - 70);
+      cx.quadraticCurveTo(W * 0.75, H - 150, W - 20, H - 60);
+      cx.stroke();
+      // stars
+      botStroke(cx, "rgba(255,220,255,0.8)", 1.5);
+      var stars = [[80, 60], [150, 100], [220, 50], [400, 70], [500, 110], [600, 55], [700, 90]];
+      for (var si = 0; si < stars.length; si++) {
+        var sx = stars[si][0], sy = stars[si][1];
+        cx.beginPath();
+        cx.moveTo(sx, sy - 4); cx.lineTo(sx, sy + 4);
+        cx.moveTo(sx - 4, sy); cx.lineTo(sx + 4, sy);
+        cx.stroke();
+      }
+      // focal figure in lower center slot
+      botDrawRomance(cx, W * 0.5, H - 160);
+      // small heart accent top-left free slot
+      botStroke(cx, "rgba(255,140,175,0.75)", 2);
+      cx.beginPath();
+      cx.moveTo(90, 160);
+      cx.bezierCurveTo(70, 145, 70, 125, 90, 135);
+      cx.bezierCurveTo(110, 125, 110, 145, 90, 160);
+      cx.stroke();
+      return;
+    }
+
+    if (style === "child") {
+      // playground scene: sun left, house right, pet center
+      botDrawChild(cx, 100, 100);
+      botDrawChild(cx, W - 140, H - 160);
+      botDrawChild(cx, W * 0.45, H - 140);
+      return;
+    }
+
+    // smart: structured diagram across slots
+    botDrawSmart(cx, 120, 120);
+    botDrawSmart(cx, W - 140, 130);
+    botDrawSmart(cx, W * 0.5, H - 130);
+  }
+
+  function botDrawSomething(forceScene) {
     // The bot-lock blocks ONLY the bots from drawing — it never affects
     // the human user, who can keep drawing at any time.
     if (!currentBot || drawingLocked) return;
     botBusy = true;
-    pushUndo();
     var cx = getActiveCtx();
     var style = currentBot.drawStyle;
-    var col = colorStr();
-
-    // simple procedural drawings per style
-    var cx0 = 80 + Math.random() * (W - 160);
-    var cy0 = 60 + Math.random() * (H - 120);
 
     cx.save();
     cx.lineCap = "round";
     cx.lineJoin = "round";
 
-    if (style === "child") {
-      cx.strokeStyle = "rgba(" + (20 + Math.random() * 200 | 0) + "," + (20 + Math.random() * 200 | 0) + "," + (20 + Math.random() * 200 | 0) + ",0.85)";
-      cx.lineWidth = 3 + Math.random() * 8;
-      cx.beginPath();
-      var x = cx0, y = cy0;
-      cx.moveTo(x, y);
-      for (var i = 0; i < 8 + Math.random() * 12; i++) {
-        x += (Math.random() - 0.5) * 40;
-        y += (Math.random() - 0.5) * 40;
-        cx.lineTo(x, y);
-      }
-      cx.stroke();
-      // maybe a "face"
-      if (Math.random() < 0.4) {
-        cx.beginPath();
-        cx.arc(cx0, cy0, 15 + Math.random() * 20, 0, Math.PI * 2);
-        cx.stroke();
-      }
-    } else if (style === "jane") {
-      // soft grey/brown tones, small creatures or buildings
-      var tones = ["rgba(90,90,95,0.7)", "rgba(120,100,80,0.65)", "rgba(70,80,90,0.7)", "rgba(140,130,120,0.6)"];
-      cx.strokeStyle = pick(tones);
-      cx.fillStyle = pick(tones);
-      cx.lineWidth = 1.5 + Math.random() * 2;
-      if (Math.random() < 0.45) {
-        // small rat-like
-        cx.beginPath();
-        cx.ellipse(cx0, cy0, 18, 10, 0, 0, Math.PI * 2);
-        cx.stroke();
-        cx.beginPath();
-        cx.moveTo(cx0 + 16, cy0);
-        cx.quadraticCurveTo(cx0 + 30, cy0 - 8, cx0 + 28, cy0 + 6);
-        cx.stroke();
-        // ears
-        cx.beginPath();
-        cx.arc(cx0 - 10, cy0 - 8, 5, 0, Math.PI * 2);
-        cx.stroke();
-      } else if (Math.random() < 0.5) {
-        // simple building / street
-        cx.strokeRect(cx0 - 20, cy0 - 30, 40, 50);
-        cx.strokeRect(cx0 - 8, cy0 + 5, 12, 15);
-        cx.beginPath();
-        cx.moveTo(cx0 - 25, cy0 - 30);
-        cx.lineTo(cx0, cy0 - 50);
-        cx.lineTo(cx0 + 25, cy0 - 30);
-        cx.stroke();
-      } else {
-        // tamagotchi-ish oval device
-        cx.beginPath();
-        cx.ellipse(cx0, cy0, 16, 22, 0, 0, Math.PI * 2);
-        cx.stroke();
-        cx.strokeRect(cx0 - 8, cy0 - 8, 16, 12);
-      }
-    } else if (style === "romance") {
-      cx.strokeStyle = pick(["rgba(255,150,180,0.8)", "rgba(180,140,220,0.75)", "rgba(100,180,255,0.7)", "rgba(40,40,50,0.8)"]);
-      cx.lineWidth = 2;
-      if (Math.random() < 0.5) {
-        // anime-ish eye or face outline
-        cx.beginPath();
-        cx.ellipse(cx0, cy0, 22, 28, 0, 0, Math.PI * 2);
-        cx.stroke();
-        cx.beginPath();
-        cx.ellipse(cx0 - 7, cy0 - 4, 5, 7, 0, 0, Math.PI * 2);
-        cx.stroke();
-        cx.beginPath();
-        cx.ellipse(cx0 + 7, cy0 - 4, 5, 7, 0, 0, Math.PI * 2);
-        cx.stroke();
-      } else {
-        // dog silhouette rough
-        cx.beginPath();
-        cx.moveTo(cx0 - 25, cy0 + 10);
-        cx.quadraticCurveTo(cx0 - 10, cy0 - 25, cx0 + 15, cy0 - 10);
-        cx.quadraticCurveTo(cx0 + 35, cy0, cx0 + 20, cy0 + 20);
-        cx.lineTo(cx0 - 20, cy0 + 18);
-        cx.closePath();
-        cx.stroke();
-      }
+    // ~40% (or forced) full composed scene; else single sticker in a free-ish slot
+    if (forceScene || Math.random() < 0.4) {
+      botDrawScene(cx, style);
     } else {
-      // smart / ai_ta — geometric helpful shapes
-      cx.strokeStyle = "rgba(60,120,180,0.75)";
-      cx.lineWidth = 2;
-      var kind = Math.random();
-      if (kind < 0.33) {
-        cx.beginPath();
-        cx.arc(cx0, cy0, 20 + Math.random() * 25, 0, Math.PI * 2);
-        cx.stroke();
-      } else if (kind < 0.66) {
-        var s = 25 + Math.random() * 30;
-        cx.strokeRect(cx0 - s / 2, cy0 - s / 2, s, s);
-      } else {
-        cx.beginPath();
-        cx.moveTo(cx0, cy0 - 30);
-        cx.lineTo(cx0 + 25, cy0 + 20);
-        cx.lineTo(cx0 - 25, cy0 + 20);
-        cx.closePath();
-        cx.stroke();
-      }
+      var slots = [
+        [W * 0.25, H * 0.35],
+        [W * 0.7, H * 0.35],
+        [W * 0.3, H * 0.7],
+        [W * 0.65, H * 0.7],
+        [W * 0.5, H * 0.5]
+      ];
+      var slot = pick(slots);
+      if (style === "jane") botDrawJane(cx, slot[0], slot[1]);
+      else if (style === "romance") botDrawRomance(cx, slot[0], slot[1]);
+      else if (style === "child") botDrawChild(cx, slot[0], slot[1]);
+      else botDrawSmart(cx, slot[0], slot[1]);
     }
 
     cx.restore();
     composite();
+    pushUndo();
     botBusy = false;
 
-    if (Math.random() < 0.5) {
+    if (Math.random() < 0.55) {
       setTimeout(function () {
         if (currentBot) addChat(currentBot.name, pickUnique(currentBot.name, currentBot.phrases), "bot");
       }, 600);
@@ -1761,13 +3434,22 @@
     if (!text || !currentBot) return;
     chatInput.value = "";
     addChat("ти", text);
-    // simple reaction — also avoid repeating recent phrases
+    var lower = text.toLowerCase();
+    var wantsDraw = /намалюй|малюй|намалювати|помальо|щось намал/.test(lower);
+    var wantsScene = /сцен|картин|вулиц|перехрест|світ|фантаст/.test(lower);
+
     setTimeout(function () {
       if (!currentBot) return;
       var reply = getKeywordReply(currentBot, text);
 
       if (!reply) {
-        if (currentBot.name === "ai_ta") {
+        if (wantsDraw) {
+          reply = pick([
+            "малюю…",
+            "зараз щось з’явиться.",
+            "ок, один фрагмент на полотно."
+          ]);
+        } else if (currentBot.name === "ai_ta") {
           var aiExtra = [
             "Зрозумів. Можу спробувати допомогти з цим.",
             "Цікаво. Продовжуйте, я спостерігаю.",
@@ -1783,12 +3465,149 @@
       }
 
       addChat(currentBot.name, reply, "bot");
+
+      if (wantsDraw && !drawingLocked) {
+        setTimeout(function () {
+          if (currentBot) botDrawSomething(wantsScene || Math.random() < 0.55);
+        }, 400 + Math.random() * 600);
+      }
     }, 500 + Math.random() * 1200);
   }
 
   chatSend.addEventListener("click", onChatSend);
   chatInput.addEventListener("keydown", function (e) {
     if (e.key === "Enter") onChatSend();
+  });
+
+  /* ===== HOTKEYS ===== */
+  function selectToolByName(name) {
+    var btn = document.querySelector('.tool-btn[data-tool="' + name + '"]');
+    if (!btn) return;
+    btn.click();
+  }
+
+  function isTypingTarget(el) {
+    if (!el) return false;
+    var tag = (el.tagName || "").toLowerCase();
+    return tag === "input" || tag === "textarea" || tag === "select" || el.isContentEditable;
+  }
+
+  window.addEventListener("keydown", function (e) {
+    if (isTypingTarget(e.target)) return;
+
+    var mod = e.ctrlKey || e.metaKey;
+    var key = e.key;
+    var code = e.code;
+
+    // Space = temporary pan
+    if (key === " " || code === "Space") {
+      e.preventDefault();
+      if (!spacePan && tool !== "pan") {
+        prevToolBeforeSpace = tool;
+        spacePan = true;
+        selectToolByName("pan");
+      }
+      return;
+    }
+
+    if (mod && (key === "z" || key === "Z")) {
+      e.preventDefault();
+      if (e.shiftKey) redo();
+      else undo();
+      return;
+    }
+    if (mod && (key === "y" || key === "Y")) {
+      e.preventDefault();
+      redo();
+      return;
+    }
+    if (mod && (key === "s" || key === "S")) {
+      e.preventDefault();
+      document.querySelector('.tool-btn[data-tool="save"]').click();
+      return;
+    }
+    if (mod && (key === "c" || key === "C")) {
+      e.preventDefault();
+      copySelection();
+      return;
+    }
+    if (mod && (key === "v" || key === "V")) {
+      e.preventDefault();
+      pasteClipboard();
+      return;
+    }
+    if (mod && (key === "x" || key === "X")) {
+      e.preventDefault();
+      copySelection();
+      deleteSelection();
+      return;
+    }
+
+    if (key === "Delete" || key === "Backspace") {
+      e.preventDefault();
+      if (selection) deleteSelection();
+      else document.querySelector('.tool-btn[data-tool="clear"]').click();
+      return;
+    }
+
+    if (key === "[" || key === "х") {
+      size = Math.max(1, size - 1);
+      sizeRange.value = size;
+      sizeVal.textContent = size;
+      return;
+    }
+    if (key === "]" || key === "ъ" || key === "ї") {
+      size = Math.min(60, size + 1);
+      sizeRange.value = size;
+      sizeVal.textContent = size;
+      return;
+    }
+    if (key === "+" || key === "=") {
+      e.preventDefault();
+      document.querySelector('.tool-btn[data-tool="zoom-in"]').click();
+      return;
+    }
+    if (key === "-" || key === "_") {
+      e.preventDefault();
+      document.querySelector('.tool-btn[data-tool="zoom-out"]').click();
+      return;
+    }
+
+    // tool shortcuts (ignore when modifier held, except already handled)
+    if (mod) return;
+    var map = {
+      b: "pencil", p: "brush", w: "watercolor", a: "spray", c: "calligraphy",
+      n: "noise", l: "line", r: "rect", o: "ellipse", h: "gradient",
+      g: "fill", t: "text", m: "select", s: "clone", e: "eraser",
+      i: "eyedropper", f: "shape-fill", x: "mirror", v: "mirror-v"
+    };
+    var k = key.toLowerCase();
+    if (map[k]) {
+      e.preventDefault();
+      selectToolByName(map[k]);
+    }
+    if (key === ";") {
+      e.preventDefault();
+      selectToolByName("grid");
+    }
+    if (key >= "1" && key <= "4") {
+      var idx = parseInt(key, 10) - 1;
+      if (idx < layers.length) {
+        activeLayer = idx;
+        renderLayersUI();
+        hudLayer.textContent = (idx + 1);
+      }
+    }
+  });
+
+  window.addEventListener("keyup", function (e) {
+    if (e.key === " " || e.code === "Space") {
+      if (spacePan) {
+        spacePan = false;
+        if (prevToolBeforeSpace) selectToolByName(prevToolBeforeSpace);
+        prevToolBeforeSpace = null;
+      }
+    }
   });
 
   /* ===== INIT ===== */
@@ -1798,6 +3617,24 @@
     canvas.height = H;
     composite();
   }
+
+  var fontSelect = document.getElementById("font-select");
+  if (fontSelect) {
+    fontSelect.addEventListener("change", function () {
+      textFont = fontSelect.value || "sans-serif";
+      toast("Шрифт: " + fontSelect.options[fontSelect.selectedIndex].text);
+    });
+  }
+
+  document.querySelectorAll(".filter-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      runFilter(btn.getAttribute("data-filter"));
+    });
+  });
+
+  // shape-fill starts enabled — mark button active
+  var shapeFillBtn = document.querySelector('.tool-btn[data-tool="shape-fill"]');
+  if (shapeFillBtn) shapeFillBtn.classList.add("active");
 
   initPalette();
   setColor(26, 74, 96);
