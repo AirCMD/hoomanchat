@@ -7,7 +7,7 @@
 <title>ОСТРІВ: ХО</title>
 <link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
 <style>
-/* ===== Frutiger Aero XO UI ===== */
+/* ===== Frutiger Aero XO UI (лише контент острова; шапка / ліва / низ — з template) ===== */
 .xo-wrap { margin: 0 0 10px; }
 .xo-panel {
   background: linear-gradient(165deg, rgba(255,255,255,0.92) 0%, rgba(210,240,255,0.88) 45%, rgba(220,230,255,0.9) 100%);
@@ -406,9 +406,10 @@
   </div>
 </div>
 
-</div><!-- site-right -->
-</div><!-- site-layout -->
-</div><!-- hoomenchat-site -->
+<div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
+<div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span id="today-hoomen"></span></div></div>
+<div class="footer-line">Гуменчат — місце для гуменів. Версія для <a href="../rules.html">СЛАБКОГО ЗАЛІЗА</a></div>
+</div></div></div>
 
 <div class="kick-screen" id="kick-screen">
   <h2>🚫 Вилучено з гри</h2>
@@ -442,15 +443,15 @@
   var PLAYER = "copy_pasta";
 
   /* ===== STATE ===== */
-  var board = Array(9).fill(null); // 'X' | 'O' | null
+  var board = Array(9).fill(null);
   var humanSym = null;
   var botSym = null;
-  var current = null; // whose turn
+  var current = null;
   var opponent = null;
   var gameActive = false;
   var score = { you: 0, bot: 0 };
   var lastMoveAt = 0;
-  var afkAsked = []; // phrases already used this game
+  var afkAsked = [];
   var afkTimer = null;
   var botThinkTimer = null;
   var selTimer = null;
@@ -505,16 +506,6 @@
       .replace(/"/g, "&quot;");
   }
 
-  var GREETINGS = [
-    "Привіт, copy_pasta! Готова до бою? 🔥",
-    "О, copy_pasta зайшла! Давай зіграємо ✨",
-    "Йоу, copy_pasta! Не програй одразу 😏",
-    "Вітаю на острові ХО, copy_pasta!",
-    "copy_pasta, нарешті! Я вже чекав/чекала.",
-    "Хей! copy_pasta, покажи клас 💪",
-    "Здоров, copy_pasta. Готуйся думати.",
-    "Привіт-привіт! copy_pasta у грі 🎯"
-  ];
   var GREET_F = [
     "Привіт, copy_pasta! Готова до бою? 🔥",
     "О, copy_pasta зайшла! Давай зіграємо ✨",
@@ -566,7 +557,6 @@
     { re: /ти хто|хто ти/i, answers: ["твій суперник", "гумен з острова ХО", "я " ] }
   ];
 
-  /* Bad words (kick) — Ukrainian / mixed common */
   var BAD = [
     /п[іи]зд/i, /хуй/i, /ху[ієя]/i, /бля[дт]/i, /єба[нт]/i, /еба[нт]/i,
     /сука/i, /мудак/i, /мудил/i, /дебіл/i, /ідіот/i, /гондон/i,
@@ -664,7 +654,7 @@
       var phrase = pick(available);
       afkAsked.push(phrase);
       if (opponent) addChat(opponent.name, phrase, "bot");
-      scheduleAfkCheck(); // next reminder later
+      scheduleAfkCheck();
     }, rnd(18000, 28000));
   }
 
@@ -684,7 +674,6 @@
       }
     }
     if (emptyCells().length === 0 && b === board) return { winner: "draw" };
-    // for minimax board copy
     var full = true;
     for (var j = 0; j < 9; j++) if (!b[j]) { full = false; break; }
     if (full) return { winner: "draw" };
@@ -733,26 +722,19 @@
     var empties = emptyCells();
     if (!empties.length) return null;
 
-    // petro_ivanchuk / extreme clueless: almost always random or bad
     if (opponent && opponent.clueless) {
-      // prefer edges, avoid center/corners sometimes
       var badish = empties.filter(function (i) { return i !== 4; });
       return pick(badish.length ? badish : empties);
     }
 
-    // newbie: high chance of pure random, sometimes block, rarely good
     if (opponent && opponent.newbie) {
       if (Math.random() < 0.75) return pick(empties);
-      // sometimes take random corner/edge even if losing
     }
 
-    // With probability (1 - skill) play suboptimal / random
     if (Math.random() > skill) {
-      // medium: 50% random, else try simple heuristic
       if (Math.random() < 0.45) return pick(empties);
     }
 
-    // Try win immediately
     for (var i = 0; i < empties.length; i++) {
       var t = empties[i];
       board[t] = botSym;
@@ -762,7 +744,6 @@
       }
       board[t] = null;
     }
-    // Block human win
     for (var j = 0; j < empties.length; j++) {
       var t2 = empties[j];
       board[t2] = humanSym;
@@ -773,14 +754,12 @@
       board[t2] = null;
     }
 
-    // Depth based on skill
     var depth = 9;
     if (skill < 0.3) depth = 1;
     else if (skill < 0.5) depth = 2;
     else if (skill < 0.7) depth = 3;
     else if (skill < 0.85) depth = 5;
     else if (skill < 0.93) depth = 7;
-    // masters almost full
 
     var bestScore = -Infinity;
     var bestMoves = [];
@@ -798,7 +777,6 @@
       }
     }
 
-    // Slight noise for non-perfect: sometimes pick 2nd best
     if (skill < 0.98 && bestMoves.length === 1 && empties.length > 1 && Math.random() > skill) {
       var others = empties.filter(function (x) { return x !== bestMoves[0]; });
       if (others.length) return pick(others);
@@ -891,7 +869,7 @@
     if (!gameActive || current !== botSym) return;
     clearTimeout(botThinkTimer);
     var think = rnd(450, 1400);
-    if (opponent && opponent.skill > 0.9) think = rnd(700, 1800); // masters "think"
+    if (opponent && opponent.skill > 0.9) think = rnd(700, 1800);
     botThinkTimer = setTimeout(function () {
       if (!gameActive || current !== botSym) return;
       var move = findBestMove(opponent.skill);
@@ -938,7 +916,7 @@
     renderBoard();
     updateHud();
     document.getElementById("opp-name").textContent = "?";
-    document.getElementById("opp-role").textContent = "відбір…";
+    document.getElementById("opp-role").textContent = "підбір…";
 
     var left = 15;
     var nameEl = document.getElementById("sel-name");
@@ -946,7 +924,6 @@
     var timerEl = document.getElementById("sel-timer");
     timerEl.textContent = left;
 
-    // rapid cycling names
     var cycle = setInterval(function () {
       var b = pick(BOTS);
       nameEl.textContent = b.name;
@@ -962,8 +939,6 @@
       if (left <= 0) {
         clearInterval(selTimer);
         clearInterval(cycle);
-        // weighted: masters less frequent, newbies more? or pure random
-        // slight bias toward mid-tier for fun, but all possible
         var weights = BOTS.map(function (b) {
           if (b.skill > 0.9) return 0.7;
           if (b.newbie || b.clueless) return 1.2;
@@ -992,7 +967,6 @@
   }
 
   function beginMatch() {
-    // random symbol
     if (Math.random() < 0.5) {
       humanSym = "X";
       botSym = "O";
@@ -1004,12 +978,11 @@
     gameActive = true;
     lastMoveAt = Date.now();
     afkAsked = [];
-    current = "X"; // X always starts
+    current = "X";
     renderBoard();
     updateHud();
 
     addChat(null, "Партія почалась. Ти граєш «" + humanSym + "», " + opponent.name + " — «" + botSym + "».");
-    // greeting
     var greets = opponent.gender === "f" ? GREET_F : GREET_M;
     setTimeout(function () {
       if (!gameActive) return;
@@ -1028,7 +1001,6 @@
     startSelection();
   });
 
-  // boot
   startSelection();
 })();
 </script>
