@@ -139,8 +139,23 @@
   display: block;
   width: 100%;
   height: 100%;
+  max-width: 800px;
+  max-height: 500px;
+  aspect-ratio: 800 / 500;
   cursor: crosshair;
   background: #fff;
+}
+
+.canvas-stage {
+  flex: 0 0 auto;
+  width: min(800px, 100%);
+  aspect-ratio: 800 / 500;
+  height: auto;
+  min-height: 0;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .canvas-stage.panning #main-canvas { cursor: grab; }
 .canvas-stage.panning.dragging #main-canvas { cursor: grabbing; }
@@ -266,6 +281,14 @@
   border-color: #5aa0c0;
   background: linear-gradient(180deg, #e0f4fc, #c8e8f8);
 }
+.layer-merge-check {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  cursor: pointer;
+}
+
 .layer-item .eye {
   width: 18px;
   height: 18px;
@@ -485,7 +508,7 @@
         </div>
 
         <div class="layers-panel">
-          <div class="layers-title">Шари</div>
+          <div class="layers-title">Шари <span style="font-weight:400;">(✓ — обрати для об'єднання)</span></div>
           <div class="layer-list" id="layer-list"></div>
           <div class="layer-actions">
             <button type="button" id="btn-layer-up" title="Вище">↑</button>
@@ -547,6 +570,7 @@
   var lastX = 0, lastY = 0;
   var lineStart = null;
   var activeLayer = 0;
+  var selectedLayers = [];
   var layers = [];
   var undoStack = [];
   var currentBot = null;
@@ -719,7 +743,23 @@
         var L = layers[idx];
         var div = document.createElement("div");
         div.className = "layer-item" + (idx === activeLayer ? " active" : "");
-        div.innerHTML = '<button type="button" class="eye' + (L.visible ? "" : " off") + '">' + (L.visible ? "👁" : "👁‍🗨") + '</button><span class="name">' + L.name + '</span>';
+        div.innerHTML = '<input type="checkbox" class="layer-merge-check" title="Обрати для поєднання" ' + (selectedLayers.indexOf(idx) !== -1 ? "checked" : "") + '><button type="button" class="eye' + (L.visible ? "" : " off") + '">' + (L.visible ? "👁" : "👁‍🗨") + '</button><span class="name">' + L.name + '</span>';
+        div.querySelector(".layer-merge-check").addEventListener("click", function (e) {
+          e.stopPropagation();
+          var checked = this.checked;
+          var at = selectedLayers.indexOf(idx);
+          if (checked && at === -1) {
+            if (selectedLayers.length >= 2) {
+              this.checked = false;
+              toast("Для об'єднання оберіть рівно 2 шари");
+              return;
+            }
+            selectedLayers.push(idx);
+          } else if (!checked && at !== -1) {
+            selectedLayers.splice(at, 1);
+          }
+          renderLayersUI();
+        });
         div.querySelector(".eye").addEventListener("click", function (e) {
           e.stopPropagation();
           L.visible = !L.visible;
@@ -1182,16 +1222,34 @@
         return;
       }
       if (t === "merge") {
-        if (layers.length < 2) { toast("Потрібно мінімум 2 шари"); return; }
+        if (selectedLayers.length !== 2) {
+          toast("Оберіть рівно 2 шари для об'єднання");
+          return;
+        }
+
+        var first = selectedLayers[0];
+        var second = selectedLayers[1];
+        var bottom = Math.min(first, second);
+        var top = Math.max(first, second);
+
         pushUndo();
-        var top = layers[layers.length - 1];
-        var below = layers[layers.length - 2];
-        below.ctx.drawImage(top.canvas, 0, 0);
-        layers.pop();
-        activeLayer = Math.min(activeLayer, layers.length - 1);
+
+        // Об'єднуємо саме два обрані шари.
+        layers[bottom].ctx.drawImage(layers[top].canvas, 0, 0);
+        layers.splice(top, 1);
+
+        if (activeLayer === top) {
+          activeLayer = bottom;
+        } else if (activeLayer > top) {
+          activeLayer--;
+        } else {
+          activeLayer = Math.min(activeLayer, layers.length - 1);
+        }
+
+        selectedLayers = [];
         renderLayersUI();
         composite();
-        toast("Шари об'єднано");
+        toast("Обрані шари об'єднано");
         return;
       }
       if (t === "mirror") {
@@ -1245,6 +1303,11 @@
     var tmp = layers[activeLayer];
     layers[activeLayer] = layers[activeLayer + 1];
     layers[activeLayer + 1] = tmp;
+    selectedLayers = selectedLayers.map(function (i) {
+      if (i === activeLayer) return activeLayer + 1;
+      if (i === activeLayer + 1) return activeLayer;
+      return i;
+    });
     activeLayer++;
     renderLayersUI();
     composite();
@@ -1255,6 +1318,11 @@
     var tmp = layers[activeLayer];
     layers[activeLayer] = layers[activeLayer - 1];
     layers[activeLayer - 1] = tmp;
+    selectedLayers = selectedLayers.map(function (i) {
+      if (i === activeLayer) return activeLayer - 1;
+      if (i === activeLayer - 1) return activeLayer;
+      return i;
+    });
     activeLayer--;
     renderLayersUI();
     composite();
