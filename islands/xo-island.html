@@ -351,7 +351,7 @@
         <span class="vs">VS</span>
         <div style="text-align:center">
           <div class="name" id="opp-name">?</div>
-          <div class="role" id="opp-role">відбір…</div>
+          <div class="role" id="opp-role">підбір…</div>
         </div>
       </div>
 
@@ -386,8 +386,8 @@
       <!-- Selection overlay -->
       <div class="overlay" id="sel-overlay">
         <div class="overlay-card">
-          <h3>🔍 Відбір суперника</h3>
-          <p>Шукаємо гідного суперника серед ботів…</p>
+          <h3>🔍 Пошук суперника</h3>
+          <p>Шукаємо гідного суперника серед гуменів…</p>
           <div class="sel-timer" id="sel-timer">15</div>
           <div class="sel-name" id="sel-name">…</div>
           <div class="sel-role" id="sel-role"></div>
@@ -563,7 +563,7 @@
     { re: /пробач|вибач|соррі/i, answers: ["ок", "нічого", "давай далі"] },
     { re: /ай|бля|блін|дідько/i, answers: ["обережніше зі словами", "грай спокійно", "👀"] },
     { re: /переможеш|виграєш|здавайся/i, answers: ["побачимо", "спробуй", "не так швидко", "ха"] },
-    { re: /ти хто|хто ти/i, answers: ["твій суперник", "бот з острова ХО", "я " ] }
+    { re: /ти хто|хто ти/i, answers: ["твій суперник", "гумен з острова ХО", "я " ] }
   ];
 
   /* Bad words (kick) — Ukrainian / mixed common */
@@ -825,7 +825,7 @@
     } else if (current === humanSym) {
       turnEl.textContent = "Твій хід (" + humanSym + ")";
     } else {
-      turnEl.textContent = "Хід " + (opponent ? opponent.name : "бота") + "…";
+      turnEl.textContent = "Хід " + (opponent ? opponent.name : "гумена") + "…";
     }
   }
 
@@ -841,7 +841,7 @@
       if (opponent) addChat(opponent.name, pick(["нічия…", "ок, нічия", "нічия 🤝", "ну майже"]), "bot");
     } else if (result === humanSym) {
       title = "Перемога! 🎉";
-      msg = "Ти обіграв " + (opponent ? opponent.name : "бота") + "!";
+      msg = "Ти обіграла " + (opponent ? opponent.name : "гумена") + "!";
       score.you++;
       if (opponent) {
         var loseLines = [
