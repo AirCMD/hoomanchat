@@ -70,7 +70,7 @@
   display: grid;
   /* як було: колонки зліва, зверху вниз; 3 колонки замість 2 — без скролу */
   grid-template-columns: repeat(3, 32px);
-  grid-template-rows: repeat(12, 30px);
+  grid-template-rows: repeat(13, 30px);
   grid-auto-flow: column;
   gap: 3px;
   flex-shrink: 0;
@@ -534,6 +534,77 @@
   transform: translateX(-50%) translateY(0);
 }
 
+/* Save options modal */
+.save-modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 40, 55, 0.45);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+.save-modal-backdrop.show { display: flex; }
+.save-modal {
+  background: linear-gradient(165deg, rgba(255,255,255,0.96), rgba(210,240,255,0.94));
+  border: 1px solid rgba(120, 190, 220, 0.7);
+  border-radius: 14px;
+  padding: 14px 16px;
+  min-width: 260px;
+  max-width: 92vw;
+  box-shadow: 0 8px 28px rgba(30, 80, 110, 0.25);
+}
+.save-modal h3 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #1a5a78;
+  text-align: center;
+}
+.save-modal .save-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.save-modal .save-opts button {
+  font-size: 12px;
+  padding: 8px 10px;
+  border: 1px solid rgba(100,170,200,0.6);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #fff, #e8f6ff);
+  color: #1a4a60;
+  cursor: pointer;
+  font-weight: 600;
+}
+.save-modal .save-opts button:hover {
+  background: linear-gradient(180deg, #f0faff, #d0eefc);
+}
+.save-modal .save-color-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.save-modal .save-color-row input[type=color] {
+  width: 36px;
+  height: 28px;
+  border: 1px solid rgba(100,160,190,0.5);
+  border-radius: 6px;
+  padding: 0;
+  background: #fff;
+  cursor: pointer;
+}
+.save-modal .save-cancel {
+  margin-top: 10px;
+  width: 100%;
+  font-size: 12px;
+  padding: 6px;
+  border: 1px solid rgba(120,160,180,0.5);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.8);
+  color: #4a6a7a;
+  cursor: pointer;
+}
+
 /* Mobile tweaks */
 @media (max-width: 720px) {
   .draw-panel {
@@ -633,7 +704,10 @@
         <button type="button" class="tool-btn" data-tool="fill" title="Заливка (G)">⬛</button>
         <button type="button" class="tool-btn" data-tool="circles" title="Кружечки">⭕</button>
         <button type="button" class="tool-btn" data-tool="text" title="Текст (T)">T</button>
-        <button type="button" class="tool-btn" data-tool="select" title="Виділення (M)">⬚</button>
+        <button type="button" class="tool-btn" data-tool="select" title="Виділення □ (M)">⬚</button>
+        <button type="button" class="tool-btn" data-tool="lasso" title="Ласо (Q)">➰</button>
+        <button type="button" class="tool-btn" data-tool="wand" title="Чарівна паличка (U)">✨</button>
+        <button type="button" class="tool-btn" data-tool="transform" title="Трансформ виділення (D)">⤢</button>
         <button type="button" class="tool-btn" data-tool="clone" title="Штамп-клон (S, Alt=джерело)"> ⎘</button>
         <button type="button" class="tool-btn" data-tool="blur" title="Блюр">💦</button>
         <button type="button" class="tool-btn" data-tool="dodge" title="Освітлення">☀</button>
@@ -745,6 +819,22 @@
 
 <div class="toast" id="toast"></div>
 
+<div class="save-modal-backdrop" id="save-modal" aria-hidden="true">
+  <div class="save-modal" role="dialog" aria-label="Зберегти PNG">
+    <h3>Зберегти PNG</h3>
+    <div class="save-opts">
+      <button type="button" data-save-bg="white">Білий фон</button>
+      <button type="button" data-save-bg="transparent">Прозорий фон</button>
+      <button type="button" data-save-bg="color" id="save-bg-color-btn">Колір фону…</button>
+    </div>
+    <div class="save-color-row">
+      <label for="save-bg-color" style="font-size:11px;color:#1e4a5c;">Колір:</label>
+      <input type="color" id="save-bg-color" value="#ffffff">
+    </div>
+    <button type="button" class="save-cancel" id="save-cancel">Скасувати</button>
+  </div>
+</div>
+
 <div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
 <div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span id="today-hoomen"></span></div></div>
 <div class="footer-line">Гуменчат — місце для гуменів. Повернутися до <a href="../islands.html">ОСТРОВІВ</a></div>
@@ -778,10 +868,18 @@
   var lastX = 0, lastY = 0;
   var lineStart = null;
   var linePreviewEnd = null; // live preview end point for line tool
-  var selection = null; // {x,y,w,h} in canvas coords
+  // selection: { type:'rect'|'lasso'|'wand', x,y,w,h, points?, maskCanvas? }
+  var selection = null;
   var selectDrag = null;
-  var clipboard = null; // offscreen canvas
+  var clipboard = null; // offscreen canvas (RGBA crop)
+  var clipboardMask = null; // optional mask canvas same size
   var cloneSource = null; // {x,y}
+  // Floating transform: cut pixels live above the layer until commit
+  var floating = null; // { canvas, mask, x, y, w, h }
+  var transformMode = null; // null | 'move' | 'scale-nw'|...|'scale-se'
+  var transformStart = null; // pointer + floating snapshot
+  var lassoPoints = null; // active lasso path while drawing
+  var wandTolerance = 32;
   var spacePan = false;
   var prevToolBeforeSpace = null;
   var activeLayer = 0;
@@ -995,7 +1093,8 @@
     pencil: "Олівець", brush: "Браш", watercolor: "Акварель", spray: "Аерограф",
     calligraphy: "Каліграфія", noise: "Шум", pixel: "Піксель", line: "Лінія",
     rect: "Прямокутник", ellipse: "Еліпс", gradient: "Градієнт", fill: "Заливка",
-    circles: "Кружечки", text: "Текст", select: "Виділення", clone: "Штамп",
+    circles: "Кружечки", text: "Текст", select: "Виділення", lasso: "Ласо",
+    wand: "Паличка", transform: "Трансформ", clone: "Штамп",
     blur: "Блюр", dodge: "Освітлення", burn: "Затемнення", eraser: "Гумка",
     eyedropper: "Піпетка", pan: "Переміщення",
     mirror: "Дзеркало ↔", "mirror-v": "Дзеркало ↕",
@@ -1121,7 +1220,7 @@
 
     // Semi-transparent preview for shape / gradient tools
     if (isDrawing && lineStart && linePreviewEnd &&
-        (tool === "line" || tool === "rect" || tool === "ellipse" || tool === "gradient" || tool === "select")) {
+        (tool === "line" || tool === "rect" || tool === "ellipse" || tool === "gradient" || tool === "select" || tool === "lasso")) {
       ctx.save();
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
@@ -1149,6 +1248,17 @@
         ctx.strokeRect(sx + 0.5, sy + 0.5, sw, sh);
         ctx.fillStyle = "rgba(80,160,220,0.12)";
         ctx.fillRect(sx, sy, sw, sh);
+      } else if (tool === "lasso" && lassoPoints && lassoPoints.length) {
+        ctx.strokeStyle = "rgba(20,120,200,0.95)";
+        ctx.lineWidth = 1;
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath();
+        ctx.moveTo(lassoPoints[0][0], lassoPoints[0][1]);
+        for (var li = 1; li < lassoPoints.length; li++) {
+          ctx.lineTo(lassoPoints[li][0], lassoPoints[li][1]);
+        }
+        if (linePreviewEnd) ctx.lineTo(linePreviewEnd.x, linePreviewEnd.y);
+        ctx.stroke();
       } else {
         var prevAlpha = 0.35 * opacity;
         ctx.strokeStyle = "rgba(" + color.r + "," + color.g + "," + color.b + "," + Math.max(0.2, prevAlpha + 0.15) + ")";
@@ -1168,13 +1278,53 @@
       ctx.restore();
     }
 
-    // Persistent selection outline
-    if (selection && tool === "select" && !isDrawing) {
+    // Floating transform pixels
+    if (floating) {
+      ctx.save();
+      ctx.drawImage(floating.canvas, floating.x, floating.y);
+      ctx.strokeStyle = "rgba(20,120,200,0.95)";
+      ctx.lineWidth = 1;
+      ctx.setLineDash([5, 4]);
+      ctx.strokeRect(floating.x + 0.5, floating.y + 0.5, floating.w, floating.h);
+      // handles
+      var hs = 6;
+      var corners = [
+        [floating.x, floating.y],
+        [floating.x + floating.w, floating.y],
+        [floating.x, floating.y + floating.h],
+        [floating.x + floating.w, floating.y + floating.h]
+      ];
+      ctx.setLineDash([]);
+      ctx.fillStyle = "rgba(255,255,255,0.95)";
+      ctx.strokeStyle = "rgba(20,100,180,0.95)";
+      for (var hi = 0; hi < corners.length; hi++) {
+        ctx.fillRect(corners[hi][0] - hs / 2, corners[hi][1] - hs / 2, hs, hs);
+        ctx.strokeRect(corners[hi][0] - hs / 2, corners[hi][1] - hs / 2, hs, hs);
+      }
+      ctx.restore();
+    }
+
+    // Persistent selection outline (any selection tool / transform)
+    if (selection && !floating && !isDrawing) {
       ctx.save();
       ctx.strokeStyle = "rgba(20,120,200,0.95)";
       ctx.lineWidth = 1;
       ctx.setLineDash([5, 4]);
-      ctx.strokeRect(selection.x + 0.5, selection.y + 0.5, selection.w, selection.h);
+      if (selection.type === "lasso" && selection.points && selection.points.length > 2) {
+        ctx.beginPath();
+        ctx.moveTo(selection.points[0][0], selection.points[0][1]);
+        for (var spi = 1; spi < selection.points.length; spi++) {
+          ctx.lineTo(selection.points[spi][0], selection.points[spi][1]);
+        }
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fillStyle = "rgba(80,160,220,0.10)";
+        ctx.fill();
+      } else {
+        ctx.strokeRect(selection.x + 0.5, selection.y + 0.5, selection.w, selection.h);
+        ctx.fillStyle = "rgba(80,160,220,0.10)";
+        ctx.fillRect(selection.x, selection.y, selection.w, selection.h);
+      }
       ctx.restore();
     }
 
@@ -1783,41 +1933,256 @@
     toast("Шар повернуто на 90°");
   }
 
+  function ensureSelBBox(sel) {
+    if (!sel) return null;
+    if (sel.w > 0 && sel.h > 0) return sel;
+    return null;
+  }
+
+  function makeMaskCanvas(w, h) {
+    var c = document.createElement("canvas");
+    c.width = Math.max(1, w | 0);
+    c.height = Math.max(1, h | 0);
+    return c;
+  }
+
+  /** Build full-size or local mask for selection (white = selected). */
+  function selectionMaskLocal(sel) {
+    if (!sel || sel.w < 1 || sel.h < 1) return null;
+    if (sel.maskCanvas) return sel.maskCanvas;
+    var mc = makeMaskCanvas(sel.w, sel.h);
+    var mctx = mc.getContext("2d");
+    mctx.fillStyle = "#fff";
+    if (sel.type === "lasso" && sel.points && sel.points.length > 2) {
+      mctx.beginPath();
+      mctx.moveTo(sel.points[0][0] - sel.x, sel.points[0][1] - sel.y);
+      for (var i = 1; i < sel.points.length; i++) {
+        mctx.lineTo(sel.points[i][0] - sel.x, sel.points[i][1] - sel.y);
+      }
+      mctx.closePath();
+      mctx.fill();
+    } else {
+      mctx.fillRect(0, 0, sel.w, sel.h);
+    }
+    return mc;
+  }
+
+  function bboxFromPoints(pts) {
+    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (var i = 0; i < pts.length; i++) {
+      if (pts[i][0] < minX) minX = pts[i][0];
+      if (pts[i][1] < minY) minY = pts[i][1];
+      if (pts[i][0] > maxX) maxX = pts[i][0];
+      if (pts[i][1] > maxY) maxY = pts[i][1];
+    }
+    return {
+      x: Math.floor(minX),
+      y: Math.floor(minY),
+      w: Math.ceil(maxX - minX) || 1,
+      h: Math.ceil(maxY - minY) || 1
+    };
+  }
+
+  function bboxFromMaskCanvas(mc, ox, oy) {
+    var img = mc.getContext("2d").getImageData(0, 0, mc.width, mc.height);
+    var d = img.data;
+    var minX = mc.width, minY = mc.height, maxX = -1, maxY = -1;
+    for (var y = 0; y < mc.height; y++) {
+      for (var x = 0; x < mc.width; x++) {
+        if (d[(y * mc.width + x) * 4 + 3] > 10) {
+          if (x < minX) minX = x;
+          if (y < minY) minY = y;
+          if (x > maxX) maxX = x;
+          if (y > maxY) maxY = y;
+        }
+      }
+    }
+    if (maxX < 0) return null;
+    return {
+      x: (ox || 0) + minX,
+      y: (oy || 0) + minY,
+      w: maxX - minX + 1,
+      h: maxY - minY + 1
+    };
+  }
+
+  function clearSelectionArea(cx, sel) {
+    if (!sel || sel.w < 1 || sel.h < 1) return;
+    var mask = selectionMaskLocal(sel);
+    if (!mask || sel.type === "rect") {
+      cx.clearRect(sel.x, sel.y, sel.w, sel.h);
+      return;
+    }
+    // punch hole using mask
+    var tmp = makeMaskCanvas(sel.w, sel.h);
+    var tctx = tmp.getContext("2d");
+    tctx.drawImage(cx.canvas, sel.x, sel.y, sel.w, sel.h, 0, 0, sel.w, sel.h);
+    tctx.globalCompositeOperation = "destination-out";
+    tctx.drawImage(mask, 0, 0);
+    cx.clearRect(sel.x, sel.y, sel.w, sel.h);
+    cx.drawImage(tmp, sel.x, sel.y);
+  }
+
+  function extractSelectionPixels(sel) {
+    if (!sel || sel.w < 1 || sel.h < 1) return null;
+    var src = layers[activeLayer].canvas;
+    var out = makeMaskCanvas(sel.w, sel.h);
+    var octx = out.getContext("2d");
+    octx.drawImage(src, sel.x, sel.y, sel.w, sel.h, 0, 0, sel.w, sel.h);
+    var mask = selectionMaskLocal(sel);
+    if (mask && sel.type !== "rect") {
+      octx.globalCompositeOperation = "destination-in";
+      octx.drawImage(mask, 0, 0);
+      octx.globalCompositeOperation = "source-over";
+    }
+    return { canvas: out, mask: mask };
+  }
+
   function deleteSelection() {
+    commitFloatingIfAny();
     if (!selection) { toast("Немає виділення"); return; }
     finalizeStrokeIfNeeded();
-    var cx = getActiveCtx();
-    cx.clearRect(selection.x, selection.y, selection.w, selection.h);
+    clearSelectionArea(getActiveCtx(), selection);
     composite();
     pushUndo();
     toast("Виділення очищено");
   }
 
   function copySelection() {
+    commitFloatingIfAny();
     if (!selection || selection.w < 1 || selection.h < 1) { toast("Немає виділення"); return; }
-    var c = document.createElement("canvas");
-    c.width = selection.w;
-    c.height = selection.h;
-    c.getContext("2d").drawImage(
-      layers[activeLayer].canvas,
-      selection.x, selection.y, selection.w, selection.h,
-      0, 0, selection.w, selection.h
-    );
-    clipboard = c;
+    var extracted = extractSelectionPixels(selection);
+    if (!extracted) { toast("Немає виділення"); return; }
+    clipboard = extracted.canvas;
+    clipboardMask = extracted.mask;
     toast("Скопійовано");
   }
 
   function pasteClipboard() {
+    commitFloatingIfAny();
     if (!clipboard) { toast("Буфер порожній"); return; }
     finalizeStrokeIfNeeded();
     var cx = getActiveCtx();
     var px = selection ? selection.x : 20;
     var py = selection ? selection.y : 20;
     cx.drawImage(clipboard, px, py);
-    selection = { x: px, y: py, w: clipboard.width, h: clipboard.height };
+    selection = {
+      type: "rect",
+      x: px,
+      y: py,
+      w: clipboard.width,
+      h: clipboard.height
+    };
     composite();
     pushUndo();
     toast("Вставлено");
+  }
+
+  function commitFloatingIfAny() {
+    if (!floating) return;
+    var cx = getActiveCtx();
+    cx.drawImage(floating.canvas, floating.x, floating.y);
+    selection = {
+      type: "rect",
+      x: floating.x,
+      y: floating.y,
+      w: floating.w,
+      h: floating.h
+    };
+    floating = null;
+    transformMode = null;
+    transformStart = null;
+    composite();
+    pushUndo();
+  }
+
+  function beginTransformFromSelection() {
+    commitFloatingIfAny();
+    if (!selection || selection.w < 1 || selection.h < 1) {
+      toast("Спочатку зроби виділення");
+      return false;
+    }
+    finalizeStrokeIfNeeded();
+    var extracted = extractSelectionPixels(selection);
+    if (!extracted) return false;
+    clearSelectionArea(getActiveCtx(), selection);
+    floating = {
+      canvas: extracted.canvas,
+      mask: extracted.mask,
+      x: selection.x,
+      y: selection.y,
+      w: selection.w,
+      h: selection.h
+    };
+    selection = {
+      type: "rect",
+      x: floating.x,
+      y: floating.y,
+      w: floating.w,
+      h: floating.h
+    };
+    composite();
+    return true;
+  }
+
+  function wandSelectAt(mx, my) {
+    mx = mx | 0; my = my | 0;
+    if (mx < 0 || my < 0 || mx >= W || my >= H) return;
+    var src = layers[activeLayer].canvas;
+    var sctx = src.getContext("2d");
+    var img = sctx.getImageData(0, 0, W, H);
+    var data = img.data;
+    var start = (my * W + mx) * 4;
+    var tr = data[start], tg = data[start + 1], tb = data[start + 2], ta = data[start + 3];
+    var tol = wandTolerance;
+    var mask = makeMaskCanvas(W, H);
+    var mctx = mask.getContext("2d");
+    var mimg = mctx.createImageData(W, H);
+    var md = mimg.data;
+    var visited = new Uint8Array(W * H);
+    var stack = [mx, my];
+    function match(i) {
+      return Math.abs(data[i] - tr) <= tol &&
+             Math.abs(data[i + 1] - tg) <= tol &&
+             Math.abs(data[i + 2] - tb) <= tol &&
+             Math.abs(data[i + 3] - ta) <= tol;
+    }
+    while (stack.length) {
+      var y = stack.pop();
+      var x = stack.pop();
+      if (x < 0 || y < 0 || x >= W || y >= H) continue;
+      var idx = y * W + x;
+      if (visited[idx]) continue;
+      var di = idx * 4;
+      if (!match(di)) continue;
+      visited[idx] = 1;
+      md[di] = md[di + 1] = md[di + 2] = 255;
+      md[di + 3] = 255;
+      stack.push(x + 1, y);
+      stack.push(x - 1, y);
+      stack.push(x, y + 1);
+      stack.push(x, y - 1);
+    }
+    mctx.putImageData(mimg, 0, 0);
+    var bb = bboxFromMaskCanvas(mask, 0, 0);
+    if (!bb) {
+      selection = null;
+      toast("Нічого не виділено");
+      return;
+    }
+    // crop mask to bbox
+    var local = makeMaskCanvas(bb.w, bb.h);
+    local.getContext("2d").drawImage(mask, bb.x, bb.y, bb.w, bb.h, 0, 0, bb.w, bb.h);
+    selection = {
+      type: "wand",
+      x: bb.x,
+      y: bb.y,
+      w: bb.w,
+      h: bb.h,
+      maskCanvas: local
+    };
+    toast("Виділено паличкою");
+    composite();
   }
 
   /** Local blur under the cursor (for blur tool as a brush). */
@@ -2203,6 +2568,46 @@
       return;
     }
 
+    if (tool === "wand") {
+      commitFloatingIfAny();
+      wandSelectAt(pos.x, pos.y);
+      return;
+    }
+
+    if (tool === "transform") {
+      if (!floating) {
+        if (!beginTransformFromSelection()) return;
+      }
+      // hit-test handles / body
+      var fx = floating.x, fy = floating.y, fw = floating.w, fh = floating.h;
+      var hs = 8;
+      var corners = {
+        "scale-nw": [fx, fy],
+        "scale-ne": [fx + fw, fy],
+        "scale-sw": [fx, fy + fh],
+        "scale-se": [fx + fw, fy + fh]
+      };
+      transformMode = "move";
+      for (var hk in corners) {
+        if (!corners.hasOwnProperty(hk)) continue;
+        if (Math.abs(pos.x - corners[hk][0]) <= hs && Math.abs(pos.y - corners[hk][1]) <= hs) {
+          transformMode = hk;
+          break;
+        }
+      }
+      isDrawing = true;
+      transformStart = {
+        mx: pos.x,
+        my: pos.y,
+        x: floating.x,
+        y: floating.y,
+        w: floating.w,
+        h: floating.h,
+        canvas: floating.canvas
+      };
+      return;
+    }
+
     // Clone: Alt/Option click sets source point
     if (tool === "clone" && (e.altKey || e.metaKey)) {
       cloneSource = { x: pos.x, y: pos.y };
@@ -2217,6 +2622,12 @@
     lineStart = { x: pos.x, y: pos.y };
     linePreviewEnd = (tool === "line" || tool === "rect" || tool === "ellipse" || tool === "gradient" || tool === "select")
       ? { x: pos.x, y: pos.y } : null;
+
+    if (tool === "lasso") {
+      lassoPoints = [[pos.x, pos.y]];
+      linePreviewEnd = { x: pos.x, y: pos.y };
+      return;
+    }
 
     if (tool === "pencil" || tool === "brush" || tool === "eraser" || tool === "circles" ||
         tool === "watercolor" || tool === "calligraphy" || tool === "noise" || tool === "pixel") {
@@ -2283,6 +2694,58 @@
     }
 
     var pos = getPos(e);
+
+    if (tool === "transform" && floating && transformStart) {
+      var dx = pos.x - transformStart.mx;
+      var dy = pos.y - transformStart.my;
+      if (transformMode === "move") {
+        floating.x = transformStart.x + dx;
+        floating.y = transformStart.y + dy;
+      } else if (transformMode && transformMode.indexOf("scale-") === 0) {
+        var nx = transformStart.x;
+        var ny = transformStart.y;
+        var nw = transformStart.w;
+        var nh = transformStart.h;
+        if (transformMode === "scale-se") {
+          nw = Math.max(4, transformStart.w + dx);
+          nh = Math.max(4, transformStart.h + dy);
+        } else if (transformMode === "scale-nw") {
+          nw = Math.max(4, transformStart.w - dx);
+          nh = Math.max(4, transformStart.h - dy);
+          nx = transformStart.x + (transformStart.w - nw);
+          ny = transformStart.y + (transformStart.h - nh);
+        } else if (transformMode === "scale-ne") {
+          nw = Math.max(4, transformStart.w + dx);
+          nh = Math.max(4, transformStart.h - dy);
+          ny = transformStart.y + (transformStart.h - nh);
+        } else if (transformMode === "scale-sw") {
+          nw = Math.max(4, transformStart.w - dx);
+          nh = Math.max(4, transformStart.h + dy);
+          nx = transformStart.x + (transformStart.w - nw);
+        }
+        // resample original snapshot
+        var scaled = makeMaskCanvas(nw | 0, nh | 0);
+        scaled.getContext("2d").drawImage(transformStart.canvas, 0, 0, nw, nh);
+        floating.canvas = scaled;
+        floating.x = nx;
+        floating.y = ny;
+        floating.w = nw | 0;
+        floating.h = nh | 0;
+      }
+      selection = { type: "rect", x: floating.x, y: floating.y, w: floating.w, h: floating.h };
+      scheduleComposite();
+      return;
+    }
+
+    if (tool === "lasso" && lassoPoints) {
+      var lastP = lassoPoints[lassoPoints.length - 1];
+      if (!lastP || Math.hypot(pos.x - lastP[0], pos.y - lastP[1]) >= 2) {
+        lassoPoints.push([pos.x, pos.y]);
+      }
+      linePreviewEnd = { x: pos.x, y: pos.y };
+      scheduleComposite();
+      return;
+    }
 
     if (tool === "line" || tool === "rect" || tool === "ellipse" || tool === "gradient" || tool === "select") {
       lastX = pos.x;
@@ -2359,9 +2822,41 @@
     } else if (e.type === "mouseup") {
       if (Date.now() - lastTouchTs < 700) return;
     }
-    if (!isDrawing && !strokeDirty) return;
+    if (!isDrawing && !strokeDirty && !lassoPoints) return;
     isDrawing = false;
     stage.classList.remove("dragging");
+
+    if (tool === "transform" && floating) {
+      transformMode = null;
+      transformStart = null;
+      selection = { type: "rect", x: floating.x, y: floating.y, w: floating.w, h: floating.h };
+      flushComposite();
+      strokeDirty = false;
+      return;
+    }
+
+    if (tool === "lasso" && lassoPoints && lassoPoints.length > 2) {
+      var bb = bboxFromPoints(lassoPoints);
+      if (bb.w > 2 && bb.h > 2) {
+        selection = {
+          type: "lasso",
+          x: bb.x,
+          y: bb.y,
+          w: bb.w,
+          h: bb.h,
+          points: lassoPoints.slice()
+        };
+      } else {
+        selection = null;
+      }
+      lassoPoints = null;
+      lineStart = null;
+      linePreviewEnd = null;
+      flushComposite();
+      strokeDirty = false;
+      return;
+    }
+    lassoPoints = null;
 
     if (lineStart && (tool === "line" || tool === "rect" || tool === "ellipse")) {
       var pos = getPos(e);
@@ -2377,8 +2872,8 @@
       var sy = Math.min(lineStart.y, posS.y);
       var sw = Math.abs(posS.x - lineStart.x);
       var sh = Math.abs(posS.y - lineStart.y);
-      selection = (sw > 2 && sh > 2) ? { x: sx, y: sy, w: sw, h: sh } : null;
-      strokeDirty = false; // selection itself is not a paint action
+      selection = (sw > 2 && sh > 2) ? { type: "rect", x: sx, y: sy, w: sw, h: sh } : null;
+      strokeDirty = false;
     }
     lineStart = null;
     linePreviewEnd = null;
@@ -2447,19 +2942,13 @@
         return;
       }
       if (t === "save") {
-        // composite to temp and download
-        var tmp = document.createElement("canvas");
-        tmp.width = W; tmp.height = H;
-        var tctx = tmp.getContext("2d");
-        tctx.fillStyle = "#ffffff";
-        tctx.fillRect(0, 0, W, H);
-        layers.forEach(function (L) { if (L.visible) tctx.drawImage(L.canvas, 0, 0); });
-        var a = document.createElement("a");
-        a.download = "malyunok-" + Date.now() + ".png";
-        a.href = tmp.toDataURL("image/png");
-        a.click();
-        toast("Збережено PNG (" + W + "×" + H + ")");
+        openSaveModal();
         return;
+      }
+      if (t === "transform") {
+        // selecting transform tool prepares floating from current selection
+        if (!floating) beginTransformFromSelection();
+        // fall through to regular tool select
       }
       if (t === "upload") {
         fileInput.click();
@@ -2517,6 +3006,9 @@
       }
 
       // regular tool select
+      if (floating && t !== "transform") {
+        commitFloatingIfAny();
+      }
       var toggles = { mirror: 1, "mirror-v": 1, "shape-fill": 1, grid: 1 };
       document.querySelectorAll(".tool-btn").forEach(function (b) {
         var dt = b.getAttribute("data-tool");
@@ -2526,7 +3018,7 @@
       tool = t;
       hudTool.textContent = toolNames[t] || t;
       stage.classList.toggle("panning", t === "pan");
-      canvas.style.cursor = t === "pan" ? "grab" : (t === "eyedropper" ? "copy" : (t === "select" ? "crosshair" : "crosshair"));
+      canvas.style.cursor = t === "pan" ? "grab" : (t === "eyedropper" ? "copy" : (t === "select" || t === "lasso" || t === "wand" || t === "transform" ? "crosshair" : "crosshair"));
     });
   });
 
@@ -2588,6 +3080,68 @@
   });
 
   /* ===== CHAT & BOTS ===== */
+  function downloadComposite(bgMode, bgColor) {
+    commitFloatingIfAny();
+    var tmp = document.createElement("canvas");
+    tmp.width = W; tmp.height = H;
+    var tctx = tmp.getContext("2d");
+    if (bgMode === "white") {
+      tctx.fillStyle = "#ffffff";
+      tctx.fillRect(0, 0, W, H);
+    } else if (bgMode === "color") {
+      tctx.fillStyle = bgColor || "#ffffff";
+      tctx.fillRect(0, 0, W, H);
+    }
+    // transparent: leave clear
+    layers.forEach(function (L) { if (L.visible) tctx.drawImage(L.canvas, 0, 0); });
+    var a = document.createElement("a");
+    a.download = "malyunok-" + Date.now() + ".png";
+    a.href = tmp.toDataURL("image/png");
+    a.click();
+    var label = bgMode === "transparent" ? "прозорий" : (bgMode === "color" ? "колірний" : "білий");
+    toast("Збережено PNG (" + label + ", " + W + "×" + H + ")");
+  }
+
+  function openSaveModal() {
+    var modal = document.getElementById("save-modal");
+    if (!modal) {
+      downloadComposite("white");
+      return;
+    }
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden", "false");
+  }
+
+  function closeSaveModal() {
+    var modal = document.getElementById("save-modal");
+    if (!modal) return;
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
+  }
+
+  (function initSaveModal() {
+    var modal = document.getElementById("save-modal");
+    if (!modal) return;
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) closeSaveModal();
+    });
+    var cancel = document.getElementById("save-cancel");
+    if (cancel) cancel.addEventListener("click", closeSaveModal);
+    modal.querySelectorAll("[data-save-bg]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var mode = btn.getAttribute("data-save-bg");
+        var colorEl = document.getElementById("save-bg-color");
+        var col = colorEl ? colorEl.value : "#ffffff";
+        if (mode === "color") {
+          downloadComposite("color", col);
+        } else {
+          downloadComposite(mode);
+        }
+        closeSaveModal();
+      });
+    });
+  })();
+
   function toast(msg, ms) {
     toastEl.textContent = msg;
     toastEl.classList.add("show");
@@ -3792,12 +4346,30 @@
       return;
     }
 
+    // Enter — застосувати трансформ
+    if (key === "Enter" && floating) {
+      e.preventDefault();
+      commitFloatingIfAny();
+      toast("Трансформ застосовано");
+      return;
+    }
+    if (key === "Escape" && floating) {
+      e.preventDefault();
+      floating = null;
+      transformMode = null;
+      transformStart = null;
+      composite();
+      toast("Трансформ скасовано");
+      return;
+    }
+
     // tool shortcuts (ignore when modifier held, except already handled)
     if (mod) return;
     var map = {
       b: "pencil", p: "brush", w: "watercolor", a: "spray", c: "calligraphy",
       n: "noise", k: "pixel", l: "line", r: "rect", o: "ellipse", h: "gradient",
-      g: "fill", t: "text", m: "select", s: "clone", e: "eraser",
+      g: "fill", t: "text", m: "select", q: "lasso", u: "wand", d: "transform",
+      s: "clone", e: "eraser",
       i: "eyedropper", f: "shape-fill", x: "mirror", v: "mirror-v"
     };
     var k = key.toLowerCase();
