@@ -68,14 +68,27 @@
 }
 .tools-col {
   display: grid;
-  grid-template-columns: repeat(2, 32px);
-  grid-template-rows: repeat(18, 30px);
-  grid-auto-flow: column;
+  /* 3 rows × 12 cols — усі кнопки видно без скролу на ноутбуці */
+  grid-template-columns: repeat(12, 30px);
+  grid-template-rows: repeat(3, 30px);
+  grid-auto-flow: row;
   gap: 3px;
   flex-shrink: 0;
   align-content: start;
-  max-height: min(560px, 70vh);
-  overflow-y: auto;
+  max-height: none;
+  overflow: visible;
+}
+/* вужчий ноутбук / планшет landscape: 4 ряди, щільніше */
+@media (max-width: 1100px) and (min-width: 721px) {
+  .tools-col {
+    grid-template-columns: repeat(9, 28px);
+    grid-template-rows: repeat(4, 28px);
+  }
+  .tools-col .tool-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
 }
 .canvas-col {
   flex: 1 1 auto;
@@ -624,6 +637,7 @@
         <button type="button" class="tool-btn" data-tool="spray" title="Аерограф (A)">💨</button>
         <button type="button" class="tool-btn" data-tool="calligraphy" title="Каліграфія (C)">🖋️</button>
         <button type="button" class="tool-btn" data-tool="noise" title="Шум / зерно (N)">░</button>
+        <button type="button" class="tool-btn" data-tool="pixel" title="Піксель (K)">⊞</button>
         <button type="button" class="tool-btn" data-tool="line" title="Лінія (L)">／</button>
         <button type="button" class="tool-btn" data-tool="rect" title="Прямокутник (R)">▭</button>
         <button type="button" class="tool-btn" data-tool="ellipse" title="Еліпс (O)">⬭</button>
@@ -991,7 +1005,7 @@
 
   var toolNames = {
     pencil: "Олівець", brush: "Браш", watercolor: "Акварель", spray: "Аерограф",
-    calligraphy: "Каліграфія", noise: "Шум", line: "Лінія",
+    calligraphy: "Каліграфія", noise: "Шум", pixel: "Піксель", line: "Лінія",
     rect: "Прямокутник", ellipse: "Еліпс", gradient: "Градієнт", fill: "Заливка",
     circles: "Кружечки", text: "Текст", select: "Виділення", clone: "Штамп",
     blur: "Блюр", dodge: "Освітлення", burn: "Затемнення", eraser: "Гумка",
@@ -1635,6 +1649,26 @@
           cx.fillRect(nx, ny, 1 + Math.random() * 1.5, 1 + Math.random() * 1.5);
         }
       }
+    } else if (opts.pixel) {
+      // Pixel-art brush: snap to grid of cell size = brush size, solid squares
+      var cell = Math.max(1, s | 0);
+      var distP = Math.hypot(x1 - x0, y1 - y0);
+      var stepP = Math.max(1, cell * 0.5);
+      var stepsP = Math.max(1, Math.ceil(distP / stepP));
+      if (stepsP > 40) stepsP = 40;
+      cx.fillStyle = "rgba(" + color.r + "," + color.g + "," + color.b + "," + baseAlpha + ")";
+      // also paint start point
+      var sx0 = Math.floor(x0 / cell) * cell;
+      var sy0 = Math.floor(y0 / cell) * cell;
+      cx.fillRect(sx0, sy0, cell, cell);
+      for (var ip = 1; ip <= stepsP; ip++) {
+        var tp = ip / stepsP;
+        var ppx = x0 + (x1 - x0) * tp;
+        var ppy = y0 + (y1 - y0) * tp;
+        var sx = Math.floor(ppx / cell) * cell;
+        var sy = Math.floor(ppy / cell) * cell;
+        cx.fillRect(sx, sy, cell, cell);
+      }
     } else if (opts.brush) {
       var dist = Math.hypot(x1 - x0, y1 - y0);
       // fewer stamps per segment keeps soft brush smooth enough but much cheaper
@@ -2197,7 +2231,7 @@
       ? { x: pos.x, y: pos.y } : null;
 
     if (tool === "pencil" || tool === "brush" || tool === "eraser" || tool === "circles" ||
-        tool === "watercolor" || tool === "calligraphy" || tool === "noise") {
+        tool === "watercolor" || tool === "calligraphy" || tool === "noise" || tool === "pixel") {
       strokeDirty = true;
       var opts = {
         size: size,
@@ -2206,7 +2240,8 @@
         circles: tool === "circles",
         watercolor: tool === "watercolor",
         calligraphy: tool === "calligraphy",
-        noise: tool === "noise"
+        noise: tool === "noise",
+        pixel: tool === "pixel"
       };
       drawStroke(getActiveCtx(), pos.x, pos.y, pos.x, pos.y, opts);
       composite();
@@ -2270,7 +2305,7 @@
     }
 
     if (tool === "pencil" || tool === "brush" || tool === "eraser" || tool === "circles" ||
-        tool === "watercolor" || tool === "calligraphy" || tool === "noise") {
+        tool === "watercolor" || tool === "calligraphy" || tool === "noise" || tool === "pixel") {
       var opts = {
         size: size,
         brush: tool === "brush",
@@ -2278,7 +2313,8 @@
         circles: tool === "circles",
         watercolor: tool === "watercolor",
         calligraphy: tool === "calligraphy",
-        noise: tool === "noise"
+        noise: tool === "noise",
+        pixel: tool === "pixel"
       };
       drawStroke(getActiveCtx(), lastX, lastY, pos.x, pos.y, opts);
       lastX = pos.x;
@@ -3772,7 +3808,7 @@
     if (mod) return;
     var map = {
       b: "pencil", p: "brush", w: "watercolor", a: "spray", c: "calligraphy",
-      n: "noise", l: "line", r: "rect", o: "ellipse", h: "gradient",
+      n: "noise", k: "pixel", l: "line", r: "rect", o: "ellipse", h: "gradient",
       g: "fill", t: "text", m: "select", s: "clone", e: "eraser",
       i: "eyedropper", f: "shape-fill", x: "mirror", v: "mirror-v"
     };
