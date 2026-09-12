@@ -68,27 +68,15 @@
 }
 .tools-col {
   display: grid;
-  /* 3 rows × 12 cols — усі кнопки видно без скролу на ноутбуці */
-  grid-template-columns: repeat(12, 30px);
-  grid-template-rows: repeat(3, 30px);
-  grid-auto-flow: row;
+  /* як було: колонки зліва, зверху вниз; 3 колонки замість 2 — без скролу */
+  grid-template-columns: repeat(3, 32px);
+  grid-template-rows: repeat(12, 30px);
+  grid-auto-flow: column;
   gap: 3px;
   flex-shrink: 0;
   align-content: start;
   max-height: none;
   overflow: visible;
-}
-/* вужчий ноутбук / планшет landscape: 4 ряди, щільніше */
-@media (max-width: 1100px) and (min-width: 721px) {
-  .tools-col {
-    grid-template-columns: repeat(9, 28px);
-    grid-template-rows: repeat(4, 28px);
-  }
-  .tools-col .tool-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 14px;
-  }
 }
 .canvas-col {
   flex: 1 1 auto;
