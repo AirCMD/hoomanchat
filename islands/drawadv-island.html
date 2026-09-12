@@ -1211,6 +1211,9 @@
     ctx.save();
     ctx.translate(panX, panY);
     ctx.scale(zoom, zoom);
+    // Pixel-art must stay pixel-art while zooming. Everything else can use
+    // the browser default interpolation.
+    ctx.imageSmoothingEnabled = (tool !== "pixel");
 
     for (var i = 0; i < layers.length; i++) {
       if (layers[i].visible) {
@@ -1433,30 +1436,50 @@
   var histStep = -1;
 
   function cloneLayerCanvases() {
-    // Snapshot only current layers; reuse 2d context options for speed
+    // A history entry is an image-state snapshot. Keep layer order, names and
+    // visibility too, otherwise restoring an old image can silently mismatch
+    // the current layer UI.
     return layers.map(function (L) {
       var c = document.createElement("canvas");
       c.width = W;
       c.height = H;
       var cctx = c.getContext("2d", { alpha: true });
+      cctx.imageSmoothingEnabled = false;
       cctx.drawImage(L.canvas, 0, 0);
       return c;
     });
   }
 
+  function makeHistoryEntry() {
+    return {
+      canvases: cloneLayerCanvases(),
+      active: activeLayer,
+      meta: layers.map(function (L) {
+        return { name: L.name, visible: L.visible };
+      })
+    };
+  }
+
   function restoreHistoryEntry(entry) {
     if (!entry) return;
-    while (layers.length < entry.canvases.length) {
-      layers.push(createLayer());
+
+    while (layers.length < entry.canvases.length) layers.push(createLayer());
+    while (layers.length > entry.canvases.length && layers.length > 1) layers.pop();
+
+    for (var i = 0; i < entry.canvases.length; i++) {
+      var L = layers[i];
+      L.ctx.clearRect(0, 0, W, H);
+      L.ctx.imageSmoothingEnabled = false;
+      L.ctx.drawImage(entry.canvases[i], 0, 0);
+      if (entry.meta && entry.meta[i]) {
+        L.name = entry.meta[i].name;
+        L.visible = entry.meta[i].visible !== false;
+      }
     }
-    while (layers.length > entry.canvases.length && layers.length > 1) {
-      layers.pop();
-    }
-    for (var i = 0; i < layers.length && i < entry.canvases.length; i++) {
-      layers[i].ctx.clearRect(0, 0, W, H);
-      layers[i].ctx.drawImage(entry.canvases[i], 0, 0);
-    }
-    activeLayer = Math.min(entry.active, layers.length - 1);
+
+    // Undoing a brush stroke must NOT jump to whatever layer happened to be
+    // active in an older history entry. Active layer is UI state, not paint.
+    activeLayer = Math.max(0, Math.min(activeLayer, layers.length - 1));
     selectedLayers = [];
     renderLayersUI();
     composite();
@@ -1467,7 +1490,7 @@
     if (histStep < history.length - 1) {
       history = history.slice(0, histStep + 1);
     }
-    history.push({ canvases: cloneLayerCanvases(), active: activeLayer });
+    history.push(makeHistoryEntry());
     histStep = history.length - 1;
     while (history.length > MAX_UNDO) {
       history.shift();
@@ -1804,7 +1827,10 @@
       }
     } else if (opts.pixel) {
       // Pixel-art brush: snap to grid of cell size = brush size, solid squares
-      var cell = Math.max(1, s | 0);
+      var cell = Math.max(1, Math.round(s));
+      // Integer-aligned fillRect + disabled smoothing keeps a 1px pixel truly
+      // one source pixel wide even when the canvas is zoomed.
+      cx.imageSmoothingEnabled = false;
       var distP = Math.hypot(x1 - x0, y1 - y0);
       var stepP = Math.max(1, cell * 0.5);
       var stepsP = Math.max(1, Math.ceil(distP / stepP));
@@ -2238,39 +2264,92 @@
     composite();
   }
 
-  /** Local blur under the cursor (for blur tool as a brush). */
+  /**
+   * Local blur brush. Uses alpha-premultiplied averaging so transparent pixels
+   * cannot drag black/white into the color and make the result look dirty.
+   * The blurred result is blended back with a soft circular mask, so the tool
+   * behaves like a blur brush rather than repainting the whole rectangle.
+   */
   function blurAt(cx, x, y, radius) {
     radius = Math.max(2, Math.min(24, radius | 0));
-    var x0 = Math.max(0, (x - radius) | 0);
-    var y0 = Math.max(0, (y - radius) | 0);
-    var x1 = Math.min(W, (x + radius + 1) | 0);
-    var y1 = Math.min(H, (y + radius + 1) | 0);
+    var x0 = Math.max(0, Math.floor(x - radius));
+    var y0 = Math.max(0, Math.floor(y - radius));
+    var x1 = Math.min(W, Math.ceil(x + radius + 1));
+    var y1 = Math.min(H, Math.ceil(y + radius + 1));
     var bw = x1 - x0, bh = y1 - y0;
     if (bw < 3 || bh < 3) return;
 
     var img = cx.getImageData(x0, y0, bw, bh);
-    var data = img.data;
-    var copy = new Uint8ClampedArray(data);
-    var k = Math.max(1, Math.min(4, (radius / 4) | 0));
-    for (var py = k; py < bh - k; py++) {
-      for (var px = k; px < bw - k; px++) {
-        // only blur inside the circular brush
-        var dx = (x0 + px) - x;
-        var dy = (y0 + py) - y;
-        if (dx * dx + dy * dy > radius * radius) continue;
-        var r = 0, g = 0, b = 0, a = 0, count = 0;
-        for (var dy2 = -k; dy2 <= k; dy2++) {
-          for (var dx2 = -k; dx2 <= k; dx2++) {
-            var i = ((py + dy2) * bw + (px + dx2)) * 4;
-            r += copy[i]; g += copy[i + 1]; b += copy[i + 2]; a += copy[i + 3];
-            count++;
-          }
+    var src = new Uint8ClampedArray(img.data);
+    var out = img.data;
+    var k = Math.max(1, Math.min(6, Math.round(radius * 0.22)));
+
+    // Horizontal + vertical box blur. Premultiplied RGB prevents transparent
+    // black from contaminating colored edges.
+    var tmpR = new Float32Array(bw * bh);
+    var tmpG = new Float32Array(bw * bh);
+    var tmpB = new Float32Array(bw * bh);
+    var tmpA = new Float32Array(bw * bh);
+
+    for (var py = 0; py < bh; py++) {
+      for (var px = 0; px < bw; px++) {
+        var rs = 0, gs = 0, bs = 0, as = 0, count = 0;
+        for (var xx = Math.max(0, px - k); xx <= Math.min(bw - 1, px + k); xx++) {
+          var si = (py * bw + xx) * 4;
+          var a = src[si + 3] / 255;
+          rs += src[si] * a;
+          gs += src[si + 1] * a;
+          bs += src[si + 2] * a;
+          as += a;
+          count++;
         }
-        var oi = (py * bw + px) * 4;
-        data[oi] = r / count;
-        data[oi + 1] = g / count;
-        data[oi + 2] = b / count;
-        data[oi + 3] = a / count;
+        var ti = py * bw + px;
+        tmpR[ti] = rs / count;
+        tmpG[ti] = gs / count;
+        tmpB[ti] = bs / count;
+        tmpA[ti] = as / count;
+      }
+    }
+
+    for (var py2 = 0; py2 < bh; py2++) {
+      for (var px2 = 0; px2 < bw; px2++) {
+        var vsR = 0, vsG = 0, vsB = 0, vsA = 0, vcount = 0;
+        for (var yy = Math.max(0, py2 - k); yy <= Math.min(bh - 1, py2 + k); yy++) {
+          var vi = yy * bw + px2;
+          vsR += tmpR[vi];
+          vsG += tmpG[vi];
+          vsB += tmpB[vi];
+          vsA += tmpA[vi];
+          vcount++;
+        }
+
+        var oi = (py2 * bw + px2) * 4;
+        var oldA = src[oi + 3] / 255;
+        var blurA = vsA / vcount;
+        var blurR = blurA > 0.0001 ? (vsR / vcount) / blurA : 0;
+        var blurG = blurA > 0.0001 ? (vsG / vcount) / blurA : 0;
+        var blurB = blurA > 0.0001 ? (vsB / vcount) / blurA : 0;
+
+        var dx = (x0 + px2) - x;
+        var dy = (y0 + py2) - y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d > radius) continue;
+
+        // Soft edge, full strength in the center.
+        var mask = 1 - d / radius;
+        mask = mask * mask * (3 - 2 * mask);
+        var mix = mask * 0.9;
+
+        // Keep transparent pixels transparent instead of manufacturing a
+        // colored/black halo around the blurred object.
+        out[oi] = Math.round(src[oi] * (1 - mix) + blurR * mix);
+        out[oi + 1] = Math.round(src[oi + 1] * (1 - mix) + blurG * mix);
+        out[oi + 2] = Math.round(src[oi + 2] * (1 - mix) + blurB * mix);
+        out[oi + 3] = Math.round(src[oi + 3] * (1 - mix) + blurA * 255 * mix);
+
+        // If the original pixel was transparent, don't let RGB become visible
+        // just because a neighboring opaque pixel was sampled.
+        if (oldA < 0.001) out[oi + 3] = 0;
       }
     }
     cx.putImageData(img, x0, y0);
