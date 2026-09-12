@@ -1278,21 +1278,26 @@
       ctx.restore();
     }
 
-    // Floating transform pixels
+    // Floating transform pixels (move / scale / rotate)
     if (floating) {
       ctx.save();
-      ctx.drawImage(floating.canvas, floating.x, floating.y);
+      var fang = floating.angle || 0;
+      var fcx = floating.x + floating.w / 2;
+      var fcy = floating.y + floating.h / 2;
+      ctx.translate(fcx, fcy);
+      ctx.rotate(fang);
+      ctx.drawImage(floating.canvas, -floating.w / 2, -floating.h / 2);
       ctx.strokeStyle = "rgba(20,120,200,0.95)";
       ctx.lineWidth = 1;
       ctx.setLineDash([5, 4]);
-      ctx.strokeRect(floating.x + 0.5, floating.y + 0.5, floating.w, floating.h);
-      // handles
+      ctx.strokeRect(-floating.w / 2 + 0.5, -floating.h / 2 + 0.5, floating.w, floating.h);
+      // corner handles (in local rotated space)
       var hs = 6;
       var corners = [
-        [floating.x, floating.y],
-        [floating.x + floating.w, floating.y],
-        [floating.x, floating.y + floating.h],
-        [floating.x + floating.w, floating.y + floating.h]
+        [-floating.w / 2, -floating.h / 2],
+        [floating.w / 2, -floating.h / 2],
+        [-floating.w / 2, floating.h / 2],
+        [floating.w / 2, floating.h / 2]
       ];
       ctx.setLineDash([]);
       ctx.fillStyle = "rgba(255,255,255,0.95)";
@@ -1301,6 +1306,16 @@
         ctx.fillRect(corners[hi][0] - hs / 2, corners[hi][1] - hs / 2, hs, hs);
         ctx.strokeRect(corners[hi][0] - hs / 2, corners[hi][1] - hs / 2, hs, hs);
       }
+      // rotation handle (above top center)
+      var rhY = -floating.h / 2 - 22;
+      ctx.beginPath();
+      ctx.moveTo(0, -floating.h / 2);
+      ctx.lineTo(0, rhY);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(0, rhY, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
       ctx.restore();
     }
 
@@ -2039,10 +2054,21 @@
   }
 
   function deleteSelection() {
-    commitFloatingIfAny();
+    if (floating) {
+      // вже вирізано з шару — просто викинути floating
+      floating = null;
+      transformMode = null;
+      transformStart = null;
+      selection = null;
+      composite();
+      pushUndo();
+      toast("Виділення видалено");
+      return;
+    }
     if (!selection) { toast("Немає виділення"); return; }
     finalizeStrokeIfNeeded();
     clearSelectionArea(getActiveCtx(), selection);
+    selection = null;
     composite();
     pushUndo();
     toast("Виділення очищено");
@@ -2081,14 +2107,39 @@
   function commitFloatingIfAny() {
     if (!floating) return;
     var cx = getActiveCtx();
-    cx.drawImage(floating.canvas, floating.x, floating.y);
-    selection = {
-      type: "rect",
-      x: floating.x,
-      y: floating.y,
-      w: floating.w,
-      h: floating.h
-    };
+    var ang = floating.angle || 0;
+    if (!ang) {
+      cx.drawImage(floating.canvas, floating.x, floating.y);
+    } else {
+      cx.save();
+      cx.translate(floating.x + floating.w / 2, floating.y + floating.h / 2);
+      cx.rotate(ang);
+      cx.drawImage(floating.canvas, -floating.w / 2, -floating.h / 2);
+      cx.restore();
+    }
+    // axis-aligned bbox after rotation (approx)
+    if (ang) {
+      var cos = Math.abs(Math.cos(ang)), sin = Math.abs(Math.sin(ang));
+      var bw = floating.w * cos + floating.h * sin;
+      var bh = floating.w * sin + floating.h * cos;
+      var cx0 = floating.x + floating.w / 2;
+      var cy0 = floating.y + floating.h / 2;
+      selection = {
+        type: "rect",
+        x: cx0 - bw / 2,
+        y: cy0 - bh / 2,
+        w: bw,
+        h: bh
+      };
+    } else {
+      selection = {
+        type: "rect",
+        x: floating.x,
+        y: floating.y,
+        w: floating.w,
+        h: floating.h
+      };
+    }
     floating = null;
     transformMode = null;
     transformStart = null;
@@ -2108,11 +2159,13 @@
     clearSelectionArea(getActiveCtx(), selection);
     floating = {
       canvas: extracted.canvas,
+      source: extracted.canvas, // original for clean rescale
       mask: extracted.mask,
       x: selection.x,
       y: selection.y,
       w: selection.w,
-      h: selection.h
+      h: selection.h,
+      angle: 0
     };
     selection = {
       type: "rect",
@@ -2578,21 +2631,32 @@
       if (!floating) {
         if (!beginTransformFromSelection()) return;
       }
-      // hit-test handles / body
-      var fx = floating.x, fy = floating.y, fw = floating.w, fh = floating.h;
-      var hs = 8;
+      var fw = floating.w, fh = floating.h;
+      var fang = floating.angle || 0;
+      var fcx = floating.x + fw / 2;
+      var fcy = floating.y + fh / 2;
+      var cosA = Math.cos(fang), sinA = Math.sin(fang);
+      function locToWorld(lx, ly) {
+        return [fcx + lx * cosA - ly * sinA, fcy + lx * sinA + ly * cosA];
+      }
+      var hs = 10;
       var corners = {
-        "scale-nw": [fx, fy],
-        "scale-ne": [fx + fw, fy],
-        "scale-sw": [fx, fy + fh],
-        "scale-se": [fx + fw, fy + fh]
+        "scale-nw": locToWorld(-fw / 2, -fh / 2),
+        "scale-ne": locToWorld(fw / 2, -fh / 2),
+        "scale-sw": locToWorld(-fw / 2, fh / 2),
+        "scale-se": locToWorld(fw / 2, fh / 2)
       };
+      var rotHandle = locToWorld(0, -fh / 2 - 22);
       transformMode = "move";
-      for (var hk in corners) {
-        if (!corners.hasOwnProperty(hk)) continue;
-        if (Math.abs(pos.x - corners[hk][0]) <= hs && Math.abs(pos.y - corners[hk][1]) <= hs) {
-          transformMode = hk;
-          break;
+      if (Math.hypot(pos.x - rotHandle[0], pos.y - rotHandle[1]) <= hs + 2) {
+        transformMode = "rotate";
+      } else {
+        for (var hk in corners) {
+          if (!corners.hasOwnProperty(hk)) continue;
+          if (Math.abs(pos.x - corners[hk][0]) <= hs && Math.abs(pos.y - corners[hk][1]) <= hs) {
+            transformMode = hk;
+            break;
+          }
         }
       }
       isDrawing = true;
@@ -2603,7 +2667,9 @@
         y: floating.y,
         w: floating.w,
         h: floating.h,
-        canvas: floating.canvas
+        angle: fang,
+        mouseAng: Math.atan2(pos.y - fcy, pos.x - fcx),
+        canvas: floating.source || floating.canvas
       };
       return;
     }
@@ -2701,6 +2767,11 @@
       if (transformMode === "move") {
         floating.x = transformStart.x + dx;
         floating.y = transformStart.y + dy;
+      } else if (transformMode === "rotate") {
+        var rcx = floating.x + floating.w / 2;
+        var rcy = floating.y + floating.h / 2;
+        var nowAng = Math.atan2(pos.y - rcy, pos.x - rcx);
+        floating.angle = transformStart.angle + (nowAng - transformStart.mouseAng);
       } else if (transformMode && transformMode.indexOf("scale-") === 0) {
         var nx = transformStart.x;
         var ny = transformStart.y;
@@ -2723,10 +2794,10 @@
           nh = Math.max(4, transformStart.h + dy);
           nx = transformStart.x + (transformStart.w - nw);
         }
-        // resample original snapshot
         var scaled = makeMaskCanvas(nw | 0, nh | 0);
         scaled.getContext("2d").drawImage(transformStart.canvas, 0, 0, nw, nh);
         floating.canvas = scaled;
+        floating.source = transformStart.canvas;
         floating.x = nx;
         floating.y = ny;
         floating.w = nw | 0;
@@ -4271,6 +4342,7 @@
     var mod = e.ctrlKey || e.metaKey;
     var key = e.key;
     var code = e.code;
+    // Фізичні клавіші (e.code) — працюють і на UA, і на EN розкладці
 
     // Space = temporary pan
     if (key === " " || code === "Space") {
@@ -4283,77 +4355,77 @@
       return;
     }
 
-    if (mod && (key === "z" || key === "Z")) {
+    if (mod && code === "KeyZ") {
       e.preventDefault();
       if (e.shiftKey) redo();
       else undo();
       return;
     }
-    if (mod && (key === "y" || key === "Y")) {
+    if (mod && code === "KeyY") {
       e.preventDefault();
       redo();
       return;
     }
-    if (mod && (key === "s" || key === "S")) {
+    if (mod && code === "KeyS") {
       e.preventDefault();
       document.querySelector('.tool-btn[data-tool="save"]').click();
       return;
     }
-    if (mod && (key === "c" || key === "C")) {
+    if (mod && code === "KeyC") {
       e.preventDefault();
       copySelection();
       return;
     }
-    if (mod && (key === "v" || key === "V")) {
+    if (mod && code === "KeyV") {
       e.preventDefault();
       pasteClipboard();
       return;
     }
-    if (mod && (key === "x" || key === "X")) {
+    if (mod && code === "KeyX") {
       e.preventDefault();
       copySelection();
       deleteSelection();
       return;
     }
 
-    if (key === "Delete" || key === "Backspace") {
+    if (key === "Delete" || key === "Backspace" || code === "Delete" || code === "Backspace") {
       e.preventDefault();
-      if (selection) deleteSelection();
+      if (selection || floating) deleteSelection();
       else document.querySelector('.tool-btn[data-tool="clear"]').click();
       return;
     }
 
-    if (key === "[" || key === "х") {
+    if (code === "BracketLeft" || key === "[" || key === "х" || key === "Х") {
       size = Math.max(1, size - 1);
       sizeRange.value = size;
       sizeVal.textContent = size;
       return;
     }
-    if (key === "]" || key === "ї") {
+    if (code === "BracketRight" || key === "]" || key === "ї" || key === "Ї") {
       size = Math.min(60, size + 1);
       sizeRange.value = size;
       sizeVal.textContent = size;
       return;
     }
-    if (key === "+" || key === "=") {
+    if (key === "+" || key === "=" || code === "Equal" || code === "NumpadAdd") {
       e.preventDefault();
       document.querySelector('.tool-btn[data-tool="zoom-in"]').click();
       return;
     }
-    if (key === "-" || key === "_") {
+    if (key === "-" || key === "_" || code === "Minus" || code === "NumpadSubtract") {
       e.preventDefault();
       document.querySelector('.tool-btn[data-tool="zoom-out"]').click();
       return;
     }
 
     // Enter — застосувати трансформ
-    if (key === "Enter" && floating) {
+    if ((key === "Enter" || code === "Enter" || code === "NumpadEnter") && floating) {
       e.preventDefault();
       commitFloatingIfAny();
       toast("Трансформ застосовано");
       return;
     }
-    if (key === "Escape" && floating) {
+    if ((key === "Escape" || code === "Escape") && floating) {
       e.preventDefault();
       floating = null;
       transformMode = null;
@@ -4363,30 +4435,54 @@
       return;
     }
 
-    // tool shortcuts (ignore when modifier held, except already handled)
+    // tool shortcuts by physical key (layout-independent)
     if (mod) return;
-    var map = {
+    var codeMap = {
+      KeyB: "pencil", KeyP: "brush", KeyW: "watercolor", KeyA: "spray", KeyC: "calligraphy",
+      KeyN: "noise", KeyK: "pixel", KeyL: "line", KeyR: "rect", KeyO: "ellipse", KeyH: "gradient",
+      KeyG: "fill", KeyT: "text", KeyM: "select", KeyQ: "lasso", KeyU: "wand", KeyD: "transform",
+      KeyS: "clone", KeyE: "eraser",
+      KeyI: "eyedropper", KeyF: "shape-fill", KeyX: "mirror", KeyV: "mirror-v"
+    };
+    if (codeMap[code]) {
+      e.preventDefault();
+      selectToolByName(codeMap[code]);
+      return;
+    }
+    // також на випадок, якщо code недоступний — літера з key (EN + типові UA)
+    var keyMap = {
       b: "pencil", p: "brush", w: "watercolor", a: "spray", c: "calligraphy",
       n: "noise", k: "pixel", l: "line", r: "rect", o: "ellipse", h: "gradient",
       g: "fill", t: "text", m: "select", q: "lasso", u: "wand", d: "transform",
-      s: "clone", e: "eraser",
-      i: "eyedropper", f: "shape-fill", x: "mirror", v: "mirror-v"
+      s: "clone", e: "eraser", i: "eyedropper", f: "shape-fill", x: "mirror", v: "mirror-v",
+      // українська розкладка (символ, який друкує та сама фізична клавіша)
+      и: "pencil", з: "brush", ц: "watercolor", ф: "spray", с: "calligraphy",
+      т: "noise", л: "pixel", д: "line", к: "rect", щ: "ellipse", р: "gradient",
+      п: "fill", е: "text", ь: "select", й: "lasso", г: "wand", в: "transform",
+      і: "clone", у: "eraser", ш: "eyedropper", а: "shape-fill", ч: "mirror", м: "mirror-v"
     };
     var k = key.toLowerCase();
-    if (map[k]) {
+    if (keyMap[k]) {
       e.preventDefault();
-      selectToolByName(map[k]);
+      selectToolByName(keyMap[k]);
     }
-    if (key === ";") {
+    if (key === ";" || key === "ж" || code === "Semicolon") {
       e.preventDefault();
       selectToolByName("grid");
     }
-    if (key >= "1" && key <= "4") {
-      var idx = parseInt(key, 10) - 1;
+    if (code >= "Digit1" && code <= "Digit4") {
+      var idx = parseInt(code.replace("Digit", ""), 10) - 1;
       if (idx < layers.length) {
         activeLayer = idx;
         renderLayersUI();
         hudLayer.textContent = (idx + 1);
+      }
+    } else if (key >= "1" && key <= "4") {
+      var idx2 = parseInt(key, 10) - 1;
+      if (idx2 < layers.length) {
+        activeLayer = idx2;
+        renderLayersUI();
+        hudLayer.textContent = (idx2 + 1);
       }
     }
   });
