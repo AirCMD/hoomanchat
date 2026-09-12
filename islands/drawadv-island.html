@@ -788,6 +788,53 @@
   var currentBot = null;
   var botTimer = null;
   var botBusy = false;
+  // Non-overlapping placement for bot stickers (grid of free cells)
+  var BOT_SLOT_COLS = 4;
+  var BOT_SLOT_ROWS = 3;
+  var botSlotUsed = []; // length = COLS*ROWS, true if taken
+  var botSceneUsed = false; // full-canvas scene already placed
+
+  function resetBotSlots() {
+    botSlotUsed = [];
+    for (var i = 0; i < BOT_SLOT_COLS * BOT_SLOT_ROWS; i++) botSlotUsed[i] = false;
+    botSceneUsed = false;
+  }
+  resetBotSlots();
+
+  function botSlotCenter(index) {
+    var col = index % BOT_SLOT_COLS;
+    var row = (index / BOT_SLOT_COLS) | 0;
+    var marginX = 70;
+    var marginY = 70;
+    var cellW = (W - marginX * 2) / BOT_SLOT_COLS;
+    var cellH = (H - marginY * 2) / BOT_SLOT_ROWS;
+    return {
+      x: marginX + cellW * (col + 0.5),
+      y: marginY + cellH * (row + 0.5),
+      index: index
+    };
+  }
+
+  /** Pick a free grid cell. Returns null if the board is full (no stacking). */
+  function claimBotSlot() {
+    var free = [];
+    for (var i = 0; i < botSlotUsed.length; i++) {
+      if (!botSlotUsed[i]) free.push(i);
+    }
+    if (!free.length) return null;
+    var idx = free[(Math.random() * free.length) | 0];
+    botSlotUsed[idx] = true;
+    return botSlotCenter(idx);
+  }
+
+  function claimBotSlots(n) {
+    var out = [];
+    for (var k = 0; k < n; k++) {
+      var s = claimBotSlot();
+      if (s) out.push(s);
+    }
+    return out;
+  }
   var usedPhrases = {};   // botName -> array of recently used phrase texts
   var usedGreets = {};    // botName -> array of used greets
 
@@ -807,21 +854,14 @@
         "добре, що тут тихо."
       ],
       phrases: [
-        "у Сумному буває сніг, дощі. вони всі в тумані.",
+        "у Сумному немає дощів. тільки туман.",
         "Сьогодні знайшла тама-чі біля порожнього майданчика.",
         "Сірі знову сидів на цеглі. Браун десь у недобудованому будинку засів з іншими піцюками.",
         "в бібліотеці сьогодні майже нікого, тільки пенсіонери.",
         "кафе Signal на перехресті… світло там завжди м’яке.",
-        "Ось що цікаво... місто Сумне назвали так через постійні тумани і рідкісні дні без них. А хочеш дізнатися чому у нас постійні тумани? Бо гумени міста Веселе підібрали місцинку біля нас для своїх заводів. Ці заводи і є причиною постійних туманів.",
-        "Спочатку я жила у тітки та дядька, а потім переїхала до села. Пік ти можеш побачити на моєму острові.",
-        "Сподіваюсь ти заходила у гру Ставок, 2 сторінка острова, 08 номер? Перевір там.",
         "гумени не цінують тама-чі. я їх чищу, приводжу в порядок і залипаю у грі.",
         "просто… недобудовані, закинуті будівлі.",
-        "малюю піцюка. він схожий на Сірі.",
-        "село мене лякало найбільше, якщо буде час, подивись серед островів мій, острів Джейн. 10 сторінка під 48 номером.",
-        "я якось заглядала в гості до одного парубчика в магазині... він симпатичний, тому я не гаяла час і відвідую його й досі, інколи.",
-        "коли я працювала сміттяркою, ми прокидалися дуже рано та їздили всім містом щоб зібрати сміття на переробку. Ти навіть уявити не можеш скільки нормальних речей без причин йде на смітник.",
-        "один мій найомий сказав про існування інших паралельних світів з іншою Джейн. Спочатку мені було від цього сміховинно, але пізніше я зрозуміла що це точно не мушкалове чергове. Реально я можу ще десь існувати.",
+        "малюю пацюка. він схожий на Сірі.",
         "тама-чі... вони теплі, навіть якщо пластикові."
       ],
       keywords: [
@@ -829,8 +869,8 @@
         { words: ["як справи?", "як ти?"], replies: ["Як? Сьогодні ходила в кафе Signal, послухала про стусни гуменів та й пішла, нічого цікавого.", "Я сьогодні хочу трішки посидіти в тиші..."] },
         { words: ["я теж", "і я"], replies: ["ок.", "окей."] },
         { words: ["дощ", "погода"], replies: ["дощу тут не видно. тільки туман.", "погода якась сіра…"] },
-        { words: ["кіт", "кішка", "кішку", "киця", "кітик", "кітика", "кицюню", "кицьку", "кота"], replies: ["кіт? Сірі б точно схвалила.", "намалюй кота. я подивлюся."] },
-        { words: ["пацюк", "щур", "піцюк", "пацюка", "піцюка"], replies: ["піцюки — мої старі знайомі.", "намалюй йому довгий хвіст."] },
+        { words: ["кіт", "кот"], replies: ["кіт? Сірі б точно схвалив.", "намалюй кота. я подивлюся."] },
+        { words: ["пацюк", "щур"], replies: ["пацюки — мої старі знайомі.", "намалюй йому довгий хвіст."] },
         { words: ["намалюй", "малюй", "намалювати"], replies: ["добре… намалюю.", "зараз щось з’явиться на полотні."] }
       ],
       drawStyle: "jane"
@@ -844,18 +884,17 @@
       ],
       phrases: [
         "мм… справи норм",
-        "ммм… у мене гарно виходить",
+        "мм… у мене гарно виходить",
         "ня, аніме дівчина б тут пасувала",
         "мм… собака ідеальна",
-        "…",
         "йо, колір цікавий",
         "мм… я просто поруч помалюю",
         "ня, не заважаю?"
       ],
       keywords: [
         { words: ["привіт", "хай"], replies: ["ня, привіт ще раз!", "йо, я тут~"] },
-        { words: ["любов", "кохання", "романтика", "люлюбов"], replies: ["ня… це вже моя тема.", "о, романтика! додай серденько."] },
-        { words: ["кіт", "кішка", "кішку", "киця", "кітик", "кітика", "кицюню", "кицьку", "кота"], replies: ["ня, котик був би милий.", "кіт? так, однозначно."] },
+        { words: ["любов", "кохання", "романтика"], replies: ["ня… це вже моя тема.", "о, романтика! додай сердечко."] },
+        { words: ["кіт", "кот"], replies: ["ня, котик був би милий.", "кіт? так, однозначно."] },
         { words: ["собака", "пес"], replies: ["собака теж ідеально пасує.", "ня, намалюй йому великі очі."] },
         { words: ["намалюй", "малюй", "намалювати"], replies: ["ня, зараз щось намалюю~", "йо, малюю!"] },
         { words: ["дівчин", "мрі"], replies: ["ня… дівчина мрії.", "довге волосся обов'язково."] }
@@ -1271,6 +1310,11 @@
     }
     histStep--;
     restoreHistoryEntry(history[histStep]);
+    // Occupancy grid is approximate after undo — free one random used slot if any
+    for (var ui = botSlotUsed.length - 1; ui >= 0; ui--) {
+      if (botSlotUsed[ui]) { botSlotUsed[ui] = false; break; }
+    }
+    if (histStep <= 0) resetBotSlots();
   }
 
   function redo() {
@@ -2365,6 +2409,7 @@
         if (!confirm("Очистити всі шари?")) return;
         finalizeStrokeIfNeeded();
         layers.forEach(function (L) { L.ctx.clearRect(0, 0, W, H); });
+        resetBotSlots();
         composite();
         pushUndo();
         toast("Очищено");
@@ -3377,17 +3422,17 @@
     }
 
     if (style === "child") {
-      // playground scene: sun left, house right, pet center
-      botDrawChild(cx, 100, 100);
-      botDrawChild(cx, W - 140, H - 160);
-      botDrawChild(cx, W * 0.45, H - 140);
+      // playground: three well-separated stickers
+      botDrawChild(cx, 110, 110);
+      botDrawChild(cx, W - 120, 120);
+      botDrawChild(cx, W * 0.5, H - 110);
       return;
     }
 
-    // smart: structured diagram across slots
-    botDrawSmart(cx, 120, 120);
-    botDrawSmart(cx, W - 140, 130);
-    botDrawSmart(cx, W * 0.5, H - 130);
+    // smart: three separated diagrams
+    botDrawSmart(cx, 110, 120);
+    botDrawSmart(cx, W - 120, 130);
+    botDrawSmart(cx, W * 0.5, H - 120);
   }
 
   /** Normalize Ukrainian chat text for stabler matching */
@@ -3409,7 +3454,7 @@
 
   /** Explicit intent to draw */
   function detectDrawIntent(t) {
-    if (/(намалюй|намалювати|помалюй|помальовуй|змалюй|домалюй)/.test(t)) return true;
+    if (/(намалюй|намалювати|помальуй|помальовуй|змалюй|домалюй)/.test(t)) return true;
     if (/малюй/.test(t) && !/не\s+малюй/.test(t)) return true;
     if (/(можеш|можна|давай|зроби|хочу|будь\s*ласка|пліз|please).{0,24}(намал|помал|змал|малюн)/.test(t)) return true;
     if (/(намал|помал|змал).{0,12}(будь\s*ласка|пліз|please)/.test(t)) return true;
@@ -3470,23 +3515,40 @@
     cx.lineCap = "round";
     cx.lineJoin = "round";
 
-    // Full scene only when asked / forced, or randomly when no specific subject
-    var doScene = forceScene || subject === "scene" || (!subject && Math.random() < 0.4);
+    // Full scene: only if asked, or rare random when board is still empty
+    var doScene = (forceScene || subject === "scene") ||
+      (!subject && !botSceneUsed && !botSlotUsed.some(function (u) { return u; }) && Math.random() < 0.25);
+
     if (doScene && (!subject || subject === "scene")) {
+      if (botSceneUsed || botSlotUsed.some(function (u) { return u; })) {
+        cx.restore();
+        botBusy = false;
+        toast("Мало вільного місця — очисти полотно або відміни, щоб боти не малювали поверх");
+        if (currentBot) {
+          setTimeout(function () {
+            if (currentBot) addChat(currentBot.name, pick([
+              "краще очистити полотно, інакше налізе одне на одне.",
+              "місця бракує… зітри або починай новий шар."
+            ]), "bot");
+          }, 300);
+        }
+        return;
+      }
       botDrawScene(cx, style);
+      botSceneUsed = true;
+      for (var si = 0; si < botSlotUsed.length; si++) botSlotUsed[si] = true;
     } else {
-      var slots = [
-        [W * 0.25, H * 0.35],
-        [W * 0.7, H * 0.35],
-        [W * 0.3, H * 0.7],
-        [W * 0.65, H * 0.7],
-        [W * 0.5, H * 0.5]
-      ];
-      var slot = pick(slots);
-      if (style === "jane") botDrawJane(cx, slot[0], slot[1], subject);
-      else if (style === "romance") botDrawRomance(cx, slot[0], slot[1], subject);
-      else if (style === "child") botDrawChild(cx, slot[0], slot[1], subject);
-      else botDrawSmart(cx, slot[0], slot[1], subject);
+      var slot = claimBotSlot();
+      if (!slot) {
+        cx.restore();
+        botBusy = false;
+        toast("Усі місця зайняті — очисти полотно, щоб боти малювали далі без накладання");
+        return;
+      }
+      if (style === "jane") botDrawJane(cx, slot.x, slot.y, subject);
+      else if (style === "romance") botDrawRomance(cx, slot.x, slot.y, subject);
+      else if (style === "child") botDrawChild(cx, slot.x, slot.y, subject);
+      else botDrawSmart(cx, slot.x, slot.y, subject);
     }
 
     cx.restore();
