@@ -7,7 +7,7 @@
 <title>ОСТРІВ: HOOMENART</title>
 <link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
 <style>
-/* ===== Gallery ===== */
+/* ===== Gallery — маленькі прев'ю, 6 на сторінку ===== */
 .gallery-section { margin: 0 0 12px; }
 .gallery-header {
   margin: 0 0 10px;
@@ -24,35 +24,35 @@
 }
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
 }
-@media (min-width: 520px) {
-  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 480px) {
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
 }
 .gallery-item {
   background: linear-gradient(165deg, rgba(255,255,255,0.95) 0%, rgba(220,240,255,0.9) 100%);
-  border: 1px solid rgba(120, 190, 220, 0.7);
-  border-radius: 12px;
-  padding: 8px;
-  box-shadow: 0 2px 8px rgba(40, 100, 140, 0.12);
+  border: 1px solid rgba(120, 190, 220, 0.65);
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 1px 4px rgba(40, 100, 140, 0.1);
   cursor: pointer;
-  transition: transform 0.12s, box-shadow 0.12s;
+  transition: transform 0.1s, box-shadow 0.1s;
   overflow: hidden;
 }
 .gallery-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(40, 120, 160, 0.22);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(40, 120, 160, 0.2);
 }
 .gallery-thumb-wrap {
   position: relative;
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 8px;
+  border-radius: 6px;
   overflow: hidden;
   background: linear-gradient(135deg, #e8f4fc, #d0e8f5);
-  border: 1px solid rgba(140, 190, 220, 0.5);
+  border: 1px solid rgba(140, 190, 220, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,19 +65,20 @@
 }
 .gallery-thumb-placeholder {
   color: #5a8aa0;
-  font-size: 13px;
+  font-size: 10px;
   text-align: center;
-  padding: 8px;
-  line-height: 1.3;
+  padding: 4px;
+  line-height: 1.25;
 }
 .gallery-item-meta {
-  margin-top: 6px;
-  font-size: 11px;
+  margin-top: 3px;
+  font-size: 10px;
   color: #2a5a70;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
+  padding: 0 1px;
 }
 .gallery-item-title {
   font-weight: 600;
@@ -85,10 +86,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   flex: 1;
+  min-width: 0;
 }
 .gallery-item-likes {
   color: #c45a7a;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* Pagination */
@@ -96,22 +99,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   flex-wrap: wrap;
-  margin: 10px 0 14px;
+  margin: 8px 0 12px;
 }
 .page-btn {
-  min-width: 32px;
-  height: 30px;
-  padding: 0 8px;
+  min-width: 28px;
+  height: 26px;
+  padding: 0 6px;
   border: 1px solid rgba(100, 170, 200, 0.6);
-  border-radius: 8px;
+  border-radius: 7px;
   background: linear-gradient(180deg, #fff 0%, #e8f6ff 100%);
   color: #1a4a60;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(60,120,160,0.12);
+  box-shadow: 0 1px 2px rgba(60,120,160,0.1);
   transition: background 0.12s, transform 0.08s;
 }
 .page-btn:hover:not(:disabled) {
@@ -416,7 +419,7 @@ function escapeHtml(text) {
     .replace(/"/g, "&quot;");
 }
 
-/* ===== Дані галереї (src: "#" — заглушка) ===== */
+/* ===== Дані галереї ===== */
 var artworks = [
   {
     id: 1,
@@ -536,9 +539,9 @@ var artworks = [
   }
 ];
 
-var PER_PAGE = 4;
+var PER_PAGE = 6;
 var currentPage = 1;
-var currentIndex = 0; // index in artworks for popup navigation
+var currentIndex = 0;
 
 var grid = document.getElementById('gallery-grid');
 var pagination = document.getElementById('gallery-pagination');
@@ -745,7 +748,6 @@ popupLikeBtn.onclick = function (e) {
     art.likes = (art.likes || 0) + 1;
   }
   updatePopupContent();
-  // оновити лічильник на плитці, якщо вона на поточній сторінці
   renderGrid();
 };
 
@@ -772,7 +774,7 @@ document.addEventListener('keydown', function (e) {
   if (e.key === 'ArrowRight') document.getElementById('popup-next').click();
 });
 
-/* Stats (як було) */
+/* Stats */
 function safe(base, range) {
   var v;
   do { v = base + Math.floor(Math.random() * range); }
