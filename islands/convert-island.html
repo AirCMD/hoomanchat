@@ -1,0 +1,1184 @@
+```html
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Aero PNG Converter</title>
+
+<style>
+/* =========================================================
+   FRUTIGER AERO IMAGE CONVERTER
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #16445c;
+
+    background:
+        radial-gradient(circle at 15% 15%, rgba(255,255,255,.9) 0 35px, transparent 36px),
+        radial-gradient(circle at 85% 22%, rgba(255,255,255,.55) 0 18px, transparent 19px),
+        linear-gradient(
+            to bottom,
+            #6fdcff 0%,
+            #b8f2ff 38%,
+            #e7fcff 58%,
+            #8de57b 59%,
+            #45c95d 100%
+        );
+
+    background-attachment: fixed;
+}
+
+/* Небо */
+body::before {
+    content: "";
+    position: fixed;
+    left: -80px;
+    right: -80px;
+    top: 50px;
+    height: 150px;
+
+    background:
+        radial-gradient(ellipse at 20% 50%,
+            rgba(255,255,255,.8) 0 60px,
+            transparent 61px),
+        radial-gradient(ellipse at 28% 45%,
+            rgba(255,255,255,.7) 0 45px,
+            transparent 46px),
+        radial-gradient(ellipse at 78% 40%,
+            rgba(255,255,255,.65) 0 55px,
+            transparent 56px);
+
+    filter: blur(3px);
+    pointer-events: none;
+}
+
+/* Бульбашки */
+.bubble {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            rgba(255,255,255,.95) 0 7%,
+            rgba(255,255,255,.45) 8% 20%,
+            rgba(100,220,255,.15) 40%,
+            rgba(255,255,255,.05) 65%,
+            transparent 72%
+        );
+
+    border: 1px solid rgba(255,255,255,.65);
+    box-shadow:
+        inset 5px 5px 12px rgba(255,255,255,.6),
+        0 5px 15px rgba(0,100,150,.12);
+}
+
+.b1 {
+    width: 90px;
+    height: 90px;
+    left: 5%;
+    bottom: 12%;
+}
+
+.b2 {
+    width: 45px;
+    height: 45px;
+    right: 10%;
+    top: 17%;
+}
+
+.b3 {
+    width: 125px;
+    height: 125px;
+    right: 4%;
+    bottom: 8%;
+}
+
+/* =========================================================
+   ОСНОВНИЙ КОНТЕЙНЕР
+   ========================================================= */
+
+.wrapper {
+    position: relative;
+    z-index: 1;
+
+    width: min(1100px, calc(100% - 30px));
+    margin: 35px auto 60px;
+}
+
+/* Верхня панель */
+.header {
+    position: relative;
+
+    padding: 22px 28px;
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255,255,255,.94),
+            rgba(190,244,255,.78)
+        );
+
+    border: 2px solid rgba(255,255,255,.9);
+
+    box-shadow:
+        0 8px 25px rgba(0,90,130,.22),
+        inset 0 2px 0 rgba(255,255,255,.95),
+        inset 0 -8px 18px rgba(30,180,220,.12);
+}
+
+.header::after {
+    content: "";
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 8px;
+    height: 20px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.5);
+    filter: blur(7px);
+}
+
+.header h1 {
+    position: relative;
+    z-index: 2;
+
+    margin: 0;
+    font-size: clamp(27px, 5vw, 44px);
+
+    color: #087aa5;
+
+    text-shadow:
+        0 2px 0 white,
+        0 3px 5px rgba(0,100,140,.25);
+}
+
+.header p {
+    position: relative;
+    z-index: 2;
+
+    margin: 8px 0 0;
+    font-size: 15px;
+    color: #37718a;
+}
+
+/* =========================================================
+   PANELS
+   ========================================================= */
+
+.panel {
+    margin-top: 20px;
+    padding: 22px;
+
+    border-radius: 25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.93),
+            rgba(225,250,255,.82)
+        );
+
+    border: 2px solid rgba(255,255,255,.9);
+
+    box-shadow:
+        0 10px 28px rgba(0,80,120,.18),
+        inset 0 2px 0 rgba(255,255,255,.95);
+}
+
+.drop-zone {
+    min-height: 180px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    border-radius: 20px;
+
+    border: 3px dashed rgba(23,161,197,.42);
+
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(255,255,255,.9),
+            transparent 55%
+        ),
+        rgba(170,238,255,.25);
+
+    transition: .2s ease;
+}
+
+.drop-zone.dragging {
+    transform: scale(1.01);
+
+    border-color: #16a6d2;
+
+    background:
+        rgba(110,225,255,.35);
+
+    box-shadow:
+        0 0 25px rgba(20,190,240,.25);
+}
+
+.drop-icon {
+    font-size: 45px;
+    margin-bottom: 8px;
+
+    filter:
+        drop-shadow(0 3px 2px rgba(0,100,130,.2));
+}
+
+.drop-zone strong {
+    font-size: 20px;
+    color: #087ca4;
+}
+
+.drop-zone small {
+    margin-top: 7px;
+    color: #568095;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+/* =========================================================
+   КНОПКИ
+   ========================================================= */
+
+.button {
+    appearance: none;
+    border: 1px solid rgba(255,255,255,.9);
+
+    border-radius: 15px;
+
+    padding: 12px 20px;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    color: #14546b;
+
+    cursor: pointer;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #ffffff 0%,
+            #dffaff 45%,
+            #9be8fa 50%,
+            #63cfe9 100%
+        );
+
+    box-shadow:
+        0 4px 9px rgba(0,100,140,.2),
+        inset 0 2px 0 rgba(255,255,255,.95),
+        inset 0 -3px 5px rgba(0,120,170,.12);
+
+    text-shadow: 0 1px 0 white;
+
+    transition: .15s ease;
+}
+
+.button:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 13px rgba(0,100,140,.24),
+        inset 0 2px 0 white;
+}
+
+.button:active {
+    transform: translateY(1px);
+
+    box-shadow:
+        inset 0 3px 6px rgba(0,100,140,.18);
+}
+
+.button.green {
+    color: #185e36;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #ffffff,
+            #e9ffe9 45%,
+            #a5edaa 50%,
+            #55ce67 100%
+        );
+}
+
+.button.orange {
+    color: #704c14;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #ffffff,
+            #fff6d5 45%,
+            #ffdc77 50%,
+            #f2b83f 100%
+        );
+}
+
+/* =========================================================
+   КОНТРОЛИ
+   ========================================================= */
+
+.controls {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+
+    margin-top: 18px;
+}
+
+.control-box {
+    padding: 16px;
+
+    border-radius: 18px;
+
+    background: rgba(255,255,255,.55);
+
+    border: 1px solid rgba(255,255,255,.85);
+
+    box-shadow:
+        inset 0 1px 4px rgba(0,100,140,.07);
+}
+
+.control-title {
+    font-weight: bold;
+    color: #087ca4;
+    margin-bottom: 9px;
+}
+
+.mode-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: #13a7ce;
+}
+
+/* =========================================================
+   PREVIEW
+   ========================================================= */
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+
+    margin-top: 20px;
+}
+
+.preview-card {
+    min-width: 0;
+
+    padding: 14px;
+
+    border-radius: 20px;
+
+    background: rgba(255,255,255,.7);
+
+    border: 1px solid rgba(255,255,255,.9);
+
+    box-shadow:
+        inset 0 1px 5px rgba(0,100,140,.08);
+}
+
+.preview-card h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+    color: #187b9b;
+}
+
+.canvas-wrap {
+    position: relative;
+
+    width: 100%;
+    min-height: 240px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 14px;
+
+    border: 1px solid rgba(0,110,150,.18);
+
+    background-color: #f5fbfd;
+
+    /* шахівниця прозорості */
+    background-image:
+        linear-gradient(45deg, #dce9ed 25%, transparent 25%),
+        linear-gradient(-45deg, #dce9ed 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #dce9ed 75%),
+        linear-gradient(-45deg, transparent 75%, #dce9ed 75%);
+
+    background-size: 24px 24px;
+    background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+}
+
+.canvas-wrap.original {
+    background:
+        linear-gradient(
+            135deg,
+            #eaffff,
+            #ffffff
+        );
+}
+
+canvas {
+    display: block;
+
+    max-width: 100%;
+    max-height: 520px;
+
+    object-fit: contain;
+}
+
+/* =========================================================
+   INFO
+   ========================================================= */
+
+.info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-top: 15px;
+}
+
+.info span {
+    padding: 7px 12px;
+
+    border-radius: 20px;
+
+    background: rgba(255,255,255,.7);
+
+    border: 1px solid rgba(255,255,255,.9);
+
+    font-size: 13px;
+    color: #397286;
+}
+
+.download-area {
+    margin-top: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.status {
+    width: 100%;
+    text-align: center;
+
+    min-height: 20px;
+
+    color: #31748a;
+    font-size: 14px;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer {
+    text-align: center;
+
+    margin-top: 20px;
+
+    font-size: 12px;
+
+    color: rgba(20,80,100,.75);
+}
+
+@media (max-width: 720px) {
+
+    .wrapper {
+        width: min(100% - 14px, 1100px);
+        margin-top: 12px;
+    }
+
+    .header {
+        padding: 18px;
+    }
+
+    .panel {
+        padding: 14px;
+        border-radius: 20px;
+    }
+
+    .preview-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .drop-zone {
+        min-height: 150px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+
+<main class="wrapper">
+
+    <header class="header">
+        <h1>🌊 Aero PNG Converter</h1>
+        <p>
+            Конвертація зображень у PNG прямо у браузері.
+            Без серверів, реєстрації та завантаження файлів кудись.
+        </p>
+    </header>
+
+    <section class="panel">
+
+        <div
+            class="drop-zone"
+            id="dropZone"
+        >
+            <div class="drop-icon">🖼️</div>
+
+            <strong>
+                Перетягни сюди зображення
+            </strong>
+
+            <small>
+                JPG · JPEG · JFIF · WebP · PNG · GIF · BMP та інші формати,
+                які відкриває браузер
+            </small>
+
+            <br>
+
+            <label class="button" for="fileInput">
+                Вибрати файл
+            </label>
+
+            <input
+                id="fileInput"
+                type="file"
+                accept="image/*"
+            >
+        </div>
+
+        <div class="controls">
+
+            <div class="control-box">
+
+                <div class="control-title">
+                    Режим обробки
+                </div>
+
+                <div class="mode-buttons">
+
+                    <button
+                        class="button green"
+                        id="transparentBtn"
+                        type="button"
+                    >
+                        ✨ Зробити фон прозорим
+                    </button>
+
+                    <button
+                        class="button orange"
+                        id="normalBtn"
+                        type="button"
+                    >
+                        🖼️ Не робити прозорим
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="control-box">
+
+                <div class="control-title">
+                    Чутливість видалення фону:
+                    <span id="thresholdValue">35</span>
+                </div>
+
+                <input
+                    id="threshold"
+                    type="range"
+                    min="5"
+                    max="100"
+                    value="35"
+                >
+
+                <small>
+                    Більше значення → більше схожих кольорів стане прозорим.
+                </small>
+
+            </div>
+
+        </div>
+
+        <div class="preview-grid">
+
+            <div class="preview-card">
+
+                <h3>Оригінал</h3>
+
+                <div class="canvas-wrap original">
+                    <canvas id="originalCanvas"></canvas>
+                </div>
+
+            </div>
+
+            <div class="preview-card">
+
+                <h3>Результат PNG</h3>
+
+                <div class="canvas-wrap">
+                    <canvas id="resultCanvas"></canvas>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="info">
+
+            <span id="fileInfo">
+                Файл не вибрано
+            </span>
+
+            <span id="sizeInfo">
+                Розмір: —
+            </span>
+
+            <span id="modeInfo">
+                Режим: —
+            </span>
+
+        </div>
+
+        <div class="download-area">
+
+            <button
+                class="button green"
+                id="downloadBtn"
+                type="button"
+                disabled
+            >
+                💾 Завантажити PNG
+            </button>
+
+            <div
+                class="status"
+                id="status"
+            ></div>
+
+        </div>
+
+    </section>
+
+    <div class="footer">
+        Aero PNG Converter · Обробка виконується локально у браузері
+    </div>
+
+</main>
+
+<script>
+/* =========================================================
+   AERO PNG CONVERTER
+   ========================================================= */
+
+const fileInput = document.getElementById("fileInput");
+const dropZone = document.getElementById("dropZone");
+
+const originalCanvas = document.getElementById("originalCanvas");
+const resultCanvas = document.getElementById("resultCanvas");
+
+const transparentBtn =
+    document.getElementById("transparentBtn");
+
+const normalBtn =
+    document.getElementById("normalBtn");
+
+const downloadBtn =
+    document.getElementById("downloadBtn");
+
+const threshold =
+    document.getElementById("threshold");
+
+const thresholdValue =
+    document.getElementById("thresholdValue");
+
+const fileInfo =
+    document.getElementById("fileInfo");
+
+const sizeInfo =
+    document.getElementById("sizeInfo");
+
+const modeInfo =
+    document.getElementById("modeInfo");
+
+const status =
+    document.getElementById("status");
+
+const originalCtx =
+    originalCanvas.getContext("2d", {
+        willReadFrequently: true
+    });
+
+const resultCtx =
+    resultCanvas.getContext("2d", {
+        willReadFrequently: true
+    });
+
+let loadedImage = null;
+let currentFileName = "image";
+
+/* ---------------------------------------------------------
+   FILE
+   --------------------------------------------------------- */
+
+fileInput.addEventListener("change", event => {
+
+    const file = event.target.files[0];
+
+    if (file) {
+        loadImage(file);
+    }
+
+});
+
+dropZone.addEventListener("dragover", event => {
+
+    event.preventDefault();
+
+    dropZone.classList.add("dragging");
+
+});
+
+dropZone.addEventListener("dragleave", () => {
+
+    dropZone.classList.remove("dragging");
+
+});
+
+dropZone.addEventListener("drop", event => {
+
+    event.preventDefault();
+
+    dropZone.classList.remove("dragging");
+
+    const file = event.dataTransfer.files[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+
+        status.textContent =
+            "Це не схоже на файл зображення.";
+
+        return;
+    }
+
+    loadImage(file);
+
+});
+
+/* ---------------------------------------------------------
+   LOAD IMAGE
+   --------------------------------------------------------- */
+
+function loadImage(file) {
+
+    status.textContent = "Відкриваю зображення…";
+
+    const url = URL.createObjectURL(file);
+
+    const img = new Image();
+
+    img.onload = () => {
+
+        loadedImage = img;
+
+        currentFileName =
+            file.name
+                .replace(/\.[^/.]+$/, "")
+                .replace(/[^\wа-яА-ЯіїєІЇЄ0-9\- ]/g, "_");
+
+        const width = img.naturalWidth;
+        const height = img.naturalHeight;
+
+        originalCanvas.width = width;
+        originalCanvas.height = height;
+
+        resultCanvas.width = width;
+        resultCanvas.height = height;
+
+        originalCtx.clearRect(
+            0,
+            0,
+            width,
+            height
+        );
+
+        originalCtx.drawImage(
+            img,
+            0,
+            0
+        );
+
+        resultCtx.clearRect(
+            0,
+            0,
+            width,
+            height
+        );
+
+        resultCtx.drawImage(
+            img,
+            0,
+            0
+        );
+
+        fileInfo.textContent =
+            "Файл: " + file.name;
+
+        sizeInfo.textContent =
+            `Розмір: ${width} × ${height}`;
+
+        modeInfo.textContent =
+            "Режим: оригінал";
+
+        downloadBtn.disabled = false;
+
+        status.textContent =
+            "Зображення готове до обробки.";
+
+        URL.revokeObjectURL(url);
+
+    };
+
+    img.onerror = () => {
+
+        status.textContent =
+            "Браузер не зміг відкрити цей формат.";
+
+        URL.revokeObjectURL(url);
+
+    };
+
+    img.src = url;
+}
+
+/* ---------------------------------------------------------
+   THRESHOLD
+   --------------------------------------------------------- */
+
+threshold.addEventListener("input", () => {
+
+    thresholdValue.textContent =
+        threshold.value;
+
+});
+
+/* ---------------------------------------------------------
+   NORMAL PNG
+   --------------------------------------------------------- */
+
+normalBtn.addEventListener("click", () => {
+
+    if (!loadedImage) {
+
+        status.textContent =
+            "Спочатку вибери зображення.";
+
+        return;
+    }
+
+    const width = loadedImage.naturalWidth;
+    const height = loadedImage.naturalHeight;
+
+    resultCanvas.width = width;
+    resultCanvas.height = height;
+
+    resultCtx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+    resultCtx.drawImage(
+        loadedImage,
+        0,
+        0
+    );
+
+    modeInfo.textContent =
+        "Режим: PNG без прозорості";
+
+    status.textContent =
+        "Фон залишено без змін.";
+
+});
+
+/* ---------------------------------------------------------
+   TRANSPARENT BACKGROUND
+   --------------------------------------------------------- */
+
+transparentBtn.addEventListener("click", () => {
+
+    if (!loadedImage) {
+
+        status.textContent =
+            "Спочатку вибери зображення.";
+
+        return;
+    }
+
+    makeBackgroundTransparent();
+
+});
+
+/*
+ * Визначаємо колір фону за кутами.
+ *
+ * Це не AI-сегментація. Алгоритм спеціально простий:
+ * він добре працює з однотонним / градієнтним фоном,
+ * білим фоном, небом тощо.
+ */
+
+function makeBackgroundTransparent() {
+
+    const width = loadedImage.naturalWidth;
+    const height = loadedImage.naturalHeight;
+
+    resultCanvas.width = width;
+    resultCanvas.height = height;
+
+    resultCtx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+    resultCtx.drawImage(
+        loadedImage,
+        0,
+        0
+    );
+
+    const imageData =
+        resultCtx.getImageData(
+            0,
+            0,
+            width,
+            height
+        );
+
+    const data = imageData.data;
+
+    /*
+     * Беремо кольори з чотирьох кутів.
+     * Додаємо кілька пікселів навколо них,
+     * щоб один випадковий піксель не зламав визначення.
+     */
+
+    const samples = [];
+
+    const samplePoints = [
+        [0, 0],
+        [width - 1, 0],
+        [0, height - 1],
+        [width - 1, height - 1]
+    ];
+
+    for (const [x, y] of samplePoints) {
+
+        const index =
+            (y * width + x) * 4;
+
+        samples.push({
+            r: data[index],
+            g: data[index + 1],
+            b: data[index + 2]
+        });
+
+    }
+
+    /*
+     * Поріг.
+     *
+     * Внутрішньо збільшуємо його трохи,
+     * тому що RGB-відстань має інший масштаб.
+     */
+
+    const userThreshold =
+        Number(threshold.value);
+
+    const maxDistance =
+        userThreshold * 4.42;
+
+    /*
+     * Проходимо всі пікселі.
+     */
+
+    for (let i = 0; i < data.length; i += 4) {
+
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+
+        let closestDistance = Infinity;
+
+        /*
+         * Якщо колір близький хоча б до одного
+         * з кольорів кутів — вважаємо його фоном.
+         */
+
+        for (const sample of samples) {
+
+            const dr = r - sample.r;
+            const dg = g - sample.g;
+            const db = b - sample.b;
+
+            const distance =
+                Math.sqrt(
+                    dr * dr +
+                    dg * dg +
+                    db * db
+                );
+
+            if (distance < closestDistance) {
+                closestDistance = distance;
+            }
+
+        }
+
+        if (closestDistance <= maxDistance) {
+
+            /*
+             * Плавна прозорість біля межі.
+             * Це допомагає зменшити грубі ореоли.
+             */
+
+            const alpha =
+                Math.max(
+                    0,
+                    Math.min(
+                        255,
+                        Math.round(
+                            (
+                                closestDistance /
+                                maxDistance
+                            ) * 255
+                        )
+                    )
+                );
+
+            data[i + 3] = alpha;
+
+        }
+
+    }
+
+    resultCtx.putImageData(
+        imageData,
+        0,
+        0
+    );
+
+    modeInfo.textContent =
+        "Режим: прозорий фон";
+
+    status.textContent =
+        "Фон оброблено. Перевір результат справа.";
+
+}
+
+/* ---------------------------------------------------------
+   DOWNLOAD PNG
+   --------------------------------------------------------- */
+
+downloadBtn.addEventListener("click", () => {
+
+    if (!loadedImage) return;
+
+    resultCanvas.toBlob(
+        blob => {
+
+            if (!blob) {
+
+                status.textContent =
+                    "Не вдалося створити PNG.";
+
+                return;
+            }
+
+            const url =
+                URL.createObjectURL(blob);
+
+            const link =
+                document.createElement("a");
+
+            link.href = url;
+
+            link.download =
+                currentFileName + ".png";
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            link.remove();
+
+            setTimeout(() => {
+                URL.revokeObjectURL(url);
+            }, 1000);
+
+            status.textContent =
+                "PNG підготовлено.";
+
+        },
+        "image/png"
+    );
+
+});
+</script>
+
+</body>
+</html>
+```
