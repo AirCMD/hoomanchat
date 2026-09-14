@@ -1,0 +1,3853 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wind Builder</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #111820;
+    --panel: #1a2530;
+    --panel2: #202f3b;
+    --border: #3a4b58;
+    --accent: #29b6e6;
+    --text: #eaf6fa;
+    --muted: #91a5b1;
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    border: 1px solid var(--border);
+    background: #243441;
+    color: var(--text);
+    border-radius: 6px;
+    padding: 7px 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #304756;
+}
+
+button.active {
+    background: var(--accent);
+    color: #07141b;
+}
+
+button.danger {
+    color: #ff9b9b;
+}
+
+.app {
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 50px 1fr;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 9px;
+    background: #0d141b;
+    border-bottom: 1px solid var(--border);
+}
+
+.logo {
+    font-weight: bold;
+    color: #72ddff;
+    font-size: 15px;
+    margin-right: 12px;
+}
+
+.separator {
+    width: 1px;
+    height: 26px;
+    background: var(--border);
+    margin: 0 5px;
+}
+
+.status {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* =========================
+   WORKSPACE
+========================= */
+
+.workspace {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 245px minmax(500px, 1fr) 300px;
+}
+
+.panel {
+    min-height: 0;
+    overflow-y: auto;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+}
+
+.right-panel {
+    border-right: 0;
+    border-left: 1px solid var(--border);
+}
+
+.panel-title {
+    padding: 13px 12px 6px;
+    color: var(--muted);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: .08em;
+}
+
+.component-grid {
+    padding: 7px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+}
+
+.component-grid button {
+    font-size: 11px;
+    text-align: left;
+}
+
+.component-grid button.full {
+    grid-column: 1 / -1;
+}
+
+/* =========================
+   CANVAS
+========================= */
+
+.canvas-area {
+    min-width: 0;
+    min-height: 0;
+    overflow: auto;
+    background:
+        linear-gradient(45deg, #111920 25%, transparent 25%),
+        linear-gradient(-45deg, #111920 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #111920 75%),
+        linear-gradient(-45deg, transparent 75%, #111920 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+}
+
+.canvas-wrap {
+    padding: 60px;
+    min-width: max-content;
+    min-height: 100%;
+}
+
+.canvas {
+    position: relative;
+    width: 1100px;
+    min-height: 700px;
+    background: white;
+    color: #111;
+    margin: 0 auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,.45);
+}
+
+.canvas.free-layout .builder-node {
+    position: absolute;
+}
+
+/* =========================
+   NODES
+========================= */
+
+.builder-node {
+    position: relative;
+    min-width: 20px;
+    min-height: 20px;
+    outline: 1px solid transparent;
+    cursor: pointer;
+}
+
+.builder-node:hover {
+    outline: 1px dashed #27b8e9;
+}
+
+.builder-node.selected {
+    outline: 2px solid #20bdf2;
+    outline-offset: 1px;
+}
+
+.node-label {
+    display: none;
+    position: absolute;
+    top: -18px;
+    left: 0;
+    z-index: 99999;
+    background: #20bdf2;
+    color: #00151d;
+    font-size: 9px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    pointer-events: none;
+}
+
+.builder-node.selected > .node-label {
+    display: block;
+}
+
+/* =========================
+   BUILT-IN COMPONENTS
+========================= */
+
+.node-container {
+    border: 1px dashed #aab8c0;
+    background: rgba(255,255,255,.4);
+}
+
+.node-section {
+    background: #f3f7f9;
+}
+
+.node-header {
+    background: linear-gradient(#68d7f5,#1688bd);
+    color: white;
+    padding: 18px;
+}
+
+.node-footer {
+    background: #243542;
+    color: white;
+    padding: 20px;
+}
+
+.node-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.node-post {
+    border: 1px solid #ccd7dd;
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+
+.node-profile {
+    border: 1px solid #ccd7dd;
+    background: #f8fbfd;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.profile-avatar {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: #cdd8de;
+    object-fit: cover;
+}
+
+.node-gallery {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 6px;
+}
+
+.gallery-placeholder {
+    aspect-ratio: 1;
+    background: #dce6eb;
+}
+
+.node-divider {
+    padding: 0 !important;
+    min-height: 2px !important;
+}
+
+.node-spacer {
+    background: repeating-linear-gradient(
+        45deg,
+        #e8eef1,
+        #e8eef1 5px,
+        #d9e2e6 5px,
+        #d9e2e6 10px
+    );
+}
+
+.node-input input,
+.node-select select {
+    width: 100%;
+    height: 100%;
+}
+
+.node-checkbox {
+    padding: 5px;
+}
+
+.node-video {
+    background: #111;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.node-modal {
+    background: white;
+    border: 2px solid #444;
+    box-shadow: 0 15px 40px #0004;
+    padding: 20px;
+}
+
+.node-notification {
+    background: #eaf8ff;
+    border: 1px solid #6ac8ec;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.node-chat {
+    border: 1px solid #ccd7dd;
+    border-radius: 10px;
+    padding: 12px;
+    background: white;
+}
+
+.node-game {
+    background: #17232c;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =========================
+   PROPERTIES
+========================= */
+
+.tabs {
+    display: flex;
+    gap: 5px;
+    padding: 8px;
+}
+
+.tabs button {
+    flex: 1;
+    font-size: 11px;
+}
+
+.properties {
+    padding: 8px 12px 20px;
+}
+
+.property-group {
+    margin-bottom: 18px;
+}
+
+.property-title {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    margin: 12px 0 7px;
+}
+
+.property-row {
+    display: grid;
+    grid-template-columns: 85px 1fr;
+    align-items: center;
+    gap: 7px;
+    margin: 6px 0;
+}
+
+.property-row label {
+    color: #a9bac5;
+    font-size: 11px;
+}
+
+.property-row input,
+.property-row select,
+.property-row textarea {
+    width: 100%;
+    background: #111a21;
+    color: white;
+    border: 1px solid #435561;
+    border-radius: 5px;
+    padding: 6px;
+}
+
+.property-row textarea {
+    min-height: 70px;
+    resize: vertical;
+}
+
+.full-button {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.hint {
+    padding: 15px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* =========================
+   LAYERS
+========================= */
+
+.layer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 9px;
+    border-bottom: 1px solid #293640;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.layer:hover {
+    background: #233440;
+}
+
+.layer.selected {
+    background: #14516a;
+}
+
+.layer-name {
+    flex: 1;
+}
+
+.layer-actions button {
+    padding: 2px 5px;
+    font-size: 9px;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal {
+    width: 700px;
+    max-height: 80vh;
+    overflow: auto;
+    background: #1b2731;
+    border: 1px solid #536572;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.modal h2 {
+    margin-top: 0;
+}
+
+.code-area {
+    width: 100%;
+    height: 450px;
+    resize: none;
+    background: #0d141a;
+    color: #c9f1ff;
+    border: 1px solid #40515d;
+    padding: 12px;
+    font-family: Consolas, monospace;
+    font-size: 12px;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    padding: 10px 15px;
+    background: #152833;
+    border: 1px solid #3f697a;
+    border-radius: 7px;
+    display: none;
+    z-index: 9999999;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- ================= TOP ================= -->
+
+<header class="topbar">
+
+    <div class="logo">WIND BUILDER</div>
+
+    <button onclick="newProject()">Новий</button>
+    <button onclick="saveProject()">Зберегти</button>
+    <button onclick="loadProject()">Завантажити</button>
+
+    <div class="separator"></div>
+
+    <button onclick="undo()">↶</button>
+    <button onclick="redo()">↷</button>
+
+    <div class="separator"></div>
+
+    <button onclick="openPreview()">Preview</button>
+    <button onclick="openCode()">HTML</button>
+    <button onclick="exportHTML()">Export</button>
+
+    <div class="separator"></div>
+
+    <button id="normalModeButton" class="active" onclick="setLayoutMode('normal')">
+        Normal
+    </button>
+
+    <button id="freeModeButton" onclick="setLayoutMode('free')">
+        Free
+    </button>
+
+    <div class="status" id="status">
+        0 елементів
+    </div>
+
+</header>
+
+
+<div class="workspace">
+
+<!-- ================= LEFT PANEL ================= -->
+
+<aside class="panel">
+
+    <div class="panel-title">
+        Структура
+    </div>
+
+    <div class="component-grid">
+
+        <button class="full" onclick="createPreset('header')">
+            ＋ Створити шапку
+        </button>
+
+        <button class="full" onclick="createPreset('single')">
+            ＋ Створити один блок
+        </button>
+
+        <button onclick="createPreset('left')">
+            ＋ Лівий блок
+        </button>
+
+        <button onclick="createPreset('right')">
+            ＋ Правий блок
+        </button>
+
+        <button class="full" onclick="createPreset('twoColumns')">
+            ＋ Дві колонки
+        </button>
+
+        <button class="full" onclick="createPreset('threeColumns')">
+            ＋ Три колонки
+        </button>
+
+        <button class="full" onclick="addComponent('container')">
+            ＋ Порожній контейнер
+        </button>
+
+    </div>
+
+
+    <div class="panel-title">
+        Компоненти
+    </div>
+
+    <div class="component-grid" id="componentButtons"></div>
+
+
+    <div class="panel-title">
+        Шари
+    </div>
+
+    <div id="layers"></div>
+
+</aside>
+
+
+<!-- ================= CANVAS ================= -->
+
+<main class="canvas-area">
+
+    <div class="canvas-wrap">
+
+        <div
+            id="canvas"
+            class="canvas"
+            onclick="selectNode(null)"
+        ></div>
+
+    </div>
+
+</main>
+
+
+<!-- ================= RIGHT PANEL ================= -->
+
+<aside class="panel right-panel">
+
+    <div class="tabs">
+
+        <button
+            id="propertiesTabButton"
+            class="active"
+            onclick="showRightTab('properties')"
+        >
+            Властивості
+        </button>
+
+        <button
+            id="pageTabButton"
+            onclick="showRightTab('page')"
+        >
+            Сторінка
+        </button>
+
+    </div>
+
+
+    <div id="propertiesPanel">
+
+        <div class="properties" id="properties"></div>
+
+    </div>
+
+
+    <div
+        id="pagePanel"
+        style="display:none"
+    >
+
+        <div class="properties">
+
+            <div class="property-title">
+                Сторінка
+            </div>
+
+            <div class="property-row">
+                <label>Width</label>
+                <input
+                    type="number"
+                    id="pageWidth"
+                    value="1100"
+                    onchange="updatePage()"
+                >
+            </div>
+
+            <div class="property-row">
+                <label>Height</label>
+                <input
+                    type="number"
+                    id="pageHeight"
+                    value="700"
+                    onchange="updatePage()"
+                >
+            </div>
+
+            <div class="property-row">
+                <label>Background</label>
+                <input
+                    type="text"
+                    id="pageBackground"
+                    value="#ffffff"
+                    onchange="updatePage()"
+                >
+            </div>
+
+            <div class="property-row">
+                <label>Layout</label>
+
+                <select
+                    id="pageLayout"
+                    onchange="updatePage()"
+                >
+                    <option value="normal">Normal</option>
+                    <option value="free">Free</option>
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</aside>
+
+</div>
+
+</div>
+
+
+<!-- ================= CODE MODAL ================= -->
+
+<div
+    class="modal-overlay"
+    id="codeModal"
+    onclick="closeModal(event)"
+>
+
+    <div class="modal">
+
+        <h2>Згенерований HTML</h2>
+
+        <textarea
+            class="code-area"
+            id="codeOutput"
+            spellcheck="false"
+        ></textarea>
+
+        <br><br>
+
+        <button onclick="copyCode()">
+            Копіювати
+        </button>
+
+        <button onclick="closeCode()">
+            Закрити
+        </button>
+
+    </div>
+
+</div>
+
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script>
+
+/* ============================================================
+   WIND BUILDER
+============================================================ */
+
+
+/* =========================
+   COMPONENT DEFINITIONS
+========================= */
+
+const COMPONENTS = {
+
+    container: {
+        name: "Контейнер"
+    },
+
+    section: {
+        name: "Секція"
+    },
+
+    text: {
+        name: "Текст"
+    },
+
+    heading: {
+        name: "Заголовок"
+    },
+
+    button: {
+        name: "Кнопка"
+    },
+
+    image: {
+        name: "Зображення"
+    },
+
+    video: {
+        name: "Відео"
+    },
+
+    divider: {
+        name: "Розділювач"
+    },
+
+    spacer: {
+        name: "Відступ"
+    },
+
+    profile: {
+        name: "Профіль"
+    },
+
+    post: {
+        name: "Допис"
+    },
+
+    likes: {
+        name: "Лайки"
+    },
+
+    comments: {
+        name: "Коментарі"
+    },
+
+    friends: {
+        name: "Друзі"
+    },
+
+    groups: {
+        name: "Групи"
+    },
+
+    gallery: {
+        name: "Галерея"
+    },
+
+    menu: {
+        name: "Меню"
+    },
+
+    tabs: {
+        name: "Вкладки"
+    },
+
+    form: {
+        name: "Форма"
+    },
+
+    input: {
+        name: "Input"
+    },
+
+    select: {
+        name: "Select"
+    },
+
+    checkbox: {
+        name: "Checkbox"
+    },
+
+    modal: {
+        name: "Modal"
+    },
+
+    notification: {
+        name: "Сповіщення"
+    },
+
+    messages: {
+        name: "Повідомлення"
+    },
+
+    bot: {
+        name: "Бот"
+    },
+
+    game: {
+        name: "Гра"
+    },
+
+    footer: {
+        name: "Footer"
+    }
+
+};
+
+
+/* =========================
+   STATE
+========================= */
+
+let state = {
+
+    page: {
+        width: 1100,
+        height: 700,
+        background: "#ffffff",
+        layout: "normal"
+    },
+
+    nodes: [],
+
+    selected: null
+
+};
+
+
+let undoStack = [];
+let redoStack = [];
+
+
+/* =========================
+   ID
+========================= */
+
+function generateId() {
+
+    return "node_" +
+        Math.random()
+            .toString(36)
+            .substring(2, 9);
+
+}
+
+
+/* =========================
+   SNAPSHOT
+========================= */
+
+function snapshot() {
+
+    undoStack.push(
+        JSON.stringify(state)
+    );
+
+    if (undoStack.length > 100) {
+
+        undoStack.shift();
+
+    }
+
+    redoStack = [];
+
+}
+
+
+/* =========================
+   UNDO
+========================= */
+
+function undo() {
+
+    if (!undoStack.length) return;
+
+    redoStack.push(
+        JSON.stringify(state)
+    );
+
+    state = JSON.parse(
+        undoStack.pop()
+    );
+
+    render();
+
+}
+
+
+/* =========================
+   REDO
+========================= */
+
+function redo() {
+
+    if (!redoStack.length) return;
+
+    undoStack.push(
+        JSON.stringify(state)
+    );
+
+    state = JSON.parse(
+        redoStack.pop()
+    );
+
+    render();
+
+}
+
+
+/* =========================
+   DEFAULT NODE
+========================= */
+
+function createDefaultNode(type) {
+
+    const node = {
+
+        id: generateId(),
+
+        type,
+
+        parent: null,
+
+        x: 30,
+
+        y: 30,
+
+        width: 300,
+
+        height: 100,
+
+        padding: 12,
+
+        margin: 0,
+
+        background: "transparent",
+
+        color: "#111111",
+
+        fontSize: 16,
+
+        fontWeight: "normal",
+
+        textAlign: "left",
+
+        borderWidth: 0,
+
+        borderColor: "#cccccc",
+
+        borderRadius: 0,
+
+        shadow: "none",
+
+        opacity: 1,
+
+        zIndex: 1,
+
+        text: ""
+
+    };
+
+
+    switch (type) {
+
+        case "container":
+
+            node.width = 500;
+            node.height = 200;
+            node.background = "#ffffff";
+            break;
+
+
+        case "section":
+
+            node.width = 800;
+            node.height = 220;
+            node.background = "#eef5f8";
+            break;
+
+
+        case "text":
+
+            node.width = 350;
+            node.height = 50;
+            node.text = "Новий текст";
+            break;
+
+
+        case "heading":
+
+            node.width = 500;
+            node.height = 60;
+            node.text = "Заголовок";
+            node.fontSize = 30;
+            node.fontWeight = "bold";
+            break;
+
+
+        case "button":
+
+            node.width = 140;
+            node.height = 42;
+            node.text = "Кнопка";
+            node.background = "#168dc8";
+            node.color = "#ffffff";
+            node.borderRadius = 7;
+            node.textAlign = "center";
+            break;
+
+
+        case "image":
+
+            node.width = 320;
+            node.height = 220;
+            node.background = "#dce6eb";
+            break;
+
+
+        case "video":
+
+            node.width = 450;
+            node.height = 260;
+            node.background = "#111111";
+            node.color = "#ffffff";
+            node.text = "VIDEO";
+            node.textAlign = "center";
+            break;
+
+
+        case "divider":
+
+            node.width = 500;
+            node.height = 2;
+            node.padding = 0;
+            node.background = "#ccd5da";
+            break;
+
+
+        case "spacer":
+
+            node.width = 300;
+            node.height = 50;
+            node.background =
+                "repeating-linear-gradient(45deg,#eee,#eee 5px,#ddd 5px,#ddd 10px)";
+            break;
+
+
+        case "profile":
+
+            node.width = 280;
+            node.height = 170;
+            node.background = "#f4fafc";
+            node.text = "Яні Куронеко\nонлайн";
+            break;
+
+
+        case "post":
+
+            node.width = 600;
+            node.height = 230;
+            node.background = "#ffffff";
+            node.borderWidth = 1;
+            node.borderColor = "#ccd6dc";
+            node.borderRadius = 12;
+            node.text =
+                "Медитація\n\nСьогодні слухаю релакс-музику.";
+            break;
+
+
+        case "likes":
+
+            node.width = 180;
+            node.height = 40;
+            node.text = "♥ 12 лайків";
+            break;
+
+
+        case "comments":
+
+            node.width = 500;
+            node.height = 130;
+            node.background = "#f7fafb";
+            node.text = "Коментарі";
+            break;
+
+
+        case "friends":
+
+            node.width = 300;
+            node.height = 200;
+            node.background = "#f4fafc";
+            node.text = "Друзі";
+            break;
+
+
+        case "groups":
+
+            node.width = 300;
+            node.height = 200;
+            node.background = "#f4fafc";
+            node.text = "Групи";
+            break;
+
+
+        case "gallery":
+
+            node.width = 420;
+            node.height = 250;
+            node.background = "#edf3f5";
+            node.text = "Галерея";
+            break;
+
+
+        case "menu":
+
+            node.width = 700;
+            node.height = 50;
+            node.background = "#17384a";
+            node.color = "#ffffff";
+            node.text =
+                "Головна   Профіль   Друзі   Групи   Галерея";
+            break;
+
+
+        case "tabs":
+
+            node.width = 600;
+            node.height = 45;
+            node.text =
+                "Профіль | Стрічка | Фото";
+            break;
+
+
+        case "form":
+
+            node.width = 400;
+            node.height = 220;
+            node.background = "#f4f8fa";
+            node.text = "Форма";
+            break;
+
+
+        case "input":
+
+            node.width = 300;
+            node.height = 40;
+            node.text = "Введіть текст";
+            break;
+
+
+        case "select":
+
+            node.width = 300;
+            node.height = 40;
+            node.text = "Оберіть...";
+            break;
+
+
+        case "checkbox":
+
+            node.width = 220;
+            node.height = 35;
+            node.text = "Підписатися";
+            break;
+
+
+        case "modal":
+
+            node.width = 420;
+            node.height = 250;
+            node.background = "#ffffff";
+            node.borderWidth = 1;
+            node.text = "Модальне вікно";
+            break;
+
+
+        case "notification":
+
+            node.width = 300;
+            node.height = 75;
+            node.background = "#e8f8ff";
+            node.borderWidth = 1;
+            node.borderColor = "#69c9ec";
+            node.borderRadius = 8;
+            node.text = "Нове сповіщення";
+            break;
+
+
+        case "messages":
+
+            node.width = 320;
+            node.height = 220;
+            node.background = "#ffffff";
+            node.borderWidth = 1;
+            node.text = "Повідомлення";
+            break;
+
+
+        case "bot":
+
+            node.width = 300;
+            node.height = 120;
+            node.background = "#eaf4f8";
+            node.text = "Бот відповідає...";
+            break;
+
+
+        case "game":
+
+            node.width = 500;
+            node.height = 300;
+            node.background = "#17242e";
+            node.color = "#ffffff";
+            node.text = "GAME";
+            node.textAlign = "center";
+            break;
+
+
+        case "footer":
+
+            node.width = 1000;
+            node.height = 80;
+            node.background = "#243542";
+            node.color = "#ffffff";
+            node.text = "FOOTER";
+            node.textAlign = "center";
+            break;
+
+    }
+
+
+    return node;
+
+}
+
+
+/* =========================
+   ADD COMPONENT
+========================= */
+
+function addComponent(type, parent = null) {
+
+    snapshot();
+
+    const node =
+        createDefaultNode(type);
+
+    node.parent = parent;
+
+    state.nodes.push(node);
+
+    state.selected = node.id;
+
+    render();
+
+}
+
+
+/* =========================
+   FIND NODE
+========================= */
+
+function getNode(id) {
+
+    return state.nodes.find(
+        node => node.id === id
+    );
+
+}
+
+
+/* =========================
+   SELECT
+========================= */
+
+function selectNode(id) {
+
+    state.selected = id;
+
+    render();
+
+}
+
+
+/* =========================
+   DELETE
+========================= */
+
+function deleteNode(id) {
+
+    const node = getNode(id);
+
+    if (!node) return;
+
+    snapshot();
+
+    const ids = new Set([id]);
+
+    let changed = true;
+
+    while (changed) {
+
+        changed = false;
+
+        state.nodes.forEach(node => {
+
+            if (
+                node.parent &&
+                ids.has(node.parent) &&
+                !ids.has(node.id)
+            ) {
+
+                ids.add(node.id);
+
+                changed = true;
+
+            }
+
+        });
+
+    }
+
+    state.nodes =
+        state.nodes.filter(
+            node => !ids.has(node.id)
+        );
+
+    state.selected = null;
+
+    render();
+
+}
+
+
+/* =========================
+   DUPLICATE
+========================= */
+
+function duplicateNode(id) {
+
+    const node = getNode(id);
+
+    if (!node) return;
+
+    snapshot();
+
+    const copy =
+        JSON.parse(
+            JSON.stringify(node)
+        );
+
+    copy.id = generateId();
+
+    copy.x =
+        Number(copy.x || 0) + 25;
+
+    copy.y =
+        Number(copy.y || 0) + 25;
+
+    state.nodes.push(copy);
+
+    state.selected = copy.id;
+
+    render();
+
+}
+
+
+/* =========================
+   RENDER
+========================= */
+
+function render() {
+
+    renderCanvas();
+
+    renderLayers();
+
+    renderProperties();
+
+    renderPageSettings();
+
+    document.getElementById("status")
+        .textContent =
+        state.nodes.length +
+        " елементів";
+
+}
+
+
+/* =========================
+   RENDER CANVAS
+========================= */
+
+function renderCanvas() {
+
+    const canvas =
+        document.getElementById("canvas");
+
+    canvas.innerHTML = "";
+
+    canvas.style.width =
+        state.page.width + "px";
+
+    canvas.style.minHeight =
+        state.page.height + "px";
+
+    canvas.style.background =
+        state.page.background;
+
+    canvas.classList.toggle(
+        "free-layout",
+        state.page.layout === "free"
+    );
+
+
+    const roots =
+        state.nodes.filter(
+            node => !node.parent
+        );
+
+
+    roots.forEach(node => {
+
+        renderNode(node, canvas);
+
+    });
+
+}
+
+
+/* =========================
+   RENDER NODE
+========================= */
+
+function renderNode(node, parentElement) {
+
+    const element =
+        document.createElement("div");
+
+
+    element.className =
+        "builder-node node-" +
+        node.type;
+
+
+    element.dataset.id =
+        node.id;
+
+
+    applyNodeStyles(
+        element,
+        node
+    );
+
+
+    if (
+        state.page.layout === "free" ||
+        !node.parent
+    ) {
+
+        element.style.left =
+            node.x + "px";
+
+        element.style.top =
+            node.y + "px";
+
+    }
+
+
+    renderNodeContent(
+        element,
+        node
+    );
+
+
+    const label =
+        document.createElement("div");
+
+    label.className =
+        "node-label";
+
+    label.textContent =
+        COMPONENTS[node.type]?.name ||
+        node.type;
+
+    element.appendChild(label);
+
+
+    if (
+        node.id ===
+        state.selected
+    ) {
+
+        element.classList.add(
+            "selected"
+        );
+
+    }
+
+
+    element.addEventListener(
+        "click",
+        function(event) {
+
+            event.stopPropagation();
+
+            selectNode(node.id);
+
+        }
+    );
+
+
+    /*
+        Drag & drop
+    */
+
+    element.draggable = true;
+
+
+    element.addEventListener(
+        "dragstart",
+        function(event) {
+
+            event.stopPropagation();
+
+            event.dataTransfer.setData(
+                "text/plain",
+                node.id
+            );
+
+        }
+    );
+
+
+    element.addEventListener(
+        "dragover",
+        function(event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+        }
+    );
+
+
+    element.addEventListener(
+        "drop",
+        function(event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            const draggedId =
+                event.dataTransfer.getData(
+                    "text/plain"
+                );
+
+            if (
+                !draggedId ||
+                draggedId === node.id
+            ) {
+
+                return;
+
+            }
+
+            const dragged =
+                getNode(draggedId);
+
+            if (!dragged) return;
+
+            /*
+                Забороняємо вкладити
+                батька у власного нащадка.
+            */
+
+            if (
+                isDescendant(
+                    node.id,
+                    dragged.id
+                )
+            ) {
+
+                return;
+
+            }
+
+            snapshot();
+
+            dragged.parent =
+                node.id;
+
+            render();
+
+        }
+    );
+
+
+    parentElement.appendChild(
+        element
+    );
+
+
+    const children =
+        state.nodes.filter(
+            child =>
+                child.parent === node.id
+        );
+
+
+    children.forEach(
+        child =>
+            renderNode(
+                child,
+                element
+            )
+    );
+
+}
+
+
+/* =========================
+   DESCENDANT CHECK
+========================= */
+
+function isDescendant(
+    parentId,
+    possibleChildId
+) {
+
+    let current =
+        getNode(parentId);
+
+    while (
+        current &&
+        current.parent
+    ) {
+
+        if (
+            current.parent ===
+            possibleChildId
+        ) {
+
+            return true;
+
+        }
+
+        current =
+            getNode(current.parent);
+
+    }
+
+    return false;
+
+}
+
+
+/* =========================
+   NODE STYLES
+========================= */
+
+function applyNodeStyles(
+    element,
+    node
+) {
+
+    element.style.width =
+        node.width + "px";
+
+    element.style.height =
+        node.height + "px";
+
+    element.style.padding =
+        node.padding + "px";
+
+    element.style.margin =
+        node.margin + "px";
+
+    element.style.background =
+        node.background;
+
+    element.style.color =
+        node.color;
+
+    element.style.fontSize =
+        node.fontSize + "px";
+
+    element.style.fontWeight =
+        node.fontWeight;
+
+    element.style.textAlign =
+        node.textAlign;
+
+    element.style.border =
+        node.borderWidth +
+        "px solid " +
+        node.borderColor;
+
+    element.style.borderRadius =
+        node.borderRadius + "px";
+
+    element.style.opacity =
+        node.opacity;
+
+    element.style.zIndex =
+        node.zIndex;
+
+    element.style.boxShadow =
+        node.shadow;
+
+}
+
+
+/* =========================
+   NODE CONTENT
+========================= */
+
+function renderNodeContent(
+    element,
+    node
+) {
+
+    switch (node.type) {
+
+        case "text":
+        case "heading":
+        case "menu":
+        case "tabs":
+        case "likes":
+        case "comments":
+        case "friends":
+        case "groups":
+        case "notification":
+        case "messages":
+        case "bot":
+        case "game":
+        case "modal":
+
+            element.innerText =
+                node.text;
+
+            break;
+
+
+        case "button":
+
+            element.innerText =
+                node.text;
+
+            break;
+
+
+        case "image":
+
+            if (node.src) {
+
+                const img =
+                    document.createElement("img");
+
+                img.src =
+                    node.src;
+
+                img.style.width =
+                    "100%";
+
+                img.style.height =
+                    "100%";
+
+                img.style.objectFit =
+                    "cover";
+
+                element.appendChild(img);
+
+            } else {
+
+                element.innerText =
+                    "Зображення";
+
+            }
+
+            break;
+
+
+        case "video":
+
+            element.innerText =
+                node.text ||
+                "VIDEO";
+
+            break;
+
+
+        case "profile":
+
+            element.innerHTML = `
+
+                <strong>
+                    ${escapeHTML(
+                        node.text
+                    )}
+                </strong>
+
+                <br>
+
+                <small>
+                    ● онлайн
+                </small>
+
+            `;
+
+            break;
+
+
+        case "post":
+
+            const parts =
+                String(node.text)
+                    .split("\n");
+
+            element.innerHTML = `
+
+                <strong>
+                    Яні Куронеко
+                </strong>
+
+                <h3>
+                    ${escapeHTML(
+                        parts[0] || "Допис"
+                    )}
+                </h3>
+
+                <div>
+                    ${escapeHTML(
+                        parts.slice(2).join("\n")
+                    )}
+                </div>
+
+                <br>
+
+                <small>
+                    ♥ 12
+                    &nbsp;&nbsp;
+                    💬 Коментарі
+                </small>
+
+            `;
+
+            break;
+
+
+        case "divider":
+
+            break;
+
+
+        case "spacer":
+
+            break;
+
+
+        case "input":
+
+            element.innerHTML = `
+
+                <input
+                    placeholder="${escapeAttribute(
+                        node.text
+                    )}"
+                    style="
+                        width:100%;
+                        height:100%;
+                        border:0;
+                        background:transparent;
+                        outline:none;
+                    "
+                >
+
+            `;
+
+            break;
+
+
+        case "select":
+
+            element.innerHTML = `
+
+                <select
+                    style="
+                        width:100%;
+                        height:100%;
+                    "
+                >
+
+                    <option>
+                        ${escapeHTML(
+                            node.text
+                        )}
+                    </option>
+
+                </select>
+
+            `;
+
+            break;
+
+
+        case "checkbox":
+
+            element.innerHTML = `
+
+                <label>
+
+                    <input type="checkbox">
+
+                    ${escapeHTML(
+                        node.text
+                    )}
+
+                </label>
+
+            `;
+
+            break;
+
+
+        case "form":
+
+            element.innerHTML = `
+
+                <strong>
+                    ${escapeHTML(
+                        node.text
+                    )}
+                </strong>
+
+                <br><br>
+
+                <input
+                    placeholder="Ім'я"
+                    style="
+                        width:100%;
+                        padding:8px;
+                    "
+                >
+
+                <br><br>
+
+                <button>
+                    Відправити
+                </button>
+
+            `;
+
+            break;
+
+
+        case "gallery":
+
+            element.innerHTML = `
+
+                <div
+                    style="
+                        display:grid;
+                        grid-template-columns:
+                            repeat(3,1fr);
+                        gap:6px;
+                    "
+                >
+
+                    ${[
+                        1,2,3,4,5,6
+                    ].map(() => `
+
+                        <div
+                            style="
+                                aspect-ratio:1;
+                                background:#dce6eb;
+                            "
+                        ></div>
+
+                    `).join("")}
+
+                </div>
+
+            `;
+
+            break;
+
+    }
+
+}
+
+
+/* =========================
+   LAYERS
+========================= */
+
+function renderLayers() {
+
+    const layers =
+        document.getElementById(
+            "layers"
+        );
+
+    layers.innerHTML = "";
+
+
+    state.nodes.forEach(
+        node => {
+
+            const layer =
+                document.createElement(
+                    "div"
+                );
+
+            layer.className =
+                "layer" +
+                (
+                    node.id ===
+                    state.selected
+                        ? " selected"
+                        : ""
+                );
+
+
+            const name =
+                document.createElement(
+                    "div"
+                );
+
+            name.className =
+                "layer-name";
+
+            name.textContent =
+                COMPONENTS[node.type]?.name ||
+                node.type;
+
+
+            layer.appendChild(name);
+
+
+            const actions =
+                document.createElement(
+                    "div"
+                );
+
+            actions.className =
+                "layer-actions";
+
+
+            const up =
+                document.createElement(
+                    "button"
+                );
+
+            up.textContent = "↑";
+
+            up.onclick =
+                event => {
+
+                    event.stopPropagation();
+
+                    moveLayer(
+                        node.id,
+                        -1
+                    );
+
+                };
+
+
+            const down =
+                document.createElement(
+                    "button"
+                );
+
+            down.textContent = "↓";
+
+            down.onclick =
+                event => {
+
+                    event.stopPropagation();
+
+                    moveLayer(
+                        node.id,
+                        1
+                    );
+
+                };
+
+
+            actions.appendChild(up);
+            actions.appendChild(down);
+
+            layer.appendChild(
+                actions
+            );
+
+
+            layer.onclick =
+                () =>
+                    selectNode(
+                        node.id
+                    );
+
+
+            layers.appendChild(
+                layer
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================
+   MOVE LAYER
+========================= */
+
+function moveLayer(
+    id,
+    direction
+) {
+
+    const index =
+        state.nodes.findIndex(
+            node =>
+                node.id === id
+        );
+
+    if (index < 0) return;
+
+    const target =
+        index + direction;
+
+    if (
+        target < 0 ||
+        target >=
+        state.nodes.length
+    ) {
+
+        return;
+
+    }
+
+    snapshot();
+
+    [
+        state.nodes[index],
+        state.nodes[target]
+    ] = [
+        state.nodes[target],
+        state.nodes[index]
+    ];
+
+    render();
+
+}
+
+
+/* =========================
+   PROPERTIES
+========================= */
+
+function renderProperties() {
+
+    const box =
+        document.getElementById(
+            "properties"
+        );
+
+    const node =
+        getNode(
+            state.selected
+        );
+
+
+    if (!node) {
+
+        box.innerHTML = `
+
+            <div class="hint">
+
+                Вибери елемент на canvas,
+                щоб редагувати його.
+
+                <br><br>
+
+                Можна також створити
+                порожній контейнер і
+                вкладати в нього будь-які
+                інші компоненти.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    box.innerHTML = `
+
+        <div class="property-title">
+            ${COMPONENTS[node.type]?.name}
+        </div>
+
+
+        <div class="property-group">
+
+            ${propertyInput(
+                "ID",
+                "id",
+                node.id,
+                "text"
+            )}
+
+            ${propertyInput(
+                "X",
+                "x",
+                node.x,
+                "number"
+            )}
+
+            ${propertyInput(
+                "Y",
+                "y",
+                node.y,
+                "number"
+            )}
+
+            ${propertyInput(
+                "Width",
+                "width",
+                node.width,
+                "number"
+            )}
+
+            ${propertyInput(
+                "Height",
+                "height",
+                node.height,
+                "number"
+            )}
+
+        </div>
+
+
+        <div class="property-title">
+            Контент
+        </div>
+
+
+        ${propertyTextarea(
+            "Текст",
+            "text",
+            node.text
+        )}
+
+
+        ${propertyInput(
+            "Image URL",
+            "src",
+            node.src || "",
+            "text"
+        )}
+
+
+        <div class="property-title">
+            Стиль
+        </div>
+
+
+        ${propertyInput(
+            "Background",
+            "background",
+            node.background,
+            "text"
+        )}
+
+
+        ${propertyInput(
+            "Color",
+            "color",
+            node.color,
+            "text"
+        )}
+
+
+        ${propertyInput(
+            "Font size",
+            "fontSize",
+            node.fontSize,
+            "number"
+        )}
+
+
+        ${propertySelect(
+            "Font weight",
+            "fontWeight",
+            node.fontWeight,
+            [
+                "normal",
+                "bold",
+                "lighter"
+            ]
+        )}
+
+
+        ${propertySelect(
+            "Align",
+            "textAlign",
+            node.textAlign,
+            [
+                "left",
+                "center",
+                "right"
+            ]
+        )}
+
+
+        ${propertyInput(
+            "Padding",
+            "padding",
+            node.padding,
+            "number"
+        )}
+
+
+        ${propertyInput(
+            "Margin",
+            "margin",
+            node.margin,
+            "number"
+        )}
+
+
+        ${propertyInput(
+            "Radius",
+            "borderRadius",
+            node.borderRadius,
+            "number"
+        )}
+
+
+        ${propertyInput(
+            "Border",
+            "borderWidth",
+            node.borderWidth,
+            "number"
+        )}
+
+
+        ${propertyInput(
+            "Border color",
+            "borderColor",
+            node.borderColor,
+            "text"
+        )}
+
+
+        ${propertyInput(
+            "Opacity",
+            "opacity",
+            node.opacity,
+            "number"
+        )}
+
+
+        ${propertyInput(
+            "Z-index",
+            "zIndex",
+            node.zIndex,
+            "number"
+        )}
+
+
+        <br>
+
+        <button
+            class="full-button"
+            onclick="duplicateNode(
+                '${node.id}'
+            )"
+        >
+            Дублювати
+        </button>
+
+
+        <button
+            class="full-button danger"
+            onclick="deleteNode(
+                '${node.id}'
+            )"
+        >
+            Видалити
+        </button>
+
+    `;
+
+
+    /*
+        Live inputs
+    */
+
+    box.querySelectorAll(
+        "[data-property]"
+    ).forEach(
+        input => {
+
+            input.addEventListener(
+                "input",
+                event => {
+
+                    const key =
+                        event.target
+                            .dataset
+                            .property;
+
+                    let value =
+                        event.target.value;
+
+
+                    if (
+                        event.target.type ===
+                        "number"
+                    ) {
+
+                        value =
+                            Number(value);
+
+                    }
+
+
+                    node[key] =
+                        value;
+
+                    renderCanvas();
+
+                    renderLayers();
+
+                    updatePropertySelection();
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================
+   PROPERTY HELPERS
+========================= */
+
+function propertyInput(
+    label,
+    key,
+    value,
+    type
+) {
+
+    return `
+
+        <div class="property-row">
+
+            <label>
+                ${label}
+            </label>
+
+            <input
+                type="${type}"
+                data-property="${key}"
+                value="${escapeAttribute(
+                    value
+                )}"
+            >
+
+        </div>
+
+    `;
+
+}
+
+
+function propertyTextarea(
+    label,
+    key,
+    value
+) {
+
+    return `
+
+        <div class="property-row">
+
+            <label>
+                ${label}
+            </label>
+
+            <textarea
+                data-property="${key}"
+            >${escapeHTML(
+                value
+            )}</textarea>
+
+        </div>
+
+    `;
+
+}
+
+
+function propertySelect(
+    label,
+    key,
+    value,
+    options
+) {
+
+    return `
+
+        <div class="property-row">
+
+            <label>
+                ${label}
+            </label>
+
+            <select
+                data-property="${key}"
+            >
+
+                ${
+                    options.map(
+                        option => `
+
+                            <option
+                                value="${option}"
+                                ${
+                                    option === value
+                                        ? "selected"
+                                        : ""
+                                }
+                            >
+                                ${option}
+                            </option>
+
+                        `
+                    ).join("")
+                }
+
+            </select>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================
+   PAGE SETTINGS
+========================= */
+
+function renderPageSettings() {
+
+    document.getElementById(
+        "pageWidth"
+    ).value =
+        state.page.width;
+
+
+    document.getElementById(
+        "pageHeight"
+    ).value =
+        state.page.height;
+
+
+    document.getElementById(
+        "pageBackground"
+    ).value =
+        state.page.background;
+
+
+    document.getElementById(
+        "pageLayout"
+    ).value =
+        state.page.layout;
+
+}
+
+
+function updatePage() {
+
+    snapshot();
+
+    state.page.width =
+        Number(
+            document.getElementById(
+                "pageWidth"
+            ).value
+        ) || 1100;
+
+
+    state.page.height =
+        Number(
+            document.getElementById(
+                "pageHeight"
+            ).value
+        ) || 700;
+
+
+    state.page.background =
+        document.getElementById(
+            "pageBackground"
+        ).value;
+
+
+    state.page.layout =
+        document.getElementById(
+            "pageLayout"
+        ).value;
+
+
+    render();
+
+}
+
+
+/* =========================
+   LAYOUT MODE
+========================= */
+
+function setLayoutMode(mode) {
+
+    snapshot();
+
+    state.page.layout =
+        mode;
+
+    document.getElementById(
+        "normalModeButton"
+    ).classList.toggle(
+        "active",
+        mode === "normal"
+    );
+
+    document.getElementById(
+        "freeModeButton"
+    ).classList.toggle(
+        "active",
+        mode === "free"
+    );
+
+    render();
+
+}
+
+
+/* =========================
+   RIGHT TABS
+========================= */
+
+function showRightTab(tab) {
+
+    const properties =
+        document.getElementById(
+            "propertiesPanel"
+        );
+
+    const page =
+        document.getElementById(
+            "pagePanel"
+        );
+
+
+    const propertiesButton =
+        document.getElementById(
+            "propertiesTabButton"
+        );
+
+    const pageButton =
+        document.getElementById(
+            "pageTabButton"
+        );
+
+
+    if (tab === "properties") {
+
+        properties.style.display =
+            "block";
+
+        page.style.display =
+            "none";
+
+        propertiesButton.classList.add(
+            "active"
+        );
+
+        pageButton.classList.remove(
+            "active"
+        );
+
+    } else {
+
+        properties.style.display =
+            "none";
+
+        page.style.display =
+            "block";
+
+        propertiesButton.classList.remove(
+            "active"
+        );
+
+        pageButton.classList.add(
+            "active"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   PRESETS
+========================= */
+
+function createPreset(type) {
+
+    snapshot();
+
+
+    if (type === "header") {
+
+        const header =
+            createDefaultNode(
+                "header"
+            );
+
+        header.x = 0;
+        header.y = 0;
+        header.width =
+            state.page.width;
+
+        header.height = 90;
+
+        header.text =
+            "HEADER";
+
+        state.nodes.push(
+            header
+        );
+
+        state.selected =
+            header.id;
+
+    }
+
+
+    if (type === "single") {
+
+        const section =
+            createDefaultNode(
+                "section"
+            );
+
+        section.x = 30;
+        section.y = 30;
+
+        section.width =
+            state.page.width - 60;
+
+        section.height = 300;
+
+        state.nodes.push(
+            section
+        );
+
+        state.selected =
+            section.id;
+
+    }
+
+
+    if (type === "left") {
+
+        const left =
+            createDefaultNode(
+                "container"
+            );
+
+        left.x = 20;
+        left.y = 20;
+
+        left.width = 270;
+        left.height = 500;
+
+        left.text =
+            "LEFT";
+
+        const content =
+            createDefaultNode(
+                "container"
+            );
+
+        content.x = 310;
+        content.y = 20;
+
+        content.width =
+            state.page.width - 330;
+
+        content.height = 500;
+
+        content.text =
+            "CONTENT";
+
+        state.nodes.push(
+            left,
+            content
+        );
+
+        state.selected =
+            left.id;
+
+    }
+
+
+    if (type === "right") {
+
+        const content =
+            createDefaultNode(
+                "container"
+            );
+
+        content.x = 20;
+        content.y = 20;
+
+        content.width =
+            state.page.width - 330;
+
+        content.height = 500;
+
+        content.text =
+            "CONTENT";
+
+
+        const right =
+            createDefaultNode(
+                "container"
+            );
+
+        right.x =
+            state.page.width - 290;
+
+        right.y = 20;
+
+        right.width = 270;
+        right.height = 500;
+
+        right.text =
+            "RIGHT";
+
+
+        state.nodes.push(
+            content,
+            right
+        );
+
+        state.selected =
+            right.id;
+
+    }
+
+
+    if (type === "twoColumns") {
+
+        const gap = 20;
+
+        const width =
+            (
+                state.page.width -
+                gap * 3
+            ) / 2;
+
+
+        const left =
+            createDefaultNode(
+                "container"
+            );
+
+        left.x = gap;
+        left.y = gap;
+        left.width = width;
+        left.height = 500;
+
+
+        const right =
+            createDefaultNode(
+                "container"
+            );
+
+        right.x =
+            width +
+            gap * 2;
+
+        right.y = gap;
+
+        right.width = width;
+        right.height = 500;
+
+
+        state.nodes.push(
+            left,
+            right
+        );
+
+        state.selected =
+            left.id;
+
+    }
+
+
+    if (type === "threeColumns") {
+
+        const gap = 20;
+
+        const width =
+            (
+                state.page.width -
+                gap * 4
+            ) / 3;
+
+
+        for (
+            let i = 0;
+            i < 3;
+            i++
+        ) {
+
+            const column =
+                createDefaultNode(
+                    "container"
+                );
+
+            column.x =
+                gap +
+                i *
+                (
+                    width +
+                    gap
+                );
+
+            column.y = gap;
+
+            column.width =
+                width;
+
+            column.height = 500;
+
+            state.nodes.push(
+                column
+            );
+
+            state.selected =
+                column.id;
+
+        }
+
+    }
+
+
+    render();
+
+}
+
+
+/* =========================
+   COMPONENT BUTTONS
+========================= */
+
+function buildComponentButtons() {
+
+    const box =
+        document.getElementById(
+            "componentButtons"
+        );
+
+
+    Object.keys(
+        COMPONENTS
+    ).forEach(
+        type => {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+
+            button.textContent =
+                "＋ " +
+                COMPONENTS[type].name;
+
+
+            button.onclick =
+                () =>
+                    addComponent(
+                        type
+                    );
+
+
+            box.appendChild(
+                button
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================
+   SAVE PROJECT
+========================= */
+
+function saveProject() {
+
+    const data =
+        JSON.stringify(
+            state,
+            null,
+            2
+        );
+
+
+    const blob =
+        new Blob(
+            [data],
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+    link.href = url;
+
+    link.download =
+        "wind-project.json";
+
+    link.click();
+
+    URL.revokeObjectURL(
+        url
+    );
+
+
+    showToast(
+        "Проект збережено"
+    );
+
+}
+
+
+/* =========================
+   LOAD PROJECT
+========================= */
+
+function loadProject() {
+
+    const input =
+        document.createElement(
+            "input"
+        );
+
+
+    input.type =
+        "file";
+
+    input.accept =
+        ".json";
+
+
+    input.onchange =
+        event => {
+
+            const file =
+                event.target.files[0];
+
+            if (!file) return;
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function() {
+
+                    try {
+
+                        snapshot();
+
+                        state =
+                            JSON.parse(
+                                reader.result
+                            );
+
+                        render();
+
+                        showToast(
+                            "Проект завантажено"
+                        );
+
+                    }
+
+                    catch {
+
+                        alert(
+                            "Помилка JSON"
+                        );
+
+                    }
+
+                };
+
+
+            reader.readAsText(
+                file
+            );
+
+        };
+
+
+    input.click();
+
+}
+
+
+/* =========================
+   NEW PROJECT
+========================= */
+
+function newProject() {
+
+    if (
+        !confirm(
+            "Створити новий проект?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    snapshot();
+
+
+    state = {
+
+        page: {
+
+            width: 1100,
+
+            height: 700,
+
+            background:
+                "#ffffff",
+
+            layout:
+                "normal"
+
+        },
+
+        nodes: [],
+
+        selected: null
+
+    };
+
+
+    render();
+
+}
+
+
+/* =========================
+   GENERATE HTML
+========================= */
+
+function generateHTML() {
+
+    const body =
+        state.nodes
+            .filter(
+                node =>
+                    !node.parent
+            )
+            .map(
+                node =>
+                    generateNodeHTML(
+                        node
+                    )
+            )
+            .join("\n");
+
+
+    return `<!DOCTYPE html>
+
+<html lang="uk">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Wind Page</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #ddd;
+    font-family: Arial, sans-serif;
+}
+
+.wind-page {
+    position: relative;
+    width: ${state.page.width}px;
+    min-height: ${state.page.height}px;
+    margin: 0 auto;
+    background: ${state.page.background};
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wind-page">
+
+${body}
+
+</div>
+
+</body>
+
+</html>`;
+
+}
+
+
+/* =========================
+   GENERATE NODE HTML
+========================= */
+
+function generateNodeHTML(
+    node
+) {
+
+    const style = `
+
+position:absolute;
+
+left:${node.x}px;
+
+top:${node.y}px;
+
+width:${node.width}px;
+
+height:${node.height}px;
+
+padding:${node.padding}px;
+
+margin:${node.margin}px;
+
+background:${node.background};
+
+color:${node.color};
+
+font-size:${node.fontSize}px;
+
+font-weight:${node.fontWeight};
+
+text-align:${node.textAlign};
+
+border:${node.borderWidth}px solid ${node.borderColor};
+
+border-radius:${node.borderRadius}px;
+
+opacity:${node.opacity};
+
+z-index:${node.zIndex};
+
+`;
+
+
+    let content =
+        escapeHTML(
+            node.text || ""
+        );
+
+
+    const children =
+        state.nodes
+            .filter(
+                child =>
+                    child.parent ===
+                    node.id
+            )
+            .map(
+                child =>
+                    generateNodeHTML(
+                        child
+                    )
+            )
+            .join("\n");
+
+
+    if (
+        node.type ===
+        "button"
+    ) {
+
+        content =
+            `<button>${escapeHTML(
+                node.text
+            )}</button>`;
+
+    }
+
+
+    if (
+        node.type ===
+        "image"
+    ) {
+
+        content =
+            node.src
+                ? `<img
+                    src="${escapeAttribute(
+                        node.src
+                    )}"
+                    style="
+                        width:100%;
+                        height:100%;
+                        object-fit:cover;
+                    "
+                   >`
+                : "IMAGE";
+
+    }
+
+
+    if (
+        node.type ===
+        "input"
+    ) {
+
+        content =
+            `<input
+                placeholder="${escapeAttribute(
+                    node.text
+                )}"
+                style="
+                    width:100%;
+                    height:100%;
+                "
+            >`;
+
+    }
+
+
+    return `
+
+<div
+    class="wind-${node.type}"
+    style="${style}"
+>
+
+${content}
+
+${children}
+
+</div>
+
+`;
+
+}
+
+
+/* =========================
+   OPEN CODE
+========================= */
+
+function openCode() {
+
+    document.getElementById(
+        "codeOutput"
+    ).value =
+        generateHTML();
+
+
+    document.getElementById(
+        "codeModal"
+    ).classList.add(
+        "open"
+    );
+
+}
+
+
+/* =========================
+   CLOSE CODE
+========================= */
+
+function closeCode() {
+
+    document.getElementById(
+        "codeModal"
+    ).classList.remove(
+        "open"
+    );
+
+}
+
+
+function closeModal(event) {
+
+    if (
+        event.target.id ===
+        "codeModal"
+    ) {
+
+        closeCode();
+
+    }
+
+}
+
+
+/* =========================
+   COPY
+========================= */
+
+function copyCode() {
+
+    const area =
+        document.getElementById(
+            "codeOutput"
+        );
+
+
+    navigator.clipboard.writeText(
+        area.value
+    );
+
+
+    showToast(
+        "HTML скопійовано"
+    );
+
+}
+
+
+/* =========================
+   EXPORT HTML
+========================= */
+
+function exportHTML() {
+
+    const html =
+        generateHTML();
+
+
+    const blob =
+        new Blob(
+            [html],
+            {
+                type:
+                    "text/html"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href = url;
+
+    link.download =
+        "wind-page.html";
+
+    link.click();
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+
+    showToast(
+        "HTML експортовано"
+    );
+
+}
+
+
+/* =========================
+   PREVIEW
+========================= */
+
+function openPreview() {
+
+    const html =
+        generateHTML();
+
+
+    const windowObject =
+        window.open(
+            "",
+            "_blank"
+        );
+
+
+    if (!windowObject) {
+
+        alert(
+            "Браузер заблокував popup."
+        );
+
+        return;
+
+    }
+
+
+    windowObject.document.open();
+
+    windowObject.document.write(
+        html
+    );
+
+    windowObject.document.close();
+
+}
+
+
+/* =========================
+   HELPERS
+========================= */
+
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+function escapeAttribute(
+    value
+) {
+
+    return escapeHTML(
+        value
+    );
+
+}
+
+
+function showToast(
+    message
+) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+
+    toast.textContent =
+        message;
+
+    toast.style.display =
+        "block";
+
+
+    setTimeout(
+        () => {
+
+            toast.style.display =
+                "none";
+
+        },
+        1600
+    );
+
+}
+
+
+function updatePropertySelection() {
+
+    const selected =
+        document.querySelector(
+            ".builder-node.selected"
+        );
+
+    if (selected) {
+
+        selected.scrollIntoView({
+            block: "nearest",
+            inline: "nearest"
+        });
+
+    }
+
+}
+
+
+/* =========================
+   KEYBOARD
+========================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key ===
+            "Delete"
+        ) {
+
+            if (
+                state.selected
+            ) {
+
+                deleteNode(
+                    state.selected
+                );
+
+            }
+
+        }
+
+
+        if (
+            event.ctrlKey &&
+            event.key.toLowerCase() ===
+            "d"
+        ) {
+
+            event.preventDefault();
+
+            if (
+                state.selected
+            ) {
+
+                duplicateNode(
+                    state.selected
+                );
+
+            }
+
+        }
+
+
+        if (
+            event.ctrlKey &&
+            event.key.toLowerCase() ===
+            "z"
+        ) {
+
+            event.preventDefault();
+
+            undo();
+
+        }
+
+
+        if (
+            event.ctrlKey &&
+            event.key.toLowerCase() ===
+            "y"
+        ) {
+
+            event.preventDefault();
+
+            redo();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   INIT
+========================= */
+
+buildComponentButtons();
+
+render();
+
+</script>
+
+</body>
+</html>
