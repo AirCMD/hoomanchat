@@ -562,7 +562,7 @@ kbd{
 
     <div class="top-spacer"></div>
 
-    <button class="aero-btn" id="saveProjectBtn">💾 Проєкт</button>
+    <button class="aero-btn" id="saveProjectBtn">💾 Проджект</button>
     <button class="aero-btn" id="loadProjectBtn">📂 Завантажити</button>
     <button class="aero-btn" id="pngBtn">PNG</button>
 </header>
@@ -2762,7 +2762,7 @@ document.getElementById("projectFile").onchange = async e=>{
     }catch(err){
 
         alert(
-            "Не вдалося відкрити проєкт:\n"+
+            "Не вдалося відкрити проджект:\n"+
             err.message
         );
     }
@@ -2783,12 +2783,12 @@ document.getElementById("localSaveBtn").onclick = ()=>{
             JSON.stringify(projectData())
         );
 
-        alert("Проєкт збережено у браузері.");
+        alert("Проджект збережено у браузері.");
 
     }catch(err){
 
         alert(
-            "Не вдалося зберегти проєкт:\n"+
+            "Не вдалося зберегти проджект:\n"+
             err.message
         );
     }
@@ -2800,7 +2800,7 @@ document.getElementById("localLoadBtn").onclick = async ()=>{
         localStorage.getItem(LOCAL_KEY);
 
     if(!raw){
-        alert("Збереженого проєкту немає.");
+        alert("Збереженого проджекту немає.");
         return;
     }
 
