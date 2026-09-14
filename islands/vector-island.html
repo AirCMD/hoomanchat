@@ -2,974 +2,549 @@
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AeroCanvas Studio</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AeroCanvas SAI Studio</title>
 
 <style>
-/* =========================================================
-   AEROCANVAS  STUDIO
-   Один HTML-файл
-   Frutiger Aero / glossy web / sky / water / nature
-   ========================================================= */
-
-:root {
-    --sky-1: #dff8ff;
-    --sky-2: #9eeaff;
-    --sky-3: #55cdec;
-
-    --water-1: #d9fbff;
-    --water-2: #7bdff2;
-    --water-3: #20a9d0;
-
-    --green-1: #efffd9;
-    --green-2: #b8ed75;
-    --green-3: #58bd48;
-
-    --blue: #159bc5;
-    --blue-dark: #08749c;
-
-    --text: #14506a;
-    --text-dark: #0b4055;
-
-    --panel: rgba(239, 253, 255, .88);
-    --panel-solid: #eefcff;
-
-    --border: rgba(23, 142, 177, .35);
-
-    --shadow:
-        0 10px 30px rgba(0, 104, 137, .18),
-        0 2px 7px rgba(0, 89, 118, .12);
-
-    --soft-shadow:
-        0 4px 12px rgba(0, 100, 130, .15);
-
-    --radius: 18px;
+*{
+    box-sizing:border-box;
+    user-select:none;
 }
 
-* {
-    box-sizing: border-box;
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;
 }
 
-html,
-body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-}
-
-body {
-    overflow: hidden;
-    font-family:
-        "Trebuchet MS",
-        "Segoe UI",
-        Arial,
-        sans-serif;
-
-    color: var(--text);
-
+body{
+    color:#12445b;
     background:
-        radial-gradient(
-            ellipse at 15% 5%,
-            rgba(255,255,255,.95) 0 7%,
-            transparent 22%
-        ),
-        radial-gradient(
-            ellipse at 85% 15%,
-            rgba(255,255,255,.75) 0 5%,
-            transparent 20%
-        ),
-        linear-gradient(
-            180deg,
-            #dffaff 0%,
-            #9be7fa 43%,
-            #67d3e7 70%,
-            #bcefa0 100%
-        );
+        radial-gradient(circle at 15% 12%,rgba(255,255,255,.95),transparent 25%),
+        radial-gradient(circle at 80% 5%,rgba(125,235,255,.7),transparent 30%),
+        linear-gradient(#73dff5 0%,#b8f3fb 38%,#d9f8df 70%,#8bd48d 100%);
 }
 
-/* ---------------------------------------------------------
-   Decorative Aero background
-   --------------------------------------------------------- */
+/* ===== MAIN WINDOW ===== */
 
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-
-    background:
-        radial-gradient(
-            ellipse at 25% 100%,
-            rgba(76, 190, 76, .38),
-            transparent 32%
-        ),
-        radial-gradient(
-            ellipse at 78% 105%,
-            rgba(106, 212, 83, .30),
-            transparent 30%
-        );
-
-    opacity: .9;
+.app{
+    width:100vw;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
 }
 
-body::after {
-    content: "";
-    position: fixed;
-    width: 500px;
-    height: 180px;
-    top: -80px;
-    left: 8%;
+/* ===== TOP BAR ===== */
 
-    border-radius: 50%;
-
-    background: rgba(255,255,255,.34);
-
-    filter: blur(8px);
-    transform: rotate(-5deg);
-
-    pointer-events: none;
-}
-
-/* ---------------------------------------------------------
-   Main app
-   --------------------------------------------------------- */
-
-.app {
-    position: relative;
-    z-index: 1;
-
-    display: grid;
-    grid-template-columns: 245px minmax(0, 1fr) 245px;
-    grid-template-rows: 76px minmax(0, 1fr);
-
-    width: 100vw;
-    height: 100vh;
-
-    padding: 10px;
-    gap: 10px;
-}
-
-/* ---------------------------------------------------------
-   Top bar
-   --------------------------------------------------------- */
-
-.topbar {
-    grid-column: 1 / -1;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    min-width: 0;
-    padding: 10px 16px;
-
-    border: 1px solid rgba(255,255,255,.75);
-    border-radius: 23px;
+.topbar{
+    min-height:64px;
+    padding:8px 12px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    flex-wrap:wrap;
 
     background:
         linear-gradient(
-            180deg,
-            rgba(255,255,255,.92),
-            rgba(218,249,255,.72) 48%,
-            rgba(172,237,249,.78)
+            rgba(255,255,255,.86),
+            rgba(181,242,250,.72)
         );
-
-    box-shadow: var(--shadow);
-
-    backdrop-filter: blur(12px);
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    min-width: 0;
-}
-
-.logo {
-    width: 48px;
-    height: 48px;
-
-    flex: 0 0 auto;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 15px;
-
-    color: white;
-    font-size: 25px;
-    font-weight: bold;
-
-    background:
-        radial-gradient(
-            circle at 30% 25%,
-            white 0 9%,
-            transparent 10%
-        ),
-        linear-gradient(
-            145deg,
-            #69ddff,
-            #159bc5 55%,
-            #08789f
-        );
-
-    border: 2px solid rgba(255,255,255,.8);
-
+    border-bottom:1px solid rgba(0,120,155,.32);
     box-shadow:
-        inset 0 2px 4px rgba(255,255,255,.8),
-        0 4px 9px rgba(0,100,130,.2);
+        0 3px 12px rgba(0,90,110,.25),
+        inset 0 1px rgba(255,255,255,.95);
+    backdrop-filter:blur(12px);
+    z-index:20;
 }
 
-.brand-title {
-    min-width: 0;
+.logo{
+    font-size:19px;
+    font-weight:bold;
+    color:#075b78;
+    text-shadow:0 1px white;
+    margin-right:8px;
+    white-space:nowrap;
 }
 
-.brand-title strong {
-    display: block;
-
-    font-size: 20px;
-    line-height: 1.05;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    color: #08769d;
-
-    text-shadow:
-        0 1px white,
-        0 2px rgba(255,255,255,.6);
+.logo span{
+    color:#28a858;
 }
 
-.brand-title span {
-    display: block;
-
-    margin-top: 3px;
-
-    font-size: 11px;
-    color: #397b8f;
-}
-
-/* ---------------------------------------------------------
-   Buttons
-   --------------------------------------------------------- */
-
-.top-actions {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-
-    flex-wrap: wrap;
-    justify-content: flex-end;
+.top-spacer{
+    flex:1;
 }
 
 button,
 select,
-input {
-    font: inherit;
+input{
+    font:inherit;
 }
 
-button {
-    cursor: pointer;
-}
-
-.aero-button {
-    position: relative;
-
-    min-height: 34px;
-    padding: 6px 12px;
-
-    border: 1px solid rgba(30,143,174,.38);
-    border-radius: 11px;
-
-    color: var(--text-dark);
+.aero-btn{
+    border:1px solid rgba(0,103,135,.45);
+    border-radius:9px;
+    padding:7px 11px;
+    color:#12516a;
+    cursor:pointer;
 
     background:
         linear-gradient(
-            180deg,
-            rgba(255,255,255,.96),
-            rgba(223,250,255,.92) 46%,
-            rgba(177,237,247,.92)
+            #ffffff 0%,
+            #e7fbff 44%,
+            #b5ebf4 48%,
+            #8ddbe8 100%
         );
 
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.95),
-        0 2px 5px rgba(0,100,130,.13);
+        0 2px 4px rgba(0,90,110,.25),
+        inset 0 1px rgba(255,255,255,.95);
 
-    transition:
-        transform .08s ease,
-        box-shadow .12s ease,
-        filter .12s ease;
+    transition:.12s;
 }
 
-.aero-button:hover {
-    filter: brightness(1.035);
+.aero-btn:hover{
+    filter:brightness(1.05);
+    transform:translateY(-1px);
+}
 
+.aero-btn:active{
+    transform:translateY(1px);
     box-shadow:
-        inset 0 1px 0 white,
-        0 3px 8px rgba(0,100,130,.18);
+        inset 0 2px 5px rgba(0,80,100,.25);
 }
 
-.aero-button:active {
-    transform: translateY(1px);
-
+.aero-btn.active{
+    background:
+        linear-gradient(
+            #baf8ff,
+            #6fd9e8 50%,
+            #4bbdce
+        );
     box-shadow:
-        inset 0 2px 5px rgba(0,100,130,.16);
+        inset 0 2px 5px rgba(0,90,110,.22),
+        0 1px 3px rgba(0,90,110,.2);
 }
 
-.aero-button:disabled {
-    cursor: default;
-    opacity: .45;
-    filter: grayscale(.25);
+.danger{
+    color:#8a3030;
 }
 
-.aero-button.primary {
-    color: white;
+/* ===== WORK AREA ===== */
 
-    border-color: rgba(0,110,145,.5);
+.workarea{
+    flex:1;
+    min-height:0;
+    display:grid;
+    grid-template-columns:245px minmax(0,1fr) 245px;
+    gap:8px;
+    padding:8px;
+}
+
+/* ===== PANELS ===== */
+
+.panel{
+    min-height:0;
+    overflow:auto;
+    padding:9px;
+
+    border:1px solid rgba(0,120,145,.35);
+    border-radius:13px;
 
     background:
         linear-gradient(
-            180deg,
-            #66dcfa,
-            #20acd1 52%,
-            #0b8db6
-        );
-
-    text-shadow: 0 1px 2px rgba(0,60,90,.35);
-}
-
-.aero-button.green {
-    background:
-        linear-gradient(
-            180deg,
-            #edffd8,
-            #b8ef7d 50%,
-            #68c950
-        );
-
-    border-color: rgba(70,160,60,.4);
-}
-
-/* ---------------------------------------------------------
-   Panels
-   --------------------------------------------------------- */
-
-.panel {
-    min-height: 0;
-    overflow: auto;
-
-    padding: 12px;
-
-    border-radius: var(--radius);
-
-    border: 1px solid rgba(255,255,255,.8);
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(250,255,255,.91),
-            rgba(227,249,253,.83)
-        );
-
-    box-shadow: var(--shadow);
-
-    backdrop-filter: blur(13px);
-
-    scrollbar-width: thin;
-    scrollbar-color: rgba(21,155,197,.45) transparent;
-}
-
-.panel h3 {
-    margin: 5px 5px 10px;
-
-    font-size: 13px;
-    color: #08789e;
-
-    text-shadow: 0 1px white;
-}
-
-.section {
-    margin-bottom: 13px;
-    padding: 10px;
-
-    border-radius: 14px;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255,255,255,.75),
-            rgba(214,246,251,.65)
-        );
-
-    border: 1px solid rgba(50,160,187,.18);
-}
-
-/* ---------------------------------------------------------
-   Tools
-   --------------------------------------------------------- */
-
-.tool-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0,1fr));
-    gap: 7px;
-}
-
-.tool {
-    min-height: 55px;
-    padding: 5px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    gap: 3px;
-
-    border-radius: 13px;
-
-    border: 1px solid rgba(40,150,180,.25);
-
-    color: #17657d;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255,255,255,.92),
-            rgba(208,244,250,.88)
+            rgba(255,255,255,.83),
+            rgba(221,250,247,.67)
         );
 
     box-shadow:
-        inset 0 1px rgba(255,255,255,.9),
-        0 2px 4px rgba(0,100,130,.09);
+        0 4px 15px rgba(0,90,110,.18),
+        inset 0 1px rgba(255,255,255,.95);
+
+    backdrop-filter:blur(10px);
 }
 
-.tool:hover {
-    filter: brightness(1.04);
-}
+.section{
+    margin-bottom:10px;
+    padding:9px;
 
-.tool.active {
-    color: white;
+    border-radius:11px;
+    border:1px solid rgba(0,125,145,.25);
 
     background:
         linear-gradient(
-            180deg,
-            #65dafa,
-            #19a8ce 52%,
-            #0789b2
+            rgba(255,255,255,.73),
+            rgba(215,248,244,.5)
         );
-
-    border-color: rgba(0,104,139,.55);
 
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.55),
-        0 3px 8px rgba(0,115,150,.22);
+        inset 0 1px rgba(255,255,255,.9);
 }
 
-.tool-icon {
-    font-size: 19px;
-    line-height: 1;
+.section-title{
+    margin-bottom:7px;
+    color:#08718d;
+    font-size:13px;
+    font-weight:bold;
+    text-shadow:0 1px white;
 }
 
-.tool-label {
-    font-size: 10px;
-    font-weight: bold;
+.tool-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:5px;
 }
 
-/* ---------------------------------------------------------
-   Controls
-   --------------------------------------------------------- */
-
-.control {
-    margin-bottom: 10px;
+.tool-grid button{
+    min-height:36px;
+    padding:5px;
+    font-size:12px;
 }
 
-.control:last-child {
-    margin-bottom: 0;
+.control-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin:6px 0;
 }
 
-.control label {
-    display: flex;
-    justify-content: space-between;
-
-    margin-bottom: 5px;
-
-    font-size: 11px;
-    font-weight: bold;
-    color: #286d82;
+.control-row label{
+    min-width:70px;
+    font-size:12px;
 }
 
-input[type="range"] {
-    width: 100%;
-    accent-color: #159bc5;
+.control-row input[type="range"]{
+    flex:1;
+    min-width:0;
 }
 
-input[type="color"] {
-    width: 100%;
-    height: 38px;
-
-    padding: 3px;
-
-    border-radius: 10px;
-    border: 1px solid rgba(20,130,160,.3);
-
-    background: white;
+.value{
+    width:40px;
+    text-align:right;
+    font-size:11px;
 }
 
-select {
-    width: 100%;
-    min-height: 34px;
+/* ===== COLOR ===== */
 
-    padding: 5px 8px;
-
-    border-radius: 10px;
-
-    border: 1px solid rgba(30,143,174,.35);
-
-    color: #14576d;
-
-    background: rgba(255,255,255,.9);
+.color-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
-/* ---------------------------------------------------------
-   Color swatches
-   --------------------------------------------------------- */
-
-.swatches {
-    display: grid;
-    grid-template-columns: repeat(6,1fr);
-    gap: 5px;
+#colorPicker{
+    width:45px;
+    height:35px;
+    padding:2px;
+    border-radius:8px;
+    border:1px solid #558b99;
+    cursor:pointer;
 }
 
-.swatch {
-    aspect-ratio: 1;
+.swatches{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:4px;
+    margin-top:7px;
+}
 
-    padding: 0;
+.swatch{
+    height:25px;
+    border-radius:6px;
+    border:1px solid rgba(0,70,90,.35);
+    cursor:pointer;
+    box-shadow:
+        inset 0 1px rgba(255,255,255,.7),
+        0 1px 2px rgba(0,0,0,.12);
+}
 
-    border-radius: 8px;
+/* ===== GRADIENT ===== */
 
-    border: 2px solid rgba(255,255,255,.9);
+.gradient-mode{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:5px;
+}
+
+.gradient-stops{
+    margin-top:7px;
+}
+
+.stop{
+    display:grid;
+    grid-template-columns:25px 1fr 42px;
+    gap:5px;
+    align-items:center;
+    padding:5px;
+    margin-bottom:4px;
+
+    border-radius:7px;
+    border:1px solid rgba(0,110,130,.25);
+    cursor:pointer;
+}
+
+.stop.active{
+    background:rgba(100,225,240,.3);
+    border-color:#189bb2;
+}
+
+.stop-preview{
+    width:23px;
+    height:23px;
+    border-radius:5px;
+    border:1px solid #57818a;
+}
+
+.stop-pos{
+    font-size:11px;
+    text-align:right;
+}
+
+.gradient-buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:5px;
+    margin-top:6px;
+}
+
+input[type="number"],
+select{
+    width:100%;
+    min-height:31px;
+    border:1px solid rgba(0,100,125,.4);
+    border-radius:7px;
+    background:rgba(255,255,255,.75);
+    color:#164c60;
+}
+
+/* ===== LAYERS ===== */
+
+.layers{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.layer{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:7px;
+
+    border-radius:7px;
+    border:1px solid rgba(0,110,130,.22);
+    cursor:pointer;
+}
+
+.layer.active{
+    background:rgba(86,214,231,.32);
+    border-color:#1798ad;
+}
+
+.layer-name{
+    flex:1;
+    font-size:12px;
+}
+
+.layer-eye{
+    cursor:pointer;
+    width:24px;
+}
+
+/* ===== CENTER ===== */
+
+.center{
+    min-width:0;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.canvas-toolbar{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    flex-wrap:wrap;
+    padding:7px;
+
+    border-radius:11px;
+    border:1px solid rgba(0,110,135,.3);
+
+    background:
+        linear-gradient(
+            rgba(255,255,255,.82),
+            rgba(184,239,246,.66)
+        );
 
     box-shadow:
-        0 1px 4px rgba(0,70,100,.25);
-
-    cursor: pointer;
+        0 3px 10px rgba(0,80,100,.18),
+        inset 0 1px white;
 }
 
-/* ---------------------------------------------------------
-   Layers
-   --------------------------------------------------------- */
-
-.layers {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+.zoom-value{
+    min-width:57px;
+    text-align:center;
+    font-size:12px;
+    font-weight:bold;
 }
 
-.layer-row {
-    display: grid;
-    grid-template-columns: 26px 1fr 30px;
-    align-items: center;
-    gap: 6px;
+/* ===== VIEWPORT ===== */
 
-    min-height: 37px;
+.viewport{
+    flex:1;
+    min-height:0;
+    overflow:hidden;
+    position:relative;
 
-    padding: 4px 6px;
-
-    border-radius: 10px;
-
-    background: rgba(255,255,255,.58);
-
-    border: 1px solid rgba(50,150,180,.15);
-
-    cursor: pointer;
-}
-
-.layer-row.active {
-    background:
-        linear-gradient(
-            90deg,
-            rgba(105,221,250,.48),
-            rgba(188,244,250,.6)
-        );
-
-    border-color: rgba(20,145,180,.38);
-}
-
-.layer-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    font-size: 11px;
-}
-
-.eye {
-    border: 0;
-    background: transparent;
-
-    padding: 2px;
-
-    cursor: pointer;
-
-    color: #2785a0;
-}
-
-/* ---------------------------------------------------------
-   Canvas area
-   --------------------------------------------------------- */
-
-.workspace {
-    min-width: 0;
-    min-height: 0;
-
-    display: flex;
-    flex-direction: column;
-
-    border-radius: var(--radius);
-
-    overflow: hidden;
-
-    border: 1px solid rgba(255,255,255,.85);
+    border-radius:15px;
+    border:1px solid rgba(0,90,110,.4);
 
     background:
+        radial-gradient(circle at 30% 20%,rgba(255,255,255,.9),transparent 30%),
         linear-gradient(
-            180deg,
-            rgba(233,252,255,.72),
-            rgba(143,224,238,.48)
+            135deg,
+            rgba(100,205,220,.4),
+            rgba(230,255,250,.55)
         );
-
-    box-shadow: var(--shadow);
-}
-
-/* ---------------------------------------------------------
-   Workspace toolbar
-   --------------------------------------------------------- */
-
-.workspace-toolbar {
-    min-height: 48px;
-
-    display: flex;
-    align-items: center;
-
-    gap: 7px;
-
-    padding: 7px 9px;
-
-    overflow-x: auto;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255,255,255,.88),
-            rgba(207,246,251,.75)
-        );
-
-    border-bottom: 1px solid rgba(35,145,175,.22);
-
-    scrollbar-width: thin;
-}
-
-.workspace-toolbar .separator {
-    width: 1px;
-    height: 26px;
-
-    flex: 0 0 auto;
-
-    background: rgba(30,130,160,.22);
-}
-
-.zoom-value {
-    min-width: 56px;
-
-    text-align: center;
-
-    font-size: 11px;
-    font-weight: bold;
-
-    color: #226d83;
-}
-
-/* ---------------------------------------------------------
-   Viewport
-   --------------------------------------------------------- */
-
-.viewport {
-    position: relative;
-
-    flex: 1;
-
-    min-width: 0;
-    min-height: 0;
-
-    overflow: hidden;
-
-    touch-action: none;
-
-    cursor: crosshair;
-
-    background:
-        radial-gradient(
-            circle at 20% 20%,
-            rgba(255,255,255,.55),
-            transparent 25%
-        ),
-        linear-gradient(
-            180deg,
-            #d9faff,
-            #9de3f0
-        );
-}
-
-/* Decorative horizon */
-
-.viewport::before {
-    content: "";
-
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    height: 19%;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(130,220,105,0),
-            rgba(114,204,92,.28)
-        );
-
-    pointer-events: none;
-}
-
-/* ---------------------------------------------------------
-   Canvas container
-   --------------------------------------------------------- */
-
-.canvas-container {
-    position: absolute;
-
-    width: 1000px;
-    height: 700px;
-
-    left: 50%;
-    top: 50%;
-
-    margin-left: -500px;
-    margin-top: -350px;
-
-    transform-origin: center center;
-
-    background: white;
-
-    border-radius: 4px;
 
     box-shadow:
-        0 18px 35px rgba(0,70,90,.27),
-        0 3px 8px rgba(0,70,90,.16);
-
-    overflow: hidden;
-
-    will-change: transform;
+        inset 0 0 35px rgba(0,100,130,.15),
+        0 5px 18px rgba(0,70,90,.2);
 }
 
-/* Every canvas is exactly aligned */
-
-.canvas-layer {
-    position: absolute;
-
-    left: 0;
-    top: 0;
-
-    width: 1000px;
-    height: 700px;
-
-    display: block;
+.viewport.panning{
+    cursor:grabbing;
 }
 
-/* Persistent vector layer */
+.canvas-container{
+    position:absolute;
+    width:1000px;
+    height:700px;
+    left:50%;
+    top:50%;
 
-#vector-canvas {
-    pointer-events: none;
-}
-
-/* Temporary editing preview */
-
-#preview-canvas {
-    pointer-events: auto;
-}
-
-/* ---------------------------------------------------------
-   Status bar
-   --------------------------------------------------------- */
-
-.statusbar {
-    min-height: 29px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 10px;
-
-    padding: 4px 10px;
+    transform-origin:center center;
 
     background:
         linear-gradient(
-            180deg,
-            rgba(255,255,255,.78),
-            rgba(201,242,249,.72)
+            45deg,
+            #d9d9d9 25%,
+            #ffffff 25%,
+            #ffffff 75%,
+            #d9d9d9 75%
         );
+    background-size:24px 24px;
 
-    border-top: 1px solid rgba(30,140,170,.18);
-
-    font-size: 10px;
-
-    color: #397589;
+    box-shadow:
+        0 12px 35px rgba(0,60,80,.3),
+        0 0 0 2px rgba(255,255,255,.7);
 }
 
-.status-left,
-.status-right {
-    min-width: 0;
-
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+.canvas-container canvas{
+    position:absolute;
+    left:0;
+    top:0;
+    width:1000px;
+    height:700px;
+    pointer-events:none;
 }
 
-/* ---------------------------------------------------------
-   Right panel
-   --------------------------------------------------------- */
+#previewCanvas{
+    pointer-events:none;
+}
 
-.info-card {
-    padding: 9px;
+/* ===== STATUS ===== */
 
-    border-radius: 12px;
+.statusbar{
+    min-height:30px;
+    padding:5px 9px;
+
+    display:flex;
+    align-items:center;
+    gap:15px;
+
+    border-radius:9px;
+    border:1px solid rgba(0,110,130,.3);
 
     background:
         linear-gradient(
-            145deg,
-            rgba(239,255,215,.78),
-            rgba(211,249,228,.7)
-        );
-
-    border: 1px solid rgba(84,174,82,.25);
-
-    font-size: 11px;
-    line-height: 1.4;
-}
-
-.info-card strong {
-    color: #287d45;
-}
-
-/* ---------------------------------------------------------
-   Vector status
-   --------------------------------------------------------- */
-
-.vector-status {
-    min-height: 50px;
-
-    padding: 8px;
-
-    border-radius: 11px;
-
-    background:
-        linear-gradient(
-            180deg,
             rgba(255,255,255,.8),
-            rgba(217,247,250,.8)
+            rgba(174,238,244,.65)
         );
 
-    border: 1px solid rgba(30,145,175,.2);
-
-    font-size: 10px;
-    line-height: 1.35;
+    font-size:11px;
 }
 
-/* ---------------------------------------------------------
-   Responsive
-   --------------------------------------------------------- */
+/* ===== HINTS ===== */
 
-@media (max-width: 1180px) {
-    .app {
-        grid-template-columns: 210px minmax(0,1fr) 210px;
-    }
-
-    .brand-title strong {
-        font-size: 17px;
-    }
-
-    .tool-grid {
-        gap: 5px;
-    }
-
-    .tool {
-        min-height: 50px;
-    }
+.hint{
+    font-size:11px;
+    line-height:1.45;
+    color:#356879;
 }
 
-@media (max-width: 900px) {
-    .app {
-        grid-template-columns: 190px minmax(0,1fr);
-    }
-
-    .right-panel {
-        display: none;
-    }
+kbd{
+    padding:1px 4px;
+    border-radius:4px;
+    background:white;
+    border:1px solid #9abdc5;
+    box-shadow:0 1px 1px rgba(0,0,0,.15);
 }
 
-@media (max-width: 700px) {
-    .app {
-        grid-template-columns: 1fr;
-        grid-template-rows: 62px auto minmax(0,1fr);
+/* ===== RESPONSIVE ===== */
 
-        padding: 6px;
-        gap: 6px;
+@media(max-width:1050px){
+    .workarea{
+        grid-template-columns:205px minmax(0,1fr) 205px;
     }
 
-    .topbar {
-        grid-column: 1;
-
-        padding: 7px 10px;
-        border-radius: 16px;
+    .logo{
+        font-size:15px;
     }
 
-    .brand-title span {
-        display: none;
-    }
-
-    .brand-title strong {
-        font-size: 14px;
-    }
-
-    .logo {
-        width: 40px;
-        height: 40px;
-        font-size: 20px;
-    }
-
-    .left-panel {
-        display: none;
-    }
-
-    .workspace {
-        grid-column: 1;
+    .aero-btn{
+        padding:6px 8px;
+        font-size:12px;
     }
 }
 
-/* ---------------------------------------------------------
-   Keyboard focus
-   --------------------------------------------------------- */
+@media(max-width:800px){
+    .workarea{
+        grid-template-columns:175px minmax(0,1fr);
+    }
 
-button:focus-visible,
-select:focus-visible,
-input:focus-visible {
-    outline: 2px solid #1aa9d2;
-    outline-offset: 2px;
+    .right-panel{
+        display:none;
+    }
+}
+
+@media(max-width:620px){
+    .workarea{
+        grid-template-columns:1fr;
+    }
+
+    .left-panel{
+        display:none;
+    }
+}
+
+/* ===== SCROLLBAR ===== */
+
+::-webkit-scrollbar{
+    width:9px;
+    height:9px;
+}
+
+::-webkit-scrollbar-track{
+    background:rgba(255,255,255,.35);
+}
+
+::-webkit-scrollbar-thumb{
+    border-radius:10px;
+    background:linear-gradient(#8ee8ef,#49b9c9);
+    border:1px solid rgba(0,90,110,.3);
 }
 </style>
 </head>
@@ -978,3607 +553,2360 @@ input:focus-visible {
 
 <div class="app">
 
-    <!-- =====================================================
-         TOP BAR
-         ===================================================== -->
+<header class="topbar">
+    <div class="logo">AeroCanvas <span>SAI Studio</span></div>
 
-    <header class="topbar">
+    <button class="aero-btn" id="undoBtn">↶ Undo</button>
+    <button class="aero-btn" id="redoBtn">↷ Redo</button>
+    <button class="aero-btn" id="clearBtn">✕ Очистити</button>
 
-        <div class="brand">
-            <div class="logo">✦</div>
+    <div class="top-spacer"></div>
 
-            <div class="brand-title">
-                <strong>AeroCanvas Studio</strong>
-                <span>вектор • растрове малювання • Frutiger Aero</span>
-            </div>
+    <button class="aero-btn" id="saveProjectBtn">💾 Проєкт</button>
+    <button class="aero-btn" id="loadProjectBtn">📂 Завантажити</button>
+    <button class="aero-btn" id="pngBtn">PNG</button>
+</header>
+
+<div class="workarea">
+
+<!-- ================= LEFT ================= -->
+
+<aside class="panel left-panel">
+
+    <div class="section">
+        <div class="section-title">Інструменти</div>
+
+        <div class="tool-grid">
+            <button class="aero-btn active" data-tool="pencil">✎ Олівець</button>
+            <button class="aero-btn" data-tool="eraser">⌫ Гумка</button>
+
+            <button class="aero-btn" data-tool="vector">〰 Вектор</button>
+            <button class="aero-btn" data-tool="line">╱ Лінія</button>
+
+            <button class="aero-btn" data-tool="rect">□ Прямокутник</button>
+            <button class="aero-btn" data-tool="circle">○ Коло</button>
+
+            <button class="aero-btn" data-tool="wand">✦ Піпетка</button>
+            <button class="aero-btn" data-tool="pan">✋ Рука</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Пензель</div>
+
+        <div class="control-row">
+            <label>Розмір</label>
+            <input id="sizeRange" type="range" min="1" max="100" value="8">
+            <span class="value" id="sizeValue">8</span>
         </div>
 
-        <div class="top-actions">
-
-            <button class="aero-button" id="undoBtn">
-                ↶ Відміна
-            </button>
-
-            <button class="aero-button" id="redoBtn">
-                ↷ Повернення
-            </button>
-
-            <button class="aero-button green" id="clearBtn">
-                ✕ Очищення
-            </button>
-
-            <button class="aero-button primary" id="exportBtn">
-                ↓ PNG
-            </button>
-
+        <div class="control-row">
+            <label>Прозорість</label>
+            <input id="opacityRange" type="range" min="1" max="100" value="100">
+            <span class="value" id="opacityValue">100%</span>
         </div>
 
-    </header>
-
-
-    <!-- =====================================================
-         LEFT PANEL
-         ===================================================== -->
-
-    <aside class="panel left-panel">
-
-        <h3>Інструменти</h3>
-
-        <div class="section">
-
-            <div class="tool-grid">
-
-                <button class="tool active" data-tool="pencil">
-                    <span class="tool-icon">✎</span>
-                    <span class="tool-label">Олівець</span>
-                </button>
-
-                <button class="tool" data-tool="vector">
-                    <span class="tool-icon">〰</span>
-                    <span class="tool-label">Вектор</span>
-                </button>
-
-                <button class="tool" data-tool="line">
-                    <span class="tool-icon">╱</span>
-                    <span class="tool-label">Лінія</span>
-                </button>
-
-                <button class="tool" data-tool="rect">
-                    <span class="tool-icon">□</span>
-                    <span class="tool-label">Прямокутник</span>
-                </button>
-
-                <button class="tool" data-tool="circle">
-                    <span class="tool-icon">○</span>
-                    <span class="tool-label">Коло</span>
-                </button>
-
-                <button class="tool" data-tool="wand">
-                    <span class="tool-icon">✦</span>
-                    <span class="tool-label">Піпетка</span>
-                </button>
-
-                <button class="tool" data-tool="pan">
-                    <span class="tool-icon">✋</span>
-                    <span class="tool-label">Рух</span>
-                </button>
-
-            </div>
-
+        <div class="color-row">
+            <input id="colorPicker" type="color" value="#1389a8">
+            <div style="flex:1;font-size:12px;">Основний колір</div>
         </div>
 
+        <div class="swatches">
+            <div class="swatch" data-color="#000000" style="background:#000"></div>
+            <div class="swatch" data-color="#ffffff" style="background:#fff"></div>
+            <div class="swatch" data-color="#1389a8" style="background:#1389a8"></div>
+            <div class="swatch" data-color="#00b7d6" style="background:#00b7d6"></div>
+            <div class="swatch" data-color="#39b54a" style="background:#39b54a"></div>
+            <div class="swatch" data-color="#ffdc4a" style="background:#ffdc4a"></div>
+            <div class="swatch" data-color="#ff8b3d" style="background:#ff8b3d"></div>
+            <div class="swatch" data-color="#ef4b68" style="background:#ef4b68"></div>
+            <div class="swatch" data-color="#a55eea" style="background:#a55eea"></div>
+            <div class="swatch" data-color="#4d7cff" style="background:#4d7cff"></div>
+            <div class="swatch" data-color="#795548" style="background:#795548"></div>
+            <div class="swatch" data-color="#80cbc4" style="background:#80cbc4"></div>
+        </div>
+    </div>
 
-        <h3>Пензель</h3>
+    <!-- GRADIENT -->
+    <div class="section">
+        <div class="section-title">Заливка / градієнт</div>
 
-        <div class="section">
-
-            <div class="control">
-
-                <label>
-                    <span>Розмір</span>
-                    <span id="sizeValue">12 px</span>
-                </label>
-
-                <input
-                    id="sizeRange"
-                    type="range"
-                    min="1"
-                    max="100"
-                    value="12"
-                >
-
-            </div>
-
-
-            <div class="control">
-
-                <label>
-                    <span>Непрозорість</span>
-                    <span id="opacityValue">100%</span>
-                </label>
-
-                <input
-                    id="opacityRange"
-                    type="range"
-                    min="1"
-                    max="100"
-                    value="100"
-                >
-
-            </div>
-
-
-            <div class="control">
-
-                <label>
-                    <span>Колір</span>
-                </label>
-
-                <input
-                    id="colorPicker"
-                    type="color"
-                    value="#157fa4"
-                >
-
-            </div>
-
+        <div class="gradient-mode">
+            <button class="aero-btn active" id="solidModeBtn">● Суцільний</button>
+            <button class="aero-btn" id="gradientModeBtn">🌈 Градієнт</button>
         </div>
 
+        <div id="gradientControls" style="display:none">
 
-        <h3>Кольори</h3>
+            <div class="gradient-stops" id="gradientStops"></div>
 
-        <div class="section">
-
-            <div class="swatches">
-
-                <button class="swatch" style="background:#111111" data-color="#111111"></button>
-                <button class="swatch" style="background:#ffffff" data-color="#ffffff"></button>
-                <button class="swatch" style="background:#ff5252" data-color="#ff5252"></button>
-                <button class="swatch" style="background:#ff9d32" data-color="#ff9d32"></button>
-                <button class="swatch" style="background:#ffe34b" data-color="#ffe34b"></button>
-                <button class="swatch" style="background:#65c94a" data-color="#65c94a"></button>
-
-                <button class="swatch" style="background:#28c9c9" data-color="#28c9c9"></button>
-                <button class="swatch" style="background:#37a8ff" data-color="#37a8ff"></button>
-                <button class="swatch" style="background:#7868ff" data-color="#7868ff"></button>
-                <button class="swatch" style="background:#d66cff" data-color="#d66cff"></button>
-                <button class="swatch" style="background:#ff73a8" data-color="#ff73a8"></button>
-                <button class="swatch" style="background:#9a6940" data-color="#9a6940"></button>
-
+            <div class="gradient-buttons">
+                <button class="aero-btn" id="addStopBtn">＋ Стоп</button>
+                <button class="aero-btn danger" id="removeStopBtn">− Стоп</button>
             </div>
+
+            <div class="control-row">
+                <label>Позиція</label>
+                <input id="stopPosition" type="range" min="0" max="100" value="0">
+                <span class="value" id="stopPositionValue">0%</span>
+            </div>
+
+            <div class="color-row">
+                <input id="stopColor" type="color" value="#1389a8">
+                <div style="font-size:11px">Колір стопа</div>
+            </div>
+
+            <button class="aero-btn" id="reverseGradientBtn"
+                    style="width:100%;margin-top:6px">
+                ↔ Розвернути
+            </button>
+
+            <div class="hint" style="margin-top:6px">
+                У градієнтному режимі напрямок кольорів визначається
+                напрямком лінії або фігури.
+            </div>
+        </div>
+    </div>
+
+    <!-- LAYERS -->
+    <div class="section">
+        <div class="section-title">Шари</div>
+
+        <div class="layers" id="layers"></div>
+
+        <button class="aero-btn" id="newLayerBtn"
+                style="width:100%;margin-top:6px">
+            ＋ Новий шар
+        </button>
+    </div>
+
+</aside>
+
+<!-- ================= CENTER ================= -->
+
+<main class="center">
+
+    <div class="canvas-toolbar">
+        <button class="aero-btn" id="zoomOutBtn">−</button>
+        <span class="zoom-value" id="zoomValue">100%</span>
+        <button class="aero-btn" id="zoomInBtn">＋</button>
+
+        <button class="aero-btn" id="zoom100Btn">100%</button>
+        <button class="aero-btn" id="fitBtn">Вписати</button>
+        <button class="aero-btn" id="centerBtn">Центр</button>
+
+        <div class="top-spacer"></div>
+
+        <button class="aero-btn" id="finishVectorBtn">✓ Завершити вектор</button>
+        <button class="aero-btn danger" id="deleteVectorBtn">⌫ Видалити вектор</button>
+    </div>
+
+    <div class="viewport" id="viewport">
+
+        <div class="canvas-container" id="canvasContainer">
+
+            <canvas id="layer0" width="1000" height="700"></canvas>
+            <canvas id="layer1" width="1000" height="700"></canvas>
+            <canvas id="layer2" width="1000" height="700"></canvas>
+            <canvas id="layer3" width="1000" height="700"></canvas>
+
+            <!-- постійний шар векторів -->
+            <canvas id="vectorCanvas" width="1000" height="700"></canvas>
+
+            <!-- тимчасовий preview -->
+            <canvas id="previewCanvas" width="1000" height="700"></canvas>
 
         </div>
 
+    </div>
 
-        <h3>Шари</h3>
+    <div class="statusbar">
+        <span id="statusText">Олівець</span>
+        <span id="coordText">X: — Y: —</span>
+        <span id="layerStatus">Шар: 1</span>
+        <span id="zoomStatus">100%</span>
+    </div>
 
-        <div class="section">
+</main>
 
-            <div class="layers" id="layersList">
+<!-- ================= RIGHT ================= -->
 
-                <div class="layer-row active" data-layer="3">
-                    <button class="eye" data-eye="3">●</button>
-                    <span class="layer-name">Layer 4</span>
-                    <span>4</span>
-                </div>
+<aside class="panel right-panel">
 
-                <div class="layer-row" data-layer="2">
-                    <button class="eye" data-eye="2">●</button>
-                    <span class="layer-name">Layer 3</span>
-                    <span>3</span>
-                </div>
+    <div class="section">
+        <div class="section-title">Еластичний вектор</div>
 
-                <div class="layer-row" data-layer="1">
-                    <button class="eye" data-eye="1">●</button>
-                    <span class="layer-name">Layer 2</span>
-                    <span>2</span>
-                </div>
-
-                <div class="layer-row" data-layer="0">
-                    <button class="eye" data-eye="0">●</button>
-                    <span class="layer-name">Layer 1</span>
-                    <span>1</span>
-                </div>
-
-            </div>
-
+        <div class="control-row">
+            <label>Згладжування</label>
+            <input id="smoothRange" type="range" min="0" max="100" value="65">
+            <span class="value" id="smoothValue">65</span>
         </div>
 
-    </aside>
-
-
-    <!-- =====================================================
-         WORKSPACE
-         ===================================================== -->
-
-    <main class="workspace">
-
-        <div class="workspace-toolbar">
-
-            <button class="aero-button" id="zoomOutBtn">
-                −
-            </button>
-
-            <span class="zoom-value" id="zoomValue">
-                100%
-            </span>
-
-            <button class="aero-button" id="zoomInBtn">
-                +
-            </button>
-
-            <button class="aero-button" id="zoomResetBtn">
-                100%
-            </button>
-
-            <div class="separator"></div>
-
-            <button class="aero-button" id="fitBtn">
-                ◉ Фіксувати
-            </button>
-
-            <button class="aero-button" id="centerBtn">
-                ⊙ Центрування
-            </button>
-
-            <div class="separator"></div>
-
-            <button class="aero-button" id="vectorFinishBtn">
-                ✓ Завершити вектор
-            </button>
-
-            <button class="aero-button" id="vectorDeleteBtn">
-                × Видалити вектор
-            </button>
-
+        <div class="control-row">
+            <label>Еластичність</label>
+            <input id="elasticRange" type="range" min="0" max="100" value="70">
+            <span class="value" id="elasticValue">70</span>
         </div>
 
-
-        <div class="viewport" id="viewport">
-
-            <div class="canvas-container" id="canvasContainer">
-
-                <!-- Raster layers -->
-                <canvas
-                    id="layer-0"
-                    class="canvas-layer"
-                    width="1000"
-                    height="700"
-                ></canvas>
-
-                <canvas
-                    id="layer-1"
-                    class="canvas-layer"
-                    width="1000"
-                    height="700"
-                ></canvas>
-
-                <canvas
-                    id="layer-2"
-                    class="canvas-layer"
-                    width="1000"
-                    height="700"
-                ></canvas>
-
-                <canvas
-                    id="layer-3"
-                    class="canvas-layer"
-                    width="1000"
-                    height="700"
-                ></canvas>
-
-                <!--
-                    ВАЖЛИВО:
-
-                    Цей canvas постійний.
-                    Саме тут живуть готові векторні лінії.
-
-                    Preview нижче використовується лише
-                    для поточного редагування.
-                -->
-
-                <canvas
-                    id="vector-canvas"
-                    class="canvas-layer"
-                    width="1000"
-                    height="700"
-                ></canvas>
-
-                <canvas
-                    id="preview-canvas"
-                    class="canvas-layer"
-                    width="1000"
-                    height="700"
-                ></canvas>
-
-            </div>
-
+        <div class="hint">
+            Малюй вектор мишкою. Після відпускання він
+            залишається на полотні. Вузли можна перетягувати.
         </div>
+    </div>
 
+    <div class="section">
+        <div class="section-title">Експорт</div>
 
-        <div class="statusbar">
+        <button class="aero-btn" id="pngTransparentBtn"
+                style="width:100%;margin-bottom:5px">
+            PNG — прозорий фон
+        </button>
 
-            <div class="status-left" id="statusText">
-                Олівець • Layer 4 • 1000×700
-            </div>
+        <button class="aero-btn" id="pngBackgroundBtn"
+                style="width:100%">
+            PNG — білий фон
+        </button>
 
-            <div class="status-right" id="cursorText">
-                x: — y: —
-            </div>
-
+        <div class="hint" style="margin-top:7px">
+            Прозорий PNG зберігає альфа-канал.
+            Сірий шаховий фон редактора до PNG не потрапляє.
         </div>
+    </div>
 
-    </main>
+    <div class="section">
+        <div class="section-title">Керування</div>
 
-
-    <!-- =====================================================
-         RIGHT PANEL
-         ===================================================== -->
-
-    <aside class="panel right-panel">
-
-        <h3>Еластичний вектор</h3>
-
-        <div class="section">
-
-            <div class="vector-status" id="vectorStatus">
-                Векторний режим не активний.
-            </div>
-
+        <div class="hint">
+            <p><kbd>Ctrl</kbd> + <kbd>Z</kbd> — скасувати</p>
+            <p><kbd>Ctrl</kbd> + <kbd>Y</kbd> — повернути</p>
+            <p><kbd>Space</kbd> + перетягування — панорамування</p>
+            <p>Колесо — масштаб</p>
+            <p>ПКМ — панорамування</p>
+            <p><kbd>Esc</kbd> — скасувати активний вектор</p>
+            <p><kbd>Delete</kbd> — видалити вибраний вектор</p>
         </div>
+    </div>
 
+    <div class="section">
+        <div class="section-title">Локальне збереження</div>
 
-        <h3>Параметри вектора</h3>
+        <button class="aero-btn" id="localSaveBtn"
+                style="width:100%;margin-bottom:5px">
+            💾 Зберегти в браузері
+        </button>
 
-        <div class="section">
+        <button class="aero-btn" id="localLoadBtn"
+                style="width:100%">
+            ↻ Відновити
+        </button>
+    </div>
 
-            <div class="control">
-
-                <label>
-                    <span>Сегментація</span>
-                    <span id="smoothValue">8</span>
-                </label>
-
-                <input
-                    id="smoothRange"
-                    type="range"
-                    min="2"
-                    max="20"
-                    value="8"
-                >
-
-            </div>
-
-
-            <div class="control">
-
-                <label>
-                    <span>Пружність</span>
-                    <span id="elasticValue">65%</span>
-                </label>
-
-                <input
-                    id="elasticRange"
-                    type="range"
-                    min="0"
-                    max="100"
-                    value="65"
-                >
-
-            </div>
-
-        </div>
-
-
-        <h3>Підказки</h3>
-
-        <div class="section">
-
-            <div class="info-card">
-
-                <strong>Вектор</strong><br>
-                Клацай для створення вузлів.<br>
-                Перетягуй вузли для редагування.<br><br>
-
-                <strong>Олівець</strong><br>
-                Затисни ліву кнопку і малюй.<br><br>
-
-                <strong>Zoom</strong><br>
-                Колесо миші або Ctrl + колесо.<br><br>
-
-                <strong>Pan</strong><br>
-                Space + перетягування.
-                
-            </div>
-
-        </div>
-
-
-        <h3>Файл</h3>
-
-        <div class="section">
-
-            <button class="aero-button primary" id="saveLocalBtn" style="width:100%;">
-                💾 Зберегти в браузері
-            </button>
-
-            <br><br>
-
-            <button class="aero-button" id="loadLocalBtn" style="width:100%;">
-                ↻ Відновити
-            </button>
-
-        </div>
-
-    </aside>
+</aside>
 
 </div>
+</div>
 
+<input type="file" id="projectFile" accept=".json,application/json"
+       style="display:none">
 
 <script>
 "use strict";
 
-/* =========================================================
+/* ============================================================
    AEROCANVAS SAI STUDIO
-   ALL JAVASCRIPT IN THIS FILE
-   ========================================================= */
-
-/* ---------------------------------------------------------
-   Canvas constants
-   --------------------------------------------------------- */
+   Один HTML / без бібліотек
+   ============================================================ */
 
 const WIDTH = 1000;
 const HEIGHT = 700;
 
-
-/* ---------------------------------------------------------
-   DOM
-   --------------------------------------------------------- */
-
-const viewport = document.getElementById("viewport");
-const container = document.getElementById("canvasContainer");
-
-const previewCanvas = document.getElementById("preview-canvas");
-const previewCtx = previewCanvas.getContext("2d");
-
-const vectorCanvas = document.getElementById("vector-canvas");
-const vectorCtx = vectorCanvas.getContext("2d");
+/* ================= CANVASES ================= */
 
 const rasterCanvases = [
-    document.getElementById("layer-0"),
-    document.getElementById("layer-1"),
-    document.getElementById("layer-2"),
-    document.getElementById("layer-3")
+    document.getElementById("layer0"),
+    document.getElementById("layer1"),
+    document.getElementById("layer2"),
+    document.getElementById("layer3")
 ];
 
-const rasterContexts = rasterCanvases.map(
-    canvas => canvas.getContext("2d", { willReadFrequently: true })
-);
+const rasterCtx = rasterCanvases.map(c => c.getContext("2d"));
 
+const vectorCanvas = document.getElementById("vectorCanvas");
+const vectorCtx = vectorCanvas.getContext("2d");
 
-/* ---------------------------------------------------------
-   State
-   --------------------------------------------------------- */
+const previewCanvas = document.getElementById("previewCanvas");
+const previewCtx = previewCanvas.getContext("2d");
+
+const viewport = document.getElementById("viewport");
+const canvasContainer = document.getElementById("canvasContainer");
+
+/* ================= STATE ================= */
 
 let currentTool = "pencil";
+let currentLayer = 0;
 
-let currentLayer = 3;
-
-let mainColor = "#157fa4";
-
-let brushSize = 12;
-
+let mainColor = "#1389a8";
+let brushSize = 8;
 let brushOpacity = 1;
 
 let fillMode = "solid";
 
+let smoothness = 65;
+let elasticity = 70;
 
-/* ---------------------------------------------------------
-   Zoom / Pan
-   --------------------------------------------------------- */
+/* gradient */
+let gradientStops = [
+    {pos:0, color:"#1389a8"},
+    {pos:1, color:"#7cecf7"}
+];
 
-let scale = 1;
+let selectedGradientStop = 0;
 
+/* zoom / pan */
+let zoom = 1;
 let panX = 0;
-
 let panY = 0;
 
-const MIN_SCALE = 0.25;
-const MAX_SCALE = 4;
+/* drawing */
+let pointerDown = false;
+let spaceDown = false;
 
+let lastPoint = null;
+let startPoint = null;
 
-/* ---------------------------------------------------------
-   Pointer state
-   --------------------------------------------------------- */
+let currentStroke = [];
 
-let isDrawing = false;
-
-let isPanning = false;
-
-let isDraggingVectorPoint = false;
-
-let activePointerId = null;
-
-let lastX = 0;
-
-let lastY = 0;
-
-let panStartX = 0;
-
-let panStartY = 0;
-
-let originalPanX = 0;
-
-let originalPanY = 0;
-
-let spacePressed = false;
-
-
-/* ---------------------------------------------------------
-   Shapes
-   --------------------------------------------------------- */
-
+/* shape */
 let shapeStart = null;
+let shapeEnd = null;
 
-
-/* =========================================================
-   VECTOR SYSTEM
-   ========================================================= */
-
-/*
-    allVectorLines:
-
-    [
-        {
-            id,
-            layer,
-            points: [
-                { x, y, w }
-            ],
-            color,
-            opacity
-        }
-    ]
-*/
-
+/* vector */
 let allVectorLines = [];
-
 let activeVectorLine = null;
-
+let selectedVectorId = null;
 let selectedVectorPtIndex = -1;
-
 let nextVectorId = 1;
 
+let vectorEditBefore = null;
 
-/* ---------------------------------------------------------
-   Vector settings
-   --------------------------------------------------------- */
+/* history */
+let undoStack = [];
+let redoStack = [];
+const MAX_HISTORY = 40;
 
-let smoothness = 8;
+/* layer visibility */
+let layerVisible = [true,true,true,true];
 
-let elasticity = 0.65;
+/* ================= HELPERS ================= */
 
-
-/* =========================================================
-   HISTORY
-   ========================================================= */
-
-const undoStack = [];
-
-const redoStack = [];
-
-const MAX_HISTORY = 30;
-
-
-/* ---------------------------------------------------------
-   Clone vector data
-   --------------------------------------------------------- */
-
-function cloneVectors() {
-
-    return JSON.parse(
-        JSON.stringify(allVectorLines)
-    );
+function clone(obj){
+    return JSON.parse(JSON.stringify(obj));
 }
 
+function clamp(v,min,max){
+    return Math.max(min,Math.min(max,v));
+}
 
-/* ---------------------------------------------------------
-   Save state
-   --------------------------------------------------------- */
+function hexToRgba(hex,alpha=1){
+    let h = hex.replace("#","");
+    if(h.length === 3){
+        h = h.split("").map(x=>x+x).join("");
+    }
 
-function saveState() {
+    const r = parseInt(h.substring(0,2),16);
+    const g = parseInt(h.substring(2,4),16);
+    const b = parseInt(h.substring(4,6),16);
 
-    const raster = rasterContexts.map(ctx =>
-        ctx.getImageData(
-            0,
-            0,
-            WIDTH,
-            HEIGHT
-        )
-    );
+    return `rgba(${r},${g},${b},${alpha})`;
+}
 
-    const vectors = cloneVectors();
+function distance(a,b){
+    return Math.hypot(a.x-b.x,a.y-b.y);
+}
 
-    undoStack.push({
-        raster,
-        vectors
+function sortStops(stops){
+    return [...stops].sort((a,b)=>a.pos-b.pos);
+}
+
+/* ================= GRADIENT ================= */
+
+function createGradient(ctx,x1,y1,x2,y2,stops=gradientStops){
+    const g = ctx.createLinearGradient(x1,y1,x2,y2);
+
+    const sorted = sortStops(stops);
+
+    if(sorted.length === 0){
+        g.addColorStop(0,mainColor);
+        g.addColorStop(1,mainColor);
+        return g;
+    }
+
+    sorted.forEach(s=>{
+        g.addColorStop(
+            clamp(Number(s.pos),0,1),
+            s.color
+        );
     });
 
-    if (undoStack.length > MAX_HISTORY) {
+    return g;
+}
+
+function getGradientStyle(ctx,x1,y1,x2,y2,stops){
+    if(fillMode === "solid"){
+        return hexToRgba(mainColor,brushOpacity);
+    }
+
+    return createGradient(ctx,x1,y1,x2,y2,stops);
+}
+
+function renderGradientStops(){
+    const box = document.getElementById("gradientStops");
+    box.innerHTML = "";
+
+    gradientStops.forEach((stop,index)=>{
+        const row = document.createElement("div");
+        row.className = "stop" +
+            (index === selectedGradientStop ? " active" : "");
+
+        const preview = document.createElement("div");
+        preview.className = "stop-preview";
+        preview.style.background = stop.color;
+
+        const text = document.createElement("div");
+        text.textContent = "Стоп " + (index+1);
+
+        const pos = document.createElement("div");
+        pos.className = "stop-pos";
+        pos.textContent = Math.round(stop.pos*100) + "%";
+
+        row.appendChild(preview);
+        row.appendChild(text);
+        row.appendChild(pos);
+
+        row.addEventListener("click",()=>{
+            selectedGradientStop = index;
+            updateGradientUI();
+        });
+
+        box.appendChild(row);
+    });
+}
+
+function updateGradientUI(){
+    renderGradientStops();
+
+    const stop = gradientStops[selectedGradientStop];
+    if(!stop) return;
+
+    const pos = Math.round(stop.pos*100);
+
+    document.getElementById("stopPosition").value = pos;
+    document.getElementById("stopPositionValue").textContent =
+        pos + "%";
+
+    document.getElementById("stopColor").value = stop.color;
+}
+
+function setFillMode(mode){
+    fillMode = mode;
+
+    document.getElementById("solidModeBtn")
+        .classList.toggle("active",mode === "solid");
+
+    document.getElementById("gradientModeBtn")
+        .classList.toggle("active",mode === "gradient");
+
+    document.getElementById("gradientControls").style.display =
+        mode === "gradient" ? "block" : "none";
+
+    updateStatus();
+}
+
+document.getElementById("solidModeBtn").onclick =
+    ()=>setFillMode("solid");
+
+document.getElementById("gradientModeBtn").onclick =
+    ()=>setFillMode("gradient");
+
+document.getElementById("addStopBtn").onclick = ()=>{
+    saveState();
+
+    const a = gradientStops[0];
+    const b = gradientStops[gradientStops.length-1];
+
+    const newPos = gradientStops.length === 1
+        ? 0.5
+        : 0.5;
+
+    gradientStops.push({
+        pos:newPos,
+        color:a ? a.color : "#ffffff"
+    });
+
+    gradientStops = sortStops(gradientStops);
+    selectedGradientStop =
+        gradientStops.findIndex(s=>s.pos===newPos);
+
+    updateGradientUI();
+};
+
+document.getElementById("removeStopBtn").onclick = ()=>{
+    if(gradientStops.length <= 2) return;
+
+    saveState();
+
+    gradientStops.splice(selectedGradientStop,1);
+
+    selectedGradientStop =
+        clamp(selectedGradientStop,0,gradientStops.length-1);
+
+    updateGradientUI();
+};
+
+document.getElementById("stopPosition").oninput = e=>{
+    const stop = gradientStops[selectedGradientStop];
+    if(!stop) return;
+
+    stop.pos = Number(e.target.value)/100;
+
+    document.getElementById("stopPositionValue").textContent =
+        e.target.value + "%";
+
+    renderGradientStops();
+};
+
+document.getElementById("stopPosition").onchange = ()=>{
+    saveState();
+};
+
+document.getElementById("stopColor").oninput = e=>{
+    const stop = gradientStops[selectedGradientStop];
+    if(!stop) return;
+
+    stop.color = e.target.value;
+    renderGradientStops();
+};
+
+document.getElementById("stopColor").onchange = ()=>{
+    saveState();
+};
+
+document.getElementById("reverseGradientBtn").onclick = ()=>{
+    saveState();
+
+    gradientStops = gradientStops.map(s=>({
+        pos:1-s.pos,
+        color:s.color
+    }));
+
+    gradientStops = sortStops(gradientStops);
+
+    selectedGradientStop =
+        gradientStops.length-1-selectedGradientStop;
+
+    updateGradientUI();
+};
+
+/* ================= HISTORY ================= */
+
+function snapshot(){
+    return {
+        layers:rasterCanvases.map(c=>c.toDataURL("image/png")),
+        vectors:clone(allVectorLines),
+        gradientStops:clone(gradientStops),
+        fillMode,
+        currentLayer
+    };
+}
+
+function saveState(){
+    undoStack.push(snapshot());
+
+    if(undoStack.length > MAX_HISTORY){
         undoStack.shift();
     }
 
     redoStack.length = 0;
-
-    updateHistoryButtons();
 }
 
+async function restoreSnapshot(state){
+    for(let i=0;i<rasterCanvases.length;i++){
+        await loadImageToCanvas(
+            state.layers[i],
+            rasterCanvases[i]
+        );
+    }
 
-/* ---------------------------------------------------------
-   Restore complete state
-   --------------------------------------------------------- */
+    allVectorLines = clone(state.vectors || []);
 
-function restoreState(state) {
-
-    if (!state) return;
-
-    state.raster.forEach(
-        (imageData, index) => {
-
-            rasterContexts[index].putImageData(
-                imageData,
-                0,
-                0
-            );
-
-        }
+    gradientStops = clone(
+        state.gradientStops || [
+            {pos:0,color:"#1389a8"},
+            {pos:1,color:"#7cecf7"}
+        ]
     );
 
-    allVectorLines = JSON.parse(
-        JSON.stringify(state.vectors || [])
-    );
+    fillMode = state.fillMode || "solid";
 
-    activeVectorLine = null;
+    currentLayer =
+        clamp(
+            state.currentLayer ?? 0,
+            0,
+            rasterCanvases.length-1
+        );
 
-    selectedVectorPtIndex = -1;
-
-    clearPreview();
-
-    renderAllVectors();
-
-    updateVectorStatus();
+    setFillMode(fillMode);
+    updateGradientUI();
+    renderVectors();
+    renderLayers();
 }
 
+function loadImageToCanvas(data,canvas){
+    return new Promise(resolve=>{
+        const img = new Image();
 
-/* ---------------------------------------------------------
-   Undo
-   --------------------------------------------------------- */
+        img.onload = ()=>{
+            const ctx = canvas.getContext("2d");
 
-function undo() {
+            ctx.clearRect(0,0,WIDTH,HEIGHT);
+            ctx.drawImage(img,0,0);
 
-    if (undoStack.length === 0) return;
+            resolve();
+        };
 
-    const current = {
-        raster: rasterContexts.map(ctx =>
-            ctx.getImageData(
-                0,
-                0,
-                WIDTH,
-                HEIGHT
-            )
-        ),
-        vectors: cloneVectors()
-    };
+        img.src = data;
+    });
+}
+
+async function undo(){
+    if(!undoStack.length) return;
+
+    const current = snapshot();
 
     redoStack.push(current);
 
     const state = undoStack.pop();
 
-    restoreState(state);
-
-    updateHistoryButtons();
+    await restoreSnapshot(state);
 }
 
+async function redo(){
+    if(!redoStack.length) return;
 
-/* ---------------------------------------------------------
-   Redo
-   --------------------------------------------------------- */
-
-function redo() {
-
-    if (redoStack.length === 0) return;
-
-    const current = {
-        raster: rasterContexts.map(ctx =>
-            ctx.getImageData(
-                0,
-                0,
-                WIDTH,
-                HEIGHT
-            )
-        ),
-        vectors: cloneVectors()
-    };
+    const current = snapshot();
 
     undoStack.push(current);
 
     const state = redoStack.pop();
 
-    restoreState(state);
-
-    updateHistoryButtons();
+    await restoreSnapshot(state);
 }
 
+/* ================= TOOLS ================= */
 
-/* ---------------------------------------------------------
-   History buttons
-   --------------------------------------------------------- */
-
-function updateHistoryButtons() {
-
-    document.getElementById("undoBtn").disabled =
-        undoStack.length === 0;
-
-    document.getElementById("redoBtn").disabled =
-        redoStack.length === 0;
-}
-
-
-/* =========================================================
-   INITIAL CANVAS
-   ========================================================= */
-
-function initializeCanvas() {
-
-    rasterContexts.forEach(ctx => {
-
-        ctx.clearRect(
-            0,
-            0,
-            WIDTH,
-            HEIGHT
-        );
-
-    });
-
-    /*
-        Білий фон НЕ малюємо на шарі.
-
-        PNG export сам створить білий фон.
-    */
-
-    renderAllVectors();
-
-    updateLayerUI();
-
-    updateStatus();
-
-    updateVectorStatus();
-
-    updateZoomText();
-
-    fitCanvas();
-}
-
-
-/* =========================================================
-   TOOL SYSTEM
-   ========================================================= */
-
-function setTool(tool) {
-
+function setTool(tool){
     currentTool = tool;
 
-    document
-        .querySelectorAll(".tool")
-        .forEach(button => {
+    document.querySelectorAll("[data-tool]").forEach(btn=>{
+        btn.classList.toggle(
+            "active",
+            btn.dataset.tool === tool
+        );
+    });
 
-            button.classList.toggle(
-                "active",
-                button.dataset.tool === tool
-            );
-
-        });
-
-    clearPreview();
-
+    activeVectorLine = null;
     selectedVectorPtIndex = -1;
 
-    isDraggingVectorPoint = false;
+    clearPreview();
+    renderVectors();
 
     updateStatus();
-
-    updateVectorStatus();
-
-    updateCursor();
 }
 
+document.querySelectorAll("[data-tool]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+        setTool(btn.dataset.tool);
+    });
+});
 
-/* ---------------------------------------------------------
-   Cursor
-   --------------------------------------------------------- */
+/* ================= COORDINATES ================= */
 
-function updateCursor() {
-
-    if (spacePressed || currentTool === "pan") {
-
-        viewport.style.cursor =
-            isPanning ? "grabbing" : "grab";
-
-        return;
-    }
-
-    if (currentTool === "vector") {
-
-        viewport.style.cursor =
-            "crosshair";
-
-        return;
-    }
-
-    if (currentTool === "wand") {
-
-        viewport.style.cursor =
-            "copy";
-
-        return;
-    }
-
-    viewport.style.cursor =
-        "crosshair";
-}
-
-
-/* =========================================================
-   COORDINATES
-   ========================================================= */
-
-function getCanvasCoords(e) {
-
-    const rect =
-        container.getBoundingClientRect();
-
-    /*
-        rect уже враховує CSS scale.
-
-        Тому ділимо на фактичний масштаб
-        canvas-container.
-    */
-
-    const x =
-        (e.clientX - rect.left) /
-        scale;
-
-    const y =
-        (e.clientY - rect.top) /
-        scale;
+function getCanvasCoords(e){
+    const rect = canvasContainer.getBoundingClientRect();
 
     return {
-        x: Math.max(0, Math.min(WIDTH, x)),
-        y: Math.max(0, Math.min(HEIGHT, y))
+        x:clamp(
+            (e.clientX-rect.left)/zoom,
+            0,
+            WIDTH
+        ),
+        y:clamp(
+            (e.clientY-rect.top)/zoom,
+            0,
+            HEIGHT
+        )
     };
 }
 
+/* ================= TRANSFORM ================= */
 
-/* =========================================================
-   ZOOM
-   ========================================================= */
-
-function updateTransform() {
-
-    scale = Math.max(
-        MIN_SCALE,
-        Math.min(MAX_SCALE, scale)
-    );
-
-    /*
-        Не дозволяємо полотну повністю втекти.
-    */
-
-    const viewportWidth =
-        viewport.clientWidth;
-
-    const viewportHeight =
-        viewport.clientHeight;
-
-    const scaledWidth =
-        WIDTH * scale;
-
-    const scaledHeight =
-        HEIGHT * scale;
-
-    const extraX =
-        Math.max(
-            80,
-            (scaledWidth - viewportWidth) / 2 +
-            viewportWidth * 0.35
-        );
-
-    const extraY =
-        Math.max(
-            80,
-            (scaledHeight - viewportHeight) / 2 +
-            viewportHeight * 0.35
-        );
-
-    panX = Math.max(
-        -extraX,
-        Math.min(extraX, panX)
-    );
-
-    panY = Math.max(
-        -extraY,
-        Math.min(extraY, panY)
-    );
-
-    container.style.transform =
-        `translate(${panX}px, ${panY}px) scale(${scale})`;
-
-    updateZoomText();
-}
-
-
-/* ---------------------------------------------------------
-   Zoom around mouse
-   --------------------------------------------------------- */
-
-function zoomAt(clientX, clientY, factor) {
-
-    const oldScale = scale;
-
-    const newScale = Math.max(
-        MIN_SCALE,
-        Math.min(
-            MAX_SCALE,
-            oldScale * factor
-        )
-    );
-
-    if (newScale === oldScale) return;
-
-    const viewportRect =
-        viewport.getBoundingClientRect();
-
-    const centerX =
-        viewportRect.left +
-        viewportRect.width / 2;
-
-    const centerY =
-        viewportRect.top +
-        viewportRect.height / 2;
-
-    const mouseX =
-        clientX - centerX;
-
-    const mouseY =
-        clientY - centerY;
-
-    /*
-        Preserve point under cursor.
-    */
-
-    panX =
-        mouseX -
-        (mouseX - panX) *
-        (newScale / oldScale);
-
-    panY =
-        mouseY -
-        (mouseY - panY) *
-        (newScale / oldScale);
-
-    scale = newScale;
-
-    updateTransform();
-}
-
-
-/* ---------------------------------------------------------
-   Zoom text
-   --------------------------------------------------------- */
-
-function updateZoomText() {
+function updateTransform(){
+    canvasContainer.style.transform =
+        `translate(-50%,-50%) translate(${panX}px,${panY}px) scale(${zoom})`;
 
     document.getElementById("zoomValue").textContent =
-        Math.round(scale * 100) + "%";
+        Math.round(zoom*100)+"%";
+
+    document.getElementById("zoomStatus").textContent =
+        Math.round(zoom*100)+"%";
 }
 
+function getFitZoom(){
+    const r = viewport.getBoundingClientRect();
 
-/* ---------------------------------------------------------
-   Fit
-   --------------------------------------------------------- */
+    return Math.min(
+        (r.width-35)/WIDTH,
+        (r.height-35)/HEIGHT,
+        1
+    );
+}
 
-function fitCanvas() {
-
-    const w =
-        viewport.clientWidth;
-
-    const h =
-        viewport.clientHeight;
-
-    if (w <= 0 || h <= 0) return;
-
-    const padding = 45;
-
-    const sx =
-        (w - padding) / WIDTH;
-
-    const sy =
-        (h - padding) / HEIGHT;
-
-    scale =
-        Math.min(
-            sx,
-            sy,
-            1.5
-        );
-
-    scale =
-        Math.max(
-            MIN_SCALE,
-            Math.min(MAX_SCALE, scale)
-        );
-
+function fitCanvas(){
+    zoom = getFitZoom();
     panX = 0;
     panY = 0;
-
     updateTransform();
 }
 
-
-/* ---------------------------------------------------------
-   Center
-   --------------------------------------------------------- */
-
-function centerCanvas() {
-
+function centerCanvas(){
     panX = 0;
     panY = 0;
-
     updateTransform();
 }
 
-
-/* =========================================================
-   DRAWING
-   ========================================================= */
-
-function beginDrawing(x, y) {
-
-    const ctx =
-        rasterContexts[currentLayer];
-
-    ctx.save();
-
-    ctx.globalAlpha =
-        brushOpacity;
-
-    ctx.strokeStyle =
-        mainColor;
-
-    ctx.fillStyle =
-        mainColor;
-
-    ctx.lineWidth =
-        brushSize;
-
-    ctx.lineCap =
-        "round";
-
-    ctx.lineJoin =
-        "round";
-
-    ctx.beginPath();
-
-    ctx.moveTo(x, y);
-
-    ctx.lineTo(x + 0.01, y + 0.01);
-
-    ctx.stroke();
-
-    ctx.restore();
-
-    lastX = x;
-    lastY = y;
+function setZoom(value){
+    zoom = clamp(value,0.1,4);
+    updateTransform();
 }
 
-
-/* ---------------------------------------------------------
-   Continue pencil
-   --------------------------------------------------------- */
-
-function drawPencil(x, y) {
-
-    const ctx =
-        rasterContexts[currentLayer];
-
-    ctx.save();
-
-    ctx.globalAlpha =
-        brushOpacity;
-
-    ctx.strokeStyle =
-        mainColor;
-
-    ctx.lineWidth =
-        brushSize;
-
-    ctx.lineCap =
-        "round";
-
-    ctx.lineJoin =
-        "round";
-
-    ctx.beginPath();
-
-    ctx.moveTo(lastX, lastY);
-
-    ctx.lineTo(x, y);
-
-    ctx.stroke();
-
-    ctx.restore();
-
-    lastX = x;
-    lastY = y;
+function zoomAtCenter(amount){
+    setZoom(zoom*amount);
 }
 
+function constrainPan(){
+    const r = viewport.getBoundingClientRect();
 
-/* =========================================================
-   SHAPES
-   ========================================================= */
+    const halfW = WIDTH*zoom/2;
+    const halfH = HEIGHT*zoom/2;
 
-function drawShapePreview(x, y) {
+    const limitX = Math.max(0,(halfW-r.width/2)+100);
+    const limitY = Math.max(0,(halfH-r.height/2)+100);
 
+    panX = clamp(panX,-limitX,limitX);
+    panY = clamp(panY,-limitY,limitY);
+}
+
+/* ================= PREVIEW ================= */
+
+function clearPreview(){
+    previewCtx.clearRect(0,0,WIDTH,HEIGHT);
+}
+
+/* ================= PENCIL ================= */
+
+function beginPencil(p){
+    pointerDown = true;
+
+    saveState();
+
+    currentStroke = [p];
+    lastPoint = p;
+
+    drawPencilPreview();
+}
+
+function drawPencilPreview(){
     clearPreview();
 
-    if (!shapeStart) return;
+    if(currentStroke.length < 1) return;
 
     previewCtx.save();
 
-    previewCtx.globalAlpha =
-        brushOpacity;
+    previewCtx.lineCap = "round";
+    previewCtx.lineJoin = "round";
+    previewCtx.globalAlpha = brushOpacity;
 
-    previewCtx.strokeStyle =
-        mainColor;
+    if(fillMode === "gradient" &&
+       currentStroke.length >= 2){
 
-    previewCtx.lineWidth =
-        brushSize;
+        const a = currentStroke[0];
+        const b = currentStroke[currentStroke.length-1];
 
-    previewCtx.lineCap =
-        "round";
+        previewCtx.strokeStyle =
+            createGradient(
+                previewCtx,
+                a.x,a.y,b.x,b.y
+            );
 
-    previewCtx.lineJoin =
-        "round";
-
-    const sx = shapeStart.x;
-    const sy = shapeStart.y;
-
-    if (currentTool === "line") {
-
-        previewCtx.beginPath();
-
-        previewCtx.moveTo(sx, sy);
-
-        previewCtx.lineTo(x, y);
-
-        previewCtx.stroke();
-
+    }else{
+        previewCtx.strokeStyle = mainColor;
     }
 
-    else if (currentTool === "rect") {
+    previewCtx.lineWidth = brushSize;
 
-        previewCtx.strokeRect(
-            sx,
-            sy,
-            x - sx,
-            y - sy
+    previewCtx.beginPath();
+
+    previewCtx.moveTo(
+        currentStroke[0].x,
+        currentStroke[0].y
+    );
+
+    for(let i=1;i<currentStroke.length;i++){
+        previewCtx.lineTo(
+            currentStroke[i].x,
+            currentStroke[i].y
         );
-
     }
 
-    else if (currentTool === "circle") {
-
-        const dx = x - sx;
-        const dy = y - sy;
-
-        const radius =
-            Math.sqrt(dx * dx + dy * dy);
-
-        previewCtx.beginPath();
-
-        previewCtx.arc(
-            sx,
-            sy,
-            radius,
-            0,
-            Math.PI * 2
-        );
-
-        previewCtx.stroke();
-
-    }
+    previewCtx.stroke();
 
     previewCtx.restore();
 }
 
+function commitPencil(){
+    if(currentStroke.length === 0) return;
 
-/* ---------------------------------------------------------
-   Commit shape
-   --------------------------------------------------------- */
-
-function commitShape(x, y) {
-
-    if (!shapeStart) return;
-
-    saveState();
-
-    const ctx =
-        rasterContexts[currentLayer];
+    const ctx = rasterCtx[currentLayer];
 
     ctx.save();
 
-    ctx.globalAlpha =
-        brushOpacity;
+    ctx.globalCompositeOperation = "source-over";
+    ctx.globalAlpha = brushOpacity;
 
-    ctx.strokeStyle =
-        mainColor;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = brushSize;
 
-    ctx.lineWidth =
-        brushSize;
+    if(fillMode === "gradient" &&
+       currentStroke.length >= 2){
 
-    ctx.lineCap =
-        "round";
+        const a = currentStroke[0];
+        const b = currentStroke[currentStroke.length-1];
 
-    ctx.lineJoin =
-        "round";
+        ctx.strokeStyle =
+            createGradient(ctx,a.x,a.y,b.x,b.y);
 
-    const sx = shapeStart.x;
-    const sy = shapeStart.y;
-
-    if (currentTool === "line") {
-
-        ctx.beginPath();
-
-        ctx.moveTo(sx, sy);
-
-        ctx.lineTo(x, y);
-
-        ctx.stroke();
-
+    }else{
+        ctx.strokeStyle = mainColor;
     }
 
-    else if (currentTool === "rect") {
+    ctx.beginPath();
 
-        ctx.strokeRect(
-            sx,
-            sy,
-            x - sx,
-            y - sy
-        );
-
-    }
-
-    else if (currentTool === "circle") {
-
-        const dx = x - sx;
-        const dy = y - sy;
-
-        const radius =
-            Math.sqrt(dx * dx + dy * dy);
-
-        ctx.beginPath();
-
+    if(currentStroke.length === 1){
         ctx.arc(
-            sx,
-            sy,
-            radius,
+            currentStroke[0].x,
+            currentStroke[0].y,
+            brushSize/2,
             0,
-            Math.PI * 2
+            Math.PI*2
+        );
+        ctx.fillStyle =
+            fillMode === "solid"
+                ? mainColor
+                : createGradient(
+                    ctx,
+                    currentStroke[0].x,
+                    currentStroke[0].y,
+                    currentStroke[0].x+1,
+                    currentStroke[0].y+1
+                );
+        ctx.fill();
+    }else{
+        ctx.moveTo(
+            currentStroke[0].x,
+            currentStroke[0].y
         );
 
-        ctx.stroke();
+        for(let i=1;i<currentStroke.length;i++){
+            ctx.lineTo(
+                currentStroke[i].x,
+                currentStroke[i].y
+            );
+        }
 
+        ctx.stroke();
     }
 
     ctx.restore();
 
+    currentStroke = [];
+    clearPreview();
+}
+
+function beginEraser(p){
+    pointerDown = true;
+
+    saveState();
+
+    eraseAt(p);
+    lastPoint = p;
+}
+
+function eraseAt(p){
+    const ctx = rasterCtx[currentLayer];
+
+    ctx.save();
+
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.globalAlpha = 1;
+
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = brushSize;
+
+    ctx.beginPath();
+
+    if(lastPoint){
+        ctx.moveTo(lastPoint.x,lastPoint.y);
+    }else{
+        ctx.moveTo(p.x,p.y);
+    }
+
+    ctx.lineTo(p.x,p.y);
+    ctx.stroke();
+
+    ctx.restore();
+
+    lastPoint = p;
+}
+
+/* ================= SHAPES ================= */
+
+function beginShape(p){
+    pointerDown = true;
+    startPoint = p;
+    shapeStart = p;
+    shapeEnd = p;
+
+    saveState();
+
+    drawShapePreview();
+}
+
+function drawShapePreview(){
+    clearPreview();
+
+    if(!shapeStart || !shapeEnd) return;
+
+    drawShape(
+        previewCtx,
+        currentTool,
+        shapeStart,
+        shapeEnd,
+        true
+    );
+}
+
+function drawShape(ctx,tool,a,b,preview=false){
+    ctx.save();
+
+    ctx.globalAlpha = brushOpacity;
+    ctx.lineWidth = brushSize;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    const x = Math.min(a.x,b.x);
+    const y = Math.min(a.y,b.y);
+    const w = Math.abs(b.x-a.x);
+    const h = Math.abs(b.y-a.y);
+
+    let gx1 = x;
+    let gy1 = y;
+    let gx2 = x+w;
+    let gy2 = y+h;
+
+    if(tool === "line"){
+        gx1 = a.x;
+        gy1 = a.y;
+        gx2 = b.x;
+        gy2 = b.y;
+    }
+
+    const style =
+        fillMode === "gradient"
+            ? createGradient(
+                ctx,
+                gx1,gy1,gx2,gy2
+            )
+            : mainColor;
+
+    ctx.strokeStyle = style;
+    ctx.fillStyle = style;
+
+    if(tool === "line"){
+        ctx.beginPath();
+        ctx.moveTo(a.x,a.y);
+        ctx.lineTo(b.x,b.y);
+        ctx.stroke();
+    }
+
+    else if(tool === "rect"){
+        ctx.beginPath();
+        ctx.rect(x,y,w,h);
+        ctx.stroke();
+    }
+
+    else if(tool === "circle"){
+        const cx = (a.x+b.x)/2;
+        const cy = (a.y+b.y)/2;
+
+        const rx = w/2;
+        const ry = h/2;
+
+        ctx.beginPath();
+        ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);
+        ctx.stroke();
+    }
+
+    ctx.restore();
+}
+
+function commitShape(){
+    if(!shapeStart || !shapeEnd) return;
+
+    drawShape(
+        rasterCtx[currentLayer],
+        currentTool,
+        shapeStart,
+        shapeEnd,
+        false
+    );
+
     shapeStart = null;
+    shapeEnd = null;
 
     clearPreview();
 }
 
+/* ================= VECTOR ================= */
 
-/* =========================================================
-   VECTOR MATH
-   ========================================================= */
+function beginVector(p){
+    pointerDown = true;
 
-/*
-    Catmull-Rom interpolation.
-
-    Це робить вектор "еластичним":
-    лінія проходить через вузли, але між ними
-    плавно вигинається.
-*/
-
-function catmullRom(
-    p0,
-    p1,
-    p2,
-    p3,
-    t
-) {
-
-    const t2 = t * t;
-
-    const t3 = t2 * t;
-
-    return {
-
-        x:
-            0.5 *
-            (
-                2 * p1.x +
-                (-p0.x + p2.x) * t +
-                (2*p0.x - 5*p1.x + 4*p2.x - p3.x) * t2 +
-                (-p0.x + 3*p1.x - 3*p2.x + p3.x) * t3
-            ),
-
-        y:
-            0.5 *
-            (
-                2 * p1.y +
-                (-p0.y + p2.y) * t +
-                (2*p0.y - 5*p1.y + 4*p2.y - p3.y) * t2 +
-                (-p0.y + 3*p1.y - 3*p2.y + p3.y) * t3
-            )
-
+    activeVectorLine = {
+        id:nextVectorId++,
+        points:[p],
+        color:mainColor,
+        opacity:brushOpacity,
+        width:brushSize,
+        smoothness,
+        elasticity,
+        fillMode,
+        gradientStops:clone(gradientStops)
     };
+
+    selectedVectorId = null;
+
+    drawVectorPreview();
 }
 
+function addVectorPoint(p){
+    if(!activeVectorLine) return;
 
-/* ---------------------------------------------------------
-   Build smooth points
-   --------------------------------------------------------- */
+    const pts = activeVectorLine.points;
 
-function getSmoothPoints(points) {
+    if(
+        pts.length === 0 ||
+        distance(pts[pts.length-1],p) > 2
+    ){
+        pts.push(p);
+    }
 
-    if (!points || points.length < 2) {
+    drawVectorPreview();
+}
 
-        return points || [];
-
+function catmullRom(points,amount=0.65){
+    if(points.length < 3){
+        return points.slice();
     }
 
     const result = [];
 
     const tension =
-        elasticity;
+        clamp(amount,0,1);
 
-    /*
-        Чим більша elasticity,
-        тим сильніше крива реагує на сусідні вузли.
-    */
+    for(let i=0;i<points.length-1;i++){
 
-    const step =
-        1 /
-        Math.max(
-            3,
-            smoothness
-        );
+        const p0 = points[Math.max(0,i-1)];
+        const p1 = points[i];
+        const p2 = points[i+1];
+        const p3 = points[Math.min(points.length-1,i+2)];
 
-    for (
-        let i = 0;
-        i < points.length - 1;
-        i++
-    ) {
+        const steps = 8;
 
-        const p0 =
-            points[
-                Math.max(0, i - 1)
-            ];
+        for(let j=0;j<steps;j++){
 
-        const p1 =
-            points[i];
+            const t = j/steps;
+            const t2 = t*t;
+            const t3 = t2*t;
 
-        const p2 =
-            points[i + 1];
-
-        const p3 =
-            points[
-                Math.min(
-                    points.length - 1,
-                    i + 2
-                )
-            ];
-
-        /*
-            Безпосередня інтерполяція з
-            керованою "пружністю".
-        */
-
-        for (
-            let t = 0;
-            t < 1;
-            t += step
-        ) {
-
-            const c =
-                catmullRom(
-                    p0,
-                    p1,
-                    p2,
-                    p3,
-                    t
+            const baseX =
+                0.5 * (
+                    2*p1.x +
+                    (-p0.x+p2.x)*t +
+                    (2*p0.x-5*p1.x+4*p2.x-p3.x)*t2 +
+                    (-p0.x+3*p1.x-3*p2.x+p3.x)*t3
                 );
 
-            /*
-                Змішуємо із прямою,
-                щоб elasticity = 0 не давав
-                занадто агресивну криву.
-            */
+            const baseY =
+                0.5 * (
+                    2*p1.y +
+                    (-p0.y+p2.y)*t +
+                    (2*p0.y-5*p1.y+4*p2.y-p3.y)*t2 +
+                    (-p0.y+3*p1.y-3*p2.y+p3.y)*t3
+                );
 
-            const linear = {
-                x:
-                    p1.x +
-                    (p2.x - p1.x) * t,
+            const linearX =
+                p1.x+(p2.x-p1.x)*t;
 
-                y:
-                    p1.y +
-                    (p2.y - p1.y) * t
-            };
+            const linearY =
+                p1.y+(p2.y-p1.y)*t;
 
             result.push({
-
-                x:
-                    linear.x +
-                    (c.x - linear.x) *
-                    tension,
-
-                y:
-                    linear.y +
-                    (c.y - linear.y) *
-                    tension,
-
-                w:
-                    p1.w +
-                    (p2.w - p1.w) * t
-
+                x:linearX+(baseX-linearX)*tension,
+                y:linearY+(baseY-linearY)*tension
             });
-
         }
-
     }
 
-    result.push(
-        points[points.length - 1]
-    );
+    result.push(points[points.length-1]);
 
     return result;
 }
 
-
-/* =========================================================
-   DRAW SMOOTH VECTOR
-   ========================================================= */
-
-function drawSmoothVector(
-    ctx,
-    points,
-    color,
-    opacity
-) {
-
-    if (!points || points.length === 0) {
-        return;
-    }
+function drawVectorPath(ctx,line,points){
+    if(!points || points.length < 2) return;
 
     ctx.save();
 
-    ctx.globalAlpha =
-        opacity;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = line.width;
+    ctx.globalAlpha = line.opacity;
 
-    ctx.strokeStyle =
-        color;
+    if(line.fillMode === "gradient"){
 
-    ctx.lineCap =
-        "round";
+        const a = points[0];
+        const b = points[points.length-1];
 
-    ctx.lineJoin =
-        "round";
-
-    /*
-        Один вузол = маленька точка.
-    */
-
-    if (points.length === 1) {
-
-        ctx.fillStyle = color;
-
-        ctx.beginPath();
-
-        ctx.arc(
-            points[0].x,
-            points[0].y,
-            Math.max(
-                2,
-                points[0].w / 2
-            ),
-            0,
-            Math.PI * 2
-        );
-
-        ctx.fill();
-
-        ctx.restore();
-
-        return;
-    }
-
-    const smooth =
-        getSmoothPoints(points);
-
-    if (smooth.length === 0) {
-
-        ctx.restore();
-
-        return;
-    }
-
-    /*
-        Для змінної товщини малюємо маленькими
-        сегментами.
-    */
-
-    for (
-        let i = 0;
-        i < smooth.length - 1;
-        i++
-    ) {
-
-        const a = smooth[i];
-        const b = smooth[i + 1];
-
-        const width =
-            Math.max(
-                1,
-                (a.w + b.w) / 2
+        ctx.strokeStyle =
+            createGradient(
+                ctx,
+                a.x,a.y,b.x,b.y,
+                line.gradientStops
             );
 
-        ctx.lineWidth =
-            width;
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            a.x,
-            a.y
-        );
-
-        ctx.lineTo(
-            b.x,
-            b.y
-        );
-
-        ctx.stroke();
-
+    }else{
+        ctx.strokeStyle = line.color;
     }
+
+    ctx.beginPath();
+
+    ctx.moveTo(points[0].x,points[0].y);
+
+    for(let i=1;i<points.length;i++){
+        ctx.lineTo(points[i].x,points[i].y);
+    }
+
+    ctx.stroke();
 
     ctx.restore();
 }
 
+function drawVectorLine(ctx,line,showNodes=false){
+    if(!line || line.points.length < 2) return;
 
-/* =========================================================
-   PERSISTENT VECTOR RENDER
-   ========================================================= */
-
-/*
-    КРИТИЧНО:
-
-    Ця функція НЕ чіпає raster layers.
-
-    Вона очищає ТІЛЬКИ vector-canvas.
-*/
-
-function renderAllVectors(
-    excludeLine = null
-) {
-
-    vectorCtx.clearRect(
-        0,
-        0,
-        WIDTH,
-        HEIGHT
-    );
-
-    for (const line of allVectorLines) {
-
-        if (line === excludeLine) {
-            continue;
-        }
-
-        if (
-            !line.points ||
-            line.points.length < 1
-        ) {
-            continue;
-        }
-
-        drawSmoothVector(
-            vectorCtx,
-            line.points,
-            line.color,
-            line.opacity
-        );
-
-    }
-}
-
-
-/* =========================================================
-   VECTOR PREVIEW
-   ========================================================= */
-
-function drawVectorPreview() {
-
-    /*
-        Всі завершені вектори залишаються
-        на vector-canvas.
-
-        Поточний вектор НЕ малюємо там,
-        щоб уникнути подвійної товщини.
-    */
-
-    renderAllVectors(
-        activeVectorLine
-    );
-
-    clearPreview();
-
-    if (
-        !activeVectorLine ||
-        activeVectorLine.points.length === 0
-    ) {
-
-        return;
-    }
-
-    /*
-        Поточна еластична лінія.
-    */
-
-    drawSmoothVector(
-        previewCtx,
-        activeVectorLine.points,
-        activeVectorLine.color,
-        activeVectorLine.opacity
-    );
-
-
-    /*
-        Вузли.
-    */
-
-    previewCtx.save();
-
-    for (
-        let i = 0;
-        i < activeVectorLine.points.length;
-        i++
-    ) {
-
-        const point =
-            activeVectorLine.points[i];
-
-        const selected =
-            i === selectedVectorPtIndex;
-
-        previewCtx.beginPath();
-
-        previewCtx.arc(
-            point.x,
-            point.y,
-            selected ? 7 : 5,
+    const amount =
+        clamp(
+            (line.smoothness ?? 65)/100,
             0,
-            Math.PI * 2
-        );
-
-        previewCtx.fillStyle =
-            selected
-                ? "#ffffff"
-                : "rgba(255,255,255,.9)";
-
-        previewCtx.fill();
-
-        previewCtx.lineWidth = 2;
-
-        previewCtx.strokeStyle =
-            selected
-                ? "#ff8a2a"
-                : "#159bc5";
-
-        previewCtx.stroke();
-
-    }
-
-    previewCtx.restore();
-}
-
-
-/* =========================================================
-   VECTOR NODE HIT TEST
-   ========================================================= */
-
-function findVectorPoint(
-    x,
-    y
-) {
-
-    if (!activeVectorLine) {
-        return -1;
-    }
-
-    const hitRadius =
-        Math.max(
-            10 / scale,
-            12
-        );
-
-    for (
-        let i =
-            activeVectorLine.points.length - 1;
-        i >= 0;
-        i--
-    ) {
-
-        const p =
-            activeVectorLine.points[i];
-
-        const dx =
-            x - p.x;
-
-        const dy =
-            y - p.y;
-
-        if (
-            dx * dx +
-            dy * dy <=
-            hitRadius * hitRadius
-        ) {
-
-            return i;
-
-        }
-
-    }
-
-    return -1;
-}
-
-
-/* =========================================================
-   START VECTOR
-   ========================================================= */
-
-function startVector(x, y) {
-
-    /*
-        Якщо є поточний вектор,
-        спочатку перевіряємо вузол.
-    */
-
-    if (activeVectorLine) {
-
-        const hit =
-            findVectorPoint(x, y);
-
-        if (hit !== -1) {
-
-            selectedVectorPtIndex =
-                hit;
-
-            isDraggingVectorPoint =
-                true;
-
-            drawVectorPreview();
-
-            updateVectorStatus();
-
-            return;
-
-        }
-    }
-
-
-    /*
-        Якщо активного вектора немає —
-        створюємо новий.
-    */
-
-    if (!activeVectorLine) {
-
-        activeVectorLine = {
-
-            id: nextVectorId++,
-
-            layer: currentLayer,
-
-            points: [],
-
-            color: mainColor,
-
-            opacity: brushOpacity
-
-        };
-
-        allVectorLines.push(
-            activeVectorLine
-        );
-
-    }
-
-
-    /*
-        Додаємо вузол.
-    */
-
-    activeVectorLine.points.push({
-
-        x,
-        y,
-        w: brushSize
-
-    });
-
-    selectedVectorPtIndex =
-        activeVectorLine.points.length - 1;
-
-    drawVectorPreview();
-
-    updateVectorStatus();
-}
-
-
-/* =========================================================
-   DRAG VECTOR NODE
-   ========================================================= */
-
-function moveVectorPoint(x, y) {
-
-    if (
-        !activeVectorLine ||
-        selectedVectorPtIndex < 0
-    ) {
-
-        return;
-    }
-
-    const point =
-        activeVectorLine.points[
-            selectedVectorPtIndex
-        ];
-
-    point.x =
-        Math.max(
-            0,
-            Math.min(WIDTH, x)
-        );
-
-    point.y =
-        Math.max(
-            0,
-            Math.min(HEIGHT, y)
-        );
-
-    drawVectorPreview();
-}
-
-
-/* =========================================================
-   FINISH VECTOR
-   ========================================================= */
-
-function finishVectorPath() {
-
-    if (!activeVectorLine) {
-
-        clearPreview();
-
-        renderAllVectors();
-
-        updateVectorStatus();
-
-        return;
-    }
-
-
-    /*
-        Якщо тільки один вузол —
-        це не повноцінна лінія.
-    */
-
-    if (
-        activeVectorLine.points.length < 2
-    ) {
-
-        const index =
-            allVectorLines.indexOf(
-                activeVectorLine
-            );
-
-        if (index !== -1) {
-
-            allVectorLines.splice(
-                index,
-                1
-            );
-
-        }
-
-        activeVectorLine = null;
-
-        selectedVectorPtIndex = -1;
-
-        clearPreview();
-
-        renderAllVectors();
-
-        updateVectorStatus();
-
-        return;
-    }
-
-
-    /*
-        Вектор уже існує в allVectorLines.
-
-        Перед завершенням зберігаємо
-        поточний повний стан.
-    */
-
-    saveState();
-
-    activeVectorLine = null;
-
-    selectedVectorPtIndex = -1;
-
-    isDraggingVectorPoint = false;
-
-    clearPreview();
-
-    renderAllVectors();
-
-    updateVectorStatus();
-
-    updateStatus();
-}
-
-
-/* =========================================================
-   DELETE ACTIVE VECTOR
-   ========================================================= */
-
-function deleteActiveVector() {
-
-    if (!activeVectorLine) {
-        return;
-    }
-
-    saveState();
-
-    const index =
-        allVectorLines.indexOf(
-            activeVectorLine
-        );
-
-    if (index !== -1) {
-
-        allVectorLines.splice(
-            index,
             1
         );
 
-    }
+    const smooth =
+        catmullRom(line.points,amount);
 
-    activeVectorLine = null;
+    drawVectorPath(ctx,line,smooth);
 
-    selectedVectorPtIndex = -1;
+    if(showNodes){
+        ctx.save();
 
-    isDraggingVectorPoint = false;
+        line.points.forEach((p,i)=>{
+            ctx.beginPath();
 
-    clearPreview();
-
-    renderAllVectors();
-
-    updateVectorStatus();
-}
-
-
-/* =========================================================
-   PREVIEW CLEAR
-   ========================================================= */
-
-function clearPreview() {
-
-    previewCtx.clearRect(
-        0,
-        0,
-        WIDTH,
-        HEIGHT
-    );
-}
-
-
-/* =========================================================
-   POINTER DOWN
-   ========================================================= */
-
-viewport.addEventListener(
-    "pointerdown",
-    function(e) {
-
-        /*
-            Ліва кнопка миші,
-            або pen/touch.
-        */
-
-        if (
-            e.pointerType === "mouse" &&
-            e.button !== 0
-        ) {
-
-            return;
-
-        }
-
-        e.preventDefault();
-
-        activePointerId =
-            e.pointerId;
-
-        try {
-
-            viewport.setPointerCapture(
-                e.pointerId
+            ctx.arc(
+                p.x,
+                p.y,
+                i === selectedVectorPtIndex ? 7 : 5,
+                0,
+                Math.PI*2
             );
 
-        } catch (_) {}
-
-
-        /*
-            SPACE або Pan tool
-        */
-
-        if (
-            spacePressed ||
-            currentTool === "pan"
-        ) {
-
-            isPanning = true;
-
-            panStartX =
-                e.clientX;
-
-            panStartY =
-                e.clientY;
-
-            originalPanX =
-                panX;
-
-            originalPanY =
-                panY;
-
-            updateCursor();
-
-            return;
-
-        }
-
-
-        const pos =
-            getCanvasCoords(e);
-
-
-        /*
-            VECTOR
-        */
-
-        if (currentTool === "vector") {
-
-            startVector(
-                pos.x,
-                pos.y
-            );
-
-            return;
-        }
-
-
-        /*
-            PENCIL
-        */
-
-        if (currentTool === "pencil") {
-
-            saveState();
-
-            isDrawing = true;
-
-            beginDrawing(
-                pos.x,
-                pos.y
-            );
-
-            return;
-        }
-
-
-        /*
-            SHAPES
-        */
-
-        if (
-            currentTool === "line" ||
-            currentTool === "rect" ||
-            currentTool === "circle"
-        ) {
-
-            shapeStart = {
-                x: pos.x,
-                y: pos.y
-            };
-
-            return;
-        }
-
-
-        /*
-            EYEDROPPER
-        */
-
-        if (currentTool === "wand") {
-
-            pickColor(
-                pos.x,
-                pos.y
-            );
-
-            return;
-        }
-
-    },
-    {
-        passive: false
-    }
-);
-
-
-/* =========================================================
-   POINTER MOVE
-   ========================================================= */
-
-viewport.addEventListener(
-    "pointermove",
-    function(e) {
-
-        if (
-            activePointerId !== null &&
-            e.pointerId !== activePointerId
-        ) {
-
-            return;
-        }
-
-        const pos =
-            getCanvasCoords(e);
-
-        updateCursorPosition(
-            pos.x,
-            pos.y
-        );
-
-
-        /*
-            PAN
-        */
-
-        if (isPanning) {
-
-            panX =
-                originalPanX +
-                (e.clientX - panStartX);
-
-            panY =
-                originalPanY +
-                (e.clientY - panStartY);
-
-            updateTransform();
-
-            return;
-        }
-
-
-        /*
-            VECTOR NODE DRAG
-        */
-
-        if (
-            currentTool === "vector" &&
-            isDraggingVectorPoint
-        ) {
-
-            moveVectorPoint(
-                pos.x,
-                pos.y
-            );
-
-            return;
-        }
-
-
-        /*
-            PENCIL
-        */
-
-        if (
-            currentTool === "pencil" &&
-            isDrawing
-        ) {
-
-            drawPencil(
-                pos.x,
-                pos.y
-            );
-
-            return;
-        }
-
-
-        /*
-            SHAPE PREVIEW
-        */
-
-        if (
-            (
-                currentTool === "line" ||
-                currentTool === "rect" ||
-                currentTool === "circle"
-            ) &&
-            shapeStart
-        ) {
-
-            drawShapePreview(
-                pos.x,
-                pos.y
-            );
-
-        }
-
-    },
-    {
-        passive: false
-    }
-);
-
-
-/* =========================================================
-   POINTER UP
-   ========================================================= */
-
-viewport.addEventListener(
-    "pointerup",
-    function(e) {
-
-        if (
-            activePointerId !== null &&
-            e.pointerId !== activePointerId
-        ) {
-
-            return;
-        }
-
-        e.preventDefault();
-
-
-        /*
-            PAN
-        */
-
-        if (isPanning) {
-
-            isPanning = false;
-
-            updateCursor();
-
-            releasePointer(e);
-
-            return;
-        }
-
-
-        /*
-            VECTOR
-        */
-
-        if (
-            currentTool === "vector" &&
-            isDraggingVectorPoint
-        ) {
-
-            isDraggingVectorPoint =
-                false;
-
-            /*
-                Після переміщення вузла
-                стан уже змінено.
-
-                Створюємо history snapshot.
-            */
-
-            if (activeVectorLine) {
-
-                saveState();
-
-            }
-
-            drawVectorPreview();
-
-            releasePointer(e);
-
-            return;
-        }
-
-
-        /*
-            PENCIL
-        */
-
-        if (
-            currentTool === "pencil" &&
-            isDrawing
-        ) {
-
-            isDrawing = false;
-
-            releasePointer(e);
-
-            return;
-        }
-
-
-        /*
-            SHAPE
-        */
-
-        if (
-            (
-                currentTool === "line" ||
-                currentTool === "rect" ||
-                currentTool === "circle"
-            ) &&
-            shapeStart
-        ) {
-
-            const pos =
-                getCanvasCoords(e);
-
-            commitShape(
-                pos.x,
-                pos.y
-            );
-
-            releasePointer(e);
-
-            return;
-        }
-
-
-        releasePointer(e);
-
-    },
-    {
-        passive: false
-    }
-);
-
-
-/* ---------------------------------------------------------
-   Pointer cancel
-   --------------------------------------------------------- */
-
-viewport.addEventListener(
-    "pointercancel",
-    function(e) {
-
-        isDrawing = false;
-
-        isPanning = false;
-
-        isDraggingVectorPoint = false;
-
-        shapeStart = null;
-
-        clearPreview();
-
-        updateCursor();
-
-        releasePointer(e);
-
-    }
-);
-
-
-/* ---------------------------------------------------------
-   Release helper
-   --------------------------------------------------------- */
-
-function releasePointer(e) {
-
-    try {
-
-        if (
-            viewport.hasPointerCapture(
-                e.pointerId
-            )
-        ) {
-
-            viewport.releasePointerCapture(
-                e.pointerId
-            );
-
-        }
-
-    } catch (_) {}
-
-    activePointerId = null;
-}
-
-
-/* =========================================================
-   MOUSE WHEEL ZOOM
-   ========================================================= */
-
-viewport.addEventListener(
-    "wheel",
-    function(e) {
-
-        e.preventDefault();
-
-        const factor =
-            e.deltaY < 0
-                ? 1.1
-                : 1 / 1.1;
-
-        zoomAt(
-            e.clientX,
-            e.clientY,
-            factor
-        );
-
-    },
-    {
-        passive: false
-    }
-);
-
-
-/* =========================================================
-   COLOR PICKER
-   ========================================================= */
-
-function pickColor(x, y) {
-
-    /*
-        Векторний canvas + preview не беремо,
-        тому що піпетка має брати саме raster.
-    */
-
-    const temp =
-        document.createElement("canvas");
-
-    temp.width = WIDTH;
-    temp.height = HEIGHT;
-
-    const ctx =
-        temp.getContext("2d");
-
-    /*
-        Малюємо шари знизу вгору.
-    */
-
-    for (let i = 0; i < rasterCanvases.length; i++) {
-
-        ctx.drawImage(
-            rasterCanvases[i],
-            0,
-            0
-        );
-
-    }
-
-    const pixel =
-        ctx.getImageData(
-            Math.floor(x),
-            Math.floor(y),
-            1,
-            1
-        ).data;
-
-    if (pixel[3] === 0) {
-        return;
-    }
-
-    const hex =
-        "#" +
-        [pixel[0], pixel[1], pixel[2]]
-            .map(v =>
-                v.toString(16).padStart(2,"0")
-            )
-            .join("");
-
-    mainColor = hex;
-
-    document.getElementById(
-        "colorPicker"
-    ).value = hex;
-
-    updateStatus();
-
-    /*
-        Після піпетки повертаємося
-        до олівця.
-    */
-
-    setTool("pencil");
-}
-
-
-/* =========================================================
-   LAYERS
-   ========================================================= */
-
-function updateLayerUI() {
-
-    document
-        .querySelectorAll(".layer-row")
-        .forEach(row => {
-
-            row.classList.toggle(
-                "active",
-                Number(row.dataset.layer) === currentLayer
-            );
-
+            ctx.fillStyle =
+                i === selectedVectorPtIndex
+                    ? "#ffdf4f"
+                    : "#ffffff";
+
+            ctx.fill();
+
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#087a94";
+            ctx.stroke();
         });
 
+        ctx.restore();
+    }
 }
 
+function renderVectors(){
+    vectorCtx.clearRect(0,0,WIDTH,HEIGHT);
 
-/* ---------------------------------------------------------
-   Select layer
-   --------------------------------------------------------- */
-
-document
-    .getElementById("layersList")
-    .addEventListener(
-        "click",
-        function(e) {
-
-            const row =
-                e.target.closest(".layer-row");
-
-            if (!row) return;
-
-            /*
-                Eye button має окрему поведінку.
-            */
-
-            if (
-                e.target.closest(".eye")
-            ) {
-
-                const index =
-                    Number(
-                        e.target.closest(".eye")
-                            .dataset.eye
-                    );
-
-                rasterCanvases[index].style.display =
-                    rasterCanvases[index].style.display === "none"
-                        ? "block"
-                        : "none";
-
-                e.target.closest(".eye").textContent =
-                    rasterCanvases[index].style.display === "none"
-                        ? "○"
-                        : "●";
-
-                return;
-            }
-
-            currentLayer =
-                Number(row.dataset.layer);
-
-            updateLayerUI();
-
-            updateStatus();
-
-            updateVectorStatus();
-
-        }
-    );
-
-
-/* =========================================================
-   TOOL BUTTONS
-   ========================================================= */
-
-document
-    .querySelectorAll(".tool")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                setTool(
-                    button.dataset.tool
-                );
-
-            }
+    allVectorLines.forEach(line=>{
+        drawVectorLine(
+            vectorCtx,
+            line,
+            line.id === selectedVectorId
         );
-
     });
-
-
-/* =========================================================
-   BRUSH CONTROLS
-   ========================================================= */
-
-document
-    .getElementById("sizeRange")
-    .addEventListener(
-        "input",
-        function() {
-
-            brushSize =
-                Number(this.value);
-
-            document.getElementById(
-                "sizeValue"
-            ).textContent =
-                brushSize + " px";
-
-            updateStatus();
-
-        }
-    );
-
-
-document
-    .getElementById("opacityRange")
-    .addEventListener(
-        "input",
-        function() {
-
-            brushOpacity =
-                Number(this.value) / 100;
-
-            document.getElementById(
-                "opacityValue"
-            ).textContent =
-                this.value + "%";
-
-            updateStatus();
-
-        }
-    );
-
-
-document
-    .getElementById("colorPicker")
-    .addEventListener(
-        "input",
-        function() {
-
-            mainColor =
-                this.value;
-
-            updateStatus();
-
-        }
-    );
-
-
-/* ---------------------------------------------------------
-   Swatches
-   --------------------------------------------------------- */
-
-document
-    .querySelectorAll(".swatch")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            function() {
-
-                mainColor =
-                    this.dataset.color;
-
-                document.getElementById(
-                    "colorPicker"
-                ).value =
-                    mainColor;
-
-                updateStatus();
-
-            }
-        );
-
-    });
-
-
-/* =========================================================
-   VECTOR SETTINGS
-   ========================================================= */
-
-document
-    .getElementById("smoothRange")
-    .addEventListener(
-        "input",
-        function() {
-
-            smoothness =
-                Number(this.value);
-
-            document.getElementById(
-                "smoothValue"
-            ).textContent =
-                smoothness;
-
-            if (activeVectorLine) {
-                drawVectorPreview();
-            }
-
-        }
-    );
-
-
-document
-    .getElementById("elasticRange")
-    .addEventListener(
-        "input",
-        function() {
-
-            elasticity =
-                Number(this.value) / 100;
-
-            document.getElementById(
-                "elasticValue"
-            ).textContent =
-                this.value + "%";
-
-            if (activeVectorLine) {
-                drawVectorPreview();
-            }
-
-        }
-    );
-
-
-/* =========================================================
-   TOP BUTTONS
-   ========================================================= */
-
-document
-    .getElementById("undoBtn")
-    .addEventListener(
-        "click",
-        undo
-    );
-
-
-document
-    .getElementById("redoBtn")
-    .addEventListener(
-        "click",
-        redo
-    );
-
-
-/* ---------------------------------------------------------
-   Clear current raster layer
-   --------------------------------------------------------- */
-
-document
-    .getElementById("clearBtn")
-    .addEventListener(
-        "click",
-        function() {
-
-            saveState();
-
-            rasterContexts[currentLayer]
-                .clearRect(
-                    0,
-                    0,
-                    WIDTH,
-                    HEIGHT
-                );
-
-        }
-    );
-
-
-/* =========================================================
-   VECTOR BUTTONS
-   ========================================================= */
-
-document
-    .getElementById("vectorFinishBtn")
-    .addEventListener(
-        "click",
-        finishVectorPath
-    );
-
-
-document
-    .getElementById("vectorDeleteBtn")
-    .addEventListener(
-        "click",
-        deleteActiveVector
-    );
-
-
-/* =========================================================
-   ZOOM BUTTONS
-   ========================================================= */
-
-document
-    .getElementById("zoomInBtn")
-    .addEventListener(
-        "click",
-        function() {
-
-            const rect =
-                viewport.getBoundingClientRect();
-
-            zoomAt(
-                rect.left + rect.width / 2,
-                rect.top + rect.height / 2,
-                1.2
-            );
-
-        }
-    );
-
-
-document
-    .getElementById("zoomOutBtn")
-    .addEventListener(
-        "click",
-        function() {
-
-            const rect =
-                viewport.getBoundingClientRect();
-
-            zoomAt(
-                rect.left + rect.width / 2,
-                rect.top + rect.height / 2,
-                1 / 1.2
-            );
-
-        }
-    );
-
-
-document
-    .getElementById("zoomResetBtn")
-    .addEventListener(
-        "click",
-        function() {
-
-            scale = 1;
-
-            panX = 0;
-
-            panY = 0;
-
-            updateTransform();
-
-        }
-    );
-
-
-document
-    .getElementById("fitBtn")
-    .addEventListener(
-        "click",
-        fitCanvas
-    );
-
-
-document
-    .getElementById("centerBtn")
-    .addEventListener(
-        "click",
-        centerCanvas
-    );
-
-
-/* =========================================================
-   KEYBOARD
-   ========================================================= */
-
-window.addEventListener(
-    "keydown",
-    function(e) {
-
-        /*
-            Space = temporary pan
-        */
-
-        if (
-            e.code === "Space" &&
-            !e.repeat
-        ) {
-
-            spacePressed = true;
-
-            updateCursor();
-
-            e.preventDefault();
-
-        }
-
-
-        /*
-            Ctrl/Cmd + Z
-        */
-
-        if (
-            (e.ctrlKey || e.metaKey) &&
-            e.key.toLowerCase() === "z"
-        ) {
-
-            if (e.shiftKey) {
-                redo();
-            } else {
-                undo();
-            }
-
-            e.preventDefault();
-
-        }
-
-
-        /*
-            Ctrl/Cmd + Y
-        */
-
-        if (
-            (e.ctrlKey || e.metaKey) &&
-            e.key.toLowerCase() === "y"
-        ) {
-
-            redo();
-
-            e.preventDefault();
-
-        }
-
-
-        /*
-            V = vector
-        */
-
-        if (
-            !e.ctrlKey &&
-            !e.metaKey &&
-            !e.altKey &&
-            e.key.toLowerCase() === "v"
-        ) {
-
-            setTool("vector");
-
-        }
-
-
-        /*
-            B = brush
-        */
-
-        if (
-            !e.ctrlKey &&
-            !e.metaKey &&
-            !e.altKey &&
-            e.key.toLowerCase() === "b"
-        ) {
-
-            setTool("pencil");
-
-        }
-
-
-        /*
-            H = pan
-        */
-
-        if (
-            !e.ctrlKey &&
-            !e.metaKey &&
-            !e.altKey &&
-            e.key.toLowerCase() === "h"
-        ) {
-
-            setTool("pan");
-
-        }
-
-
-        /*
-            Escape:
-            скасувати активне редагування вектора.
-        */
-
-        if (e.key === "Escape") {
-
-            if (activeVectorLine) {
-
-                const index =
-                    allVectorLines.indexOf(
-                        activeVectorLine
-                    );
-
-                if (index !== -1) {
-
-                    allVectorLines.splice(
-                        index,
-                        1
-                    );
-
-                }
-
-                activeVectorLine = null;
-
-                selectedVectorPtIndex = -1;
-
-                isDraggingVectorPoint = false;
-
-                clearPreview();
-
-                renderAllVectors();
-
-                updateVectorStatus();
-
-            }
-
-        }
-
-
-        /*
-            Enter = завершити вектор.
-        */
-
-        if (
-            e.key === "Enter" &&
-            currentTool === "vector"
-        ) {
-
-            finishVectorPath();
-
-        }
-
-    }
-);
-
-
-window.addEventListener(
-    "keyup",
-    function(e) {
-
-        if (e.code === "Space") {
-
-            spacePressed = false;
-
-            updateCursor();
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   PREVENT SPACE SCROLL
-   ========================================================= */
-
-window.addEventListener(
-    "keydown",
-    function(e) {
-
-        if (e.code === "Space") {
-
-            e.preventDefault();
-
-        }
-
-    },
-    {
-        passive: false
-    }
-);
-
-
-/* =========================================================
-   STATUS
-   ========================================================= */
-
-const toolNames = {
-
-    pencil: "Олівець",
-    vector: "Еластичний вектор",
-    line: "Лінія",
-    rect: "Прямокутник",
-    circle: "Коло",
-    wand: "Піпетка",
-    pan: "Рух"
-
-};
-
-
-function updateStatus() {
-
-    document.getElementById(
-        "statusText"
-    ).textContent =
-        `${toolNames[currentTool]} • Layer ${currentLayer + 1} • ${WIDTH}×${HEIGHT}`;
-
 }
 
+function drawVectorPreview(){
+    clearPreview();
 
-function updateVectorStatus() {
+    renderVectors();
 
-    const el =
-        document.getElementById(
-            "vectorStatus"
+    if(activeVectorLine){
+        drawVectorLine(
+            previewCtx,
+            activeVectorLine,
+            true
         );
-
-    if (!activeVectorLine) {
-
-        el.innerHTML =
-            "Векторний режим готовий.<br>" +
-            "Клацни по полотну, щоб створити перший вузол.";
-
-        return;
     }
-
-    const count =
-        activeVectorLine.points.length;
-
-    el.innerHTML =
-        `<strong>Активний вектор</strong><br>` +
-        `Вузлів: ${count}<br>` +
-        `Перетягни вузол або додай новий.<br>` +
-        `Enter — завершити. Esc — скасувати.`;
-
 }
 
+function finishVector(){
+    if(!activeVectorLine) return;
 
-function updateCursorPosition(x, y) {
-
-    document.getElementById(
-        "cursorText"
-    ).textContent =
-        `x: ${Math.round(x)} y: ${Math.round(y)}`;
-
-}
-
-
-/* =========================================================
-   PNG EXPORT
-   ========================================================= */
-
-function exportPNG() {
-
-    const output =
-        document.createElement("canvas");
-
-    output.width =
-        WIDTH;
-
-    output.height =
-        HEIGHT;
-
-    const ctx =
-        output.getContext("2d");
-
-
-    /*
-        Білий фон.
-    */
-
-    ctx.fillStyle =
-        "#ffffff";
-
-    ctx.fillRect(
-        0,
-        0,
-        WIDTH,
-        HEIGHT
-    );
-
-
-    /*
-        Raster layers.
-    */
-
-    for (
-        let i = 0;
-        i < rasterCanvases.length;
-        i++
-    ) {
-
-        if (
-            rasterCanvases[i].style.display ===
-            "none"
-        ) {
-
-            continue;
-
-        }
-
-        ctx.drawImage(
-            rasterCanvases[i],
-            0,
-            0
-        );
-
-    }
-
-
-    /*
-        Векторний шар.
-
-        Малюємо його напряму з даних,
-        тому export не залежить від preview.
-    */
-
-    for (
-        const line of allVectorLines
-    ) {
-
-        drawSmoothVector(
-            ctx,
-            line.points,
-            line.color,
-            line.opacity
-        );
-
-    }
-
-
-    const link =
-        document.createElement("a");
-
-    link.download =
-        "aerocanvas.png";
-
-    link.href =
-        output.toDataURL(
-            "image/png"
-        );
-
-    link.click();
-
-}
-
-
-document
-    .getElementById("exportBtn")
-    .addEventListener(
-        "click",
-        exportPNG
-    );
-
-
-/* =========================================================
-   LOCAL STORAGE
-   ========================================================= */
-
-function saveLocal() {
-
-    /*
-        ImageData не можна нормально зберігати
-        як є, тому переводимо raster у PNG dataURL.
-    */
-
-    const raster =
-        rasterCanvases.map(
-            canvas =>
-                canvas.toDataURL("image/png")
-        );
-
-    const data = {
-
-        raster,
-
-        vectors:
-            cloneVectors(),
-
-        currentLayer,
-
-        mainColor,
-
-        brushSize,
-
-        brushOpacity,
-
-        scale,
-
-        panX,
-
-        panY
-
-    };
-
-    try {
-
-        localStorage.setItem(
-            "aerocanvas-project",
-            JSON.stringify(data)
-        );
-
-        document.getElementById(
-            "statusText"
-        ).textContent =
-            "Проєкт збережено в браузері.";
-
-    } catch (error) {
-
-        alert(
-            "Не вдалося зберегти проєкт у браузері."
-        );
-
-    }
-
-}
-
-
-async function loadLocal() {
-
-    const raw =
-        localStorage.getItem(
-            "aerocanvas-project"
-        );
-
-    if (!raw) {
-
-        alert(
-            "Збереженого проєкту немає."
-        );
-
-        return;
-    }
-
-    try {
-
-        const data =
-            JSON.parse(raw);
-
-        /*
-            Спочатку очищаємо raster.
-        */
-
-        rasterContexts.forEach(
-            ctx =>
-                ctx.clearRect(
-                    0,
-                    0,
-                    WIDTH,
-                    HEIGHT
-                )
-        );
-
-
-        /*
-            Відновлюємо PNG raster.
-        */
-
-        for (
-            let i = 0;
-            i < data.raster.length;
-            i++
-        ) {
-
-            const image =
-                new Image();
-
-            image.src =
-                data.raster[i];
-
-            await new Promise(
-                resolve => {
-
-                    image.onload =
-                        resolve;
-
-                    image.onerror =
-                        resolve;
-
-                }
-            );
-
-            rasterContexts[i]
-                .drawImage(
-                    image,
-                    0,
-                    0
-                );
-
-        }
-
-
-        /*
-            Відновлюємо vectors.
-        */
-
-        allVectorLines =
-            data.vectors || [];
-
-        nextVectorId =
-            allVectorLines.reduce(
-                (max, line) =>
-                    Math.max(
-                        max,
-                        Number(line.id) || 0
-                    ),
-                0
-            ) + 1;
-
-
-        currentLayer =
-            data.currentLayer ?? 3;
-
-        mainColor =
-            data.mainColor ?? "#157fa4";
-
-        brushSize =
-            data.brushSize ?? 12;
-
-        brushOpacity =
-            data.brushOpacity ?? 1;
-
-
-        document.getElementById(
-            "colorPicker"
-        ).value =
-            mainColor;
-
-        document.getElementById(
-            "sizeRange"
-        ).value =
-            brushSize;
-
-        document.getElementById(
-            "sizeValue"
-        ).textContent =
-            brushSize + " px";
-
-        document.getElementById(
-            "opacityRange"
-        ).value =
-            Math.round(
-                brushOpacity * 100
-            );
-
-        document.getElementById(
-            "opacityValue"
-        ).textContent =
-            Math.round(
-                brushOpacity * 100
-            ) + "%";
-
-
-        /*
-            Pan/zoom не відновлюємо,
-            якщо їх не було.
-        */
-
-        if (
-            typeof data.scale === "number"
-        ) {
-
-            scale = data.scale;
-
-        }
-
-        if (
-            typeof data.panX === "number"
-        ) {
-
-            panX = data.panX;
-
-        }
-
-        if (
-            typeof data.panY === "number"
-        ) {
-
-            panY = data.panY;
-
-        }
-
-
+    if(activeVectorLine.points.length < 2){
         activeVectorLine = null;
+        clearPreview();
+        return;
+    }
 
+    /*
+       ВАЖЛИВО:
+       snapshot робиться ДО додавання нового вектора,
+       тому Undo справді прибирає вектор.
+    */
+    saveState();
+
+    allVectorLines.push(
+        clone(activeVectorLine)
+    );
+
+    selectedVectorId =
+        activeVectorLine.id;
+
+    activeVectorLine = null;
+
+    clearPreview();
+    renderVectors();
+
+    updateStatus();
+}
+
+function cancelVector(){
+    activeVectorLine = null;
+    clearPreview();
+    renderVectors();
+}
+
+function getVectorNodeHit(p){
+    let best = null;
+    let bestDistance = Infinity;
+
+    for(const line of allVectorLines){
+
+        for(let i=0;i<line.points.length;i++){
+
+            const d =
+                distance(p,line.points[i]);
+
+            if(d < 14/zoom && d < bestDistance){
+
+                best = {
+                    line,
+                    index:i
+                };
+
+                bestDistance = d;
+            }
+        }
+    }
+
+    return best;
+}
+
+function getVectorBodyHit(p){
+    for(let li=allVectorLines.length-1;li>=0;li--){
+
+        const line = allVectorLines[li];
+
+        const smooth =
+            catmullRom(
+                line.points,
+                (line.smoothness ?? 65)/100
+            );
+
+        for(let i=1;i<smooth.length;i++){
+
+            const a = smooth[i-1];
+            const b = smooth[i];
+
+            const abx = b.x-a.x;
+            const aby = b.y-a.y;
+
+            const len2 = abx*abx+aby*aby;
+
+            if(len2 === 0) continue;
+
+            const t =
+                clamp(
+                    ((p.x-a.x)*abx+
+                     (p.y-a.y)*aby)/len2,
+                    0,
+                    1
+                );
+
+            const q = {
+                x:a.x+abx*t,
+                y:a.y+aby*t
+            };
+
+            if(distance(p,q) < 10/zoom){
+                return line;
+            }
+        }
+    }
+
+    return null;
+}
+
+function selectVectorAt(p){
+    const node = getVectorNodeHit(p);
+
+    if(node){
+        selectedVectorId = node.line.id;
+        selectedVectorPtIndex = node.index;
+
+        renderVectors();
+
+        return true;
+    }
+
+    const line = getVectorBodyHit(p);
+
+    if(line){
+        selectedVectorId = line.id;
         selectedVectorPtIndex = -1;
 
-        clearPreview();
+        renderVectors();
 
-        renderAllVectors();
-
-        updateLayerUI();
-
-        updateTransform();
-
-        updateStatus();
-
-        updateVectorStatus();
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            "Файл у localStorage пошкоджений."
-        );
-
+        return true;
     }
 
+    selectedVectorId = null;
+    selectedVectorPtIndex = -1;
+
+    renderVectors();
+
+    return false;
 }
 
+function moveSelectedVectorNode(p){
+    if(
+        !selectedVectorId ||
+        selectedVectorPtIndex < 0
+    ) return;
 
-document
-    .getElementById("saveLocalBtn")
-    .addEventListener(
-        "click",
-        saveLocal
-    );
+    const line =
+        allVectorLines.find(
+            l=>l.id===selectedVectorId
+        );
 
+    if(!line) return;
 
-document
-    .getElementById("loadLocalBtn")
-    .addEventListener(
-        "click",
-        loadLocal
-    );
+    line.points[selectedVectorPtIndex] = p;
 
+    renderVectors();
+}
 
-/* =========================================================
-   WINDOW RESIZE
-   ========================================================= */
+/* ================= POINTER ================= */
 
-window.addEventListener(
-    "resize",
-    function() {
+viewport.addEventListener("pointerdown",e=>{
 
-        /*
-            Якщо масштаб був близький до fit,
-            просто коригуємо межі pan.
-        */
-
-        updateTransform();
-
+    if(e.button === 2){
+        startPan(e);
+        return;
     }
-);
 
+    if(spaceDown){
+        startPan(e);
+        return;
+    }
 
-/* =========================================================
-   INITIAL STATE
-   ========================================================= */
+    const p = getCanvasCoords(e);
 
-initializeCanvas();
+    if(currentTool === "pan"){
+        startPan(e);
+        return;
+    }
 
-updateHistoryButtons();
+    if(currentTool === "vector"){
+
+        const hit = getVectorNodeHit(p);
+
+        if(hit){
+            selectedVectorId = hit.line.id;
+            selectedVectorPtIndex = hit.index;
+
+            vectorEditBefore = snapshot();
+
+            pointerDown = true;
+
+            viewport.setPointerCapture(e.pointerId);
+
+            renderVectors();
+
+            return;
+        }
+
+        beginVector(p);
+        viewport.setPointerCapture(e.pointerId);
+        return;
+    }
+
+    if(currentTool === "pencil"){
+        beginPencil(p);
+        viewport.setPointerCapture(e.pointerId);
+        return;
+    }
+
+    if(currentTool === "eraser"){
+        beginEraser(p);
+        viewport.setPointerCapture(e.pointerId);
+        return;
+    }
+
+    if(
+        currentTool === "line" ||
+        currentTool === "rect" ||
+        currentTool === "circle"
+    ){
+        beginShape(p);
+        viewport.setPointerCapture(e.pointerId);
+        return;
+    }
+
+    if(currentTool === "wand"){
+        pickColor(p);
+        return;
+    }
+});
+
+viewport.addEventListener("pointermove",e=>{
+
+    const p = getCanvasCoords(e);
+
+    document.getElementById("coordText").textContent =
+        `X: ${Math.round(p.x)} Y: ${Math.round(p.y)}`;
+
+    if(!pointerDown) return;
+
+    if(panPointer){
+        movePan(e);
+        return;
+    }
+
+    if(currentTool === "pencil"){
+
+        currentStroke.push(p);
+        lastPoint = p;
+
+        drawPencilPreview();
+    }
+
+    else if(currentTool === "eraser"){
+
+        eraseAt(p);
+    }
+
+    else if(currentTool === "vector"){
+
+        if(selectedVectorPtIndex >= 0){
+            moveSelectedVectorNode(p);
+        }else{
+            addVectorPoint(p);
+        }
+    }
+
+    else if(
+        currentTool === "line" ||
+        currentTool === "rect" ||
+        currentTool === "circle"
+    ){
+
+        shapeEnd = p;
+        drawShapePreview();
+    }
+});
+
+viewport.addEventListener("pointerup",e=>{
+
+    if(panPointer){
+        endPan();
+        return;
+    }
+
+    if(!pointerDown) return;
+
+    pointerDown = false;
+
+    try{
+        viewport.releasePointerCapture(e.pointerId);
+    }catch(_){}
+
+    if(currentTool === "pencil"){
+        commitPencil();
+    }
+
+    else if(currentTool === "eraser"){
+        lastPoint = null;
+    }
+
+    else if(currentTool === "vector"){
+
+        if(selectedVectorPtIndex >= 0){
+
+            /*
+             * Повертаємо стан до редагування,
+             * потім повторно застосовуємо поточний результат.
+             */
+            if(vectorEditBefore){
+                const after = snapshot();
+
+                undoStack.push(vectorEditBefore);
+                redoStack.length = 0;
+
+                vectorEditBefore = null;
+            }
+
+            selectedVectorPtIndex = -1;
+            renderVectors();
+
+        }else{
+            finishVector();
+        }
+    }
+
+    else if(
+        currentTool === "line" ||
+        currentTool === "rect" ||
+        currentTool === "circle"
+    ){
+        commitShape();
+    }
+});
+
+viewport.addEventListener("pointercancel",()=>{
+    pointerDown = false;
+    panPointer = false;
+});
+
+/* ================= PAN ================= */
+
+let panPointer = false;
+let panStartMouse = null;
+let panStartX = 0;
+let panStartY = 0;
+
+function startPan(e){
+    panPointer = true;
+    pointerDown = true;
+
+    panStartMouse = {
+        x:e.clientX,
+        y:e.clientY
+    };
+
+    panStartX = panX;
+    panStartY = panY;
+
+    viewport.classList.add("panning");
+
+    try{
+        viewport.setPointerCapture(e.pointerId);
+    }catch(_){}
+}
+
+function movePan(e){
+    if(!panPointer) return;
+
+    panX =
+        panStartX +
+        (e.clientX-panStartMouse.x);
+
+    panY =
+        panStartY +
+        (e.clientY-panStartMouse.y);
+
+    constrainPan();
+    updateTransform();
+}
+
+function endPan(){
+    panPointer = false;
+    pointerDown = false;
+
+    viewport.classList.remove("panning");
+}
+
+/* ================= WHEEL ================= */
+
+viewport.addEventListener("wheel",e=>{
+    e.preventDefault();
+
+    const factor =
+        e.deltaY < 0 ? 1.1 : 0.9;
+
+    zoomAtCenter(factor);
+
+},{passive:false});
+
+/* ================= CONTEXT MENU ================= */
+
+viewport.addEventListener("contextmenu",e=>{
+    e.preventDefault();
+});
+
+/* ================= PICKER ================= */
+
+function pickColor(p){
+
+    for(let i=rasterCanvases.length-1;i>=0;i--){
+
+        if(!layerVisible[i]) continue;
+
+        const data =
+            rasterCtx[i].getImageData(
+                Math.floor(p.x),
+                Math.floor(p.y),
+                1,
+                1
+            ).data;
+
+        if(data[3] > 5){
+
+            const hex =
+                "#" +
+                [data[0],data[1],data[2]]
+                    .map(v=>v.toString(16).padStart(2,"0"))
+                    .join("");
+
+            mainColor = hex;
+
+            document.getElementById("colorPicker").value =
+                hex;
+
+            updateStatus();
+
+            return;
+        }
+    }
+}
+
+/* ================= LAYERS ================= */
+
+function renderLayers(){
+
+    const box = document.getElementById("layers");
+    box.innerHTML = "";
+
+    rasterCanvases.forEach((_,i)=>{
+
+        const row = document.createElement("div");
+
+        row.className =
+            "layer" +
+            (currentLayer===i ? " active":"");
+
+        const eye = document.createElement("button");
+
+        eye.className = "aero-btn layer-eye";
+
+        eye.textContent =
+            layerVisible[i] ? "●" : "○";
+
+        eye.title = "Видимість";
+
+        eye.onclick = e=>{
+            e.stopPropagation();
+
+            layerVisible[i] =
+                !layerVisible[i];
+
+            rasterCanvases[i].style.display =
+                layerVisible[i] ? "block" : "none";
+
+            renderLayers();
+        };
+
+        const name = document.createElement("span");
+
+        name.className = "layer-name";
+        name.textContent = "Шар " + (i+1);
+
+        row.appendChild(eye);
+        row.appendChild(name);
+
+        row.onclick = ()=>{
+            currentLayer = i;
+            renderLayers();
+            updateStatus();
+        };
+
+        box.appendChild(row);
+    });
+
+    document.getElementById("layerStatus").textContent =
+        "Шар: " + (currentLayer+1);
+}
+
+document.getElementById("newLayerBtn").onclick = ()=>{
+
+    saveState();
+
+    /*
+     * Якщо є вільний шар — очищаємо його.
+     * Шари залишаються чотирма незалежними растровими рівнями.
+     */
+    const ctx = rasterCtx[currentLayer];
+
+    ctx.clearRect(0,0,WIDTH,HEIGHT);
+
+    renderLayers();
+};
+
+/* ================= CONTROLS ================= */
+
+document.getElementById("sizeRange").oninput = e=>{
+    brushSize = Number(e.target.value);
+
+    document.getElementById("sizeValue").textContent =
+        brushSize;
+};
+
+document.getElementById("opacityRange").oninput = e=>{
+    brushOpacity = Number(e.target.value)/100;
+
+    document.getElementById("opacityValue").textContent =
+        e.target.value+"%";
+};
+
+document.getElementById("colorPicker").oninput = e=>{
+    mainColor = e.target.value;
+};
+
+document.querySelectorAll(".swatch").forEach(s=>{
+    s.onclick = ()=>{
+        mainColor = s.dataset.color;
+
+        document.getElementById("colorPicker").value =
+            mainColor;
+    };
+});
+
+document.getElementById("smoothRange").oninput = e=>{
+    smoothness = Number(e.target.value);
+
+    document.getElementById("smoothValue").textContent =
+        smoothness;
+};
+
+document.getElementById("elasticRange").oninput = e=>{
+    elasticity = Number(e.target.value);
+
+    document.getElementById("elasticValue").textContent =
+        elasticity;
+};
+
+/* ================= VECTOR BUTTONS ================= */
+
+document.getElementById("finishVectorBtn").onclick =
+    finishVector;
+
+document.getElementById("deleteVectorBtn").onclick = ()=>{
+
+    if(!selectedVectorId) return;
+
+    const index =
+        allVectorLines.findIndex(
+            l=>l.id===selectedVectorId
+        );
+
+    if(index < 0) return;
+
+    saveState();
+
+    allVectorLines.splice(index,1);
+
+    selectedVectorId = null;
+    selectedVectorPtIndex = -1;
+
+    renderVectors();
+};
+
+/* ================= CLEAR ================= */
+
+document.getElementById("clearBtn").onclick = ()=>{
+
+    saveState();
+
+    rasterCtx.forEach(ctx=>{
+        ctx.clearRect(0,0,WIDTH,HEIGHT);
+    });
+
+    allVectorLines = [];
+
+    activeVectorLine = null;
+    selectedVectorId = null;
+
+    clearPreview();
+    renderVectors();
+};
+
+/* ================= UNDO / REDO ================= */
+
+document.getElementById("undoBtn").onclick = undo;
+document.getElementById("redoBtn").onclick = redo;
+
+/* ================= KEYBOARD ================= */
+
+document.addEventListener("keydown",e=>{
+
+    if(e.code === "Space"){
+        spaceDown = true;
+
+        if(
+            !e.repeat &&
+            document.activeElement.tagName !== "INPUT"
+        ){
+            e.preventDefault();
+        }
+    }
+
+    if(e.ctrlKey && e.key.toLowerCase()==="z"){
+        e.preventDefault();
+        undo();
+    }
+
+    if(e.ctrlKey && e.key.toLowerCase()==="y"){
+        e.preventDefault();
+        redo();
+    }
+
+    if(e.key === "Escape"){
+        cancelVector();
+        shapeStart = null;
+        shapeEnd = null;
+        currentStroke = [];
+        clearPreview();
+    }
+
+    if(
+        e.key === "Delete" &&
+        selectedVectorId
+    ){
+        document.getElementById("deleteVectorBtn").click();
+    }
+});
+
+document.addEventListener("keyup",e=>{
+    if(e.code === "Space"){
+        spaceDown = false;
+    }
+});
+
+/* ================= STATUS ================= */
+
+function updateStatus(){
+
+    const names = {
+        pencil:"Олівець",
+        eraser:"Гумка",
+        vector:"Еластичний вектор",
+        line:"Лінія",
+        rect:"Прямокутник",
+        circle:"Коло",
+        wand:"Піпетка",
+        pan:"Панорамування"
+    };
+
+    let text = names[currentTool] || currentTool;
+
+    if(fillMode === "gradient"){
+        text += " · Градієнт";
+    }
+
+    document.getElementById("statusText").textContent =
+        text;
+
+    document.getElementById("layerStatus").textContent =
+        "Шар: "+(currentLayer+1);
+}
+
+/* ================= EXPORT ================= */
+
+function createExportCanvas(withWhiteBackground=false){
+
+    const out =
+        document.createElement("canvas");
+
+    out.width = WIDTH;
+    out.height = HEIGHT;
+
+    const ctx = out.getContext("2d");
+
+    if(withWhiteBackground){
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0,0,WIDTH,HEIGHT);
+    }
+
+    /*
+     * Експорт растрових шарів.
+     */
+    rasterCanvases.forEach((canvas,i)=>{
+        if(!layerVisible[i]) return;
+
+        ctx.drawImage(canvas,0,0);
+    });
+
+    /*
+     * Векторний шар.
+     */
+    allVectorLines.forEach(line=>{
+        drawVectorLine(ctx,line,false);
+    });
+
+    return out;
+}
+
+function downloadCanvas(canvas,name){
+
+    canvas.toBlob(blob=>{
+
+        const url =
+            URL.createObjectURL(blob);
+
+        const a =
+            document.createElement("a");
+
+        a.href = url;
+        a.download = name;
+
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+
+        setTimeout(()=>{
+            URL.revokeObjectURL(url);
+        },1000);
+
+    },"image/png");
+}
+
+document.getElementById("pngTransparentBtn").onclick = ()=>{
+    const out = createExportCanvas(false);
+    downloadCanvas(out,"aerocanvas-transparent.png");
+};
+
+document.getElementById("pngBackgroundBtn").onclick = ()=>{
+    const out = createExportCanvas(true);
+    downloadCanvas(out,"aerocanvas-white.png");
+};
+
+document.getElementById("pngBtn").onclick = ()=>{
+    const out = createExportCanvas(false);
+    downloadCanvas(out,"aerocanvas.png");
+};
+
+/* ================= PROJECT JSON ================= */
+
+function projectData(){
+
+    return {
+        version:3,
+
+        width:WIDTH,
+        height:HEIGHT,
+
+        layers:rasterCanvases.map((canvas,i)=>({
+            name:"Шар "+(i+1),
+            visible:layerVisible[i],
+            image:canvas.toDataURL("image/png")
+        })),
+
+        vectors:clone(allVectorLines),
+
+        gradient:{
+            fillMode,
+            stops:clone(gradientStops)
+        },
+
+        settings:{
+            mainColor,
+            brushSize,
+            brushOpacity,
+            smoothness,
+            elasticity
+        }
+    };
+}
+
+function saveProjectFile(){
+
+    const json =
+        JSON.stringify(
+            projectData(),
+            null,
+            2
+        );
+
+    const blob =
+        new Blob(
+            [json],
+            {type:"application/json"}
+        );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const a =
+        document.createElement("a");
+
+    a.href = url;
+    a.download = "aerocanvas-project.json";
+
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(url);
+}
+
+document.getElementById("saveProjectBtn").onclick =
+    saveProjectFile;
+
+/* ================= LOAD PROJECT ================= */
+
+document.getElementById("loadProjectBtn").onclick = ()=>{
+    document.getElementById("projectFile").click();
+};
+
+document.getElementById("projectFile").onchange = async e=>{
+
+    const file = e.target.files[0];
+
+    if(!file) return;
+
+    try{
+
+        const text = await file.text();
+        const data = JSON.parse(text);
+
+        if(
+            !data.layers ||
+            !Array.isArray(data.layers)
+        ){
+            throw new Error("Неправильний формат");
+        }
+
+        saveState();
+
+        for(let i=0;i<rasterCanvases.length;i++){
+
+            if(data.layers[i]){
+                await loadImageToCanvas(
+                    data.layers[i].image,
+                    rasterCanvases[i]
+                );
+
+                layerVisible[i] =
+                    data.layers[i].visible !== false;
+            }else{
+                rasterCtx[i].clearRect(
+                    0,0,WIDTH,HEIGHT
+                );
+            }
+        }
+
+        allVectorLines =
+            clone(data.vectors || []);
+
+        if(data.gradient){
+
+            fillMode =
+                data.gradient.fillMode || "solid";
+
+            gradientStops =
+                clone(
+                    data.gradient.stops ||
+                    gradientStops
+                );
+        }
+
+        if(data.settings){
+
+            mainColor =
+                data.settings.mainColor || mainColor;
+
+            brushSize =
+                data.settings.brushSize || brushSize;
+
+            brushOpacity =
+                data.settings.brushOpacity ?? brushOpacity;
+
+            smoothness =
+                data.settings.smoothness ?? smoothness;
+
+            elasticity =
+                data.settings.elasticity ?? elasticity;
+        }
+
+        document.getElementById("colorPicker").value =
+            mainColor;
+
+        document.getElementById("sizeRange").value =
+            brushSize;
+
+        document.getElementById("sizeValue").textContent =
+            brushSize;
+
+        document.getElementById("opacityRange").value =
+            Math.round(brushOpacity*100);
+
+        document.getElementById("opacityValue").textContent =
+            Math.round(brushOpacity*100)+"%";
+
+        document.getElementById("smoothRange").value =
+            smoothness;
+
+        document.getElementById("smoothValue").textContent =
+            smoothness;
+
+        document.getElementById("elasticRange").value =
+            elasticity;
+
+        document.getElementById("elasticValue").textContent =
+            elasticity;
+
+        setFillMode(fillMode);
+        updateGradientUI();
+        renderLayers();
+        renderVectors();
+        updateStatus();
+
+    }catch(err){
+
+        alert(
+            "Не вдалося відкрити проєкт:\n"+
+            err.message
+        );
+    }
+
+    e.target.value = "";
+};
+
+/* ================= LOCAL STORAGE ================= */
+
+const LOCAL_KEY = "aerocanvas_sai_studio_project";
+
+document.getElementById("localSaveBtn").onclick = ()=>{
+
+    try{
+
+        localStorage.setItem(
+            LOCAL_KEY,
+            JSON.stringify(projectData())
+        );
+
+        alert("Проєкт збережено у браузері.");
+
+    }catch(err){
+
+        alert(
+            "Не вдалося зберегти проєкт:\n"+
+            err.message
+        );
+    }
+};
+
+document.getElementById("localLoadBtn").onclick = async ()=>{
+
+    const raw =
+        localStorage.getItem(LOCAL_KEY);
+
+    if(!raw){
+        alert("Збереженого проєкту немає.");
+        return;
+    }
+
+    try{
+
+        const data = JSON.parse(raw);
+
+        saveState();
+
+        for(let i=0;i<rasterCanvases.length;i++){
+
+            if(data.layers[i]){
+                await loadImageToCanvas(
+                    data.layers[i].image,
+                    rasterCanvases[i]
+                );
+
+                layerVisible[i] =
+                    data.layers[i].visible !== false;
+            }
+        }
+
+        allVectorLines =
+            clone(data.vectors || []);
+
+        if(data.gradient){
+
+            fillMode =
+                data.gradient.fillMode || "solid";
+
+            gradientStops =
+                clone(
+                    data.gradient.stops ||
+                    gradientStops
+                );
+        }
+
+        if(data.settings){
+
+            mainColor =
+                data.settings.mainColor || mainColor;
+
+            brushSize =
+                data.settings.brushSize || brushSize;
+
+            brushOpacity =
+                data.settings.brushOpacity ?? brushOpacity;
+
+            smoothness =
+                data.settings.smoothness ?? smoothness;
+
+            elasticity =
+                data.settings.elasticity ?? elasticity;
+        }
+
+        document.getElementById("colorPicker").value =
+            mainColor;
+
+        document.getElementById("sizeRange").value =
+            brushSize;
+
+        document.getElementById("sizeValue").textContent =
+            brushSize;
+
+        document.getElementById("opacityRange").value =
+            Math.round(brushOpacity*100);
+
+        document.getElementById("opacityValue").textContent =
+            Math.round(brushOpacity*100)+"%";
+
+        document.getElementById("smoothRange").value =
+            smoothness;
+
+        document.getElementById("smoothValue").textContent =
+            smoothness;
+
+        document.getElementById("elasticRange").value =
+            elasticity;
+
+        document.getElementById("elasticValue").textContent =
+            elasticity;
+
+        setFillMode(fillMode);
+        updateGradientUI();
+        renderLayers();
+        renderVectors();
+        updateStatus();
+
+    }catch(err){
+
+        alert(
+            "Помилка завантаження:\n"+
+            err.message
+        );
+    }
+};
+
+/* ================= ZOOM BUTTONS ================= */
+
+document.getElementById("zoomInBtn").onclick = ()=>{
+    zoomAtCenter(1.2);
+};
+
+document.getElementById("zoomOutBtn").onclick = ()=>{
+    zoomAtCenter(1/1.2);
+};
+
+document.getElementById("zoom100Btn").onclick = ()=>{
+    setZoom(1);
+};
+
+document.getElementById("fitBtn").onclick =
+    fitCanvas;
+
+document.getElementById("centerBtn").onclick =
+    centerCanvas;
+
+/* ================= RESIZE ================= */
+
+window.addEventListener("resize",()=>{
+    constrainPan();
+    updateTransform();
+});
+
+/* ================= INIT ================= */
+
+renderLayers();
+renderGradientStops();
+updateGradientUI();
+updateStatus();
+
+fitCanvas();
+updateTransform();
+
+/*
+ * Білий фон НЕ є частиною жодного растрового шару.
+ * Тому порожнє полотно автоматично залишається прозорим
+ * при експорті PNG.
+ */
 
 </script>
 
