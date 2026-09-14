@@ -1808,7 +1808,7 @@ function renderVectors(){
         drawVectorLine(
             vectorCtx,
             line,
-            line.id === selectedVectorId
+             line.id === selectedVectorId && currentTool === "vector"
         );
     });
 }
