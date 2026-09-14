@@ -1,0 +1,2244 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Aero Layer Studio</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #164d63;
+
+    background:
+        radial-gradient(
+            circle at 15% 15%,
+            rgba(255,255,255,.95) 0 30px,
+            transparent 31px
+        ),
+        radial-gradient(
+            circle at 85% 25%,
+            rgba(255,255,255,.55) 0 22px,
+            transparent 23px
+        ),
+        linear-gradient(
+            to bottom,
+            #64d7ff 0%,
+            #baf3ff 42%,
+            #eaffff 58%,
+            #8ee87b 59%,
+            #46c95b 100%
+        );
+
+    background-attachment: fixed;
+}
+
+/* =========================================================
+   ДЕКОР
+   ========================================================= */
+
+body::before {
+    content: "";
+    position: fixed;
+    z-index: 0;
+
+    left: -100px;
+    right: -100px;
+    top: 50px;
+
+    height: 160px;
+
+    background:
+        radial-gradient(
+            ellipse at 20% 50%,
+            rgba(255,255,255,.75) 0 65px,
+            transparent 66px
+        ),
+        radial-gradient(
+            ellipse at 29% 45%,
+            rgba(255,255,255,.65) 0 48px,
+            transparent 49px
+        ),
+        radial-gradient(
+            ellipse at 75% 45%,
+            rgba(255,255,255,.6) 0 60px,
+            transparent 61px
+        );
+
+    filter: blur(5px);
+    pointer-events: none;
+}
+
+.bubble {
+    position: fixed;
+    z-index: 0;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            rgba(255,255,255,.95) 0 7%,
+            rgba(255,255,255,.5) 8% 20%,
+            rgba(80,220,255,.12) 40%,
+            transparent 72%
+        );
+
+    border: 1px solid rgba(255,255,255,.7);
+
+    box-shadow:
+        inset 5px 5px 15px rgba(255,255,255,.65),
+        0 5px 20px rgba(0,100,150,.12);
+}
+
+.b1 {
+    width: 100px;
+    height: 100px;
+
+    left: 4%;
+    bottom: 12%;
+}
+
+.b2 {
+    width: 50px;
+    height: 50px;
+
+    right: 10%;
+    top: 15%;
+}
+
+.b3 {
+    width: 140px;
+    height: 140px;
+
+    right: 2%;
+    bottom: 4%;
+}
+
+/* =========================================================
+   ОСНОВНИЙ КОНТЕЙНЕР
+   ========================================================= */
+
+.wrapper {
+    position: relative;
+    z-index: 1;
+
+    width: min(1200px, calc(100% - 24px));
+
+    margin: 25px auto 50px;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.header {
+    position: relative;
+
+    padding: 22px 27px;
+
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255,255,255,.96),
+            rgba(201,246,255,.82)
+        );
+
+    border: 2px solid rgba(255,255,255,.9);
+
+    box-shadow:
+        0 10px 30px rgba(0,80,120,.22),
+        inset 0 2px 0 rgba(255,255,255,.95);
+}
+
+.header h1 {
+    margin: 0;
+
+    color: #087ca5;
+
+    font-size: clamp(28px, 5vw, 42px);
+
+    text-shadow:
+        0 2px 0 white,
+        0 3px 5px rgba(0,90,130,.2);
+}
+
+.header p {
+    margin: 8px 0 0;
+
+    color: #39748a;
+}
+
+/* =========================================================
+   PANELS
+   ========================================================= */
+
+.panel {
+    margin-top: 18px;
+
+    padding: 18px;
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.94),
+            rgba(225,251,255,.82)
+        );
+
+    border: 2px solid rgba(255,255,255,.9);
+
+    box-shadow:
+        0 10px 28px rgba(0,80,120,.18),
+        inset 0 2px 0 white;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.buttons {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 9px;
+}
+
+button,
+.file-button {
+    appearance: none;
+
+    border: 1px solid rgba(255,255,255,.95);
+
+    border-radius: 14px;
+
+    padding: 11px 17px;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    color: #15566c;
+
+    cursor: pointer;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #ffffff 0%,
+            #e4fbff 45%,
+            #9de8f8 50%,
+            #63cde7 100%
+        );
+
+    box-shadow:
+        0 4px 9px rgba(0,100,140,.2),
+        inset 0 2px 0 white,
+        inset 0 -3px 5px rgba(0,100,150,.1);
+
+    text-shadow:
+        0 1px 0 white;
+}
+
+button:hover,
+.file-button:hover {
+    transform: translateY(-1px);
+}
+
+button:active,
+.file-button:active {
+    transform: translateY(1px);
+
+    box-shadow:
+        inset 0 3px 6px rgba(0,100,140,.18);
+}
+
+button.green {
+    color: #185e36;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #ffffff,
+            #eaffea 45%,
+            #a7edae 50%,
+            #55ce67 100%
+        );
+}
+
+button.orange {
+    color: #704c14;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #ffffff,
+            #fff7d9 45%,
+            #ffdc7b 50%,
+            #efb63e 100%
+        );
+}
+
+button.red {
+    color: #743535;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #ffffff,
+            #fff0f0 45%,
+            #ffb0b0 50%,
+            #ed7272 100%
+        );
+}
+
+input[type="file"] {
+    display: none;
+}
+
+/* =========================================================
+   EDITOR
+   ========================================================= */
+
+.editor-layout {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        250px;
+
+    gap: 16px;
+
+    margin-top: 16px;
+}
+
+/* =========================================================
+   CANVAS
+   ========================================================= */
+
+.canvas-panel {
+    position: relative;
+
+    min-width: 0;
+
+    padding: 14px;
+
+    border-radius: 21px;
+
+    background:
+        rgba(255,255,255,.6);
+
+    border: 1px solid rgba(255,255,255,.9);
+
+    box-shadow:
+        inset 0 1px 5px rgba(0,90,130,.08);
+}
+
+.canvas-title {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 10px;
+
+    color: #087ba3;
+
+    font-weight: bold;
+}
+
+.canvas-area {
+    position: relative;
+
+    width: 100%;
+
+    min-height: 560px;
+
+    overflow: hidden;
+
+    border-radius: 16px;
+
+    border: 1px solid rgba(0,100,140,.2);
+
+    background-color: #f5fbfd;
+
+    background-image:
+        linear-gradient(45deg, #dce9ed 25%, transparent 25%),
+        linear-gradient(-45deg, #dce9ed 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #dce9ed 75%),
+        linear-gradient(-45deg, transparent 75%, #dce9ed 75%);
+
+    background-size: 24px 24px;
+
+    background-position:
+        0 0,
+        0 12px,
+        12px -12px,
+        -12px 0;
+}
+
+#editorCanvas {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    max-width: 95%;
+    max-height: 95%;
+
+    box-shadow:
+        0 7px 20px rgba(0,70,100,.18);
+}
+
+.selection {
+    position: absolute;
+
+    display: none;
+
+    border: 2px solid #0ca9d4;
+
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,.9),
+        0 0 10px rgba(0,160,210,.35);
+
+    pointer-events: none;
+}
+
+.selection.active {
+    display: block;
+}
+
+/* ручки */
+
+.handle {
+    position: absolute;
+
+    width: 13px;
+    height: 13px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #ffffff,
+            #8fe5f7
+        );
+
+    border: 2px solid #079bc3;
+
+    box-shadow:
+        0 2px 5px rgba(0,80,110,.3);
+
+    pointer-events: auto;
+
+    cursor: nwse-resize;
+}
+
+.handle.br {
+    right: -8px;
+    bottom: -8px;
+}
+
+.handle.bl {
+    left: -8px;
+    bottom: -8px;
+
+    cursor: nesw-resize;
+}
+
+.handle.tr {
+    right: -8px;
+    top: -8px;
+
+    cursor: nesw-resize;
+}
+
+.handle.tl {
+    left: -8px;
+    top: -8px;
+
+    cursor: nwse-resize;
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.sidebar {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+.side-box {
+    padding: 15px;
+
+    border-radius: 19px;
+
+    background:
+        rgba(255,255,255,.68);
+
+    border: 1px solid rgba(255,255,255,.9);
+
+    box-shadow:
+        inset 0 1px 5px rgba(0,90,130,.07);
+}
+
+.side-title {
+    margin-bottom: 10px;
+
+    color: #087ba3;
+
+    font-weight: bold;
+}
+
+.layer {
+    padding: 11px;
+
+    margin-bottom: 7px;
+
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255,255,255,.85),
+            rgba(211,245,252,.75)
+        );
+
+    border: 1px solid rgba(255,255,255,.9);
+
+    cursor: pointer;
+
+    font-size: 13px;
+}
+
+.layer.active {
+    border-color: #10a6cf;
+
+    box-shadow:
+        0 0 0 2px rgba(16,166,207,.15);
+}
+
+.layer small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #648898;
+}
+
+.range-row {
+    margin-top: 8px;
+}
+
+.range-row input {
+    width: 100%;
+
+    accent-color: #11a5cc;
+}
+
+.value {
+    float: right;
+
+    color: #197997;
+}
+
+.help {
+    font-size: 12px;
+
+    line-height: 1.5;
+
+    color: #507f90;
+}
+
+.status {
+    min-height: 20px;
+
+    margin-top: 12px;
+
+    text-align: center;
+
+    font-size: 13px;
+
+    color: #35758a;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .editor-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .canvas-area {
+        min-height: 430px;
+    }
+
+    .sidebar {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 550px) {
+
+    .wrapper {
+        width: calc(100% - 10px);
+
+        margin-top: 7px;
+    }
+
+    .header {
+        padding: 17px;
+    }
+
+    .panel {
+        padding: 12px;
+    }
+
+    .sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .canvas-area {
+        min-height: 350px;
+    }
+
+    button,
+    .file-button {
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="bubble b1"></div>
+<div class="bubble b2"></div>
+<div class="bubble b3"></div>
+
+<main class="wrapper">
+
+<header class="header">
+
+    <h1>🌊 Aero Layer Studio</h1>
+
+    <p>
+        Простий редактор двох шарів —
+        накладай, переміщуй, масштабуй,
+        змінюй прозорість та об'єднуй.
+    </p>
+
+</header>
+
+<section class="panel">
+
+    <div class="buttons">
+
+        <label class="file-button">
+            🖼️ Додати нижній шар
+            <input
+                type="file"
+                id="bottomInput"
+                accept="image/*"
+            >
+        </label>
+
+        <label class="file-button">
+            🌈 Додати верхній шар
+            <input
+                type="file"
+                id="topInput"
+                accept="image/*"
+            >
+        </label>
+
+        <button
+            id="mergeBtn"
+            class="green"
+        >
+            🔗 Об'єднати шари
+        </button>
+
+        <button
+            id="undoBtn"
+        >
+            ↩ Скасувати об'єднання
+        </button>
+
+        <button
+            id="downloadBtn"
+            class="green"
+        >
+            💾 Зберегти PNG
+        </button>
+
+        <button
+            id="clearBtn"
+            class="red"
+        >
+            🗑 Очистити
+        </button>
+
+    </div>
+
+    <div class="editor-layout">
+
+        <!-- =================================================
+             РЕДАКТОР
+             ================================================= -->
+
+        <div class="canvas-panel">
+
+            <div class="canvas-title">
+
+                <span>
+                    Полотно
+                </span>
+
+                <span id="canvasInfo">
+                    —
+                </span>
+
+            </div>
+
+            <div
+                class="canvas-area"
+                id="canvasArea"
+            >
+
+                <canvas
+                    id="editorCanvas"
+                ></canvas>
+
+                <div
+                    class="selection"
+                    id="selection"
+                >
+
+                    <div
+                        class="handle tl"
+                        data-handle="tl"
+                    ></div>
+
+                    <div
+                        class="handle tr"
+                        data-handle="tr"
+                    ></div>
+
+                    <div
+                        class="handle bl"
+                        data-handle="bl"
+                    ></div>
+
+                    <div
+                        class="handle br"
+                        data-handle="br"
+                    ></div>
+
+                </div>
+
+            </div>
+
+            <div
+                class="status"
+                id="status"
+            >
+                Додай зображення для початку.
+            </div>
+
+        </div>
+
+        <!-- =================================================
+             SIDEBAR
+             ================================================= -->
+
+        <aside class="sidebar">
+
+            <div class="side-box">
+
+                <div class="side-title">
+                    Шари
+                </div>
+
+                <div
+                    class="layer"
+                    id="bottomLayerButton"
+                >
+                    🟦 Нижній шар
+                    <small id="bottomName">
+                        порожній
+                    </small>
+                </div>
+
+                <div
+                    class="layer"
+                    id="topLayerButton"
+                >
+                    🟩 Верхній шар
+                    <small id="topName">
+                        порожній
+                    </small>
+                </div>
+
+            </div>
+
+            <div class="side-box">
+
+                <div class="side-title">
+                    Прозорість
+                    <span
+                        class="value"
+                        id="opacityValue"
+                    >
+                        100%
+                    </span>
+                </div>
+
+                <div class="range-row">
+
+                    <input
+                        type="range"
+                        id="opacity"
+                        min="0"
+                        max="100"
+                        value="100"
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="side-box">
+
+                <div class="side-title">
+                    Керування
+                </div>
+
+                <div class="help">
+
+                    <b>Переміщення:</b><br>
+                    наведи курсор на середину
+                    активного зображення та перетягни його.
+
+                    <br><br>
+
+                    <b>Масштаб:</b><br>
+                    потягни будь-який кут рамки.
+
+                    <br><br>
+
+                    <b>Шар:</b><br>
+                    натисни на назву шару,
+                    щоб зробити його активним.
+
+                    <br><br>
+
+                    <b>Прозорість:</b><br>
+                    змінюється для активного шару.
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</section>
+
+</main>
+
+<script>
+/* =========================================================
+   AERO LAYER STUDIO
+   ========================================================= */
+
+const canvas =
+    document.getElementById("editorCanvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+const canvasArea =
+    document.getElementById("canvasArea");
+
+const selection =
+    document.getElementById("selection");
+
+const bottomInput =
+    document.getElementById("bottomInput");
+
+const topInput =
+    document.getElementById("topInput");
+
+const bottomLayerButton =
+    document.getElementById("bottomLayerButton");
+
+const topLayerButton =
+    document.getElementById("topLayerButton");
+
+const bottomName =
+    document.getElementById("bottomName");
+
+const topName =
+    document.getElementById("topName");
+
+const opacity =
+    document.getElementById("opacity");
+
+const opacityValue =
+    document.getElementById("opacityValue");
+
+const mergeBtn =
+    document.getElementById("mergeBtn");
+
+const undoBtn =
+    document.getElementById("undoBtn");
+
+const downloadBtn =
+    document.getElementById("downloadBtn");
+
+const clearBtn =
+    document.getElementById("clearBtn");
+
+const status =
+    document.getElementById("status");
+
+const canvasInfo =
+    document.getElementById("canvasInfo");
+
+
+/* =========================================================
+   СТАН
+   ========================================================= */
+
+let bottomLayer = null;
+let topLayer = null;
+
+let activeLayer = "top";
+
+let history = [];
+
+let interaction = null;
+
+
+/* =========================================================
+   СТРУКТУРА ШАРУ
+   ========================================================= */
+
+function createLayer(image, name) {
+
+    return {
+
+        image: image,
+
+        name: name,
+
+        x: 0,
+
+        y: 0,
+
+        width: image.naturalWidth,
+
+        height: image.naturalHeight,
+
+        opacity: 1
+
+    };
+
+}
+
+
+/* =========================================================
+   ЗАВАНТАЖЕННЯ
+   ========================================================= */
+
+bottomInput.addEventListener(
+    "change",
+    event => {
+
+        const file =
+            event.target.files[0];
+
+        if (!file) return;
+
+        loadImage(
+            file,
+            layer => {
+
+                bottomLayer =
+                    createLayer(
+                        layer,
+                        file.name
+                    );
+
+                bottomName.textContent =
+                    file.name;
+
+                fitNewLayer(
+                    bottomLayer
+                );
+
+                activeLayer = "bottom";
+
+                updateUI();
+
+                redraw();
+
+                status.textContent =
+                    "Нижній шар додано.";
+
+            }
+        );
+
+    }
+);
+
+
+topInput.addEventListener(
+    "change",
+    event => {
+
+        const file =
+            event.target.files[0];
+
+        if (!file) return;
+
+        loadImage(
+            file,
+            layer => {
+
+                topLayer =
+                    createLayer(
+                        layer,
+                        file.name
+                    );
+
+                topName.textContent =
+                    file.name;
+
+                fitNewLayer(
+                    topLayer
+                );
+
+                activeLayer = "top";
+
+                updateUI();
+
+                redraw();
+
+                status.textContent =
+                    "Верхній шар додано.";
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+   IMAGE LOADER
+   ========================================================= */
+
+function loadImage(file, callback) {
+
+    const url =
+        URL.createObjectURL(file);
+
+    const img =
+        new Image();
+
+    img.onload = () => {
+
+        callback(img);
+
+        URL.revokeObjectURL(url);
+
+    };
+
+    img.onerror = () => {
+
+        status.textContent =
+            "Не вдалося відкрити це зображення.";
+
+        URL.revokeObjectURL(url);
+
+    };
+
+    img.src = url;
+}
+
+
+/* =========================================================
+   РОЗМІР ПОЛОТНА
+   ========================================================= */
+
+function updateCanvasSize() {
+
+    let width = 1000;
+    let height = 700;
+
+    if (bottomLayer) {
+
+        width =
+            Math.max(
+                width,
+                bottomLayer.image.naturalWidth
+            );
+
+        height =
+            Math.max(
+                height,
+                bottomLayer.image.naturalHeight
+            );
+    }
+
+    if (topLayer) {
+
+        width =
+            Math.max(
+                width,
+                topLayer.image.naturalWidth
+            );
+
+        height =
+            Math.max(
+                height,
+                topLayer.image.naturalHeight
+            );
+    }
+
+    /*
+     * Не дозволяємо полотну бути гігантським
+     * через випадкове фото.
+     */
+
+    const MAX = 4000;
+
+    width =
+        Math.min(width, MAX);
+
+    height =
+        Math.min(height, MAX);
+
+    canvas.width = width;
+    canvas.height = height;
+
+    canvasInfo.textContent =
+        `${width} × ${height}`;
+}
+
+
+/* =========================================================
+   НОВИЙ ШАР ПІДГАНЯЄМО ПІД ПОЛОТНО
+   ========================================================= */
+
+function fitNewLayer(layer) {
+
+    updateCanvasSize();
+
+    const cw = canvas.width;
+    const ch = canvas.height;
+
+    const iw = layer.image.naturalWidth;
+    const ih = layer.image.naturalHeight;
+
+    /*
+     * Якщо картинка більша за полотно —
+     * автоматично зменшуємо її.
+     */
+
+    const scale =
+        Math.min(
+            1,
+            cw / iw,
+            ch / ih
+        );
+
+    layer.width =
+        iw * scale;
+
+    layer.height =
+        ih * scale;
+
+    layer.x =
+        (cw - layer.width) / 2;
+
+    layer.y =
+        (ch - layer.height) / 2;
+}
+
+
+/* =========================================================
+   DRAW
+   ========================================================= */
+
+function redraw() {
+
+    updateCanvasSize();
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    if (bottomLayer) {
+
+        drawLayer(
+            bottomLayer
+        );
+    }
+
+    if (topLayer) {
+
+        drawLayer(
+            topLayer
+        );
+    }
+
+    updateSelection();
+
+}
+
+
+function drawLayer(layer) {
+
+    ctx.save();
+
+    ctx.globalAlpha =
+        layer.opacity;
+
+    ctx.drawImage(
+        layer.image,
+
+        layer.x,
+        layer.y,
+
+        layer.width,
+        layer.height
+    );
+
+    ctx.restore();
+}
+
+
+/* =========================================================
+   ACTIVE LAYER
+   ========================================================= */
+
+function getActiveLayer() {
+
+    if (activeLayer === "top") {
+        return topLayer;
+    }
+
+    return bottomLayer;
+}
+
+
+bottomLayerButton.addEventListener(
+    "click",
+    () => {
+
+        if (!bottomLayer) return;
+
+        activeLayer = "bottom";
+
+        updateUI();
+        updateSelection();
+
+    }
+);
+
+
+topLayerButton.addEventListener(
+    "click",
+    () => {
+
+        if (!topLayer) return;
+
+        activeLayer = "top";
+
+        updateUI();
+        updateSelection();
+
+    }
+);
+
+
+/* =========================================================
+   UI
+   ========================================================= */
+
+function updateUI() {
+
+    bottomLayerButton.classList.toggle(
+        "active",
+        activeLayer === "bottom"
+    );
+
+    topLayerButton.classList.toggle(
+        "active",
+        activeLayer === "top"
+    );
+
+    const layer =
+        getActiveLayer();
+
+    if (layer) {
+
+        opacity.value =
+            Math.round(
+                layer.opacity * 100
+            );
+
+        opacityValue.textContent =
+            Math.round(
+                layer.opacity * 100
+            ) + "%";
+
+    }
+
+    updateSelection();
+}
+
+
+/* =========================================================
+   OPACITY
+   ========================================================= */
+
+opacity.addEventListener(
+    "input",
+    () => {
+
+        const layer =
+            getActiveLayer();
+
+        if (!layer) return;
+
+        layer.opacity =
+            Number(opacity.value) / 100;
+
+        opacityValue.textContent =
+            opacity.value + "%";
+
+        redraw();
+
+    }
+);
+
+
+/* =========================================================
+   SELECTION BOX
+   ========================================================= */
+
+function updateSelection() {
+
+    const layer =
+        getActiveLayer();
+
+    if (!layer) {
+
+        selection.classList.remove(
+            "active"
+        );
+
+        return;
+    }
+
+    selection.classList.add(
+        "active"
+    );
+
+    /*
+     * Canvas виводиться через:
+     * translate(-50%, -50%)
+     *
+     * Тому беремо реальний bounding rectangle.
+     */
+
+    const canvasRect =
+        canvas.getBoundingClientRect();
+
+    const areaRect =
+        canvasArea.getBoundingClientRect();
+
+    const scaleX =
+        canvasRect.width /
+        canvas.width;
+
+    const scaleY =
+        canvasRect.height /
+        canvas.height;
+
+    const left =
+        (canvasRect.left -
+        areaRect.left) +
+        layer.x * scaleX;
+
+    const top =
+        (canvasRect.top -
+        areaRect.top) +
+        layer.y * scaleY;
+
+    const width =
+        layer.width * scaleX;
+
+    const height =
+        layer.height * scaleY;
+
+    selection.style.left =
+        left + "px";
+
+    selection.style.top =
+        top + "px";
+
+    selection.style.width =
+        width + "px";
+
+    selection.style.height =
+        height + "px";
+}
+
+
+/* =========================================================
+   MOUSE COORDINATES
+   ========================================================= */
+
+function canvasCoordinates(event) {
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    return {
+
+        x:
+            (event.clientX - rect.left) *
+            canvas.width /
+            rect.width,
+
+        y:
+            (event.clientY - rect.top) *
+            canvas.height /
+            rect.height
+
+    };
+}
+
+
+/* =========================================================
+   HIT TEST
+   ========================================================= */
+
+function pointInsideLayer(
+    layer,
+    point
+) {
+
+    return (
+        point.x >= layer.x &&
+        point.x <=
+            layer.x + layer.width &&
+
+        point.y >= layer.y &&
+        point.y <=
+            layer.y + layer.height
+    );
+}
+
+
+/* =========================================================
+   ПОЧАТОК ПЕРЕМІЩЕННЯ
+   ========================================================= */
+
+canvas.addEventListener(
+    "mousedown",
+    event => {
+
+        const layer =
+            getActiveLayer();
+
+        if (!layer) return;
+
+        const point =
+            canvasCoordinates(event);
+
+        if (
+            pointInsideLayer(
+                layer,
+                point
+            )
+        ) {
+
+            interaction = {
+
+                type: "move",
+
+                startX: point.x,
+                startY: point.y,
+
+                originalX: layer.x,
+                originalY: layer.y
+
+            };
+
+            canvas.style.cursor =
+                "grabbing";
+        }
+
+    }
+);
+
+
+/* =========================================================
+   РУХ
+   ========================================================= */
+
+window.addEventListener(
+    "mousemove",
+    event => {
+
+        if (!interaction) return;
+
+        const layer =
+            getActiveLayer();
+
+        if (!layer) return;
+
+        const point =
+            canvasCoordinates(event);
+
+        if (
+            interaction.type ===
+            "move"
+        ) {
+
+            layer.x =
+                interaction.originalX +
+                (
+                    point.x -
+                    interaction.startX
+                );
+
+            layer.y =
+                interaction.originalY +
+                (
+                    point.y -
+                    interaction.startY
+                );
+
+            redraw();
+        }
+
+        if (
+            interaction.type ===
+            "resize"
+        ) {
+
+            resizeLayer(
+                layer,
+                point
+            );
+        }
+
+    }
+);
+
+
+/* =========================================================
+   ЗАКІНЧЕННЯ
+   ========================================================= */
+
+window.addEventListener(
+    "mouseup",
+    () => {
+
+        if (interaction) {
+
+            interaction = null;
+
+            canvas.style.cursor =
+                "grab";
+
+            status.textContent =
+                "Готово.";
+        }
+
+    }
+);
+
+
+/* =========================================================
+   RESIZE HANDLES
+   ========================================================= */
+
+document.querySelectorAll(
+    ".handle"
+).forEach(handle => {
+
+    handle.addEventListener(
+        "mousedown",
+        event => {
+
+            event.stopPropagation();
+
+            const layer =
+                getActiveLayer();
+
+            if (!layer) return;
+
+            const point =
+                canvasCoordinates(event);
+
+            interaction = {
+
+                type: "resize",
+
+                handle:
+                    handle.dataset.handle,
+
+                startX: point.x,
+                startY: point.y,
+
+                originalX: layer.x,
+                originalY: layer.y,
+
+                originalWidth:
+                    layer.width,
+
+                originalHeight:
+                    layer.height
+
+            };
+
+        }
+    );
+
+});
+
+
+/* =========================================================
+   RESIZE
+   ========================================================= */
+
+function resizeLayer(
+    layer,
+    point
+) {
+
+    const dx =
+        point.x -
+        interaction.startX;
+
+    const dy =
+        point.y -
+        interaction.startY;
+
+    const ratio =
+        interaction.originalWidth /
+        interaction.originalHeight;
+
+    let width =
+        interaction.originalWidth;
+
+    let height =
+        interaction.originalHeight;
+
+    let x =
+        interaction.originalX;
+
+    let y =
+        interaction.originalY;
+
+    /*
+     * Масштабування пропорційне.
+     */
+
+    if (
+        interaction.handle === "br"
+    ) {
+
+        width =
+            interaction.originalWidth +
+            dx;
+
+        height =
+            width / ratio;
+
+    }
+
+    else if (
+        interaction.handle === "bl"
+    ) {
+
+        width =
+            interaction.originalWidth -
+            dx;
+
+        height =
+            width / ratio;
+
+        x =
+            interaction.originalX +
+            (
+                interaction.originalWidth -
+                width
+            );
+
+    }
+
+    else if (
+        interaction.handle === "tr"
+    ) {
+
+        width =
+            interaction.originalWidth +
+            dx;
+
+        height =
+            width / ratio;
+
+        y =
+            interaction.originalY +
+            (
+                interaction.originalHeight -
+                height
+            );
+
+    }
+
+    else if (
+        interaction.handle === "tl"
+    ) {
+
+        width =
+            interaction.originalWidth -
+            dx;
+
+        height =
+            width / ratio;
+
+        x =
+            interaction.originalX +
+            (
+                interaction.originalWidth -
+                width
+            );
+
+        y =
+            interaction.originalY +
+            (
+                interaction.originalHeight -
+                height
+            );
+
+    }
+
+    /*
+     * Мінімальний розмір.
+     */
+
+    if (
+        width < 20 ||
+        height < 20
+    ) {
+        return;
+    }
+
+    layer.x = x;
+    layer.y = y;
+
+    layer.width = width;
+    layer.height = height;
+
+    redraw();
+}
+
+
+/* =========================================================
+   TOUCH SUPPORT
+   ========================================================= */
+
+canvas.addEventListener(
+    "touchstart",
+    event => {
+
+        if (event.touches.length !== 1)
+            return;
+
+        const touch =
+            event.touches[0];
+
+        canvas.dispatchEvent(
+            new MouseEvent(
+                "mousedown",
+                {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                }
+            )
+        );
+
+    },
+    { passive: true }
+);
+
+
+/* =========================================================
+   MERGE
+   ========================================================= */
+
+mergeBtn.addEventListener(
+    "click",
+    () => {
+
+        if (!bottomLayer && !topLayer) {
+
+            status.textContent =
+                "Немає шарів для об'єднання.";
+
+            return;
+        }
+
+        saveHistory();
+
+        /*
+         * Малюємо поточний результат
+         * на новий canvas.
+         */
+
+        const merged =
+            document.createElement(
+                "canvas"
+            );
+
+        merged.width =
+            canvas.width;
+
+        merged.height =
+            canvas.height;
+
+        const mergedCtx =
+            merged.getContext("2d");
+
+        if (bottomLayer) {
+
+            mergedCtx.save();
+
+            mergedCtx.globalAlpha =
+                bottomLayer.opacity;
+
+            mergedCtx.drawImage(
+                bottomLayer.image,
+                bottomLayer.x,
+                bottomLayer.y,
+                bottomLayer.width,
+                bottomLayer.height
+            );
+
+            mergedCtx.restore();
+
+        }
+
+        if (topLayer) {
+
+            mergedCtx.save();
+
+            mergedCtx.globalAlpha =
+                topLayer.opacity;
+
+            mergedCtx.drawImage(
+                topLayer.image,
+                topLayer.x,
+                topLayer.y,
+                topLayer.width,
+                topLayer.height
+            );
+
+            mergedCtx.restore();
+
+        }
+
+        /*
+         * Перетворюємо результат
+         * на Image.
+         */
+
+        const img =
+            new Image();
+
+        img.onload = () => {
+
+            bottomLayer =
+                createLayer(
+                    img,
+                    "Об'єднаний результат"
+                );
+
+            bottomLayer.x = 0;
+            bottomLayer.y = 0;
+
+            bottomLayer.width =
+                canvas.width;
+
+            bottomLayer.height =
+                canvas.height;
+
+            bottomLayer.opacity = 1;
+
+            topLayer = null;
+
+            bottomName.textContent =
+                "Об'єднаний результат";
+
+            topName.textContent =
+                "порожній";
+
+            activeLayer =
+                "bottom";
+
+            updateUI();
+
+            redraw();
+
+            status.textContent =
+                "Шари об'єднано.";
+
+        };
+
+        img.src =
+            merged.toDataURL(
+                "image/png"
+            );
+
+    }
+);
+
+
+/* =========================================================
+   HISTORY
+   ========================================================= */
+
+function saveHistory() {
+
+    const state = {
+
+        bottom:
+            cloneLayer(
+                bottomLayer
+            ),
+
+        top:
+            cloneLayer(
+                topLayer
+            ),
+
+        active:
+            activeLayer
+
+    };
+
+    history.push(state);
+
+    if (history.length > 10) {
+        history.shift();
+    }
+}
+
+
+function cloneLayer(layer) {
+
+    if (!layer) return null;
+
+    return {
+
+        image: layer.image,
+
+        name: layer.name,
+
+        x: layer.x,
+
+        y: layer.y,
+
+        width: layer.width,
+
+        height: layer.height,
+
+        opacity: layer.opacity
+
+    };
+}
+
+
+undoBtn.addEventListener(
+    "click",
+    () => {
+
+        if (!history.length) {
+
+            status.textContent =
+                "Немає чого скасовувати.";
+
+            return;
+        }
+
+        const state =
+            history.pop();
+
+        bottomLayer =
+            state.bottom;
+
+        topLayer =
+            state.top;
+
+        activeLayer =
+            state.active;
+
+        bottomName.textContent =
+            bottomLayer
+                ? bottomLayer.name
+                : "порожній";
+
+        topName.textContent =
+            topLayer
+                ? topLayer.name
+                : "порожній";
+
+        updateUI();
+
+        redraw();
+
+        status.textContent =
+            "Об'єднання скасовано.";
+
+    }
+);
+
+
+/* =========================================================
+   DOWNLOAD
+   ========================================================= */
+
+downloadBtn.addEventListener(
+    "click",
+    () => {
+
+        if (!bottomLayer && !topLayer) {
+
+            status.textContent =
+                "Немає зображення для збереження.";
+
+            return;
+        }
+
+        /*
+         * Малюємо фінальний результат
+         * без рамки виділення.
+         */
+
+        const output =
+            document.createElement(
+                "canvas"
+            );
+
+        output.width =
+            canvas.width;
+
+        output.height =
+            canvas.height;
+
+        const outputCtx =
+            output.getContext("2d");
+
+        if (bottomLayer) {
+
+            outputCtx.save();
+
+            outputCtx.globalAlpha =
+                bottomLayer.opacity;
+
+            outputCtx.drawImage(
+                bottomLayer.image,
+                bottomLayer.x,
+                bottomLayer.y,
+                bottomLayer.width,
+                bottomLayer.height
+            );
+
+            outputCtx.restore();
+        }
+
+        if (topLayer) {
+
+            outputCtx.save();
+
+            outputCtx.globalAlpha =
+                topLayer.opacity;
+
+            outputCtx.drawImage(
+                topLayer.image,
+                topLayer.x,
+                topLayer.y,
+                topLayer.width,
+                topLayer.height
+            );
+
+            outputCtx.restore();
+        }
+
+        output.toBlob(
+            blob => {
+
+                if (!blob) {
+
+                    status.textContent =
+                        "Не вдалося створити PNG.";
+
+                    return;
+                }
+
+                const url =
+                    URL.createObjectURL(
+                        blob
+                    );
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
+
+                link.href = url;
+
+                link.download =
+                    "aero-composition.png";
+
+                document.body.appendChild(
+                    link
+                );
+
+                link.click();
+
+                link.remove();
+
+                setTimeout(
+                    () => {
+                        URL.revokeObjectURL(
+                            url
+                        );
+                    },
+                    1000
+                );
+
+                status.textContent =
+                    "PNG збережено.";
+
+            },
+
+            "image/png"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   CLEAR
+   ========================================================= */
+
+clearBtn.addEventListener(
+    "click",
+    () => {
+
+        saveHistory();
+
+        bottomLayer = null;
+        topLayer = null;
+
+        bottomName.textContent =
+            "порожній";
+
+        topName.textContent =
+            "порожній";
+
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        updateUI();
+
+        status.textContent =
+            "Полотно очищено.";
+
+    }
+);
+
+
+/* =========================================================
+   WINDOW RESIZE
+   ========================================================= */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        updateSelection();
+
+    }
+);
+
+
+/* =========================================================
+   ПОЧАТКОВИЙ СТАН
+   ========================================================= */
+
+canvas.style.cursor =
+    "grab";
+
+updateCanvasSize();
+
+updateUI();
+
+</script>
+
+</body>
+</html>
+
