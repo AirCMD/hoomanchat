@@ -1,694 +1,3568 @@
+html
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AeroCanvas SAI Studio</title>
-    <style>
-        :root {
-            --aero-glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(200, 230, 255, 0.45) 100%);
-            --aero-border: 1px solid rgba(255, 255, 255, 0.9);
-            --aero-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-            --aero-btn-bg: linear-gradient(180deg, #ffffff 0%, #dbeeff 50%, #b2d7fe 51%, #e2f1ff 100%);
-            --aero-btn-hover: linear-gradient(180deg, #ffffff 0%, #e8f4ff 50%, #cce5ff 51%, #edf6ff 100%);
-            --aero-btn-active: linear-gradient(180deg, #aed4f8 0%, #70b4f3 100%);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>AeroCanvas SAI Studio</title>
 
-        * { box-sizing: border-box; user-select: none; margin: 0; padding: 0; }
+<style>
+:root {
+    --sky-1: #79d9ff;
+    --sky-2: #bcecff;
+    --water: #46b9df;
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0e4b88 0%, #2989d8 40%, #89c7fe 80%, #e0f3ff 100%);
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
+    --glass: rgba(235, 250, 255, .68);
+    --glass-strong: rgba(245, 253, 255, .84);
+    --glass-soft: rgba(255, 255, 255, .38);
 
-        .app-header {
-            background: var(--aero-glass-bg);
-            backdrop-filter: blur(12px);
-            border-bottom: var(--aero-border);
-            box-shadow: var(--aero-shadow);
-            padding: 8px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 100;
-        }
+    --line: rgba(255,255,255,.78);
+    --line-blue: rgba(46,145,193,.42);
 
-        .app-title {
-            font-weight: bold;
-            font-size: 18px;
-            color: #0b3c6d;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
-        }
+    --text: #124d6b;
+    --text-dark: #083b56;
 
-        .main-layout {
-            display: flex;
-            flex: 1;
-            height: calc(100vh - 50px);
-            position: relative;
-        }
+    --blue: #25a9df;
+    --blue-dark: #087caf;
 
-        .sidebar {
-            width: 290px;
-            background: var(--aero-glass-bg);
-            backdrop-filter: blur(12px);
-            border-right: var(--aero-border);
-            box-shadow: var(--aero-shadow);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            padding: 12px;
-            overflow-y: auto;
-            z-index: 90;
-        }
+    --green: #53cfa0;
+    --green-dark: #269b78;
 
-        .panel-section {
-            background: rgba(255, 255, 255, 0.45);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            border-radius: 8px;
-            padding: 10px;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-        }
+    --shadow:
+        0 10px 30px rgba(20, 95, 130, .20),
+        0 2px 6px rgba(0,0,0,.10),
+        inset 0 1px rgba(255,255,255,.95);
 
-        .panel-section h4 {
-            font-size: 11px;
-            text-transform: uppercase;
-            color: #15497b;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
+    --small-shadow:
+        0 3px 10px rgba(20, 95, 130, .16),
+        inset 0 1px rgba(255,255,255,.95);
+}
 
-        .btn {
-            background: var(--aero-btn-bg);
-            border: 1px solid #7da2ce;
-            border-radius: 5px;
-            padding: 6px 10px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #0c3966;
-            cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.9);
-            transition: all 0.15s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
+/* --------------------------------------------------
+   GLOBAL
+-------------------------------------------------- */
 
-        .btn:hover { background: var(--aero-btn-hover); border-color: #4282c4; }
-        .btn:active, .btn.active {
-            background: var(--aero-btn-active);
-            color: #fff;
-            border-color: #19528d;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-        }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
 
-        .btn-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
-        .tool-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
 
-        .field-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
-        .field-group label { font-size: 12px; color: #1a436a; display: flex; justify-content: space-between; }
+body {
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        Geneva,
+        Verdana,
+        sans-serif;
 
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%; height: 6px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 3px; border: 1px solid #a3c4e0;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 14px; height: 14px;
-            border-radius: 50%; background: var(--aero-btn-bg);
-            border: 1px solid #0c3966; cursor: pointer;
-        }
+    color: var(--text);
 
-        .gradient-stops { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
-        .stop-item { width: 24px; height: 24px; border-radius: 4px; border: 1px solid #7da2ce; cursor: pointer; }
+    overflow: hidden;
 
-        .layer-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 6px 8px; background: rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 5px;
-            margin-bottom: 4px; cursor: pointer; font-size: 12px; color: #0c3966;
-        }
-        .layer-item.active { background: rgba(160, 210, 255, 0.8); border-color: #2989d8; font-weight: bold; }
+    background:
+        radial-gradient(circle at 18% 12%, rgba(255,255,255,.85) 0 3%, transparent 18%),
+        radial-gradient(circle at 82% 20%, rgba(255,255,255,.55) 0 4%, transparent 20%),
+        linear-gradient(
+            160deg,
+            #51c8ef 0%,
+            #8edff7 28%,
+            #b8efff 58%,
+            #5ec8dd 100%
+        );
+}
 
-        .viewport {
-            flex: 1; position: relative; overflow: hidden;
-            background: radial-gradient(circle, #3a506b 0%, #1c2541 100%);
-            display: flex; align-items: center; justify-content: center;
-        }
+/* --------------------------------------------------
+   HEADER
+-------------------------------------------------- */
 
-        .canvas-container {
-            position: absolute; width: 1000px; height: 700px;
-            background-color: #ffffff;
-            background-image: 
-                linear-gradient(45deg, #ccc 25%, transparent 25%), 
-                linear-gradient(-45deg, #ccc 25%, transparent 25%), 
-                linear-gradient(45deg, transparent 75%, #ccc 75%), 
-                linear-gradient(-45deg, transparent 75%, #ccc 75%);
-            background-size: 20px 20px;
-            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            transform-origin: center center;
-        }
+.app-header {
+    min-height: 56px;
+    height: 56px;
 
-        .canvas-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        #preview-canvas { pointer-events: auto; }
-    </style>
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 7px 12px;
+
+    position: relative;
+    z-index: 100;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.88),
+            rgba(218,246,255,.66)
+        );
+
+    border-bottom: 1px solid rgba(255,255,255,.95);
+
+    box-shadow:
+        0 4px 18px rgba(20,100,130,.20),
+        inset 0 1px rgba(255,255,255,1);
+
+    backdrop-filter: blur(18px) saturate(130%);
+    -webkit-backdrop-filter: blur(18px) saturate(130%);
+}
+
+.app-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    min-width: 0;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    color: #07547b;
+
+    text-shadow:
+        0 1px 0 white,
+        0 0 8px rgba(255,255,255,.75);
+
+    white-space: nowrap;
+}
+
+.header-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: nowrap;
+}
+
+/* --------------------------------------------------
+   BUTTONS
+-------------------------------------------------- */
+
+.btn {
+    min-height: 32px;
+
+    padding: 6px 11px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    border-radius: 8px;
+
+    border: 1px solid rgba(56,139,177,.55);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.96) 0%,
+            rgba(238,252,255,.90) 42%,
+            rgba(184,231,247,.88) 48%,
+            rgba(222,247,255,.94) 100%
+        );
+
+    color: var(--text-dark);
+
+    font: inherit;
+    font-size: 12px;
+    font-weight: 650;
+
+    box-shadow: var(--small-shadow);
+
+    cursor: pointer;
+
+    transition:
+        transform .08s ease,
+        filter .12s ease,
+        box-shadow .12s ease,
+        background .12s ease;
+
+    -webkit-tap-highlight-color: transparent;
+
+    touch-action: manipulation;
+}
+
+.btn:hover {
+    filter: brightness(1.06) saturate(1.08);
+
+    box-shadow:
+        0 5px 14px rgba(20,100,140,.20),
+        inset 0 1px rgba(255,255,255,1);
+
+    border-color: rgba(32,130,177,.72);
+}
+
+.btn:focus-visible {
+    outline: 2px solid rgba(35,172,226,.75);
+    outline-offset: 2px;
+}
+
+.btn:active,
+.btn.active {
+    transform: translateY(1px);
+
+    background:
+        linear-gradient(
+            180deg,
+            #76d4f0,
+            #3ab5dc 55%,
+            #8ce0f4
+        );
+
+    border-color: #1689b7;
+
+    color: white;
+
+    box-shadow:
+        inset 0 2px 5px rgba(0,90,130,.30),
+        0 1px 3px rgba(0,70,100,.15);
+}
+
+.btn.green {
+    background:
+        linear-gradient(
+            180deg,
+            #eafff5,
+            #b9f1d8 48%,
+            #72d5ae 52%,
+            #c9f5df
+        );
+
+    border-color: #52b88f;
+}
+
+.btn.green:hover {
+    filter: brightness(1.06);
+}
+
+/* --------------------------------------------------
+   LAYOUT
+-------------------------------------------------- */
+
+.main-layout {
+    display: flex;
+    width: 100%;
+    height: calc(100vh - 56px);
+    min-height: 0;
+}
+
+/* --------------------------------------------------
+   SIDEBAR
+-------------------------------------------------- */
+
+.sidebar {
+    width: 292px;
+    min-width: 250px;
+
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+
+    padding: 10px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(246,253,255,.76),
+            rgba(189,236,250,.52)
+        );
+
+    border-right: 1px solid rgba(255,255,255,.90);
+
+    box-shadow:
+        4px 0 18px rgba(20,100,130,.14);
+
+    backdrop-filter: blur(18px) saturate(125%);
+    -webkit-backdrop-filter: blur(18px) saturate(125%);
+
+    z-index: 80;
+}
+
+.panel-section {
+    padding: 10px;
+
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.70),
+            rgba(215,244,255,.40)
+        );
+
+    border: 1px solid rgba(255,255,255,.85);
+
+    box-shadow:
+        0 3px 10px rgba(20,100,130,.09),
+        inset 0 1px rgba(255,255,255,.90);
+}
+
+.panel-section h4 {
+    margin-bottom: 8px;
+
+    color: #116084;
+
+    font-size: 11px;
+    font-weight: 750;
+
+    letter-spacing: .65px;
+    text-transform: uppercase;
+
+    text-shadow: 0 1px white;
+}
+
+.btn-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 6px;
+}
+
+.tool-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 6px;
+}
+
+.tool-grid .btn {
+    min-height: 38px;
+    padding: 5px 4px;
+    font-size: 11px;
+}
+
+/* --------------------------------------------------
+   FIELDS
+-------------------------------------------------- */
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 9px;
+}
+
+.field-group:last-child {
+    margin-bottom: 0;
+}
+
+.field-group label {
+    display: flex;
+    justify-content: space-between;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    color: #175676;
+}
+
+.field-group label span {
+    font-weight: 750;
+}
+
+input[type="range"] {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 100%;
+    height: 7px;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(120,190,215,.40),
+            rgba(255,255,255,.85)
+        );
+
+    border: 1px solid rgba(70,145,175,.40);
+
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+
+    width: 17px;
+    height: 17px;
+
+    border-radius: 50%;
+
+    border: 1px solid #2689b1;
+
+    background:
+        radial-gradient(circle at 35% 30%, white 0 18%, transparent 19%),
+        linear-gradient(#effcff, #5fc6e6);
+
+    box-shadow:
+        0 2px 5px rgba(0,80,110,.22),
+        inset 0 1px white;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 17px;
+    height: 17px;
+
+    border-radius: 50%;
+
+    border: 1px solid #2689b1;
+
+    background: linear-gradient(#effcff, #5fc6e6);
+
+    cursor: pointer;
+}
+
+input[type="color"] {
+    border: 1px solid rgba(50,130,165,.5);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* --------------------------------------------------
+   GRADIENT
+-------------------------------------------------- */
+
+.gradient-stops {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 7px;
+}
+
+.stop-item {
+    width: 28px;
+    height: 28px;
+
+    padding: 0;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+}
+
+/* --------------------------------------------------
+   LAYERS
+-------------------------------------------------- */
+
+.layer-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 34px;
+
+    padding: 7px 9px;
+    margin-bottom: 4px;
+
+    border-radius: 8px;
+
+    background: rgba(255,255,255,.50);
+
+    border: 1px solid rgba(255,255,255,.78);
+
+    color: #12516f;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: .12s ease;
+}
+
+.layer-item:hover {
+    background: rgba(255,255,255,.72);
+}
+
+.layer-item.active {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(137,224,248,.78),
+            rgba(69,183,219,.65)
+        );
+
+    border-color: rgba(22,135,180,.65);
+
+    color: white;
+
+    text-shadow: 0 1px rgba(0,80,110,.35);
+
+    box-shadow:
+        inset 0 1px rgba(255,255,255,.85),
+        0 2px 7px rgba(20,110,145,.16);
+}
+
+/* --------------------------------------------------
+   VECTOR PANEL
+-------------------------------------------------- */
+
+.vector-info {
+    font-size: 10px;
+    line-height: 1.4;
+    color: #215a73;
+    margin-bottom: 8px;
+}
+
+.vector-status {
+    margin-top: 8px;
+
+    padding: 7px;
+
+    border-radius: 7px;
+
+    background: rgba(255,255,255,.52);
+
+    border: 1px solid rgba(255,255,255,.75);
+
+    font-size: 10px;
+}
+
+/* --------------------------------------------------
+   VIEWPORT
+-------------------------------------------------- */
+
+.viewport {
+    position: relative;
+
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            #516e78 0%,
+            #304e5a 48%,
+            #203d49 100%
+        );
+
+    touch-action: none;
+
+    cursor: crosshair;
+}
+
+/* subtle Aero water/glow */
+
+.viewport::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 0%,
+            rgba(130,220,240,.18),
+            transparent 55%
+        );
+}
+
+/* --------------------------------------------------
+   CANVAS
+-------------------------------------------------- */
+
+.canvas-container {
+    position: absolute;
+
+    width: 1000px;
+    height: 700px;
+
+    transform-origin: center center;
+
+    box-shadow:
+        0 25px 55px rgba(0,0,0,.45),
+        0 4px 12px rgba(0,0,0,.25);
+
+    will-change: transform;
+
+    /* transparency checker */
+    background-color: white;
+
+    background-image:
+        linear-gradient(45deg, #d4d4d4 25%, transparent 25%),
+        linear-gradient(-45deg, #d4d4d4 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #d4d4d4 75%),
+        linear-gradient(-45deg, transparent 75%, #d4d4d4 75%);
+
+    background-size: 20px 20px;
+
+    background-position:
+        0 0,
+        0 10px,
+        10px -10px,
+        -10px 0;
+}
+
+.canvas-layer {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    pointer-events: none;
+}
+
+#preview-canvas {
+    pointer-events: auto;
+}
+
+/* --------------------------------------------------
+   SCROLLBAR
+-------------------------------------------------- */
+
+.sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(255,255,255,.18);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            #9ce1f3,
+            #55b9d9
+        );
+
+    border: 1px solid rgba(255,255,255,.65);
+}
+
+/* --------------------------------------------------
+   RESPONSIVE LAPTOP
+-------------------------------------------------- */
+
+@media (max-width: 1050px) {
+
+    .sidebar {
+        width: 255px;
+        min-width: 235px;
+        padding: 8px;
+    }
+
+    .app-title {
+        font-size: 15px;
+    }
+
+    .header-actions .btn {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+}
+
+@media (max-width: 760px) {
+
+    .app-header {
+        min-height: 50px;
+        height: 50px;
+    }
+
+    .main-layout {
+        height: calc(100vh - 50px);
+    }
+
+    .sidebar {
+        width: 215px;
+        min-width: 205px;
+    }
+
+    .app-title {
+        max-width: 190px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .header-actions .btn {
+        font-size: 0;
+        min-width: 36px;
+    }
+
+    .header-actions .btn:first-letter {
+        font-size: 15px;
+    }
+
+    .tool-grid {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+}
+
+/* --------------------------------------------------
+   VERY SMALL WIDTH
+-------------------------------------------------- */
+
+@media (max-width: 570px) {
+
+    .sidebar {
+        width: 185px;
+        min-width: 180px;
+    }
+
+    .panel-section {
+        padding: 8px;
+    }
+
+    .btn {
+        min-height: 34px;
+        font-size: 11px;
+    }
+
+    .tool-grid .btn {
+        font-size: 10px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <header class="app-header">
-        <div class="app-title">🎨 AeroCanvas Studio (SAI Vector Update)</div>
-        <div style="display: flex; gap: 8px;">
-            <button class="btn" onclick="undo()">↶ Відмінити</button>
-            <button class="btn" onclick="redo()">↷ Повернути</button>
-            <button class="btn" onclick="exportPNG()" style="background: linear-gradient(180deg, #c2f0c2 0%, #62d262 100%); border-color: #2e8b2e;">💾 Зберегти PNG</button>
-        </div>
-    </header>
+<header class="app-header">
 
-    <div class="main-layout">
-        <aside class="sidebar">
-            <div class="panel-section">
-                <h4>Навігація та Масштаб</h4>
-                <div class="btn-grid" style="margin-bottom:6px;">
-                    <button class="btn" id="tool-pan" onclick="setTool('pan')">🖐️ Перетягувати</button>
-                    <button class="btn" onclick="resetView()">🎯 По центру</button>
-                </div>
-                <div class="btn-grid">
-                    <button class="btn" onclick="zoomDelta(0.15)">🔍 +</button>
-                    <button class="btn" onclick="zoomDelta(-0.15)">🔍 -</button>
-                </div>
-                <button class="btn" style="width:100%; margin-top:6px;" onclick="setZoom(1)">100% Масштаб</button>
-            </div>
-
-            <div class="panel-section">
-                <h4>Інструменти</h4>
-                <div class="tool-grid">
-                    <button class="btn active" id="tool-pencil" onclick="setTool('pencil')">✏️ Олівець</button>
-                    <button class="btn" id="tool-vector" onclick="setTool('vector')">✒️ Вектор</button>
-                    <button class="btn" id="tool-wand" onclick="setTool('wand')">🪄 Паличка</button>
-                    <button class="btn" id="tool-line" onclick="setTool('line')">╱ Лінія</button>
-                    <button class="btn" id="tool-rect" onclick="setTool('rect')">▭ Квадрат</button>
-                    <button class="btn" id="tool-circle" onclick="setTool('circle')">◯ Коло</button>
-                </div>
-            </div>
-
-            <div class="panel-section">
-                <h4>Параметри</h4>
-                <div class="field-group">
-                    <label>Товщина: <span id="val-size">5</span>px</label>
-                    <input type="range" id="prop-size" min="1" max="100" value="5" oninput="updateProps()">
-                </div>
-                <div class="field-group">
-                    <label>Прозорість: <span id="val-opacity">100</span>%</label>
-                    <input type="range" id="prop-opacity" min="1" max="100" value="100" oninput="updateProps()">
-                </div>
-            </div>
-
-            <div class="panel-section">
-                <h4>Колір / Заливка</h4>
-                <div class="btn-grid" style="margin-bottom:8px;">
-                    <button class="btn active" id="fill-solid" onclick="setFillMode('solid')">Однорідний</button>
-                    <button class="btn" id="fill-grad" onclick="setFillMode('gradient')">Градієнт</button>
-                </div>
-                <div id="solid-color-container">
-                    <input type="color" id="main-color" value="#1976d2" onchange="updateProps()" style="width:100%; height:32px; cursor:pointer;">
-                </div>
-                <div id="gradient-container" style="display:none;">
-                    <div style="font-size:11px; color:#0c3966;">Маркери градієнта:</div>
-                    <div class="gradient-stops" id="stops-list"></div>
-                    <button class="btn" style="width:100%; margin-top:6px; font-size:11px;" onclick="addGradientStop()">+ Маркер</button>
-                </div>
-            </div>
-
-            <div class="panel-section" id="vector-tools-panel" style="display:none;">
-                <h4>Вектор SAI</h4>
-                <p style="font-size:10px; color:#1a436a; margin-bottom:6px;">Затисніть <b>Ctrl</b> та клацніть на лінію, щоб виділити її маркери.</p>
-                <div class="btn-grid">
-                    <button class="btn" onclick="modifyVectorWidth(1.3)">Товстіше +</button>
-                    <button class="btn" onclick="modifyVectorWidth(0.7)">Тонше -</button>
-                </div>
-                <button class="btn" style="width:100%; margin-top:6px;" onclick="finishVectorPath()">Зафіксувати лінію</button>
-            </div>
-
-            <div class="panel-section">
-                <h4>Шари (4)</h4>
-                <div id="layers-list"></div>
-            </div>
-        </aside>
-
-        <main class="viewport" id="viewport">
-            <div class="canvas-container" id="canvas-container">
-                <canvas id="layer-0" class="canvas-layer" width="1000" height="700"></canvas>
-                <canvas id="layer-1" class="canvas-layer" width="1000" height="700"></canvas>
-                <canvas id="layer-2" class="canvas-layer" width="1000" height="700"></canvas>
-                <canvas id="layer-3" class="canvas-layer" width="1000" height="700"></canvas>
-                <canvas id="preview-canvas" class="canvas-layer" width="1000" height="700"></canvas>
-            </div>
-        </main>
+    <div class="app-title">
+        🎨 AeroCanvas Studio
     </div>
 
-    <script>
-        const WIDTH = 1000, HEIGHT = 700;
-        let layers = [], activeLayerIndex = 3;
-        let currentTool = 'pencil', fillMode = 'solid';
+    <div class="header-actions">
 
-        let scale = 1, panX = 0, panY = 0;
-        let isPanning = false, startPanX = 0, startPanY = 0;
+        <button class="btn"
+                type="button"
+                onclick="undo()"
+                title="Ctrl+Z">
+            ↶ Відмінити
+        </button>
 
-        let brushSize = 5, brushOpacity = 1.0, mainColor = '#1976d2';
-        let gradientStops = ['#1976d2', '#89c7fe'];
+        <button class="btn"
+                type="button"
+                onclick="redo()"
+                title="Ctrl+Y">
+            ↷ Повернути
+        </button>
 
-        let isDrawing = false, startX = 0, startY = 0, activePath = [];
+        <button class="btn green"
+                type="button"
+                onclick="exportPNG()">
+            💾 PNG
+        </button>
 
-        // Vector Storage
-        let allVectorLines = []; // Array of saved lines [{ layer, points:[{x,y,w}] }]
-        let activeVectorLine = null;
-        let selectedVectorPtIndex = -1;
+    </div>
 
-        const undoStack = [], redoStack = [];
-        const container = document.getElementById('canvas-container');
-        const viewport = document.getElementById('viewport');
-        const previewCanvas = document.getElementById('preview-canvas');
-        const previewCtx = previewCanvas.getContext('2d');
+</header>
 
-        window.onload = () => {
-            for (let i = 0; i < 4; i++) {
-                const canvas = document.getElementById(`layer-${i}`);
-                layers.push({ canvas: canvas, ctx: canvas.getContext('2d') });
+
+<div class="main-layout">
+
+<aside class="sidebar">
+
+    <!-- NAVIGATION -->
+
+    <div class="panel-section">
+
+        <h4>Навігація та масштаб</h4>
+
+        <div class="btn-grid">
+
+            <button class="btn"
+                    id="tool-pan"
+                    type="button"
+                    onclick="setTool('pan')">
+                🖐 Перетягувати
+            </button>
+
+            <button class="btn"
+                    type="button"
+                    onclick="resetView()">
+                🎯 Центр
+            </button>
+
+        </div>
+
+        <div class="btn-grid" style="margin-top:6px;">
+
+            <button class="btn"
+                    type="button"
+                    onclick="zoomDelta(.15)">
+                🔍 +
+            </button>
+
+            <button class="btn"
+                    type="button"
+                    onclick="zoomDelta(-.15)">
+                🔍 −
+            </button>
+
+        </div>
+
+        <button class="btn"
+                type="button"
+                style="width:100%; margin-top:6px;"
+                onclick="setZoom(1)">
+            100% Масштаб
+        </button>
+
+    </div>
+
+
+    <!-- TOOLS -->
+
+    <div class="panel-section">
+
+        <h4>Інструменти</h4>
+
+        <div class="tool-grid">
+
+            <button class="btn active"
+                    id="tool-pencil"
+                    type="button"
+                    onclick="setTool('pencil')">
+                ✏️ Олівець
+            </button>
+
+            <button class="btn"
+                    id="tool-vector"
+                    type="button"
+                    onclick="setTool('vector')">
+                ✒️ Вектор
+            </button>
+
+            <button class="btn"
+                    id="tool-wand"
+                    type="button"
+                    onclick="setTool('wand')">
+                🪄 Паличка
+            </button>
+
+            <button class="btn"
+                    id="tool-line"
+                    type="button"
+                    onclick="setTool('line')">
+                ╱ Лінія
+            </button>
+
+            <button class="btn"
+                    id="tool-rect"
+                    type="button"
+                    onclick="setTool('rect')">
+                ▭ Прямокутник
+            </button>
+
+            <button class="btn"
+                    id="tool-circle"
+                    type="button"
+                    onclick="setTool('circle')">
+                ◯ Коло
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- PROPERTIES -->
+
+    <div class="panel-section">
+
+        <h4>Параметри</h4>
+
+        <div class="field-group">
+
+            <label>
+                Товщина
+                <span id="val-size">5</span>px
+            </label>
+
+            <input
+                type="range"
+                id="prop-size"
+                min="1"
+                max="100"
+                value="5"
+            >
+
+        </div>
+
+        <div class="field-group">
+
+            <label>
+                Прозорість
+                <span id="val-opacity">100</span>%
+            </label>
+
+            <input
+                type="range"
+                id="prop-opacity"
+                min="1"
+                max="100"
+                value="100"
+            >
+
+        </div>
+
+    </div>
+
+
+    <!-- COLOR -->
+
+    <div class="panel-section">
+
+        <h4>Колір / заливка</h4>
+
+        <div class="btn-grid">
+
+            <button class="btn active"
+                    id="fill-solid"
+                    type="button"
+                    onclick="setFillMode('solid')">
+                Однорідний
+            </button>
+
+            <button class="btn"
+                    id="fill-grad"
+                    type="button"
+                    onclick="setFillMode('gradient')">
+                Градієнт
+            </button>
+
+        </div>
+
+
+        <div id="solid-color-container"
+             style="margin-top:8px;">
+
+            <input
+                type="color"
+                id="main-color"
+                value="#1976d2"
+                style="width:100%; height:34px;"
+            >
+
+        </div>
+
+
+        <div id="gradient-container"
+             style="display:none; margin-top:8px;">
+
+            <div style="font-size:11px;">
+                Маркери градієнта:
+            </div>
+
+            <div class="gradient-stops"
+                 id="stops-list">
+            </div>
+
+            <button
+                class="btn"
+                type="button"
+                style="width:100%; margin-top:6px;"
+                onclick="addGradientStop()">
+                + Маркер
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- VECTOR -->
+
+    <div class="panel-section"
+         id="vector-tools-panel"
+         style="display:none;">
+
+        <h4>Еластичний вектор</h4>
+
+        <div class="vector-info">
+            Малюй протягуванням миші — лінія формується
+            в реальному часі та автоматично згладжується.
+            <br><br>
+            <b>Ctrl + клік</b> по вектору — вибрати його.
+            Потім можна перетягувати вузли.
+        </div>
+
+        <div class="btn-grid">
+
+            <button class="btn"
+                    type="button"
+                    onclick="modifyVectorWidth(1.25)">
+                Товстіше +
+            </button>
+
+            <button class="btn"
+                    type="button"
+                    onclick="modifyVectorWidth(.8)">
+                Тонше −
+            </button>
+
+        </div>
+
+        <button
+            class="btn"
+            type="button"
+            style="width:100%; margin-top:6px;"
+            onclick="finishVectorPath()">
+            ✓ Зафіксувати
+        </button>
+
+        <div class="vector-status"
+             id="vector-status">
+            Немає активного вектора
+        </div>
+
+    </div>
+
+
+    <!-- LAYERS -->
+
+    <div class="panel-section">
+
+        <h4>Шари</h4>
+
+        <div id="layers-list"></div>
+
+    </div>
+
+</aside>
+
+
+<main class="viewport"
+      id="viewport">
+
+    <div class="canvas-container"
+         id="canvas-container">
+
+        <canvas
+            id="layer-0"
+            class="canvas-layer"
+            width="1000"
+            height="700">
+        </canvas>
+
+        <canvas
+            id="layer-1"
+            class="canvas-layer"
+            width="1000"
+            height="700">
+        </canvas>
+
+        <canvas
+            id="layer-2"
+            class="canvas-layer"
+            width="1000"
+            height="700">
+        </canvas>
+
+        <canvas
+            id="layer-3"
+            class="canvas-layer"
+            width="1000"
+            height="700">
+        </canvas>
+
+        <canvas
+            id="preview-canvas"
+            class="canvas-layer"
+            width="1000"
+            height="700">
+        </canvas>
+
+    </div>
+
+</main>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   BASIC STATE
+========================================================= */
+
+const WIDTH = 1000;
+const HEIGHT = 700;
+
+let layers = [];
+let activeLayerIndex = 3;
+
+let currentTool = "pencil";
+let fillMode = "solid";
+
+let brushSize = 5;
+let brushOpacity = 1;
+let mainColor = "#1976d2";
+
+let gradientStops = [
+    "#1976d2",
+    "#89c7fe"
+];
+
+
+/* =========================================================
+   VIEW
+========================================================= */
+
+let scale = 1;
+
+let panX = 0;
+let panY = 0;
+
+let isPanning = false;
+
+let panStartPointerX = 0;
+let panStartPointerY = 0;
+
+let panStartX = 0;
+let panStartY = 0;
+
+
+/* =========================================================
+   DRAWING
+========================================================= */
+
+let isDrawing = false;
+
+let startX = 0;
+let startY = 0;
+
+let activePath = [];
+
+
+/* =========================================================
+   VECTOR ENGINE
+========================================================= */
+
+/*
+    Each vector:
+
+    {
+        id,
+        layer,
+        points: [
+            {
+                x,
+                y,
+                w
             }
-            renderLayersUI();
-            renderGradientStopsUI();
-            resetView();
-            saveState();
+        ],
+        color,
+        opacity
+    }
 
-            previewCanvas.addEventListener('mousedown', handleMouseDown);
-            window.addEventListener('mousemove', handleMouseMove);
-            window.addEventListener('mouseup', handleMouseUp);
-            viewport.addEventListener('wheel', handleWheel, { passive: false });
+    Unlike the original version, the vector is not
+    immediately converted into raster pixels.
+*/
 
-            window.addEventListener('keydown', (e) => {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
-                if ((e.ctrlKey || e.metaKey) && e.key === 'y') { e.preventDefault(); redo(); }
-            });
-        };
+let allVectorLines = [];
 
-        /* --- Viewport Boundaries & Pan --- */
-        function updateTransform() {
-            scale = Math.min(Math.max(0.4, scale), 3.0); // Min 0.4x, Max 3.0x
-            const maxPanX = viewport.clientWidth / 2;
-            const maxPanY = viewport.clientHeight / 2;
-            panX = Math.min(Math.max(-maxPanX, panX), maxPanX);
-            panY = Math.min(Math.max(-maxPanY, panY), maxPanY);
-            container.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
-        }
+let activeVectorLine = null;
 
-        function resetView() {
-            scale = 1;
-            panX = 0; panY = 0;
-            updateTransform();
-        }
+let selectedVectorPtIndex = -1;
 
-        function setZoom(val) { scale = val; updateTransform(); }
-        function zoomDelta(delta) { scale += delta; updateTransform(); }
+let vectorDraggingPoint = false;
 
-        function handleWheel(e) {
-            e.preventDefault();
-            scale *= (e.deltaY < 0 ? 1.1 : 0.9);
-            updateTransform();
-        }
 
-        /* --- Tools & UI --- */
-        function setTool(tool) {
-            currentTool = tool;
-            document.querySelectorAll('.tool-grid .btn, #tool-pan').forEach(b => b.classList.remove('active'));
-            const btn = document.getElementById(`tool-${tool}`);
-            if (btn) btn.classList.add('active');
-            document.getElementById('vector-tools-panel').style.display = (tool === 'vector') ? 'block' : 'none';
-            if (tool !== 'vector') finishVectorPath();
-            clearPreview();
-        }
+/* =========================================================
+   DOM
+========================================================= */
 
-        function setFillMode(mode) {
-            fillMode = mode;
-            document.getElementById('fill-solid').classList.toggle('active', mode === 'solid');
-            document.getElementById('fill-grad').classList.toggle('active', mode === 'gradient');
-            document.getElementById('solid-color-container').style.display = (mode === 'solid') ? 'block' : 'none';
-            document.getElementById('gradient-container').style.display = (mode === 'gradient') ? 'block' : 'none';
-        }
+const container =
+    document.getElementById("canvas-container");
 
-        function updateProps() {
-            brushSize = parseInt(document.getElementById('prop-size').value);
-            brushOpacity = parseInt(document.getElementById('prop-opacity').value) / 100;
-            mainColor = document.getElementById('main-color').value;
-            document.getElementById('val-size').innerText = brushSize;
-            document.getElementById('val-opacity').innerText = Math.round(brushOpacity * 100);
-        }
+const viewport =
+    document.getElementById("viewport");
 
-        function renderGradientStopsUI() {
-            const list = document.getElementById('stops-list');
-            list.innerHTML = '';
-            gradientStops.forEach((color, idx) => {
-                const el = document.createElement('input');
-                el.type = 'color'; el.value = color; el.className = 'stop-item';
-                el.onchange = (e) => { gradientStops[idx] = e.target.value; };
-                list.appendChild(el);
-            });
-        }
+const previewCanvas =
+    document.getElementById("preview-canvas");
 
-        function addGradientStop() {
-            if (gradientStops.length < 5) {
-                gradientStops.push('#ffffff');
-                renderGradientStopsUI();
-            }
-        }
+const previewCtx =
+    previewCanvas.getContext("2d");
 
-        function renderLayersUI() {
-            const list = document.getElementById('layers-list');
-            list.innerHTML = '';
-            for (let i = 3; i >= 0; i--) {
-                const div = document.createElement('div');
-                div.className = `layer-item ${i === activeLayerIndex ? 'active' : ''}`;
-                div.innerHTML = `<span>Шар ${i + 1}</span> <small>${i === 3 ? '(Верхній)' : ''}</small>`;
-                div.onclick = () => { activeLayerIndex = i; renderLayersUI(); };
-                list.appendChild(div);
-            }
-        }
 
-        function getCanvasCoords(e) {
-            const rect = container.getBoundingClientRect();
-            return {
-                x: (e.clientX - rect.left) / scale,
-                y: (e.clientY - rect.top) / scale
-            };
-        }
+/* =========================================================
+   HISTORY
+========================================================= */
 
-        /* --- Drawing & Interaction Handlers --- */
-        function handleMouseDown(e) {
-            const pos = getCanvasCoords(e);
+const undoStack = [];
+const redoStack = [];
 
-            if (currentTool === 'pan' || e.button === 1) {
-                isPanning = true;
-                startPanX = e.clientX - panX;
-                startPanY = e.clientY - panY;
-                return;
-            }
+const MAX_HISTORY = 30;
 
-            isDrawing = true;
-            startX = pos.x; startY = pos.y;
 
-            if (currentTool === 'pencil') {
-                activePath = [{ x: pos.x, y: pos.y }];
-            } else if (currentTool === 'vector') {
-                // Check Ctrl-Click to select existing vector line
-                if (e.ctrlKey || e.metaKey) {
-                    selectVectorLineAt(pos.x, pos.y);
-                    return;
+/* =========================================================
+   INIT
+========================================================= */
+
+window.addEventListener("load", () => {
+
+    for (let i = 0; i < 4; i++) {
+
+        const canvas =
+            document.getElementById(`layer-${i}`);
+
+        layers.push({
+            canvas,
+            ctx: canvas.getContext("2d")
+        });
+
+    }
+
+    renderLayersUI();
+    renderGradientStopsUI();
+
+    updateProps();
+
+    resetView();
+
+    saveState();
+
+    /*
+        Pointer events work much better on laptops
+        and touchpads than the old mouse events.
+    */
+
+    previewCanvas.addEventListener(
+        "pointerdown",
+        handlePointerDown
+    );
+
+    window.addEventListener(
+        "pointermove",
+        handlePointerMove
+    );
+
+    window.addEventListener(
+        "pointerup",
+        handlePointerUp
+    );
+
+    window.addEventListener(
+        "pointercancel",
+        handlePointerUp
+    );
+
+
+    viewport.addEventListener(
+        "wheel",
+        handleWheel,
+        { passive: false }
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        handleKeyboard
+    );
+
+
+    /*
+        Prevent accidental browser dragging.
+    */
+
+    previewCanvas.addEventListener(
+        "dragstart",
+        e => e.preventDefault()
+    );
+
+});
+
+
+/* =========================================================
+   VIEWPORT / ZOOM
+========================================================= */
+
+function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+}
+
+
+function updateTransform() {
+
+    scale = clamp(scale, .25, 4);
+
+    /*
+        Keep enough of the canvas reachable while
+        preventing it from being thrown infinitely away.
+    */
+
+    const halfW =
+        Math.max(
+            0,
+            (container.offsetWidth * scale -
+             viewport.clientWidth) / 2
+        );
+
+    const halfH =
+        Math.max(
+            0,
+            (container.offsetHeight * scale -
+             viewport.clientHeight) / 2
+        );
+
+    const extraX = 120;
+    const extraY = 120;
+
+    panX = clamp(
+        panX,
+        -halfW - extraX,
+        halfW + extraX
+    );
+
+    panY = clamp(
+        panY,
+        -halfH - extraY,
+        halfH + extraY
+    );
+
+    container.style.transform =
+        `translate(${panX}px, ${panY}px) scale(${scale})`;
+}
+
+
+function resetView() {
+
+    scale = 1;
+
+    panX = 0;
+    panY = 0;
+
+    updateTransform();
+}
+
+
+function setZoom(value) {
+
+    scale = value;
+
+    updateTransform();
+}
+
+
+function zoomDelta(delta) {
+
+    scale += delta;
+
+    updateTransform();
+}
+
+
+function handleWheel(e) {
+
+    /*
+        Ctrl + wheel is often generated by a laptop
+        touchpad/browser zoom gesture. Treat it as canvas zoom.
+    */
+
+    e.preventDefault();
+
+    const oldScale = scale;
+
+    const direction =
+        e.deltaY < 0 ? 1 : -1;
+
+    scale *= direction > 0 ? 1.1 : .9;
+
+    scale = clamp(scale, .25, 4);
+
+    /*
+        Zoom around the pointer position.
+    */
+
+    const rect =
+        container.getBoundingClientRect();
+
+    const mouseX =
+        e.clientX - rect.left;
+
+    const mouseY =
+        e.clientY - rect.top;
+
+    const ratio =
+        scale / oldScale;
+
+    panX -=
+        (mouseX - container.offsetWidth / 2) *
+        (ratio - 1);
+
+    panY -=
+        (mouseY - container.offsetHeight / 2) *
+        (ratio - 1);
+
+    updateTransform();
+}
+
+
+/* =========================================================
+   TOOLS
+========================================================= */
+
+function setTool(tool) {
+
+    /*
+        Finish unfinished vector before switching tools.
+    */
+
+    if (
+        currentTool === "vector" &&
+        tool !== "vector"
+    ) {
+        finishVectorPath();
+    }
+
+    currentTool = tool;
+
+    document
+        .querySelectorAll(
+            ".tool-grid .btn, #tool-pan"
+        )
+        .forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+    const button =
+        document.getElementById(`tool-${tool}`);
+
+    if (button) {
+        button.classList.add("active");
+    }
+
+    document.getElementById(
+        "vector-tools-panel"
+    ).style.display =
+        tool === "vector"
+            ? "block"
+            : "none";
+
+    clearPreview();
+
+    updateCursor();
+}
+
+
+function updateCursor() {
+
+    if (currentTool === "pan") {
+
+        viewport.style.cursor =
+            isPanning
+                ? "grabbing"
+                : "grab";
+
+    } else {
+
+        viewport.style.cursor =
+            "crosshair";
+
+    }
+}
+
+
+/* =========================================================
+   FILL
+========================================================= */
+
+function setFillMode(mode) {
+
+    fillMode = mode;
+
+    document
+        .getElementById("fill-solid")
+        .classList.toggle(
+            "active",
+            mode === "solid"
+        );
+
+    document
+        .getElementById("fill-grad")
+        .classList.toggle(
+            "active",
+            mode === "gradient"
+        );
+
+    document.getElementById(
+        "solid-color-container"
+    ).style.display =
+        mode === "solid"
+            ? "block"
+            : "none";
+
+    document.getElementById(
+        "gradient-container"
+    ).style.display =
+        mode === "gradient"
+            ? "block"
+            : "none";
+}
+
+
+/* =========================================================
+   PROPERTIES
+========================================================= */
+
+function updateProps() {
+
+    brushSize =
+        parseInt(
+            document.getElementById(
+                "prop-size"
+            ).value
+        );
+
+    brushOpacity =
+        parseInt(
+            document.getElementById(
+                "prop-opacity"
+            ).value
+        ) / 100;
+
+    mainColor =
+        document.getElementById(
+            "main-color"
+        ).value;
+
+    document.getElementById(
+        "val-size"
+    ).textContent = brushSize;
+
+    document.getElementById(
+        "val-opacity"
+    ).textContent =
+        Math.round(brushOpacity * 100);
+}
+
+
+document
+    .getElementById("prop-size")
+    .addEventListener(
+        "input",
+        updateProps
+    );
+
+document
+    .getElementById("prop-opacity")
+    .addEventListener(
+        "input",
+        updateProps
+    );
+
+document
+    .getElementById("main-color")
+    .addEventListener(
+        "input",
+        updateProps
+    );
+
+
+/* =========================================================
+   GRADIENT UI
+========================================================= */
+
+function renderGradientStopsUI() {
+
+    const list =
+        document.getElementById(
+            "stops-list"
+        );
+
+    list.innerHTML = "";
+
+    gradientStops.forEach(
+        (color, index) => {
+
+            const input =
+                document.createElement("input");
+
+            input.type = "color";
+
+            input.value = color;
+
+            input.className =
+                "stop-item";
+
+            input.title =
+                `Маркер ${index + 1}`;
+
+            input.addEventListener(
+                "input",
+                e => {
+
+                    gradientStops[index] =
+                        e.target.value;
+
                 }
+            );
 
-                if (!activeVectorLine) {
-                    activeVectorLine = { layer: activeLayerIndex, points: [], color: mainColor };
-                    allVectorLines.push(activeVectorLine);
-                }
+            list.appendChild(input);
+        }
+    );
+}
 
-                // Check marker selection
-                let hitIndex = activeVectorLine.points.findIndex(pt => Math.hypot(pt.x - pos.x, pt.y - pos.y) < 12);
-                if (hitIndex !== -1) {
-                    selectedVectorPtIndex = hitIndex;
-                } else {
-                    activeVectorLine.points.push({ x: pos.x, y: pos.y, w: brushSize });
-                    selectedVectorPtIndex = activeVectorLine.points.length - 1;
-                }
-                drawVectorPreview();
-            } else if (currentTool === 'wand') {
-                applyMagicWand(Math.round(pos.x), Math.round(pos.y));
+
+function addGradientStop() {
+
+    if (gradientStops.length >= 5) {
+        return;
+    }
+
+    gradientStops.push("#ffffff");
+
+    renderGradientStopsUI();
+}
+
+
+/* =========================================================
+   LAYERS
+========================================================= */
+
+function renderLayersUI() {
+
+    const list =
+        document.getElementById(
+            "layers-list"
+        );
+
+    list.innerHTML = "";
+
+    for (
+        let i = layers.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "layer-item" +
+            (
+                i === activeLayerIndex
+                    ? " active"
+                    : ""
+            );
+
+        const name =
+            i === layers.length - 1
+                ? "Верхній шар"
+                : `Шар ${i + 1}`;
+
+        div.innerHTML =
+            `<span>${name}</span>
+             <small>${i === activeLayerIndex ? "●" : ""}</small>`;
+
+        div.addEventListener(
+            "click",
+            () => {
+
+                activeLayerIndex = i;
+
+                renderLayersUI();
             }
+        );
+
+        list.appendChild(div);
+    }
+}
+
+
+/* =========================================================
+   COORDINATES
+========================================================= */
+
+function getCanvasCoords(e) {
+
+    const rect =
+        container.getBoundingClientRect();
+
+    return {
+
+        x:
+            (e.clientX - rect.left) / scale,
+
+        y:
+            (e.clientY - rect.top) / scale
+
+    };
+}
+
+
+/* =========================================================
+   POINTER DOWN
+========================================================= */
+
+function handlePointerDown(e) {
+
+    /*
+        Don't allow right click to draw.
+    */
+
+    if (e.button === 2) {
+        return;
+    }
+
+    e.preventDefault();
+
+    const pos =
+        getCanvasCoords(e);
+
+
+    /* Middle mouse = pan */
+
+    if (
+        currentTool === "pan" ||
+        e.button === 1
+    ) {
+
+        isPanning = true;
+
+        panStartPointerX =
+            e.clientX;
+
+        panStartPointerY =
+            e.clientY;
+
+        panStartX = panX;
+        panStartY = panY;
+
+        updateCursor();
+
+        return;
+    }
+
+
+    /* VECTOR */
+
+    if (currentTool === "vector") {
+
+        handleVectorPointerDown(
+            e,
+            pos
+        );
+
+        return;
+    }
+
+
+    /* MAGIC WAND */
+
+    if (currentTool === "wand") {
+
+        applyMagicWand(
+            Math.round(pos.x),
+            Math.round(pos.y)
+        );
+
+        return;
+    }
+
+
+    /* NORMAL DRAWING */
+
+    isDrawing = true;
+
+    startX = pos.x;
+    startY = pos.y;
+
+
+    if (currentTool === "pencil") {
+
+        activePath = [
+            {
+                x: pos.x,
+                y: pos.y
+            }
+        ];
+
+        drawDot(
+            layers[activeLayerIndex].ctx,
+            pos.x,
+            pos.y
+        );
+    }
+
+    /*
+        Capture pointer so releasing slightly outside
+        the canvas still finishes the stroke.
+    */
+
+    try {
+        previewCanvas.setPointerCapture(e.pointerId);
+    } catch (_) {}
+}
+
+
+/* =========================================================
+   POINTER MOVE
+========================================================= */
+
+function handlePointerMove(e) {
+
+    /* PAN */
+
+    if (isPanning) {
+
+        const dx =
+            e.clientX -
+            panStartPointerX;
+
+        const dy =
+            e.clientY -
+            panStartPointerY;
+
+        panX = panStartX + dx;
+        panY = panStartY + dy;
+
+        updateTransform();
+
+        return;
+    }
+
+
+    /* VECTOR */
+
+    if (currentTool === "vector") {
+
+        handleVectorPointerMove(
+            e
+        );
+
+        return;
+    }
+
+
+    if (!isDrawing) {
+        return;
+    }
+
+
+    const pos =
+        getCanvasCoords(e);
+
+
+    if (currentTool === "pencil") {
+
+        activePath.push({
+            x: pos.x,
+            y: pos.y
+        });
+
+        drawPencilStroke(
+            layers[activeLayerIndex].ctx,
+            activePath
+        );
+
+    }
+
+
+    else if (
+        ["line", "rect", "circle"]
+            .includes(currentTool)
+    ) {
+
+        clearPreview();
+
+        drawShape(
+            previewCtx,
+            startX,
+            startY,
+            pos.x,
+            pos.y,
+            currentTool
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   POINTER UP
+========================================================= */
+
+function handlePointerUp(e) {
+
+    if (isPanning) {
+
+        isPanning = false;
+
+        updateCursor();
+
+        return;
+    }
+
+
+    if (currentTool === "vector") {
+
+        handleVectorPointerUp(e);
+
+        return;
+    }
+
+
+    if (!isDrawing) {
+        return;
+    }
+
+    isDrawing = false;
+
+    const pos =
+        getCanvasCoords(e);
+
+    const ctx =
+        layers[activeLayerIndex].ctx;
+
+
+    if (currentTool === "pencil") {
+
+        saveState();
+
+    }
+
+    else if (
+        ["line", "rect", "circle"]
+            .includes(currentTool)
+    ) {
+
+        clearPreview();
+
+        drawShape(
+            ctx,
+            startX,
+            startY,
+            pos.x,
+            pos.y,
+            currentTool
+        );
+
+        saveState();
+    }
+
+}
+
+
+/* =========================================================
+   PENCIL
+========================================================= */
+
+function drawDot(ctx, x, y) {
+
+    ctx.save();
+
+    ctx.globalAlpha =
+        brushOpacity;
+
+    ctx.fillStyle =
+        mainColor;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        brushSize / 2,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+    ctx.restore();
+}
+
+
+function drawPencilStroke(ctx, path) {
+
+    if (path.length < 2) {
+        return;
+    }
+
+    const a =
+        path[path.length - 2];
+
+    const b =
+        path[path.length - 1];
+
+    ctx.save();
+
+    ctx.globalAlpha =
+        brushOpacity;
+
+    ctx.strokeStyle =
+        mainColor;
+
+    ctx.lineWidth =
+        brushSize;
+
+    ctx.lineCap =
+        "round";
+
+    ctx.lineJoin =
+        "round";
+
+    ctx.beginPath();
+
+    ctx.moveTo(a.x, a.y);
+
+    ctx.lineTo(b.x, b.y);
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+
+/* =========================================================
+   SHAPES
+========================================================= */
+
+function getFillStyle(
+    ctx,
+    x1,
+    y1,
+    x2,
+    y2
+) {
+
+    if (fillMode === "solid") {
+        return mainColor;
+    }
+
+    const grad =
+        ctx.createLinearGradient(
+            x1,
+            y1,
+            x2,
+            y2
+        );
+
+    const step =
+        1 /
+        Math.max(
+            1,
+            gradientStops.length - 1
+        );
+
+    gradientStops.forEach(
+        (color, index) => {
+
+            grad.addColorStop(
+                index * step,
+                color
+            );
+
+        }
+    );
+
+    return grad;
+}
+
+
+function drawShape(
+    ctx,
+    x1,
+    y1,
+    x2,
+    y2,
+    type
+) {
+
+    ctx.save();
+
+    ctx.globalAlpha =
+        brushOpacity;
+
+    ctx.strokeStyle =
+        mainColor;
+
+    ctx.fillStyle =
+        getFillStyle(
+            ctx,
+            x1,
+            y1,
+            x2,
+            y2
+        );
+
+    ctx.lineWidth =
+        brushSize;
+
+    ctx.lineCap =
+        "round";
+
+    ctx.lineJoin =
+        "round";
+
+    ctx.beginPath();
+
+
+    if (type === "line") {
+
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+
+        ctx.stroke();
+
+    }
+
+
+    else if (type === "rect") {
+
+        ctx.fillRect(
+            x1,
+            y1,
+            x2 - x1,
+            y2 - y1
+        );
+
+        ctx.strokeRect(
+            x1,
+            y1,
+            x2 - x1,
+            y2 - y1
+        );
+
+    }
+
+
+    else if (type === "circle") {
+
+        const radius =
+            Math.hypot(
+                x2 - x1,
+                y2 - y1
+            );
+
+        ctx.arc(
+            x1,
+            y1,
+            radius,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+        ctx.stroke();
+
+    }
+
+    ctx.restore();
+}
+
+
+/* =========================================================
+   ELASTIC VECTOR TOOL
+========================================================= */
+
+/*
+    The important difference from the original:
+
+    The user now DRAGS the vector.
+
+    Every movement creates a vector node.
+    The preview uses Catmull-Rom interpolation,
+    producing a smooth elastic curve instead of
+    disconnected straight segments.
+*/
+
+function handleVectorPointerDown(e, pos) {
+
+    /* Ctrl + click = select existing vector */
+
+    if (e.ctrlKey || e.metaKey) {
+
+        const hit =
+            findVectorHit(
+                pos.x,
+                pos.y
+            );
+
+        if (hit) {
+
+            activeVectorLine =
+                hit.line;
+
+            selectedVectorPtIndex =
+                hit.index;
+
+            vectorDraggingPoint = true;
+
+            updateVectorStatus();
+
+            drawVectorPreview();
+
+            try {
+                previewCanvas.setPointerCapture(
+                    e.pointerId
+                );
+            } catch (_) {}
+
+            return;
         }
 
-        function handleMouseMove(e) {
-            if (isPanning) {
-                panX = e.clientX - startPanX;
-                panY = e.clientY - startPanY;
-                updateTransform();
-                return;
-            }
+        activeVectorLine = null;
+        selectedVectorPtIndex = -1;
 
-            if (!isDrawing) return;
-            const pos = getCanvasCoords(e);
+        clearPreview();
 
-            if (currentTool === 'pencil') {
-                activePath.push({ x: pos.x, y: pos.y });
-                drawPencilStroke(layers[activeLayerIndex].ctx, activePath);
-            } else if (['line', 'rect', 'circle'].includes(currentTool)) {
-                clearPreview();
-                drawShape(previewCtx, startX, startY, pos.x, pos.y, currentTool);
+        updateVectorStatus();
+
+        return;
+    }
+
+
+    /*
+        Starting a completely new elastic vector.
+    */
+
+    activeVectorLine = {
+
+        id:
+            Date.now() +
+            Math.random(),
+
+        layer:
+            activeLayerIndex,
+
+        color:
+            mainColor,
+
+        opacity:
+            brushOpacity,
+
+        points: [
+            {
+                x: pos.x,
+                y: pos.y,
+                w: brushSize
             }
+        ]
+
+    };
+
+    allVectorLines.push(
+        activeVectorLine
+    );
+
+    selectedVectorPtIndex = 0;
+
+    isDrawing = true;
+
+    updateVectorStatus();
+
+    drawVectorPreview();
+
+    try {
+        previewCanvas.setPointerCapture(
+            e.pointerId
+        );
+    } catch (_) {}
+}
+
+
+function handleVectorPointerMove(e) {
+
+    if (!activeVectorLine) {
+        return;
+    }
+
+
+    const pos =
+        getCanvasCoords(e);
+
+
+    /*
+        Moving an existing control point.
+    */
+
+    if (vectorDraggingPoint) {
+
+        if (
+            selectedVectorPtIndex >= 0
+        ) {
+
+            activeVectorLine.points[
+                selectedVectorPtIndex
+            ].x = clamp(
+                pos.x,
+                0,
+                WIDTH
+            );
+
+            activeVectorLine.points[
+                selectedVectorPtIndex
+            ].y = clamp(
+                pos.y,
+                0,
+                HEIGHT
+            );
+
+            drawVectorPreview();
         }
 
-        function handleMouseUp(e) {
-            if (isPanning) { isPanning = false; return; }
-            if (!isDrawing) return;
-            isDrawing = false;
+        return;
+    }
 
-            const pos = getCanvasCoords(e);
-            const ctx = layers[activeLayerIndex].ctx;
 
-            if (currentTool === 'pencil') {
-                saveState();
-            } else if (['line', 'rect', 'circle'].includes(currentTool)) {
-                clearPreview();
-                drawShape(ctx, startX, startY, pos.x, pos.y, currentTool);
-                saveState();
-            }
-        }
+    /*
+        New elastic stroke.
+    */
 
-        /* --- Drawing Mechanics --- */
-        function getFillStyle(ctx, x1, y1, x2, y2) {
-            if (fillMode === 'solid') return mainColor;
-            const grad = ctx.createLinearGradient(x1, y1, x2, y2);
-            const step = 1 / Math.max(1, gradientStops.length - 1);
-            gradientStops.forEach((col, idx) => grad.addColorStop(idx * step, col));
-            return grad;
-        }
+    if (!isDrawing) {
+        return;
+    }
 
-        function drawPencilStroke(ctx, path) {
-            if (path.length < 2) return;
-            ctx.save();
-            ctx.globalAlpha = brushOpacity;
-            ctx.strokeStyle = mainColor;
-            ctx.lineWidth = brushSize;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
+
+    const pts =
+        activeVectorLine.points;
+
+    const last =
+        pts[pts.length - 1];
+
+    const distance =
+        Math.hypot(
+            pos.x - last.x,
+            pos.y - last.y
+        );
+
+
+    /*
+        Don't create hundreds of identical nodes
+        when a touchpad generates tiny movements.
+    */
+
+    if (distance >= 2.5) {
+
+        pts.push({
+
+            x: pos.x,
+            y: pos.y,
+
+            /*
+                Slightly variable width creates a more
+                natural SAI-like vector feel.
+            */
+
+            w:
+                brushSize *
+                (
+                    .92 +
+                    Math.min(
+                        distance / 40,
+                        .18
+                    )
+                )
+
+        });
+
+        selectedVectorPtIndex =
+            pts.length - 1;
+
+        drawVectorPreview();
+    }
+
+}
+
+
+function handleVectorPointerUp(e) {
+
+    if (vectorDraggingPoint) {
+
+        vectorDraggingPoint = false;
+
+        saveState();
+
+        updateVectorStatus();
+
+        return;
+    }
+
+
+    if (!isDrawing) {
+        return;
+    }
+
+    isDrawing = false;
+
+    /*
+        Ignore accidental one-point vectors.
+    */
+
+    if (
+        activeVectorLine &&
+        activeVectorLine.points.length < 2
+    ) {
+
+        allVectorLines =
+            allVectorLines.filter(
+                line =>
+                    line !== activeVectorLine
+            );
+
+        activeVectorLine = null;
+
+        selectedVectorPtIndex = -1;
+
+        clearPreview();
+
+        updateVectorStatus();
+
+        return;
+    }
+
+
+    finishVectorPath();
+}
+
+
+/* =========================================================
+   CATMULL-ROM VECTOR RENDERING
+========================================================= */
+
+function catmullRom(
+    p0,
+    p1,
+    p2,
+    p3,
+    t
+) {
+
+    const t2 = t * t;
+    const t3 = t2 * t;
+
+    return {
+
+        x:
+            .5 *
+            (
+                2 * p1.x +
+                (-p0.x + p2.x) * t +
+                (2*p0.x - 5*p1.x + 4*p2.x - p3.x) * t2 +
+                (-p0.x + 3*p1.x - 3*p2.x + p3.x) * t3
+            ),
+
+        y:
+            .5 *
+            (
+                2 * p1.y +
+                (-p0.y + p2.y) * t +
+                (2*p0.y - 5*p1.y + 4*p2.y - p3.y) * t2 +
+                (-p0.y + 3*p1.y - 3*p2.y + p3.y) * t3
+            )
+
+    };
+}
+
+
+function drawSmoothVector(
+    ctx,
+    points,
+    color,
+    opacity
+) {
+
+    if (!points || points.length < 2) {
+        return;
+    }
+
+    ctx.save();
+
+    ctx.globalAlpha =
+        opacity;
+
+    ctx.strokeStyle =
+        color;
+
+    ctx.lineCap =
+        "round";
+
+    ctx.lineJoin =
+        "round";
+
+
+    /*
+        More subdivisions = smoother elastic curve.
+    */
+
+    for (
+        let i = 0;
+        i < points.length - 1;
+        i++
+    ) {
+
+        const p0 =
+            points[Math.max(0, i - 1)];
+
+        const p1 =
+            points[i];
+
+        const p2 =
+            points[i + 1];
+
+        const p3 =
+            points[
+                Math.min(
+                    points.length - 1,
+                    i + 2
+                )
+            ];
+
+
+        const steps = 10;
+
+
+        for (
+            let s = 0;
+            s < steps;
+            s++
+        ) {
+
+            const t1 =
+                s / steps;
+
+            const t2 =
+                (s + 1) / steps;
+
+            const a =
+                catmullRom(
+                    p0,
+                    p1,
+                    p2,
+                    p3,
+                    t1
+                );
+
+            const b =
+                catmullRom(
+                    p0,
+                    p1,
+                    p2,
+                    p3,
+                    t2
+                );
+
+
+            /*
+                Interpolate width between vector nodes.
+            */
+
+            const wa =
+                p1.w +
+                (p2.w - p1.w) *
+                t1;
+
+            const wb =
+                p1.w +
+                (p2.w - p1.w) *
+                t2;
+
+
+            ctx.lineWidth =
+                (wa + wb) / 2;
+
             ctx.beginPath();
-            ctx.moveTo(path[path.length - 2].x, path[path.length - 2].y);
-            ctx.lineTo(path[path.length - 1].x, path[path.length - 1].y);
+
+            ctx.moveTo(
+                a.x,
+                a.y
+            );
+
+            ctx.lineTo(
+                b.x,
+                b.y
+            );
+
             ctx.stroke();
-            ctx.restore();
+
         }
+    }
 
-        function drawShape(ctx, x1, y1, x2, y2, shapeType) {
-            ctx.save();
-            ctx.globalAlpha = brushOpacity;
-            ctx.strokeStyle = mainColor;
-            ctx.fillStyle = getFillStyle(ctx, x1, y1, x2, y2);
-            ctx.lineWidth = brushSize;
-            ctx.lineCap = 'round';
+    ctx.restore();
+}
 
-            ctx.beginPath();
-            if (shapeType === 'line') {
-                ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-            } else if (shapeType === 'rect') {
-                ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
-                ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
-            } else if (shapeType === 'circle') {
-                const r = Math.hypot(x2 - x1, y2 - y1);
-                ctx.arc(x1, y1, r, 0, 2 * Math.PI);
-                ctx.fill(); ctx.stroke();
-            }
-            ctx.restore();
-        }
 
-        /* --- Vector Engine & Selection --- */
-        function selectVectorLineAt(x, y) {
-            for (let line of allVectorLines) {
-                for (let pt of line.points) {
-                    if (Math.hypot(pt.x - x, pt.y - y) < 15) {
-                        activeVectorLine = line;
-                        selectedVectorPtIndex = line.points.indexOf(pt);
-                        drawVectorPreview();
-                        return;
-                    }
-                }
-            }
-        }
+/* =========================================================
+   VECTOR PREVIEW
+========================================================= */
 
-        function drawVectorPreview() {
-            clearPreview();
-            if (!activeVectorLine || activeVectorLine.points.length === 0) return;
+function drawVectorPreview() {
+
+    clearPreview();
+
+    if (
+        !activeVectorLine ||
+        activeVectorLine.points.length === 0
+    ) {
+        return;
+    }
+
+
+    drawSmoothVector(
+        previewCtx,
+        activeVectorLine.points,
+        activeVectorLine.color || mainColor,
+        activeVectorLine.opacity ?? brushOpacity
+    );
+
+
+    /*
+        Control points are shown only for the active
+        vector, making editing visually obvious.
+    */
+
+    activeVectorLine.points.forEach(
+        (pt, index) => {
 
             previewCtx.save();
-            previewCtx.globalAlpha = brushOpacity;
-            previewCtx.strokeStyle = activeVectorLine.color || mainColor;
-            previewCtx.lineCap = 'round';
-            previewCtx.lineJoin = 'round';
 
-            const pts = activeVectorLine.points;
-            for (let i = 0; i < pts.length - 1; i++) {
-                previewCtx.beginPath();
-                previewCtx.lineWidth = (pts[i].w + pts[i+1].w) / 2;
-                previewCtx.moveTo(pts[i].x, pts[i].y);
-                previewCtx.lineTo(pts[i+1].x, pts[i+1].y);
-                previewCtx.stroke();
-            }
+            previewCtx.beginPath();
 
-            // Draw Markers
-            pts.forEach((pt, idx) => {
-                previewCtx.beginPath();
-                previewCtx.arc(pt.x, pt.y, Math.max(5, pt.w / 2 + 2), 0, 2 * Math.PI);
-                previewCtx.fillStyle = (idx === selectedVectorPtIndex) ? '#ff3300' : '#00e676';
-                previewCtx.fill();
-                previewCtx.strokeStyle = '#ffffff';
-                previewCtx.lineWidth = 2;
-                previewCtx.stroke();
-            });
+            previewCtx.arc(
+                pt.x,
+                pt.y,
+                Math.max(
+                    4,
+                    Math.min(
+                        7,
+                        pt.w / 2 + 2
+                    )
+                ),
+                0,
+                Math.PI * 2
+            );
+
+            previewCtx.fillStyle =
+                index === selectedVectorPtIndex
+                    ? "#ff633d"
+                    : "#28c995";
+
+            previewCtx.fill();
+
+            previewCtx.strokeStyle =
+                "white";
+
+            previewCtx.lineWidth = 2;
+
+            previewCtx.stroke();
+
             previewCtx.restore();
         }
+    );
+}
 
-        function modifyVectorWidth(factor) {
-            if (activeVectorLine && selectedVectorPtIndex !== -1 && activeVectorLine.points[selectedVectorPtIndex]) {
-                activeVectorLine.points[selectedVectorPtIndex].w = Math.max(1, activeVectorLine.points[selectedVectorPtIndex].w * factor);
-                drawVectorPreview();
-                redrawActiveVectorToLayer();
+
+/* =========================================================
+   VECTOR HIT TEST
+========================================================= */
+
+function findVectorHit(x, y) {
+
+    let best = null;
+    let bestDistance = 18;
+
+    /*
+        First check control points.
+    */
+
+    for (
+        const line of allVectorLines
+    ) {
+
+        for (
+            let i = 0;
+            i < line.points.length;
+            i++
+        ) {
+
+            const pt =
+                line.points[i];
+
+            const d =
+                Math.hypot(
+                    pt.x - x,
+                    pt.y - y
+                );
+
+            if (d < bestDistance) {
+
+                bestDistance = d;
+
+                best = {
+                    line,
+                    index: i
+                };
+
             }
         }
+    }
 
-        function redrawActiveVectorToLayer() {
-            if (!activeVectorLine) return;
-            const ctx = layers[activeVectorLine.layer].ctx;
-            const pts = activeVectorLine.points;
-            ctx.save();
-            ctx.globalAlpha = brushOpacity;
-            ctx.strokeStyle = activeVectorLine.color || mainColor;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            for (let i = 0; i < pts.length - 1; i++) {
-                ctx.beginPath();
-                ctx.lineWidth = (pts[i].w + pts[i+1].w) / 2;
-                ctx.moveTo(pts[i].x, pts[i].y);
-                ctx.lineTo(pts[i+1].x, pts[i+1].y);
-                ctx.stroke();
+    if (best) {
+        return best;
+    }
+
+
+    /*
+        Then approximate distance to vector segments.
+    */
+
+    for (
+        const line of allVectorLines
+    ) {
+
+        const pts =
+            line.points;
+
+        for (
+            let i = 0;
+            i < pts.length - 1;
+            i++
+        ) {
+
+            const a = pts[i];
+            const b = pts[i + 1];
+
+            const d =
+                pointToSegmentDistance(
+                    x,
+                    y,
+                    a.x,
+                    a.y,
+                    b.x,
+                    b.y
+                );
+
+            if (d < bestDistance) {
+
+                bestDistance = d;
+
+                best = {
+                    line,
+                    index: i
+                };
+
             }
-            ctx.restore();
+        }
+    }
+
+    return best;
+}
+
+
+function pointToSegmentDistance(
+    px,
+    py,
+    x1,
+    y1,
+    x2,
+    y2
+) {
+
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+
+    if (dx === 0 && dy === 0) {
+
+        return Math.hypot(
+            px - x1,
+            py - y1
+        );
+
+    }
+
+    const t =
+        clamp(
+            (
+                (px - x1) * dx +
+                (py - y1) * dy
+            ) /
+            (dx * dx + dy * dy),
+            0,
+            1
+        );
+
+    const x =
+        x1 + t * dx;
+
+    const y =
+        y1 + t * dy;
+
+    return Math.hypot(
+        px - x,
+        py - y
+    );
+}
+
+
+/* =========================================================
+   VECTOR WIDTH
+========================================================= */
+
+function modifyVectorWidth(factor) {
+
+    if (
+        !activeVectorLine ||
+        selectedVectorPtIndex < 0
+    ) {
+        return;
+    }
+
+    const point =
+        activeVectorLine.points[
+            selectedVectorPtIndex
+        ];
+
+    if (!point) {
+        return;
+    }
+
+    point.w =
+        clamp(
+            point.w * factor,
+            1,
+            100
+        );
+
+    drawVectorPreview();
+
+    saveState();
+
+    updateVectorStatus();
+}
+
+
+/* =========================================================
+   FINISH VECTOR
+========================================================= */
+
+function finishVectorPath() {
+
+    if (!activeVectorLine) {
+        return;
+    }
+
+    /*
+        Keep the vector as vector data.
+        It is NOT rasterized here.
+    */
+
+    saveState();
+
+    clearPreview();
+
+    activeVectorLine = null;
+
+    selectedVectorPtIndex = -1;
+
+    vectorDraggingPoint = false;
+
+    updateVectorStatus();
+}
+
+
+/* =========================================================
+   RENDER ALL VECTORS
+========================================================= */
+
+function renderAllVectors() {
+
+    layers.forEach(
+        layer =>
+            layer.ctx.clearRect(
+                0,
+                0,
+                WIDTH,
+                HEIGHT
+            )
+    );
+
+    /*
+        NOTE:
+        In a full vector editor the raster and vector
+        histories would be separated. Here we redraw
+        vector lines over the existing raster layers.
+    */
+
+    for (
+        const line of allVectorLines
+    ) {
+
+        const ctx =
+            layers[line.layer].ctx;
+
+        drawSmoothVector(
+            ctx,
+            line.points,
+            line.color,
+            line.opacity
+        );
+
+    }
+}
+
+
+/* =========================================================
+   VECTOR STATUS
+========================================================= */
+
+function updateVectorStatus() {
+
+    const el =
+        document.getElementById(
+            "vector-status"
+        );
+
+    if (!activeVectorLine) {
+
+        el.textContent =
+            "Немає активного вектора";
+
+        return;
+    }
+
+    el.textContent =
+        `Вузлів: ${activeVectorLine.points.length}` +
+        (
+            selectedVectorPtIndex >= 0
+                ? ` • Вибрано: ${selectedVectorPtIndex + 1}`
+                : ""
+        );
+}
+
+
+/* =========================================================
+   MAGIC WAND
+========================================================= */
+
+function applyMagicWand(
+    startX,
+    startY
+) {
+
+    startX =
+        clamp(
+            startX,
+            0,
+            WIDTH - 1
+        );
+
+    startY =
+        clamp(
+            startY,
+            0,
+            HEIGHT - 1
+        );
+
+
+    const ctx =
+        layers[activeLayerIndex].ctx;
+
+    const imgData =
+        ctx.getImageData(
+            0,
+            0,
+            WIDTH,
+            HEIGHT
+        );
+
+    const data =
+        imgData.data;
+
+
+    const startPos =
+        (
+            startY * WIDTH +
+            startX
+        ) * 4;
+
+
+    const startR =
+        data[startPos];
+
+    const startG =
+        data[startPos + 1];
+
+    const startB =
+        data[startPos + 2];
+
+    const startA =
+        data[startPos + 3];
+
+
+    /*
+        If clicking fully transparent canvas,
+        don't perform an enormous flood fill.
+    */
+
+    if (startA === 0) {
+        return;
+    }
+
+
+    const visited =
+        new Uint8Array(
+            WIDTH * HEIGHT
+        );
+
+    const queue = [
+        startX,
+        startY
+    ];
+
+
+    const filledCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+    filledCanvas.width =
+        WIDTH;
+
+    filledCanvas.height =
+        HEIGHT;
+
+    const fCtx =
+        filledCanvas.getContext("2d");
+
+    const fData =
+        fCtx.createImageData(
+            WIDTH,
+            HEIGHT
+        );
+
+
+    const tolerance = 20;
+
+
+    while (queue.length > 0) {
+
+        const cy =
+            queue.pop();
+
+        const cx =
+            queue.pop();
+
+
+        if (
+            cx < 0 ||
+            cx >= WIDTH ||
+            cy < 0 ||
+            cy >= HEIGHT
+        ) {
+            continue;
         }
 
-        function finishVectorPath() {
-            if (activeVectorLine) {
-                redrawActiveVectorToLayer();
-                saveState();
-            }
-            activeVectorLine = null;
-            selectedVectorPtIndex = -1;
-            clearPreview();
+
+        const idx =
+            cy * WIDTH + cx;
+
+
+        if (visited[idx]) {
+            continue;
         }
 
-        /* --- Magic Wand (Inner Boundary Flood Fill) --- */
-        function applyMagicWand(startX, startY) {
-            const ctx = layers[activeLayerIndex].ctx;
-            const imgData = ctx.getImageData(0, 0, WIDTH, HEIGHT);
-            const data = imgData.data;
+        visited[idx] = 1;
 
-            const startPos = (startY * WIDTH + startX) * 4;
-            const startR = data[startPos], startG = data[startPos+1], startB = data[startPos+2], startA = data[startPos+3];
 
-            const visited = new Uint8Array(WIDTH * HEIGHT);
-            const queue = [startX, startY];
-            const filledCanvas = document.createElement('canvas');
-            filledCanvas.width = WIDTH; filledCanvas.height = HEIGHT;
-            const fCtx = filledCanvas.getContext('2d');
-            const fData = fCtx.createImageData(WIDTH, HEIGHT);
+        const pos =
+            idx * 4;
 
-            while (queue.length > 0) {
-                const cy = queue.pop();
-                const cx = queue.pop();
-                const idx = cy * WIDTH + cx;
 
-                if (cx < 0 || cx >= WIDTH || cy < 0 || cy >= HEIGHT || visited[idx]) continue;
-                visited[idx] = 1;
+        const matches =
+            Math.abs(
+                data[pos] - startR
+            ) < tolerance &&
 
-                const pos = idx * 4;
-                if (Math.abs(data[pos] - startR) < 20 &&
-                    Math.abs(data[pos+1] - startG) < 20 &&
-                    Math.abs(data[pos+2] - startB) < 20 &&
-                    Math.abs(data[pos+3] - startA) < 20) {
+            Math.abs(
+                data[pos + 1] - startG
+            ) < tolerance &&
 
-                    fData.data[pos + 3] = 255; // Mark mask pixel
+            Math.abs(
+                data[pos + 2] - startB
+            ) < tolerance &&
 
-                    queue.push(cx + 1, cy);
-                    queue.push(cx - 1, cy);
-                    queue.push(cx, cy + 1);
-                    queue.push(cx, cy - 1);
+            Math.abs(
+                data[pos + 3] - startA
+            ) < tolerance;
+
+
+        if (!matches) {
+            continue;
+        }
+
+
+        fData.data[pos] = 255;
+        fData.data[pos + 1] = 255;
+        fData.data[pos + 2] = 255;
+        fData.data[pos + 3] = 255;
+
+
+        queue.push(cx + 1, cy);
+        queue.push(cx - 1, cy);
+        queue.push(cx, cy + 1);
+        queue.push(cx, cy - 1);
+    }
+
+
+    fCtx.putImageData(
+        fData,
+        0,
+        0
+    );
+
+
+    const fillLayer =
+        document.createElement(
+            "canvas"
+        );
+
+    fillLayer.width =
+        WIDTH;
+
+    fillLayer.height =
+        HEIGHT;
+
+    const fillCtx =
+        fillLayer.getContext("2d");
+
+
+    fillCtx.globalAlpha =
+        brushOpacity;
+
+    fillCtx.fillStyle =
+        getFillStyle(
+            fillCtx,
+            startX,
+            startY,
+            startX + 150,
+            startY + 150
+        );
+
+    fillCtx.fillRect(
+        0,
+        0,
+        WIDTH,
+        HEIGHT
+    );
+
+
+    fillCtx.globalCompositeOperation =
+        "destination-in";
+
+    fillCtx.drawImage(
+        filledCanvas,
+        0,
+        0
+    );
+
+
+    ctx.drawImage(
+        fillLayer,
+        0,
+        0
+    );
+
+
+    saveState();
+}
+
+
+/* =========================================================
+   PREVIEW
+========================================================= */
+
+function clearPreview() {
+
+    previewCtx.clearRect(
+        0,
+        0,
+        WIDTH,
+        HEIGHT
+    );
+
+}
+
+
+/* =========================================================
+   HISTORY
+========================================================= */
+
+/*
+    Important:
+    Vector data is included in history too.
+*/
+
+function cloneVectors() {
+
+    return JSON.parse(
+        JSON.stringify(
+            allVectorLines
+        )
+    );
+}
+
+
+function createState() {
+
+    return {
+
+        layers:
+            layers.map(
+                layer =>
+                    layer.ctx.getImageData(
+                        0,
+                        0,
+                        WIDTH,
+                        HEIGHT
+                    )
+            ),
+
+        vectors:
+            cloneVectors()
+
+    };
+}
+
+
+function saveState() {
+
+    const state =
+        createState();
+
+    undoStack.push(
+        state
+    );
+
+    if (
+        undoStack.length >
+        MAX_HISTORY
+    ) {
+
+        undoStack.shift();
+    }
+
+    redoStack.length = 0;
+}
+
+
+function restoreState(state) {
+
+    state.layers.forEach(
+        (imgData, index) => {
+
+            layers[index].ctx.putImageData(
+                imgData,
+                0,
+                0
+            );
+
+        }
+    );
+
+
+    allVectorLines =
+        JSON.parse(
+            JSON.stringify(
+                state.vectors || []
+            )
+        );
+
+
+    clearPreview();
+}
+
+
+function undo() {
+
+    if (
+        undoStack.length <= 1
+    ) {
+        return;
+    }
+
+    const current =
+        undoStack.pop();
+
+    redoStack.push(
+        current
+    );
+
+    restoreState(
+        undoStack[
+            undoStack.length - 1
+        ]
+    );
+}
+
+
+function redo() {
+
+    if (
+        redoStack.length === 0
+    ) {
+        return;
+    }
+
+    const state =
+        redoStack.pop();
+
+    undoStack.push(
+        state
+    );
+
+    restoreState(
+        state
+    );
+}
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+function handleKeyboard(e) {
+
+    const tag =
+        document.activeElement?.tagName;
+
+    /*
+        Don't intercept keyboard input while
+        using color/range controls.
+    */
+
+    if (
+        tag === "INPUT" ||
+        tag === "TEXTAREA"
+    ) {
+
+        /*
+            But still allow Escape to leave vector mode.
+        */
+
+        if (e.key !== "Escape") {
+            return;
+        }
+    }
+
+
+    if (
+        (e.ctrlKey || e.metaKey) &&
+        e.key.toLowerCase() === "z"
+    ) {
+
+        e.preventDefault();
+
+        undo();
+
+        return;
+    }
+
+
+    if (
+        (e.ctrlKey || e.metaKey) &&
+        e.key.toLowerCase() === "y"
+    ) {
+
+        e.preventDefault();
+
+        redo();
+
+        return;
+    }
+
+
+    /*
+        Tool shortcuts.
+    */
+
+    if (
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.altKey
+    ) {
+
+        switch (
+            e.key.toLowerCase()
+        ) {
+
+            case "p":
+                setTool("pencil");
+                break;
+
+            case "v":
+                setTool("vector");
+                break;
+
+            case "l":
+                setTool("line");
+                break;
+
+            case "r":
+                setTool("rect");
+                break;
+
+            case "c":
+                setTool("circle");
+                break;
+
+            case "w":
+                setTool("wand");
+                break;
+
+            case "h":
+                setTool("pan");
+                break;
+
+            case "0":
+                resetView();
+                break;
+
+            case "+":
+            case "=":
+                zoomDelta(.15);
+                break;
+
+            case "-":
+                zoomDelta(-.15);
+                break;
+
+            case "escape":
+
+                if (
+                    currentTool === "vector"
+                ) {
+
+                    finishVectorPath();
                 }
-            }
 
-            fCtx.putImageData(fData, 0, 0);
+                break;
 
-            // Render color/gradient mask onto target layer
-            ctx.save();
-            ctx.globalAlpha = brushOpacity;
-            fCtx.globalCompositeOperation = 'source-in';
-            fCtx.fillStyle = getFillStyle(ctx, startX, startY, startX + 150, startY + 150);
-            fCtx.fillRect(0, 0, WIDTH, HEIGHT);
-
-            ctx.drawImage(filledCanvas, 0, 0);
-            ctx.restore();
-            saveState();
         }
+    }
 
-        function clearPreview() { previewCtx.clearRect(0, 0, WIDTH, HEIGHT); }
+}
 
-        /* --- History (Undo / Redo) --- */
-        function saveState() {
-            if (undoStack.length >= 20) undoStack.shift();
-            const state = layers.map(l => l.ctx.getImageData(0, 0, WIDTH, HEIGHT));
-            undoStack.push(state);
-            redoStack.length = 0;
+
+/* =========================================================
+   EXPORT PNG
+========================================================= */
+
+function exportPNG() {
+
+    const exportCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+    exportCanvas.width =
+        WIDTH;
+
+    exportCanvas.height =
+        HEIGHT;
+
+    const ctx =
+        exportCanvas.getContext(
+            "2d"
+        );
+
+
+    /*
+        Raster layers.
+    */
+
+    layers.forEach(
+        layer => {
+
+            ctx.drawImage(
+                layer.canvas,
+                0,
+                0
+            );
+
         }
+    );
 
-        function undo() {
-            if (undoStack.length > 1) {
-                redoStack.push(undoStack.pop());
-                restoreState(undoStack[undoStack.length - 1]);
-            }
-        }
 
-        function redo() {
-            if (redoStack.length > 0) {
-                const state = redoStack.pop();
-                undoStack.push(state);
-                restoreState(state);
-            }
-        }
+    /*
+        Vector layers.
+        They are rendered at their native
+        1000 × 700 resolution.
+    */
 
-        function restoreState(state) {
-            state.forEach((imgData, idx) => layers[idx].ctx.putImageData(imgData, 0, 0));
-        }
+    for (
+        const line of allVectorLines
+    ) {
 
-        /* --- PNG Export --- */
-        function exportPNG() {
-            const expCanvas = document.createElement('canvas');
-            expCanvas.width = WIDTH; expCanvas.height = HEIGHT;
-            const expCtx = expCanvas.getContext('2d');
-            layers.forEach(l => expCtx.drawImage(l.canvas, 0, 0));
+        drawSmoothVector(
+            ctx,
+            line.points,
+            line.color,
+            line.opacity
+        );
 
-            const link = document.createElement('a');
-            link.download = 'aerocanvas-art.png';
-            link.href = expCanvas.toDataURL('image/png');
-            link.click();
-        }
-    </script>
+    }
+
+
+    const link =
+        document.createElement("a");
+
+    link.download =
+        "aerocanvas-art.png";
+
+    link.href =
+        exportCanvas.toDataURL(
+            "image/png"
+        );
+
+    link.click();
+}
+
+
+/* =========================================================
+   CONTEXT MENU
+========================================================= */
+
+previewCanvas.addEventListener(
+    "contextmenu",
+    e => {
+        e.preventDefault();
+    }
+);
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        updateTransform();
+
+    }
+);
+
+</script>
+
 </body>
 </html>
