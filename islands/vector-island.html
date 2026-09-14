@@ -1611,18 +1611,51 @@ function beginVector(p){
 }
 
 function addVectorPoint(p){
-    if(!activeVectorLine) return;
+  if(!activeVectorLine) return;
 
-    const pts = activeVectorLine.points;
+  const pts = activeVectorLine.points;
 
-    if(
-        pts.length === 0 ||
-        distance(pts[pts.length-1],p) > 2
-    ){
-        pts.push(p);
+  // Не створюємо нову точку, якщо курсор майже не змістився.
+  // 10 px дає набагато менше контрольних точок.
+  const MIN_DISTANCE = 10;
+
+  if(pts.length === 0){
+    pts.push({...p});
+  } else {
+    const last = pts[pts.length - 1];
+
+    if(distance(last, p) >= MIN_DISTANCE){
+      pts.push({...p});
+
+      // Прибираємо зайві точки на майже прямій ділянці.
+      if(pts.length >= 3){
+        const a = pts[pts.length - 3];
+        const b = pts[pts.length - 2];
+        const c = pts[pts.length - 1];
+
+        const abx = b.x - a.x;
+        const aby = b.y - a.y;
+        const bcx = c.x - b.x;
+        const bcy = c.y - b.y;
+
+        const cross = Math.abs(abx * bcy - aby * bcx);
+        const lengthAB = Math.hypot(abx, aby);
+        const lengthBC = Math.hypot(bcx, bcy);
+
+        // Якщо три точки майже лежать на одній лінії —
+        // середня точка нам не потрібна.
+        if(
+          lengthAB > 0 &&
+          lengthBC > 0 &&
+          cross / (lengthAB * lengthBC) < 0.08
+        ){
+          pts.splice(pts.length - 2, 1);
+        }
+      }
     }
+  }
 
-    drawVectorPreview();
+  drawVectorPreview();
 }
 
 function catmullRom(points,amount=0.65){
