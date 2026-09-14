@@ -1,585 +1,753 @@
-html
 <!DOCTYPE html>
 <html lang="uk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AeroCanvas SAI Studio</title>
 
 <style>
+/* =========================================================
+   AEROCANVAS SAI STUDIO
+   Один HTML-файл
+   Frutiger Aero / glossy web / sky / water / nature
+   ========================================================= */
+
 :root {
-    --sky-1: #79d9ff;
-    --sky-2: #bcecff;
-    --water: #46b9df;
+    --sky-1: #dff8ff;
+    --sky-2: #9eeaff;
+    --sky-3: #55cdec;
 
-    --glass: rgba(235, 250, 255, .68);
-    --glass-strong: rgba(245, 253, 255, .84);
-    --glass-soft: rgba(255, 255, 255, .38);
+    --water-1: #d9fbff;
+    --water-2: #7bdff2;
+    --water-3: #20a9d0;
 
-    --line: rgba(255,255,255,.78);
-    --line-blue: rgba(46,145,193,.42);
+    --green-1: #efffd9;
+    --green-2: #b8ed75;
+    --green-3: #58bd48;
 
-    --text: #124d6b;
-    --text-dark: #083b56;
+    --blue: #159bc5;
+    --blue-dark: #08749c;
 
-    --blue: #25a9df;
-    --blue-dark: #087caf;
+    --text: #14506a;
+    --text-dark: #0b4055;
 
-    --green: #53cfa0;
-    --green-dark: #269b78;
+    --panel: rgba(239, 253, 255, .88);
+    --panel-solid: #eefcff;
+
+    --border: rgba(23, 142, 177, .35);
 
     --shadow:
-        0 10px 30px rgba(20, 95, 130, .20),
-        0 2px 6px rgba(0,0,0,.10),
-        inset 0 1px rgba(255,255,255,.95);
+        0 10px 30px rgba(0, 104, 137, .18),
+        0 2px 7px rgba(0, 89, 118, .12);
 
-    --small-shadow:
-        0 3px 10px rgba(20, 95, 130, .16),
-        inset 0 1px rgba(255,255,255,.95);
+    --soft-shadow:
+        0 4px 12px rgba(0, 100, 130, .15);
+
+    --radius: 18px;
 }
-
-/* --------------------------------------------------
-   GLOBAL
--------------------------------------------------- */
 
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    user-select: none;
 }
 
 html,
 body {
     width: 100%;
     height: 100%;
+    margin: 0;
 }
 
 body {
+    overflow: hidden;
     font-family:
+        "Trebuchet MS",
         "Segoe UI",
-        Tahoma,
-        Geneva,
-        Verdana,
+        Arial,
         sans-serif;
 
     color: var(--text);
 
-    overflow: hidden;
-
     background:
-        radial-gradient(circle at 18% 12%, rgba(255,255,255,.85) 0 3%, transparent 18%),
-        radial-gradient(circle at 82% 20%, rgba(255,255,255,.55) 0 4%, transparent 20%),
+        radial-gradient(
+            ellipse at 15% 5%,
+            rgba(255,255,255,.95) 0 7%,
+            transparent 22%
+        ),
+        radial-gradient(
+            ellipse at 85% 15%,
+            rgba(255,255,255,.75) 0 5%,
+            transparent 20%
+        ),
         linear-gradient(
-            160deg,
-            #51c8ef 0%,
-            #8edff7 28%,
-            #b8efff 58%,
-            #5ec8dd 100%
+            180deg,
+            #dffaff 0%,
+            #9be7fa 43%,
+            #67d3e7 70%,
+            #bcefa0 100%
         );
 }
 
-/* --------------------------------------------------
-   HEADER
--------------------------------------------------- */
+/* ---------------------------------------------------------
+   Decorative Aero background
+   --------------------------------------------------------- */
 
-.app-header {
-    min-height: 56px;
-    height: 56px;
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at 25% 100%,
+            rgba(76, 190, 76, .38),
+            transparent 32%
+        ),
+        radial-gradient(
+            ellipse at 78% 105%,
+            rgba(106, 212, 83, .30),
+            transparent 30%
+        );
+
+    opacity: .9;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    width: 500px;
+    height: 180px;
+    top: -80px;
+    left: 8%;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.34);
+
+    filter: blur(8px);
+    transform: rotate(-5deg);
+
+    pointer-events: none;
+}
+
+/* ---------------------------------------------------------
+   Main app
+   --------------------------------------------------------- */
+
+.app {
+    position: relative;
+    z-index: 1;
+
+    display: grid;
+    grid-template-columns: 245px minmax(0, 1fr) 245px;
+    grid-template-rows: 76px minmax(0, 1fr);
+
+    width: 100vw;
+    height: 100vh;
+
+    padding: 10px;
+    gap: 10px;
+}
+
+/* ---------------------------------------------------------
+   Top bar
+   --------------------------------------------------------- */
+
+.topbar {
+    grid-column: 1 / -1;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
 
+    min-width: 0;
+    padding: 10px 16px;
+
+    border: 1px solid rgba(255,255,255,.75);
+    border-radius: 23px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.92),
+            rgba(218,249,255,.72) 48%,
+            rgba(172,237,249,.78)
+        );
+
+    box-shadow: var(--shadow);
+
+    backdrop-filter: blur(12px);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
     gap: 12px;
 
-    padding: 7px 12px;
+    min-width: 0;
+}
 
+.logo {
+    width: 48px;
+    height: 48px;
+
+    flex: 0 0 auto;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 15px;
+
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            white 0 9%,
+            transparent 10%
+        ),
+        linear-gradient(
+            145deg,
+            #69ddff,
+            #159bc5 55%,
+            #08789f
+        );
+
+    border: 2px solid rgba(255,255,255,.8);
+
+    box-shadow:
+        inset 0 2px 4px rgba(255,255,255,.8),
+        0 4px 9px rgba(0,100,130,.2);
+}
+
+.brand-title {
+    min-width: 0;
+}
+
+.brand-title strong {
+    display: block;
+
+    font-size: 20px;
+    line-height: 1.05;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    color: #08769d;
+
+    text-shadow:
+        0 1px white,
+        0 2px rgba(255,255,255,.6);
+}
+
+.brand-title span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 11px;
+    color: #397b8f;
+}
+
+/* ---------------------------------------------------------
+   Buttons
+   --------------------------------------------------------- */
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+button,
+select,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.aero-button {
     position: relative;
-    z-index: 100;
+
+    min-height: 34px;
+    padding: 6px 12px;
+
+    border: 1px solid rgba(30,143,174,.38);
+    border-radius: 11px;
+
+    color: var(--text-dark);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.96),
+            rgba(223,250,255,.92) 46%,
+            rgba(177,237,247,.92)
+        );
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.95),
+        0 2px 5px rgba(0,100,130,.13);
+
+    transition:
+        transform .08s ease,
+        box-shadow .12s ease,
+        filter .12s ease;
+}
+
+.aero-button:hover {
+    filter: brightness(1.035);
+
+    box-shadow:
+        inset 0 1px 0 white,
+        0 3px 8px rgba(0,100,130,.18);
+}
+
+.aero-button:active {
+    transform: translateY(1px);
+
+    box-shadow:
+        inset 0 2px 5px rgba(0,100,130,.16);
+}
+
+.aero-button:disabled {
+    cursor: default;
+    opacity: .45;
+    filter: grayscale(.25);
+}
+
+.aero-button.primary {
+    color: white;
+
+    border-color: rgba(0,110,145,.5);
+
+    background:
+        linear-gradient(
+            180deg,
+            #66dcfa,
+            #20acd1 52%,
+            #0b8db6
+        );
+
+    text-shadow: 0 1px 2px rgba(0,60,90,.35);
+}
+
+.aero-button.green {
+    background:
+        linear-gradient(
+            180deg,
+            #edffd8,
+            #b8ef7d 50%,
+            #68c950
+        );
+
+    border-color: rgba(70,160,60,.4);
+}
+
+/* ---------------------------------------------------------
+   Panels
+   --------------------------------------------------------- */
+
+.panel {
+    min-height: 0;
+    overflow: auto;
+
+    padding: 12px;
+
+    border-radius: var(--radius);
+
+    border: 1px solid rgba(255,255,255,.8);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(250,255,255,.91),
+            rgba(227,249,253,.83)
+        );
+
+    box-shadow: var(--shadow);
+
+    backdrop-filter: blur(13px);
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(21,155,197,.45) transparent;
+}
+
+.panel h3 {
+    margin: 5px 5px 10px;
+
+    font-size: 13px;
+    color: #08789e;
+
+    text-shadow: 0 1px white;
+}
+
+.section {
+    margin-bottom: 13px;
+    padding: 10px;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.75),
+            rgba(214,246,251,.65)
+        );
+
+    border: 1px solid rgba(50,160,187,.18);
+}
+
+/* ---------------------------------------------------------
+   Tools
+   --------------------------------------------------------- */
+
+.tool-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 7px;
+}
+
+.tool {
+    min-height: 55px;
+    padding: 5px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 3px;
+
+    border-radius: 13px;
+
+    border: 1px solid rgba(40,150,180,.25);
+
+    color: #17657d;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.92),
+            rgba(208,244,250,.88)
+        );
+
+    box-shadow:
+        inset 0 1px rgba(255,255,255,.9),
+        0 2px 4px rgba(0,100,130,.09);
+}
+
+.tool:hover {
+    filter: brightness(1.04);
+}
+
+.tool.active {
+    color: white;
+
+    background:
+        linear-gradient(
+            180deg,
+            #65dafa,
+            #19a8ce 52%,
+            #0789b2
+        );
+
+    border-color: rgba(0,104,139,.55);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.55),
+        0 3px 8px rgba(0,115,150,.22);
+}
+
+.tool-icon {
+    font-size: 19px;
+    line-height: 1;
+}
+
+.tool-label {
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* ---------------------------------------------------------
+   Controls
+   --------------------------------------------------------- */
+
+.control {
+    margin-bottom: 10px;
+}
+
+.control:last-child {
+    margin-bottom: 0;
+}
+
+.control label {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 5px;
+
+    font-size: 11px;
+    font-weight: bold;
+    color: #286d82;
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: #159bc5;
+}
+
+input[type="color"] {
+    width: 100%;
+    height: 38px;
+
+    padding: 3px;
+
+    border-radius: 10px;
+    border: 1px solid rgba(20,130,160,.3);
+
+    background: white;
+}
+
+select {
+    width: 100%;
+    min-height: 34px;
+
+    padding: 5px 8px;
+
+    border-radius: 10px;
+
+    border: 1px solid rgba(30,143,174,.35);
+
+    color: #14576d;
+
+    background: rgba(255,255,255,.9);
+}
+
+/* ---------------------------------------------------------
+   Color swatches
+   --------------------------------------------------------- */
+
+.swatches {
+    display: grid;
+    grid-template-columns: repeat(6,1fr);
+    gap: 5px;
+}
+
+.swatch {
+    aspect-ratio: 1;
+
+    padding: 0;
+
+    border-radius: 8px;
+
+    border: 2px solid rgba(255,255,255,.9);
+
+    box-shadow:
+        0 1px 4px rgba(0,70,100,.25);
+
+    cursor: pointer;
+}
+
+/* ---------------------------------------------------------
+   Layers
+   --------------------------------------------------------- */
+
+.layers {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.layer-row {
+    display: grid;
+    grid-template-columns: 26px 1fr 30px;
+    align-items: center;
+    gap: 6px;
+
+    min-height: 37px;
+
+    padding: 4px 6px;
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,.58);
+
+    border: 1px solid rgba(50,150,180,.15);
+
+    cursor: pointer;
+}
+
+.layer-row.active {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(105,221,250,.48),
+            rgba(188,244,250,.6)
+        );
+
+    border-color: rgba(20,145,180,.38);
+}
+
+.layer-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-size: 11px;
+}
+
+.eye {
+    border: 0;
+    background: transparent;
+
+    padding: 2px;
+
+    cursor: pointer;
+
+    color: #2785a0;
+}
+
+/* ---------------------------------------------------------
+   Canvas area
+   --------------------------------------------------------- */
+
+.workspace {
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    border-radius: var(--radius);
+
+    overflow: hidden;
+
+    border: 1px solid rgba(255,255,255,.85);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(233,252,255,.72),
+            rgba(143,224,238,.48)
+        );
+
+    box-shadow: var(--shadow);
+}
+
+/* ---------------------------------------------------------
+   Workspace toolbar
+   --------------------------------------------------------- */
+
+.workspace-toolbar {
+    min-height: 48px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 7px 9px;
+
+    overflow-x: auto;
 
     background:
         linear-gradient(
             180deg,
             rgba(255,255,255,.88),
-            rgba(218,246,255,.66)
+            rgba(207,246,251,.75)
         );
 
-    border-bottom: 1px solid rgba(255,255,255,.95);
+    border-bottom: 1px solid rgba(35,145,175,.22);
 
-    box-shadow:
-        0 4px 18px rgba(20,100,130,.20),
-        inset 0 1px rgba(255,255,255,1);
-
-    backdrop-filter: blur(18px) saturate(130%);
-    -webkit-backdrop-filter: blur(18px) saturate(130%);
+    scrollbar-width: thin;
 }
 
-.app-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.workspace-toolbar .separator {
+    width: 1px;
+    height: 26px;
 
-    min-width: 0;
+    flex: 0 0 auto;
 
-    font-size: 17px;
-    font-weight: 700;
-
-    color: #07547b;
-
-    text-shadow:
-        0 1px 0 white,
-        0 0 8px rgba(255,255,255,.75);
-
-    white-space: nowrap;
+    background: rgba(30,130,160,.22);
 }
 
-.header-actions {
-    display: flex;
-    gap: 6px;
-    flex-wrap: nowrap;
-}
+.zoom-value {
+    min-width: 56px;
 
-/* --------------------------------------------------
-   BUTTONS
--------------------------------------------------- */
-
-.btn {
-    min-height: 32px;
-
-    padding: 6px 11px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-
-    border-radius: 8px;
-
-    border: 1px solid rgba(56,139,177,.55);
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255,255,255,.96) 0%,
-            rgba(238,252,255,.90) 42%,
-            rgba(184,231,247,.88) 48%,
-            rgba(222,247,255,.94) 100%
-        );
-
-    color: var(--text-dark);
-
-    font: inherit;
-    font-size: 12px;
-    font-weight: 650;
-
-    box-shadow: var(--small-shadow);
-
-    cursor: pointer;
-
-    transition:
-        transform .08s ease,
-        filter .12s ease,
-        box-shadow .12s ease,
-        background .12s ease;
-
-    -webkit-tap-highlight-color: transparent;
-
-    touch-action: manipulation;
-}
-
-.btn:hover {
-    filter: brightness(1.06) saturate(1.08);
-
-    box-shadow:
-        0 5px 14px rgba(20,100,140,.20),
-        inset 0 1px rgba(255,255,255,1);
-
-    border-color: rgba(32,130,177,.72);
-}
-
-.btn:focus-visible {
-    outline: 2px solid rgba(35,172,226,.75);
-    outline-offset: 2px;
-}
-
-.btn:active,
-.btn.active {
-    transform: translateY(1px);
-
-    background:
-        linear-gradient(
-            180deg,
-            #76d4f0,
-            #3ab5dc 55%,
-            #8ce0f4
-        );
-
-    border-color: #1689b7;
-
-    color: white;
-
-    box-shadow:
-        inset 0 2px 5px rgba(0,90,130,.30),
-        0 1px 3px rgba(0,70,100,.15);
-}
-
-.btn.green {
-    background:
-        linear-gradient(
-            180deg,
-            #eafff5,
-            #b9f1d8 48%,
-            #72d5ae 52%,
-            #c9f5df
-        );
-
-    border-color: #52b88f;
-}
-
-.btn.green:hover {
-    filter: brightness(1.06);
-}
-
-/* --------------------------------------------------
-   LAYOUT
--------------------------------------------------- */
-
-.main-layout {
-    display: flex;
-    width: 100%;
-    height: calc(100vh - 56px);
-    min-height: 0;
-}
-
-/* --------------------------------------------------
-   SIDEBAR
--------------------------------------------------- */
-
-.sidebar {
-    width: 292px;
-    min-width: 250px;
-
-    height: 100%;
-
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-
-    padding: 10px;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(246,253,255,.76),
-            rgba(189,236,250,.52)
-        );
-
-    border-right: 1px solid rgba(255,255,255,.90);
-
-    box-shadow:
-        4px 0 18px rgba(20,100,130,.14);
-
-    backdrop-filter: blur(18px) saturate(125%);
-    -webkit-backdrop-filter: blur(18px) saturate(125%);
-
-    z-index: 80;
-}
-
-.panel-section {
-    padding: 10px;
-
-    border-radius: 11px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,.70),
-            rgba(215,244,255,.40)
-        );
-
-    border: 1px solid rgba(255,255,255,.85);
-
-    box-shadow:
-        0 3px 10px rgba(20,100,130,.09),
-        inset 0 1px rgba(255,255,255,.90);
-}
-
-.panel-section h4 {
-    margin-bottom: 8px;
-
-    color: #116084;
+    text-align: center;
 
     font-size: 11px;
-    font-weight: 750;
+    font-weight: bold;
 
-    letter-spacing: .65px;
-    text-transform: uppercase;
-
-    text-shadow: 0 1px white;
+    color: #226d83;
 }
 
-.btn-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0,1fr));
-    gap: 6px;
-}
-
-.tool-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0,1fr));
-    gap: 6px;
-}
-
-.tool-grid .btn {
-    min-height: 38px;
-    padding: 5px 4px;
-    font-size: 11px;
-}
-
-/* --------------------------------------------------
-   FIELDS
--------------------------------------------------- */
-
-.field-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-bottom: 9px;
-}
-
-.field-group:last-child {
-    margin-bottom: 0;
-}
-
-.field-group label {
-    display: flex;
-    justify-content: space-between;
-
-    font-size: 12px;
-    font-weight: 600;
-
-    color: #175676;
-}
-
-.field-group label span {
-    font-weight: 750;
-}
-
-input[type="range"] {
-    appearance: none;
-    -webkit-appearance: none;
-
-    width: 100%;
-    height: 7px;
-
-    border-radius: 10px;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(120,190,215,.40),
-            rgba(255,255,255,.85)
-        );
-
-    border: 1px solid rgba(70,145,175,.40);
-
-    cursor: pointer;
-}
-
-input[type="range"]::-webkit-slider-thumb {
-    appearance: none;
-    -webkit-appearance: none;
-
-    width: 17px;
-    height: 17px;
-
-    border-radius: 50%;
-
-    border: 1px solid #2689b1;
-
-    background:
-        radial-gradient(circle at 35% 30%, white 0 18%, transparent 19%),
-        linear-gradient(#effcff, #5fc6e6);
-
-    box-shadow:
-        0 2px 5px rgba(0,80,110,.22),
-        inset 0 1px white;
-}
-
-input[type="range"]::-moz-range-thumb {
-    width: 17px;
-    height: 17px;
-
-    border-radius: 50%;
-
-    border: 1px solid #2689b1;
-
-    background: linear-gradient(#effcff, #5fc6e6);
-
-    cursor: pointer;
-}
-
-input[type="color"] {
-    border: 1px solid rgba(50,130,165,.5);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-/* --------------------------------------------------
-   GRADIENT
--------------------------------------------------- */
-
-.gradient-stops {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 7px;
-}
-
-.stop-item {
-    width: 28px;
-    height: 28px;
-
-    padding: 0;
-
-    border-radius: 7px;
-
-    cursor: pointer;
-}
-
-/* --------------------------------------------------
-   LAYERS
--------------------------------------------------- */
-
-.layer-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    min-height: 34px;
-
-    padding: 7px 9px;
-    margin-bottom: 4px;
-
-    border-radius: 8px;
-
-    background: rgba(255,255,255,.50);
-
-    border: 1px solid rgba(255,255,255,.78);
-
-    color: #12516f;
-
-    font-size: 12px;
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition: .12s ease;
-}
-
-.layer-item:hover {
-    background: rgba(255,255,255,.72);
-}
-
-.layer-item.active {
-    background:
-        linear-gradient(
-            180deg,
-            rgba(137,224,248,.78),
-            rgba(69,183,219,.65)
-        );
-
-    border-color: rgba(22,135,180,.65);
-
-    color: white;
-
-    text-shadow: 0 1px rgba(0,80,110,.35);
-
-    box-shadow:
-        inset 0 1px rgba(255,255,255,.85),
-        0 2px 7px rgba(20,110,145,.16);
-}
-
-/* --------------------------------------------------
-   VECTOR PANEL
--------------------------------------------------- */
-
-.vector-info {
-    font-size: 10px;
-    line-height: 1.4;
-    color: #215a73;
-    margin-bottom: 8px;
-}
-
-.vector-status {
-    margin-top: 8px;
-
-    padding: 7px;
-
-    border-radius: 7px;
-
-    background: rgba(255,255,255,.52);
-
-    border: 1px solid rgba(255,255,255,.75);
-
-    font-size: 10px;
-}
-
-/* --------------------------------------------------
-   VIEWPORT
--------------------------------------------------- */
+/* ---------------------------------------------------------
+   Viewport
+   --------------------------------------------------------- */
 
 .viewport {
     position: relative;
 
     flex: 1;
+
     min-width: 0;
     min-height: 0;
 
     overflow: hidden;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background:
-        radial-gradient(
-            ellipse at center,
-            #516e78 0%,
-            #304e5a 48%,
-            #203d49 100%
-        );
-
     touch-action: none;
 
     cursor: crosshair;
+
+    background:
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(255,255,255,.55),
+            transparent 25%
+        ),
+        linear-gradient(
+            180deg,
+            #d9faff,
+            #9de3f0
+        );
 }
 
-/* subtle Aero water/glow */
+/* Decorative horizon */
 
 .viewport::before {
     content: "";
 
     position: absolute;
-    inset: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
-    pointer-events: none;
+    height: 19%;
 
     background:
-        radial-gradient(
-            ellipse at 50% 0%,
-            rgba(130,220,240,.18),
-            transparent 55%
+        linear-gradient(
+            180deg,
+            rgba(130,220,105,0),
+            rgba(114,204,92,.28)
         );
+
+    pointer-events: none;
 }
 
-/* --------------------------------------------------
-   CANVAS
--------------------------------------------------- */
+/* ---------------------------------------------------------
+   Canvas container
+   --------------------------------------------------------- */
 
 .canvas-container {
     position: absolute;
@@ -587,31 +755,28 @@ input[type="color"] {
     width: 1000px;
     height: 700px;
 
+    left: 50%;
+    top: 50%;
+
+    margin-left: -500px;
+    margin-top: -350px;
+
     transform-origin: center center;
 
+    background: white;
+
+    border-radius: 4px;
+
     box-shadow:
-        0 25px 55px rgba(0,0,0,.45),
-        0 4px 12px rgba(0,0,0,.25);
+        0 18px 35px rgba(0,70,90,.27),
+        0 3px 8px rgba(0,70,90,.16);
+
+    overflow: hidden;
 
     will-change: transform;
-
-    /* transparency checker */
-    background-color: white;
-
-    background-image:
-        linear-gradient(45deg, #d4d4d4 25%, transparent 25%),
-        linear-gradient(-45deg, #d4d4d4 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, #d4d4d4 75%),
-        linear-gradient(-45deg, transparent 75%, #d4d4d4 75%);
-
-    background-size: 20px 20px;
-
-    background-position:
-        0 0,
-        0 10px,
-        10px -10px,
-        -10px 0;
 }
+
+/* Every canvas is exactly aligned */
 
 .canvas-layer {
     position: absolute;
@@ -619,568 +784,761 @@ input[type="color"] {
     left: 0;
     top: 0;
 
-    width: 100%;
-    height: 100%;
+    width: 1000px;
+    height: 700px;
 
+    display: block;
+}
+
+/* Persistent vector layer */
+
+#vector-canvas {
     pointer-events: none;
 }
+
+/* Temporary editing preview */
 
 #preview-canvas {
     pointer-events: auto;
 }
 
-/* --------------------------------------------------
-   SCROLLBAR
--------------------------------------------------- */
+/* ---------------------------------------------------------
+   Status bar
+   --------------------------------------------------------- */
 
-.sidebar::-webkit-scrollbar {
-    width: 8px;
-}
+.statusbar {
+    min-height: 29px;
 
-.sidebar::-webkit-scrollbar-track {
-    background: rgba(255,255,255,.18);
-}
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-.sidebar::-webkit-scrollbar-thumb {
-    border-radius: 10px;
+    gap: 10px;
+
+    padding: 4px 10px;
 
     background:
         linear-gradient(
-            #9ce1f3,
-            #55b9d9
+            180deg,
+            rgba(255,255,255,.78),
+            rgba(201,242,249,.72)
         );
 
-    border: 1px solid rgba(255,255,255,.65);
+    border-top: 1px solid rgba(30,140,170,.18);
+
+    font-size: 10px;
+
+    color: #397589;
 }
 
-/* --------------------------------------------------
-   RESPONSIVE LAPTOP
--------------------------------------------------- */
+.status-left,
+.status-right {
+    min-width: 0;
 
-@media (max-width: 1050px) {
-
-    .sidebar {
-        width: 255px;
-        min-width: 235px;
-        padding: 8px;
-    }
-
-    .app-title {
-        font-size: 15px;
-    }
-
-    .header-actions .btn {
-        padding-left: 8px;
-        padding-right: 8px;
-    }
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
-@media (max-width: 760px) {
+/* ---------------------------------------------------------
+   Right panel
+   --------------------------------------------------------- */
 
-    .app-header {
-        min-height: 50px;
-        height: 50px;
+.info-card {
+    padding: 9px;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(239,255,215,.78),
+            rgba(211,249,228,.7)
+        );
+
+    border: 1px solid rgba(84,174,82,.25);
+
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.info-card strong {
+    color: #287d45;
+}
+
+/* ---------------------------------------------------------
+   Vector status
+   --------------------------------------------------------- */
+
+.vector-status {
+    min-height: 50px;
+
+    padding: 8px;
+
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.8),
+            rgba(217,247,250,.8)
+        );
+
+    border: 1px solid rgba(30,145,175,.2);
+
+    font-size: 10px;
+    line-height: 1.35;
+}
+
+/* ---------------------------------------------------------
+   Responsive
+   --------------------------------------------------------- */
+
+@media (max-width: 1180px) {
+    .app {
+        grid-template-columns: 210px minmax(0,1fr) 210px;
     }
 
-    .main-layout {
-        height: calc(100vh - 50px);
-    }
-
-    .sidebar {
-        width: 215px;
-        min-width: 205px;
-    }
-
-    .app-title {
-        max-width: 190px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .header-actions .btn {
-        font-size: 0;
-        min-width: 36px;
-    }
-
-    .header-actions .btn:first-letter {
-        font-size: 15px;
+    .brand-title strong {
+        font-size: 17px;
     }
 
     .tool-grid {
-        grid-template-columns: repeat(2, minmax(0,1fr));
+        gap: 5px;
+    }
+
+    .tool {
+        min-height: 50px;
     }
 }
 
-/* --------------------------------------------------
-   VERY SMALL WIDTH
--------------------------------------------------- */
-
-@media (max-width: 570px) {
-
-    .sidebar {
-        width: 185px;
-        min-width: 180px;
+@media (max-width: 900px) {
+    .app {
+        grid-template-columns: 190px minmax(0,1fr);
     }
 
-    .panel-section {
-        padding: 8px;
+    .right-panel {
+        display: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: 62px auto minmax(0,1fr);
+
+        padding: 6px;
+        gap: 6px;
     }
 
-    .btn {
-        min-height: 34px;
-        font-size: 11px;
+    .topbar {
+        grid-column: 1;
+
+        padding: 7px 10px;
+        border-radius: 16px;
     }
 
-    .tool-grid .btn {
-        font-size: 10px;
+    .brand-title span {
+        display: none;
     }
+
+    .brand-title strong {
+        font-size: 14px;
+    }
+
+    .logo {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    .left-panel {
+        display: none;
+    }
+
+    .workspace {
+        grid-column: 1;
+    }
+}
+
+/* ---------------------------------------------------------
+   Keyboard focus
+   --------------------------------------------------------- */
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+    outline: 2px solid #1aa9d2;
+    outline-offset: 2px;
 }
 </style>
 </head>
 
 <body>
 
-<header class="app-header">
+<div class="app">
 
-    <div class="app-title">
-        🎨 AeroCanvas Studio
-    </div>
+    <!-- =====================================================
+         TOP BAR
+         ===================================================== -->
 
-    <div class="header-actions">
+    <header class="topbar">
 
-        <button class="btn"
-                type="button"
-                onclick="undo()"
-                title="Ctrl+Z">
-            ↶ Відмінити
-        </button>
+        <div class="brand">
+            <div class="logo">✦</div>
 
-        <button class="btn"
-                type="button"
-                onclick="redo()"
-                title="Ctrl+Y">
-            ↷ Повернути
-        </button>
+            <div class="brand-title">
+                <strong>AeroCanvas SAI Studio</strong>
+                <span>elastic vectors • raster drawing • Frutiger Aero</span>
+            </div>
+        </div>
 
-        <button class="btn green"
-                type="button"
-                onclick="exportPNG()">
-            💾 PNG
-        </button>
+        <div class="top-actions">
 
-    </div>
-
-</header>
-
-
-<div class="main-layout">
-
-<aside class="sidebar">
-
-    <!-- NAVIGATION -->
-
-    <div class="panel-section">
-
-        <h4>Навігація та масштаб</h4>
-
-        <div class="btn-grid">
-
-            <button class="btn"
-                    id="tool-pan"
-                    type="button"
-                    onclick="setTool('pan')">
-                🖐 Перетягувати
+            <button class="aero-button" id="undoBtn">
+                ↶ Undo
             </button>
 
-            <button class="btn"
-                    type="button"
-                    onclick="resetView()">
-                🎯 Центр
+            <button class="aero-button" id="redoBtn">
+                ↷ Redo
+            </button>
+
+            <button class="aero-button green" id="clearBtn">
+                ✕ Clear
+            </button>
+
+            <button class="aero-button primary" id="exportBtn">
+                ↓ PNG
             </button>
 
         </div>
 
-        <div class="btn-grid" style="margin-top:6px;">
-
-            <button class="btn"
-                    type="button"
-                    onclick="zoomDelta(.15)">
-                🔍 +
-            </button>
-
-            <button class="btn"
-                    type="button"
-                    onclick="zoomDelta(-.15)">
-                🔍 −
-            </button>
-
-        </div>
-
-        <button class="btn"
-                type="button"
-                style="width:100%; margin-top:6px;"
-                onclick="setZoom(1)">
-            100% Масштаб
-        </button>
-
-    </div>
+    </header>
 
 
-    <!-- TOOLS -->
+    <!-- =====================================================
+         LEFT PANEL
+         ===================================================== -->
 
-    <div class="panel-section">
+    <aside class="panel left-panel">
 
-        <h4>Інструменти</h4>
+        <h3>Інструменти</h3>
 
-        <div class="tool-grid">
+        <div class="section">
 
-            <button class="btn active"
-                    id="tool-pencil"
-                    type="button"
-                    onclick="setTool('pencil')">
-                ✏️ Олівець
-            </button>
+            <div class="tool-grid">
 
-            <button class="btn"
-                    id="tool-vector"
-                    type="button"
-                    onclick="setTool('vector')">
-                ✒️ Вектор
-            </button>
+                <button class="tool active" data-tool="pencil">
+                    <span class="tool-icon">✎</span>
+                    <span class="tool-label">Олівець</span>
+                </button>
 
-            <button class="btn"
-                    id="tool-wand"
-                    type="button"
-                    onclick="setTool('wand')">
-                🪄 Паличка
-            </button>
+                <button class="tool" data-tool="vector">
+                    <span class="tool-icon">〰</span>
+                    <span class="tool-label">Вектор</span>
+                </button>
 
-            <button class="btn"
-                    id="tool-line"
-                    type="button"
-                    onclick="setTool('line')">
-                ╱ Лінія
-            </button>
+                <button class="tool" data-tool="line">
+                    <span class="tool-icon">╱</span>
+                    <span class="tool-label">Лінія</span>
+                </button>
 
-            <button class="btn"
-                    id="tool-rect"
-                    type="button"
-                    onclick="setTool('rect')">
-                ▭ Прямокутник
-            </button>
+                <button class="tool" data-tool="rect">
+                    <span class="tool-icon">□</span>
+                    <span class="tool-label">Прямокутник</span>
+                </button>
 
-            <button class="btn"
-                    id="tool-circle"
-                    type="button"
-                    onclick="setTool('circle')">
-                ◯ Коло
-            </button>
+                <button class="tool" data-tool="circle">
+                    <span class="tool-icon">○</span>
+                    <span class="tool-label">Коло</span>
+                </button>
 
-        </div>
+                <button class="tool" data-tool="wand">
+                    <span class="tool-icon">✦</span>
+                    <span class="tool-label">Піпетка</span>
+                </button>
 
-    </div>
+                <button class="tool" data-tool="pan">
+                    <span class="tool-icon">✋</span>
+                    <span class="tool-label">Рух</span>
+                </button>
 
-
-    <!-- PROPERTIES -->
-
-    <div class="panel-section">
-
-        <h4>Параметри</h4>
-
-        <div class="field-group">
-
-            <label>
-                Товщина
-                <span id="val-size">5</span>px
-            </label>
-
-            <input
-                type="range"
-                id="prop-size"
-                min="1"
-                max="100"
-                value="5"
-            >
-
-        </div>
-
-        <div class="field-group">
-
-            <label>
-                Прозорість
-                <span id="val-opacity">100</span>%
-            </label>
-
-            <input
-                type="range"
-                id="prop-opacity"
-                min="1"
-                max="100"
-                value="100"
-            >
-
-        </div>
-
-    </div>
-
-
-    <!-- COLOR -->
-
-    <div class="panel-section">
-
-        <h4>Колір / заливка</h4>
-
-        <div class="btn-grid">
-
-            <button class="btn active"
-                    id="fill-solid"
-                    type="button"
-                    onclick="setFillMode('solid')">
-                Однорідний
-            </button>
-
-            <button class="btn"
-                    id="fill-grad"
-                    type="button"
-                    onclick="setFillMode('gradient')">
-                Градієнт
-            </button>
-
-        </div>
-
-
-        <div id="solid-color-container"
-             style="margin-top:8px;">
-
-            <input
-                type="color"
-                id="main-color"
-                value="#1976d2"
-                style="width:100%; height:34px;"
-            >
-
-        </div>
-
-
-        <div id="gradient-container"
-             style="display:none; margin-top:8px;">
-
-            <div style="font-size:11px;">
-                Маркери градієнта:
             </div>
 
-            <div class="gradient-stops"
-                 id="stops-list">
+        </div>
+
+
+        <h3>Пензель</h3>
+
+        <div class="section">
+
+            <div class="control">
+
+                <label>
+                    <span>Розмір</span>
+                    <span id="sizeValue">12 px</span>
+                </label>
+
+                <input
+                    id="sizeRange"
+                    type="range"
+                    min="1"
+                    max="100"
+                    value="12"
+                >
+
             </div>
 
-            <button
-                class="btn"
-                type="button"
-                style="width:100%; margin-top:6px;"
-                onclick="addGradientStop()">
-                + Маркер
+
+            <div class="control">
+
+                <label>
+                    <span>Непрозорість</span>
+                    <span id="opacityValue">100%</span>
+                </label>
+
+                <input
+                    id="opacityRange"
+                    type="range"
+                    min="1"
+                    max="100"
+                    value="100"
+                >
+
+            </div>
+
+
+            <div class="control">
+
+                <label>
+                    <span>Колір</span>
+                </label>
+
+                <input
+                    id="colorPicker"
+                    type="color"
+                    value="#157fa4"
+                >
+
+            </div>
+
+        </div>
+
+
+        <h3>Кольори</h3>
+
+        <div class="section">
+
+            <div class="swatches">
+
+                <button class="swatch" style="background:#111111" data-color="#111111"></button>
+                <button class="swatch" style="background:#ffffff" data-color="#ffffff"></button>
+                <button class="swatch" style="background:#ff5252" data-color="#ff5252"></button>
+                <button class="swatch" style="background:#ff9d32" data-color="#ff9d32"></button>
+                <button class="swatch" style="background:#ffe34b" data-color="#ffe34b"></button>
+                <button class="swatch" style="background:#65c94a" data-color="#65c94a"></button>
+
+                <button class="swatch" style="background:#28c9c9" data-color="#28c9c9"></button>
+                <button class="swatch" style="background:#37a8ff" data-color="#37a8ff"></button>
+                <button class="swatch" style="background:#7868ff" data-color="#7868ff"></button>
+                <button class="swatch" style="background:#d66cff" data-color="#d66cff"></button>
+                <button class="swatch" style="background:#ff73a8" data-color="#ff73a8"></button>
+                <button class="swatch" style="background:#9a6940" data-color="#9a6940"></button>
+
+            </div>
+
+        </div>
+
+
+        <h3>Шари</h3>
+
+        <div class="section">
+
+            <div class="layers" id="layersList">
+
+                <div class="layer-row active" data-layer="3">
+                    <button class="eye" data-eye="3">●</button>
+                    <span class="layer-name">Layer 4</span>
+                    <span>4</span>
+                </div>
+
+                <div class="layer-row" data-layer="2">
+                    <button class="eye" data-eye="2">●</button>
+                    <span class="layer-name">Layer 3</span>
+                    <span>3</span>
+                </div>
+
+                <div class="layer-row" data-layer="1">
+                    <button class="eye" data-eye="1">●</button>
+                    <span class="layer-name">Layer 2</span>
+                    <span>2</span>
+                </div>
+
+                <div class="layer-row" data-layer="0">
+                    <button class="eye" data-eye="0">●</button>
+                    <span class="layer-name">Layer 1</span>
+                    <span>1</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         WORKSPACE
+         ===================================================== -->
+
+    <main class="workspace">
+
+        <div class="workspace-toolbar">
+
+            <button class="aero-button" id="zoomOutBtn">
+                −
+            </button>
+
+            <span class="zoom-value" id="zoomValue">
+                100%
+            </span>
+
+            <button class="aero-button" id="zoomInBtn">
+                +
+            </button>
+
+            <button class="aero-button" id="zoomResetBtn">
+                100%
+            </button>
+
+            <div class="separator"></div>
+
+            <button class="aero-button" id="fitBtn">
+                ◉ Fit
+            </button>
+
+            <button class="aero-button" id="centerBtn">
+                ⊙ Center
+            </button>
+
+            <div class="separator"></div>
+
+            <button class="aero-button" id="vectorFinishBtn">
+                ✓ Завершити вектор
+            </button>
+
+            <button class="aero-button" id="vectorDeleteBtn">
+                × Видалити вектор
             </button>
 
         </div>
 
-    </div>
+
+        <div class="viewport" id="viewport">
+
+            <div class="canvas-container" id="canvasContainer">
+
+                <!-- Raster layers -->
+                <canvas
+                    id="layer-0"
+                    class="canvas-layer"
+                    width="1000"
+                    height="700"
+                ></canvas>
+
+                <canvas
+                    id="layer-1"
+                    class="canvas-layer"
+                    width="1000"
+                    height="700"
+                ></canvas>
+
+                <canvas
+                    id="layer-2"
+                    class="canvas-layer"
+                    width="1000"
+                    height="700"
+                ></canvas>
+
+                <canvas
+                    id="layer-3"
+                    class="canvas-layer"
+                    width="1000"
+                    height="700"
+                ></canvas>
+
+                <!--
+                    ВАЖЛИВО:
+
+                    Цей canvas постійний.
+                    Саме тут живуть готові векторні лінії.
+
+                    Preview нижче використовується лише
+                    для поточного редагування.
+                -->
+
+                <canvas
+                    id="vector-canvas"
+                    class="canvas-layer"
+                    width="1000"
+                    height="700"
+                ></canvas>
+
+                <canvas
+                    id="preview-canvas"
+                    class="canvas-layer"
+                    width="1000"
+                    height="700"
+                ></canvas>
+
+            </div>
+
+        </div>
 
 
-    <!-- VECTOR -->
+        <div class="statusbar">
 
-    <div class="panel-section"
-         id="vector-tools-panel"
-         style="display:none;">
+            <div class="status-left" id="statusText">
+                Олівець • Layer 4 • 1000×700
+            </div>
 
-        <h4>Еластичний вектор</h4>
+            <div class="status-right" id="cursorText">
+                x: — y: —
+            </div>
 
-        <div class="vector-info">
-            Малюй протягуванням миші — лінія формується
-            в реальному часі та автоматично згладжується.
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         RIGHT PANEL
+         ===================================================== -->
+
+    <aside class="panel right-panel">
+
+        <h3>Еластичний вектор</h3>
+
+        <div class="section">
+
+            <div class="vector-status" id="vectorStatus">
+                Векторний режим не активний.
+            </div>
+
+        </div>
+
+
+        <h3>Параметри вектора</h3>
+
+        <div class="section">
+
+            <div class="control">
+
+                <label>
+                    <span>Сегментація</span>
+                    <span id="smoothValue">8</span>
+                </label>
+
+                <input
+                    id="smoothRange"
+                    type="range"
+                    min="2"
+                    max="20"
+                    value="8"
+                >
+
+            </div>
+
+
+            <div class="control">
+
+                <label>
+                    <span>Пружність</span>
+                    <span id="elasticValue">65%</span>
+                </label>
+
+                <input
+                    id="elasticRange"
+                    type="range"
+                    min="0"
+                    max="100"
+                    value="65"
+                >
+
+            </div>
+
+        </div>
+
+
+        <h3>Підказки</h3>
+
+        <div class="section">
+
+            <div class="info-card">
+
+                <strong>Вектор</strong><br>
+                Клацай для створення вузлів.<br>
+                Перетягуй вузли для редагування.<br><br>
+
+                <strong>Олівець</strong><br>
+                Затисни ліву кнопку і малюй.<br><br>
+
+                <strong>Zoom</strong><br>
+                Колесо миші або Ctrl + колесо.<br><br>
+
+                <strong>Pan</strong><br>
+                Space + перетягування.
+                
+            </div>
+
+        </div>
+
+
+        <h3>Файл</h3>
+
+        <div class="section">
+
+            <button class="aero-button primary" id="saveLocalBtn" style="width:100%;">
+                💾 Зберегти в браузері
+            </button>
+
             <br><br>
-            <b>Ctrl + клік</b> по вектору — вибрати його.
-            Потім можна перетягувати вузли.
-        </div>
 
-        <div class="btn-grid">
-
-            <button class="btn"
-                    type="button"
-                    onclick="modifyVectorWidth(1.25)">
-                Товстіше +
-            </button>
-
-            <button class="btn"
-                    type="button"
-                    onclick="modifyVectorWidth(.8)">
-                Тонше −
+            <button class="aero-button" id="loadLocalBtn" style="width:100%;">
+                ↻ Відновити
             </button>
 
         </div>
 
-        <button
-            class="btn"
-            type="button"
-            style="width:100%; margin-top:6px;"
-            onclick="finishVectorPath()">
-            ✓ Зафіксувати
-        </button>
-
-        <div class="vector-status"
-             id="vector-status">
-            Немає активного вектора
-        </div>
-
-    </div>
-
-
-    <!-- LAYERS -->
-
-    <div class="panel-section">
-
-        <h4>Шари</h4>
-
-        <div id="layers-list"></div>
-
-    </div>
-
-</aside>
-
-
-<main class="viewport"
-      id="viewport">
-
-    <div class="canvas-container"
-         id="canvas-container">
-
-        <canvas
-            id="layer-0"
-            class="canvas-layer"
-            width="1000"
-            height="700">
-        </canvas>
-
-        <canvas
-            id="layer-1"
-            class="canvas-layer"
-            width="1000"
-            height="700">
-        </canvas>
-
-        <canvas
-            id="layer-2"
-            class="canvas-layer"
-            width="1000"
-            height="700">
-        </canvas>
-
-<canvas
-    id="layer-3"
-    class="canvas-layer"
-    width="1000"
-    height="700">
-</canvas>
-
-<!-- Постійний шар для векторів -->
-<canvas
-    id="vector-canvas"
-    class="canvas-layer"
-    width="1000"
-    height="700">
-</canvas>
-
-<!-- Тимчасовий preview: вузли, поточна еластична лінія -->
-<canvas
-    id="preview-canvas"
-    class="canvas-layer"
-    width="1000"
-    height="700">
-</canvas>
-    </div>
-
-</main>
+    </aside>
 
 </div>
 
 
 <script>
+"use strict";
 
 /* =========================================================
-   BASIC STATE
-========================================================= */
+   AEROCANVAS SAI STUDIO
+   ALL JAVASCRIPT IN THIS FILE
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   Canvas constants
+   --------------------------------------------------------- */
 
 const WIDTH = 1000;
 const HEIGHT = 700;
 
-let layers = [];
-let activeLayerIndex = 3;
 
-let currentTool = "pencil";
-let fillMode = "solid";
+/* ---------------------------------------------------------
+   DOM
+   --------------------------------------------------------- */
 
-let brushSize = 5;
-let brushOpacity = 1;
-let mainColor = "#1976d2";
+const viewport = document.getElementById("viewport");
+const container = document.getElementById("canvasContainer");
 
-let gradientStops = [
-    "#1976d2",
-    "#89c7fe"
+const previewCanvas = document.getElementById("preview-canvas");
+const previewCtx = previewCanvas.getContext("2d");
+
+const vectorCanvas = document.getElementById("vector-canvas");
+const vectorCtx = vectorCanvas.getContext("2d");
+
+const rasterCanvases = [
+    document.getElementById("layer-0"),
+    document.getElementById("layer-1"),
+    document.getElementById("layer-2"),
+    document.getElementById("layer-3")
 ];
 
+const rasterContexts = rasterCanvases.map(
+    canvas => canvas.getContext("2d", { willReadFrequently: true })
+);
 
-/* =========================================================
-   VIEW
-========================================================= */
+
+/* ---------------------------------------------------------
+   State
+   --------------------------------------------------------- */
+
+let currentTool = "pencil";
+
+let currentLayer = 3;
+
+let mainColor = "#157fa4";
+
+let brushSize = 12;
+
+let brushOpacity = 1;
+
+let fillMode = "solid";
+
+
+/* ---------------------------------------------------------
+   Zoom / Pan
+   --------------------------------------------------------- */
 
 let scale = 1;
 
 let panX = 0;
+
 let panY = 0;
 
-let isPanning = false;
-
-let panStartPointerX = 0;
-let panStartPointerY = 0;
-
-let panStartX = 0;
-let panStartY = 0;
+const MIN_SCALE = 0.25;
+const MAX_SCALE = 4;
 
 
-/* =========================================================
-   DRAWING
-========================================================= */
+/* ---------------------------------------------------------
+   Pointer state
+   --------------------------------------------------------- */
 
 let isDrawing = false;
 
-let startX = 0;
-let startY = 0;
+let isPanning = false;
 
-let activePath = [];
+let isDraggingVectorPoint = false;
+
+let activePointerId = null;
+
+let lastX = 0;
+
+let lastY = 0;
+
+let panStartX = 0;
+
+let panStartY = 0;
+
+let originalPanX = 0;
+
+let originalPanY = 0;
+
+let spacePressed = false;
+
+
+/* ---------------------------------------------------------
+   Shapes
+   --------------------------------------------------------- */
+
+let shapeStart = null;
 
 
 /* =========================================================
-   VECTOR ENGINE
-========================================================= */
+   VECTOR SYSTEM
+   ========================================================= */
 
 /*
-    Each vector:
+    allVectorLines:
 
-    {
-        id,
-        layer,
-        points: [
-            {
-                x,
-                y,
-                w
-            }
-        ],
-        color,
-        opacity
-    }
-
-    Unlike the original version, the vector is not
-    immediately converted into raster pixels.
+    [
+        {
+            id,
+            layer,
+            points: [
+                { x, y, w }
+            ],
+            color,
+            opacity
+        }
+    ]
 */
 
 let allVectorLines = [];
@@ -1189,169 +1547,477 @@ let activeVectorLine = null;
 
 let selectedVectorPtIndex = -1;
 
-let vectorDraggingPoint = false;
+let nextVectorId = 1;
 
 
-/* =========================================================
-   DOM
-========================================================= */
+/* ---------------------------------------------------------
+   Vector settings
+   --------------------------------------------------------- */
 
-const container =
-    document.getElementById("canvas-container");
+let smoothness = 8;
 
-const viewport =
-    document.getElementById("viewport");
-
-const previewCanvas =
-    document.getElementById("preview-canvas");
-
-const previewCtx =
-    previewCanvas.getContext("2d");
+let elasticity = 0.65;
 
 
 /* =========================================================
    HISTORY
-========================================================= */
+   ========================================================= */
 
 const undoStack = [];
+
 const redoStack = [];
 
 const MAX_HISTORY = 30;
 
 
-/* =========================================================
-   INIT
-========================================================= */
+/* ---------------------------------------------------------
+   Clone vector data
+   --------------------------------------------------------- */
 
-window.addEventListener("load", () => {
+function cloneVectors() {
 
-    for (let i = 0; i < 4; i++) {
-
-        const canvas =
-            document.getElementById(`layer-${i}`);
-
-        layers.push({
-            canvas,
-            ctx: canvas.getContext("2d")
-        });
-
-    }
-
-    renderLayersUI();
-    renderGradientStopsUI();
-
-    updateProps();
-
-    resetView();
-
-    saveState();
-
-    /*
-        Pointer events work much better on laptops
-        and touchpads than the old mouse events.
-    */
-
-    previewCanvas.addEventListener(
-        "pointerdown",
-        handlePointerDown
+    return JSON.parse(
+        JSON.stringify(allVectorLines)
     );
-
-    window.addEventListener(
-        "pointermove",
-        handlePointerMove
-    );
-
-    window.addEventListener(
-        "pointerup",
-        handlePointerUp
-    );
-
-    window.addEventListener(
-        "pointercancel",
-        handlePointerUp
-    );
-
-
-    viewport.addEventListener(
-        "wheel",
-        handleWheel,
-        { passive: false }
-    );
-
-
-    document.addEventListener(
-        "keydown",
-        handleKeyboard
-    );
-
-
-    /*
-        Prevent accidental browser dragging.
-    */
-
-    previewCanvas.addEventListener(
-        "dragstart",
-        e => e.preventDefault()
-    );
-
-});
-
-
-/* =========================================================
-   VIEWPORT / ZOOM
-========================================================= */
-
-function clamp(value, min, max) {
-    return Math.min(Math.max(value, min), max);
 }
 
 
-function updateTransform() {
+/* ---------------------------------------------------------
+   Save state
+   --------------------------------------------------------- */
 
-    scale = clamp(scale, .25, 4);
+function saveState() {
 
-    /*
-        Keep enough of the canvas reachable while
-        preventing it from being thrown infinitely away.
-    */
-
-    const halfW =
-        Math.max(
+    const raster = rasterContexts.map(ctx =>
+        ctx.getImageData(
             0,
-            (container.offsetWidth * scale -
-             viewport.clientWidth) / 2
-        );
-
-    const halfH =
-        Math.max(
             0,
-            (container.offsetHeight * scale -
-             viewport.clientHeight) / 2
-        );
-
-    const extraX = 120;
-    const extraY = 120;
-
-    panX = clamp(
-        panX,
-        -halfW - extraX,
-        halfW + extraX
+            WIDTH,
+            HEIGHT
+        )
     );
 
-    panY = clamp(
-        panY,
-        -halfH - extraY,
-        halfH + extraY
+    const vectors = cloneVectors();
+
+    undoStack.push({
+        raster,
+        vectors
+    });
+
+    if (undoStack.length > MAX_HISTORY) {
+        undoStack.shift();
+    }
+
+    redoStack.length = 0;
+
+    updateHistoryButtons();
+}
+
+
+/* ---------------------------------------------------------
+   Restore complete state
+   --------------------------------------------------------- */
+
+function restoreState(state) {
+
+    if (!state) return;
+
+    state.raster.forEach(
+        (imageData, index) => {
+
+            rasterContexts[index].putImageData(
+                imageData,
+                0,
+                0
+            );
+
+        }
+    );
+
+    allVectorLines = JSON.parse(
+        JSON.stringify(state.vectors || [])
+    );
+
+    activeVectorLine = null;
+
+    selectedVectorPtIndex = -1;
+
+    clearPreview();
+
+    renderAllVectors();
+
+    updateVectorStatus();
+}
+
+
+/* ---------------------------------------------------------
+   Undo
+   --------------------------------------------------------- */
+
+function undo() {
+
+    if (undoStack.length === 0) return;
+
+    const current = {
+        raster: rasterContexts.map(ctx =>
+            ctx.getImageData(
+                0,
+                0,
+                WIDTH,
+                HEIGHT
+            )
+        ),
+        vectors: cloneVectors()
+    };
+
+    redoStack.push(current);
+
+    const state = undoStack.pop();
+
+    restoreState(state);
+
+    updateHistoryButtons();
+}
+
+
+/* ---------------------------------------------------------
+   Redo
+   --------------------------------------------------------- */
+
+function redo() {
+
+    if (redoStack.length === 0) return;
+
+    const current = {
+        raster: rasterContexts.map(ctx =>
+            ctx.getImageData(
+                0,
+                0,
+                WIDTH,
+                HEIGHT
+            )
+        ),
+        vectors: cloneVectors()
+    };
+
+    undoStack.push(current);
+
+    const state = redoStack.pop();
+
+    restoreState(state);
+
+    updateHistoryButtons();
+}
+
+
+/* ---------------------------------------------------------
+   History buttons
+   --------------------------------------------------------- */
+
+function updateHistoryButtons() {
+
+    document.getElementById("undoBtn").disabled =
+        undoStack.length === 0;
+
+    document.getElementById("redoBtn").disabled =
+        redoStack.length === 0;
+}
+
+
+/* =========================================================
+   INITIAL CANVAS
+   ========================================================= */
+
+function initializeCanvas() {
+
+    rasterContexts.forEach(ctx => {
+
+        ctx.clearRect(
+            0,
+            0,
+            WIDTH,
+            HEIGHT
+        );
+
+    });
+
+    /*
+        Білий фон НЕ малюємо на шарі.
+
+        PNG export сам створить білий фон.
+    */
+
+    renderAllVectors();
+
+    updateLayerUI();
+
+    updateStatus();
+
+    updateVectorStatus();
+
+    updateZoomText();
+
+    fitCanvas();
+}
+
+
+/* =========================================================
+   TOOL SYSTEM
+   ========================================================= */
+
+function setTool(tool) {
+
+    currentTool = tool;
+
+    document
+        .querySelectorAll(".tool")
+        .forEach(button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.tool === tool
+            );
+
+        });
+
+    clearPreview();
+
+    selectedVectorPtIndex = -1;
+
+    isDraggingVectorPoint = false;
+
+    updateStatus();
+
+    updateVectorStatus();
+
+    updateCursor();
+}
+
+
+/* ---------------------------------------------------------
+   Cursor
+   --------------------------------------------------------- */
+
+function updateCursor() {
+
+    if (spacePressed || currentTool === "pan") {
+
+        viewport.style.cursor =
+            isPanning ? "grabbing" : "grab";
+
+        return;
+    }
+
+    if (currentTool === "vector") {
+
+        viewport.style.cursor =
+            "crosshair";
+
+        return;
+    }
+
+    if (currentTool === "wand") {
+
+        viewport.style.cursor =
+            "copy";
+
+        return;
+    }
+
+    viewport.style.cursor =
+        "crosshair";
+}
+
+
+/* =========================================================
+   COORDINATES
+   ========================================================= */
+
+function getCanvasCoords(e) {
+
+    const rect =
+        container.getBoundingClientRect();
+
+    /*
+        rect уже враховує CSS scale.
+
+        Тому ділимо на фактичний масштаб
+        canvas-container.
+    */
+
+    const x =
+        (e.clientX - rect.left) /
+        scale;
+
+    const y =
+        (e.clientY - rect.top) /
+        scale;
+
+    return {
+        x: Math.max(0, Math.min(WIDTH, x)),
+        y: Math.max(0, Math.min(HEIGHT, y))
+    };
+}
+
+
+/* =========================================================
+   ZOOM
+   ========================================================= */
+
+function updateTransform() {
+
+    scale = Math.max(
+        MIN_SCALE,
+        Math.min(MAX_SCALE, scale)
+    );
+
+    /*
+        Не дозволяємо полотну повністю втекти.
+    */
+
+    const viewportWidth =
+        viewport.clientWidth;
+
+    const viewportHeight =
+        viewport.clientHeight;
+
+    const scaledWidth =
+        WIDTH * scale;
+
+    const scaledHeight =
+        HEIGHT * scale;
+
+    const extraX =
+        Math.max(
+            80,
+            (scaledWidth - viewportWidth) / 2 +
+            viewportWidth * 0.35
+        );
+
+    const extraY =
+        Math.max(
+            80,
+            (scaledHeight - viewportHeight) / 2 +
+            viewportHeight * 0.35
+        );
+
+    panX = Math.max(
+        -extraX,
+        Math.min(extraX, panX)
+    );
+
+    panY = Math.max(
+        -extraY,
+        Math.min(extraY, panY)
     );
 
     container.style.transform =
         `translate(${panX}px, ${panY}px) scale(${scale})`;
+
+    updateZoomText();
 }
 
 
-function resetView() {
+/* ---------------------------------------------------------
+   Zoom around mouse
+   --------------------------------------------------------- */
 
-    scale = 1;
+function zoomAt(clientX, clientY, factor) {
+
+    const oldScale = scale;
+
+    const newScale = Math.max(
+        MIN_SCALE,
+        Math.min(
+            MAX_SCALE,
+            oldScale * factor
+        )
+    );
+
+    if (newScale === oldScale) return;
+
+    const viewportRect =
+        viewport.getBoundingClientRect();
+
+    const centerX =
+        viewportRect.left +
+        viewportRect.width / 2;
+
+    const centerY =
+        viewportRect.top +
+        viewportRect.height / 2;
+
+    const mouseX =
+        clientX - centerX;
+
+    const mouseY =
+        clientY - centerY;
+
+    /*
+        Preserve point under cursor.
+    */
+
+    panX =
+        mouseX -
+        (mouseX - panX) *
+        (newScale / oldScale);
+
+    panY =
+        mouseY -
+        (mouseY - panY) *
+        (newScale / oldScale);
+
+    scale = newScale;
+
+    updateTransform();
+}
+
+
+/* ---------------------------------------------------------
+   Zoom text
+   --------------------------------------------------------- */
+
+function updateZoomText() {
+
+    document.getElementById("zoomValue").textContent =
+        Math.round(scale * 100) + "%";
+}
+
+
+/* ---------------------------------------------------------
+   Fit
+   --------------------------------------------------------- */
+
+function fitCanvas() {
+
+    const w =
+        viewport.clientWidth;
+
+    const h =
+        viewport.clientHeight;
+
+    if (w <= 0 || h <= 0) return;
+
+    const padding = 45;
+
+    const sx =
+        (w - padding) / WIDTH;
+
+    const sy =
+        (h - padding) / HEIGHT;
+
+    scale =
+        Math.min(
+            sx,
+            sy,
+            1.5
+        );
+
+    scale =
+        Math.max(
+            MIN_SCALE,
+            Math.min(MAX_SCALE, scale)
+        );
 
     panX = 0;
     panY = 0;
@@ -1360,656 +2026,71 @@ function resetView() {
 }
 
 
-function setZoom(value) {
+/* ---------------------------------------------------------
+   Center
+   --------------------------------------------------------- */
 
-    scale = value;
+function centerCanvas() {
 
-    updateTransform();
-}
-
-
-function zoomDelta(delta) {
-
-    scale += delta;
-
-    updateTransform();
-}
-
-
-function handleWheel(e) {
-
-    /*
-        Ctrl + wheel is often generated by a laptop
-        touchpad/browser zoom gesture. Treat it as canvas zoom.
-    */
-
-    e.preventDefault();
-
-    const oldScale = scale;
-
-    const direction =
-        e.deltaY < 0 ? 1 : -1;
-
-    scale *= direction > 0 ? 1.1 : .9;
-
-    scale = clamp(scale, .25, 4);
-
-    /*
-        Zoom around the pointer position.
-    */
-
-    const rect =
-        container.getBoundingClientRect();
-
-    const mouseX =
-        e.clientX - rect.left;
-
-    const mouseY =
-        e.clientY - rect.top;
-
-    const ratio =
-        scale / oldScale;
-
-    panX -=
-        (mouseX - container.offsetWidth / 2) *
-        (ratio - 1);
-
-    panY -=
-        (mouseY - container.offsetHeight / 2) *
-        (ratio - 1);
+    panX = 0;
+    panY = 0;
 
     updateTransform();
 }
 
 
 /* =========================================================
-   TOOLS
-========================================================= */
+   DRAWING
+   ========================================================= */
 
-function setTool(tool) {
-
-    /*
-        Finish unfinished vector before switching tools.
-    */
-
-    if (
-        currentTool === "vector" &&
-        tool !== "vector"
-    ) {
-        finishVectorPath();
-    }
-
-    currentTool = tool;
-
-    document
-        .querySelectorAll(
-            ".tool-grid .btn, #tool-pan"
-        )
-        .forEach(btn => {
-            btn.classList.remove("active");
-        });
-
-    const button =
-        document.getElementById(`tool-${tool}`);
-
-    if (button) {
-        button.classList.add("active");
-    }
-
-    document.getElementById(
-        "vector-tools-panel"
-    ).style.display =
-        tool === "vector"
-            ? "block"
-            : "none";
-
-    clearPreview();
-
-    updateCursor();
-}
-
-
-function updateCursor() {
-
-    if (currentTool === "pan") {
-
-        viewport.style.cursor =
-            isPanning
-                ? "grabbing"
-                : "grab";
-
-    } else {
-
-        viewport.style.cursor =
-            "crosshair";
-
-    }
-}
-
-
-/* =========================================================
-   FILL
-========================================================= */
-
-function setFillMode(mode) {
-
-    fillMode = mode;
-
-    document
-        .getElementById("fill-solid")
-        .classList.toggle(
-            "active",
-            mode === "solid"
-        );
-
-    document
-        .getElementById("fill-grad")
-        .classList.toggle(
-            "active",
-            mode === "gradient"
-        );
-
-    document.getElementById(
-        "solid-color-container"
-    ).style.display =
-        mode === "solid"
-            ? "block"
-            : "none";
-
-    document.getElementById(
-        "gradient-container"
-    ).style.display =
-        mode === "gradient"
-            ? "block"
-            : "none";
-}
-
-
-/* =========================================================
-   PROPERTIES
-========================================================= */
-
-function updateProps() {
-
-    brushSize =
-        parseInt(
-            document.getElementById(
-                "prop-size"
-            ).value
-        );
-
-    brushOpacity =
-        parseInt(
-            document.getElementById(
-                "prop-opacity"
-            ).value
-        ) / 100;
-
-    mainColor =
-        document.getElementById(
-            "main-color"
-        ).value;
-
-    document.getElementById(
-        "val-size"
-    ).textContent = brushSize;
-
-    document.getElementById(
-        "val-opacity"
-    ).textContent =
-        Math.round(brushOpacity * 100);
-}
-
-
-document
-    .getElementById("prop-size")
-    .addEventListener(
-        "input",
-        updateProps
-    );
-
-document
-    .getElementById("prop-opacity")
-    .addEventListener(
-        "input",
-        updateProps
-    );
-
-document
-    .getElementById("main-color")
-    .addEventListener(
-        "input",
-        updateProps
-    );
-
-
-/* =========================================================
-   GRADIENT UI
-========================================================= */
-
-function renderGradientStopsUI() {
-
-    const list =
-        document.getElementById(
-            "stops-list"
-        );
-
-    list.innerHTML = "";
-
-    gradientStops.forEach(
-        (color, index) => {
-
-            const input =
-                document.createElement("input");
-
-            input.type = "color";
-
-            input.value = color;
-
-            input.className =
-                "stop-item";
-
-            input.title =
-                `Маркер ${index + 1}`;
-
-            input.addEventListener(
-                "input",
-                e => {
-
-                    gradientStops[index] =
-                        e.target.value;
-
-                }
-            );
-
-            list.appendChild(input);
-        }
-    );
-}
-
-
-function addGradientStop() {
-
-    if (gradientStops.length >= 5) {
-        return;
-    }
-
-    gradientStops.push("#ffffff");
-
-    renderGradientStopsUI();
-}
-
-
-/* =========================================================
-   LAYERS
-========================================================= */
-
-function renderLayersUI() {
-
-    const list =
-        document.getElementById(
-            "layers-list"
-        );
-
-    list.innerHTML = "";
-
-    for (
-        let i = layers.length - 1;
-        i >= 0;
-        i--
-    ) {
-
-        const div =
-            document.createElement("div");
-
-        div.className =
-            "layer-item" +
-            (
-                i === activeLayerIndex
-                    ? " active"
-                    : ""
-            );
-
-        const name =
-            i === layers.length - 1
-                ? "Верхній шар"
-                : `Шар ${i + 1}`;
-
-        div.innerHTML =
-            `<span>${name}</span>
-             <small>${i === activeLayerIndex ? "●" : ""}</small>`;
-
-        div.addEventListener(
-            "click",
-            () => {
-
-                activeLayerIndex = i;
-
-                renderLayersUI();
-            }
-        );
-
-        list.appendChild(div);
-    }
-}
-
-
-/* =========================================================
-   COORDINATES
-========================================================= */
-
-function getCanvasCoords(e) {
-
-    const rect =
-        container.getBoundingClientRect();
-
-    return {
-
-        x:
-            (e.clientX - rect.left) / scale,
-
-        y:
-            (e.clientY - rect.top) / scale
-
-    };
-}
-
-
-/* =========================================================
-   POINTER DOWN
-========================================================= */
-
-function handlePointerDown(e) {
-
-    /*
-        Don't allow right click to draw.
-    */
-
-    if (e.button === 2) {
-        return;
-    }
-
-    e.preventDefault();
-
-    const pos =
-        getCanvasCoords(e);
-
-
-    /* Middle mouse = pan */
-
-    if (
-        currentTool === "pan" ||
-        e.button === 1
-    ) {
-
-        isPanning = true;
-
-        panStartPointerX =
-            e.clientX;
-
-        panStartPointerY =
-            e.clientY;
-
-        panStartX = panX;
-        panStartY = panY;
-
-        updateCursor();
-
-        return;
-    }
-
-
-    /* VECTOR */
-
-    if (currentTool === "vector") {
-
-        handleVectorPointerDown(
-            e,
-            pos
-        );
-
-        return;
-    }
-
-
-    /* MAGIC WAND */
-
-    if (currentTool === "wand") {
-
-        applyMagicWand(
-            Math.round(pos.x),
-            Math.round(pos.y)
-        );
-
-        return;
-    }
-
-
-    /* NORMAL DRAWING */
-
-    isDrawing = true;
-
-    startX = pos.x;
-    startY = pos.y;
-
-
-    if (currentTool === "pencil") {
-
-        activePath = [
-            {
-                x: pos.x,
-                y: pos.y
-            }
-        ];
-
-        drawDot(
-            layers[activeLayerIndex].ctx,
-            pos.x,
-            pos.y
-        );
-    }
-
-    /*
-        Capture pointer so releasing slightly outside
-        the canvas still finishes the stroke.
-    */
-
-    try {
-        previewCanvas.setPointerCapture(e.pointerId);
-    } catch (_) {}
-}
-
-
-/* =========================================================
-   POINTER MOVE
-========================================================= */
-
-function handlePointerMove(e) {
-
-    /* PAN */
-
-    if (isPanning) {
-
-        const dx =
-            e.clientX -
-            panStartPointerX;
-
-        const dy =
-            e.clientY -
-            panStartPointerY;
-
-        panX = panStartX + dx;
-        panY = panStartY + dy;
-
-        updateTransform();
-
-        return;
-    }
-
-
-    /* VECTOR */
-
-    if (currentTool === "vector") {
-
-        handleVectorPointerMove(
-            e
-        );
-
-        return;
-    }
-
-
-    if (!isDrawing) {
-        return;
-    }
-
-
-    const pos =
-        getCanvasCoords(e);
-
-
-    if (currentTool === "pencil") {
-
-        activePath.push({
-            x: pos.x,
-            y: pos.y
-        });
-
-        drawPencilStroke(
-            layers[activeLayerIndex].ctx,
-            activePath
-        );
-
-    }
-
-
-    else if (
-        ["line", "rect", "circle"]
-            .includes(currentTool)
-    ) {
-
-        clearPreview();
-
-        drawShape(
-            previewCtx,
-            startX,
-            startY,
-            pos.x,
-            pos.y,
-            currentTool
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   POINTER UP
-========================================================= */
-
-function handlePointerUp(e) {
-
-    if (isPanning) {
-
-        isPanning = false;
-
-        updateCursor();
-
-        return;
-    }
-
-
-    if (currentTool === "vector") {
-
-        handleVectorPointerUp(e);
-
-        return;
-    }
-
-
-    if (!isDrawing) {
-        return;
-    }
-
-    isDrawing = false;
-
-    const pos =
-        getCanvasCoords(e);
+function beginDrawing(x, y) {
 
     const ctx =
-        layers[activeLayerIndex].ctx;
-
-
-    if (currentTool === "pencil") {
-
-        saveState();
-
-    }
-
-    else if (
-        ["line", "rect", "circle"]
-            .includes(currentTool)
-    ) {
-
-        clearPreview();
-
-        drawShape(
-            ctx,
-            startX,
-            startY,
-            pos.x,
-            pos.y,
-            currentTool
-        );
-
-        saveState();
-    }
-
-}
-
-
-/* =========================================================
-   PENCIL
-========================================================= */
-
-function drawDot(ctx, x, y) {
+        rasterContexts[currentLayer];
 
     ctx.save();
 
     ctx.globalAlpha =
         brushOpacity;
 
+    ctx.strokeStyle =
+        mainColor;
+
     ctx.fillStyle =
         mainColor;
 
+    ctx.lineWidth =
+        brushSize;
+
+    ctx.lineCap =
+        "round";
+
+    ctx.lineJoin =
+        "round";
+
     ctx.beginPath();
 
-    ctx.arc(
-        x,
-        y,
-        brushSize / 2,
-        0,
-        Math.PI * 2
-    );
+    ctx.moveTo(x, y);
 
-    ctx.fill();
+    ctx.lineTo(x + 0.01, y + 0.01);
+
+    ctx.stroke();
 
     ctx.restore();
+
+    lastX = x;
+    lastY = y;
 }
 
 
-function drawPencilStroke(ctx, path) {
+/* ---------------------------------------------------------
+   Continue pencil
+   --------------------------------------------------------- */
 
-    if (path.length < 2) {
-        return;
-    }
+function drawPencil(x, y) {
 
-    const a =
-        path[path.length - 2];
-
-    const b =
-        path[path.length - 1];
+    const ctx =
+        rasterContexts[currentLayer];
 
     ctx.save();
 
@@ -2030,70 +2111,110 @@ function drawPencilStroke(ctx, path) {
 
     ctx.beginPath();
 
-    ctx.moveTo(a.x, a.y);
+    ctx.moveTo(lastX, lastY);
 
-    ctx.lineTo(b.x, b.y);
+    ctx.lineTo(x, y);
 
     ctx.stroke();
 
     ctx.restore();
+
+    lastX = x;
+    lastY = y;
 }
 
 
 /* =========================================================
    SHAPES
-========================================================= */
+   ========================================================= */
 
-function getFillStyle(
-    ctx,
-    x1,
-    y1,
-    x2,
-    y2
-) {
+function drawShapePreview(x, y) {
 
-    if (fillMode === "solid") {
-        return mainColor;
+    clearPreview();
+
+    if (!shapeStart) return;
+
+    previewCtx.save();
+
+    previewCtx.globalAlpha =
+        brushOpacity;
+
+    previewCtx.strokeStyle =
+        mainColor;
+
+    previewCtx.lineWidth =
+        brushSize;
+
+    previewCtx.lineCap =
+        "round";
+
+    previewCtx.lineJoin =
+        "round";
+
+    const sx = shapeStart.x;
+    const sy = shapeStart.y;
+
+    if (currentTool === "line") {
+
+        previewCtx.beginPath();
+
+        previewCtx.moveTo(sx, sy);
+
+        previewCtx.lineTo(x, y);
+
+        previewCtx.stroke();
+
     }
 
-    const grad =
-        ctx.createLinearGradient(
-            x1,
-            y1,
-            x2,
-            y2
+    else if (currentTool === "rect") {
+
+        previewCtx.strokeRect(
+            sx,
+            sy,
+            x - sx,
+            y - sy
         );
 
-    const step =
-        1 /
-        Math.max(
-            1,
-            gradientStops.length - 1
+    }
+
+    else if (currentTool === "circle") {
+
+        const dx = x - sx;
+        const dy = y - sy;
+
+        const radius =
+            Math.sqrt(dx * dx + dy * dy);
+
+        previewCtx.beginPath();
+
+        previewCtx.arc(
+            sx,
+            sy,
+            radius,
+            0,
+            Math.PI * 2
         );
 
-    gradientStops.forEach(
-        (color, index) => {
+        previewCtx.stroke();
 
-            grad.addColorStop(
-                index * step,
-                color
-            );
+    }
 
-        }
-    );
-
-    return grad;
+    previewCtx.restore();
 }
 
 
-function drawShape(
-    ctx,
-    x1,
-    y1,
-    x2,
-    y2,
-    type
-) {
+/* ---------------------------------------------------------
+   Commit shape
+   --------------------------------------------------------- */
+
+function commitShape(x, y) {
+
+    if (!shapeStart) return;
+
+    saveState();
+
+    const ctx =
+        rasterContexts[currentLayer];
 
     ctx.save();
 
@@ -2102,15 +2223,6 @@ function drawShape(
 
     ctx.strokeStyle =
         mainColor;
-
-    ctx.fillStyle =
-        getFillStyle(
-            ctx,
-            x1,
-            y1,
-            x2,
-            y2
-        );
 
     ctx.lineWidth =
         brushSize;
@@ -2121,331 +2233,73 @@ function drawShape(
     ctx.lineJoin =
         "round";
 
-    ctx.beginPath();
+    const sx = shapeStart.x;
+    const sy = shapeStart.y;
 
+    if (currentTool === "line") {
 
-    if (type === "line") {
+        ctx.beginPath();
 
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
+        ctx.moveTo(sx, sy);
+
+        ctx.lineTo(x, y);
 
         ctx.stroke();
 
     }
 
-
-    else if (type === "rect") {
-
-        ctx.fillRect(
-            x1,
-            y1,
-            x2 - x1,
-            y2 - y1
-        );
+    else if (currentTool === "rect") {
 
         ctx.strokeRect(
-            x1,
-            y1,
-            x2 - x1,
-            y2 - y1
+            sx,
+            sy,
+            x - sx,
+            y - sy
         );
 
     }
 
+    else if (currentTool === "circle") {
 
-    else if (type === "circle") {
+        const dx = x - sx;
+        const dy = y - sy;
 
         const radius =
-            Math.hypot(
-                x2 - x1,
-                y2 - y1
-            );
+            Math.sqrt(dx * dx + dy * dy);
+
+        ctx.beginPath();
 
         ctx.arc(
-            x1,
-            y1,
+            sx,
+            sy,
             radius,
             0,
             Math.PI * 2
         );
 
-        ctx.fill();
         ctx.stroke();
 
     }
 
     ctx.restore();
+
+    shapeStart = null;
+
+    clearPreview();
 }
 
 
 /* =========================================================
-   ELASTIC VECTOR TOOL
-========================================================= */
+   VECTOR MATH
+   ========================================================= */
 
 /*
-    The important difference from the original:
+    Catmull-Rom interpolation.
 
-    The user now DRAGS the vector.
-
-    Every movement creates a vector node.
-    The preview uses Catmull-Rom interpolation,
-    producing a smooth elastic curve instead of
-    disconnected straight segments.
+    Це робить вектор "еластичним":
+    лінія проходить через вузли, але між ними
+    плавно вигинається.
 */
-
-function handleVectorPointerDown(e, pos) {
-
-    /* Ctrl + click = select existing vector */
-
-    if (e.ctrlKey || e.metaKey) {
-
-        const hit =
-            findVectorHit(
-                pos.x,
-                pos.y
-            );
-
-        if (hit) {
-
-            activeVectorLine =
-                hit.line;
-
-            selectedVectorPtIndex =
-                hit.index;
-
-            vectorDraggingPoint = true;
-
-            updateVectorStatus();
-
-            drawVectorPreview();
-
-            try {
-                previewCanvas.setPointerCapture(
-                    e.pointerId
-                );
-            } catch (_) {}
-
-            return;
-        }
-
-        activeVectorLine = null;
-        selectedVectorPtIndex = -1;
-
-        clearPreview();
-
-        updateVectorStatus();
-
-        return;
-    }
-
-
-    /*
-        Starting a completely new elastic vector.
-    */
-
-    activeVectorLine = {
-
-        id:
-            Date.now() +
-            Math.random(),
-
-        layer:
-            activeLayerIndex,
-
-        color:
-            mainColor,
-
-        opacity:
-            brushOpacity,
-
-        points: [
-            {
-                x: pos.x,
-                y: pos.y,
-                w: brushSize
-            }
-        ]
-
-    };
-
-    allVectorLines.push(
-        activeVectorLine
-    );
-
-    selectedVectorPtIndex = 0;
-
-    isDrawing = true;
-
-    updateVectorStatus();
-
-    drawVectorPreview();
-
-    try {
-        previewCanvas.setPointerCapture(
-            e.pointerId
-        );
-    } catch (_) {}
-}
-
-
-function handleVectorPointerMove(e) {
-
-    if (!activeVectorLine) {
-        return;
-    }
-
-
-    const pos =
-        getCanvasCoords(e);
-
-
-    /*
-        Moving an existing control point.
-    */
-
-    if (vectorDraggingPoint) {
-
-        if (
-            selectedVectorPtIndex >= 0
-        ) {
-
-            activeVectorLine.points[
-                selectedVectorPtIndex
-            ].x = clamp(
-                pos.x,
-                0,
-                WIDTH
-            );
-
-            activeVectorLine.points[
-                selectedVectorPtIndex
-            ].y = clamp(
-                pos.y,
-                0,
-                HEIGHT
-            );
-
-            drawVectorPreview();
-        }
-
-        return;
-    }
-
-
-    /*
-        New elastic stroke.
-    */
-
-    if (!isDrawing) {
-        return;
-    }
-
-
-    const pts =
-        activeVectorLine.points;
-
-    const last =
-        pts[pts.length - 1];
-
-    const distance =
-        Math.hypot(
-            pos.x - last.x,
-            pos.y - last.y
-        );
-
-
-    /*
-        Don't create hundreds of identical nodes
-        when a touchpad generates tiny movements.
-    */
-
-    if (distance >= 2.5) {
-
-        pts.push({
-
-            x: pos.x,
-            y: pos.y,
-
-            /*
-                Slightly variable width creates a more
-                natural SAI-like vector feel.
-            */
-
-            w:
-                brushSize *
-                (
-                    .92 +
-                    Math.min(
-                        distance / 40,
-                        .18
-                    )
-                )
-
-        });
-
-        selectedVectorPtIndex =
-            pts.length - 1;
-
-        drawVectorPreview();
-    }
-
-}
-
-
-function handleVectorPointerUp(e) {
-
-    if (vectorDraggingPoint) {
-
-        vectorDraggingPoint = false;
-
-        saveState();
-
-        updateVectorStatus();
-
-        return;
-    }
-
-
-    if (!isDrawing) {
-        return;
-    }
-
-    isDrawing = false;
-
-    /*
-        Ignore accidental one-point vectors.
-    */
-
-    if (
-        activeVectorLine &&
-        activeVectorLine.points.length < 2
-    ) {
-
-        allVectorLines =
-            allVectorLines.filter(
-                line =>
-                    line !== activeVectorLine
-            );
-
-        activeVectorLine = null;
-
-        selectedVectorPtIndex = -1;
-
-        clearPreview();
-
-        updateVectorStatus();
-
-        return;
-    }
-
-
-    finishVectorPath();
-}
-
-
-/* =========================================================
-   CATMULL-ROM VECTOR RENDERING
-========================================================= */
 
 function catmullRom(
     p0,
@@ -2456,12 +2310,13 @@ function catmullRom(
 ) {
 
     const t2 = t * t;
+
     const t3 = t2 * t;
 
     return {
 
         x:
-            .5 *
+            0.5 *
             (
                 2 * p1.x +
                 (-p0.x + p2.x) * t +
@@ -2470,7 +2325,7 @@ function catmullRom(
             ),
 
         y:
-            .5 *
+            0.5 *
             (
                 2 * p1.y +
                 (-p0.y + p2.y) * t +
@@ -2482,6 +2337,130 @@ function catmullRom(
 }
 
 
+/* ---------------------------------------------------------
+   Build smooth points
+   --------------------------------------------------------- */
+
+function getSmoothPoints(points) {
+
+    if (!points || points.length < 2) {
+
+        return points || [];
+
+    }
+
+    const result = [];
+
+    const tension =
+        elasticity;
+
+    /*
+        Чим більша elasticity,
+        тим сильніше крива реагує на сусідні вузли.
+    */
+
+    const step =
+        1 /
+        Math.max(
+            3,
+            smoothness
+        );
+
+    for (
+        let i = 0;
+        i < points.length - 1;
+        i++
+    ) {
+
+        const p0 =
+            points[
+                Math.max(0, i - 1)
+            ];
+
+        const p1 =
+            points[i];
+
+        const p2 =
+            points[i + 1];
+
+        const p3 =
+            points[
+                Math.min(
+                    points.length - 1,
+                    i + 2
+                )
+            ];
+
+        /*
+            Безпосередня інтерполяція з
+            керованою "пружністю".
+        */
+
+        for (
+            let t = 0;
+            t < 1;
+            t += step
+        ) {
+
+            const c =
+                catmullRom(
+                    p0,
+                    p1,
+                    p2,
+                    p3,
+                    t
+                );
+
+            /*
+                Змішуємо із прямою,
+                щоб elasticity = 0 не давав
+                занадто агресивну криву.
+            */
+
+            const linear = {
+                x:
+                    p1.x +
+                    (p2.x - p1.x) * t,
+
+                y:
+                    p1.y +
+                    (p2.y - p1.y) * t
+            };
+
+            result.push({
+
+                x:
+                    linear.x +
+                    (c.x - linear.x) *
+                    tension,
+
+                y:
+                    linear.y +
+                    (c.y - linear.y) *
+                    tension,
+
+                w:
+                    p1.w +
+                    (p2.w - p1.w) * t
+
+            });
+
+        }
+
+    }
+
+    result.push(
+        points[points.length - 1]
+    );
+
+    return result;
+}
+
+
+/* =========================================================
+   DRAW SMOOTH VECTOR
+   ========================================================= */
+
 function drawSmoothVector(
     ctx,
     points,
@@ -2489,7 +2468,7 @@ function drawSmoothVector(
     opacity
 ) {
 
-    if (!points || points.length < 2) {
+    if (!points || points.length === 0) {
         return;
     }
 
@@ -2507,102 +2486,81 @@ function drawSmoothVector(
     ctx.lineJoin =
         "round";
 
+    /*
+        Один вузол = маленька точка.
+    */
+
+    if (points.length === 1) {
+
+        ctx.fillStyle = color;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            points[0].x,
+            points[0].y,
+            Math.max(
+                2,
+                points[0].w / 2
+            ),
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+        ctx.restore();
+
+        return;
+    }
+
+    const smooth =
+        getSmoothPoints(points);
+
+    if (smooth.length === 0) {
+
+        ctx.restore();
+
+        return;
+    }
 
     /*
-        More subdivisions = smoother elastic curve.
+        Для змінної товщини малюємо маленькими
+        сегментами.
     */
 
     for (
         let i = 0;
-        i < points.length - 1;
+        i < smooth.length - 1;
         i++
     ) {
 
-        const p0 =
-            points[Math.max(0, i - 1)];
+        const a = smooth[i];
+        const b = smooth[i + 1];
 
-        const p1 =
-            points[i];
-
-        const p2 =
-            points[i + 1];
-
-        const p3 =
-            points[
-                Math.min(
-                    points.length - 1,
-                    i + 2
-                )
-            ];
-
-
-        const steps = 10;
-
-
-        for (
-            let s = 0;
-            s < steps;
-            s++
-        ) {
-
-            const t1 =
-                s / steps;
-
-            const t2 =
-                (s + 1) / steps;
-
-            const a =
-                catmullRom(
-                    p0,
-                    p1,
-                    p2,
-                    p3,
-                    t1
-                );
-
-            const b =
-                catmullRom(
-                    p0,
-                    p1,
-                    p2,
-                    p3,
-                    t2
-                );
-
-
-            /*
-                Interpolate width between vector nodes.
-            */
-
-            const wa =
-                p1.w +
-                (p2.w - p1.w) *
-                t1;
-
-            const wb =
-                p1.w +
-                (p2.w - p1.w) *
-                t2;
-
-
-            ctx.lineWidth =
-                (wa + wb) / 2;
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                a.x,
-                a.y
+        const width =
+            Math.max(
+                1,
+                (a.w + b.w) / 2
             );
 
-            ctx.lineTo(
-                b.x,
-                b.y
-            );
+        ctx.lineWidth =
+            width;
 
-            ctx.stroke();
+        ctx.beginPath();
 
-        }
+        ctx.moveTo(
+            a.x,
+            a.y
+        );
+
+        ctx.lineTo(
+            b.x,
+            b.y
+        );
+
+        ctx.stroke();
+
     }
 
     ctx.restore();
@@ -2610,315 +2568,43 @@ function drawSmoothVector(
 
 
 /* =========================================================
-   VECTOR PREVIEW
-========================================================= */
+   PERSISTENT VECTOR RENDER
+   ========================================================= */
 
-function drawVectorPreview() {
+/*
+    КРИТИЧНО:
 
-    clearPreview();
+    Ця функція НЕ чіпає raster layers.
 
-    if (
-        !activeVectorLine ||
-        activeVectorLine.points.length === 0
-    ) {
-        return;
-    }
+    Вона очищає ТІЛЬКИ vector-canvas.
+*/
 
-
-    drawSmoothVector(
-        previewCtx,
-        activeVectorLine.points,
-        activeVectorLine.color || mainColor,
-        activeVectorLine.opacity ?? brushOpacity
-    );
-
-
-    /*
-        Control points are shown only for the active
-        vector, making editing visually obvious.
-    */
-
-    activeVectorLine.points.forEach(
-        (pt, index) => {
-
-            previewCtx.save();
-
-            previewCtx.beginPath();
-
-            previewCtx.arc(
-                pt.x,
-                pt.y,
-                Math.max(
-                    4,
-                    Math.min(
-                        7,
-                        pt.w / 2 + 2
-                    )
-                ),
-                0,
-                Math.PI * 2
-            );
-
-            previewCtx.fillStyle =
-                index === selectedVectorPtIndex
-                    ? "#ff633d"
-                    : "#28c995";
-
-            previewCtx.fill();
-
-            previewCtx.strokeStyle =
-                "white";
-
-            previewCtx.lineWidth = 2;
-
-            previewCtx.stroke();
-
-            previewCtx.restore();
-        }
-    );
-}
-
-
-/* =========================================================
-   VECTOR HIT TEST
-========================================================= */
-
-function findVectorHit(x, y) {
-
-    let best = null;
-    let bestDistance = 18;
-
-    /*
-        First check control points.
-    */
-
-    for (
-        const line of allVectorLines
-    ) {
-
-        for (
-            let i = 0;
-            i < line.points.length;
-            i++
-        ) {
-
-            const pt =
-                line.points[i];
-
-            const d =
-                Math.hypot(
-                    pt.x - x,
-                    pt.y - y
-                );
-
-            if (d < bestDistance) {
-
-                bestDistance = d;
-
-                best = {
-                    line,
-                    index: i
-                };
-
-            }
-        }
-    }
-
-    if (best) {
-        return best;
-    }
-
-
-    /*
-        Then approximate distance to vector segments.
-    */
-
-    for (
-        const line of allVectorLines
-    ) {
-
-        const pts =
-            line.points;
-
-        for (
-            let i = 0;
-            i < pts.length - 1;
-            i++
-        ) {
-
-            const a = pts[i];
-            const b = pts[i + 1];
-
-            const d =
-                pointToSegmentDistance(
-                    x,
-                    y,
-                    a.x,
-                    a.y,
-                    b.x,
-                    b.y
-                );
-
-            if (d < bestDistance) {
-
-                bestDistance = d;
-
-                best = {
-                    line,
-                    index: i
-                };
-
-            }
-        }
-    }
-
-    return best;
-}
-
-
-function pointToSegmentDistance(
-    px,
-    py,
-    x1,
-    y1,
-    x2,
-    y2
+function renderAllVectors(
+    excludeLine = null
 ) {
 
-    const dx = x2 - x1;
-    const dy = y2 - y1;
-
-    if (dx === 0 && dy === 0) {
-
-        return Math.hypot(
-            px - x1,
-            py - y1
-        );
-
-    }
-
-    const t =
-        clamp(
-            (
-                (px - x1) * dx +
-                (py - y1) * dy
-            ) /
-            (dx * dx + dy * dy),
-            0,
-            1
-        );
-
-    const x =
-        x1 + t * dx;
-
-    const y =
-        y1 + t * dy;
-
-    return Math.hypot(
-        px - x,
-        py - y
-    );
-}
-
-
-/* =========================================================
-   VECTOR WIDTH
-========================================================= */
-
-function modifyVectorWidth(factor) {
-
-    if (
-        !activeVectorLine ||
-        selectedVectorPtIndex < 0
-    ) {
-        return;
-    }
-
-    const point =
-        activeVectorLine.points[
-            selectedVectorPtIndex
-        ];
-
-    if (!point) {
-        return;
-    }
-
-    point.w =
-        clamp(
-            point.w * factor,
-            1,
-            100
-        );
-
-    drawVectorPreview();
-
-    saveState();
-
-    updateVectorStatus();
-}
-
-
-/* =========================================================
-   FINISH VECTOR
-========================================================= */
-
-function finishVectorPath() {
-
-    if (!activeVectorLine) {
-        return;
-    }
-
-    /*
-        Keep the vector as vector data.
-        It is NOT rasterized here.
-    */
-
-    saveState();
-
-    clearPreview();
-
-    activeVectorLine = null;
-
-    selectedVectorPtIndex = -1;
-
-    vectorDraggingPoint = false;
-
-    updateVectorStatus();
-}
-
-
-/* =========================================================
-   RENDER ALL VECTORS
-========================================================= */
-
-function renderAllVectors() {
-
-    layers.forEach(
-        layer =>
-            layer.ctx.clearRect(
-                0,
-                0,
-                WIDTH,
-                HEIGHT
-            )
+    vectorCtx.clearRect(
+        0,
+        0,
+        WIDTH,
+        HEIGHT
     );
 
-    /*
-        NOTE:
-        In a full vector editor the raster and vector
-        histories would be separated. Here we redraw
-        vector lines over the existing raster layers.
-    */
+    for (const line of allVectorLines) {
 
-    for (
-        const line of allVectorLines
-    ) {
+        if (line === excludeLine) {
+            continue;
+        }
 
-        const ctx =
-            layers[line.layer].ctx;
+        if (
+            !line.points ||
+            line.points.length < 1
+        ) {
+            continue;
+        }
 
         drawSmoothVector(
-            ctx,
+            vectorCtx,
             line.points,
             line.color,
             line.opacity
@@ -2929,274 +2615,387 @@ function renderAllVectors() {
 
 
 /* =========================================================
-   VECTOR STATUS
-========================================================= */
+   VECTOR PREVIEW
+   ========================================================= */
 
-function updateVectorStatus() {
+function drawVectorPreview() {
 
-    const el =
-        document.getElementById(
-            "vector-status"
-        );
+    /*
+        Всі завершені вектори залишаються
+        на vector-canvas.
 
-    if (!activeVectorLine) {
+        Поточний вектор НЕ малюємо там,
+        щоб уникнути подвійної товщини.
+    */
 
-        el.textContent =
-            "Немає активного вектора";
+    renderAllVectors(
+        activeVectorLine
+    );
+
+    clearPreview();
+
+    if (
+        !activeVectorLine ||
+        activeVectorLine.points.length === 0
+    ) {
 
         return;
     }
 
-    el.textContent =
-        `Вузлів: ${activeVectorLine.points.length}` +
-        (
-            selectedVectorPtIndex >= 0
-                ? ` • Вибрано: ${selectedVectorPtIndex + 1}`
-                : ""
-        );
-}
+    /*
+        Поточна еластична лінія.
+    */
 
-
-/* =========================================================
-   MAGIC WAND
-========================================================= */
-
-function applyMagicWand(
-    startX,
-    startY
-) {
-
-    startX =
-        clamp(
-            startX,
-            0,
-            WIDTH - 1
-        );
-
-    startY =
-        clamp(
-            startY,
-            0,
-            HEIGHT - 1
-        );
-
-
-    const ctx =
-        layers[activeLayerIndex].ctx;
-
-    const imgData =
-        ctx.getImageData(
-            0,
-            0,
-            WIDTH,
-            HEIGHT
-        );
-
-    const data =
-        imgData.data;
-
-
-    const startPos =
-        (
-            startY * WIDTH +
-            startX
-        ) * 4;
-
-
-    const startR =
-        data[startPos];
-
-    const startG =
-        data[startPos + 1];
-
-    const startB =
-        data[startPos + 2];
-
-    const startA =
-        data[startPos + 3];
+    drawSmoothVector(
+        previewCtx,
+        activeVectorLine.points,
+        activeVectorLine.color,
+        activeVectorLine.opacity
+    );
 
 
     /*
-        If clicking fully transparent canvas,
-        don't perform an enormous flood fill.
+        Вузли.
     */
 
-    if (startA === 0) {
-        return;
+    previewCtx.save();
+
+    for (
+        let i = 0;
+        i < activeVectorLine.points.length;
+        i++
+    ) {
+
+        const point =
+            activeVectorLine.points[i];
+
+        const selected =
+            i === selectedVectorPtIndex;
+
+        previewCtx.beginPath();
+
+        previewCtx.arc(
+            point.x,
+            point.y,
+            selected ? 7 : 5,
+            0,
+            Math.PI * 2
+        );
+
+        previewCtx.fillStyle =
+            selected
+                ? "#ffffff"
+                : "rgba(255,255,255,.9)";
+
+        previewCtx.fill();
+
+        previewCtx.lineWidth = 2;
+
+        previewCtx.strokeStyle =
+            selected
+                ? "#ff8a2a"
+                : "#159bc5";
+
+        previewCtx.stroke();
+
     }
 
-
-    const visited =
-        new Uint8Array(
-            WIDTH * HEIGHT
-        );
-
-    const queue = [
-        startX,
-        startY
-    ];
-
-
-    const filledCanvas =
-        document.createElement(
-            "canvas"
-        );
-
-    filledCanvas.width =
-        WIDTH;
-
-    filledCanvas.height =
-        HEIGHT;
-
-    const fCtx =
-        filledCanvas.getContext("2d");
-
-    const fData =
-        fCtx.createImageData(
-            WIDTH,
-            HEIGHT
-        );
-
-
-    const tolerance = 20;
-
-
-    while (queue.length > 0) {
-
-        const cy =
-            queue.pop();
-
-        const cx =
-            queue.pop();
-
-
-        if (
-            cx < 0 ||
-            cx >= WIDTH ||
-            cy < 0 ||
-            cy >= HEIGHT
-        ) {
-            continue;
-        }
-
-
-        const idx =
-            cy * WIDTH + cx;
-
-
-        if (visited[idx]) {
-            continue;
-        }
-
-        visited[idx] = 1;
-
-
-        const pos =
-            idx * 4;
-
-
-        const matches =
-            Math.abs(
-                data[pos] - startR
-            ) < tolerance &&
-
-            Math.abs(
-                data[pos + 1] - startG
-            ) < tolerance &&
-
-            Math.abs(
-                data[pos + 2] - startB
-            ) < tolerance &&
-
-            Math.abs(
-                data[pos + 3] - startA
-            ) < tolerance;
-
-
-        if (!matches) {
-            continue;
-        }
-
-
-        fData.data[pos] = 255;
-        fData.data[pos + 1] = 255;
-        fData.data[pos + 2] = 255;
-        fData.data[pos + 3] = 255;
-
-
-        queue.push(cx + 1, cy);
-        queue.push(cx - 1, cy);
-        queue.push(cx, cy + 1);
-        queue.push(cx, cy - 1);
-    }
-
-
-    fCtx.putImageData(
-        fData,
-        0,
-        0
-    );
-
-
-    const fillLayer =
-        document.createElement(
-            "canvas"
-        );
-
-    fillLayer.width =
-        WIDTH;
-
-    fillLayer.height =
-        HEIGHT;
-
-    const fillCtx =
-        fillLayer.getContext("2d");
-
-
-    fillCtx.globalAlpha =
-        brushOpacity;
-
-    fillCtx.fillStyle =
-        getFillStyle(
-            fillCtx,
-            startX,
-            startY,
-            startX + 150,
-            startY + 150
-        );
-
-    fillCtx.fillRect(
-        0,
-        0,
-        WIDTH,
-        HEIGHT
-    );
-
-
-    fillCtx.globalCompositeOperation =
-        "destination-in";
-
-    fillCtx.drawImage(
-        filledCanvas,
-        0,
-        0
-    );
-
-
-    ctx.drawImage(
-        fillLayer,
-        0,
-        0
-    );
-
-
-    saveState();
+    previewCtx.restore();
 }
 
 
 /* =========================================================
-   PREVIEW
-========================================================= */
+   VECTOR NODE HIT TEST
+   ========================================================= */
+
+function findVectorPoint(
+    x,
+    y
+) {
+
+    if (!activeVectorLine) {
+        return -1;
+    }
+
+    const hitRadius =
+        Math.max(
+            10 / scale,
+            12
+        );
+
+    for (
+        let i =
+            activeVectorLine.points.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const p =
+            activeVectorLine.points[i];
+
+        const dx =
+            x - p.x;
+
+        const dy =
+            y - p.y;
+
+        if (
+            dx * dx +
+            dy * dy <=
+            hitRadius * hitRadius
+        ) {
+
+            return i;
+
+        }
+
+    }
+
+    return -1;
+}
+
+
+/* =========================================================
+   START VECTOR
+   ========================================================= */
+
+function startVector(x, y) {
+
+    /*
+        Якщо є поточний вектор,
+        спочатку перевіряємо вузол.
+    */
+
+    if (activeVectorLine) {
+
+        const hit =
+            findVectorPoint(x, y);
+
+        if (hit !== -1) {
+
+            selectedVectorPtIndex =
+                hit;
+
+            isDraggingVectorPoint =
+                true;
+
+            drawVectorPreview();
+
+            updateVectorStatus();
+
+            return;
+
+        }
+    }
+
+
+    /*
+        Якщо активного вектора немає —
+        створюємо новий.
+    */
+
+    if (!activeVectorLine) {
+
+        activeVectorLine = {
+
+            id: nextVectorId++,
+
+            layer: currentLayer,
+
+            points: [],
+
+            color: mainColor,
+
+            opacity: brushOpacity
+
+        };
+
+        allVectorLines.push(
+            activeVectorLine
+        );
+
+    }
+
+
+    /*
+        Додаємо вузол.
+    */
+
+    activeVectorLine.points.push({
+
+        x,
+        y,
+        w: brushSize
+
+    });
+
+    selectedVectorPtIndex =
+        activeVectorLine.points.length - 1;
+
+    drawVectorPreview();
+
+    updateVectorStatus();
+}
+
+
+/* =========================================================
+   DRAG VECTOR NODE
+   ========================================================= */
+
+function moveVectorPoint(x, y) {
+
+    if (
+        !activeVectorLine ||
+        selectedVectorPtIndex < 0
+    ) {
+
+        return;
+    }
+
+    const point =
+        activeVectorLine.points[
+            selectedVectorPtIndex
+        ];
+
+    point.x =
+        Math.max(
+            0,
+            Math.min(WIDTH, x)
+        );
+
+    point.y =
+        Math.max(
+            0,
+            Math.min(HEIGHT, y)
+        );
+
+    drawVectorPreview();
+}
+
+
+/* =========================================================
+   FINISH VECTOR
+   ========================================================= */
+
+function finishVectorPath() {
+
+    if (!activeVectorLine) {
+
+        clearPreview();
+
+        renderAllVectors();
+
+        updateVectorStatus();
+
+        return;
+    }
+
+
+    /*
+        Якщо тільки один вузол —
+        це не повноцінна лінія.
+    */
+
+    if (
+        activeVectorLine.points.length < 2
+    ) {
+
+        const index =
+            allVectorLines.indexOf(
+                activeVectorLine
+            );
+
+        if (index !== -1) {
+
+            allVectorLines.splice(
+                index,
+                1
+            );
+
+        }
+
+        activeVectorLine = null;
+
+        selectedVectorPtIndex = -1;
+
+        clearPreview();
+
+        renderAllVectors();
+
+        updateVectorStatus();
+
+        return;
+    }
+
+
+    /*
+        Вектор уже існує в allVectorLines.
+
+        Перед завершенням зберігаємо
+        поточний повний стан.
+    */
+
+    saveState();
+
+    activeVectorLine = null;
+
+    selectedVectorPtIndex = -1;
+
+    isDraggingVectorPoint = false;
+
+    clearPreview();
+
+    renderAllVectors();
+
+    updateVectorStatus();
+
+    updateStatus();
+}
+
+
+/* =========================================================
+   DELETE ACTIVE VECTOR
+   ========================================================= */
+
+function deleteActiveVector() {
+
+    if (!activeVectorLine) {
+        return;
+    }
+
+    saveState();
+
+    const index =
+        allVectorLines.indexOf(
+            activeVectorLine
+        );
+
+    if (index !== -1) {
+
+        allVectorLines.splice(
+            index,
+            1
+        );
+
+    }
+
+    activeVectorLine = null;
+
+    selectedVectorPtIndex = -1;
+
+    isDraggingVectorPoint = false;
+
+    clearPreview();
+
+    renderAllVectors();
+
+    updateVectorStatus();
+}
+
+
+/* =========================================================
+   PREVIEW CLEAR
+   ========================================================= */
 
 function clearPreview() {
 
@@ -3206,314 +3005,1241 @@ function clearPreview() {
         WIDTH,
         HEIGHT
     );
-
 }
 
 
 /* =========================================================
-   HISTORY
-========================================================= */
+   POINTER DOWN
+   ========================================================= */
 
-/*
-    Important:
-    Vector data is included in history too.
-*/
+viewport.addEventListener(
+    "pointerdown",
+    function(e) {
 
-function cloneVectors() {
+        /*
+            Ліва кнопка миші,
+            або pen/touch.
+        */
 
-    return JSON.parse(
-        JSON.stringify(
-            allVectorLines
-        )
-    );
+        if (
+            e.pointerType === "mouse" &&
+            e.button !== 0
+        ) {
+
+            return;
+
+        }
+
+        e.preventDefault();
+
+        activePointerId =
+            e.pointerId;
+
+        try {
+
+            viewport.setPointerCapture(
+                e.pointerId
+            );
+
+        } catch (_) {}
+
+
+        /*
+            SPACE або Pan tool
+        */
+
+        if (
+            spacePressed ||
+            currentTool === "pan"
+        ) {
+
+            isPanning = true;
+
+            panStartX =
+                e.clientX;
+
+            panStartY =
+                e.clientY;
+
+            originalPanX =
+                panX;
+
+            originalPanY =
+                panY;
+
+            updateCursor();
+
+            return;
+
+        }
+
+
+        const pos =
+            getCanvasCoords(e);
+
+
+        /*
+            VECTOR
+        */
+
+        if (currentTool === "vector") {
+
+            startVector(
+                pos.x,
+                pos.y
+            );
+
+            return;
+        }
+
+
+        /*
+            PENCIL
+        */
+
+        if (currentTool === "pencil") {
+
+            saveState();
+
+            isDrawing = true;
+
+            beginDrawing(
+                pos.x,
+                pos.y
+            );
+
+            return;
+        }
+
+
+        /*
+            SHAPES
+        */
+
+        if (
+            currentTool === "line" ||
+            currentTool === "rect" ||
+            currentTool === "circle"
+        ) {
+
+            shapeStart = {
+                x: pos.x,
+                y: pos.y
+            };
+
+            return;
+        }
+
+
+        /*
+            EYEDROPPER
+        */
+
+        if (currentTool === "wand") {
+
+            pickColor(
+                pos.x,
+                pos.y
+            );
+
+            return;
+        }
+
+    },
+    {
+        passive: false
+    }
+);
+
+
+/* =========================================================
+   POINTER MOVE
+   ========================================================= */
+
+viewport.addEventListener(
+    "pointermove",
+    function(e) {
+
+        if (
+            activePointerId !== null &&
+            e.pointerId !== activePointerId
+        ) {
+
+            return;
+        }
+
+        const pos =
+            getCanvasCoords(e);
+
+        updateCursorPosition(
+            pos.x,
+            pos.y
+        );
+
+
+        /*
+            PAN
+        */
+
+        if (isPanning) {
+
+            panX =
+                originalPanX +
+                (e.clientX - panStartX);
+
+            panY =
+                originalPanY +
+                (e.clientY - panStartY);
+
+            updateTransform();
+
+            return;
+        }
+
+
+        /*
+            VECTOR NODE DRAG
+        */
+
+        if (
+            currentTool === "vector" &&
+            isDraggingVectorPoint
+        ) {
+
+            moveVectorPoint(
+                pos.x,
+                pos.y
+            );
+
+            return;
+        }
+
+
+        /*
+            PENCIL
+        */
+
+        if (
+            currentTool === "pencil" &&
+            isDrawing
+        ) {
+
+            drawPencil(
+                pos.x,
+                pos.y
+            );
+
+            return;
+        }
+
+
+        /*
+            SHAPE PREVIEW
+        */
+
+        if (
+            (
+                currentTool === "line" ||
+                currentTool === "rect" ||
+                currentTool === "circle"
+            ) &&
+            shapeStart
+        ) {
+
+            drawShapePreview(
+                pos.x,
+                pos.y
+            );
+
+        }
+
+    },
+    {
+        passive: false
+    }
+);
+
+
+/* =========================================================
+   POINTER UP
+   ========================================================= */
+
+viewport.addEventListener(
+    "pointerup",
+    function(e) {
+
+        if (
+            activePointerId !== null &&
+            e.pointerId !== activePointerId
+        ) {
+
+            return;
+        }
+
+        e.preventDefault();
+
+
+        /*
+            PAN
+        */
+
+        if (isPanning) {
+
+            isPanning = false;
+
+            updateCursor();
+
+            releasePointer(e);
+
+            return;
+        }
+
+
+        /*
+            VECTOR
+        */
+
+        if (
+            currentTool === "vector" &&
+            isDraggingVectorPoint
+        ) {
+
+            isDraggingVectorPoint =
+                false;
+
+            /*
+                Після переміщення вузла
+                стан уже змінено.
+
+                Створюємо history snapshot.
+            */
+
+            if (activeVectorLine) {
+
+                saveState();
+
+            }
+
+            drawVectorPreview();
+
+            releasePointer(e);
+
+            return;
+        }
+
+
+        /*
+            PENCIL
+        */
+
+        if (
+            currentTool === "pencil" &&
+            isDrawing
+        ) {
+
+            isDrawing = false;
+
+            releasePointer(e);
+
+            return;
+        }
+
+
+        /*
+            SHAPE
+        */
+
+        if (
+            (
+                currentTool === "line" ||
+                currentTool === "rect" ||
+                currentTool === "circle"
+            ) &&
+            shapeStart
+        ) {
+
+            const pos =
+                getCanvasCoords(e);
+
+            commitShape(
+                pos.x,
+                pos.y
+            );
+
+            releasePointer(e);
+
+            return;
+        }
+
+
+        releasePointer(e);
+
+    },
+    {
+        passive: false
+    }
+);
+
+
+/* ---------------------------------------------------------
+   Pointer cancel
+   --------------------------------------------------------- */
+
+viewport.addEventListener(
+    "pointercancel",
+    function(e) {
+
+        isDrawing = false;
+
+        isPanning = false;
+
+        isDraggingVectorPoint = false;
+
+        shapeStart = null;
+
+        clearPreview();
+
+        updateCursor();
+
+        releasePointer(e);
+
+    }
+);
+
+
+/* ---------------------------------------------------------
+   Release helper
+   --------------------------------------------------------- */
+
+function releasePointer(e) {
+
+    try {
+
+        if (
+            viewport.hasPointerCapture(
+                e.pointerId
+            )
+        ) {
+
+            viewport.releasePointerCapture(
+                e.pointerId
+            );
+
+        }
+
+    } catch (_) {}
+
+    activePointerId = null;
 }
 
 
-function createState() {
+/* =========================================================
+   MOUSE WHEEL ZOOM
+   ========================================================= */
 
-    return {
+viewport.addEventListener(
+    "wheel",
+    function(e) {
 
-        layers:
-            layers.map(
-                layer =>
-                    layer.ctx.getImageData(
-                        0,
-                        0,
-                        WIDTH,
-                        HEIGHT
-                    )
-            ),
+        e.preventDefault();
 
-        vectors:
-            cloneVectors()
+        const factor =
+            e.deltaY < 0
+                ? 1.1
+                : 1 / 1.1;
 
-    };
-}
+        zoomAt(
+            e.clientX,
+            e.clientY,
+            factor
+        );
+
+    },
+    {
+        passive: false
+    }
+);
 
 
-function saveState() {
+/* =========================================================
+   COLOR PICKER
+   ========================================================= */
 
-    const state =
-        createState();
+function pickColor(x, y) {
 
-    undoStack.push(
-        state
-    );
+    /*
+        Векторний canvas + preview не беремо,
+        тому що піпетка має брати саме raster.
+    */
 
-    if (
-        undoStack.length >
-        MAX_HISTORY
-    ) {
+    const temp =
+        document.createElement("canvas");
 
-        undoStack.shift();
+    temp.width = WIDTH;
+    temp.height = HEIGHT;
+
+    const ctx =
+        temp.getContext("2d");
+
+    /*
+        Малюємо шари знизу вгору.
+    */
+
+    for (let i = 0; i < rasterCanvases.length; i++) {
+
+        ctx.drawImage(
+            rasterCanvases[i],
+            0,
+            0
+        );
+
     }
 
-    redoStack.length = 0;
+    const pixel =
+        ctx.getImageData(
+            Math.floor(x),
+            Math.floor(y),
+            1,
+            1
+        ).data;
+
+    if (pixel[3] === 0) {
+        return;
+    }
+
+    const hex =
+        "#" +
+        [pixel[0], pixel[1], pixel[2]]
+            .map(v =>
+                v.toString(16).padStart(2,"0")
+            )
+            .join("");
+
+    mainColor = hex;
+
+    document.getElementById(
+        "colorPicker"
+    ).value = hex;
+
+    updateStatus();
+
+    /*
+        Після піпетки повертаємося
+        до олівця.
+    */
+
+    setTool("pencil");
 }
 
 
-function restoreState(state) {
+/* =========================================================
+   LAYERS
+   ========================================================= */
 
-    state.layers.forEach(
-        (imgData, index) => {
+function updateLayerUI() {
 
-            layers[index].ctx.putImageData(
-                imgData,
-                0,
-                0
+    document
+        .querySelectorAll(".layer-row")
+        .forEach(row => {
+
+            row.classList.toggle(
+                "active",
+                Number(row.dataset.layer) === currentLayer
+            );
+
+        });
+
+}
+
+
+/* ---------------------------------------------------------
+   Select layer
+   --------------------------------------------------------- */
+
+document
+    .getElementById("layersList")
+    .addEventListener(
+        "click",
+        function(e) {
+
+            const row =
+                e.target.closest(".layer-row");
+
+            if (!row) return;
+
+            /*
+                Eye button має окрему поведінку.
+            */
+
+            if (
+                e.target.closest(".eye")
+            ) {
+
+                const index =
+                    Number(
+                        e.target.closest(".eye")
+                            .dataset.eye
+                    );
+
+                rasterCanvases[index].style.display =
+                    rasterCanvases[index].style.display === "none"
+                        ? "block"
+                        : "none";
+
+                e.target.closest(".eye").textContent =
+                    rasterCanvases[index].style.display === "none"
+                        ? "○"
+                        : "●";
+
+                return;
+            }
+
+            currentLayer =
+                Number(row.dataset.layer);
+
+            updateLayerUI();
+
+            updateStatus();
+
+            updateVectorStatus();
+
+        }
+    );
+
+
+/* =========================================================
+   TOOL BUTTONS
+   ========================================================= */
+
+document
+    .querySelectorAll(".tool")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                setTool(
+                    button.dataset.tool
+                );
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   BRUSH CONTROLS
+   ========================================================= */
+
+document
+    .getElementById("sizeRange")
+    .addEventListener(
+        "input",
+        function() {
+
+            brushSize =
+                Number(this.value);
+
+            document.getElementById(
+                "sizeValue"
+            ).textContent =
+                brushSize + " px";
+
+            updateStatus();
+
+        }
+    );
+
+
+document
+    .getElementById("opacityRange")
+    .addEventListener(
+        "input",
+        function() {
+
+            brushOpacity =
+                Number(this.value) / 100;
+
+            document.getElementById(
+                "opacityValue"
+            ).textContent =
+                this.value + "%";
+
+            updateStatus();
+
+        }
+    );
+
+
+document
+    .getElementById("colorPicker")
+    .addEventListener(
+        "input",
+        function() {
+
+            mainColor =
+                this.value;
+
+            updateStatus();
+
+        }
+    );
+
+
+/* ---------------------------------------------------------
+   Swatches
+   --------------------------------------------------------- */
+
+document
+    .querySelectorAll(".swatch")
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            function() {
+
+                mainColor =
+                    this.dataset.color;
+
+                document.getElementById(
+                    "colorPicker"
+                ).value =
+                    mainColor;
+
+                updateStatus();
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   VECTOR SETTINGS
+   ========================================================= */
+
+document
+    .getElementById("smoothRange")
+    .addEventListener(
+        "input",
+        function() {
+
+            smoothness =
+                Number(this.value);
+
+            document.getElementById(
+                "smoothValue"
+            ).textContent =
+                smoothness;
+
+            if (activeVectorLine) {
+                drawVectorPreview();
+            }
+
+        }
+    );
+
+
+document
+    .getElementById("elasticRange")
+    .addEventListener(
+        "input",
+        function() {
+
+            elasticity =
+                Number(this.value) / 100;
+
+            document.getElementById(
+                "elasticValue"
+            ).textContent =
+                this.value + "%";
+
+            if (activeVectorLine) {
+                drawVectorPreview();
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   TOP BUTTONS
+   ========================================================= */
+
+document
+    .getElementById("undoBtn")
+    .addEventListener(
+        "click",
+        undo
+    );
+
+
+document
+    .getElementById("redoBtn")
+    .addEventListener(
+        "click",
+        redo
+    );
+
+
+/* ---------------------------------------------------------
+   Clear current raster layer
+   --------------------------------------------------------- */
+
+document
+    .getElementById("clearBtn")
+    .addEventListener(
+        "click",
+        function() {
+
+            saveState();
+
+            rasterContexts[currentLayer]
+                .clearRect(
+                    0,
+                    0,
+                    WIDTH,
+                    HEIGHT
+                );
+
+        }
+    );
+
+
+/* =========================================================
+   VECTOR BUTTONS
+   ========================================================= */
+
+document
+    .getElementById("vectorFinishBtn")
+    .addEventListener(
+        "click",
+        finishVectorPath
+    );
+
+
+document
+    .getElementById("vectorDeleteBtn")
+    .addEventListener(
+        "click",
+        deleteActiveVector
+    );
+
+
+/* =========================================================
+   ZOOM BUTTONS
+   ========================================================= */
+
+document
+    .getElementById("zoomInBtn")
+    .addEventListener(
+        "click",
+        function() {
+
+            const rect =
+                viewport.getBoundingClientRect();
+
+            zoomAt(
+                rect.left + rect.width / 2,
+                rect.top + rect.height / 2,
+                1.2
             );
 
         }
     );
 
 
-    allVectorLines =
-        JSON.parse(
-            JSON.stringify(
-                state.vectors || []
-            )
-        );
+document
+    .getElementById("zoomOutBtn")
+    .addEventListener(
+        "click",
+        function() {
 
+            const rect =
+                viewport.getBoundingClientRect();
 
-    clearPreview();
-}
+            zoomAt(
+                rect.left + rect.width / 2,
+                rect.top + rect.height / 2,
+                1 / 1.2
+            );
 
-
-function undo() {
-
-    if (
-        undoStack.length <= 1
-    ) {
-        return;
-    }
-
-    const current =
-        undoStack.pop();
-
-    redoStack.push(
-        current
+        }
     );
 
-    restoreState(
-        undoStack[
-            undoStack.length - 1
-        ]
-    );
-}
 
+document
+    .getElementById("zoomResetBtn")
+    .addEventListener(
+        "click",
+        function() {
 
-function redo() {
+            scale = 1;
 
-    if (
-        redoStack.length === 0
-    ) {
-        return;
-    }
+            panX = 0;
 
-    const state =
-        redoStack.pop();
+            panY = 0;
 
-    undoStack.push(
-        state
+            updateTransform();
+
+        }
     );
 
-    restoreState(
-        state
+
+document
+    .getElementById("fitBtn")
+    .addEventListener(
+        "click",
+        fitCanvas
     );
-}
+
+
+document
+    .getElementById("centerBtn")
+    .addEventListener(
+        "click",
+        centerCanvas
+    );
 
 
 /* =========================================================
    KEYBOARD
-========================================================= */
+   ========================================================= */
 
-function handleKeyboard(e) {
-
-    const tag =
-        document.activeElement?.tagName;
-
-    /*
-        Don't intercept keyboard input while
-        using color/range controls.
-    */
-
-    if (
-        tag === "INPUT" ||
-        tag === "TEXTAREA"
-    ) {
+window.addEventListener(
+    "keydown",
+    function(e) {
 
         /*
-            But still allow Escape to leave vector mode.
+            Space = temporary pan
         */
 
-        if (e.key !== "Escape") {
-            return;
-        }
-    }
-
-
-    if (
-        (e.ctrlKey || e.metaKey) &&
-        e.key.toLowerCase() === "z"
-    ) {
-
-        e.preventDefault();
-
-        undo();
-
-        return;
-    }
-
-
-    if (
-        (e.ctrlKey || e.metaKey) &&
-        e.key.toLowerCase() === "y"
-    ) {
-
-        e.preventDefault();
-
-        redo();
-
-        return;
-    }
-
-
-    /*
-        Tool shortcuts.
-    */
-
-    if (
-        !e.ctrlKey &&
-        !e.metaKey &&
-        !e.altKey
-    ) {
-
-        switch (
-            e.key.toLowerCase()
+        if (
+            e.code === "Space" &&
+            !e.repeat
         ) {
 
-            case "p":
-                setTool("pencil");
-                break;
+            spacePressed = true;
 
-            case "v":
-                setTool("vector");
-                break;
+            updateCursor();
 
-            case "l":
-                setTool("line");
-                break;
-
-            case "r":
-                setTool("rect");
-                break;
-
-            case "c":
-                setTool("circle");
-                break;
-
-            case "w":
-                setTool("wand");
-                break;
-
-            case "h":
-                setTool("pan");
-                break;
-
-            case "0":
-                resetView();
-                break;
-
-            case "+":
-            case "=":
-                zoomDelta(.15);
-                break;
-
-            case "-":
-                zoomDelta(-.15);
-                break;
-
-            case "escape":
-
-                if (
-                    currentTool === "vector"
-                ) {
-
-                    finishVectorPath();
-                }
-
-                break;
+            e.preventDefault();
 
         }
+
+
+        /*
+            Ctrl/Cmd + Z
+        */
+
+        if (
+            (e.ctrlKey || e.metaKey) &&
+            e.key.toLowerCase() === "z"
+        ) {
+
+            if (e.shiftKey) {
+                redo();
+            } else {
+                undo();
+            }
+
+            e.preventDefault();
+
+        }
+
+
+        /*
+            Ctrl/Cmd + Y
+        */
+
+        if (
+            (e.ctrlKey || e.metaKey) &&
+            e.key.toLowerCase() === "y"
+        ) {
+
+            redo();
+
+            e.preventDefault();
+
+        }
+
+
+        /*
+            V = vector
+        */
+
+        if (
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            e.key.toLowerCase() === "v"
+        ) {
+
+            setTool("vector");
+
+        }
+
+
+        /*
+            B = brush
+        */
+
+        if (
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            e.key.toLowerCase() === "b"
+        ) {
+
+            setTool("pencil");
+
+        }
+
+
+        /*
+            H = pan
+        */
+
+        if (
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            e.key.toLowerCase() === "h"
+        ) {
+
+            setTool("pan");
+
+        }
+
+
+        /*
+            Escape:
+            скасувати активне редагування вектора.
+        */
+
+        if (e.key === "Escape") {
+
+            if (activeVectorLine) {
+
+                const index =
+                    allVectorLines.indexOf(
+                        activeVectorLine
+                    );
+
+                if (index !== -1) {
+
+                    allVectorLines.splice(
+                        index,
+                        1
+                    );
+
+                }
+
+                activeVectorLine = null;
+
+                selectedVectorPtIndex = -1;
+
+                isDraggingVectorPoint = false;
+
+                clearPreview();
+
+                renderAllVectors();
+
+                updateVectorStatus();
+
+            }
+
+        }
+
+
+        /*
+            Enter = завершити вектор.
+        */
+
+        if (
+            e.key === "Enter" &&
+            currentTool === "vector"
+        ) {
+
+            finishVectorPath();
+
+        }
+
     }
+);
+
+
+window.addEventListener(
+    "keyup",
+    function(e) {
+
+        if (e.code === "Space") {
+
+            spacePressed = false;
+
+            updateCursor();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   PREVENT SPACE SCROLL
+   ========================================================= */
+
+window.addEventListener(
+    "keydown",
+    function(e) {
+
+        if (e.code === "Space") {
+
+            e.preventDefault();
+
+        }
+
+    },
+    {
+        passive: false
+    }
+);
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+const toolNames = {
+
+    pencil: "Олівець",
+    vector: "Еластичний вектор",
+    line: "Лінія",
+    rect: "Прямокутник",
+    circle: "Коло",
+    wand: "Піпетка",
+    pan: "Рух"
+
+};
+
+
+function updateStatus() {
+
+    document.getElementById(
+        "statusText"
+    ).textContent =
+        `${toolNames[currentTool]} • Layer ${currentLayer + 1} • ${WIDTH}×${HEIGHT}`;
+
+}
+
+
+function updateVectorStatus() {
+
+    const el =
+        document.getElementById(
+            "vectorStatus"
+        );
+
+    if (!activeVectorLine) {
+
+        el.innerHTML =
+            "Векторний режим готовий.<br>" +
+            "Клацни по полотну, щоб створити перший вузол.";
+
+        return;
+    }
+
+    const count =
+        activeVectorLine.points.length;
+
+    el.innerHTML =
+        `<strong>Активний вектор</strong><br>` +
+        `Вузлів: ${count}<br>` +
+        `Перетягни вузол або додай новий.<br>` +
+        `Enter — завершити. Esc — скасувати.`;
+
+}
+
+
+function updateCursorPosition(x, y) {
+
+    document.getElementById(
+        "cursorText"
+    ).textContent =
+        `x: ${Math.round(x)} y: ${Math.round(y)}`;
 
 }
 
 
 /* =========================================================
-   EXPORT PNG
-========================================================= */
+   PNG EXPORT
+   ========================================================= */
 
 function exportPNG() {
 
-    const exportCanvas =
-        document.createElement(
-            "canvas"
-        );
+    const output =
+        document.createElement("canvas");
 
-    exportCanvas.width =
+    output.width =
         WIDTH;
 
-    exportCanvas.height =
+    output.height =
         HEIGHT;
 
     const ctx =
-        exportCanvas.getContext(
-            "2d"
-        );
+        output.getContext("2d");
+
+
+    /*
+        Білий фон.
+    */
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.fillRect(
+        0,
+        0,
+        WIDTH,
+        HEIGHT
+    );
 
 
     /*
         Raster layers.
     */
 
-    layers.forEach(
-        layer => {
+    for (
+        let i = 0;
+        i < rasterCanvases.length;
+        i++
+    ) {
 
-            ctx.drawImage(
-                layer.canvas,
-                0,
-                0
-            );
+        if (
+            rasterCanvases[i].style.display ===
+            "none"
+        ) {
+
+            continue;
 
         }
-    );
+
+        ctx.drawImage(
+            rasterCanvases[i],
+            0,
+            0
+        );
+
+    }
 
 
     /*
-        Vector layers.
-        They are rendered at their native
-        1000 × 700 resolution.
+        Векторний шар.
+
+        Малюємо його напряму з даних,
+        тому export не залежить від preview.
     */
 
     for (
@@ -3534,41 +4260,325 @@ function exportPNG() {
         document.createElement("a");
 
     link.download =
-        "aerocanvas-art.png";
+        "aerocanvas.png";
 
     link.href =
-        exportCanvas.toDataURL(
+        output.toDataURL(
             "image/png"
         );
 
     link.click();
+
 }
 
 
-/* =========================================================
-   CONTEXT MENU
-========================================================= */
+document
+    .getElementById("exportBtn")
+    .addEventListener(
+        "click",
+        exportPNG
+    );
 
-previewCanvas.addEventListener(
-    "contextmenu",
-    e => {
-        e.preventDefault();
+
+/* =========================================================
+   LOCAL STORAGE
+   ========================================================= */
+
+function saveLocal() {
+
+    /*
+        ImageData не можна нормально зберігати
+        як є, тому переводимо raster у PNG dataURL.
+    */
+
+    const raster =
+        rasterCanvases.map(
+            canvas =>
+                canvas.toDataURL("image/png")
+        );
+
+    const data = {
+
+        raster,
+
+        vectors:
+            cloneVectors(),
+
+        currentLayer,
+
+        mainColor,
+
+        brushSize,
+
+        brushOpacity,
+
+        scale,
+
+        panX,
+
+        panY
+
+    };
+
+    try {
+
+        localStorage.setItem(
+            "aerocanvas-project",
+            JSON.stringify(data)
+        );
+
+        document.getElementById(
+            "statusText"
+        ).textContent =
+            "Проєкт збережено в браузері.";
+
+    } catch (error) {
+
+        alert(
+            "Не вдалося зберегти проєкт у браузері."
+        );
+
     }
-);
+
+}
+
+
+async function loadLocal() {
+
+    const raw =
+        localStorage.getItem(
+            "aerocanvas-project"
+        );
+
+    if (!raw) {
+
+        alert(
+            "Збереженого проєкту немає."
+        );
+
+        return;
+    }
+
+    try {
+
+        const data =
+            JSON.parse(raw);
+
+        /*
+            Спочатку очищаємо raster.
+        */
+
+        rasterContexts.forEach(
+            ctx =>
+                ctx.clearRect(
+                    0,
+                    0,
+                    WIDTH,
+                    HEIGHT
+                )
+        );
+
+
+        /*
+            Відновлюємо PNG raster.
+        */
+
+        for (
+            let i = 0;
+            i < data.raster.length;
+            i++
+        ) {
+
+            const image =
+                new Image();
+
+            image.src =
+                data.raster[i];
+
+            await new Promise(
+                resolve => {
+
+                    image.onload =
+                        resolve;
+
+                    image.onerror =
+                        resolve;
+
+                }
+            );
+
+            rasterContexts[i]
+                .drawImage(
+                    image,
+                    0,
+                    0
+                );
+
+        }
+
+
+        /*
+            Відновлюємо vectors.
+        */
+
+        allVectorLines =
+            data.vectors || [];
+
+        nextVectorId =
+            allVectorLines.reduce(
+                (max, line) =>
+                    Math.max(
+                        max,
+                        Number(line.id) || 0
+                    ),
+                0
+            ) + 1;
+
+
+        currentLayer =
+            data.currentLayer ?? 3;
+
+        mainColor =
+            data.mainColor ?? "#157fa4";
+
+        brushSize =
+            data.brushSize ?? 12;
+
+        brushOpacity =
+            data.brushOpacity ?? 1;
+
+
+        document.getElementById(
+            "colorPicker"
+        ).value =
+            mainColor;
+
+        document.getElementById(
+            "sizeRange"
+        ).value =
+            brushSize;
+
+        document.getElementById(
+            "sizeValue"
+        ).textContent =
+            brushSize + " px";
+
+        document.getElementById(
+            "opacityRange"
+        ).value =
+            Math.round(
+                brushOpacity * 100
+            );
+
+        document.getElementById(
+            "opacityValue"
+        ).textContent =
+            Math.round(
+                brushOpacity * 100
+            ) + "%";
+
+
+        /*
+            Pan/zoom не відновлюємо,
+            якщо їх не було.
+        */
+
+        if (
+            typeof data.scale === "number"
+        ) {
+
+            scale = data.scale;
+
+        }
+
+        if (
+            typeof data.panX === "number"
+        ) {
+
+            panX = data.panX;
+
+        }
+
+        if (
+            typeof data.panY === "number"
+        ) {
+
+            panY = data.panY;
+
+        }
+
+
+        activeVectorLine = null;
+
+        selectedVectorPtIndex = -1;
+
+        clearPreview();
+
+        renderAllVectors();
+
+        updateLayerUI();
+
+        updateTransform();
+
+        updateStatus();
+
+        updateVectorStatus();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Файл у localStorage пошкоджений."
+        );
+
+    }
+
+}
+
+
+document
+    .getElementById("saveLocalBtn")
+    .addEventListener(
+        "click",
+        saveLocal
+    );
+
+
+document
+    .getElementById("loadLocalBtn")
+    .addEventListener(
+        "click",
+        loadLocal
+    );
 
 
 /* =========================================================
-   RESIZE
-========================================================= */
+   WINDOW RESIZE
+   ========================================================= */
 
 window.addEventListener(
     "resize",
-    () => {
+    function() {
+
+        /*
+            Якщо масштаб був близький до fit,
+            просто коригуємо межі pan.
+        */
 
         updateTransform();
 
     }
 );
+
+
+/* =========================================================
+   INITIAL STATE
+   ========================================================= */
+
+initializeCanvas();
+
+updateHistoryButtons();
 
 </script>
 
