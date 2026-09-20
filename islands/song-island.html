@@ -1,0 +1,2954 @@
+```html
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/islands-template.css">
+<title>ОСТРІВ: MUSIC</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+
+<style>
+/* ============================================================
+   FRUTIGER AERO × WINAMP MUSIC PLAYER
+   Змінено тільки дизайн плеєра.
+   ============================================================ */
+
+.music-player-wrap {
+  margin: 0 0 10px;
+  font-family: "Trebuchet MS", Verdana, Arial, sans-serif;
+  user-select: none;
+}
+
+.winamp-frame {
+  position: relative;
+
+  background:
+    linear-gradient(
+      180deg,
+      #f7ffff 0%,
+      #d9f7fa 10%,
+      #8edee8 35%,
+      #49bfcf 65%,
+      #2697b3 100%
+    );
+
+  border: 2px solid #ffffff;
+  border-radius: 12px;
+
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,0.95),
+    inset 2px 0 0 rgba(255,255,255,0.65),
+    inset -2px -3px 0 rgba(0,105,145,0.45),
+    0 3px 0 rgba(0,100,150,0.35),
+    0 7px 18px rgba(0,90,130,0.28);
+
+  padding: 7px;
+  overflow: hidden;
+}
+
+.winamp-frame::before {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 2px;
+  height: 30px;
+
+  border-radius: 0 0 50% 50%;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.65),
+      rgba(255,255,255,0)
+    );
+
+  pointer-events: none;
+}
+
+/* ============================================================
+   TITLE BAR
+   ============================================================ */
+
+.winamp-titlebar {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background:
+    linear-gradient(
+      180deg,
+      #72e9f2 0%,
+      #20bdd1 45%,
+      #0795b6 100%
+    );
+
+  color: #ffffff;
+
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+
+  padding: 4px 6px;
+  margin-bottom: 6px;
+
+  letter-spacing: 0.3px;
+
+  border: 1px solid #ffffff;
+  border-radius: 7px;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    inset 0 -2px 3px rgba(0,95,135,0.35),
+    0 1px 2px rgba(0,80,120,0.25);
+
+  text-shadow:
+    0 1px 2px rgba(0,70,100,0.8);
+}
+
+.winamp-titlebar .winamp-btns {
+  display: flex;
+  gap: 3px;
+}
+
+.winamp-titlebar .wbtn {
+  width: 15px;
+  height: 13px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #d9faff 40%,
+      #80dbe7 100%
+    );
+
+  border: 1px solid #ffffff;
+  border-radius: 3px;
+
+  font-size: 9px;
+  line-height: 10px;
+  font-weight: bold;
+
+  color: #087a99;
+
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 1px 1px rgba(0,70,100,0.35);
+}
+
+/* ============================================================
+   PLAYER LAYOUT
+   ============================================================ */
+
+.player-main {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.player-left {
+  flex: 1 1 260px;
+  min-width: 220px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* ============================================================
+   DISPLAY
+   ============================================================ */
+
+.display-panel {
+  position: relative;
+
+  background:
+    linear-gradient(
+      180deg,
+      #063c4e 0%,
+      #075b6d 45%,
+      #032f40 100%
+    );
+
+  border: 2px solid #bffaff;
+  border-radius: 7px;
+
+  padding: 7px 8px;
+  margin-bottom: 6px;
+
+  min-height: 52px;
+  overflow: hidden;
+
+  box-shadow:
+    inset 0 2px 4px rgba(0,0,0,0.55),
+    inset 0 -1px 0 rgba(255,255,255,0.18),
+    0 1px 2px rgba(0,90,120,0.35);
+}
+
+.display-panel::after {
+  content: "";
+  position: absolute;
+
+  left: 8px;
+  right: 8px;
+  top: 3px;
+  height: 12px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.15),
+      rgba(255,255,255,0)
+    );
+
+  border-radius: 5px;
+
+  pointer-events: none;
+}
+
+.now-track {
+  color: #8dffff;
+
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  line-height: 15px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  text-shadow:
+    0 0 4px rgba(72,255,255,0.9),
+    0 0 8px rgba(0,200,255,0.5);
+
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+}
+
+.now-status {
+  color: #61eaff;
+
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+
+  margin-top: 3px;
+  opacity: 0.95;
+
+  text-shadow:
+    0 0 4px rgba(0,220,255,0.7);
+}
+
+.now-time {
+  color: #b4ffff;
+
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+
+  margin-top: 2px;
+
+  font-variant-numeric: tabular-nums;
+
+  text-shadow:
+    0 0 4px rgba(0,220,255,0.65);
+}
+
+/* ============================================================
+   VISUALIZER
+   ============================================================ */
+
+.viz-box {
+  position: relative;
+
+  background:
+    radial-gradient(
+      ellipse at center bottom,
+      #087d92 0%,
+      #043e55 45%,
+      #021d30 100%
+    );
+
+  border: 2px solid #b8faff;
+  border-radius: 7px;
+
+  height: 48px;
+  margin-bottom: 6px;
+
+  overflow: hidden;
+
+  box-shadow:
+    inset 0 2px 5px rgba(0,0,0,0.65),
+    inset 0 -1px 0 rgba(255,255,255,0.2);
+}
+
+.viz-box canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.viz-locked {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #63eaff;
+
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,65,90,0.82),
+      rgba(0,20,40,0.88)
+    );
+
+  text-shadow:
+    0 0 5px rgba(0,220,255,0.8);
+}
+
+/* ============================================================
+   CONTROL BUTTONS
+   ============================================================ */
+
+.controls-row {
+  display: flex;
+  flex-wrap: nowrap;
+
+  gap: 4px;
+  align-items: center;
+
+  margin-bottom: 6px;
+
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.wamp-btn {
+  position: relative;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #e9ffff 18%,
+      #a9edf3 48%,
+      #48c5d6 72%,
+      #159bb7 100%
+    );
+
+  border: 1px solid #ffffff;
+  border-radius: 6px;
+
+  color: #075b78;
+
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+
+  padding: 4px 7px;
+
+  cursor: pointer;
+
+  min-width: 32px;
+  text-align: center;
+
+  flex-shrink: 0;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.95),
+    inset 0 -2px 3px rgba(0,110,145,0.28),
+    0 1px 2px rgba(0,80,110,0.35);
+
+  text-shadow:
+    0 1px 0 rgba(255,255,255,0.8);
+
+  transition:
+    transform 0.08s ease,
+    filter 0.08s ease,
+    box-shadow 0.08s ease;
+}
+
+.wamp-btn::before {
+  content: "";
+
+  position: absolute;
+
+  left: 10%;
+  right: 10%;
+  top: 2px;
+
+  height: 42%;
+
+  border-radius: 5px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.85),
+      rgba(255,255,255,0)
+    );
+
+  pointer-events: none;
+}
+
+.wamp-btn:hover:not(:disabled) {
+  filter: brightness(1.08) saturate(1.08);
+
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -2px 3px rgba(0,110,145,0.25),
+    0 2px 5px rgba(0,140,180,0.4);
+}
+
+.wamp-btn:active,
+.wamp-btn.active {
+  transform: translateY(1px);
+
+  background:
+    linear-gradient(
+      180deg,
+      #159bb7 0%,
+      #48c5d6 35%,
+      #b5f4f7 100%
+    );
+
+  border-color: #78d9e5;
+
+  box-shadow:
+    inset 0 2px 4px rgba(0,80,110,0.45),
+    0 1px 1px rgba(255,255,255,0.5);
+}
+
+.wamp-btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.wamp-btn.repeat-on,
+.wamp-btn.shuffle-on {
+  color: #075d67;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #eaffff 20%,
+      #9af3df 48%,
+      #35cba7 75%,
+      #159b83 100%
+    );
+
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -2px 4px rgba(0,100,100,0.25),
+    0 0 5px rgba(40,240,190,0.45);
+}
+
+.wamp-btn.sel-active {
+  color: #14548a;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #e9f7ff 25%,
+      #9edcff 55%,
+      #4ba9ed 100%
+    );
+
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 0 6px rgba(50,170,255,0.65);
+}
+
+/* ============================================================
+   SEEK BAR
+   ============================================================ */
+
+.seek-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  margin-bottom: 6px;
+}
+
+.seek-bar {
+  flex: 1;
+
+  -webkit-appearance: none;
+  appearance: none;
+
+  height: 9px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #06394a,
+      #0b7184
+    );
+
+  border: 1px solid #d5ffff;
+  border-radius: 5px;
+
+  outline: none;
+
+  box-shadow:
+    inset 0 2px 3px rgba(0,0,0,0.45),
+    0 1px 1px rgba(255,255,255,0.5);
+}
+
+.seek-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+
+  width: 17px;
+  height: 13px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #e8ffff 25%,
+      #8ee7ef 55%,
+      #29aec5 100%
+    );
+
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+
+  cursor: pointer;
+
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 1px 2px rgba(0,70,100,0.45);
+}
+
+.seek-bar::-moz-range-thumb {
+  width: 17px;
+  height: 13px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #e8ffff 25%,
+      #8ee7ef 55%,
+      #29aec5 100%
+    );
+
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+
+  cursor: pointer;
+
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 1px 2px rgba(0,70,100,0.45);
+}
+
+/* ============================================================
+   VOLUME
+   ============================================================ */
+
+.vol-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  margin-bottom: 2px;
+}
+
+.vol-label {
+  color: #075b78;
+
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+
+  min-width: 28px;
+
+  text-shadow:
+    0 1px 0 rgba(255,255,255,0.8);
+}
+
+.vol-bar {
+  flex: 1;
+
+  -webkit-appearance: none;
+  appearance: none;
+
+  height: 9px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #06394a,
+      #0b7184
+    );
+
+  border: 1px solid #d5ffff;
+  border-radius: 5px;
+
+  box-shadow:
+    inset 0 2px 3px rgba(0,0,0,0.45),
+    0 1px 1px rgba(255,255,255,0.5);
+}
+
+.vol-bar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+
+  width: 16px;
+  height: 13px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #e5ffff 35%,
+      #74dce7 70%,
+      #1da1ba
+    );
+
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+
+  cursor: pointer;
+
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 1px 2px rgba(0,70,100,0.45);
+}
+
+.vol-bar::-moz-range-thumb {
+  width: 16px;
+  height: 13px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #e5ffff 35%,
+      #74dce7 70%,
+      #1da1ba
+    );
+
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+
+  cursor: pointer;
+
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 1px 2px rgba(0,70,100,0.45);
+}
+
+/* ============================================================
+   PLAYLIST
+   ============================================================ */
+
+.player-right {
+  flex: 0 0 220px;
+  width: 220px;
+  max-width: 100%;
+}
+
+.playlist-frame {
+  background:
+    linear-gradient(
+      180deg,
+      #07576c,
+      #023747
+    );
+
+  border: 2px solid #c6ffff;
+  border-radius: 7px;
+
+  height: 168px;
+
+  display: flex;
+  flex-direction: column;
+
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,0.2),
+    inset 0 -2px 4px rgba(0,0,0,0.45),
+    0 1px 2px rgba(0,80,110,0.35);
+}
+
+.playlist-header {
+  background:
+    linear-gradient(
+      180deg,
+      #72e8ef,
+      #18aabd
+    );
+
+  color: #ffffff;
+
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+
+  padding: 4px 6px;
+
+  border-bottom: 1px solid #d7ffff;
+  border-radius: 5px 5px 0 0;
+
+  flex-shrink: 0;
+
+  text-shadow:
+    0 1px 2px rgba(0,70,100,0.75);
+
+  box-shadow:
+    inset 0 1px 0 #ffffff;
+}
+
+.playlist-scroll {
+  flex: 1;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-color: #65d8e3 #064153;
+}
+
+.playlist-scroll::-webkit-scrollbar {
+  width: 12px;
+}
+
+.playlist-scroll::-webkit-scrollbar-track {
+  background:
+    linear-gradient(
+      90deg,
+      #043746,
+      #07576a
+    );
+
+  border-left: 1px solid rgba(255,255,255,0.18);
+}
+
+.playlist-scroll::-webkit-scrollbar-thumb {
+  background:
+    linear-gradient(
+      90deg,
+      #ffffff,
+      #a8f0f4 35%,
+      #48c5d5 70%,
+      #1494ad
+    );
+
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+
+  box-shadow:
+    inset 0 1px 0 #ffffff;
+}
+
+.track-item {
+  padding: 3px 6px;
+
+  color: #b8ffff;
+
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 11px;
+  line-height: 14px;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  border-bottom: 1px solid rgba(130,240,255,0.12);
+}
+
+.track-item:hover {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(80,230,245,0.30),
+      rgba(30,150,190,0.18)
+    );
+
+  color: #ffffff;
+}
+
+.track-item.selected {
+  background:
+    linear-gradient(
+      90deg,
+      #3bcfe0,
+      #129eb9
+    );
+
+  color: #ffffff;
+
+  outline: 1px solid #a9faff;
+
+  text-shadow:
+    0 1px 2px rgba(0,70,100,0.8);
+}
+
+.track-item.multi-selected {
+  background:
+    linear-gradient(
+      90deg,
+      #52aeea,
+      #2877bd
+    );
+
+  color: #ffffff;
+
+  outline: 1px solid #bdeaff;
+}
+
+.track-item.playing {
+  color: #ffffa0;
+
+  text-shadow:
+    0 0 4px rgba(255,255,80,0.9),
+    0 1px 2px rgba(0,70,100,0.8);
+}
+
+.track-item.locked-text {
+  color: #5fa7b5;
+}
+
+/* ============================================================
+   PASSWORD LOCK
+   ============================================================ */
+
+.lock-overlay {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(230,255,255,0.96),
+      rgba(114,215,226,0.96)
+    );
+
+  border: 2px solid #ffffff;
+  border-radius: 9px;
+
+  padding: 14px 12px;
+  margin-bottom: 7px;
+
+  text-align: center;
+
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -3px 6px rgba(0,100,130,0.25),
+    0 2px 5px rgba(0,80,110,0.25);
+}
+
+.lock-overlay.hidden {
+  display: none;
+}
+
+.lock-title {
+  color: #08708c;
+
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+
+  margin-bottom: 8px;
+
+  text-shadow:
+    0 1px 0 #ffffff;
+}
+
+.lock-input {
+  width: 100%;
+  max-width: 200px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #063849,
+      #075c70
+    );
+
+  border: 2px solid #ffffff;
+  border-radius: 6px;
+
+  color: #aaffff;
+
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+
+  padding: 5px 8px;
+
+  text-align: center;
+  outline: none;
+
+  box-shadow:
+    inset 0 2px 4px rgba(0,0,0,0.5),
+    0 1px 2px rgba(0,70,100,0.3);
+}
+
+.lock-input:focus {
+  box-shadow:
+    inset 0 2px 4px rgba(0,0,0,0.5),
+    0 0 0 2px rgba(100,240,255,0.55),
+    0 0 8px rgba(0,200,240,0.45);
+}
+
+.lock-btn {
+  margin-top: 8px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #e6ffff 25%,
+      #91e6ed 55%,
+      #27abc1 100%
+    );
+
+  border: 1px solid #ffffff;
+  border-radius: 6px;
+
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+
+  padding: 5px 14px;
+
+  cursor: pointer;
+
+  color: #075c78;
+
+  text-shadow:
+    0 1px 0 #ffffff;
+
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    inset 0 -2px 3px rgba(0,100,130,0.25),
+    0 1px 2px rgba(0,70,100,0.35);
+}
+
+.lock-btn:hover {
+  filter: brightness(1.08);
+}
+
+.lock-btn:active {
+  transform: translateY(1px);
+
+  box-shadow:
+    inset 0 2px 4px rgba(0,80,110,0.4);
+}
+
+.lock-msg {
+  margin-top: 6px;
+
+  font-size: 10px;
+  color: #c52d4b;
+
+  min-height: 14px;
+}
+
+.lock-hint {
+  margin-top: 6px;
+
+  font-size: 9px;
+  color: #27778a;
+}
+
+/* ============================================================
+   HIDDEN YOUTUBE HOST
+   ============================================================ */
+
+#yt-host {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ============================================================
+   FOOTER NOTE
+   ============================================================ */
+
+.player-footer-note {
+  margin-top: 6px;
+
+  font-size: 10px;
+
+  color: #39879a;
+
+  text-align: center;
+
+  text-shadow:
+    0 1px 0 rgba(255,255,255,0.8);
+}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 640px) {
+
+  .player-main {
+    flex-direction: column;
+  }
+
+  .player-right {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .playlist-frame {
+    height: 196px;
+  }
+
+  .controls-row {
+    justify-content: flex-start;
+  }
+
+  .wamp-btn {
+    min-width: 36px;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .display-panel {
+    min-height: 60px;
+  }
+
+  .now-track {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 420px) {
+
+  .winamp-frame {
+    padding: 5px;
+  }
+
+  .wamp-btn {
+    min-width: 30px;
+    padding: 5px 5px;
+    font-size: 11px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="hoomenchat-site">
+
+<div class="hoomenchat-header">ГУМЕНЧАТ</div>
+
+<div class="site-layout">
+
+<div class="site-left">
+<div class="left-box">
+
+<div class="site-name">MUSIC</div>
+
+<img
+  class="main-avatar"
+  src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c4c3bf95-7dbb-45e6-a48e-75f20684221e/dmrc7or-797f859b-53af-49eb-b6c6-0969425bcb21.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9jNGMzYmY5NS03ZGJiLTQ1ZTYtYTQ4ZS03NWYyMDY4NDIyMWUvZG1yYzdvci03OTdmODU5Yi01M2FmLTQ5ZWItYjZjNi0wOTY5NDI1YmNiMjEuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.ukmiyas8D6Mh_gykIRW4Yys_0P2O6k4CzV3FM4CCKD4"
+  alt="MUSIC"
+>
+
+<a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+
+<div class="nav-menu">
+<a class="nav-item" href="../profiles/copy-pasta.html">Мій гумгайл</a>
+<a class="nav-item" href="../profiles.html">Гумени</a>
+<a class="nav-item" href="../droomens.html">Друмени</a>
+<a class="nav-item" href="../activity.html">Стрічерчат</a>
+<a class="nav-item current" href="../islands.html">Острови</a>
+<a class="nav-item" href="../rules.html">Правила</a>
+</div>
+
+<div class="account-box">
+<div class="account-text">Немає гумгайла?</div>
+<a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
+<a class="account-link" href="../login.html">ВХІД</a>
+</div>
+
+</div>
+</div>
+
+
+<div class="site-right">
+
+<div class="profile-box">
+
+<div class="profile-header">MUSIC — острів</div>
+
+<div class="profile-info">
+
+<div>
+Виділити кілька треківCtrl + клік (або Cmd + клік на Mac),
+Грати лише виділені: Натисни ▶SEL,
+Очистити список треків: CLR,
+Випадковий порядок🔀 (toggle),
+Звичайний повтор одного треку🔁.
+</div>
+
+<div
+  class="profile-status"
+  style="color:green; font-style:normal;"
+>
+Статус: відкритий острів
+</div>
+
+</div>
+</div>
+
+
+<!-- ============================================================
+     MUSIC PLAYER
+     ============================================================ -->
+
+<div class="music-player-wrap">
+
+<div class="winamp-frame">
+
+<div class="winamp-titlebar">
+
+<span>MUSIC — Winamp-style Player</span>
+
+<div class="winamp-btns">
+<span class="wbtn">_</span>
+<span class="wbtn">□</span>
+<span class="wbtn">×</span>
+</div>
+
+</div>
+
+
+<!-- PASSWORD LOCK -->
+
+<div class="lock-overlay" id="lock-overlay">
+
+<div class="lock-title">
+🔒 ДОСТУП ЗАБЛОКОВАНО
+</div>
+
+<div
+  style="
+    color:#08708c;
+    font-size:10px;
+    margin-bottom:8px;
+  "
+>
+Введіть пароль, щоб розблокувати плейлист і візуалізатор
+</div>
+
+<input
+  type="password"
+  class="lock-input"
+  id="lock-input"
+  placeholder="••••••••"
+  autocomplete="off"
+  maxlength="32"
+>
+
+<div>
+
+<button
+  type="button"
+  class="lock-btn"
+  id="lock-btn"
+>
+РОЗБЛОКУВАТИ
+</button>
+
+</div>
+
+<div
+  class="lock-msg"
+  id="lock-msg"
+></div>
+
+<div class="lock-hint">
+Після розблокування назви треків стануть видимими
+</div>
+
+</div>
+
+
+<div
+  class="player-main"
+  id="player-main"
+>
+
+<div class="player-left">
+
+<div class="display-panel">
+
+<div
+  class="now-track"
+  id="now-track"
+>
+— виберіть трек —
+</div>
+
+<div
+  class="now-status"
+  id="now-status"
+>
+STOPPED
+</div>
+
+<div
+  class="now-time"
+  id="now-time"
+>
+00:00 / 00:00
+</div>
+
+</div>
+
+
+<div class="viz-box">
+
+<canvas
+  id="viz-canvas"
+  width="400"
+  height="48"
+></canvas>
+
+<div
+  class="viz-locked"
+  id="viz-locked"
+>
+ВІЗУАЛІЗАТОР ЗАБЛОКОВАНО
+</div>
+
+</div>
+
+
+<div class="controls-row">
+
+<button
+  type="button"
+  class="wamp-btn"
+  id="btn-prev"
+  title="Попередня"
+>
+⏮
+</button>
+
+<button
+  type="button"
+  class="wamp-btn"
+  id="btn-play"
+  title="Play / Pause"
+>
+▶
+</button>
+
+<button
+  type="button"
+  class="wamp-btn"
+  id="btn-stop"
+  title="Stop"
+>
+⏹
+</button>
+
+<button
+  type="button"
+  class="wamp-btn"
+  id="btn-next"
+  title="Наступна"
+>
+⏭
+</button>
+
+<button
+  type="button"
+  class="wamp-btn"
+  id="btn-rew"
+  title="Назад 10с"
+>
+⏪
+</button>
+
+<button
+  type="button"
+  class="wamp-btn"
+  id="btn-ff"
+  title="Вперед 10с"
+>
+⏩
+</button>
+
+<button
+  type="button"
+  class="wamp-btn"
+  id="btn-repeat"
+  title="Повтор треку"
+>
+🔁
+</button>
+
+<button
+  type="button"
+  class="wamp-btn"
+  id="btn-shuffle"
+  title="Випадковий порядок"
+>
+🔀
+</button>
+
+<button
+  type="button"
+  class="wamp-btn"
+  id="btn-play-sel"
+  title="Грати лише виділені (Ctrl+клік)"
+>
+▶SEL
+</button>
+
+<button
+  type="button"
+  class="wamp-btn"
+  id="btn-clear-sel"
+  title="Очистити виділення"
+>
+CLR
+</button>
+
+</div>
+
+
+<div class="seek-row">
+
+<input
+  type="range"
+  class="seek-bar"
+  id="seek-bar"
+  min="0"
+  max="1000"
+  value="0"
+  disabled
+>
+
+</div>
+
+
+<div class="vol-row">
+
+<span class="vol-label">VOL</span>
+
+<input
+  type="range"
+  class="vol-bar"
+  id="vol-bar"
+  min="0"
+  max="100"
+  value="70"
+>
+
+<span
+  class="vol-label"
+  id="vol-val"
+>
+70
+</span>
+
+</div>
+
+</div>
+
+
+<div class="player-right">
+
+<div class="playlist-frame">
+
+<div
+  class="playlist-header"
+  id="playlist-header"
+>
+PLAYLIST (0)
+</div>
+
+<div
+  class="playlist-scroll"
+  id="playlist"
+></div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="player-footer-note">
+Острів MUSIC · класичний вайб Winamp · пароль потрібен щоразу · Ctrl+клік = виділення
+</div>
+
+</div>
+
+
+<div id="yt-host"></div>
+
+
+<div class="rules-box">
+Пам'ятай та дотримуйся
+<a href="../rules.html">ПРАВИЛ</a>
+нашого ресурсу для приємного та друмнього часу разом з нами.
+</div>
+
+
+<div class="statistics-box">
+
+<div class="statistics-title">
+Статистика Гуменчату
+</div>
+
+<div>
+Зареєстровано гуменів:
+<span id="registered-hoomen"></span>
+</div>
+
+<div>
+Зараз онлайн:
+<span
+  class="statistics-online"
+  id="online-hoomen"
+></span>
+</div>
+
+<div>
+Гуменів сьогодні завітало:
+<span id="today-hoomen"></span>
+</div>
+
+</div>
+
+
+<div class="footer-line">
+Гуменчат — місце для гуменів.
+</div>
+
+</div>
+</div>
+</div>
+
+
+<script>
+(function () {
+
+  /* ============================================================
+     TRACK LIST
+     ============================================================ */
+
+  var TRACKS = [
+    { id: "vfCuZLSxA34", title: "Y", artist: "Gemini" },
+
+
+  ];
+
+  var PASSWORD = "Jane842";
+
+  /* ============================================================
+     STATE
+     ============================================================ */
+
+  var unlocked = false;
+  var selectedIndex = -1;
+  var playingIndex = -1;
+  var isPlaying = false;
+  var isRepeat = false;
+  var isShuffle = false;
+
+  var multiSelected = new Set();
+
+  var tempPlaylist = null;
+  var tempPos = -1;
+
+  var ytPlayer = null;
+  var ytReady = false;
+
+  var progressTimer = null;
+  var vizAnim = null;
+  var bars = [];
+
+  /* ============================================================
+     DOM
+     ============================================================ */
+
+  var lockOverlay = document.getElementById("lock-overlay");
+  var lockInput = document.getElementById("lock-input");
+  var lockBtn = document.getElementById("lock-btn");
+  var lockMsg = document.getElementById("lock-msg");
+
+  var playlistEl = document.getElementById("playlist");
+  var playlistHeader = document.getElementById("playlist-header");
+
+  var nowTrack = document.getElementById("now-track");
+  var nowStatus = document.getElementById("now-status");
+  var nowTime = document.getElementById("now-time");
+
+  var vizCanvas = document.getElementById("viz-canvas");
+  var vizLocked = document.getElementById("viz-locked");
+
+  var seekBar = document.getElementById("seek-bar");
+  var volBar = document.getElementById("vol-bar");
+  var volVal = document.getElementById("vol-val");
+
+  var btnPlay = document.getElementById("btn-play");
+  var btnStop = document.getElementById("btn-stop");
+  var btnPrev = document.getElementById("btn-prev");
+  var btnNext = document.getElementById("btn-next");
+  var btnRew = document.getElementById("btn-rew");
+  var btnFf = document.getElementById("btn-ff");
+  var btnRepeat = document.getElementById("btn-repeat");
+  var btnShuffle = document.getElementById("btn-shuffle");
+  var btnPlaySel = document.getElementById("btn-play-sel");
+  var btnClearSel = document.getElementById("btn-clear-sel");
+
+  /* ============================================================
+     HELPERS
+     ============================================================ */
+
+  function fmtTime(sec) {
+
+    if (!isFinite(sec) || sec < 0) {
+      return "00:00";
+    }
+
+    sec = Math.floor(sec);
+
+    var m = Math.floor(sec / 60);
+    var s = sec % 60;
+
+    return (
+      (m < 10 ? "0" : "") +
+      m +
+      ":" +
+      (s < 10 ? "0" : "") +
+      s
+    );
+  }
+
+  function displayTitle(i) {
+
+    if (!unlocked) {
+      return "Виконавець - Пісня";
+    }
+
+    var t = TRACKS[i];
+
+    return t.artist + " - " + t.title;
+  }
+
+  function setStatus(txt) {
+    nowStatus.textContent = txt;
+  }
+
+  function updateNowDisplay() {
+
+    if (selectedIndex < 0) {
+
+      nowTrack.textContent =
+        unlocked
+          ? "— виберіть трек —"
+          : "🔒 ЗАБЛОКОВАНО";
+
+      return;
+    }
+
+    nowTrack.textContent =
+      displayTitle(selectedIndex);
+  }
+
+  function updateMediaSession() {
+
+    if (
+      !("mediaSession" in navigator) ||
+      selectedIndex < 0 ||
+      !unlocked
+    ) {
+      return;
+    }
+
+    var t = TRACKS[selectedIndex];
+
+    try {
+
+      navigator.mediaSession.metadata =
+        new MediaMetadata({
+          title: t.title,
+          artist: t.artist,
+          album: "Острів MUSIC"
+        });
+
+      navigator.mediaSession.playbackState =
+        isPlaying
+          ? "playing"
+          : "paused";
+
+    } catch (e) {}
+  }
+
+  /* ============================================================
+     PLAYLIST RENDER
+     ============================================================ */
+
+  function renderPlaylist() {
+
+    playlistEl.innerHTML = "";
+
+    var headerTxt =
+      "PLAYLIST (" +
+      TRACKS.length +
+      ")";
+
+    if (!unlocked) {
+
+      headerTxt += " 🔒";
+
+    } else if (tempPlaylist) {
+
+      headerTxt +=
+        " · TEMP " +
+        (tempPos + 1) +
+        "/" +
+        tempPlaylist.length;
+
+    } else if (multiSelected.size > 0) {
+
+      headerTxt +=
+        " · SEL " +
+        multiSelected.size;
+    }
+
+    playlistHeader.textContent =
+      headerTxt;
+
+    TRACKS.forEach(function (t, i) {
+
+      var div =
+        document.createElement("div");
+
+      div.className = "track-item";
+
+      if (!unlocked) {
+        div.classList.add("locked-text");
+      }
+
+      if (i === selectedIndex) {
+        div.classList.add("selected");
+      }
+
+      if (multiSelected.has(i)) {
+        div.classList.add("multi-selected");
+      }
+
+      if (
+        i === playingIndex &&
+        isPlaying
+      ) {
+        div.classList.add("playing");
+      }
+
+      div.textContent =
+        (i + 1) +
+        ". " +
+        displayTitle(i);
+
+      div.dataset.index = i;
+
+      div.onclick = function (e) {
+
+        if (!unlocked) {
+          return;
+        }
+
+        var idx =
+          parseInt(
+            div.dataset.index,
+            10
+          );
+
+        if (
+          e.ctrlKey ||
+          e.metaKey
+        ) {
+
+          if (multiSelected.has(idx)) {
+            multiSelected.delete(idx);
+          } else {
+            multiSelected.add(idx);
+          }
+
+          renderPlaylist();
+
+        } else {
+
+          selectedIndex = idx;
+
+          renderPlaylist();
+
+          updateNowDisplay();
+        }
+      };
+
+      playlistEl.appendChild(div);
+    });
+  }
+
+  /* ============================================================
+     LOCK
+     ============================================================ */
+
+  function doUnlock() {
+
+    unlocked = true;
+
+    lockOverlay.classList.add("hidden");
+
+    vizLocked.style.display = "none";
+
+    seekBar.disabled = false;
+
+    [
+      btnPlay,
+      btnStop,
+      btnPrev,
+      btnNext,
+      btnRew,
+      btnFf,
+      btnRepeat,
+      btnShuffle,
+      btnPlaySel,
+      btnClearSel
+    ].forEach(function (b) {
+      b.disabled = false;
+    });
+
+    renderPlaylist();
+
+    updateNowDisplay();
+
+    setStatus("READY");
+
+    startViz();
+  }
+
+  function checkLock() {
+
+    unlocked = false;
+
+    vizLocked.style.display =
+      "flex";
+
+    seekBar.disabled = true;
+
+    [
+      btnPlay,
+      btnStop,
+      btnPrev,
+      btnNext,
+      btnRew,
+      btnFf,
+      btnRepeat,
+      btnShuffle,
+      btnPlaySel,
+      btnClearSel
+    ].forEach(function (b) {
+      b.disabled = true;
+    });
+
+    renderPlaylist();
+
+    updateNowDisplay();
+
+    setStatus("LOCKED");
+  }
+
+  lockBtn.onclick = function () {
+
+    var val =
+      (lockInput.value || "")
+      .trim();
+
+    if (val === PASSWORD) {
+
+      lockMsg.textContent = "";
+
+      lockInput.value = "";
+
+      doUnlock();
+
+    } else {
+
+      lockMsg.textContent =
+        "Невірний пароль";
+
+      lockInput.select();
+    }
+  };
+
+  lockInput.onkeydown = function (e) {
+
+    if (e.key === "Enter") {
+      lockBtn.click();
+    }
+  };
+
+  /* ============================================================
+     YOUTUBE API
+     ============================================================ */
+
+  function onYouTubeIframeAPIReady() {
+
+    ytPlayer =
+      new YT.Player(
+        "yt-host",
+        {
+          height: "1",
+          width: "1",
+
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
+            modestbranding: 1,
+            rel: 0,
+            playsinline: 1,
+            enablejsapi: 1
+          },
+
+          events: {
+
+            onReady: function () {
+
+              ytReady = true;
+
+              ytPlayer.setVolume(
+                parseInt(
+                  volBar.value,
+                  10
+                ) || 70
+              );
+            },
+
+            onStateChange: function (e) {
+
+              if (e.data === 1) {
+
+                isPlaying = true;
+
+                playingIndex =
+                  selectedIndex;
+
+                btnPlay.textContent =
+                  "⏸";
+
+                setStatus("PLAYING");
+
+                startProgress();
+
+                renderPlaylist();
+
+                updateMediaSession();
+
+              } else if (e.data === 2) {
+
+                isPlaying = false;
+
+                btnPlay.textContent =
+                  "▶";
+
+                setStatus("PAUSED");
+
+                stopProgress();
+
+                renderPlaylist();
+
+                updateMediaSession();
+
+              } else if (e.data === 0) {
+
+                if (
+                  isRepeat &&
+                  selectedIndex >= 0
+                ) {
+
+                  ytPlayer.seekTo(
+                    0
+                  );
+
+                  ytPlayer.playVideo();
+
+                } else {
+
+                  playNextTrack();
+                }
+
+              } else if (e.data === 3) {
+
+                setStatus(
+                  "BUFFERING..."
+                );
+              }
+            },
+
+            onError: function () {
+
+              setStatus(
+                "ERROR — спробуй інший трек"
+              );
+
+              isPlaying = false;
+
+              btnPlay.textContent =
+                "▶";
+            }
+          }
+        }
+      );
+  }
+
+  var tag =
+    document.createElement("script");
+
+  tag.src =
+    "https://www.youtube.com/iframe_api";
+
+  document.head.appendChild(tag);
+
+  window.onYouTubeIframeAPIReady =
+    onYouTubeIframeAPIReady;
+
+  /* ============================================================
+     NEXT / PREV
+     ============================================================ */
+
+  function getActiveList() {
+    return tempPlaylist || null;
+  }
+
+  function playNextTrack() {
+
+    var list =
+      getActiveList();
+
+    if (list) {
+
+      if (isShuffle) {
+
+        var candidates =
+          list.filter(function (idx) {
+            return idx !== selectedIndex;
+          });
+
+        if (candidates.length === 0) {
+
+          tempPlaylist = null;
+          tempPos = -1;
+
+          isPlaying = false;
+          playingIndex = -1;
+
+          btnPlay.textContent =
+            "▶";
+
+          setStatus("STOPPED");
+
+          stopProgress();
+
+          seekBar.value = 0;
+
+          nowTime.textContent =
+            "00:00 / 00:00";
+
+          renderPlaylist();
+
+          return;
+        }
+
+        selectedIndex =
+          candidates[
+            Math.floor(
+              Math.random() *
+              candidates.length
+            )
+          ];
+
+        tempPos =
+          list.indexOf(
+            selectedIndex
+          );
+
+      } else {
+
+        tempPos++;
+
+        if (
+          tempPos >= list.length
+        ) {
+
+          tempPlaylist = null;
+          tempPos = -1;
+
+          isPlaying = false;
+          playingIndex = -1;
+
+          btnPlay.textContent =
+            "▶";
+
+          setStatus("STOPPED");
+
+          stopProgress();
+
+          seekBar.value = 0;
+
+          nowTime.textContent =
+            "00:00 / 00:00";
+
+          renderPlaylist();
+
+          return;
+        }
+
+        selectedIndex =
+          list[tempPos];
+      }
+
+      playSelected();
+
+      return;
+    }
+
+    if (isShuffle) {
+
+      var next =
+        Math.floor(
+          Math.random() *
+          TRACKS.length
+        );
+
+      if (TRACKS.length > 1) {
+
+        while (
+          next === selectedIndex
+        ) {
+          next =
+            Math.floor(
+              Math.random() *
+              TRACKS.length
+            );
+        }
+      }
+
+      selectedIndex = next;
+
+    } else {
+
+      if (
+        selectedIndex >=
+        TRACKS.length - 1
+      ) {
+        selectedIndex = 0;
+      } else {
+        selectedIndex++;
+      }
+    }
+
+    playSelected();
+  }
+
+  function playPrevTrack() {
+
+    var list =
+      getActiveList();
+
+    if (list) {
+
+      if (isShuffle) {
+
+        var candidates =
+          list.filter(function (idx) {
+            return idx !== selectedIndex;
+          });
+
+        if (
+          candidates.length === 0
+        ) {
+          return;
+        }
+
+        selectedIndex =
+          candidates[
+            Math.floor(
+              Math.random() *
+              candidates.length
+            )
+          ];
+
+        tempPos =
+          list.indexOf(
+            selectedIndex
+          );
+
+      } else {
+
+        tempPos--;
+
+        if (tempPos < 0) {
+          tempPos =
+            list.length - 1;
+        }
+
+        selectedIndex =
+          list[tempPos];
+      }
+
+      playSelected();
+
+      return;
+    }
+
+    if (isShuffle) {
+
+      var prev =
+        Math.floor(
+          Math.random() *
+          TRACKS.length
+        );
+
+      if (TRACKS.length > 1) {
+
+        while (
+          prev === selectedIndex
+        ) {
+
+          prev =
+            Math.floor(
+              Math.random() *
+              TRACKS.length
+            );
+        }
+      }
+
+      selectedIndex = prev;
+
+    } else {
+
+      if (selectedIndex <= 0) {
+        selectedIndex =
+          TRACKS.length - 1;
+      } else {
+        selectedIndex--;
+      }
+    }
+
+    playSelected();
+  }
+
+  /* ============================================================
+     PLAYBACK CONTROLS
+     ============================================================ */
+
+  function playSelected() {
+
+    if (
+      !unlocked ||
+      !ytReady ||
+      selectedIndex < 0
+    ) {
+      return;
+    }
+
+    var t =
+      TRACKS[selectedIndex];
+
+    updateNowDisplay();
+
+    updateMediaSession();
+
+    ytPlayer.loadVideoById(
+      t.id
+    );
+
+    setTimeout(function () {
+
+      try {
+        ytPlayer.playVideo();
+      } catch (e) {}
+
+    }, 300);
+
+    playingIndex =
+      selectedIndex;
+
+    isPlaying = true;
+
+    btnPlay.textContent =
+      "⏸";
+
+    setStatus("PLAYING");
+
+    renderPlaylist();
+  }
+
+  function togglePlay() {
+
+    if (
+      !unlocked ||
+      !ytReady
+    ) {
+      return;
+    }
+
+    if (selectedIndex < 0) {
+
+      selectedIndex = 0;
+
+      renderPlaylist();
+
+      playSelected();
+
+      return;
+    }
+
+    if (isPlaying) {
+
+      ytPlayer.pauseVideo();
+
+    } else {
+
+      if (
+        playingIndex ===
+        selectedIndex
+      ) {
+
+        ytPlayer.playVideo();
+
+      } else {
+
+        playSelected();
+      }
+    }
+  }
+
+  function stopPlay() {
+
+    if (!ytReady) {
+      return;
+    }
+
+    try {
+      ytPlayer.stopVideo();
+    } catch (e) {}
+
+    isPlaying = false;
+
+    playingIndex = -1;
+
+    btnPlay.textContent =
+      "▶";
+
+    setStatus("STOPPED");
+
+    stopProgress();
+
+    seekBar.value = 0;
+
+    nowTime.textContent =
+      "00:00 / 00:00";
+
+    renderPlaylist();
+
+    updateMediaSession();
+  }
+
+  btnPlay.onclick =
+    togglePlay;
+
+  btnStop.onclick =
+    stopPlay;
+
+  btnPrev.onclick =
+    function () {
+
+      if (!unlocked) {
+        return;
+      }
+
+      playPrevTrack();
+    };
+
+  btnNext.onclick =
+    function () {
+
+      if (!unlocked) {
+        return;
+      }
+
+      playNextTrack();
+    };
+
+  btnRew.onclick =
+    function () {
+
+      if (
+        !ytReady ||
+        !isPlaying
+      ) {
+        return;
+      }
+
+      var t =
+        ytPlayer.getCurrentTime() ||
+        0;
+
+      ytPlayer.seekTo(
+        Math.max(
+          0,
+          t - 10
+        ),
+        true
+      );
+    };
+
+  btnFf.onclick =
+    function () {
+
+      if (
+        !ytReady ||
+        !isPlaying
+      ) {
+        return;
+      }
+
+      var t =
+        ytPlayer.getCurrentTime() ||
+        0;
+
+      var d =
+        ytPlayer.getDuration() ||
+        0;
+
+      ytPlayer.seekTo(
+        Math.min(
+          d,
+          t + 10
+        ),
+        true
+      );
+    };
+
+  btnRepeat.onclick =
+    function () {
+
+      isRepeat =
+        !isRepeat;
+
+      btnRepeat.classList.toggle(
+        "repeat-on",
+        isRepeat
+      );
+
+      btnRepeat.title =
+        isRepeat
+          ? "Повтор увімкнено"
+          : "Повтор вимкнено";
+    };
+
+  btnShuffle.onclick =
+    function () {
+
+      isShuffle =
+        !isShuffle;
+
+      btnShuffle.classList.toggle(
+        "shuffle-on",
+        isShuffle
+      );
+
+      btnShuffle.title =
+        isShuffle
+          ? "Shuffle увімкнено"
+          : "Shuffle вимкнено";
+    };
+
+  btnPlaySel.onclick =
+    function () {
+
+      if (
+        !unlocked ||
+        multiSelected.size === 0
+      ) {
+        return;
+      }
+
+      tempPlaylist =
+        Array.from(
+          multiSelected
+        ).sort(function (a, b) {
+          return a - b;
+        });
+
+      tempPos = 0;
+
+      selectedIndex =
+        tempPlaylist[0];
+
+      playSelected();
+
+      btnPlaySel.classList.add(
+        "sel-active"
+      );
+
+      setTimeout(function () {
+
+        btnPlaySel.classList.remove(
+          "sel-active"
+        );
+
+      }, 600);
+    };
+
+  btnClearSel.onclick =
+    function () {
+
+      multiSelected.clear();
+
+      if (tempPlaylist) {
+
+        tempPlaylist = null;
+        tempPos = -1;
+      }
+
+      renderPlaylist();
+    };
+
+  /* ============================================================
+     SEEK
+     ============================================================ */
+
+  var seeking = false;
+
+  seekBar.oninput =
+    function () {
+      seeking = true;
+    };
+
+  seekBar.onchange =
+    function () {
+
+      if (!ytReady) {
+        return;
+      }
+
+      var d =
+        ytPlayer.getDuration() ||
+        0;
+
+      if (d > 0) {
+
+        var sec =
+          (
+            parseInt(
+              seekBar.value,
+              10
+            ) / 1000
+          ) * d;
+
+        ytPlayer.seekTo(
+          sec,
+          true
+        );
+      }
+
+      seeking = false;
+    };
+
+  function startProgress() {
+
+    stopProgress();
+
+    progressTimer =
+      setInterval(
+        function () {
+
+          if (
+            !ytReady ||
+            seeking
+          ) {
+            return;
+          }
+
+          try {
+
+            var cur =
+              ytPlayer.getCurrentTime() ||
+              0;
+
+            var dur =
+              ytPlayer.getDuration() ||
+              0;
+
+            nowTime.textContent =
+              fmtTime(cur) +
+              " / " +
+              fmtTime(dur);
+
+            if (dur > 0) {
+
+              seekBar.value =
+                Math.round(
+                  (cur / dur) *
+                  1000
+                );
+            }
+
+          } catch (e) {}
+
+        },
+        400
+      );
+  }
+
+  function stopProgress() {
+
+    if (progressTimer) {
+
+      clearInterval(
+        progressTimer
+      );
+
+      progressTimer = null;
+    }
+  }
+
+  /* ============================================================
+     VOLUME
+     ============================================================ */
+
+  volBar.oninput =
+    function () {
+
+      var v =
+        parseInt(
+          volBar.value,
+          10
+        ) || 0;
+
+      volVal.textContent =
+        v;
+
+      if (ytReady) {
+
+        ytPlayer.setVolume(v);
+
+        if (v === 0) {
+          ytPlayer.mute();
+        } else {
+          ytPlayer.unMute();
+        }
+      }
+    };
+
+  /* ============================================================
+     MEDIA SESSION
+     ============================================================ */
+
+  if ("mediaSession" in navigator) {
+
+    try {
+
+      navigator.mediaSession
+        .setActionHandler(
+          "play",
+          function () {
+            if (!isPlaying) {
+              togglePlay();
+            }
+          }
+        );
+
+      navigator.mediaSession
+        .setActionHandler(
+          "pause",
+          function () {
+            if (isPlaying) {
+              togglePlay();
+            }
+          }
+        );
+
+      navigator.mediaSession
+        .setActionHandler(
+          "previoustrack",
+          function () {
+            playPrevTrack();
+          }
+        );
+
+      navigator.mediaSession
+        .setActionHandler(
+          "nexttrack",
+          function () {
+            playNextTrack();
+          }
+        );
+
+      navigator.mediaSession
+        .setActionHandler(
+          "stop",
+          function () {
+            stopPlay();
+          }
+        );
+
+    } catch (e) {}
+  }
+
+  /* ============================================================
+     VISUALIZER
+     ============================================================ */
+
+  var ctx =
+    vizCanvas.getContext("2d");
+
+  var BAR_COUNT = 32;
+
+  function initBars() {
+
+    bars = [];
+
+    for (
+      var i = 0;
+      i < BAR_COUNT;
+      i++
+    ) {
+
+      bars.push({
+        h: 0,
+        target: 0,
+        speed:
+          0.15 +
+          Math.random() * 0.25
+      });
+    }
+  }
+
+  function drawViz() {
+
+    var w =
+      vizCanvas.width;
+
+    var h =
+      vizCanvas.height;
+
+    ctx.fillStyle =
+      "#021d30";
+
+    ctx.fillRect(
+      0,
+      0,
+      w,
+      h
+    );
+
+    if (!unlocked) {
+      return;
+    }
+
+    var gap = 2;
+
+    var barW =
+      (
+        w -
+        gap *
+        (BAR_COUNT + 1)
+      ) /
+      BAR_COUNT;
+
+    for (
+      var i = 0;
+      i < BAR_COUNT;
+      i++
+    ) {
+
+      var b = bars[i];
+
+      if (isPlaying) {
+
+        var mid =
+          1 -
+          Math.abs(
+            i -
+            BAR_COUNT / 2
+          ) /
+          (BAR_COUNT / 2);
+
+        b.target =
+          (
+            0.15 +
+            Math.random() * 0.85
+          ) *
+          (
+            0.4 +
+            mid * 0.6
+          ) *
+          h *
+          0.92;
+
+      } else {
+
+        b.target =
+          2 +
+          Math.random() * 4;
+      }
+
+      b.h +=
+        (
+          b.target -
+          b.h
+        ) *
+        b.speed;
+
+      var x =
+        gap +
+        i *
+        (barW + gap);
+
+      var bh =
+        Math.max(
+          2,
+          b.h
+        );
+
+      var y =
+        h - bh;
+
+      var grad =
+        ctx.createLinearGradient(
+          0,
+          y,
+          0,
+          h
+        );
+
+      grad.addColorStop(
+        0,
+        "#bfffff"
+      );
+
+      grad.addColorStop(
+        0.35,
+        "#43e5ee"
+      );
+
+      grad.addColorStop(
+        0.7,
+        "#00b8d4"
+      );
+
+      grad.addColorStop(
+        1,
+        "#08708c"
+      );
+
+      ctx.fillStyle =
+        grad;
+
+      ctx.fillRect(
+        x,
+        y,
+        barW,
+        bh
+      );
+
+      ctx.fillStyle =
+        "#d5ffff";
+
+      ctx.fillRect(
+        x,
+        y,
+        barW,
+        2
+      );
+    }
+  }
+
+  function vizLoop() {
+
+    drawViz();
+
+    vizAnim =
+      requestAnimationFrame(
+        vizLoop
+      );
+  }
+
+  function startViz() {
+
+    if (vizAnim) {
+      return;
+    }
+
+    initBars();
+
+    var rect =
+      vizCanvas.parentElement
+        .getBoundingClientRect();
+
+    vizCanvas.width =
+      Math.max(
+        200,
+        Math.floor(
+          rect.width
+        ) || 400
+      );
+
+    vizCanvas.height =
+      48;
+
+    vizLoop();
+  }
+
+  window.addEventListener(
+    "resize",
+    function () {
+
+      if (!unlocked) {
+        return;
+      }
+
+      var rect =
+        vizCanvas.parentElement
+          .getBoundingClientRect();
+
+      vizCanvas.width =
+        Math.max(
+          200,
+          Math.floor(
+            rect.width
+          ) || 400
+        );
+
+      vizCanvas.height =
+        48;
+    }
+  );
+
+  /* ============================================================
+     STATS
+     ============================================================ */
+
+  function safe(base, range) {
+
+    var v;
+
+    do {
+
+      v =
+        base +
+        Math.floor(
+          Math.random() *
+          range
+        );
+
+    } while (
+      /63|68|13|666/.test(
+        String(v)
+      )
+    );
+
+    return v;
+  }
+
+  function stats() {
+
+    var r =
+      document.getElementById(
+        "registered-hoomen"
+      );
+
+    var o =
+      document.getElementById(
+        "online-hoomen"
+      );
+
+    var t =
+      document.getElementById(
+        "today-hoomen"
+      );
+
+    if (r) {
+
+      r.textContent =
+        (8012457)
+          .toLocaleString(
+            "uk-UA"
+          );
+    }
+
+    if (o) {
+
+      o.textContent =
+        safe(
+          1000000,
+          76001
+        ).toLocaleString(
+          "uk-UA"
+        );
+    }
+
+    if (t) {
+
+      t.textContent =
+        safe(
+          2400000,
+          180001
+        ).toLocaleString(
+          "uk-UA"
+        );
+    }
+  }
+
+  /* ============================================================
+     INIT
+     ============================================================ */
+
+  checkLock();
+
+  renderPlaylist();
+
+  stats();
+
+  setInterval(
+    stats,
+    30000
+  );
+
+})();
+</script>
+
+</body>
+</html>
+```
