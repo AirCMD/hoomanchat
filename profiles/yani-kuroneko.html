@@ -914,7 +914,55 @@ window.HOOMEN_PROFILE = {
     });
   }
 
+  function ensureLifeUI(){
+    // hoomenchat-profile.js може перезаписати частину профілю після завантаження.
+    // Тому перед кожним render() відновлюємо елементи симуляції, якщо їх прибрали.
+    const header=document.getElementById("profile-header-title");
+    if(header && !document.getElementById("mood-label")){
+      const mood=document.createElement("span");
+      mood.className="mood-indicator";
+      mood.id="mood-label";
+      mood.textContent="…";
+      header.appendChild(document.createTextNode(" "));
+      header.appendChild(mood);
+    }
+
+    const info=document.querySelector(".profile-info");
+    if(!info)return;
+
+    if(!document.getElementById("profile-status-text")){
+      const el=document.createElement("div");
+      el.id="profile-status-text";
+      info.appendChild(el);
+    }
+
+    let life=document.getElementById("life-state");
+    if(!life){
+      life=document.createElement("div");
+      life.className="life-state";
+      life.id="life-state";
+      info.appendChild(life);
+    }
+
+    const chips=[
+      ["activity-label","🎮 …"],
+      ["social-label","💬 …"],
+      ["relationship-label","♡ …"]
+    ];
+    for(const [id,text] of chips){
+      if(!document.getElementById(id)){
+        const span=document.createElement("span");
+        span.className="life-chip";
+        span.id=id;
+        span.textContent=text;
+        life.appendChild(span);
+      }
+    }
+  }
+
   function render(){
+    ensureLifeUI();
+
     const mood=moods[state.emotion];
     palette(mood);
     const statusChoices=mood.statuses||["…"];
@@ -922,12 +970,19 @@ window.HOOMEN_PROFILE = {
     state.lastStatus=pick(alternatives.length?alternatives:statusChoices);
     state.social=deriveSocial();
 
-    document.getElementById("mood-label").textContent=mood.label;
-    document.getElementById("profile-status-text").textContent=state.lastStatus;
-    document.getElementById("profile-family").innerHTML=relationshipText();
-    document.getElementById("activity-label").textContent=`${activities[state.activity].icon} ${activities[state.activity].label}`;
-    document.getElementById("social-label").textContent=`💬 ${socialLabels[state.social]}`;
-    document.getElementById("relationship-label").textContent=`♡ ${relationshipLabels[state.relationship.stage]}`;
+    const moodLabel=document.getElementById("mood-label");
+    const statusText=document.getElementById("profile-status-text");
+    const family=document.getElementById("profile-family");
+    const activityLabel=document.getElementById("activity-label");
+    const socialLabel=document.getElementById("social-label");
+    const relationshipLabel=document.getElementById("relationship-label");
+
+    if(moodLabel) moodLabel.textContent=mood.label;
+    if(statusText) statusText.textContent=state.lastStatus;
+    if(family) family.innerHTML=relationshipText();
+    if(activityLabel) activityLabel.textContent=`${activities[state.activity].icon} ${activities[state.activity].label}`;
+    if(socialLabel) socialLabel.textContent=`💬 ${socialLabels[state.social]}`;
+    if(relationshipLabel) relationshipLabel.textContent=`♡ ${relationshipLabels[state.relationship.stage]}`;
     const online=document.getElementById("profile-online-status");
     if(online) online.textContent=state.social==="offline"?"офлайн":state.social==="unavailable"?"відійшла":state.social==="busy"?"зайнята":"онлайн";
     window.HOOMEN_PROFILE.family={
@@ -954,7 +1009,7 @@ window.HOOMEN_PROFILE = {
     state.activity=isNight()?"sleeping":chooseActivity();
     state.emotion=isNight()?"tired":"neutral";
     render();
-    setTimeout(cycle, 60*1000 + Math.random()*120*1000);
+    setTimeout(cycle, 10*1000 + Math.random()*10*1000);
   }
 
   if(document.readyState==="complete")setTimeout(start,0);
