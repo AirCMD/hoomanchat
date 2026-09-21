@@ -801,22 +801,48 @@ window.HOOMEN_PROFILE = {
   // Власна відправка коментарів для цієї сторінки.
   // Частина коментарів лишається нормальною, частина "ламається" і зникає.
   document.querySelectorAll(".comment-send").forEach(btn=>{
-    btn.addEventListener("click",function(ev){
-      // Якщо загальний profile.js уже створив коментар, знаходимо його трохи пізніше.
-      setTimeout(()=>{
-        const post=this.closest(".profile-post");
-        if(!post)return;
-        const area=post.querySelector(".comments-area");
-        const comments=[...area.querySelectorAll(".comment")];
-        const mine=comments.reverse().find(c=>{
-          const a=c.querySelector(".comment-author");
-          return a && (a.textContent.trim()==="ти" || a.textContent.trim()==="you");
-        });
-        if(mine && !mine.dataset.glitchChecked){
-          mine.dataset.glitchChecked="1";
-          if(Math.random()<.52) corruptNewComment(mine,post.querySelector(".comment-count"));
+    btn.addEventListener("click",function(){
+      const post=this.closest(".profile-post");
+      if(!post)return;
+      const area=post.querySelector(".comments-area");
+      if(!area)return;
+
+      // Запам'ятовуємо всі коментарі ДО того, як profile.js обробить клік.
+      const before = new Set(area.querySelectorAll(".comment"));
+
+      // profile.js може вставляти коментар не миттєво, тому коротко спостерігаємо за DOM.
+      const observer = new MutationObserver(()=>{
+        const fresh=[...area.querySelectorAll(".comment")].find(c=>!before.has(c));
+        if(!fresh || fresh.dataset.glitchChecked)return;
+
+        fresh.dataset.glitchChecked="1";
+        observer.disconnect();
+        clearTimeout(stopWatching);
+
+        // Тепер шанс 52% застосовується саме до щойно створеного коментаря,
+        // незалежно від імені автора та HTML-структури всередині нього.
+        if(Math.random()<.52){
+          corruptNewComment(fresh,post.querySelector(".comment-count"));
         }
-      },80);
+      });
+
+      observer.observe(area,{childList:true,subtree:true});
+
+      // Страховка, якщо коментар додається синхронно ще до старту observer.
+      setTimeout(()=>{
+        const fresh=[...area.querySelectorAll(".comment")].find(c=>!before.has(c));
+        if(fresh && !fresh.dataset.glitchChecked){
+          fresh.dataset.glitchChecked="1";
+          observer.disconnect();
+          clearTimeout(stopWatching);
+          if(Math.random()<.52){
+            corruptNewComment(fresh,post.querySelector(".comment-count"));
+          }
+        }
+      },0);
+
+      // Не тримаємо observer вічно, якщо відправлення не відбулося.
+      const stopWatching=setTimeout(()=>observer.disconnect(),2500);
     },true);
   });
 
