@@ -141,7 +141,18 @@
   .comment-text { margin: 3px 0; line-height: 1.45; }
   .comment-date { font-size: 0.76rem; opacity: 0.65; }
 
-  .comments-area { display: block; margin-top: 8px; }
+  .profile-post {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .comments-area {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin-top: 8px;
+  }
 
   .profile-post-date {
     opacity: 0.6;
@@ -495,7 +506,8 @@ window.HOOMEN_PROFILE = {
       const likes = 14 + Math.floor(Math.random() * 50);
       const date = ["сьогодні", "вчора", "2 дні тому", "3 дні тому", "тиждень тому"][i];
 
-      const commentsHtml = (mood.comments || []).map(cmt => `
+      const comments = Array.isArray(mood.comments) ? mood.comments : [];
+      const commentsHtml = comments.map(cmt => `
         <div class="comment">
           <a href="#" class="comment-author">${cmt.user}</a>
           <div class="comment-text">${cmt.text}</div>
@@ -510,7 +522,7 @@ window.HOOMEN_PROFILE = {
         <div class="profile-post-body">${post.body}</div>
         <div class="post-actions">
           <button class="like-button" type="button">♡ Подобається <span class="like-count">${likes}</span></button>
-          <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">${mood.comments.length}</span></button>
+          <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">${comments.length}</span></button>
         </div>
         <div class="comments-area">
           ${commentsHtml}
@@ -537,11 +549,21 @@ window.HOOMEN_PROFILE = {
 
         const comment = document.createElement("div");
         comment.className = "comment";
-        comment.innerHTML = `
-          <a href="#" class="comment-author">ти</a>
-          <div class="comment-text">${text}</div>
-          <div class="comment-date">щойно</div>
-        `;
+
+        const author = document.createElement("a");
+        author.href = "#";
+        author.className = "comment-author";
+        author.textContent = "ти";
+
+        const body = document.createElement("div");
+        body.className = "comment-text";
+        body.textContent = text;
+
+        const commentDate = document.createElement("div");
+        commentDate.className = "comment-date";
+        commentDate.textContent = "щойно";
+
+        comment.append(author, body, commentDate);
         form.parentNode.insertBefore(comment, form);
         textarea.value = "";
 
@@ -565,8 +587,22 @@ window.HOOMEN_PROFILE = {
     setTimeout(randomMood, delay);
   }
 
-  // перший запуск
-  setTimeout(randomMood, 800);
+  // Перший запуск робимо ПІСЛЯ повного завантаження сторінки.
+  // Так hoomenchat-profile.js уже встигає завершити власну ініціалізацію
+  // і не стирає щойно створені фейкові дописи.
+  function startMoodProfile() {
+    if (window.__akiraMoodProfileStarted) return;
+    window.__akiraMoodProfileStarted = true;
+    randomMood();
+  }
+
+  if (document.readyState === "complete") {
+    setTimeout(startMoodProfile, 0);
+  } else {
+    window.addEventListener("load", () => {
+      setTimeout(startMoodProfile, 0);
+    }, { once: true });
+  }
 })();
 </script>
 </body>
