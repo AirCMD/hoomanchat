@@ -696,9 +696,13 @@ window.HOOMEN_PROFILE = {
       statuses: [
         "Очі закриваються самі. Але спати не хочеться.",
         "Батарейка блимає червоним.",
-        "Сьогодні мене вистачає тільки на найнеобхідніше.",
+        "Сьогодні мене вистачає тільки на бажання поспати.",
         "Мозок офіційно пішов додому раніше за мене.",
-        "Ще трохи і я засну просто тут."
+        "Ще трохи і я засну просто тут.",
+        "До нас на роботу прийшла одна клієнтка в Техсмітник, я відчуваю що просто відключусь. Її слова так шпехають мізки що можна просто впасти та заснути.",
+        "Втомлений, відпочиваю",
+        "Я втомився від корпоративу.",
+        "Скоріше хочу додому.",
       ],
       familyChance: 0.45,
       familyTypes: ["in_relationship", "single", "complicated"],
@@ -706,22 +710,173 @@ window.HOOMEN_PROFILE = {
       posts: [
         { title: "Що між нами?", body: "Яні, хто ми одне одному? Я просто не можу зрозуміти...", comments: [
           { user: "yani_kuroneko", text: "Не знаю, це ти мені скажи." },
-          { user: "akira_bakeneko", text: "На мою думку, між нами є щось значно більше, аніж просто дружба." },
-          { user: "yani_kuroneko", text: "Зараховано. У такому випадку, ми більше, аніж просто друзі." },
+          { user: "akira_bakeneko", text: "@yani_kuroneko, На мою думку, між нами є щось значно більше, аніж просто дружба." },
+          { user: "yani_kuroneko", text: "@akira_bakeneko, Зараховано. У такому випадку, ми більше, аніж просто друзі." }
         ]},
-        { title: "екран", body: "Слова пливуть.", comments: [
-          { user: "agatha_cheng", text: "Закрий його хоча б на пів години." }
+        { title: "Екран телефона", body: "Слова пливуть, напевно, варто перепочити.", comments: [
+          { user: "yani_kuroneko", text: "Закрий його хоча б на пів години та проведи час разом зі мною." },
+          { user: "derek_q", text: "Знайомо, так само почуваюсь." },
+          { user: "hiki_komori", text: "@derek_q, пробував змінити окуляри? Товщина скла грає величезну роль. Не соромс якщо у тебе зір погіршився." },
+          { user: "derek_q", text: "@hiki_komori, ЗІ МНОЮ ВСЕ В ПОРЯДКУ!!!! НЕ ТРЕБА РОЗДАВАТИ ПОРАДИ, ПРО ЯКІ Я НЕ ПИТАВ!" },
+          { user: "hiki_komori", text: "@derek_q, та не верещи ти як морська свиня, не треба то не треба. Я просто сказала про всяк випадок." }
         ]},
-        { title: "плечі", body: "Важкі. Ніби несу щось невидиме.", comments: [
-          { user: "yani_kuroneko", text: "Ти сьогодні зробила достатньо." }
+        { title: "Кохаю...", body: "напевно.", comments: [
+          { user: "yani_kuroneko", text: "@akira_bakeneko, Кого?" },
+          { user: "akira_bakeneko", text: "@yani_kuroneko, Одну чудову звіролюдину." },
+          { user: "yani_kuroneko", text: "@akira_bakeneko, Джині? А вона про це знає?" },
+          { user: "akira_bakeneko", text: "@yani_kuroneko, Ні, не Джині. Я сподіваюсь що десь в глибині душі вона це розуміє." }
         ]},
         { title: "ліжко", body: "Лежу і дивлюся в стелю.", comments: [
-          { user: "silent_echo", text: "Це вже майже відпочинок." },
-          { user: "yani_kuroneko", text: "Телефон теж поклади." }
+          { user: "yani_kuroneko", text: "Телефон теж поклади." },
+          { user: "akira_bakeneko", text: "@yani_kuroneko, Як скажеш." }
         ]},
-        { title: "ранок", body: "Не вірю, що він настане.", comments: [
-          { user: "yani_kuroneko", text: "Настане. Але ти можеш його проспати." }
+        { title: "ранок", body: "І знову на роботу", comments: [
+          { user: "yani_kuroneko", text: "До зустрічі." },
+          { user: "akira_bakeneko", text: "@yani_kuroneko, а ти?" },
+          { user: "yani_kuroneko", text: "@akira_bakeneko, А що я?" },
+          { user: "akira_bakeneko", text: "@yani_kuroneko, на роботу не хочеш?" },
+          { user: "yani_kuroneko", text: "@akira_bakeneko, Ні, мені й так добре." }
         ]}
+      ]
+    },
+
+    neutral: {
+      label: "нейтральність",
+      colors: { bg: "#173b4d", bg2: "#39708a", card: "rgba(31, 74, 94, 0.82)", text: "#f3fbff", accent: "#9bd8e8", accent2: "#4c9fba", muted: "#c6e4ec", glow: "rgba(104, 194, 218, 0.52)" },
+      statuses: ["Звичайний день.", "Нічого особливого. Просто я.", "Потроху займаюсь своїми справами.", "Сьогодні без крайнощів.", "Я тут, усе нормально."],
+      transitions: { calm: 4, happy: 2, social: 2, energetic: 1.5, tired: 2, anxious: 1, irritated: 0.7, in_love: 1.2 },
+      posts: [
+        { title:"будні", body:"Звичайний день. Іноді це навіть добре.", comments:[{user:"yani_kuroneko",text:"Стабільність теж має свій шарм."}] },
+        { title:"чай", body:"Зробив чай і повернувся до своїх справ.", comments:[{user:"silent_echo",text:"Найнадійніший план."}] },
+        { title:"пауза", body:"Нічого драматичного. Просто коротка пауза.", comments:[{user:"yani_kuroneko",text:"І правильно."}] },
+        { title:"день", body:"Сьогодні просто живу свій день.", comments:[] },
+        { title:"список", body:"Кілька справ зроблено. Кілька залишилось.", comments:[{user:"agatha_cheng",text:"Баланс."}] }
+      ]
+    },
+
+    cheerful: {
+      label: "веселість",
+      colors: { bg:"#6b4d00", bg2:"#d89b00", card:"rgba(126, 88, 4, .82)", text:"#fffbea", accent:"#ffd75a", accent2:"#ff9d00", muted:"#ffe7a3", glow:"rgba(255, 190, 35, .62)" },
+      statuses:["Сьогодні мене легко розсмішити.","Настрій дуркувати.","Хочеться жартів і компанії.","Щось я сьогодні підозріло веселий.","Сміюсь із дурниць і не шкодую."],
+      transitions:{ happy:4, social:3, energetic:3, calm:2, in_love:1.5, tired:1, neutral:1 },
+      posts:[
+        {title:"жарт",body:"Почув настільки дурний жарт, що тепер мушу розповісти його комусь ще.",comments:[{user:"yani_kuroneko",text:"Тільки не мені... хоча давай."}]},
+        {title:"настрій",body:"Сьогодні все якось смішніше, ніж зазвичай.",comments:[{user:"void_kitten",text:"Користуйся моментом."}]},
+        {title:"стрім",body:"На стрімі сьогодні суцільний цирк. Мені подобається.",comments:[{user:"yani_kuroneko",text:"Кинь мені потім момент."}]},
+        {title:"ха",body:"Засміявся сам із себе. Це вже самодостатня система розваг.",comments:[]},
+        {title:"вечір",body:"Хочу сьогодні кудись вибратися і наробити хороших спогадів.",comments:[{user:"yani_kuroneko",text:"Оце вже цікавіше."}]}
+      ]
+    },
+
+    in_love: {
+      label: "закоханість",
+      colors:{bg:"#651548",bg2:"#d94c91",card:"rgba(126, 27, 88, .82)",text:"#fff4fa",accent:"#ff9dca",accent2:"#ff4b9b",muted:"#ffd0e6",glow:"rgba(255, 87, 166, .66)"},
+      statuses:["Думаю про Яні частіше, ніж збирався.","Яні написала. Стрім почекає.","Хочеться побачити Яні.","Трішки зніяковів. У хорошому сенсі.","Здається, одна звіролюдка сьогодні знову займає всі думки."],
+      transitions:{ happy:4, cheerful:2, calm:3, social:3, energetic:1.5, neutral:1, anxious:.5, tired:1 },
+      posts:[
+        {title:"очі",body:"У Яні файні очі. Просто констатую факт.",comments:[{user:"yani_kuroneko",text:"Просто констатуєш, ага 😋"}]},
+        {title:"зустріч",body:"Я б ще погуляв з Яні. З цікавості. Суто наукової.",comments:[{user:"yani_kuroneko",text:"Науковець знайшовся."}]},
+        {title:"стрім",body:"Дивився стрім, але відволікся на повідомлення. Не шкодую.",comments:[{user:"yani_kuroneko",text:"Я навіть не вибачатимусь 😘"}]},
+        {title:"обійми",body:"Іноді хочеться просто когось обійняти. Конкретну когось.",comments:[{user:"silent_echo",text:"Дуже загадково."}]},
+        {title:"суші",body:"Можна було б купити суші на двох. Теоретично.",comments:[{user:"yani_kuroneko",text:"Теоретично я згодна."}]}
+      ]
+    },
+
+    social: {
+      label:"соціальність",
+      colors:{bg:"#07585c",bg2:"#00a89d",card:"rgba(6, 107, 105, .82)",text:"#efffff",accent:"#62fff0",accent2:"#00c9b7",muted:"#c0fff7",glow:"rgba(43, 255, 231, .58)"},
+      statuses:["Хочеться з кимось поговорити.","Можна сьогодні вибратися до людей.","Пишіть, я сьогодні соціальний.","Було б непогано зустрітися з друзями.","Не хочу сидіти сам."],
+      transitions:{ cheerful:3, happy:3, energetic:3, calm:2, neutral:2, in_love:1.5, tired:1 },
+      posts:[
+        {title:"люди",body:"Хто сьогодні кудись виходить?",comments:[{user:"yani_kuroneko",text:"Я можу скласти компанію."}]},
+        {title:"прогулянка",body:"Хочеться пройтися містом не самому.",comments:[{user:"agatha_cheng",text:"Рідкісний соціальний Акіра."}]},
+        {title:"вечір",body:"Може зберемося десь увечері?",comments:[{user:"yani_kuroneko",text:"Я за."}]},
+        {title:"чат",body:"Сьогодні навіть хочеться відповідати людям одразу.",comments:[{user:"void_kitten",text:"Зафіксовано."}]},
+        {title:"компанія",body:"Хороша компанія сьогодні звучить краще за самотність.",comments:[]}
+      ]
+    },
+
+    energetic: {
+      label:"енергійність",
+      colors:{bg:"#684000",bg2:"#e36c00",card:"rgba(135, 71, 4, .82)",text:"#fff8ee",accent:"#ffca66",accent2:"#ff7900",muted:"#ffe0ae",glow:"rgba(255, 133, 35, .62)"},
+      statuses:["Сьогодні батарейка на сто відсотків.","Хочеться щось робити, а не сидіти.","Можу гори звернути. Невеликі.","Треба використати цю енергію, поки вона є.","Прогулянка звучить чудово."],
+      transitions:{ happy:3, cheerful:3, social:3, inspired:2, calm:2, tired:2, neutral:1 },
+      posts:[
+        {title:"рух",body:"Зробив більше справ за годину, ніж учора за пів дня.",comments:[{user:"yani_kuroneko",text:"Тільки не витрать усе одразу."}]},
+        {title:"велосипед",body:"Погода буквально просить кудись поїхати.",comments:[{user:"agatha_cheng",text:"Оце правильний настрій."}]},
+        {title:"справи",body:"Закрив список справ. Тепер треба придумати новий.",comments:[]},
+        {title:"прогулянка",body:"Сидіти вдома сьогодні злочин.",comments:[{user:"yani_kuroneko",text:"Тоді ходімо."}]},
+        {title:"темп",body:"Мозок і тіло сьогодні нарешті домовились працювати разом.",comments:[]}
+      ]
+    },
+
+    inspired: {
+      label:"натхнення",
+      colors:{bg:"#244b1d",bg2:"#6aaf39",card:"rgba(55, 101, 42, .82)",text:"#f7fff1",accent:"#bdf58c",accent2:"#70c943",muted:"#dcffc3",glow:"rgba(145, 235, 90, .58)"},
+      statuses:["В голові з'явилась ідея.","Хочеться щось створити.","Записую думки, поки не втекли.","Сьогодні мозок генерує щось корисне.","Здається, я знаю чим займатимусь найближчі години."],
+      transitions:{ energetic:3, happy:3, calm:3, neutral:2, social:1, tired:1.5, in_love:1 },
+      posts:[
+        {title:"ідея",body:"Записав одну ідею. Потім ще три. Оце вже небезпечно.",comments:[{user:"yani_kuroneko",text:"Не загуби блокнот."}]},
+        {title:"проєкт",body:"Хочу довести одну штуку до робочого стану.",comments:[{user:"giki_code",text:"Головне не почати ще п'ять."}]},
+        {title:"ніч",body:"Найкращі ідеї, звісно, приходять тоді, коли треба спати.",comments:[{user:"yani_kuroneko",text:"Запиши і спати."}]},
+        {title:"нотатки",body:"Сьогодні нотатник працює понаднормово.",comments:[]},
+        {title:"цікавість",body:"Знайшов тему, в яку тепер хочеться закопатися на кілька годин.",comments:[]}
+      ]
+    },
+
+    panic: {
+      label:"паніка",
+      colors:{bg:"#3b0a55",bg2:"#b112c6",card:"rgba(84, 15, 111, .84)",text:"#fff2ff",accent:"#ff8cff",accent2:"#d21be8",muted:"#f4c4ff",glow:"rgba(233, 64, 255, .68)"},
+      statuses:["Зараз важко зібрати думки.","Все всередині кричить, що щось не так.","Не можу заспокоїтись.","Думки розбіглися в усі боки.","Мені треба трохи часу, щоб прийти до тями."],
+      transitions:{ anxious:6, tired:4, sad:2, calm:1, apathetic:1, irritated:.5 },
+      posts:[
+        {title:"шум",body:"Не можу нормально зосередитись. У голові занадто гучно.",comments:[{user:"yani_kuroneko",text:"Я тут. Можемо просто посидіти."}]},
+        {title:"стоп",body:"Треба зупинитися хоча б на кілька хвилин.",comments:[{user:"silent_echo",text:"Нікуди не поспішай."}]},
+        {title:"думки",body:"Мозок уже придумав катастрофу з нічого.",comments:[{user:"yani_kuroneko",text:"Давай розберемо по одному."}]},
+        {title:"дихання",body:"Намагаюсь просто дихати рівніше.",comments:[]},
+        {title:"час",body:"Мені потрібна пауза від усього.",comments:[{user:"yani_kuroneko",text:"Добре. Напишеш, коли зможеш."}]}
+      ]
+    },
+
+    irritated: {
+      label:"роздратування",
+      colors:{bg:"#5b2c0b",bg2:"#b65a13",card:"rgba(113, 55, 13, .84)",text:"#fff6ef",accent:"#ffad69",accent2:"#e66b19",muted:"#ffd1ae",glow:"rgba(255, 123, 42, .62)"},
+      statuses:["Сьогодні краще не шпехати мені мізки.","Дрібниці чомусь дратують сильніше, ніж мають.","Мені потрібна тиша.","Не в дусі. Відповім пізніше.","Ще одна дурниця і я піду пити чай у повній тиші."],
+      transitions:{ angry:2, tired:4, calm:4, neutral:2, sad:1, anxious:1 },
+      posts:[
+        {title:"пауза",body:"Сьогодні краще нічого від мене не вимагати.",comments:[{user:"yani_kuroneko",text:"Добре, не чіпаю."}]},
+        {title:"дрібниці",body:"Навіть звук сповіщень сьогодні дратує.",comments:[{user:"silent_echo",text:"Вимкни їх."}]},
+        {title:"чай",body:"Зробив чай. Це моя дипломатична місія на сьогодні.",comments:[]},
+        {title:"люди",body:"Люди сьогодні надто голосні.",comments:[{user:"yani_kuroneko",text:"Сховаємось від них."}]},
+        {title:"досить",body:"Мені просто треба трохи побути самому.",comments:[]}
+      ]
+    },
+
+    apathetic: {
+      label:"апатія",
+      colors:{bg:"#292c34",bg2:"#555b66",card:"rgba(53, 57, 66, .86)",text:"#f1f2f4",accent:"#aeb4c0",accent2:"#747c89",muted:"#c7cbd2",glow:"rgba(160, 168, 180, .42)"},
+      statuses:["Нічого особливо не хочеться.","Можу щось написати. А можу й ні.","Сьогодні все якось байдуже.","Просто лежу і дивлюся в одну точку.","Немає сил навіть вирішувати, чого я хочу."],
+      transitions:{ tired:5, sad:3, calm:2, neutral:2, anxious:.5, closed:1 },
+      posts:[
+        {title:"порожньо",body:"Не знаю, що написати. Нехай буде це.",comments:[{user:"yani_kuroneko",text:"Можеш нічого не писати."}]},
+        {title:"стіна",body:"Дивлюсь у стіну. Вона сьогодні переконливіша за більшість контенту.",comments:[]},
+        {title:"час",body:"День іде. Я теж десь поруч.",comments:[{user:"silent_echo",text:"Буває."}]},
+        {title:"нічого",body:"Сьогодні без великих думок.",comments:[]},
+        {title:"пауза",body:"Поставив усе на паузу.",comments:[{user:"yani_kuroneko",text:"Я почекаю."}]}
+      ]
+    },
+
+    closed: {
+      label:"закритість",
+      colors:{bg:"#1d2732",bg2:"#35495c",card:"rgba(37, 51, 65, .86)",text:"#f0f6fa",accent:"#91b4cc",accent2:"#527b98",muted:"#bed0dc",glow:"rgba(100, 151, 184, .46)"},
+      statuses:["Не хочу сьогодні багато про себе говорити.","Я тут, але трохи сам у собі.","Не все треба пояснювати.","Сьогодні без особистих розмов.","Мовчати зараз простіше."],
+      transitions:{ neutral:4, calm:4, tired:2, sad:1.5, apathetic:1, anxious:1, social:.5 },
+      posts:[
+        {title:"без слів",body:"Не все хочеться виносити назовні.",comments:[{user:"yani_kuroneko",text:"Не мусиш."}]},
+        {title:"тиша",body:"Сьогодні просто побуду тихіше.",comments:[]},
+        {title:"межі",body:"Іноді особисте має залишатися особистим.",comments:[{user:"silent_echo",text:"Справедливо."}]},
+        {title:"онлайн",body:"Я онлайн. Це не означає, що я готовий багато говорити.",comments:[{user:"yani_kuroneko",text:"Зрозуміла."}]},
+        {title:"кімната",body:"Закрив двері. Метафорично теж.",comments:[]}
       ]
     }
   };
@@ -730,6 +885,64 @@ window.HOOMEN_PROFILE = {
   let currentMood = null;
   let lastStatus = null;
   let lastPostKeys = [];
+
+  // === ОКРЕМІ ШАРИ СТАНУ ПЕРСОНАЖА ===
+  const activities = {
+    idle: "нічим особливим не займається", watching_stream: "дивиться стрім", gaming: "грає",
+    watching_movie: "дивиться кіно", watching_series: "дивиться серіал", working: "працює",
+    listening_music: "слухає музику", eating: "їсть", cooking: "готує їжу",
+    cleaning: "прибирає", washing_dishes: "миє посуд", laundry: "закинув одяг у пральну машину",
+    hanging_clothes: "розвішує одяг", shower: "приймає душ", bath: "у ванній",
+    toilet: "відійшов", walking: "гуляє", sleeping: "спить"
+  };
+  const activityKeys = Object.keys(activities).filter(k => k !== "sleeping");
+  const hardUnavailableActivities = new Set(["shower","bath","toilet"]);
+  const softBusyActivities = new Set(["working","cooking","cleaning","washing_dishes","laundry","hanging_clothes"]);
+  let currentActivity = "idle";
+  let currentSocial = "available";
+
+  const REL_KEY = "akira_relationship_state_v2";
+  function loadRelationship() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(REL_KEY) || "null");
+      if (saved && saved.stage) return saved;
+    } catch(e) {}
+    return { stage:"friendship", partner:"yani_kuroneko", meetings:0, relationshipMeetings:0 };
+  }
+  let relationshipState = loadRelationship();
+  function saveRelationship(){ try { localStorage.setItem(REL_KEY, JSON.stringify(relationshipState)); } catch(e) {} }
+
+  function relationshipLabel() {
+    const p = `<a href="${yani.url}">${yani.name}</a>`;
+    if (relationshipState.stage === "married") return `одружений з ${p}`;
+    if (relationshipState.stage === "relationship") return `у стосунках з ${p}`;
+    if (relationshipState.stage === "romantic_tension") return `все складно з ${p}`;
+    return "не одружений";
+  }
+
+  function chooseActivity(emotionKey) {
+    const pools = {
+      energetic:["walking","cleaning","cooking","gaming"], inspired:["working","listening_music","idle"],
+      tired:["idle","watching_stream","watching_series","listening_music"], apathetic:["idle","watching_series"],
+      sad:["idle","listening_music","watching_movie"], social:["walking","gaming","watching_stream"],
+      cheerful:["gaming","watching_stream","walking"], in_love:["watching_stream","listening_music","walking","idle"]
+    };
+    const pool = pools[emotionKey] || activityKeys;
+    currentActivity = pick(pool);
+  }
+
+  function deriveSocial(emotionKey) {
+    if (hardUnavailableActivities.has(currentActivity)) return "unavailable";
+    if (softBusyActivities.has(currentActivity)) return "busy";
+    if (["angry","irritated","apathetic"].includes(emotionKey)) return "do_not_disturb";
+    if (["social","cheerful","happy","energetic","in_love"].includes(emotionKey)) return "talkative";
+    return "available";
+  }
+
+  const socialLabels = {
+    available:"доступний до спілкування", talkative:"хоче спілкуватися", busy:"зайнятий — відповідає рідше",
+    do_not_disturb:"не в дусі — краще не турбувати", unavailable:"тимчасово не бачить повідомлень", offline:"офлайн"
+  };
 
   const pick = arr => arr[Math.floor(Math.random() * arr.length)];
   const shuffled = arr => [...arr].sort(() => Math.random() - 0.5);
@@ -743,7 +956,12 @@ window.HOOMEN_PROFILE = {
 
   function weightedNextMood(fromKey) {
     if (!fromKey || !moods[fromKey]) return pick(moodKeys);
-    const weights = moods[fromKey].transitions || {};
+    const weights = { ...(moods[fromKey].transitions || {}) };
+    // Стосунки підвищують шанс позитивних емоцій, але не блокують негативні.
+    const positive = ["happy","cheerful","calm","social","energetic","inspired","in_love"];
+    const factor = relationshipState.stage === "married" ? 2 : relationshipState.stage === "relationship" ? 1.55 : relationshipState.stage === "romantic_tension" ? 1.25 : 1;
+    positive.forEach(k => { if (weights[k]) weights[k] *= factor; });
+    if (relationshipState.stage !== "friendship" && weights.in_love) weights.in_love *= 1.35;
     const entries = Object.entries(weights).filter(([key, weight]) => moods[key] && key !== fromKey && weight > 0);
     if (!entries.length) return pick(moodKeys.filter(k => k !== fromKey));
     const total = entries.reduce((sum, [, weight]) => sum + weight, 0);
@@ -808,19 +1026,14 @@ window.HOOMEN_PROFILE = {
     } catch (e) {}
   }
 
-  function updateFamily(mood) {
+  function updateFamily() {
     const familyEl = document.getElementById("profile-family");
     if (!familyEl) return;
-    const showYani = Math.random() < mood.familyChance;
-    if (showYani) {
-      const type = pick(mood.familyTypes);
-      const prefix = type === "married" ? "одружений з" : type === "in_relationship" ? "у стосунках з" : "все складно з";
-      familyEl.innerHTML = `${prefix} <a href="${yani.url}">${yani.name}</a>`;
-      window.HOOMEN_PROFILE.family = { type, partnerName: yani.name, partnerUrl: yani.url };
-    } else {
-      familyEl.textContent = pick(["не одружений"]);
-      window.HOOMEN_PROFILE.family = { type: "single", partnerName: "", partnerUrl: "" };
-    }
+    familyEl.innerHTML = relationshipLabel();
+    const type = relationshipState.stage === "married" ? "married" :
+                 relationshipState.stage === "relationship" ? "in_relationship" :
+                 relationshipState.stage === "romantic_tension" ? "complicated" : "single";
+    window.HOOMEN_PROFILE.family = { type, partnerName: type === "single" ? "" : yani.name, partnerUrl: type === "single" ? "" : yani.url };
   }
 
   function applyMood(key) {
@@ -873,13 +1086,16 @@ window.HOOMEN_PROFILE = {
 
 
 
-    const status = pickDifferent(mood.statuses || [], lastStatus);
-    lastStatus = status;
+    chooseActivity(key);
+    currentSocial = deriveSocial(key);
+    const baseStatus = pickDifferent(mood.statuses || [], lastStatus);
+    const status = `${baseStatus} • Зараз: ${activities[currentActivity]}. • ${socialLabels[currentSocial]}.`;
+    lastStatus = baseStatus;
     const statusEl = document.getElementById("profile-status-text");
     const moodLabelEl = document.getElementById("mood-label");
     if (statusEl) statusEl.textContent = status;
     if (moodLabelEl) moodLabelEl.textContent = mood.label;
-    updateFamily(mood);
+    updateFamily();
 
     const container = document.getElementById("profile-posts");
     if (!container) { console.error("Не знайдено #profile-posts"); return; }
@@ -957,6 +1173,8 @@ window.HOOMEN_PROFILE = {
   }
 
   function setSleepingState() {
+    currentActivity = "sleeping";
+    currentSocial = "offline";
     const statusEl = document.getElementById("profile-status-text");
     const onlineEl = document.getElementById("profile-online-status");
     const moodLabelEl = document.getElementById("mood-label");
@@ -1004,6 +1222,25 @@ window.HOOMEN_PROFILE = {
     playBubble();
     scheduleMoodChange();
   }
+
+  // Невеликий API для майбутнього чату/зустрічей.
+  window.AKIRA_SIM = {
+    getState: () => ({ emotion:currentMood, activity:currentActivity, social:currentSocial, relationship:{...relationshipState} }),
+    setEmotion: (key) => { if (moods[key]) applyMood(key); },
+    setActivity: (key) => { if (activities[key]) { currentActivity=key; currentSocial=deriveSocial(currentMood); applyMood(currentMood); } },
+    addMeeting: () => {
+      if (relationshipState.stage === "friendship") {
+        relationshipState.meetings++;
+        if (relationshipState.meetings >= 25) relationshipState.stage = "romantic_tension";
+      } else if (relationshipState.stage === "relationship") {
+        relationshipState.relationshipMeetings++;
+        if (relationshipState.relationshipMeetings >= 25) relationshipState.stage = "married";
+      }
+      saveRelationship(); updateFamily(); return {...relationshipState};
+    },
+    startRelationship: () => { if (relationshipState.stage === "romantic_tension") { relationshipState.stage="relationship"; relationshipState.relationshipMeetings=0; saveRelationship(); updateFamily(); } },
+    resetRelationship: () => { relationshipState={stage:"friendship",partner:"yani_kuroneko",meetings:0,relationshipMeetings:0}; saveRelationship(); updateFamily(); }
+  };
 
   function startMoodProfile() {
     if (window.__akiraMoodProfileStarted) return;
