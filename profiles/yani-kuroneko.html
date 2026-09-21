@@ -774,12 +774,12 @@ window.HOOMEN_PROFILE = {
   function updateFamily(mood) {
     const familyEl = document.getElementById("profile-family");
     if (!familyEl) return;
-    const showYani = Math.random() < mood.familyChance;
-    if (showYani) {
+    const showAkira = Math.random() < mood.familyChance;
+    if (showAkira) {
       const type = pick(mood.familyTypes);
       const prefix = type === "married" ? "заміжня за" : type === "in_relationship" ? "у стосунках з" : "все складно з";
-      familyEl.innerHTML = `${prefix} <a href="${yani.url}">${yani.name}</a>`;
-      window.HOOMEN_PROFILE.family = { type, partnerName: yani.name, partnerUrl: yani.url };
+      familyEl.innerHTML = `${prefix} <a href="${akira.url}">${akira.name}</a>`;
+      window.HOOMEN_PROFILE.family = { type, partnerName: akira.name, partnerUrl: akira.url };
     } else {
       familyEl.textContent = pick(["не в стосунках", "сама", "поки що одна", "без пари"]);
       window.HOOMEN_PROFILE.family = { type: "single", partnerName: "", partnerUrl: "" };
