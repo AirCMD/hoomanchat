@@ -3,297 +3,114 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Гуменчат — agatha_cheng (сон)</title>
+<title>Гуменчат — akira_bakeneko</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+
+<!-- твої оригінальні стилі -->
+<link rel="stylesheet" href="../css/hoomenchat-profile.css">
+<link rel="stylesheet" href="../css/pm-popup.css">
+
+<!-- додаткові сонні ефекти (поверх твого css) -->
 <style>
-  :root {
-    --bg: #0e0c14;
-    --card: #16131f;
-    --text: #c9c2d9;
-    --muted: #8a8299;
-    --accent: #9b7ed9;
-    --soft: rgba(155, 126, 217, 0.12);
-  }
-
-  /* коли дизайн «прокидається» */
-  body.awake {
-    --bg: #1a1a1e;
-    --card: #25252b;
-    --text: #e0e0e6;
-    --muted: #a0a0ab;
-    --accent: #7a9eff;
-    --soft: rgba(122, 158, 255, 0.1);
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    line-height: 1.5;
-    min-height: 100vh;
-    overflow-x: hidden;
-    transition: background 1.2s ease, color 1.2s ease;
-  }
-
-  body::before {
+  /* м’який сонний оверлей */
+  body.dream-mode::before {
     content: "";
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse 80% 50% at 20% 30%, rgba(120, 80, 180, 0.08), transparent 60%),
-      radial-gradient(ellipse 60% 40% at 80% 70%, rgba(60, 100, 160, 0.06), transparent 50%);
+      radial-gradient(ellipse 80% 50% at 20% 30%, rgba(120, 80, 180, 0.07), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 70%, rgba(60, 100, 160, 0.05), transparent 50%);
     pointer-events: none;
     z-index: 0;
-    opacity: 1;
     transition: opacity 1.2s ease;
   }
 
-  body.awake::before { opacity: 0.25; }
-
-  #hoomenchat-site {
-    position: relative;
-    z-index: 1;
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 16px;
+  body.awake::before {
+    opacity: 0.2;
   }
 
-  .hoomenchat-header {
-    text-align: center;
-    font-size: 1.4rem;
-    letter-spacing: 0.18em;
-    color: var(--accent);
-    padding: 12px 0 20px;
-    opacity: 0.85;
+  /* плавання елементів уві сні */
+  body.dream-mode:not(.awake) .hoomenchat-header,
+  body.dream-mode:not(.awake) .left-box,
+  body.dream-mode:not(.awake) .profile-post {
+    animation: softFloat 11s ease-in-out infinite;
   }
 
-  body:not(.awake) .hoomenchat-header {
-    animation: softFloat 9s ease-in-out infinite;
-  }
-
-  .site-layout {
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 20px;
-  }
-
-  @media (max-width: 700px) {
-    .site-layout { grid-template-columns: 1fr; }
-  }
-
-  .left-box, .profile-box, .profile-post, .rules-box, .statistics-box {
-    background: var(--card);
-    border: 1px solid rgba(155, 126, 217, 0.15);
-    border-radius: 10px;
-    padding: 16px;
-    transition: background 1.2s ease, border-color 1.2s ease;
-  }
-
-  body.awake .left-box,
-  body.awake .profile-box,
-  body.awake .profile-post,
-  body.awake .rules-box,
-  body.awake .statistics-box {
-    border-color: rgba(122, 158, 255, 0.2);
-  }
-
-  .left-box { text-align: center; }
-
-  body:not(.awake) .left-box {
-    animation: softFloat 11s ease-in-out infinite 1s;
-  }
-
-  .site-name {
-    font-size: 1.15rem;
-    margin-bottom: 12px;
-    color: var(--accent);
-  }
-
-  .main-avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid rgba(155, 126, 217, 0.3);
-    margin-bottom: 14px;
-    filter: brightness(0.95) saturate(0.85);
-    transition: filter 0.6s ease, border-color 1.2s ease;
-  }
-
-  body.awake .main-avatar {
-    filter: none;
-    border-color: rgba(122, 158, 255, 0.35);
-  }
-
-  .archat-button, .account-link {
-    display: inline-block;
-    margin: 6px 0;
-    padding: 6px 12px;
-    color: var(--accent);
-    text-decoration: none;
-    border: 1px solid rgba(155, 126, 217, 0.25);
-    border-radius: 6px;
-    font-size: 0.9rem;
-    transition: background 0.3s, border-color 1.2s ease, color 1.2s ease;
-  }
-
-  body.awake .archat-button,
-  body.awake .account-link {
-    border-color: rgba(122, 158, 255, 0.3);
-  }
-
-  .archat-button:hover, .account-link:hover {
-    background: var(--soft);
-  }
-
-  .account-box {
-    margin-top: 18px;
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
-
-  .profile-header {
-    font-size: 1.1rem;
-    margin-bottom: 10px;
-    color: var(--accent);
-  }
-
-  .profile-info {
-    font-size: 0.95rem;
-    color: var(--muted);
-  }
-
-  .posts-header {
-    margin: 22px 0 12px;
-    font-size: 1rem;
-    color: var(--muted);
-  }
-
-  .profile-post {
-    margin-bottom: 16px;
-  }
-
-  body:not(.awake) .profile-post {
-    animation: softFloat 13s ease-in-out infinite;
-  }
-
-  body:not(.awake) .profile-post:nth-child(2) { animation-delay: 1.5s; }
-  body:not(.awake) .profile-post:nth-child(3) { animation-delay: 3s; }
-  body:not(.awake) .profile-post:nth-child(4) { animation-delay: 0.7s; }
-  body:not(.awake) .profile-post:nth-child(5) { animation-delay: 2.2s; }
-
-  .profile-post-title {
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: var(--text);
-    min-height: 1.4em;
-  }
-
-  .profile-post-body {
-    margin-bottom: 10px;
-    color: var(--text);
-    min-height: 1.4em;
-  }
-
-  .post-actions {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-
-  .like-button, .comment-button {
-    background: transparent;
-    border: 1px solid rgba(155, 126, 217, 0.2);
-    color: var(--muted);
-    padding: 4px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: border-color 1.2s ease, color 1.2s ease;
-  }
-
-  body.awake .like-button,
-  body.awake .comment-button {
-    border-color: rgba(122, 158, 255, 0.25);
-  }
-
-  .like-button:hover, .comment-button:hover {
-    background: var(--soft);
-    color: var(--accent);
-  }
-
-  .comments-area { display: none; }
-
-  .profile-post-date {
-    font-size: 0.8rem;
-    color: var(--muted);
-    opacity: 0.7;
-  }
-
-  .rules-box, .statistics-box {
-    margin-top: 20px;
-    font-size: 0.9rem;
-    color: var(--muted);
-  }
-
-  .rules-box a { color: var(--accent); }
-
-  .footer-line {
-    text-align: center;
-    margin-top: 28px;
-    font-size: 0.85rem;
-    color: var(--muted);
-    opacity: 0.6;
-  }
+  body.dream-mode:not(.awake) .profile-post:nth-child(2) { animation-delay: 1.4s; }
+  body.dream-mode:not(.awake) .profile-post:nth-child(3) { animation-delay: 2.8s; }
+  body.dream-mode:not(.awake) .profile-post:nth-child(4) { animation-delay: 0.6s; }
+  body.dream-mode:not(.awake) .profile-post:nth-child(5) { animation-delay: 2.1s; }
 
   @keyframes softFloat {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
+    50% { transform: translateY(-3px); }
   }
 
-  /* під час заміни тексту */
+  /* дрижання */
+  @keyframes tremble {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-2px, 1px) rotate(-1.2deg); }
+    50% { transform: translate(2px, -1px) rotate(1deg); }
+    75% { transform: translate(-1px, 2px) rotate(-0.7deg); }
+  }
+
+  .trembling {
+    animation: tremble 0.11s linear infinite !important;
+  }
+
+  /* літаюча кнопка */
+  .flying {
+    position: fixed !important;
+    z-index: 99999 !important;
+    pointer-events: none !important;
+    transition: none !important;
+  }
+
+  /* під час морфінгу тексту */
   .rewriting {
     color: #b8a0e0 !important;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
+    text-shadow: 0 0 8px rgba(155, 126, 217, 0.35);
   }
 </style>
 </head>
-<body>
+<body class="dream-mode">
 <div id="hoomenchat-site">
   <div class="hoomenchat-header">ГУМЕНЧАТ</div>
 
   <div class="site-layout">
     <div class="site-left">
       <div class="left-box">
-        <div class="site-name" id="profile-nickname">agatha_cheng</div>
+        <div class="site-name" id="profile-nickname">akira_bakeneko</div>
         <img
           class="main-avatar"
           id="profile-avatar"
-          alt="agatha_cheng"
-          src="https://blogger.googleusercontent.com/img/a/AVvXsEgAuU9OrKHkOm5e67KQhTq0zX4dSFJQzZbOt0qnKuiQAw0VufdrQNXwvvKsmcG2L3xspDC--r_x4w3NFpQeamn1d548zdkA08SBp_FiwbksYjddxSEbC0rscCFrMSEQrlkvESkRhws3JeQC1LyVzv8NQPna1eCiyPDppuvN8xsm4aLTlXn4v9CuVFk0iGc"
+          alt="akira_bakeneko"
+          src="https://blogger.googleusercontent.com/img/a/AVvXsEg6TLuKwTa6G7t32SgZE9RiJp5vLqOOqtC7lBHiLXIjBZOZAx1Dku1fWM8x_bc1lXwA1pF32pojhJW02L1BxI3oJfuvwBhC6i9Di0zPVQhzLcGslTae08Qe-4bRNEtHajGweOmDs9Snij-8QDCseC7KCckbjuGosEilTW3y2LxVSfdQ0WRgCTtt8us3ahI"
         >
-        <a class="archat-button" href="#">📩 АРЧАТ</a>
+        <a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
+        <div class="nav-menu" id="nav-menu"></div>
         <div class="account-box">
           <div class="account-text">Немає гумгайла?</div>
-          <a class="account-link" href="#">ЗАРЕЄСТРУВАТИСЯ</a>
-          <a class="account-link" href="#">ВХІД</a>
+          <a class="account-link" href="../register.html">ЗАРЕЄСТРУВАТИСЯ</a>
+          <a class="account-link" href="../login.html">ВХІД</a>
         </div>
       </div>
     </div>
 
     <div class="site-right">
       <div class="profile-box">
-        <div class="profile-header" id="profile-header-title">Профіль гумена: agatha_cheng</div>
+        <div class="profile-header" id="profile-header-title">Профіль гумена: akira_bakeneko</div>
         <div class="profile-info">
-          <strong id="profile-info-name">agatha_cheng</strong>
-          <div id="profile-status-text">Не зміню цей статус.</div>
-          <div class="profile-status" id="profile-online-status">онлайн</div>
+          <strong id="profile-info-name">akira_bakeneko</strong>
+          <div id="profile-family"></div>
+          <div id="profile-status-text"></div>
+          <div class="profile-status" id="profile-online-status"></div>
         </div>
       </div>
 
       <div class="posts-header" id="posts-header">
-        Дописи agatha_cheng — <span id="posts-count">5</span>
+        Дописи akira_bakeneko — <span id="posts-count">5</span>
       </div>
 
       <div id="profile-posts">
@@ -302,8 +119,14 @@
           <div class="profile-post-title">Тема</div>
           <div class="profile-post-body">Не люлюблю давати назву теми. Та й не знаю про що мені взагалі писати? Працюю асистенткою вченого, який розробляє та шукає роками ліки від всіх хвороб.</div>
           <div class="post-actions">
-            <button class="like-button" type="button">♡ Подобається <span class="like-count">75</span></button>
+            <button class="like-button" type="button" data-base-likes="75">♡ Подобається <span class="like-count">75</span></button>
             <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+          </div>
+          <div class="comments-area">
+            <div class="comment-form">
+              <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+              <button class="comment-send" type="button">Відправити</button>
+            </div>
           </div>
           <div class="profile-post-date">16 травня</div>
         </div>
@@ -313,8 +136,14 @@
           <div class="profile-post-title">.</div>
           <div class="profile-post-body">Привіт, я тут.</div>
           <div class="post-actions">
-            <button class="like-button" type="button">♡ Подобається <span class="like-count">47</span></button>
+            <button class="like-button" type="button" data-base-likes="47">♡ Подобається <span class="like-count">47</span></button>
             <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+          </div>
+          <div class="comments-area">
+            <div class="comment-form">
+              <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+              <button class="comment-send" type="button">Відправити</button>
+            </div>
           </div>
           <div class="profile-post-date">14 травня</div>
         </div>
@@ -324,8 +153,14 @@
           <div class="profile-post-title">...</div>
           <div class="profile-post-body">Вітаю</div>
           <div class="post-actions">
-            <button class="like-button" type="button">♡ Подобається <span class="like-count">30</span></button>
+            <button class="like-button" type="button" data-base-likes="30">♡ Подобається <span class="like-count">30</span></button>
             <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+          </div>
+          <div class="comments-area">
+            <div class="comment-form">
+              <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+              <button class="comment-send" type="button">Відправити</button>
+            </div>
           </div>
           <div class="profile-post-date">10 травня</div>
         </div>
@@ -335,8 +170,14 @@
           <div class="profile-post-title">ок</div>
           <div class="profile-post-body">Працюю</div>
           <div class="post-actions">
-            <button class="like-button" type="button">♡ Подобається <span class="like-count">14</span></button>
+            <button class="like-button" type="button" data-base-likes="14">♡ Подобається <span class="like-count">14</span></button>
             <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+          </div>
+          <div class="comments-area">
+            <div class="comment-form">
+              <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+              <button class="comment-send" type="button">Відправити</button>
+            </div>
           </div>
           <div class="profile-post-date">5 травня</div>
         </div>
@@ -346,24 +187,35 @@
           <div class="profile-post-title">й</div>
           <div class="profile-post-body">привіт</div>
           <div class="post-actions">
-            <button class="like-button" type="button">♡ Подобається <span class="like-count">34</span></button>
+            <button class="like-button" type="button" data-base-likes="34">♡ Подобається <span class="like-count">34</span></button>
             <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+          </div>
+          <div class="comments-area">
+            <div class="comment-form">
+              <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
+              <button class="comment-send" type="button">Відправити</button>
+            </div>
           </div>
           <div class="profile-post-date">2 травня</div>
         </div>
       </div>
 
+      <div class="posts-pager" id="posts-pager">
+        <button class="show-more hidden" id="show-less-posts" type="button">показати менше...</button>
+        <button class="show-more hidden" id="show-more-posts" type="button">показати ще...</button>
+      </div>
+
       <div class="rules-box">
         Пам'ятай та дотримуйся
-        <a href="#">ПРАВИЛ</a>
+        <a href="../rules.html">ПРАВИЛ</a>
         нашого ресурсу для приємного та друмнього часу разом з нами.
       </div>
 
       <div class="statistics-box">
         <div class="statistics-title">Статистика Гуменчату</div>
-        <div>Зареєстровано гуменів: <span class="statistics-number">∞</span></div>
-        <div>Зараз онлайн: <span class="statistics-online">хтось уві сні</span></div>
-        <div>Гуменів сьогодні завітало: <span class="statistics-number">?</span></div>
+        <div>Зареєстровано гуменів: <span class="statistics-number" id="registered-hoomen"></span></div>
+        <div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div>
+        <div>Гуменів сьогодні завітало: <span class="statistics-number" id="today-hoomen"></span></div>
       </div>
 
       <div class="footer-line">Гуменчат — місце для гуменів… і їхніх снів.</div>
@@ -372,118 +224,110 @@
 </div>
 
 <script>
+window.HOOMEN_PROFILE = {
+  nickname: "akira_bakeneko",
+  avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEg6TLuKwTa6G7t32SgZE9RiJp5vLqOOqtC7lBHiLXIjBZOZAx1Dku1fWM8x_bc1lXwA1pF32pojhJW02L1BxI3oJfuvwBhC6i9Di0zPVQhzLcGslTae08Qe-4bRNEtHajGweOmDs9Snij-8QDCseC7KCckbjuGosEilTW3y2LxVSfdQ0WRgCTtt8us3ahI",
+  isMainCharacter: false,
+  mainCharacterUrl: "copy-pasta.html",
+  statusText: "Не зміню цей статус.",
+  onlineStatus: "online",
+  schedule: [
+    { time: "09:00", status: "offline" },
+    { time: "18:00", status: "online" },
+    { time: "22:05", status: "away" },
+    { time: "23:02", status: "online" },
+    { time: "23:50", status: "online" }
+  ],
+  gender: "female",
+  family: {
+    type: "married",
+    partnerName: "",
+    partnerUrl: ""
+  },
+  navLinks: {
+    home: "../index.html",
+    profiles: "../profiles.html",
+    droomens: "../droomens.html",
+    activity: "../activity.html",
+    islands: "../islands.html",
+    rules: "../rules.html"
+  }
+};
+</script>
+
+<!-- твої оригінальні скрипти -->
+<script src="../js/hoomenchat-profile.js"></script>
+<script src="../js/pm-popup.js"></script>
+
+<!-- сонні ефекти -->
+<script>
 (function () {
-  // ===================== ДАНІ =====================
-  // Оригінальні тексти (щоб можна було повертати)
   const originals = [
-    {
-      title: "Тема",
-      body: "Не люлюблю давати назву теми. Та й не знаю про що мені взагалі писати? Працюю асистенткою вченого, який розробляє та шукає роками ліки від всіх хвороб."
-    },
-    {
-      title: ".",
-      body: "Привіт, я тут."
-    },
-    {
-      title: "...",
-      body: "Вітаю"
-    },
-    {
-      title: "ок",
-      body: "Працюю"
-    },
-    {
-      title: "й",
-      body: "привіт"
-    }
+    { title: "Тема", body: "Не люлюблю давати назву теми. Та й не знаю про що мені взагалі писати? Працюю асистенткою вченого, який розробляє та шукає роками ліки від всіх хвороб." },
+    { title: ".", body: "Привіт, я тут." },
+    { title: "...", body: "Вітаю" },
+    { title: "ок", body: "Працюю" },
+    { title: "й", body: "привіт" }
   ];
 
-  // Сонні заміни (можна додавати свої)
   const dreamVersions = [
-    {
-      title: "Тобі це все сниться.",
-      body: "Ймовірно, ти уві сні. Прокинься."
-    },
-    {
-      title: "Сигнал зник.",
-      body: "Кафе порожнє. Яні ніколи не існувало."
-    },
-    {
-      title: "Ліки від усього.",
-      body: "Він шукає їх уже дуже довго. Можливо, занадто довго."
-    },
-    {
-      title: "Ти все ще тут?",
-      body: "Стіни дихають. Текст змінюється без твоєї згоди."
-    },
-    {
-      title: "Прокинься.",
-      body: "Це не дописи. Це уламки сну, які ти читаєш."
-    },
-    {
-      title: "Асистентка.",
-      body: "Або пацієнтка. Різниці вже майже немає."
-    }
+    { title: "Тобі це все сниться.", body: "Ймовірно, ти уві сні. Прокинься." },
+    { title: "Сигнал зник.", body: "Кафе порожнє. Яні ніколи не існувало." },
+    { title: "Ліки від усього.", body: "Він шукає їх уже дуже довго. Можливо, занадто довго." },
+    { title: "Ти все ще тут?", body: "Стіни дихають. Текст змінюється без твоєї згоди." },
+    { title: "Прокинься.", body: "Це не дописи. Це уламки сну, які ти читаєш." },
+    { title: "Асистентка.", body: "Або пацієнтка. Різниці вже майже немає." }
   ];
 
   const symbols = "░▒▓█▀▄■□●○◆◇★☆✦✧∵∴≈≠≤≥∞∂∆∑∏√∫≡≢_";
   const posts = document.querySelectorAll(".profile-post");
-  let isRewriting = false; // щоб не запускати дві заміни одночасно
+  const allButtons = document.querySelectorAll(".like-button, .comment-button, .archat-button, .account-link");
 
-  // ===================== МОРФІНГ ТЕКСТУ =====================
-  function scramblePartial(text, intensity = 0.5) {
+  let isRewriting = false;
+  const currentState = new Array(posts.length).fill("original");
+
+  function scramblePartial(text, intensity = 0.55) {
     let out = "";
     for (let i = 0; i < text.length; i++) {
-      if (text[i] === " ") {
-        out += " ";
-      } else if (Math.random() < intensity) {
-        out += symbols[Math.floor(Math.random() * symbols.length)];
-      } else {
-        out += text[i];
-      }
+      if (text[i] === " ") out += " ";
+      else if (Math.random() < intensity) out += symbols[Math.floor(Math.random() * symbols.length)];
+      else out += text[i];
     }
     return out;
   }
 
-  // Плавна заміна одного рядка на інший (як передруковування)
-  function morphText(el, from, to, duration = 2200) {
+  function morphText(el, from, to, duration = 2400) {
     return new Promise(resolve => {
       el.classList.add("rewriting");
-      const steps = 18;
+      const steps = 20;
       const stepTime = duration / steps;
       let step = 0;
 
       const interval = setInterval(() => {
         step++;
-        const progress = step / steps;
+        const p = step / steps;
 
-        if (progress < 0.35) {
-          // фаза 1: розсипання
-          el.textContent = scramblePartial(from, 0.3 + progress * 1.2);
-        } else if (progress < 0.7) {
-          // фаза 2: змішаний текст (частина старого + частина нового + символи)
-          const mixLen = Math.max(from.length, to.length);
+        if (p < 0.32) {
+          // розсипання
+          el.textContent = scramblePartial(from, 0.25 + p * 1.4);
+        } else if (p < 0.68) {
+          // змішана фаза (старий + новий + шум)
+          const len = Math.max(from.length, to.length);
           let mixed = "";
-          for (let i = 0; i < mixLen; i++) {
+          for (let i = 0; i < len; i++) {
             const r = Math.random();
-            if (r < 0.35) {
-              mixed += symbols[Math.floor(Math.random() * symbols.length)];
-            } else if (r < 0.6 && i < from.length) {
-              mixed += from[i];
-            } else if (i < to.length) {
-              mixed += to[i];
-            } else {
-              mixed += "_";
-            }
+            if (r < 0.32) mixed += symbols[Math.floor(Math.random() * symbols.length)];
+            else if (r < 0.55 && i < from.length) mixed += from[i];
+            else if (i < to.length) mixed += to[i];
+            else mixed += "_";
           }
           el.textContent = mixed;
         } else {
-          // фаза 3: збирання нового тексту
-          const reveal = Math.floor((progress - 0.7) / 0.3 * to.length);
+          // збирання нового
+          const reveal = Math.floor((p - 0.68) / 0.32 * to.length);
           let built = to.slice(0, reveal);
-          // додаємо трохи «шумів» в кінці
           if (reveal < to.length) {
-            built += scramblePartial(to.slice(reveal), 0.6);
+            built += scramblePartial(to.slice(reveal), 0.55);
           }
           el.textContent = built;
         }
@@ -498,59 +342,114 @@
     });
   }
 
-  // Замінити один допис
-  async function replaceOnePost() {
+  async function changePost(toDream = true) {
     if (isRewriting) return;
     isRewriting = true;
 
-    const post = posts[Math.floor(Math.random() * posts.length)];
-    const id = +post.dataset.id;
+    const candidates = [];
+    posts.forEach((p, i) => {
+      if (toDream && currentState[i] === "original") candidates.push(i);
+      if (!toDream && currentState[i] === "dream") candidates.push(i);
+    });
+
+    if (!candidates.length) {
+      isRewriting = false;
+      return;
+    }
+
+    const idx = candidates[Math.floor(Math.random() * candidates.length)];
+    const post = posts[idx];
     const titleEl = post.querySelector(".profile-post-title");
     const bodyEl = post.querySelector(".profile-post-body");
+    const target = toDream
+      ? dreamVersions[Math.floor(Math.random() * dreamVersions.length)]
+      : originals[idx];
 
-    // вибираємо сонну версію
-    const dream = dreamVersions[Math.floor(Math.random() * dreamVersions.length)];
+    await morphText(titleEl, titleEl.textContent, target.title, 1900);
+    await new Promise(r => setTimeout(r, 280));
+    await morphText(bodyEl, bodyEl.textContent, target.body, 2600);
 
-    // спочатку title, потім body (трохи з затримкою)
-    await morphText(titleEl, titleEl.textContent, dream.title, 1800);
-    await new Promise(r => setTimeout(r, 300));
-    await morphText(bodyEl, bodyEl.textContent, dream.body, 2600);
-
-    // через деякий час можна повернути оригінал (або залишити)
-    // зараз залишаємо новим — сон триває
+    currentState[idx] = toDream ? "dream" : "original";
     isRewriting = false;
+
+    if (toDream) {
+      setTimeout(() => {
+        if (currentState[idx] === "dream" && !isRewriting) changePost(false);
+      }, 9000 + Math.random() * 16000);
+    }
   }
 
-  // ===================== ПРОКИДАННЯ ДИЗАЙНУ =====================
+  function trembleButton() {
+    const btn = allButtons[Math.floor(Math.random() * allButtons.length)];
+    if (!btn || btn.classList.contains("flying") || btn.classList.contains("trembling")) return;
+    btn.classList.add("trembling");
+    setTimeout(() => btn.classList.remove("trembling"), 1600 + Math.random() * 2000);
+  }
+
+  function flyButton() {
+    const btn = allButtons[Math.floor(Math.random() * allButtons.length)];
+    if (!btn || btn.classList.contains("flying") || btn.classList.contains("trembling")) return;
+
+    const rect = btn.getBoundingClientRect();
+    const startX = rect.left;
+    const startY = rect.top;
+
+    const placeholder = document.createElement("span");
+    placeholder.style.cssText = `display:inline-block;width:${rect.width}px;height:${rect.height}px;`;
+    btn.parentNode.insertBefore(placeholder, btn);
+
+    btn.classList.add("flying");
+    btn.style.left = startX + "px";
+    btn.style.top = startY + "px";
+    btn.style.width = rect.width + "px";
+
+    const duration = 3000 + Math.random() * 2500;
+    const start = performance.now();
+
+    function frame(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const angle = t * 680 + Math.sin(t * 11) * 25;
+      const x = Math.sin(t * Math.PI * 2.1) * (110 + Math.random() * 70);
+      const y = -Math.sin(t * Math.PI) * (80 + Math.random() * 50) + Math.cos(t * 7) * 18;
+
+      btn.style.transform = `translate(${x}px, ${y}px) rotate(${angle}deg)`;
+
+      if (t < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        btn.classList.remove("flying");
+        btn.style.transform = btn.style.left = btn.style.top = btn.style.width = "";
+        placeholder.replaceWith(btn);
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
   function wakeUpDesign() {
     document.body.classList.add("awake");
-    const duration = 4000 + Math.random() * 4000; // 4–8 сек
-    setTimeout(() => {
-      document.body.classList.remove("awake");
-    }, duration);
+    setTimeout(() => document.body.classList.remove("awake"), 3800 + Math.random() * 4200);
   }
 
-  // ===================== РОЗКЛАД =====================
-  function scheduleDreamEvents() {
-    // заміна допису
-    const nextReplace = 6000 + Math.random() * 9000; // 6–15 сек
-    setTimeout(() => {
-      replaceOnePost();
-      scheduleDreamEvents();
-    }, nextReplace);
-  }
+  // розклад
+  setTimeout(function loopReplace() {
+    changePost(true);
+    setTimeout(loopReplace, 7500 + Math.random() * 9500);
+  }, 4500);
 
-  function scheduleWake() {
-    const nextWake = 14000 + Math.random() * 18000; // 14–32 сек
-    setTimeout(() => {
-      wakeUpDesign();
-      scheduleWake();
-    }, nextWake);
-  }
+  setTimeout(function loopTremble() {
+    trembleButton();
+    setTimeout(loopTremble, 5500 + Math.random() * 8500);
+  }, 7000);
 
-  // старт
-  setTimeout(scheduleDreamEvents, 4000);
-  setTimeout(scheduleWake, 9000);
+  setTimeout(function loopFly() {
+    flyButton();
+    setTimeout(loopFly, 12000 + Math.random() * 14000);
+  }, 11000);
+
+  setTimeout(function loopWake() {
+    wakeUpDesign();
+    setTimeout(loopWake, 17000 + Math.random() * 19000);
+  }, 14000);
 })();
 </script>
 </body>
