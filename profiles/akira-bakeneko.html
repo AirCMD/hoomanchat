@@ -269,6 +269,68 @@
 
   #profile-family a { color: #fff !important; }
 
+
+  /* === NO-WHITE BACKGROUNDS: усі поверхні забарвлені настроєм === */
+  body,
+  #hoomenchat-site,
+  .site-layout,
+  .site-left,
+  .site-right {
+    background-color: transparent !important;
+  }
+
+  .left-box,
+  .profile-box,
+  .rules-box,
+  .statistics-box {
+    background:
+      linear-gradient(180deg,
+        var(--mood-surface-top, rgba(14, 62, 82, .97)),
+        var(--mood-surface-bottom, rgba(5, 27, 42, .99))) !important;
+  }
+
+  .profile-post {
+    background:
+      linear-gradient(180deg,
+        var(--mood-post-top, rgba(17, 91, 112, .96)),
+        var(--mood-post-bottom, rgba(6, 43, 61, .98))) !important;
+  }
+
+  .comment {
+    background:
+      linear-gradient(180deg,
+        var(--mood-comment-top, rgba(10, 55, 73, .96)),
+        var(--mood-comment-bottom, rgba(4, 29, 43, .99))) !important;
+  }
+
+  .comment-form {
+    background: var(--mood-form-bg, rgba(5, 34, 49, .94)) !important;
+    border-radius: 12px;
+    padding: 9px;
+  }
+
+  .comment-input,
+  textarea.comment-input {
+    background: var(--mood-input-bg, rgba(3, 24, 37, .98)) !important;
+    color: #f8fcff !important;
+    border-color: var(--mood-profile-border) !important;
+  }
+
+  .like-button,
+  .comment-button,
+  .comment-send,
+  .mood-indicator {
+    background:
+      linear-gradient(180deg,
+        var(--mood-button-top, rgba(27, 123, 145, .98)),
+        var(--mood-button-bottom, rgba(7, 62, 83, .98))) !important;
+  }
+
+  #profile-family,
+  #profile-status-text {
+    background: var(--mood-info-strip, rgba(4, 36, 50, .94)) !important;
+  }
+
 </style>
 </head>
 <body>
@@ -283,7 +345,7 @@
           class="main-avatar"
           id="profile-avatar"
           alt="akira_bakeneko"
-          src="https://blogger.googleusercontent.com/img/a/AVvXsEg6TLuKwTa6G7t32SgZE9RiJp5vLqOOqtC7lBHiLXIjBZOZAx1Dku1fWM8x_bc1lXwA1pF32pojhJW02L1BxI3oJfuvwBhC6i9Di0zPVQhzLcGslTae08Qe-4bRNEtHajGweOmDs9Snij-8QDCseC7KCckbjuGosEilTW3y2LxVSfdQ0WRgCTtt8us3ahI"
+          src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c4c3bf95-7dbb-45e6-a48e-75f20684221e/dmvd4yc-d31b78b6-d15f-474e-a127-0032fa743c2e.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9jNGMzYmY5NS03ZGJiLTQ1ZTYtYTQ4ZS03NWYyMDY4NDIyMWUvZG12ZDR5Yy1kMzFiNzhiNi1kMTVmLTQ3NGUtYTEyNy0wMDMyZmE3NDNjMmUuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.DuKc-l26Eh6_Lg0OfO5--Hrj8a0lPi_phLBwdb5Pa5w"
         >
         <a class="archat-button" href="../archive.html">📩 АРЧАТ</a>
         <div class="nav-menu" id="nav-menu"></div>
@@ -336,7 +398,7 @@
 <script>
 window.HOOMEN_PROFILE = {
   nickname: "akira_bakeneko",
-  avatar: "https://blogger.googleusercontent.com/img/a/AVvXsEg6TLuKwTa6G7t32SgZE9RiJp5vLqOOqtC7lBHiLXIjBZOZAx1Dku1fWM8x_bc1lXwA1pF32pojhJW02L1BxI3oJfuvwBhC6i9Di0zPVQhzLcGslTae08Qe-4bRNEtHajGweOmDs9Snij-8QDCseC7KCckbjuGosEilTW3y2LxVSfdQ0WRgCTtt8us3ahI",
+  avatar: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c4c3bf95-7dbb-45e6-a48e-75f20684221e/dmvd4yc-d31b78b6-d15f-474e-a127-0032fa743c2e.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9jNGMzYmY5NS03ZGJiLTQ1ZTYtYTQ4ZS03NWYyMDY4NDIyMWUvZG12ZDR5Yy1kMzFiNzhiNi1kMTVmLTQ3NGUtYTEyNy0wMDMyZmE3NDNjMmUuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.DuKc-l26Eh6_Lg0OfO5--Hrj8a0lPi_phLBwdb5Pa5w",
   isMainCharacter: false,
   mainCharacterUrl: "copy-pasta.html",
   statusText: "",
@@ -695,6 +757,18 @@ window.HOOMEN_PROFILE = {
     root.style.setProperty("--mood-info-bottom", mix(0.15, .98));
     root.style.setProperty("--mood-info-strip", mix(0.23, .88));
     root.style.setProperty("--mood-profile-border", `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, .62)`);
+    // Додаткові темні відтінки. Білий не використовується як фон.
+    root.style.setProperty("--mood-surface-top", mix(0.38, .97));
+    root.style.setProperty("--mood-surface-bottom", mix(0.14, .99));
+    root.style.setProperty("--mood-post-top", mix(0.50, .97));
+    root.style.setProperty("--mood-post-bottom", mix(0.22, .99));
+    root.style.setProperty("--mood-comment-top", mix(0.34, .97));
+    root.style.setProperty("--mood-comment-bottom", mix(0.13, .99));
+    root.style.setProperty("--mood-form-bg", mix(0.18, .96));
+    root.style.setProperty("--mood-input-bg", mix(0.10, .99));
+    root.style.setProperty("--mood-button-top", mix(0.68, .98));
+    root.style.setProperty("--mood-button-bottom", mix(0.34, .99));
+
 
 
     const status = pickDifferent(mood.statuses || [], lastStatus);
@@ -753,7 +827,7 @@ window.HOOMEN_PROFILE = {
         const text = textarea.value.trim();
         if (!text) return;
         const comment = document.createElement("div"); comment.className = "comment";
-        const author = document.createElement("a"); author.href = "#"; author.className = "comment-author"; author.textContent = "ти";
+        const author = document.createElement("a"); author.href = "https://aircmd.github.io/hoomanchat/profiles/copy-pasta.html"; author.className = "comment-author"; author.textContent = "copy_pasta";
         const body = document.createElement("div"); body.className = "comment-text"; body.textContent = text;
         const commentDate = document.createElement("div"); commentDate.className = "comment-date"; commentDate.textContent = "щойно";
         comment.append(author, body, commentDate);
