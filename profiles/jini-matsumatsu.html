@@ -89,6 +89,44 @@
     opacity: 0 !important;
     transition: opacity 0.4s ease;
   }
+
+/* === додаткові глюки: муха, системні повідомлення, зникнення коментаря === */
+#dream-glitch-overlay{
+  position:fixed; inset:0; z-index:99990; pointer-events:none; opacity:0;
+  background:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px),
+    linear-gradient(90deg,transparent 0 48%,rgba(255,0,90,.08) 49%,rgba(0,220,255,.08) 51%,transparent 52%);
+}
+#dream-glitch-message{
+  position:fixed; z-index:99998; left:50%; top:50%; transform:translate(-50%,-50%);
+  display:none; pointer-events:none; padding:7px 13px; max-width:80vw;
+  color:#eee; background:rgba(0,0,0,.84); border:1px solid rgba(190,170,230,.32);
+  font:700 17px/1.25 monospace; letter-spacing:.08em;
+  text-shadow:-2px 0 rgba(255,0,90,.8),2px 0 rgba(0,220,255,.75);
+}
+#dream-fly{
+  position:fixed; z-index:99999; left:0; top:0; display:none; pointer-events:none;
+  width:15px; height:10px; border-radius:60% 45% 55% 50%;
+  background:#050505; box-shadow:0 0 4px #000;
+}
+#dream-fly::before,#dream-fly::after{
+  content:""; position:absolute; top:-4px; width:9px; height:6px; border-radius:50%;
+  background:rgba(220,235,240,.45);
+}
+#dream-fly::before{left:0;transform:rotate(-28deg)}
+#dream-fly::after{right:0;transform:rotate(28deg)}
+body.extra-rgb #hoomenchat-site{
+  filter:contrast(1.18) saturate(1.35);
+  text-shadow:-2px 0 rgba(255,0,90,.30),2px 0 rgba(0,220,255,.30);
+}
+body.extra-blackout #hoomenchat-site{opacity:.035!important}
+body.extra-scan #dream-glitch-overlay{opacity:.8}
+.user-comment-doomed{animation:userCommentDoom 1.15s ease forwards}
+@keyframes userCommentDoom{
+  0%,65%{opacity:1;filter:none}
+  100%{opacity:0;filter:blur(5px);transform:translateY(-5px)}
+}
+
 </style>
 </head>
 <body class="dream-mode">
@@ -327,6 +365,7 @@ window.HOOMEN_PROFILE = {
 <script src="../js/hoomenchat-profile.js"></script>
 <script src="../js/pm-popup.js"></script>
 
+<div id="dream-glitch-overlay"></div><div id="dream-glitch-message"></div><div id="dream-fly"></div>
 <script>
 (function () {
   const originals = [
@@ -601,6 +640,200 @@ window.HOOMEN_PROFILE = {
     glitchDates();
     setTimeout(loopDates, 5000 + Math.random() * 7000);
   }, 4000);
+
+  // ========== ЗВУКИ, МУХА ТА ГЛЮК ВЛАСНОГО КОМЕНТАРЯ ==========
+  // WebAudio запускається тільки після першого кліку/клавіші: це вимога браузера.
+  let audioCtx = null;
+  let audioReady = false;
+
+  function enableGlitchAudio() {
+    if (audioReady) return;
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      audioReady = true;
+    } catch (e) {}
+  }
+  ["pointerdown","keydown","touchstart"].forEach(ev =>
+    window.addEventListener(ev, enableGlitchAudio, { once:true, passive:true })
+  );
+
+  function glitchTone(freq=120, duration=.12, type="square", gain=.018, endFreq=null) {
+    if (!audioReady || !audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const vol = audioCtx.createGain();
+    const now = audioCtx.currentTime;
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, now);
+    if (endFreq) osc.frequency.exponentialRampToValueAtTime(Math.max(20,endFreq), now + duration);
+    vol.gain.setValueAtTime(.0001, now);
+    vol.gain.exponentialRampToValueAtTime(gain, now + .012);
+    vol.gain.exponentialRampToValueAtTime(.0001, now + duration);
+    osc.connect(vol); vol.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + duration + .02);
+  }
+
+  function staticNoise(duration=.10) {
+    if (!audioReady || !audioCtx) return;
+    const len = Math.floor(audioCtx.sampleRate * duration);
+    const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i=0;i<len;i++) data[i]=(Math.random()*2-1)*(1-i/len);
+    const src = audioCtx.createBufferSource();
+    const gain = audioCtx.createGain();
+    src.buffer=buf; gain.gain.value=.017;
+    src.connect(gain); gain.connect(audioCtx.destination); src.start();
+  }
+
+  function showGlitchMessage(text, ms=600) {
+    const el=document.getElementById("dream-glitch-message");
+    if (!el) return;
+    el.textContent=text; el.style.display="block";
+    setTimeout(()=>{el.style.display="none";el.textContent="";},ms);
+  }
+
+  function extraVisualGlitch() {
+    const type=Math.floor(Math.random()*5);
+    if(type===0){
+      document.body.classList.add("extra-rgb");
+      staticNoise(.08);
+      setTimeout(()=>document.body.classList.remove("extra-rgb"),450+Math.random()*350);
+    } else if(type===1){
+      document.body.classList.add("extra-blackout");
+      glitchTone(48,.18,"sine",.022,27);
+      setTimeout(()=>document.body.classList.remove("extra-blackout"),90+Math.random()*170);
+    } else if(type===2){
+      document.body.classList.add("extra-scan");
+      staticNoise(.12);
+      setTimeout(()=>document.body.classList.remove("extra-scan"),180+Math.random()*350);
+    } else if(type===3){
+      const old=document.title;
+      document.title=["Ти спиш","Прокинься","Гуменчат — ???","[1] нове повідомлення"][Math.floor(Math.random()*4)];
+      glitchTone(930,.05,"square",.012,410);
+      setTimeout(()=>document.title=old,900+Math.random()*1000);
+    } else {
+      const avatar=document.getElementById("profile-avatar");
+      if(!avatar)return;
+      const old=avatar.style.cssText;
+      avatar.style.filter="grayscale(1) contrast(2.8) brightness(.28)";
+      avatar.style.transform="scaleX(-1)";
+      glitchTone(65,.16,"square",.015,38);
+      setTimeout(()=>avatar.style.cssText=old,110+Math.random()*190);
+    }
+  }
+
+  function buzzFly(seconds=5.4) {
+    if (!audioReady || !audioCtx) return;
+    const end=audioCtx.currentTime+seconds;
+    const a=audioCtx.createOscillator(), b=audioCtx.createOscillator(), gain=audioCtx.createGain();
+    a.type="sawtooth"; b.type="square"; a.frequency.value=174; b.frequency.value=181;
+    gain.gain.value=.0001; a.connect(gain); b.connect(gain); gain.connect(audioCtx.destination);
+    a.start(); b.start();
+    function pulse(){
+      if(audioCtx.currentTime>=end)return;
+      const t=audioCtx.currentTime;
+      gain.gain.cancelScheduledValues(t);
+      gain.gain.setValueAtTime(.0001,t);
+      gain.gain.linearRampToValueAtTime(.004+Math.random()*.008,t+.025);
+      gain.gain.linearRampToValueAtTime(.0006,t+.08+Math.random()*.09);
+      a.frequency.setValueAtTime(145+Math.random()*80,t);
+      b.frequency.setValueAtTime(150+Math.random()*85,t);
+      setTimeout(pulse,70+Math.random()*130);
+    }
+    pulse(); a.stop(end); b.stop(end);
+  }
+
+  function flyAcrossScreen() {
+    const fly=document.getElementById("dream-fly");
+    if(!fly || fly.style.display==="block") return;
+    fly.style.display="block";
+    const duration=4800+Math.random()*2600;
+    buzzFly(duration/1000);
+    const start=performance.now();
+    const fromRight=Math.random()<.5;
+    const base=18+Math.random()*55;
+
+    function frame(now){
+      const p=Math.min(1,(now-start)/duration);
+      let x=-35+p*(innerWidth+75);
+      if(fromRight)x=innerWidth+35-p*(innerWidth+75);
+      const y=(base+Math.sin(p*29)*10+Math.sin(p*67)*5)*innerHeight/100;
+      fly.style.transform=`translate(${x}px,${y}px) rotate(${Math.sin(p*42)*28}deg)`;
+      if(p<1)requestAnimationFrame(frame);
+      else fly.style.display="none";
+    }
+    requestAnimationFrame(frame);
+  }
+
+  const corruptSequences = [
+    ["Ти спиш.","Прокинься."],
+    ["Прокинься.","ПРОКИНЬСЯ"],
+    ["▓▒░ 7F 00 ?? ░▒▓","Ти спиш"],
+    ["⍙⍙⍙⍙⍙","..."],
+    ["це не твій коментар","Прокинься"],
+    ["Я цього не писала.","▒▒▒▒▒▒▒"]
+  ];
+
+  function corruptNewComment(comment, countEl) {
+    const text=comment.querySelector(".comment-text");
+    if(!text)return;
+    const seq=corruptSequences[Math.floor(Math.random()*corruptSequences.length)];
+    setTimeout(()=>{
+      staticNoise(.09);
+      text.textContent=seq[0];
+      setTimeout(()=>{
+        if(Math.random()<.78){
+          glitchTone(91,.15,"square",.017,42);
+          text.textContent=seq[1];
+        }
+        setTimeout(()=>{
+          comment.classList.add("user-comment-doomed");
+          setTimeout(()=>{
+            comment.remove();
+            if(countEl)countEl.textContent=Math.max(0,(parseInt(countEl.textContent,10)||1)-1);
+            if(Math.random()<.42)showGlitchMessage(["коментар не знайдено","Ти спиш.","Прокинься.","[дані пошкоджено]"][Math.floor(Math.random()*4)],520);
+          },1100);
+        },550+Math.random()*750);
+      },430+Math.random()*650);
+    },250+Math.random()*700);
+  }
+
+  // Власна відправка коментарів для цієї сторінки.
+  // Частина коментарів лишається нормальною, частина "ламається" і зникає.
+  document.querySelectorAll(".comment-send").forEach(btn=>{
+    btn.addEventListener("click",function(ev){
+      // Якщо загальний profile.js уже створив коментар, знаходимо його трохи пізніше.
+      setTimeout(()=>{
+        const post=this.closest(".profile-post");
+        if(!post)return;
+        const area=post.querySelector(".comments-area");
+        const comments=[...area.querySelectorAll(".comment")];
+        const mine=comments.reverse().find(c=>{
+          const a=c.querySelector(".comment-author");
+          return a && (a.textContent.trim()==="ти" || a.textContent.trim()==="you");
+        });
+        if(mine && !mine.dataset.glitchChecked){
+          mine.dataset.glitchChecked="1";
+          if(Math.random()<.52) corruptNewComment(mine,post.querySelector(".comment-count"));
+        }
+      },80);
+    },true);
+  });
+
+  // Додаткові ефекти значно рідші за вже наявні глюки.
+  setTimeout(function loopExtra(){
+    if(Math.random()<.68) extraVisualGlitch();
+    setTimeout(loopExtra,22000+Math.random()*43000);
+  },15000+Math.random()*12000);
+
+  // Муха навмисно рідкісна.
+  setTimeout(function loopRealFly(){
+    if(Math.random()<.48) flyAcrossScreen();
+    setTimeout(loopRealFly,65000+Math.random()*125000);
+  },35000+Math.random()*45000);
+
+  // Для тесту в консолі: JINI_GLITCH.fly() або JINI_GLITCH.glitch()
+  window.JINI_GLITCH={fly:flyAcrossScreen,glitch:extraVisualGlitch};
 })();
 </script>
 </body>
