@@ -214,6 +214,61 @@
     text-shadow: 0 0 20px var(--mood-glow);
     letter-spacing: 0.2em;
   }
+
+  /* Темні кольорові підкладки верхнього блоку профілю */
+  .profile-box {
+    background:
+      linear-gradient(180deg, var(--mood-profile-top, rgba(18,55,80,.96)),
+                              var(--mood-profile-bottom, rgba(8,28,44,.96))) !important;
+    border-color: var(--mood-profile-border, rgba(126,200,227,.65)) !important;
+    box-shadow:
+      0 10px 30px rgba(0,0,0,.38),
+      0 0 22px var(--mood-glow),
+      inset 0 1px 0 rgba(255,255,255,.16) !important;
+  }
+
+  .profile-header {
+    display: block;
+    padding: 10px 14px;
+    margin: -1px -1px 10px;
+    border-radius: 15px 15px 10px 10px;
+    background: linear-gradient(180deg,
+      var(--mood-header-top, rgba(35,105,145,.96)),
+      var(--mood-header-bottom, rgba(12,55,82,.96))) !important;
+    color: #fff !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,.8), 0 0 12px var(--mood-glow) !important;
+    border-bottom: 1px solid rgba(255,255,255,.18);
+  }
+
+  .profile-info {
+    margin: 0 10px 10px;
+    padding: 12px 14px;
+    border-radius: 13px;
+    background: linear-gradient(180deg,
+      var(--mood-info-top, rgba(13,48,70,.94)),
+      var(--mood-info-bottom, rgba(6,28,43,.97))) !important;
+    border: 1px solid var(--mood-profile-border, rgba(126,200,227,.42));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 4px 14px rgba(0,0,0,.22);
+    color: #fff !important;
+  }
+
+  #profile-info-name {
+    color: #fff !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,.85), 0 0 10px var(--mood-glow);
+  }
+
+  #profile-family,
+  #profile-status-text {
+    margin-top: 7px;
+    padding: 7px 10px;
+    border-radius: 9px;
+    background: var(--mood-info-strip, rgba(0,0,0,.22));
+    color: #f7fbff !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,.9);
+  }
+
+  #profile-family a { color: #fff !important; }
+
 </style>
 </head>
 <body>
@@ -618,6 +673,29 @@ window.HOOMEN_PROFILE = {
     root.style.setProperty("--mood-accent2", c.accent2 || c.accent);
     root.style.setProperty("--mood-muted", c.muted);
     root.style.setProperty("--mood-glow", c.glow);
+    // Темні підкладки профілю, автоматично забарвлені поточним настроєм
+    const hex = c.accent;
+    const toRgb = (h) => {
+      const v = h.replace("#", "");
+      return {
+        r: parseInt(v.slice(0,2),16),
+        g: parseInt(v.slice(2,4),16),
+        b: parseInt(v.slice(4,6),16)
+      };
+    };
+    const rgb = toRgb(hex);
+    const mix = (factor, alpha=1) =>
+      `rgba(${Math.round(rgb.r*factor)}, ${Math.round(rgb.g*factor)}, ${Math.round(rgb.b*factor)}, ${alpha})`;
+
+    root.style.setProperty("--mood-profile-top", mix(0.42, .97));
+    root.style.setProperty("--mood-profile-bottom", mix(0.18, .98));
+    root.style.setProperty("--mood-header-top", mix(0.62, .98));
+    root.style.setProperty("--mood-header-bottom", mix(0.34, .98));
+    root.style.setProperty("--mood-info-top", mix(0.32, .96));
+    root.style.setProperty("--mood-info-bottom", mix(0.15, .98));
+    root.style.setProperty("--mood-info-strip", mix(0.23, .88));
+    root.style.setProperty("--mood-profile-border", `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, .62)`);
+
 
     const status = pickDifferent(mood.statuses || [], lastStatus);
     lastStatus = status;
