@@ -752,21 +752,43 @@ window.HOOMEN_PROFILE = {
     return selected;
   }
 
+  // Аудіо дозволяється Chrome лише після жесту користувача.
+  // Після першого кліку/натискання персонаж зможе програвати звук
+  // саме в момент автоматичної зміни настрою.
+  let audioCtx = null;
+
+  function initMoodAudio() {
+    try {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+    } catch (e) {}
+  }
+
+  ["pointerdown", "keydown", "touchstart"].forEach(eventName => {
+    window.addEventListener(eventName, initMoodAudio, { once: true, passive: true });
+  });
+
   function playBubble() {
     try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const now = ctx.currentTime;
+      if (!audioCtx || audioCtx.state !== "running") return;
+      const now = audioCtx.currentTime;
       for (let i = 0; i < 5; i++) {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain); gain.connect(ctx.destination);
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
         const start = now + i * 0.06;
         osc.frequency.setValueAtTime(500 + Math.random() * 400, start);
         osc.frequency.exponentialRampToValueAtTime(90 + Math.random() * 50, start + 0.18);
         gain.gain.setValueAtTime(0.0001, start);
         gain.gain.exponentialRampToValueAtTime(0.15, start + 0.02);
         gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.2);
-        osc.start(start); osc.stop(start + 0.22);
+        osc.start(start);
+        osc.stop(start + 0.22);
       }
     } catch (e) {}
   }
@@ -777,7 +799,7 @@ window.HOOMEN_PROFILE = {
     const showYani = Math.random() < mood.familyChance;
     if (showYani) {
       const type = pick(mood.familyTypes);
-      const prefix = type === "married" ? "заміжня за" : type === "in_relationship" ? "у стосунках з" : "все складно з";
+      const prefix = type === "married" ? "одружений з" : type === "in_relationship" ? "у стосунках з" : "все складно з";
       familyEl.innerHTML = `${prefix} <a href="${yani.url}">${yani.name}</a>`;
       window.HOOMEN_PROFILE.family = { type, partnerName: yani.name, partnerUrl: yani.url };
     } else {
@@ -902,29 +924,87 @@ window.HOOMEN_PROFILE = {
         countSpan.textContent = parseInt(countSpan.textContent || "0", 10) + 1;
       };
     });
-    playBubble();
+  }
+
+  const MOOD_DELAYS = [
+    15 * 1000,
+    30 * 1000,
+    5 * 60 * 1000,
+    15 * 60 * 1000,
+    30 * 60 * 1000,
+    60 * 60 * 1000
+  ];
+
+  // Нічний сон: 00:00–08:59 за локальним часом браузера.
+  function isNightTime() {
+    const hour = new Date().getHours();
+    return hour >= 0 && hour < 9;
+  }
+
+  function setSleepingState() {
+    const statusEl = document.getElementById("profile-status-text");
+    const onlineEl = document.getElementById("profile-online-status");
+    const moodLabelEl = document.getElementById("mood-label");
+    if (statusEl) statusEl.textContent = "Спить.";
+    if (onlineEl) onlineEl.textContent = "спить";
+    if (moodLabelEl) moodLabelEl.textContent = "сон";
+  }
+
+  function setAwakeState() {
+    const onlineEl = document.getElementById("profile-online-status");
+    if (onlineEl) onlineEl.textContent = "онлайн";
+  }
+
+  function chooseMoodDelay() {
+    return pick(MOOD_DELAYS);
+  }
+
+  function scheduleMoodChange() {
+    if (isNightTime()) {
+      setSleepingState();
+      // Не ставимо довгий таймер: після пробудження персонаж сам
+      // продовжить цикл знову.
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setDate(now.getDate() + 1);
+      tomorrow.setHours(9, 0, 0, 0);
+      setTimeout(moodCycle, Math.max(1000, tomorrow.getTime() - now.getTime()));
+      return;
+    }
+
+    setAwakeState();
+    setTimeout(moodCycle, chooseMoodDelay());
   }
 
   function moodCycle() {
+    if (isNightTime()) {
+      setSleepingState();
+      scheduleMoodChange();
+      return;
+    }
+
     const next = weightedNextMood(currentMood);
     applyMood(next);
-    // Для демонстрації: новий стан через 18–45 секунд.
-    // Для повільнішого "живого" профілю збільште ці два числа.
-    // Настрій живе довше: наступна зміна через випадковий інтервал
-    // від 2 до 8 хвилин. Більшість змін припадає приблизно на середину
-    // діапазону, тому персонаж не смикається між емоціями кожні кілька секунд.
-    const minDelay = 2 * 60 * 1000;
-    const maxDelay = 8 * 60 * 1000;
-    const r1 = Math.random();
-    const r2 = Math.random();
-    const delay = minDelay + ((r1 + r2) / 2) * (maxDelay - minDelay);
-    setTimeout(moodCycle, delay);
+    // Звук виконується ТІЛЬКИ тут — при фактичній зміні настрою.
+    playBubble();
+    scheduleMoodChange();
   }
 
   function startMoodProfile() {
     if (window.__akiraMoodProfileStarted) return;
     window.__akiraMoodProfileStarted = true;
-    moodCycle();
+
+    // Перший стан визначається один раз після завантаження, але наступні
+    // зміни відбуваються виключно за таймером, а не через перезавантаження.
+    if (isNightTime()) {
+      if (!currentMood) applyMood(pick(moodKeys));
+      setSleepingState();
+      scheduleMoodChange();
+      return;
+    }
+
+    applyMood(pick(moodKeys));
+    scheduleMoodChange();
   }
 
   if (document.readyState === "complete") setTimeout(startMoodProfile, 0);
