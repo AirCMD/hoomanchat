@@ -10,19 +10,22 @@
 
 <style>
   :root {
-    --mood-bg: #0f1c2e;
-    --mood-card: rgba(255, 255, 255, 0.08);
-    --mood-text: #e8f4ff;
-    --mood-accent: #7ec8e3;
-    --mood-muted: #a8c5d4;
-    --mood-glow: rgba(126, 200, 227, 0.35);
+    --mood-bg: #06385f;
+    --mood-bg2: #00a7d8;
+    --mood-card: rgba(0, 105, 170, 0.72);
+    --mood-text: #f4fdff;
+    --mood-accent: #54e8ff;
+    --mood-accent2: #00b6ff;
+    --mood-muted: #b9efff;
+    --mood-glow: rgba(0, 210, 255, 0.58);
   }
 
   body {
-    background: var(--mood-bg) !important;
-    background-image:
-      radial-gradient(ellipse 120% 80% at 20% 10%, rgba(100, 180, 220, 0.15), transparent 50%),
-      radial-gradient(ellipse 80% 60% at 80% 90%, rgba(80, 160, 200, 0.1), transparent 50%) !important;
+    background:
+      radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--mood-accent) 42%, transparent) 0, transparent 31%),
+      radial-gradient(circle at 82% 78%, color-mix(in srgb, var(--mood-accent2) 34%, transparent) 0, transparent 36%),
+      linear-gradient(145deg, var(--mood-bg) 0%, var(--mood-bg2) 100%) !important;
+    background-attachment: fixed !important;
     color: var(--mood-text) !important;
     transition: background 1.3s ease, color 0.9s ease;
     min-height: 100vh;
@@ -33,88 +36,73 @@
   .profile-post,
   .rules-box,
   .statistics-box {
-    background: var(--mood-card) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
-    border-radius: 16px !important;
-    box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
-    transition: all 1.1s ease;
-  }
-
-  .site-name,
-  .profile-header,
-  .archat-button,
-  .account-link,
-  .comment-author {
-    color: var(--mood-accent) !important;
-    text-shadow: 0 0 12px var(--mood-glow);
-    transition: color 0.8s ease, text-shadow 0.8s ease;
-  }
-
-  .profile-post-title,
-  .profile-post-body,
-  .profile-info,
-  .posts-header,
-  .footer-line {
-    color: var(--mood-text) !important;
-  }
-
-  /* Глянцеві кнопки Frutiger Aero */
-  .like-button,
-  .comment-button {
-    background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.08) 100%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.45) !important;
-    color: #ffffff !important;
-    border-radius: 20px !important;
-    padding: 6px 14px !important;
-    box-shadow:
-      0 2px 8px rgba(0,0,0,0.2),
-      inset 0 1px 0 rgba(255,255,255,0.4) !important;
-    text-shadow: 0 1px 1px rgba(0,0,0,0.3);
-    transition: all 0.25s ease;
-  }
-
-  .like-button:hover,
-  .comment-button:hover {
-    background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.15) 100%) !important;
-    border-color: rgba(255, 255, 255, 0.7) !important;
-    box-shadow:
-      0 4px 16px var(--mood-glow),
-      inset 0 1px 0 rgba(255,255,255,0.5) !important;
-    transform: translateY(-1px);
-  }
-
-  .comment-send {
-    background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.5) !important;
-    color: #ffffff !important;
+    background:
+      linear-gradient(155deg, rgba(255,255,255,.18) 0%, transparent 26%),
+      linear-gradient(180deg, color-mix(in srgb, var(--mood-card) 92%, white 8%) 0%, var(--mood-card) 100%) !important;
+    backdrop-filter: blur(10px) saturate(145%);
+    -webkit-backdrop-filter: blur(10px) saturate(145%);
+    border: 1px solid color-mix(in srgb, var(--mood-accent) 55%, white 45%) !important;
     border-radius: 18px !important;
-    padding: 6px 16px !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4) !important;
-    cursor: pointer;
-    transition: all 0.25s ease;
+    box-shadow:
+      0 12px 30px rgba(0,0,0,.28),
+      0 0 24px color-mix(in srgb, var(--mood-glow) 55%, transparent),
+      inset 0 2px 0 rgba(255,255,255,.34),
+      inset 0 -1px 0 rgba(0,0,0,.16) !important;
+    transition: background 1.1s ease, border-color 1.1s ease, box-shadow 1.1s ease;
   }
 
-  .comment-send:hover {
-    background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.18) 100%) !important;
-    box-shadow: 0 4px 14px var(--mood-glow) !important;
+  .profile-post {
+    position: relative;
+    overflow: hidden;
+  }
+  .profile-post::before {
+    content: "";
+    position: absolute;
+    left: 2%; right: 2%; top: 0; height: 34%;
+    border-radius: 18px 18px 50% 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,.18), transparent);
+    pointer-events: none;
+  }
+
+  .site-name, .profile-header, .archat-button, .account-link, .comment-author {
+    color: var(--mood-accent) !important;
+    text-shadow: 0 0 7px var(--mood-glow), 0 1px 1px rgba(0,0,0,.45);
+    transition: color .8s ease, text-shadow .8s ease;
+  }
+
+  .profile-post-title, .profile-post-body, .profile-info, .posts-header, .footer-line {
+    color: var(--mood-text) !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,.38);
+  }
+
+  .like-button, .comment-button, .comment-send {
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.38) 0%, rgba(255,255,255,.08) 42%, transparent 43%),
+      linear-gradient(180deg, var(--mood-accent) 0%, var(--mood-accent2) 58%, color-mix(in srgb, var(--mood-accent2) 70%, black 30%) 100%) !important;
+    border: 1px solid rgba(255,255,255,.72) !important;
+    color: #fff !important;
+    border-radius: 22px !important;
+    padding: 6px 15px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,.28), 0 0 12px var(--mood-glow), inset 0 1px 1px rgba(255,255,255,.65) !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,.55);
+    cursor: pointer;
+    transition: transform .2s ease, filter .2s ease, box-shadow .2s ease;
+  }
+  .like-button:hover, .comment-button:hover, .comment-send:hover {
+    filter: saturate(1.25) brightness(1.12);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,0,0,.3), 0 0 22px var(--mood-glow), inset 0 1px 1px rgba(255,255,255,.75) !important;
   }
 
   .mood-indicator {
-    display: inline-block;
-    margin-left: 10px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    font-weight: 500;
-    background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
-    color: var(--mood-accent);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 2px 8px var(--mood-glow);
-    text-shadow: 0 0 8px var(--mood-glow);
+    display: inline-block; margin-left: 10px; padding: 4px 13px;
+    border-radius: 20px; font-size: .78rem; font-weight: 700;
+    background: linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,.06)),
+                linear-gradient(180deg, var(--mood-accent), var(--mood-accent2));
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.7);
+    box-shadow: 0 3px 12px var(--mood-glow), inset 0 1px 0 rgba(255,255,255,.65);
+    text-shadow: 0 1px 2px rgba(0,0,0,.55);
   }
 
   #profile-family {
@@ -273,12 +261,7 @@ window.HOOMEN_PROFILE = {
     calm: {
       label: "спокій",
       colors: {
-        bg: "#0f1c2e",
-        card: "rgba(126, 200, 227, 0.12)",
-        text: "#e8f4ff",
-        accent: "#7ec8e3",
-        muted: "#a8c5d4",
-        glow: "rgba(126, 200, 227, 0.4)"
+        bg: "#06385f", bg2: "#00a7d8", card: "rgba(0, 91, 154, 0.78)", text: "#f4fdff", accent: "#54e8ff", accent2: "#008cff", muted: "#b9efff", glow: "rgba(0, 210, 255, 0.62)"
       },
       status: "Зараз тихо. Майже нічого не болить.",
       familyChance: 0.70,
@@ -298,12 +281,7 @@ window.HOOMEN_PROFILE = {
     happy: {
       label: "радість",
       colors: {
-        bg: "#1a2a1f",
-        card: "rgba(140, 220, 160, 0.13)",
-        text: "#f0fff5",
-        accent: "#8fd9a8",
-        muted: "#a8d4b8",
-        glow: "rgba(140, 220, 160, 0.4)"
+        bg: "#08763d", bg2: "#56c900", card: "rgba(5, 126, 67, 0.78)", text: "#f7fff2", accent: "#baff39", accent2: "#00b85a", muted: "#d7ffb8", glow: "rgba(112, 255, 54, 0.62)"
       },
       status: "Сьогодні щось тепле всередині. Не знаю звідки.",
       familyChance: 0.85,
@@ -323,12 +301,7 @@ window.HOOMEN_PROFILE = {
     sad: {
       label: "смуток",
       colors: {
-        bg: "#151c28",
-        card: "rgba(130, 160, 210, 0.11)",
-        text: "#e0e8f5",
-        accent: "#8ba8d9",
-        muted: "#9bb0c8",
-        glow: "rgba(130, 160, 210, 0.35)"
+        bg: "#12265e", bg2: "#3156b8", card: "rgba(28, 61, 143, 0.80)", text: "#f0f5ff", accent: "#75a7ff", accent2: "#315dff", muted: "#bfd0ff", glow: "rgba(70, 116, 255, 0.62)"
       },
       status: "Важко писати. Але ще важче мовчати.",
       familyChance: 0.30,
@@ -348,12 +321,7 @@ window.HOOMEN_PROFILE = {
     angry: {
       label: "злість",
       colors: {
-        bg: "#2a1518",
-        card: "rgba(230, 140, 150, 0.12)",
-        text: "#ffe8ec",
-        accent: "#e89aa4",
-        muted: "#d4a8b0",
-        glow: "rgba(230, 140, 150, 0.4)"
+        bg: "#6f0715", bg2: "#e32636", card: "rgba(145, 9, 31, 0.82)", text: "#fff4f4", accent: "#ff6b55", accent2: "#d90022", muted: "#ffc0b8", glow: "rgba(255, 48, 48, 0.66)"
       },
       status: "Все дратує. Навіть цей статус.",
       familyChance: 0.22,
@@ -373,12 +341,7 @@ window.HOOMEN_PROFILE = {
     anxious: {
       label: "тривога",
       colors: {
-        bg: "#1c1528",
-        card: "rgba(180, 150, 230, 0.12)",
-        text: "#f0e8ff",
-        accent: "#c4a8e8",
-        muted: "#b8a8d0",
-        glow: "rgba(180, 150, 230, 0.4)"
+        bg: "#3c126d", bg2: "#9b35d7", card: "rgba(91, 28, 145, 0.80)", text: "#fff4ff", accent: "#f079ff", accent2: "#8f22dc", muted: "#efc3ff", glow: "rgba(211, 74, 255, 0.64)"
       },
       status: "Серце стукає швидше, ніж потрібно.",
       familyChance: 0.40,
@@ -398,12 +361,7 @@ window.HOOMEN_PROFILE = {
     tired: {
       label: "втома",
       colors: {
-        bg: "#1a1c22",
-        card: "rgba(160, 170, 190, 0.11)",
-        text: "#e4e8f0",
-        accent: "#a8b4c8",
-        muted: "#9aa4b4",
-        glow: "rgba(160, 170, 190, 0.35)"
+        bg: "#304458", bg2: "#557b91", card: "rgba(54, 83, 105, 0.82)", text: "#f3fbff", accent: "#9fe7f4", accent2: "#4d9fba", muted: "#c8e7ef", glow: "rgba(100, 205, 226, 0.55)"
       },
       status: "Очі закриваються самі. Але спати не хочеться.",
       familyChance: 0.45,
@@ -488,9 +446,11 @@ window.HOOMEN_PROFILE = {
 
     const root = document.documentElement;
     root.style.setProperty("--mood-bg", c.bg);
+    root.style.setProperty("--mood-bg2", c.bg2 || c.bg);
     root.style.setProperty("--mood-card", c.card);
     root.style.setProperty("--mood-text", c.text);
     root.style.setProperty("--mood-accent", c.accent);
+    root.style.setProperty("--mood-accent2", c.accent2 || c.accent);
     root.style.setProperty("--mood-muted", c.muted);
     root.style.setProperty("--mood-glow", c.glow);
 
