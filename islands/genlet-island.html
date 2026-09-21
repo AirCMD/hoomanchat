@@ -74,6 +74,11 @@ footer{margin-top:28px;color:var(--muted);font-size:13px}
       <label>Результат</label>
       <div id="output" class="output"></div>
       <div class="zalgo-inline-right">
+            </div>
+      <div class="controls">
+        <button class="primary" id="copy">Копіювати</button>
+        <button id="copyPlain">Копіювати оригінал</button>
+      </div>
       <label>Zalgo-лабораторія</label>
       <div class="zlevels" id="zlevels"></div>
       <div class="zgrid">
@@ -101,11 +106,7 @@ footer{margin-top:28px;color:var(--muted);font-size:13px}
       <button id="zReroll">Інший хаос</button>
       </div>
       <p class="note">Рівні змінюють кількість Unicode combining marks, а не самі українські літери. «Безпечний режим» обмежує надмірні послідовності; MAX навмисно може виглядати по-різному в різних шрифтах і сервісах.</p>
-      </div>
-      <div class="controls">
-        <button class="primary" id="copy">Копіювати</button>
-        <button id="copyPlain">Копіювати оригінал</button>
-      </div>
+
       <p id="status" class="note"></p>
       <p class="note"><span class="warn">Важливо:</span> Unicode-код може бути цілком валідним, але вигляд залежить від шрифту та програми. Тому «100% однаково виглядатиме всюди» для екзотичних символів не існує. Ця сторінка не підміняє літери невидимими символами і не використовує приватні кодові точки.</p>
     </section>
