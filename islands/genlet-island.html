@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Дивопис — Unicode-конвертер українського тексту</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#0b0d12;--panel:#121722;--panel2:#171e2b;--line:#293247;
+  --text:#edf2ff;--muted:#9da9c3;--accent:#b8ff5a;--accent2:#76d7ff;--warn:#ffd166;
+}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI","Noto Sans","DejaVu Sans",Arial,sans-serif;background:
+radial-gradient(circle at 20% 0%,#1a2131 0,transparent 34rem),var(--bg);color:var(--text)}
+main{max-width:1180px;margin:auto;padding:38px 20px 70px}
+h1{font-size:clamp(32px,6vw,68px);line-height:.95;margin:0 0 14px;letter-spacing:-.045em}
+.lead{max-width:850px;color:var(--muted);font-size:18px}
+.badge{display:inline-block;padding:5px 9px;border:1px solid var(--line);border-radius:999px;color:var(--accent);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;margin-top:26px}
+.card{background:rgba(18,23,34,.94);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 14px 50px #0005}
+label{font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+textarea{width:100%;min-height:160px;margin-top:9px;padding:16px;border-radius:13px;border:1px solid var(--line);background:#0d1119;color:var(--text);font:22px/1.45 inherit;resize:vertical;outline:none}
+textarea:focus{border-color:var(--accent2)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+button,select{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:10px 12px;font:inherit;cursor:pointer}
+button:hover{border-color:#53617e}.primary{background:var(--accent);color:#111;font-weight:900;border-color:transparent}
+.output{min-height:160px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:26px;padding:16px;border-radius:13px;background:#0d1119;border:1px solid var(--line)}
+.note{font-size:13px;color:var(--muted)} .warn{color:var(--warn)}
+.styles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+.styleBtn{text-align:left}.styleBtn b{display:block}.styleBtn span{display:block;color:var(--muted);font-size:12px}
+.section{margin-top:24px}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:760px;background:var(--panel)}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:center}
+th{position:sticky;top:0;background:#171e2b;font-size:12px;color:var(--muted)}
+td:first-child,th:first-child{text-align:left;position:sticky;left:0;background:#151b27}
+.ok{color:var(--accent)}.partial{color:var(--warn)}.no{color:#ff788a}
+footer{margin-top:28px;color:var(--muted);font-size:13px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}.styles{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+  <span class="badge">GitHub Pages · без бібліотек</span>
+  <h1>ДИВОПИС</h1>
+  <p class="lead">Конвертер Unicode-тексту: діакритика, старокириличні двійники, фонетичні/модифікаторні знаки, псевдоперевернення та інші контрольовані дивності. Усе копіюється як звичайний текст, а не як картинка.</p>
+
+  <div class="grid">
+    <section class="card">
+      <label for="input">Текст</label>
+      <textarea id="input" spellcheck="false">Їж ґедзів ще й борщ.</textarea>
+      <div class="controls">
+        <button id="clear">Очистити</button>
+        <button id="demo">Демо</button>
+        <select id="norm" title="Unicode normalization">
+          <option value="none">Без нормалізації</option>
+          <option value="NFC">NFC</option>
+          <option value="NFD">NFD</option>
+        </select>
+      </div>
+      <div class="styles" id="styles"></div>
+    </section>
+
+    <section class="card">
+      <label>Результат</label>
+      <div id="output" class="output"></div>
+      <div class="controls">
+        <button class="primary" id="copy">Копіювати</button>
+        <button id="copyPlain">Копіювати оригінал</button>
+      </div>
+      <p id="status" class="note"></p>
+      <p class="note"><span class="warn">Важливо:</span> Unicode-код може бути цілком валідним, але вигляд залежить від шрифту та програми. Тому «100% однаково виглядатиме всюди» для екзотичних символів не існує. Ця сторінка не підміняє літери невидимими символами і не використовує приватні кодові точки.</p>
+    </section>
+  </div>
+
+  <section class="card section">
+    <label>Конструктор діакритики</label>
+    <div class="controls" id="marks"></div>
+    <p class="note">Діакритики U+0300–U+036F стандартно можуть комбінуватися з кирилицею. Саме це дає найбільш повне покриття всіх 33 українських літер, хоча конкретне позиціонування - визначає шрифт.</p>
+  </section>
+
+  <section class="card section">
+    <label>Матриця покриття української абетки</label>
+    <div class="tablewrap"><table id="matrix"></table></div>
+    <p class="note">✓ = перетворення визначене для кожної літери; ◐ = художня підміна існує лише для частини абетки або є наближеною; × = окремого Unicode-алфавіту для української кирилиці немає.</p>
+  </section>
+
+  <section class="card section">
+    <label>Лабораторія символів</label>
+    <div id="alphabet" class="output" style="font-size:20px"></div>
+    <p class="note">Клацніть стиль вище, щоб побачити всю абетку. Це корисно для перевірки Ґ/Є/І/Ї, на яких більшість «fancy text» генераторів раптом згадують, що вони насправді зроблені тільки для латиниці.</p>
+  </section>
+
+  <footer>
+    Може повністю локально працювати у браузері.
+  </footer>
+</main>
+
+<script>
+const UA_LOWER = [..."абвгґдеєжзиіїйклмнопрстуфхцчшщьюя"];
+const UA_UPPER = [..."АБВГҐДЕЄЖЗИІЇЙКЛМНОПРСТУФХЦЧШЩЬЮЯ"];
+const UA = UA_LOWER.join("") + UA_UPPER.join("");
+
+const oldMap = {
+ "а":"ꙗ","А":"Ꙗ","б":"б","Б":"Б","в":"в","В":"В","г":"г","Г":"Г","ґ":"ґ","Ґ":"Ґ",
+ "д":"д","Д":"Д","е":"ѥ","Е":"Ѥ","є":"є","Є":"Є","ж":"ж","Ж":"Ж","з":"ꙁ","З":"Ꙁ",
+ "и":"и","И":"И","і":"і","І":"І","ї":"ї","Ї":"Ї","й":"й","Й":"Й","к":"к","К":"К",
+ "л":"л","Л":"Л","м":"м","М":"М","н":"н","Н":"Н","о":"ꙩ","О":"Ꙩ","п":"п","П":"П",
+ "р":"р","Р":"Р","с":"с","С":"С","т":"т","Т":"Т","у":"ꙋ","У":"Ꙋ","ф":"ф","Ф":"Ф",
+ "х":"х","Х":"Х","ц":"ц","Ц":"Ц","ч":"ч","Ч":"Ч","ш":"ш","Ш":"Ш","щ":"щ","Щ":"Щ",
+ "ь":"ꙿ","Ь":"ꙿ","ю":"ꙗ","Ю":"Ꙗ","я":"ꙗ","Я":"Ꙗ"
+};
+
+// Visual approximations. This is intentionally labelled "pseudo": Unicode has no complete upside-down Ukrainian alphabet.
+const flipMap = {
+ "а":"ɐ","А":"∀","б":"Ϭ","Б":"Ϭ","в":"ʚ","В":"ᙠ","г":"┐","Г":"⅃","ґ":"┐","Ґ":"⅃",
+ "д":"ɓ","Д":"ᗡ","е":"ǝ","Е":"Ǝ","є":"э","Є":"Э","ж":"ж","Ж":"Ж","з":"ε","З":"Ɛ",
+ "и":"и","И":"И","і":"ı","І":"I","ї":"ï","Ї":"Ï","й":"й","Й":"Й","к":"ʞ","К":"ꓘ",
+ "л":"v","Л":"V","м":"ɯ","М":"W","н":"н","Н":"H","о":"o","О":"O","п":"u","П":"∩",
+ "р":"d","Р":"Ԁ","с":"ɔ","С":"Ɔ","т":"m","Т":"⊥","у":"ʎ","У":"⅄","ф":"ф","Ф":"Ф",
+ "х":"x","Х":"X","ц":"ǹ","Ц":"Ц","ч":"Һ","Ч":"Ч","ш":"m","Ш":"W","щ":"m","Щ":"W",
+ "ь":"q","Ь":"ᑫ","ю":"ю","Ю":"Ю","я":"ʁ","Я":"R"
+};
+
+const superMap = {
+ "а":"ၮ","б":"ၯ","в":"ၰ","г":"ၱ","д":"ၲ","е":"ၳ","ж":"ၴ","з":"ၵ","и":"ၶ","к":"ၷ",
+ "л":"ၸ","м":"ၹ","н":"ၺ","о":"ၻ","п":"ၼ","р":"ၽ","с":"ၾ","т":"ၿ","у":"ႀ","ф":"ႁ",
+ "х":"ႂ","ц":"ႃ","ч":"ႄ","ш":"ႅ","щ":"ႆ","ъ":"ႇ","ы":"ႈ","ь":"ႉ","і":"ႊ"
+};
+
+const marks = [
+ ["Крапка","̇"],["Дві крапки","̈"],["Кільце","̊"],["Тильда","̃"],["Макрон","̄"],
+ ["Риска","̶"],["Нижня риска","̲"],["Подвійна низом","̳"],["Коло","⃝"],["Ромб","⃟"],
+ ["Стрілка","⃗"],["Хрест","̸"],["Зигзаг","͠"],["Крапка низом","̣"]
+];
+
+function mapChars(s,map){ return [...s].map(ch => map[ch] ?? ch).join(""); }
+function addMark(s,mark){ return [...s].map(ch => UA.includes(ch) ? ch+mark : ch).join(""); }
+function flip(s){ return [...s].reverse().map(ch => flipMap[ch] ?? ch).join(""); }
+function superCyr(s){ return [...s].map(ch => superMap[ch.toLowerCase()] ?? ch).join(""); }
+function spaced(s){ return [...s].join(" "); }
+function mirrorish(s){ return [...s].map(ch => flipMap[ch] ?? ch).join(""); }
+
+const styleDefs = [
+ {id:"plain",name:"Оригінал",desc:"Без змін",fn:s=>s,cover:"✓"},
+ {id:"dot",name:"Крапки зверху",desc:"Combining dot above",fn:s=>addMark(s,"̇"),cover:"✓"},
+ {id:"strike",name:"Перекреслений",desc:"Combining long stroke overlay",fn:s=>addMark(s,"̶"),cover:"✓"},
+ {id:"under",name:"Підкреслений",desc:"Combining low line",fn:s=>addMark(s,"̲"),cover:"✓"},
+ {id:"circle",name:"У колах",desc:"Combining enclosing circle",fn:s=>addMark(s,"⃝"),cover:"✓"},
+ {id:"old",name:"Старокириличний",desc:"Історичні/схожі кириличні форми",fn:s=>mapChars(s,oldMap),cover:"◐"},
+ {id:"super",name:"Мала кирилиця",desc:"Cyrillic Extended-D modifier letters",fn:superCyr,cover:"◐"},
+ {id:"flip",name:"Догори дриґом",desc:"Реверс + візуальні Unicode-аналоги",fn:flip,cover:"◐"},
+ {id:"mirror",name:"Псевдодзеркало",desc:"Без зміни порядку, лише аналоги",fn:mirrorish,cover:"◐"},
+ {id:"space",name:"Розрядка",desc:"Thin space між графемами",fn:spaced,cover:"✓"},
+ {id:"zalgo",name:"Легкий хаос",desc:"Кілька стандартних combining marks",fn:s=>[...s].map((c,i)=>UA.includes(c)?c+["̇","̲","̃","̸"][i%4]:c).join(""),cover:"✓"},
+];
+
+let current = styleDefs[1];
+let customMark = null;
+const input = document.querySelector("#input"), output=document.querySelector("#output"), status=document.querySelector("#status");
+
+function normalized(s){
+ const v=document.querySelector("#norm").value;
+ return v==="none" ? s : s.normalize(v);
+}
+function render(){
+ let s=normalized(input.value);
+ output.textContent = customMark ? addMark(s,customMark) : current.fn(s);
+ document.querySelector("#alphabet").textContent = customMark
+   ? addMark(UA_UPPER.join(" ")+"\n"+UA_LOWER.join(" "),customMark)
+   : current.fn(UA_UPPER.join(" ")+"\n"+UA_LOWER.join(" "));
+}
+const styles=document.querySelector("#styles");
+styleDefs.forEach(st=>{
+ const b=document.createElement("button"); b.className="styleBtn";
+ b.innerHTML=`<b>${st.name}</b><span>${st.desc}</span>`;
+ b.onclick=()=>{current=st;customMark=null;render();};
+ styles.appendChild(b);
+});
+const marksEl=document.querySelector("#marks");
+marks.forEach(([name,m])=>{
+ const b=document.createElement("button"); b.textContent=`${name} ${"А"+m}`;
+ b.onclick=()=>{customMark=m;render();}; marksEl.appendChild(b);
+});
+
+async function copyText(text){
+ try{ await navigator.clipboard.writeText(text); return true; }
+ catch(e){
+   const ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed";ta.style.opacity="0";
+   document.body.appendChild(ta); ta.focus();ta.select();
+   const ok=document.execCommand("copy"); ta.remove(); return ok;
+ }
+}
+document.querySelector("#copy").onclick=async()=>{
+ const ok=await copyText(output.textContent);
+ status.textContent=ok?"Скопійовано в буфер обміну. Людство знову перемогло Ctrl+C.":"Браузер заблокував копіювання.";
+};
+document.querySelector("#copyPlain").onclick=()=>copyText(input.value);
+document.querySelector("#clear").onclick=()=>{input.value="";render();};
+document.querySelector("#demo").onclick=()=>{input.value="Ґанок, їжак, Європа, Україна, щастя й борщ.";render();};
+input.addEventListener("input",render);
+document.querySelector("#norm").addEventListener("change",render);
+
+const matrix=document.querySelector("#matrix");
+matrix.innerHTML="<thead><tr><th>Метод</th><th>а-я</th><th>ґ</th><th>є</th><th>і</th><th>ї</th><th>Великі</th><th>Примітка</th></tr></thead>";
+const tbody=document.createElement("tbody");
+[
+ ["Combining-діакритика","✓","✓","✓","✓","✓","✓","Найповніше покриття; вигляд залежить від font shaping"],
+ ["Перекреслення/підкреслення","✓","✓","✓","✓","✓","✓","Стандартні combining marks"],
+ ["Enclosing circle/diamond","✓","✓","✓","✓","✓","✓","Кодується як база + enclosing mark"],
+ ["Старокириличні форми","◐","◐","◐","◐","◐","◐","Не є альтернативним українським алфавітом"],
+ ["Cyrillic Extended-D modifier","◐","◐","×","✓","×","×","Є лише частина малих кириличних літер"],
+ ["Псевдоперевернення","◐","◐","◐","✓","◐","◐","Візуальні аналоги з різних Unicode-блоків"],
+ ["Mathematical bold/italic","×","×","×","×","×","×","Unicode mathematical alphabets кодують латиницю/грецьку, не українську кирилицю"],
+ ["Fullwidth","×","×","×","×","×","×","Повноширинного кириличного алфавіту Unicode не має"]
+].forEach(r=>{
+ const tr=document.createElement("tr");
+ r.forEach((v,i)=>{const td=document.createElement("td");td.textContent=v;if(v==="✓")td.className="ok";if(v==="◐")td.className="partial";if(v==="×")td.className="no";tr.appendChild(td)});
+ tbody.appendChild(tr);
+});
+matrix.appendChild(tbody);
+render();
+</script>
+</body>
+</html>
