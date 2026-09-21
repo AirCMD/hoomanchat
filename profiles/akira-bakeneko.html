@@ -494,12 +494,18 @@ window.HOOMEN_PROFILE = {
     root.style.setProperty("--mood-muted", c.muted);
     root.style.setProperty("--mood-glow", c.glow);
 
-    document.getElementById("profile-status-text").textContent = mood.status;
-    document.getElementById("mood-label").textContent = mood.label;
+    const statusEl = document.getElementById("profile-status-text");
+    const moodLabelEl = document.getElementById("mood-label");
+    if (statusEl) statusEl.textContent = mood.status;
+    if (moodLabelEl) moodLabelEl.textContent = mood.label;
 
     updateFamily(mood);
 
     const container = document.getElementById("profile-posts");
+    if (!container) {
+      console.error("Не знайдено #profile-posts");
+      return;
+    }
     container.innerHTML = "";
 
     mood.posts.forEach((post, i) => {
