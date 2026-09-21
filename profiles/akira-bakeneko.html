@@ -6,13 +6,10 @@
 <title>Гуменчат — akira_bakeneko</title>
 <link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
 
-<!-- твої оригінальні стилі -->
 <link rel="stylesheet" href="../css/hoomenchat-profile.css">
 <link rel="stylesheet" href="../css/pm-popup.css">
 
-<!-- додаткові сонні ефекти (поверх твого css) -->
 <style>
-  /* м’який сонний оверлей */
   body.dream-mode::before {
     content: "";
     position: fixed;
@@ -25,11 +22,8 @@
     transition: opacity 1.2s ease;
   }
 
-  body.awake::before {
-    opacity: 0.2;
-  }
+  body.awake::before { opacity: 0.2; }
 
-  /* плавання елементів уві сні */
   body.dream-mode:not(.awake) .hoomenchat-header,
   body.dream-mode:not(.awake) .left-box,
   body.dream-mode:not(.awake) .profile-post {
@@ -46,7 +40,6 @@
     50% { transform: translateY(-3px); }
   }
 
-  /* дрижання */
   @keyframes tremble {
     0%, 100% { transform: translate(0, 0) rotate(0deg); }
     25% { transform: translate(-2px, 1px) rotate(-1.2deg); }
@@ -58,7 +51,6 @@
     animation: tremble 0.11s linear infinite !important;
   }
 
-  /* літаюча кнопка */
   .flying {
     position: fixed !important;
     z-index: 99999 !important;
@@ -66,11 +58,36 @@
     transition: none !important;
   }
 
-  /* під час морфінгу тексту */
   .rewriting {
     color: #b8a0e0 !important;
     letter-spacing: 0.04em;
     text-shadow: 0 0 8px rgba(155, 126, 217, 0.35);
+  }
+
+  /* стилі для коментарів (на випадок якщо в твоєму css їх мало) */
+  .comment {
+    margin: 8px 0;
+    padding: 6px 0;
+    border-top: 1px solid rgba(155, 126, 217, 0.12);
+    font-size: 0.9rem;
+  }
+  .comment-author {
+    color: #9b7ed9;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .comment-author:hover { text-decoration: underline; }
+  .comment-text { margin: 2px 0; }
+  .comment-date {
+    font-size: 0.75rem;
+    opacity: 0.6;
+  }
+  .comment.hidden-comment {
+    display: none !important;
+  }
+  .date-glitch {
+    opacity: 0 !important;
+    transition: opacity 0.4s ease;
   }
 </style>
 </head>
@@ -114,15 +131,31 @@
       </div>
 
       <div id="profile-posts">
+
         <!-- ДОПИС 1 -->
         <div class="profile-post" data-id="0">
           <div class="profile-post-title">Тема</div>
           <div class="profile-post-body">Не люлюблю давати назву теми. Та й не знаю про що мені взагалі писати? Працюю асистенткою вченого, який розробляє та шукає роками ліки від всіх хвороб.</div>
           <div class="post-actions">
             <button class="like-button" type="button" data-base-likes="75">♡ Подобається <span class="like-count">75</span></button>
-            <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+            <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">3</span></button>
           </div>
-          <div class="comments-area">
+          <div class="comments-area" style="display:block;">
+            <div class="comment" data-comment>
+              <a href="#" class="comment-author">agatha_cheng</a>
+              <div class="comment-text">Звучить важко. Ти хоч спиш іноді?</div>
+              <div class="comment-date">16 травня</div>
+            </div>
+            <div class="comment" data-comment>
+              <a href="#" class="comment-author">yuki_moth</a>
+              <div class="comment-text">Ліки від усіх хвороб… цікаво, чи включає це хворобу снів.</div>
+              <div class="comment-date">16 травня</div>
+            </div>
+            <div class="comment" data-comment>
+              <a href="#" class="comment-author">void_kitten</a>
+              <div class="comment-text">Я б на твоєму місці вже давно пішла.</div>
+              <div class="comment-date">15 травня</div>
+            </div>
             <div class="comment-form">
               <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
               <button class="comment-send" type="button">Відправити</button>
@@ -137,9 +170,19 @@
           <div class="profile-post-body">Привіт, я тут.</div>
           <div class="post-actions">
             <button class="like-button" type="button" data-base-likes="47">♡ Подобається <span class="like-count">47</span></button>
-            <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+            <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">2</span></button>
           </div>
-          <div class="comments-area">
+          <div class="comments-area" style="display:block;">
+            <div class="comment" data-comment>
+              <a href="#" class="comment-author">neo_signal</a>
+              <div class="comment-text">Ми тебе бачимо.</div>
+              <div class="comment-date">14 травня</div>
+            </div>
+            <div class="comment" data-comment>
+              <a href="#" class="comment-author">akira_bakeneko</a>
+              <div class="comment-text">…я знаю.</div>
+              <div class="comment-date">14 травня</div>
+            </div>
             <div class="comment-form">
               <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
               <button class="comment-send" type="button">Відправити</button>
@@ -154,9 +197,14 @@
           <div class="profile-post-body">Вітаю</div>
           <div class="post-actions">
             <button class="like-button" type="button" data-base-likes="30">♡ Подобається <span class="like-count">30</span></button>
-            <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+            <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">1</span></button>
           </div>
-          <div class="comments-area">
+          <div class="comments-area" style="display:block;">
+            <div class="comment" data-comment>
+              <a href="#" class="comment-author">silent_echo</a>
+              <div class="comment-text">Вітаю у відповідь. Хоча не впевнена, що це ти.</div>
+              <div class="comment-date">10 травня</div>
+            </div>
             <div class="comment-form">
               <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
               <button class="comment-send" type="button">Відправити</button>
@@ -188,9 +236,29 @@
           <div class="profile-post-body">привіт</div>
           <div class="post-actions">
             <button class="like-button" type="button" data-base-likes="34">♡ Подобається <span class="like-count">34</span></button>
-            <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">0</span></button>
+            <button class="comment-button" type="button">💬 Коментарі <span class="comment-count">4</span></button>
           </div>
-          <div class="comments-area">
+          <div class="comments-area" style="display:block;">
+            <div class="comment" data-comment>
+              <a href="#" class="comment-author">luna_static</a>
+              <div class="comment-text">Знову ти.</div>
+              <div class="comment-date">2 травня</div>
+            </div>
+            <div class="comment" data-comment>
+              <a href="#" class="comment-author">agatha_cheng</a>
+              <div class="comment-text">Привіт.</div>
+              <div class="comment-date">2 травня</div>
+            </div>
+            <div class="comment" data-comment>
+              <a href="#" class="comment-author">yuki_moth</a>
+              <div class="comment-text">Ти пишеш це кожен день?</div>
+              <div class="comment-date">2 травня</div>
+            </div>
+            <div class="comment" data-comment>
+              <a href="#" class="comment-author">void_kitten</a>
+              <div class="comment-text">Мені здається, я вже бачила цей допис уві сні.</div>
+              <div class="comment-date">1 травня</div>
+            </div>
             <div class="comment-form">
               <textarea class="comment-input" placeholder="Написати коментар..."></textarea>
               <button class="comment-send" type="button">Відправити</button>
@@ -198,6 +266,7 @@
           </div>
           <div class="profile-post-date">2 травня</div>
         </div>
+
       </div>
 
       <div class="posts-pager" id="posts-pager">
@@ -255,11 +324,9 @@ window.HOOMEN_PROFILE = {
 };
 </script>
 
-<!-- твої оригінальні скрипти -->
 <script src="../js/hoomenchat-profile.js"></script>
 <script src="../js/pm-popup.js"></script>
 
-<!-- сонні ефекти -->
 <script>
 (function () {
   const originals = [
@@ -286,6 +353,7 @@ window.HOOMEN_PROFILE = {
   let isRewriting = false;
   const currentState = new Array(posts.length).fill("original");
 
+  // ----- морфінг тексту -----
   function scramblePartial(text, intensity = 0.55) {
     let out = "";
     for (let i = 0; i < text.length; i++) {
@@ -308,10 +376,8 @@ window.HOOMEN_PROFILE = {
         const p = step / steps;
 
         if (p < 0.32) {
-          // розсипання
           el.textContent = scramblePartial(from, 0.25 + p * 1.4);
         } else if (p < 0.68) {
-          // змішана фаза (старий + новий + шум)
           const len = Math.max(from.length, to.length);
           let mixed = "";
           for (let i = 0; i < len; i++) {
@@ -323,12 +389,9 @@ window.HOOMEN_PROFILE = {
           }
           el.textContent = mixed;
         } else {
-          // збирання нового
           const reveal = Math.floor((p - 0.68) / 0.32 * to.length);
           let built = to.slice(0, reveal);
-          if (reveal < to.length) {
-            built += scramblePartial(to.slice(reveal), 0.55);
-          }
+          if (reveal < to.length) built += scramblePartial(to.slice(reveal), 0.55);
           el.textContent = built;
         }
 
@@ -379,6 +442,7 @@ window.HOOMEN_PROFILE = {
     }
   }
 
+  // ----- дрижання і літання кнопок -----
   function trembleButton() {
     const btn = allButtons[Math.floor(Math.random() * allButtons.length)];
     if (!btn || btn.classList.contains("flying") || btn.classList.contains("trembling")) return;
@@ -430,7 +494,73 @@ window.HOOMEN_PROFILE = {
     setTimeout(() => document.body.classList.remove("awake"), 3800 + Math.random() * 4200);
   }
 
-  // розклад
+  // ========== НОВІ ЕФЕКТИ З КОМЕНТАРЯМИ ==========
+
+  // неправильна кількість коментарів
+  function glitchCommentCounts() {
+    document.querySelectorAll(".comment-count").forEach(el => {
+      if (Math.random() < 0.45) {
+        const fake = Math.floor(Math.random() * 17); // 0–16
+        el.textContent = fake;
+      }
+    });
+  }
+
+  // коментарі зникають / з’являються
+  function glitchCommentsVisibility() {
+    document.querySelectorAll("[data-comment]").forEach(comment => {
+      if (Math.random() < 0.3) {
+        comment.classList.add("hidden-comment");
+        setTimeout(() => comment.classList.remove("hidden-comment"), 2000 + Math.random() * 5000);
+      }
+    });
+  }
+
+  // іноді додаємо «фантомний» коментар
+  function spawnPhantomComment() {
+    const areas = document.querySelectorAll(".comments-area");
+    if (!areas.length) return;
+    const area = areas[Math.floor(Math.random() * areas.length)];
+    const form = area.querySelector(".comment-form");
+    if (!form) return;
+
+    const phantoms = [
+      { user: "unknown_signal", text: "Я тут був." },
+      { user: "dream_residue", text: "Це вже повторювалося." },
+      { user: "static_voice", text: "Не читай далі." },
+      { user: "akira_bakeneko", text: "…це не я писала." }
+    ];
+    const p = phantoms[Math.floor(Math.random() * phantoms.length)];
+
+    const div = document.createElement("div");
+    div.className = "comment";
+    div.setAttribute("data-comment", "");
+    div.innerHTML = `
+      <a href="#" class="comment-author">${p.user}</a>
+      <div class="comment-text">${p.text}</div>
+      <div class="comment-date">???</div>
+    `;
+    area.insertBefore(div, form);
+
+    // через деякий час зникає
+    setTimeout(() => {
+      div.style.transition = "opacity 0.8s";
+      div.style.opacity = "0";
+      setTimeout(() => div.remove(), 900);
+    }, 4000 + Math.random() * 6000);
+  }
+
+  // дати зникають
+  function glitchDates() {
+    document.querySelectorAll(".profile-post-date, .comment-date").forEach(el => {
+      if (Math.random() < 0.25) {
+        el.classList.add("date-glitch");
+        setTimeout(() => el.classList.remove("date-glitch"), 1500 + Math.random() * 3000);
+      }
+    });
+  }
+
+  // ----- розклад -----
   setTimeout(function loopReplace() {
     changePost(true);
     setTimeout(loopReplace, 7500 + Math.random() * 9500);
@@ -450,6 +580,27 @@ window.HOOMEN_PROFILE = {
     wakeUpDesign();
     setTimeout(loopWake, 17000 + Math.random() * 19000);
   }, 14000);
+
+  // коментарні глітчі
+  setTimeout(function loopCounts() {
+    glitchCommentCounts();
+    setTimeout(loopCounts, 4000 + Math.random() * 6000);
+  }, 3000);
+
+  setTimeout(function loopVisibility() {
+    glitchCommentsVisibility();
+    setTimeout(loopVisibility, 6000 + Math.random() * 8000);
+  }, 5000);
+
+  setTimeout(function loopPhantom() {
+    if (Math.random() < 0.6) spawnPhantomComment();
+    setTimeout(loopPhantom, 9000 + Math.random() * 12000);
+  }, 8000);
+
+  setTimeout(function loopDates() {
+    glitchDates();
+    setTimeout(loopDates, 5000 + Math.random() * 7000);
+  }, 4000);
 })();
 </script>
 </body>
