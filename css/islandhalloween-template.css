@@ -1,11 +1,11 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: #1a0a2e;
+  background: #2d1b4e;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 12px;
   line-height: 14px;
-  color: #e8d5b7;
+  color: #f0e6d8;
 }
 
 * { box-sizing: border-box; }
@@ -63,7 +63,7 @@ html, body {
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 6px #0a070c, 0 0 12px rgba(10, 7, 12, 0.5);
+    box-shadow: 0 0 6px #0a070c, 0 0 12px rgba(10, 7, 12, 0.45);
   }
   50% {
     box-shadow: 0 0 12px #ff9f43, 0 0 24px rgba(255, 159, 67, 0.5);
@@ -81,7 +81,7 @@ html, body {
 }
 
 @keyframes border-flicker {
-  0%, 100% { border-color: #6b3a1e; }
+  0%, 100% { border-color: #8b5a2b; }
   30%      { border-color: #0a070c; }
   60%      { border-color: #ff8c00; }
 }
@@ -97,8 +97,8 @@ html, body {
   min-height: 100vh;
   margin: 0;
   padding: 12px;
-  background: #16082a;
-  border: 1px solid #5c3a1e;
+  background: #35205c;
+  border: 1px solid #8b5a2b;
   animation: border-flicker 8s infinite;
 }
 
@@ -116,7 +116,7 @@ html, body {
   display: block;
   margin: 0 0 10px;
   padding: 5px 8px;
-  background: linear-gradient(135deg, #0a070c, #1a0c05, #0d0518);
+  background: linear-gradient(135deg, #0a070c, #1a0c05, #12081f);
   background-size: 200% 200%;
   border: 1px solid #8b4513;
   color: #ffb347;
@@ -148,15 +148,15 @@ html, body {
 
 .left-box {
   padding: 3px 7px;
-  background: #1e0f35;
-  border: 1px solid #6b3a1e;
+  background: #3f2670;
+  border: 1px solid #8b5a2b;
   animation: border-flicker 10s infinite;
 }
 
 .site-name {
   margin: 1px 0 6px;
   padding: 0 0 4px;
-  border-bottom: 1px solid #8b5a2b;
+  border-bottom: 1px solid #a67c52;
   color: #0a070c;
   font-size: 15px;
   line-height: 17px;
@@ -174,7 +174,7 @@ html, body {
   margin: 0 0 6px;
   object-fit: cover;
   object-position: center;
-  background: #120820;
+  background: #2a1748;
   border: 1px solid #0a070c;
   animation: pulse-glow 4s ease-in-out infinite, float-slow 6s ease-in-out infinite;
 }
@@ -209,7 +209,7 @@ html, body {
   display: block;
   margin: 0;
   padding: 0;
-  border-top: 1px solid #5c3a1e;
+  border-top: 1px solid #8b5a2b;
 }
 
 .nav-item {
@@ -217,7 +217,7 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 3px 2px;
-  border-bottom: 1px solid #3d2a1a;
+  border-bottom: 1px solid #5c3d8f;
   color: #0a070c !important;
   font-size: 11px;
   line-height: 13px;
@@ -226,14 +226,14 @@ html, body {
 }
 
 .nav-item:hover {
-  background: #0d0518;
+  background: #1a0a2e;
   color: #ffb347 !important;
   text-decoration: none;
   text-shadow: 0 0 6px #0a070c;
 }
 
 .nav-item.current {
-  background: #0d0518;
+  background: #1a0a2e;
   color: #ffb347 !important;
   font-weight: bold;
   text-decoration: none;
@@ -243,13 +243,13 @@ html, body {
 .account-box {
   margin: 8px 0 0;
   padding: 5px 4px;
-  border-top: 1px solid #5c3a1e;
+  border-top: 1px solid #8b5a2b;
   text-align: center;
 }
 
 .account-text {
   margin: 0 0 5px;
-  color: #4a2a6a;
+  color: #c4a0e0;
   font-size: 9px;
   line-height: 12px;
 }
@@ -277,16 +277,16 @@ html, body {
 .profile-box {
   margin: 0 0 8px;
   padding: 7px;
-  background: #1a0a2e;
-  border: 1px solid #6b3a1e;
+  background: #3a2266;
+  border: 1px solid #8b5a2b;
   animation: border-flicker 11s infinite;
 }
 
 .profile-header {
   margin: 0 0 7px;
   padding: 4px 7px;
-  background: linear-gradient(90deg, #0a070c, #120820);
-  border: 1px solid #5c3a1e;
+  background: linear-gradient(90deg, #0a070c, #1a0a2e);
+  border: 1px solid #8b5a2b;
   color: #ffb347;
   font-size: 11px;
   line-height: 13px;
@@ -296,9 +296,9 @@ html, body {
 
 .profile-info {
   padding: 6px 7px;
-  background: #1e0f35;
-  border: 1px solid #5c3a1e;
-  color: #d4b896;
+  background: #42287a;
+  border: 1px solid #8b5a2b;
+  color: #f0e6d8;
   font-size: 11px;
   line-height: 15px;
 }
@@ -315,8 +315,8 @@ html, body {
 .posts-header {
   margin: 8px 0 5px;
   padding: 4px 7px;
-  background: linear-gradient(90deg, #0a070c, #120820);
-  border: 1px solid #5c3a1e;
+  background: linear-gradient(90deg, #0a070c, #1a0a2e);
+  border: 1px solid #8b5a2b;
   color: #ffb347;
   font-size: 11px;
   line-height: 13px;
@@ -325,14 +325,14 @@ html, body {
 
 .profile-post {
   margin: 0 0 7px;
-  background: #1a0a2e;
-  border: 1px solid #6b3a1e;
+  background: #3a2266;
+  border: 1px solid #8b5a2b;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .profile-post:hover {
   border-color: #0a070c;
-  box-shadow: 0 0 10px rgba(10, 7, 12, 0.5);
+  box-shadow: 0 0 10px rgba(10, 7, 12, 0.45);
 }
 
 .profile-post-title {
@@ -341,8 +341,8 @@ html, body {
   align-items: center;
   gap: 8px;
   padding: 4px 7px;
-  background: #16082a;
-  border-bottom: 1px solid #5c3a1e;
+  background: #2d1b4e;
+  border-bottom: 1px solid #8b5a2b;
   color: #ffcc80;
   font-size: 11px;
   line-height: 13px;
@@ -364,7 +364,7 @@ html, body {
 
 .profile-post-body {
   padding: 6px 7px;
-  color: #e8d5b7;
+  color: #f0e6d8;
   font-size: 11px;
   line-height: 15px;
   overflow-wrap: anywhere;
@@ -372,16 +372,16 @@ html, body {
 
 .profile-post-date {
   padding: 3px 7px;
-  border-top: 1px solid #3d2a1a;
-  color: #8b7355;
+  border-top: 1px solid #5c3d8f;
+  color: #c4a0e0;
   font-size: 9px;
   line-height: 11px;
 }
 
 .post-actions {
   padding: 4px 7px;
-  border-top: 1px solid #3d2a1a;
-  background: #1e0f35;
+  border-top: 1px solid #5c3d8f;
+  background: #42287a;
 }
 
 .like-button,
@@ -390,7 +390,7 @@ html, body {
   padding: 1px 3px;
   border: 0;
   background: transparent;
-  color: #c4a484;
+  color: #e0d0c0;
   font: 10px/13px Arial, Helvetica, sans-serif;
   cursor: pointer;
   transition: color 0.2s, text-shadow 0.2s;
@@ -411,8 +411,8 @@ html, body {
 .comments-area {
   display: none;
   padding: 6px 7px;
-  background: #1e0f35;
-  border-top: 1px solid #3d2a1a;
+  background: #42287a;
+  border-top: 1px solid #5c3d8f;
 }
 
 .comments-area.open {
@@ -423,9 +423,9 @@ html, body {
 .user-comment {
   margin: 0 0 5px;
   padding: 4px 5px;
-  background: #16082a;
-  border: 1px solid #4a3220;
-  color: #e8d5b7;
+  background: #35205c;
+  border: 1px solid #6b4a9a;
+  color: #f0e6d8;
   font-size: 10px;
   line-height: 13px;
   overflow-wrap: anywhere;
@@ -453,9 +453,9 @@ html, body {
   min-height: 45px;
   padding: 4px 5px;
   resize: vertical;
-  border: 1px solid #6b3a1e;
-  background: #1a0a2e;
-  color: #e8d5b7;
+  border: 1px solid #8b5a2b;
+  background: #2d1b4e;
+  color: #f0e6d8;
   font: 10px/13px Arial, Helvetica, sans-serif;
   transition: border-color 0.25s, box-shadow 0.25s;
 }
@@ -463,16 +463,16 @@ html, body {
 .comment-input:focus {
   outline: none;
   border-color: #0a070c;
-  box-shadow: 0 0 8px rgba(10, 7, 12, 0.6);
+  box-shadow: 0 0 8px rgba(10, 7, 12, 0.55);
 }
 
 .comment-send,
 .show-more,
 .create-post-btn {
   padding: 3px 8px;
-  background: #120820;
-  border: 1px solid #6b3a1e;
-  color: #d4a574;
+  background: #1a0a2e;
+  border: 1px solid #8b5a2b;
+  color: #e0d0c0;
   font-size: 10px;
   line-height: 13px;
   cursor: pointer;
@@ -500,8 +500,8 @@ html, body {
   display: none;
   margin: 0 0 8px;
   padding: 7px;
-  background: #1a0a2e;
-  border: 1px solid #6b3a1e;
+  background: #3a2266;
+  border: 1px solid #8b5a2b;
 }
 
 .create-post-form.open {
@@ -525,9 +525,9 @@ html, body {
 .rules-box {
   margin: 8px 0 0;
   padding: 5px 8px;
-  background: #1a0a2e;
-  border: 1px solid #6b3a1e;
-  color: #d4b896;
+  background: #3a2266;
+  border: 1px solid #8b5a2b;
+  color: #f0e6d8;
   font-size: 11px;
   line-height: 14px;
 }
@@ -541,9 +541,9 @@ html, body {
 .statistics-box {
   margin: 8px 0 0;
   padding: 5px 8px;
-  background: #1a0a2e;
-  border: 1px solid #6b3a1e;
-  color: #4a2a6a;
+  background: #3a2266;
+  border: 1px solid #8b5a2b;
+  color: #c4a0e0;
   font: 10px/13px "Courier New", Courier, monospace;
 }
 
@@ -554,7 +554,7 @@ html, body {
 }
 
 .statistics-number {
-  color: #e8d5b7;
+  color: #f0e6d8;
   font-weight: bold;
 }
 
@@ -567,8 +567,8 @@ html, body {
 .footer-line {
   margin: 7px 0 0;
   padding-top: 4px;
-  border-top: 1px solid #3d2a1a;
-  color: #6b5340;
+  border-top: 1px solid #5c3d8f;
+  color: #a080c0;
   font-size: 9px;
   line-height: 11px;
   text-align: center;
