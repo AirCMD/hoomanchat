@@ -312,12 +312,13 @@ html, body {
   text-shadow: 0 0 6px #7cfc00;
 }
 
+/* «Дописи спільноти» — помаранчеве тло, чорний текст */
 .posts-header {
   margin: 8px 0 5px;
   padding: 4px 7px;
-  background: linear-gradient(90deg, #0a070c, #1a0a2e);
-  border: 1px solid #8b5a2b;
-  color: #ff9f1a;
+  background: #ff9f1a;
+  border: 1px solid #c45f00;
+  color: #0a070c;
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
@@ -335,15 +336,16 @@ html, body {
   box-shadow: 0 0 10px rgba(10, 7, 12, 0.45);
 }
 
+/* Заголовки дописів («Секта» тощо) — помаранчеве тло, чорний текст */
 .profile-post-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 8px;
   padding: 4px 7px;
-  background: #2d1b4e;
-  border-bottom: 1px solid #8b5a2b;
-  color: #ff9f1a;
+  background: #ff9f1a;
+  border-bottom: 1px solid #c45f00;
+  color: #0a070c;
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
@@ -487,14 +489,15 @@ html, body {
   box-shadow: 0 0 8px rgba(10, 7, 12, 0.5);
 }
 
+/* Кнопка «Створити публікацію» — помаранчеве тло */
 .create-post-btn {
   display: block;
   width: 100%;
   margin: 0 0 5px;
   padding: 3px 8px;
-  background: #1a0a2e;
-  border: 1px solid #ff9f1a;
-  color: #ff9f1a;
+  background: #ff9f1a;
+  border: 1px solid #c45f00;
+  color: #0a070c;
   font-size: 10px;
   line-height: 13px;
   font-weight: bold;
@@ -504,10 +507,10 @@ html, body {
 }
 
 .create-post-btn:hover {
-  background: #0a070c;
-  color: #ffb347;
-  border-color: #ffb347;
-  box-shadow: 0 0 8px rgba(255, 159, 26, 0.45);
+  background: #ffb347;
+  color: #0a070c;
+  border-color: #e67e00;
+  box-shadow: 0 0 10px rgba(255, 159, 26, 0.5);
 }
 
 .create-post-form {
