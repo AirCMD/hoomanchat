@@ -1,7 +1,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: #0a070c;
+  background: #1a0a2e;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 12px;
   line-height: 14px;
@@ -16,8 +16,8 @@ html, body {
     opacity: 1;
     text-shadow:
       0 0 4px #ff9f43,
-      0 0 12px #9b59b6,
-      0 0 20px #6a0dad;
+      0 0 12px #0a070c,
+      0 0 20px #000;
   }
   20%, 24%, 55% {
     opacity: 0.55;
@@ -39,31 +39,31 @@ html, body {
     text-shadow:
       -1px 0 #ff00ff,
        1px 0 #00ffff,
-       0 0 8px #9b59b6;
+       0 0 8px #0a070c;
   }
   25% {
     text-shadow:
       -2px 0 #ff00ff,
        2px 0 #00ffff,
-       0 0 12px #6a0dad;
+       0 0 12px #000;
   }
   50% {
     text-shadow:
        1px 0 #ff00ff,
       -1px 0 #00ffff,
-       0 0 6px #9b59b6;
+       0 0 6px #0a070c;
   }
   75% {
     text-shadow:
       -1px 1px #ff00ff,
        1px -1px #00ffff,
-       0 0 10px #8e44ad;
+       0 0 10px #000;
   }
 }
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 6px #9b59b6, 0 0 12px rgba(155, 89, 182, 0.4);
+    box-shadow: 0 0 6px #0a070c, 0 0 12px rgba(10, 7, 12, 0.5);
   }
   50% {
     box-shadow: 0 0 12px #ff9f43, 0 0 24px rgba(255, 159, 67, 0.5);
@@ -77,12 +77,12 @@ html, body {
 
 @keyframes blood-pulse {
   0%, 100% { color: #e6392b; text-shadow: 0 0 4px #e6392b; }
-  50%      { color: #ff1a1a; text-shadow: 0 0 10px #ff1a1a, 0 0 18px #9b59b6; }
+  50%      { color: #ff1a1a; text-shadow: 0 0 10px #ff1a1a, 0 0 18px #0a070c; }
 }
 
 @keyframes border-flicker {
   0%, 100% { border-color: #6b3a1e; }
-  30%      { border-color: #9b59b6; }
+  30%      { border-color: #0a070c; }
   60%      { border-color: #ff8c00; }
 }
 
@@ -97,26 +97,26 @@ html, body {
   min-height: 100vh;
   margin: 0;
   padding: 12px;
-  background: #0f0b12;
+  background: #16082a;
   border: 1px solid #5c3a1e;
   animation: border-flicker 8s infinite;
 }
 
 #hoomenchat-site a {
-  color: #c39bd3;
+  color: #1a0a2e;
   transition: color 0.2s, text-shadow 0.2s;
 }
 
 #hoomenchat-site a:hover {
   color: #ff9f43;
-  text-shadow: 0 0 8px #9b59b6, 0 0 14px #ff9f43;
+  text-shadow: 0 0 8px #0a070c, 0 0 14px #ff9f43;
 }
 
 .hoomenchat-header {
   display: block;
   margin: 0 0 10px;
   padding: 5px 8px;
-  background: linear-gradient(135deg, #2a0f1a, #1a0c05, #1a0f2e);
+  background: linear-gradient(135deg, #0a070c, #1a0c05, #0d0518);
   background-size: 200% 200%;
   border: 1px solid #8b4513;
   color: #ffb347;
@@ -148,7 +148,7 @@ html, body {
 
 .left-box {
   padding: 3px 7px;
-  background: #160f18;
+  background: #1e0f35;
   border: 1px solid #6b3a1e;
   animation: border-flicker 10s infinite;
 }
@@ -157,7 +157,7 @@ html, body {
   margin: 1px 0 6px;
   padding: 0 0 4px;
   border-bottom: 1px solid #8b5a2b;
-  color: #e0b0ff;
+  color: #0a070c;
   font-size: 15px;
   line-height: 17px;
   font-weight: bold;
@@ -174,8 +174,8 @@ html, body {
   margin: 0 0 6px;
   object-fit: cover;
   object-position: center;
-  background: #1e1220;
-  border: 1px solid #9b59b6;
+  background: #120820;
+  border: 1px solid #0a070c;
   animation: pulse-glow 4s ease-in-out infinite, float-slow 6s ease-in-out infinite;
 }
 
@@ -199,9 +199,9 @@ html, body {
 }
 
 .archat-button:hover {
-  background: linear-gradient(to bottom, #ffb347, #9b59b6);
-  color: #1a0c05;
-  box-shadow: 0 0 12px #9b59b6, 0 0 20px #ff9f43;
+  background: linear-gradient(to bottom, #ffb347, #0a070c);
+  color: #ffb347;
+  box-shadow: 0 0 12px #0a070c, 0 0 20px #ff9f43;
   animation: glitch 0.4s infinite;
 }
 
@@ -218,7 +218,7 @@ html, body {
   margin: 0;
   padding: 3px 2px;
   border-bottom: 1px solid #3d2a1a;
-  color: #c39bd3 !important;
+  color: #0a070c !important;
   font-size: 11px;
   line-height: 13px;
   text-decoration: underline;
@@ -226,18 +226,18 @@ html, body {
 }
 
 .nav-item:hover {
-  background: #2a1528;
+  background: #0d0518;
   color: #ffb347 !important;
   text-decoration: none;
-  text-shadow: 0 0 6px #9b59b6;
+  text-shadow: 0 0 6px #0a070c;
 }
 
 .nav-item.current {
-  background: #2a1528;
+  background: #0d0518;
   color: #ffb347 !important;
   font-weight: bold;
   text-decoration: none;
-  box-shadow: inset 3px 0 0 #9b59b6;
+  box-shadow: inset 3px 0 0 #0a070c;
 }
 
 .account-box {
@@ -249,7 +249,7 @@ html, body {
 
 .account-text {
   margin: 0 0 5px;
-  color: #a67c9a;
+  color: #4a2a6a;
   font-size: 9px;
   line-height: 12px;
 }
@@ -257,7 +257,7 @@ html, body {
 .account-link {
   display: block;
   margin: 2px 0;
-  color: #d7bde2 !important;
+  color: #0a070c !important;
   font-size: 10px;
   line-height: 12px;
   font-weight: bold;
@@ -267,7 +267,7 @@ html, body {
 .account-link:hover {
   color: #ff9f43 !important;
   text-decoration: none;
-  text-shadow: 0 0 8px #9b59b6;
+  text-shadow: 0 0 8px #0a070c;
 }
 
 /* =====================================================
@@ -277,7 +277,7 @@ html, body {
 .profile-box {
   margin: 0 0 8px;
   padding: 7px;
-  background: #120e16;
+  background: #1a0a2e;
   border: 1px solid #6b3a1e;
   animation: border-flicker 11s infinite;
 }
@@ -285,9 +285,9 @@ html, body {
 .profile-header {
   margin: 0 0 7px;
   padding: 4px 7px;
-  background: linear-gradient(90deg, #24180f, #1e1228);
+  background: linear-gradient(90deg, #0a070c, #120820);
   border: 1px solid #5c3a1e;
-  color: #e0b0ff;
+  color: #ffb347;
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
@@ -296,7 +296,7 @@ html, body {
 
 .profile-info {
   padding: 6px 7px;
-  background: #160f18;
+  background: #1e0f35;
   border: 1px solid #5c3a1e;
   color: #d4b896;
   font-size: 11px;
@@ -315,9 +315,9 @@ html, body {
 .posts-header {
   margin: 8px 0 5px;
   padding: 4px 7px;
-  background: linear-gradient(90deg, #24180f, #1e1228);
+  background: linear-gradient(90deg, #0a070c, #120820);
   border: 1px solid #5c3a1e;
-  color: #e0b0ff;
+  color: #ffb347;
   font-size: 11px;
   line-height: 13px;
   font-weight: bold;
@@ -325,14 +325,14 @@ html, body {
 
 .profile-post {
   margin: 0 0 7px;
-  background: #120e16;
+  background: #1a0a2e;
   border: 1px solid #6b3a1e;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .profile-post:hover {
-  border-color: #9b59b6;
-  box-shadow: 0 0 10px rgba(155, 89, 182, 0.35);
+  border-color: #0a070c;
+  box-shadow: 0 0 10px rgba(10, 7, 12, 0.5);
 }
 
 .profile-post-title {
@@ -341,7 +341,7 @@ html, body {
   align-items: center;
   gap: 8px;
   padding: 4px 7px;
-  background: #1a1220;
+  background: #16082a;
   border-bottom: 1px solid #5c3a1e;
   color: #ffcc80;
   font-size: 11px;
@@ -358,7 +358,7 @@ html, body {
 }
 
 .post-author-link a {
-  color: #c39bd3 !important;
+  color: #0a070c !important;
   text-decoration: underline;
 }
 
@@ -381,7 +381,7 @@ html, body {
 .post-actions {
   padding: 4px 7px;
   border-top: 1px solid #3d2a1a;
-  background: #160f18;
+  background: #1e0f35;
 }
 
 .like-button,
@@ -398,8 +398,8 @@ html, body {
 
 .like-button:hover,
 .comment-button:hover {
-  color: #e0b0ff;
-  text-shadow: 0 0 6px #9b59b6;
+  color: #0a070c;
+  text-shadow: 0 0 6px #0a070c;
 }
 
 .like-button.liked {
@@ -411,7 +411,7 @@ html, body {
 .comments-area {
   display: none;
   padding: 6px 7px;
-  background: #160f18;
+  background: #1e0f35;
   border-top: 1px solid #3d2a1a;
 }
 
@@ -423,7 +423,7 @@ html, body {
 .user-comment {
   margin: 0 0 5px;
   padding: 4px 5px;
-  background: #0f0b12;
+  background: #16082a;
   border: 1px solid #4a3220;
   color: #e8d5b7;
   font-size: 10px;
@@ -434,13 +434,13 @@ html, body {
 
 .fake-comment:hover,
 .user-comment:hover {
-  border-color: #9b59b6;
+  border-color: #0a070c;
 }
 
 .fake-comment-name {
   margin-bottom: 2px;
   font-weight: bold;
-  color: #d7bde2;
+  color: #0a070c;
 }
 
 .comment-form {
@@ -454,7 +454,7 @@ html, body {
   padding: 4px 5px;
   resize: vertical;
   border: 1px solid #6b3a1e;
-  background: #0a070c;
+  background: #1a0a2e;
   color: #e8d5b7;
   font: 10px/13px Arial, Helvetica, sans-serif;
   transition: border-color 0.25s, box-shadow 0.25s;
@@ -462,15 +462,15 @@ html, body {
 
 .comment-input:focus {
   outline: none;
-  border-color: #9b59b6;
-  box-shadow: 0 0 8px rgba(155, 89, 182, 0.5);
+  border-color: #0a070c;
+  box-shadow: 0 0 8px rgba(10, 7, 12, 0.6);
 }
 
 .comment-send,
 .show-more,
 .create-post-btn {
   padding: 3px 8px;
-  background: #1e1220;
+  background: #120820;
   border: 1px solid #6b3a1e;
   color: #d4a574;
   font-size: 10px;
@@ -482,10 +482,10 @@ html, body {
 .comment-send:hover,
 .show-more:hover,
 .create-post-btn:hover {
-  background: #2a1528;
-  color: #e0b0ff;
-  border-color: #9b59b6;
-  box-shadow: 0 0 8px rgba(155, 89, 182, 0.4);
+  background: #0a070c;
+  color: #ffb347;
+  border-color: #0a070c;
+  box-shadow: 0 0 8px rgba(10, 7, 12, 0.5);
 }
 
 .create-post-btn {
@@ -500,7 +500,7 @@ html, body {
   display: none;
   margin: 0 0 8px;
   padding: 7px;
-  background: #120e16;
+  background: #1a0a2e;
   border: 1px solid #6b3a1e;
 }
 
@@ -525,7 +525,7 @@ html, body {
 .rules-box {
   margin: 8px 0 0;
   padding: 5px 8px;
-  background: #120e16;
+  background: #1a0a2e;
   border: 1px solid #6b3a1e;
   color: #d4b896;
   font-size: 11px;
@@ -533,7 +533,7 @@ html, body {
 }
 
 .rules-box a {
-  color: #c39bd3;
+  color: #0a070c;
   font-weight: bold;
   text-decoration: underline;
 }
@@ -541,15 +541,15 @@ html, body {
 .statistics-box {
   margin: 8px 0 0;
   padding: 5px 8px;
-  background: #120e16;
+  background: #1a0a2e;
   border: 1px solid #6b3a1e;
-  color: #a67c9a;
+  color: #4a2a6a;
   font: 10px/13px "Courier New", Courier, monospace;
 }
 
 .statistics-title {
   margin: 0 0 3px;
-  color: #e0b0ff;
+  color: #0a070c;
   font: bold 10px/12px Arial, Helvetica, sans-serif;
 }
 
