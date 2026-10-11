@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<link rel="stylesheet" href="../css/islandsairtiger-template.css">
+<title>ОСТРІВ: КОЛБИ</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<style>
+/* ===== Frutiger Aero Ball Sort ===== */
+.bs-wrap { margin: 0 0 10px; }
+.bs-panel {
+  background: linear-gradient(165deg, rgba(255,255,255,0.92) 0%, rgba(210,240,255,0.88) 45%, rgba(220,230,255,0.9) 100%);
+  border: 1px solid rgba(120, 190, 220, 0.65);
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(40, 100, 140, 0.12);
+}
+.bs-title {
+  margin: 0 0 8px;
+  padding: 7px 12px;
+  background: linear-gradient(180deg, #f0fbff 0%, #b8e8f8 40%, #7ec8e8 100%);
+  border: 1px solid #7ec0e0;
+  border-radius: 10px;
+  color: #1a5a78;
+  font-size: 13px;
+  font-weight: bold;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+  box-shadow: inset 0 1px 0 #fff, 0 2px 6px rgba(60,140,180,0.2);
+  text-align: center;
+}
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  font-size: 12px;
+  color: #1e4a5c;
+  margin-bottom: 8px;
+  padding: 7px 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(200,235,250,0.55));
+  border: 1px solid rgba(140,200,230,0.5);
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+  align-items: center;
+  justify-content: space-between;
+}
+.hud b { color: #0a7a4a; font-size: 14px; }
+.hud .hint { color: #5a7a8a; font-size: 11px; }
+
+.game-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.tubes-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  align-items: flex-end;
+  background: linear-gradient(160deg, #c8e4f4, #a8d4ec);
+  border: 2px solid rgba(100,170,200,0.7);
+  border-radius: 14px;
+  padding: 14px 10px 10px;
+  box-shadow: inset 0 1px 0 #fff, 0 4px 14px rgba(40,120,160,0.18);
+  min-width: min(100%, 280px);
+  max-width: 100%;
+  flex: 1 1 260px;
+}
+
+.tube {
+  width: 42px;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3px;
+  padding: 6px 4px 8px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(220,240,250,0.4) 100%);
+  border: 2px solid rgba(90,150,180,0.55);
+  border-top: 3px solid rgba(70,130,160,0.45);
+  border-radius: 0 0 18px 18px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.12s, border-color 0.15s;
+  position: relative;
+  box-shadow: inset 0 2px 6px rgba(40,100,140,0.08);
+}
+.tube::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 8px;
+  background: linear-gradient(180deg, #a8d0e8, #88b8d0);
+  border-radius: 4px 4px 0 0;
+  border: 1px solid rgba(90,150,180,0.5);
+  border-bottom: none;
+}
+.tube:hover {
+  border-color: #5aa0c0;
+  box-shadow: 0 0 0 2px rgba(100,180,220,0.35), inset 0 2px 6px rgba(40,100,140,0.08);
+}
+.tube.selected {
+  border-color: #e0a020;
+  box-shadow: 0 0 0 3px rgba(255,200,60,0.55), inset 0 2px 6px rgba(40,100,140,0.08);
+  transform: translateY(-4px);
+}
+.tube.selected::before {
+  background: linear-gradient(180deg, #ffd060, #e0a020);
+  border-color: #c08010;
+}
+.tube.hint-target {
+  border-color: #50c070;
+  box-shadow: 0 0 0 2px rgba(80,200,120,0.4);
+}
+
+.ball {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow:
+    inset 0 -3px 6px rgba(0,0,0,0.18),
+    inset 0 3px 5px rgba(255,255,255,0.45),
+    0 2px 4px rgba(0,0,0,0.12);
+  border: 1px solid rgba(0,0,0,0.12);
+  transition: transform 0.2s ease;
+}
+.tube.selected .ball:last-child {
+  transform: translateY(-6px) scale(1.05);
+}
+/* Flying ball during pour */
+.ball-fly {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 200;
+  box-shadow:
+    inset 0 -3px 6px rgba(0,0,0,0.18),
+    inset 0 3px 5px rgba(255,255,255,0.45),
+    0 4px 12px rgba(0,0,0,0.25);
+  border: 1px solid rgba(0,0,0,0.12);
+  transition: left 0.38s cubic-bezier(0.4, 0.0, 0.2, 1),
+              top 0.38s cubic-bezier(0.25, 0.8, 0.35, 1.15);
+  will-change: left, top;
+}
+.ball-fly.landing {
+  transition: left 0.12s ease-out, top 0.12s ease-out, transform 0.12s ease-out;
+}
+.tube.receiving .ball:last-child {
+  animation: ballLand 0.25s ease-out;
+}
+@keyframes ballLand {
+  0% { transform: scale(1.15) translateY(-4px); }
+  60% { transform: scale(0.95) translateY(1px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 150px;
+  max-width: 190px;
+}
+.info-box, .btn-box {
+  background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(210,235,250,0.75));
+  border: 1px solid rgba(140,200,230,0.55);
+  border-radius: 12px;
+  padding: 10px;
+}
+.info-label { font-size: 11px; color: #5a7a8a; text-align: center; }
+.info-big {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0a7a4a;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+  line-height: 1.15;
+}
+.info-sub {
+  font-size: 12px;
+  color: #2a6a90;
+  text-align: center;
+  margin-top: 2px;
+  font-weight: 600;
+  min-height: 18px;
+}
+.progress-bar {
+  height: 8px;
+  background: rgba(120,180,210,0.25);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #5ecf8a, #3aaa6a);
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+.btn-main {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 6px;
+  border: 1px solid #5aa0c0;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #c8eef8, #7ec8e8);
+  color: #0a3a50;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(40,120,160,0.15);
+}
+.btn-main:hover { background: linear-gradient(180deg, #d8f4fc, #90d4f0); }
+.btn-sec {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 6px;
+  border: 1px solid rgba(100,170,200,0.55);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #fff, #e8f6ff);
+  color: #1a4a60;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-sec:hover { background: linear-gradient(180deg, #f0faff, #d0eefc); }
+.btn-sec:last-child { margin-bottom: 0; }
+
+.help-text {
+  font-size: 11px;
+  color: #5a7a8a;
+  line-height: 1.35;
+  margin-top: 4px;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 50, 70, 0.55);
+  z-index: 50;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.overlay.show { display: flex; }
+.overlay-card {
+  background: linear-gradient(165deg, #f8fcff, #d8f0fc);
+  border: 2px solid rgba(100,180,210,0.7);
+  border-radius: 16px;
+  padding: 20px 24px;
+  max-width: 320px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 8px 28px rgba(20,60,90,0.25);
+}
+.overlay-card h3 { margin: 0 0 8px; color: #1a5a78; font-size: 18px; }
+.overlay-card p { margin: 0 0 14px; color: #2a5a70; font-size: 13px; line-height: 1.4; }
+.overlay-card .btn-main { margin-bottom: 0; }
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(20,50,70,0.92);
+  color: #e8f8ff;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+  z-index: 100;
+  max-width: 90%;
+  text-align: center;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 560px) {
+  .game-area { flex-direction: column; align-items: center; }
+  .side { max-width: 100%; width: 100%; flex-direction: row; flex-wrap: wrap; }
+  .side > * { flex: 1 1 140px; }
+  .tube { width: 36px; min-height: 120px; }
+  .ball { width: 26px; height: 26px; }
+}
+</style>
+</head>
+<body>
+<div class="content-area">
+<div class="main-content">
+<div class="island-content">
+
+<div class="bs-wrap">
+  <div class="bs-panel">
+    <div class="bs-title">ОСТРІВ: КОЛБИ 🧪</div>
+
+    <div class="hud">
+      <span>Рівень: <b id="hud-level">1</b> / <b id="hud-max">40</b></span>
+      <span>Ходи: <b id="hud-moves">0</b></span>
+      <span class="hint">Без таймера · усі кульки видно</span>
+    </div>
+
+    <div class="game-area">
+      <div class="tubes-wrap" id="tubes"></div>
+
+      <div class="side">
+        <div class="info-box">
+          <div class="info-label">Рівень</div>
+          <div class="info-big" id="info-level">1</div>
+          <div class="info-sub" id="info-meta">2 кольори</div>
+          <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+          <p class="help-text">Клікай колбу-джерело, потім колбу-ціль. Клади лише на той самий колір або в порожню.</p>
+        </div>
+        <div class="btn-box">
+          <button type="button" class="btn-main" id="btn-undo">↩️ Відмінити хід</button>
+          <button type="button" class="btn-sec" id="btn-shuffle">🔀 Перемішати</button>
+          <button type="button" class="btn-sec" id="btn-restart">🔄 Переграти рівень</button>
+          <button type="button" class="btn-sec" id="btn-new">⏮ З рівня 1</button>
+          <button type="button" class="btn-sec" id="btn-sound">🔊 Звук: увімк</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-card">
+    <h3 id="ov-title">Рівень пройдено!</h3>
+    <p id="ov-msg"></p>
+    <button type="button" class="btn-main" id="ov-btn">Далі →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
+<div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span id="today-hoomen"></span></div></div>
+<div class="footer-line">Гуменчат — місце для гуменів. Повернутися до <a href="../islands.html">ОСТРОВІВ</a></div>
+</div></div></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var MAX_LEVEL = 40;
+  var CAPACITY = 4; // balls per tube
+
+  // Bright distinct colors (always fully visible)
+  var COLORS = [
+    "#e74c3c", // red
+    "#3498db", // blue
+    "#2ecc71", // green
+    "#f1c40f", // yellow
+    "#9b59b6", // purple
+    "#e67e22", // orange
+    "#1abc9c", // teal
+    "#e91e63", // pink
+    "#00bcd4", // cyan
+    "#8bc34a", // light green
+    "#ff5722", // deep orange
+    "#673ab7"  // deep purple
+  ];
+
+  var level = 1;
+  var tubes = [];      // array of arrays of color strings (bottom → top)
+  var selected = null; // tube index
+  var moves = 0;
+  var history = [];    // for undo: snapshots of tubes
+  var animating = false;
+  var soundOn = true;
+  var audioCtx = null;
+
+  var tubesEl = document.getElementById("tubes");
+  var hudLevel = document.getElementById("hud-level");
+  var hudMax = document.getElementById("hud-max");
+  var hudMoves = document.getElementById("hud-moves");
+  var infoLevel = document.getElementById("info-level");
+  var infoMeta = document.getElementById("info-meta");
+  var progress = document.getElementById("progress");
+  var overlay = document.getElementById("overlay");
+  var ovTitle = document.getElementById("ov-title");
+  var ovMsg = document.getElementById("ov-msg");
+  var ovBtn = document.getElementById("ov-btn");
+  var toastEl = document.getElementById("toast");
+  var btnSound = document.getElementById("btn-sound");
+
+  hudMax.textContent = MAX_LEVEL;
+
+  function toast(msg, ms) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { toastEl.classList.remove("show"); }, ms || 1800);
+  }
+
+  /* ===== SOUNDS (Web Audio, no files) ===== */
+  function ensureAudio() {
+    if (!audioCtx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) audioCtx = new AC();
+    }
+    if (audioCtx && audioCtx.state === "suspended") {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  function playTone(freq, dur, type, vol, slideTo) {
+    if (!soundOn) return;
+    var ctx = ensureAudio();
+    if (!ctx) return;
+    var t0 = ctx.currentTime;
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = type || "sine";
+    osc.frequency.setValueAtTime(freq, t0);
+    if (slideTo) {
+      osc.frequency.linearRampToValueAtTime(slideTo, t0 + dur);
+    }
+    gain.gain.setValueAtTime(vol != null ? vol : 0.12, t0);
+    gain.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.02);
+  }
+
+  function sfx(name) {
+    if (!soundOn) return;
+    ensureAudio();
+    if (name === "select") {
+      playTone(520, 0.06, "sine", 0.08);
+    } else if (name === "pour") {
+      playTone(380, 0.1, "triangle", 0.1, 280);
+    } else if (name === "land") {
+      playTone(240, 0.08, "sine", 0.09);
+    } else if (name === "bad") {
+      playTone(180, 0.12, "square", 0.06, 120);
+    } else if (name === "undo") {
+      playTone(400, 0.07, "sine", 0.07, 320);
+    } else if (name === "shuffle") {
+      playTone(300, 0.05, "triangle", 0.08);
+      setTimeout(function () { playTone(360, 0.05, "triangle", 0.08); }, 60);
+      setTimeout(function () { playTone(420, 0.08, "triangle", 0.09); }, 120);
+    } else if (name === "win") {
+      playTone(523, 0.12, "sine", 0.1);
+      setTimeout(function () { playTone(659, 0.12, "sine", 0.1); }, 100);
+      setTimeout(function () { playTone(784, 0.2, "sine", 0.11); }, 200);
+    } else if (name === "click") {
+      playTone(600, 0.04, "sine", 0.06);
+    }
+  }
+
+  function toggleSound() {
+    soundOn = !soundOn;
+    btnSound.textContent = soundOn ? "🔊 Звук: увімк" : "🔇 Звук: вимк";
+    if (soundOn) {
+      ensureAudio();
+      sfx("click");
+    }
+    toast(soundOn ? "Звук увімкнено" : "Звук вимкнено");
+  }
+
+  /** Easy progression: colors grow slowly, always enough empty tubes */
+  function levelConfig(lv) {
+    // colors: 2 at L1, +1 every 3 levels, max 10
+    var colors = Math.min(2 + Math.floor((lv - 1) / 3), 10);
+    // empty tubes: 2 early, later still 2 (easy)
+    var empty = lv <= 6 ? 2 : 2;
+    // occasional 3 empty for comfort on higher
+    if (lv >= 20) empty = 3;
+    var tubeCount = colors + empty;
+    return { colors: colors, empty: empty, tubeCount: tubeCount };
+  }
+
+  function shuffle(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = (Math.random() * (i + 1)) | 0;
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+
+  function cloneTubes(t) {
+    return t.map(function (tube) { return tube.slice(); });
+  }
+
+  function pushHistory() {
+    history.push(cloneTubes(tubes));
+    if (history.length > 80) history.shift();
+  }
+
+  function generateLevel(lv) {
+    var cfg = levelConfig(lv);
+    var colorList = COLORS.slice(0, cfg.colors);
+
+    // Create CAPACITY balls of each color
+    var pool = [];
+    colorList.forEach(function (c) {
+      for (var i = 0; i < CAPACITY; i++) pool.push(c);
+    });
+    shuffle(pool);
+
+    // Distribute into cfg.colors tubes (filled randomly), rest empty
+    tubes = [];
+    var ti = 0;
+    for (var t = 0; t < cfg.colors; t++) {
+      var tube = [];
+      for (var b = 0; b < CAPACITY; b++) {
+        tube.push(pool[ti++]);
+      }
+      tubes.push(tube);
+    }
+    for (var e = 0; e < cfg.empty; e++) {
+      tubes.push([]);
+    }
+
+    // Light shuffle of tube order
+    shuffle(tubes);
+
+    // Avoid already-solved starts (rare but possible)
+    var guard = 0;
+    while (isSolved() && guard++ < 20) {
+      // re-shuffle balls among non-empty conceptually — regenerate simply
+      return generateLevel(lv);
+    }
+
+    selected = null;
+    moves = 0;
+    history = [];
+    pushHistory();
+  }
+
+  function topColor(tube) {
+    if (!tube.length) return null;
+    return tube[tube.length - 1];
+  }
+
+  function canPour(fromIdx, toIdx) {
+    if (fromIdx === toIdx) return false;
+    var from = tubes[fromIdx];
+    var to = tubes[toIdx];
+    if (!from.length) return false;
+    if (to.length >= CAPACITY) return false;
+    if (!to.length) return true;
+    return topColor(from) === topColor(to);
+  }
+
+  /** How many same-color balls on top of from can move into to */
+  function pourCount(fromIdx, toIdx) {
+    if (!canPour(fromIdx, toIdx)) return 0;
+    var from = tubes[fromIdx];
+    var to = tubes[toIdx];
+    var color = topColor(from);
+    var n = 0;
+    for (var i = from.length - 1; i >= 0; i--) {
+      if (from[i] === color) n++;
+      else break;
+    }
+    var space = CAPACITY - to.length;
+    return Math.min(n, space);
+  }
+
+  function ballStyle(color) {
+    return "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.55), transparent 45%), " + color;
+  }
+
+  /** Screen pos of the k-th ball from the top (0 = topmost) or landing slot */
+  function getBallScreenPos(tubeIdx, fromTopIndex, asLanding, landingOffset) {
+    var tubeEls = tubesEl.querySelectorAll(".tube");
+    var tubeEl = tubeEls[tubeIdx];
+    if (!tubeEl) return null;
+    var balls = tubeEl.querySelectorAll(".ball");
+    // DOM with column-reverse: last child = topmost
+    if (!asLanding && balls.length) {
+      var idx = balls.length - 1 - (fromTopIndex || 0);
+      if (idx < 0) idx = 0;
+      var r = balls[idx].getBoundingClientRect();
+      return { x: r.left, y: r.top, w: r.width, h: r.height };
+    }
+    var tr = tubeEl.getBoundingClientRect();
+    var ballSize = balls.length ? balls[0].getBoundingClientRect().width : 32;
+    var gap = 3;
+    var count = tubes[tubeIdx].length + (landingOffset || 0);
+    var bottomPad = 8;
+    var y = tr.bottom - bottomPad - ballSize - count * (ballSize + gap);
+    var x = tr.left + (tr.width - ballSize) / 2;
+    return { x: x, y: y, w: ballSize, h: ballSize };
+  }
+
+  function animateOneBall(color, fromPos, toPos, onDone) {
+    var fly = document.createElement("div");
+    fly.className = "ball-fly";
+    fly.style.background = ballStyle(color);
+    fly.style.left = fromPos.x + "px";
+    fly.style.top = fromPos.y + "px";
+    fly.style.width = fromPos.w + "px";
+    fly.style.height = fromPos.h + "px";
+    document.body.appendChild(fly);
+
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        var midY = Math.min(fromPos.y, toPos.y) - 32;
+        fly.style.top = midY + "px";
+        fly.style.left = ((fromPos.x + toPos.x) / 2) + "px";
+        setTimeout(function () {
+          fly.style.left = toPos.x + "px";
+          fly.style.top = toPos.y + "px";
+          setTimeout(function () {
+            if (fly.parentNode) fly.parentNode.removeChild(fly);
+            if (onDone) onDone();
+          }, 360);
+        }, 140);
+      });
+    });
+  }
+
+  /** Pour all consecutive same-color top balls that fit (2–3 etc.) with animation */
+  function pourAnimated(fromIdx, toIdx, done) {
+    var count = pourCount(fromIdx, toIdx);
+    if (!count) {
+      if (done) done(false);
+      return;
+    }
+    animating = true;
+    var color = topColor(tubes[fromIdx]);
+    var tubeEls = tubesEl.querySelectorAll(".tube");
+    var fromBalls = tubeEls[fromIdx].querySelectorAll(".ball");
+
+    // Hide the balls that will fly (top `count` balls)
+    for (var h = 0; h < count; h++) {
+      var bi = fromBalls.length - 1 - h;
+      if (fromBalls[bi]) fromBalls[bi].style.visibility = "hidden";
+    }
+
+    var i = 0;
+    function next() {
+      if (i >= count) {
+        // commit all at once (one undo step)
+        pushHistory();
+        for (var p = 0; p < count; p++) {
+          tubes[toIdx].push(tubes[fromIdx].pop());
+        }
+        moves++;
+        animating = false;
+        selected = null;
+        render();
+        var els = tubesEl.querySelectorAll(".tube");
+        if (els[toIdx]) {
+          els[toIdx].classList.add("receiving");
+          setTimeout(function () {
+            if (els[toIdx]) els[toIdx].classList.remove("receiving");
+          }, 280);
+        }
+        if (done) done(true);
+        return;
+      }
+      var fromPos = getBallScreenPos(fromIdx, i, false);
+      // landing: current length + already "in flight" before this one
+      var toPos = getBallScreenPos(toIdx, 0, true, i);
+      if (!fromPos || !toPos) {
+        // emergency: finish remaining without further animation
+        pushHistory();
+        for (var p2 = 0; p2 < count; p2++) {
+          tubes[toIdx].push(tubes[fromIdx].pop());
+        }
+        moves++;
+        animating = false;
+        selected = null;
+        render();
+        if (done) done(true);
+        return;
+      }
+      animateOneBall(color, fromPos, toPos, function () {
+        i++;
+        next();
+      });
+    }
+    next();
+  }
+
+  function isSolved() {
+    for (var i = 0; i < tubes.length; i++) {
+      var t = tubes[i];
+      if (!t.length) continue;
+      if (t.length !== CAPACITY) return false;
+      var c = t[0];
+      for (var j = 1; j < t.length; j++) {
+        if (t[j] !== c) return false;
+      }
+    }
+    return true;
+  }
+
+  function completedTubes() {
+    var n = 0;
+    var cfg = levelConfig(level);
+    for (var i = 0; i < tubes.length; i++) {
+      var t = tubes[i];
+      if (t.length === CAPACITY) {
+        var ok = true;
+        for (var j = 1; j < t.length; j++) if (t[j] !== t[0]) { ok = false; break; }
+        if (ok) n++;
+      }
+    }
+    return n;
+  }
+
+  function updateHud() {
+    var cfg = levelConfig(level);
+    hudLevel.textContent = level;
+    hudMoves.textContent = moves;
+    infoLevel.textContent = level;
+    infoMeta.textContent = cfg.colors + " кольорів · " + cfg.tubeCount + " колб";
+    var done = completedTubes();
+    var pct = cfg.colors ? (done / cfg.colors) * 100 : 0;
+    progress.style.width = pct + "%";
+  }
+
+  function render() {
+    tubesEl.innerHTML = "";
+    // Scale tube height by capacity
+    var tubeMinH = 28 + CAPACITY * 36;
+
+    tubes.forEach(function (tube, i) {
+      var el = document.createElement("div");
+      el.className = "tube";
+      el.style.minHeight = tubeMinH + "px";
+      if (selected === i) el.classList.add("selected");
+      el.dataset.i = i;
+
+      tube.forEach(function (color) {
+        var b = document.createElement("div");
+        b.className = "ball";
+        b.style.background = "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.55), transparent 45%), " + color;
+        el.appendChild(b);
+      });
+
+      // filler space so balls sit at bottom visually (column-reverse already)
+      el.addEventListener("click", onTubeClick);
+      tubesEl.appendChild(el);
+    });
+    updateHud();
+  }
+
+  function onTubeClick(e) {
+    if (animating) return;
+    var i = +e.currentTarget.dataset.i;
+
+    if (selected === null) {
+      if (!tubes[i].length) {
+        sfx("bad");
+        toast("Порожня колба");
+        return;
+      }
+      selected = i;
+      sfx("select");
+      render();
+      return;
+    }
+
+    if (selected === i) {
+      selected = null;
+      sfx("click");
+      render();
+      return;
+    }
+
+    if (canPour(selected, i)) {
+      var from = selected;
+      selected = null;
+      render();
+      sfx("pour");
+      pourAnimated(from, i, function (ok) {
+        if (ok) {
+          sfx("land");
+          if (isSolved()) {
+            sfx("win");
+            setTimeout(onLevelComplete, 280);
+          }
+        }
+      });
+    } else {
+      if (tubes[i].length) {
+        selected = i;
+        sfx("select");
+      } else {
+        sfx("bad");
+        toast("Сюди не можна");
+      }
+      render();
+    }
+  }
+
+  function onLevelComplete() {
+    if (level >= MAX_LEVEL) {
+      ovTitle.textContent = "Усі рівні! 🎉";
+      ovMsg.textContent = "Ти розсортував усі колби. Ходи на останньому рівні: " + moves + ".";
+      ovBtn.textContent = "З рівня 1";
+      ovBtn.onclick = function () { startLevel(1); };
+    } else {
+      ovTitle.textContent = "Рівень " + level + " пройдено!";
+      ovMsg.textContent = "Ходи: " + moves + ". Далі трохи більше кольорів — але все ще просто.";
+      ovBtn.textContent = "Рівень " + (level + 1) + " →";
+      ovBtn.onclick = function () { startLevel(level + 1); };
+    }
+    overlay.classList.add("show");
+  }
+
+  function startLevel(lv) {
+    level = Math.max(1, Math.min(MAX_LEVEL, lv));
+    generateLevel(level);
+    overlay.classList.remove("show");
+    render();
+  }
+
+  /** Shuffle all balls among non-empty capacity slots; keep empty tubes empty count */
+  function shuffleBalls() {
+    if (animating) return;
+    var cfg = levelConfig(level);
+    var pool = [];
+    tubes.forEach(function (t) {
+      t.forEach(function (c) { pool.push(c); });
+    });
+    if (!pool.length) return;
+    shuffle(pool);
+
+    // Rebuild: fill first cfg.colors tubes with CAPACITY each, rest empty
+    var next = [];
+    var ti = 0;
+    for (var t = 0; t < cfg.colors; t++) {
+      var tube = [];
+      for (var b = 0; b < CAPACITY; b++) tube.push(pool[ti++]);
+      next.push(tube);
+    }
+    for (var e = 0; e < cfg.empty; e++) next.push([]);
+    shuffle(next);
+
+    // Avoid accidental solved state
+    var guard = 0;
+    tubes = next;
+    while (isSolved() && guard++ < 30) {
+      shuffle(pool);
+      next = [];
+      ti = 0;
+      for (t = 0; t < cfg.colors; t++) {
+        tube = [];
+        for (b = 0; b < CAPACITY; b++) tube.push(pool[ti++]);
+        next.push(tube);
+      }
+      for (e = 0; e < cfg.empty; e++) next.push([]);
+      shuffle(next);
+      tubes = next;
+    }
+
+    selected = null;
+    moves = 0;
+    history = [];
+    pushHistory();
+    render();
+    sfx("shuffle");
+    toast("Кульки перемішано 🔀");
+  }
+
+  function undo() {
+    if (animating) return;
+    if (history.length < 2) {
+      sfx("bad");
+      toast("Немає ходів назад");
+      return;
+    }
+    history.pop();
+    tubes = cloneTubes(history[history.length - 1]);
+    moves = Math.max(0, moves - 1);
+    selected = null;
+    render();
+    sfx("undo");
+    toast("Хід скасовано");
+  }
+
+  document.getElementById("btn-undo").addEventListener("click", undo);
+  document.getElementById("btn-shuffle").addEventListener("click", shuffleBalls);
+  document.getElementById("btn-restart").addEventListener("click", function () {
+    startLevel(level);
+    sfx("click");
+    toast("Рівень перезапущено");
+  });
+  document.getElementById("btn-new").addEventListener("click", function () {
+    startLevel(1);
+    sfx("click");
+    toast("З рівня 1");
+  });
+  btnSound.addEventListener("click", toggleSound);
+
+  // unlock audio on first user gesture
+  document.body.addEventListener("click", function once() {
+    ensureAudio();
+    document.body.removeEventListener("click", once);
+  });
+
+  startLevel(1);
+})();
+</script>
+</body>
+</html>
