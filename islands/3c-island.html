@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<link rel="stylesheet" href="../css/islandsairtiger-template.css">
+<title>ОСТРІВ: 3 В РЯД</title>
+<link rel="icon" type="image/svg+xml" href="../planet-favicon.svg">
+<style>
+/* ===== Frutiger Aero Match-3 ===== */
+.m3-wrap { margin: 0 0 10px; }
+.m3-panel {
+  background: linear-gradient(165deg, rgba(255,255,255,0.92) 0%, rgba(210,240,255,0.88) 45%, rgba(220,230,255,0.9) 100%);
+  border: 1px solid rgba(120, 190, 220, 0.65);
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(40, 100, 140, 0.12);
+}
+.m3-title {
+  margin: 0 0 8px;
+  padding: 7px 12px;
+  background: linear-gradient(180deg, #f0fbff 0%, #b8e8f8 40%, #7ec8e8 100%);
+  border: 1px solid #7ec0e0;
+  border-radius: 10px;
+  color: #1a5a78;
+  font-size: 13px;
+  font-weight: bold;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+  box-shadow: inset 0 1px 0 #fff, 0 2px 6px rgba(60,140,180,0.2);
+  text-align: center;
+}
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  font-size: 12px;
+  color: #1e4a5c;
+  margin-bottom: 8px;
+  padding: 7px 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(200,235,250,0.55));
+  border: 1px solid rgba(140,200,230,0.5);
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+  align-items: center;
+  justify-content: space-between;
+}
+.hud b { color: #0a7a4a; font-size: 14px; }
+.hud .hint { color: #5a7a8a; font-size: 11px; }
+
+.board-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 3px;
+  background: linear-gradient(160deg, #c8e4f4, #a8d4ec);
+  border: 2px solid rgba(100,170,200,0.7);
+  border-radius: 14px;
+  padding: 6px;
+  box-shadow: inset 0 1px 0 #fff, 0 4px 14px rgba(40,120,160,0.18);
+  width: min(100%, 360px);
+  aspect-ratio: 1;
+  user-select: none;
+  touch-action: none;
+}
+.cell {
+  background: linear-gradient(180deg, #ffffff 0%, #e8f6ff 100%);
+  border: 1px solid rgba(120,180,210,0.45);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(18px, 5.5vw, 28px);
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s, background 0.15s, opacity 0.2s;
+  aspect-ratio: 1;
+  box-shadow: 0 1px 3px rgba(40,100,140,0.1);
+  line-height: 1;
+}
+.cell:hover { background: linear-gradient(180deg, #f8fcff, #d8f0fc); }
+.cell.selected {
+  background: linear-gradient(180deg, #ffe8a0, #ffd060);
+  border-color: #e0a020;
+  box-shadow: 0 0 0 2px #ffc040, 0 2px 8px rgba(200,140,20,0.35);
+  transform: scale(1.06);
+  z-index: 2;
+}
+.cell.matched {
+  animation: pop 0.28s ease-out forwards;
+}
+.cell.falling {
+  transition: transform 0.22s ease-in;
+}
+@keyframes pop {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.25); opacity: 0.8; }
+  100% { transform: scale(0.3); opacity: 0; }
+}
+
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 140px;
+  max-width: 180px;
+}
+.boost-panel, .info-panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.88), rgba(210,235,250,0.75));
+  border: 1px solid rgba(140,200,230,0.55);
+  border-radius: 12px;
+  padding: 10px;
+}
+.boost-title, .info-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a5a78;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.boost-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 8px 10px;
+  border: 1px solid rgba(100,170,200,0.55);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #fff 0%, #e0f4fc 100%);
+  color: #1a4a60;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(40,100,140,0.1);
+  transition: background 0.12s, transform 0.08s;
+  text-align: left;
+}
+.boost-btn:hover {
+  background: linear-gradient(180deg, #f0faff, #c8eaf8);
+  transform: translateY(-1px);
+}
+.boost-btn:active { transform: translateY(0); }
+.boost-btn .ico { font-size: 20px; line-height: 1; }
+.boost-btn .lbl { flex: 1; }
+.boost-btn .inf { font-size: 10px; color: #5a8aa0; font-weight: 500; }
+.boost-note {
+  font-size: 10px;
+  color: #5a7a8a;
+  text-align: center;
+  margin-top: 4px;
+}
+.btn-new {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #5aa0c0;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #c8eef8, #7ec8e8);
+  color: #0a3a50;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(40,120,160,0.15);
+}
+.btn-new:hover {
+  background: linear-gradient(180deg, #d8f4fc, #90d4f0);
+}
+.score-big {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0a7a4a;
+  text-align: center;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+  line-height: 1.1;
+}
+.score-label {
+  font-size: 11px;
+  color: #5a7a8a;
+  text-align: center;
+  margin-bottom: 4px;
+}
+.combo-line {
+  font-size: 12px;
+  color: #c06020;
+  text-align: center;
+  min-height: 18px;
+  font-weight: 600;
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(20,50,70,0.92);
+  color: #e8f8ff;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+  z-index: 100;
+  max-width: 90%;
+  text-align: center;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 520px) {
+  .board-wrap { flex-direction: column; align-items: center; }
+  .side-panel { max-width: 100%; width: 100%; flex-direction: row; flex-wrap: wrap; }
+  .side-panel > * { flex: 1 1 140px; }
+  .board { width: min(100%, 320px); }
+}
+</style>
+</head>
+<body>
+<div class="content-area">
+<div class="main-content">
+<div class="island-content">
+
+<div class="m3-wrap">
+  <div class="m3-panel">
+    <div class="m3-title">ОСТРІВ: 3 В РЯД ✨</div>
+
+    <div class="hud">
+      <span>Рахунок: <b id="hud-score">0</b></span>
+      <span>Комбо: <b id="hud-combo">×1</b></span>
+      <span class="hint">Без таймера · бусти безлімітні</span>
+    </div>
+
+    <div class="board-wrap">
+      <div class="board" id="board" aria-label="Ігрове поле"></div>
+
+      <div class="side-panel">
+        <div class="info-panel">
+          <div class="score-label">Твій рахунок</div>
+          <div class="score-big" id="score-big">0</div>
+          <div class="combo-line" id="combo-line"></div>
+          <button type="button" class="btn-new" id="btn-new" style="margin-top:10px;">🔄 Нова гра</button>
+        </div>
+
+        <div class="boost-panel">
+          <div class="boost-title">Бусти ∞</div>
+          <button type="button" class="boost-btn" id="boost-shuffle" title="Перемішати поле">
+            <span class="ico">🔀</span>
+            <span class="lbl">Перемішати<br><span class="inf">усі клітинки</span></span>
+          </button>
+          <button type="button" class="boost-btn" id="boost-bomb" title="Підірвати 3×3">
+            <span class="ico">💣</span>
+            <span class="lbl">Бомба<br><span class="inf">клікни клітинку</span></span>
+          </button>
+          <button type="button" class="boost-btn" id="boost-line" title="Очистити ряд/стовпчик">
+            <span class="ico">⚡</span>
+            <span class="lbl">Лінія<br><span class="inf">ряд або стовп</span></span>
+          </button>
+          <button type="button" class="boost-btn" id="boost-rainbow" title="Прибрати всі одного виду">
+            <span class="ico">🌈</span>
+            <span class="lbl">Веселка<br><span class="inf">один вид емоджі</span></span>
+          </button>
+          <div class="boost-note">Бусти можна тиснути скільки завгодно</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="rules-box">Пам'ятай та дотримуйся <a href="../rules.html">ПРАВИЛ</a> нашого ресурсу для приємного та друмнього часу разом з нами.</div>
+<div class="statistics-box"><div class="statistics-title">Статистика Гуменчату</div><div>Зареєстровано гуменів: <span id="registered-hoomen"></span></div><div>Зараз онлайн: <span class="statistics-online" id="online-hoomen"></span></div><div>Гуменів сьогодні завітало: <span id="today-hoomen"></span></div></div>
+<div class="footer-line">Гуменчат — місце для гуменів. Повернутися до <a href="../islands.html">ОСТРОВІВ</a></div>
+</div></div></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var SIZE = 8;
+  var EMOJIS = ["🍎", "🍊", "🍋", "🍇", "🍓", "🍑", "🍒", "🥝"];
+  var board = [];
+  var selected = null;
+  var score = 0;
+  var combo = 0;
+  var busy = false;
+  var boostMode = null; // null | "bomb" | "line" | "rainbow"
+
+  var boardEl = document.getElementById("board");
+  var hudScore = document.getElementById("hud-score");
+  var hudCombo = document.getElementById("hud-combo");
+  var scoreBig = document.getElementById("score-big");
+  var comboLine = document.getElementById("combo-line");
+  var toastEl = document.getElementById("toast");
+
+  function toast(msg, ms) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { toastEl.classList.remove("show"); }, ms || 2000);
+  }
+
+  function rndEmoji() {
+    return EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+  }
+
+  function idx(r, c) { return r * SIZE + c; }
+  function rc(i) { return { r: (i / SIZE) | 0, c: i % SIZE }; }
+
+  function createBoard() {
+    board = [];
+    for (var i = 0; i < SIZE * SIZE; i++) board.push(rndEmoji());
+    // ensure no initial matches
+    var guard = 0;
+    while (findMatches().length && guard++ < 80) {
+      findMatches().forEach(function (i) { board[i] = rndEmoji(); });
+    }
+    selected = null;
+    score = 0;
+    combo = 0;
+    boostMode = null;
+    updateScore();
+    render();
+  }
+
+  function render() {
+    boardEl.innerHTML = "";
+    for (var i = 0; i < board.length; i++) {
+      var cell = document.createElement("div");
+      cell.className = "cell";
+      cell.dataset.i = i;
+      cell.textContent = board[i] || "";
+      if (selected === i) cell.classList.add("selected");
+      cell.addEventListener("click", onCellClick);
+      boardEl.appendChild(cell);
+    }
+  }
+
+  function updateScore() {
+    hudScore.textContent = score;
+    scoreBig.textContent = score;
+    hudCombo.textContent = "×" + Math.max(1, combo);
+  }
+
+  function findMatches() {
+    var matched = {};
+    // horizontal
+    for (var r = 0; r < SIZE; r++) {
+      var c = 0;
+      while (c < SIZE) {
+        var e = board[idx(r, c)];
+        if (!e) { c++; continue; }
+        var len = 1;
+        while (c + len < SIZE && board[idx(r, c + len)] === e) len++;
+        if (len >= 3) {
+          for (var k = 0; k < len; k++) matched[idx(r, c + k)] = true;
+        }
+        c += len;
+      }
+    }
+    // vertical
+    for (var c2 = 0; c2 < SIZE; c2++) {
+      var r2 = 0;
+      while (r2 < SIZE) {
+        var e2 = board[idx(r2, c2)];
+        if (!e2) { r2++; continue; }
+        var len2 = 1;
+        while (r2 + len2 < SIZE && board[idx(r2 + len2, c2)] === e2) len2++;
+        if (len2 >= 3) {
+          for (var k2 = 0; k2 < len2; k2++) matched[idx(r2 + k2, c2)] = true;
+        }
+        r2 += len2;
+      }
+    }
+    return Object.keys(matched).map(Number);
+  }
+
+  function swap(i, j) {
+    var t = board[i];
+    board[i] = board[j];
+    board[j] = t;
+  }
+
+  function areAdjacent(i, j) {
+    var a = rc(i), b = rc(j);
+    return (Math.abs(a.r - b.r) + Math.abs(a.c - b.c)) === 1;
+  }
+
+  function onCellClick(e) {
+    if (busy) return;
+    var i = +e.currentTarget.dataset.i;
+
+    if (boostMode === "bomb") {
+      useBomb(i);
+      return;
+    }
+    if (boostMode === "line") {
+      useLine(i);
+      return;
+    }
+    if (boostMode === "rainbow") {
+      useRainbow(i);
+      return;
+    }
+
+    if (selected === null) {
+      selected = i;
+      render();
+      return;
+    }
+    if (selected === i) {
+      selected = null;
+      render();
+      return;
+    }
+    if (!areAdjacent(selected, i)) {
+      selected = i;
+      render();
+      return;
+    }
+
+    // try swap
+    var a = selected, b = i;
+    selected = null;
+    swap(a, b);
+    render();
+    var matches = findMatches();
+    if (!matches.length) {
+      // invalid — swap back
+      busy = true;
+      setTimeout(function () {
+        swap(a, b);
+        render();
+        busy = false;
+        toast("Немає трійки");
+      }, 180);
+      return;
+    }
+    resolveBoard();
+  }
+
+  function resolveBoard() {
+    busy = true;
+    combo = 0;
+    step();
+
+    function step() {
+      var matches = findMatches();
+      if (!matches.length) {
+        busy = false;
+        combo = 0;
+        updateScore();
+        comboLine.textContent = "";
+        // optional: check if any moves left — not required
+        return;
+      }
+      combo++;
+      var points = matches.length * 10 * combo;
+      score += points;
+      updateScore();
+      comboLine.textContent = combo > 1 ? ("Комбо ×" + combo + "  +" + points) : ("+" + points);
+
+      // animate match
+      matches.forEach(function (i) {
+        var el = boardEl.querySelector('[data-i="' + i + '"]');
+        if (el) el.classList.add("matched");
+      });
+
+      setTimeout(function () {
+        matches.forEach(function (i) { board[i] = null; });
+        // gravity
+        for (var c = 0; c < SIZE; c++) {
+          var stack = [];
+          for (var r = SIZE - 1; r >= 0; r--) {
+            var e = board[idx(r, c)];
+            if (e) stack.push(e);
+          }
+          for (var r2 = SIZE - 1; r2 >= 0; r2--) {
+            board[idx(r2, c)] = stack.length ? stack.shift() : null;
+          }
+        }
+        // fill
+        for (var i = 0; i < board.length; i++) {
+          if (!board[i]) board[i] = rndEmoji();
+        }
+        render();
+        setTimeout(step, 220);
+      }, 280);
+    }
+  }
+
+  /* ===== BOOSTS (infinite) ===== */
+  function clearBoostMode() {
+    boostMode = null;
+    document.querySelectorAll(".boost-btn").forEach(function (b) {
+      b.style.outline = "";
+    });
+  }
+
+  function setBoostMode(mode, btn) {
+    if (busy) return;
+    if (boostMode === mode) {
+      clearBoostMode();
+      toast("Буст скасовано");
+      return;
+    }
+    clearBoostMode();
+    boostMode = mode;
+    btn.style.outline = "2px solid #e0a020";
+    if (mode === "bomb") toast("Обери клітинку для бомби 💣");
+    if (mode === "line") toast("Обери клітинку — зітреться ряд і стовп ⚡");
+    if (mode === "rainbow") toast("Обери емоджі — зникнуть усі такі 🌈");
+  }
+
+  function useBomb(i) {
+    clearBoostMode();
+    busy = true;
+    var a = rc(i);
+    var cleared = [];
+    for (var dr = -1; dr <= 1; dr++) {
+      for (var dc = -1; dc <= 1; dc++) {
+        var r = a.r + dr, c = a.c + dc;
+        if (r >= 0 && r < SIZE && c >= 0 && c < SIZE) {
+          var j = idx(r, c);
+          if (board[j]) cleared.push(j);
+        }
+      }
+    }
+    score += cleared.length * 15;
+    updateScore();
+    cleared.forEach(function (j) {
+      var el = boardEl.querySelector('[data-i="' + j + '"]');
+      if (el) el.classList.add("matched");
+    });
+    setTimeout(function () {
+      cleared.forEach(function (j) { board[j] = null; });
+      // gravity + fill then cascade
+      for (var c = 0; c < SIZE; c++) {
+        var stack = [];
+        for (var r = SIZE - 1; r >= 0; r--) {
+          var e = board[idx(r, c)];
+          if (e) stack.push(e);
+        }
+        for (var r2 = SIZE - 1; r2 >= 0; r2--) {
+          board[idx(r2, c)] = stack.length ? stack.shift() : null;
+        }
+      }
+      for (var k = 0; k < board.length; k++) if (!board[k]) board[k] = rndEmoji();
+      render();
+      toast("Бабах! +" + (cleared.length * 15));
+      setTimeout(function () { resolveBoard(); }, 200);
+    }, 260);
+  }
+
+  function useLine(i) {
+    clearBoostMode();
+    busy = true;
+    var a = rc(i);
+    var cleared = [];
+    for (var c = 0; c < SIZE; c++) cleared.push(idx(a.r, c));
+    for (var r = 0; r < SIZE; r++) {
+      var j = idx(r, a.c);
+      if (cleared.indexOf(j) === -1) cleared.push(j);
+    }
+    score += cleared.length * 12;
+    updateScore();
+    cleared.forEach(function (j) {
+      var el = boardEl.querySelector('[data-i="' + j + '"]');
+      if (el) el.classList.add("matched");
+    });
+    setTimeout(function () {
+      cleared.forEach(function (j) { board[j] = null; });
+      for (var c = 0; c < SIZE; c++) {
+        var stack = [];
+        for (var r = SIZE - 1; r >= 0; r--) {
+          var e = board[idx(r, c)];
+          if (e) stack.push(e);
+        }
+        for (var r2 = SIZE - 1; r2 >= 0; r2--) {
+          board[idx(r2, c)] = stack.length ? stack.shift() : null;
+        }
+      }
+      for (var k = 0; k < board.length; k++) if (!board[k]) board[k] = rndEmoji();
+      render();
+      toast("Блискавка! +" + (cleared.length * 12));
+      setTimeout(function () { resolveBoard(); }, 200);
+    }, 260);
+  }
+
+  function useRainbow(i) {
+    clearBoostMode();
+    var target = board[i];
+    if (!target) return;
+    busy = true;
+    var cleared = [];
+    for (var j = 0; j < board.length; j++) {
+      if (board[j] === target) cleared.push(j);
+    }
+    score += cleared.length * 20;
+    updateScore();
+    cleared.forEach(function (j) {
+      var el = boardEl.querySelector('[data-i="' + j + '"]');
+      if (el) el.classList.add("matched");
+    });
+    setTimeout(function () {
+      cleared.forEach(function (j) { board[j] = null; });
+      for (var c = 0; c < SIZE; c++) {
+        var stack = [];
+        for (var r = SIZE - 1; r >= 0; r--) {
+          var e = board[idx(r, c)];
+          if (e) stack.push(e);
+        }
+        for (var r2 = SIZE - 1; r2 >= 0; r2--) {
+          board[idx(r2, c)] = stack.length ? stack.shift() : null;
+        }
+      }
+      for (var k = 0; k < board.length; k++) if (!board[k]) board[k] = rndEmoji();
+      render();
+      toast("Веселка! Усі " + target + " зникли  +" + (cleared.length * 20));
+      setTimeout(function () { resolveBoard(); }, 200);
+    }, 260);
+  }
+
+  function shuffleBoard() {
+    if (busy) return;
+    clearBoostMode();
+    // Fisher-Yates on current emojis, then fix initial matches lightly
+    for (var i = board.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = board[i]; board[i] = board[j]; board[j] = t;
+    }
+    var guard = 0;
+    while (findMatches().length && guard++ < 40) {
+      findMatches().forEach(function (i) { board[i] = rndEmoji(); });
+    }
+    selected = null;
+    render();
+    toast("Поле перемішано 🔀");
+  }
+
+  document.getElementById("boost-shuffle").addEventListener("click", shuffleBoard);
+  document.getElementById("boost-bomb").addEventListener("click", function () {
+    setBoostMode("bomb", this);
+  });
+  document.getElementById("boost-line").addEventListener("click", function () {
+    setBoostMode("line", this);
+  });
+  document.getElementById("boost-rainbow").addEventListener("click", function () {
+    setBoostMode("rainbow", this);
+  });
+  document.getElementById("btn-new").addEventListener("click", function () {
+    if (busy) return;
+    createBoard();
+    toast("Нова гра!");
+  });
+
+  createBoard();
+})();
+</script>
+</body>
+</html>
