@@ -25,14 +25,14 @@ const CHARACTERS=[
  {name:'Персонаж 10',price:900,portrait:'hikka template.png',idle:'hikka template.png',walk:'dummywalkinglegs.gif',sit:'hikka template.png'}
 ];
 // GitHub Pages: шукаємо фактичну папку без перейменування файлів.
-// Відносні шляхи працюють і для github.io/назва-репозиторію/.
+// Сторінка islands/hikkahouse-island.html, тому коренева папка ресурсів розташована на рівень вище.
 let ASSET_DIR='';
 const assetURL=name=>ASSET_DIR+String(name).split('/').map(encodeURIComponent).join('/');
 function locateAssets(){
- const folders=['assets/','Assets/','ASSETS/',''];
+ const folders=['../assets/','../Assets/','../ASSETS/','assets/','Assets/',''];
  return new Promise(resolve=>{
   function probe(index){
-   if(index>=folders.length){console.error('Не знайдено floor.png у папках assets, Assets або поруч з index.html');resolve('assets/');return}
+   if(index>=folders.length){console.error('Не знайдено floor.png у ../assets або ../Assets');resolve('../assets/');return}
    const pic=new Image();
    pic.onload=()=>resolve(folders[index]);
    pic.onerror=()=>probe(index+1);
