@@ -9,7 +9,7 @@
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#263b5b 0,#101725 68%);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
 button,select{font:inherit}button{border:1px solid #62789e;background:#344a6d;color:white;border-radius:10px;padding:9px 12px;cursor:pointer;transition:.15s}button:hover{filter:brightness(1.15);transform:translateY(-1px)}button:disabled{opacity:.4;cursor:not-allowed;transform:none}.primary{background:#4366a3;border-color:#7896c7}.gold{background:#8c6826;border-color:#d4ae58}.danger{background:#783b4c;border-color:#b96b7d}
 header{padding:18px 20px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;max-width:1400px;margin:auto}h1{font-size:clamp(23px,3vw,34px);margin:0;letter-spacing:.02em}h2{font-size:18px;margin:0 0 10px}h3{font-size:15px;margin:0 0 8px}.subtitle{color:var(--muted);font-size:13px}.layout{display:grid;grid-template-columns:minmax(240px,300px) minmax(320px,1fr) minmax(230px,290px);gap:14px;padding:12px 18px 24px;max-width:1400px;margin:auto}.panel{background:linear-gradient(145deg,rgba(37,53,81,.97),rgba(24,35,55,.97));border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 12px 35px #0003;min-width:0}.stack{display:grid;gap:12px}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:9px;background:#101a2a;border:1px solid #344765;border-radius:10px}.stat span{display:block;color:var(--muted);font-size:12px}.stat strong{font-size:19px}.bar{height:8px;background:#0d1522;border-radius:20px;overflow:hidden;margin-top:5px}.bar i{display:block;height:100%;background:var(--mint);width:50%;transition:width .2s}.bar.red i{background:var(--red)}.actions{display:flex;gap:7px;flex-wrap:wrap}.action-list{display:grid;gap:7px}.hint{font-size:12px;color:var(--muted)}.field{display:grid;gap:5px;margin:8px 0}.field label{font-size:12px;color:var(--muted)}select{background:#101a2a;color:white;border:1px solid #52698e;border-radius:9px;padding:9px;width:100%}
-.arena-wrap{overflow:auto}.arena{position:relative;min-width:540px;aspect-ratio:1.25;background:#0c1420;border:2px solid #647a9b;border-radius:13px;overflow:hidden;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);gap:3px;padding:4px;background-image:linear-gradient(#17243a,#0e1827)}.room{position:relative;border:0;border-radius:0;min-height:120px;overflow:hidden;background:#29354a;cursor:pointer;isolation:isolate}.room.selected{outline:3px solid var(--gold);outline-offset:-3px;z-index:4}.room .floor{position:absolute;inset:12px 10px 12px;width:calc(100% - 20px);height:calc(100% - 24px);object-fit:fill;opacity:1;z-index:0;image-rendering:pixelated}.room-wall{position:absolute;z-index:3;object-fit:fill;image-rendering:pixelated;pointer-events:none}.wall-top{left:0;top:0;width:100%;height:14px}.wall-left{left:0;top:0;width:12px;height:100%}.wall-right{right:0;top:0;width:12px;height:100%}.wall-bottom-left{left:0;bottom:0;width:34%;height:13px}.wall-bottom-right{right:0;bottom:0;width:34%;height:13px}.room-door{position:absolute;z-index:4;bottom:0;left:34%;width:32%;height:25px;object-fit:fill;image-rendering:pixelated;pointer-events:none}.room-label{position:absolute;z-index:5;top:15px;left:13px;font-size:10px;background:#0b1320c9;padding:2px 4px;border-radius:4px}.room-items{position:absolute;z-index:2;inset:32px 10px 25px;display:flex;justify-content:center;align-items:center;gap:3px;flex-wrap:wrap}.room-items img{width:30%;max-height:43px;object-fit:contain;filter:drop-shadow(0 2px 2px #0008)}.room-items .small{width:23%;max-height:30px}.room-footer{position:absolute;z-index:5;bottom:15px;left:13px;right:13px;display:flex;justify-content:space-between;gap:3px;font-size:9px;color:#e5edf9}.badge{background:#17243be8;border-radius:4px;padding:1px 3px}.player-room{box-shadow:inset 0 0 0 2px #ffd166}.enemy-room{box-shadow:inset 0 0 0 2px #c77b8c}.log{height:200px;overflow:auto;display:flex;flex-direction:column-reverse;gap:6px;font-size:12px}.log p{margin:0;padding:7px 8px;background:#111c2d;border-radius:8px;color:#d5e0f4}.npc-card{display:flex;gap:9px;align-items:center;padding:8px;background:#111c2d;border-radius:10px;margin-bottom:7px}.npc-card img{width:40px;height:40px;object-fit:contain}.npc-card .info{flex:1;min-width:0}.npc-card strong{display:block;font-size:13px}.npc-card small{color:var(--muted)}.screen{max-width:1400px;margin:0 auto;padding:0 18px 12px}.setup{max-width:720px;margin:35px auto;padding:22px}.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hidden{display:none!important}.modal{position:fixed;inset:0;z-index:20;background:#050913cc;display:grid;place-items:center;padding:15px}.modal-box{width:min(520px,100%);padding:22px;border-radius:18px;border:1px solid #637da4;background:linear-gradient(145deg,#2b3d5c,#141f32);text-align:center;box-shadow:0 20px 80px #0009}.gacha-orb{width:130px;height:130px;margin:15px auto;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%,#fff7c7,#f7c75e 22%,#a46ad0 55%,#3b4e9d 80%);box-shadow:0 0 30px #b89aff88;animation:float 2s ease-in-out infinite}.gacha-orb img{max-width:76%;max-height:76%;object-fit:contain}.reward{font-size:20px;color:var(--gold);font-weight:700;margin:10px}.notice{padding:9px;border:1px solid #4a668e;border-radius:10px;background:#14223a;color:#d6e5ff;font-size:12px}.footer{max-width:1400px;margin:auto;padding:0 18px 24px;color:#8fa3c4;font-size:12px}@keyframes float{50%{transform:translateY(-7px) rotate(4deg)}}@media(max-width:1000px){.layout{grid-template-columns:1fr 1.5fr}.right-col{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}}@media(max-width:700px){.layout{grid-template-columns:1fr;padding:10px}.right-col{grid-column:auto;display:grid;grid-template-columns:1fr}.arena{min-width:500px}.setup-grid{grid-template-columns:1fr}header{padding:14px}.screen{padding:0 10px 10px}}
+.arena-wrap{overflow:auto}.arena{position:relative;min-width:540px;aspect-ratio:1.25;background:#0c1420;border:2px solid #647a9b;border-radius:13px;overflow:hidden;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);gap:3px;padding:4px;background-image:linear-gradient(#17243a,#0e1827)}.room{position:relative;border:0;border-radius:0;min-height:120px;overflow:hidden;background:#29354a;cursor:pointer;isolation:isolate}.room.selected{outline:3px solid var(--gold);outline-offset:-3px;z-index:4}.runner{position:absolute;z-index:8;width:44px;height:52px;object-fit:contain;pointer-events:none;transform:translate(-50%,-50%);transition:left .48s linear,top .48s linear;filter:drop-shadow(0 3px 3px #000b)}.runner.hunter-runner{width:48px;height:58px}.runner.enemy-runner{width:40px;height:46px}.runner.running{animation:runBounce .18s ease-in-out infinite alternate}.runner.hit{animation:hitFlash .25s ease-in-out 2}.room.door-hit .room-door{filter:brightness(2) sepia(1) saturate(5);animation:doorShake .2s linear 2}.room .floor{position:absolute;inset:12px 10px 12px;width:calc(100% - 20px);height:calc(100% - 24px);object-fit:fill;opacity:1;z-index:0;image-rendering:pixelated}.room-wall{position:absolute;z-index:3;object-fit:fill;image-rendering:pixelated;pointer-events:none}.wall-top{left:0;top:0;width:100%;height:14px}.wall-left{left:0;top:0;width:12px;height:100%}.wall-right{right:0;top:0;width:12px;height:100%}.wall-bottom-left{left:0;bottom:0;width:34%;height:13px}.wall-bottom-right{right:0;bottom:0;width:34%;height:13px}.room-door{position:absolute;z-index:4;bottom:0;left:34%;width:32%;height:25px;object-fit:fill;image-rendering:pixelated;pointer-events:none}.room-label{position:absolute;z-index:5;top:15px;left:13px;font-size:10px;background:#0b1320c9;padding:2px 4px;border-radius:4px}.room-items{position:absolute;z-index:2;inset:32px 10px 25px;display:flex;justify-content:center;align-items:center;gap:3px;flex-wrap:wrap}.room-items img{width:30%;max-height:43px;object-fit:contain;filter:drop-shadow(0 2px 2px #0008)}.room-items .small{width:23%;max-height:30px}.room-footer{position:absolute;z-index:5;bottom:15px;left:13px;right:13px;display:flex;justify-content:space-between;gap:3px;font-size:9px;color:#e5edf9}.badge{background:#17243be8;border-radius:4px;padding:1px 3px}.player-room{box-shadow:inset 0 0 0 2px #ffd166}.enemy-room{box-shadow:inset 0 0 0 2px #c77b8c}.log{height:200px;overflow:auto;display:flex;flex-direction:column-reverse;gap:6px;font-size:12px}.log p{margin:0;padding:7px 8px;background:#111c2d;border-radius:8px;color:#d5e0f4}.npc-card{display:flex;gap:9px;align-items:center;padding:8px;background:#111c2d;border-radius:10px;margin-bottom:7px}.npc-card img{width:40px;height:40px;object-fit:contain}.npc-card .info{flex:1;min-width:0}.npc-card strong{display:block;font-size:13px}.npc-card small{color:var(--muted)}.screen{max-width:1400px;margin:0 auto;padding:0 18px 12px}.setup{max-width:720px;margin:35px auto;padding:22px}.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hidden{display:none!important}.modal{position:fixed;inset:0;z-index:20;background:#050913cc;display:grid;place-items:center;padding:15px}.modal-box{width:min(520px,100%);padding:22px;border-radius:18px;border:1px solid #637da4;background:linear-gradient(145deg,#2b3d5c,#141f32);text-align:center;box-shadow:0 20px 80px #0009}.gacha-orb{width:130px;height:130px;margin:15px auto;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%,#fff7c7,#f7c75e 22%,#a46ad0 55%,#3b4e9d 80%);box-shadow:0 0 30px #b89aff88;animation:float 2s ease-in-out infinite}.gacha-orb img{max-width:76%;max-height:76%;object-fit:contain}.reward{font-size:20px;color:var(--gold);font-weight:700;margin:10px}.notice{padding:9px;border:1px solid #4a668e;border-radius:10px;background:#14223a;color:#d6e5ff;font-size:12px}.footer{max-width:1400px;margin:auto;padding:0 18px 24px;color:#8fa3c4;font-size:12px}@keyframes float{50%{transform:translateY(-7px) rotate(4deg)}}@keyframes runBounce{from{margin-top:-2px;rotate:-5deg}to{margin-top:3px;rotate:5deg}}@keyframes hitFlash{50%{filter:brightness(2) sepia(1) saturate(6)}}@keyframes doorShake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}@media(max-width:1000px){.layout{grid-template-columns:1fr 1.5fr}.right-col{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}}@media(max-width:700px){.layout{grid-template-columns:1fr;padding:10px}.right-col{grid-column:auto;display:grid;grid-template-columns:1fr}.arena{min-width:500px}.setup-grid{grid-template-columns:1fr}header{padding:14px}.screen{padding:0 10px 10px}}
 </style>
 </head>
 <body>
@@ -51,7 +51,7 @@ header{padding:18px 20px 10px;display:flex;align-items:center;justify-content:sp
         <button id="upgradeWeapon">Поліпшити зброю · 35 монет</button>
         <button id="buildMoney">Побудувати генератор монет · 50</button>
         <button id="buildEnergy">Побудувати генератор енергії · 45</button>
-        <button id="upgradePc">Поліпшити комп’ютер · 40</button>
+        <button id="upgradePc">Поліпшити комп’ютер · 40</button><button id="upgradeDoorBtn">Поліпшити двері · 50</button>
         <button id="restBtn">Відпочити й відновити сили</button>
         <button id="stealBtn" class="gold">Вкрасти предмет у сусіда</button>
       </div>
@@ -89,7 +89,7 @@ header{padding:18px 20px 10px;display:flex;align-items:center;justify-content:sp
 (() => {
 'use strict';
 const $ = id => document.getElementById(id);
-const state = {started:false,turn:1,coins:150,energy:20,hp:40,maxHp:40,obsession:0,hunterLevel:1,difficulty:2,selected:0,rooms:[],npcs:[],log:[],gameOver:false};
+const state = {started:false,turn:1,coins:150,energy:20,hp:40,maxHp:40,obsession:0,hunterLevel:1,difficulty:2,selected:0,hunterRoom:null,hunterMoving:false,rooms:[],npcs:[],log:[],gameOver:false,doorHp:100,maxDoorHp:100,runnerNodes:{}};
 const ASSET_EXTS = ['png','gif','webp','jpg','jpeg','svg'];
 const imageCache = {};
 function assetCandidates(name){return ASSET_EXTS.map(ext => `../assets/${name}.${ext}`)}
@@ -101,16 +101,16 @@ function asset(name, cls=''){
 }
 function addLog(message){state.log.unshift(`Хід ${state.turn}: ${message}`);state.log=state.log.slice(0,40);renderLog()}
 function newRoom(id,owner){
-  return {id,owner,coins:0,energy:0,pc:1,weapon:0,moneytree:0,energyGen:0,door:1,concession:0,alive:true,resting:false};
+  return {id,owner,coins:0,energy:0,pc:1,weapon:0,moneytree:0,energyGen:0,door:1,doorHp:100,concession:0,alive:true,resting:false};
 }
 function startGame(){
   state.started=true;state.turn=1;state.hunterLevel=+$('hunterLevel').value;state.difficulty=+$('difficulty').value;
-  state.coins=+$('startingCoins').value;state.energy=20;state.maxHp=28+state.hunterLevel*4;state.hp=state.maxHp;state.obsession=0;state.gameOver=false;state.selected=0;
+  state.coins=+$('startingCoins').value;state.energy=20;state.maxHp=28+state.hunterLevel*4;state.hp=state.maxHp;state.obsession=0;state.gameOver=false;state.selected=0;state.hunterRoom=null;state.hunterMoving=false;state.doorHp=100;state.maxDoorHp=100;state.runnerNodes={};
   const count=+$('npcCount').value;state.rooms=Array.from({length:12},(_,i)=>newRoom(i,i===0?'player':(i<=count?'npc'+i:null)));
   state.npcs=[];
   for(let i=1;i<=count;i++){const r=state.rooms[i];r.coins=50+Math.floor(Math.random()*35);r.energy=15+Math.floor(Math.random()*15);r.pc=1+Math.floor(Math.random()*2);r.moneytree=Math.random()<.5?1:0;r.energyGen=Math.random()<.35?1:0;r.weapon=Math.random()<.35?1:0;
-    state.npcs.push({id:i,room:i,name:['Мандрівник','Скиталка','Острів’янин','Механік','Тінь','Вартовий','Мрійник'][i-1]||`NPC ${i}`,hp:30+Math.floor(Math.random()*15),maxHp:45,alive:true,profile:Math.ceil(Math.random()*3),turns:0});}
-  $('setup').classList.add('hidden');$('game').classList.remove('hidden');state.log=[];addLog(`Матч почався. Мисливець рівня ${state.hunterLevel}, суперників: ${count}.`);render();
+    state.npcs.push({id:i,room:i,pos:i,name:['Мандрівник','Скиталка','Острів’янин','Механік','Тінь','Вартовий','Мрійник'][i-1]||`NPC ${i}`,hp:30+Math.floor(Math.random()*15),maxHp:45,alive:true,profile:Math.ceil(Math.random()*3),turns:0});}
+  $('setup').classList.add('hidden');$('game').classList.remove('hidden');state.log=[];addLog(`Матч почався. Мисливець рівня ${state.hunterLevel}, суперників: ${count}.`);addLog('Натисни кімнату: мисливець побіжить туди. Суперники рухаються до нього кожного ходу.');render();
 }
 function playerRoom(){return state.rooms[0]}
 function selectedRoom(){return state.rooms[state.selected]}
@@ -122,6 +122,7 @@ function build(kind){
   if(kind==='weapon'){if(r.weapon>=8){addLog('Зброя вже максимального 8-го рівня.');return}if(!canAfford(r.weapon?35+r.weapon*8:45,5))return;spend(r.weapon?35+r.weapon*8:45,5);r.weapon++;addLog(`Зброю поліпшено до рівня ${r.weapon}.`)}
   if(kind==='money'){if(r.moneytree>=4){addLog('Генератор монет уже 4-го рівня.');return}if(!canAfford(r.moneytree?35+r.moneytree*10:50,3))return;spend(r.moneytree?35+r.moneytree*10:50,3);r.moneytree++;addLog(`Генератор монет: рівень ${r.moneytree}.`)}
   if(kind==='energy'){if(r.energyGen>=5){addLog('Генератор енергії вже 5-го рівня.');return}if(!canAfford(r.energyGen?30+r.energyGen*10:45,2))return;spend(r.energyGen?30+r.energyGen*10:45,2);r.energyGen++;addLog(`Генератор енергії: рівень ${r.energyGen}.`)}
+  if(kind==='door'){if(r.door>=6){addLog('Двері вже 6-го рівня.');return}if(!canAfford(35+r.door*15,4))return;spend(35+r.door*15,4);r.door++;r.doorHp=Math.min(100+r.door*30,r.doorHp+35);if(r.id===0)state.maxDoorHp=100+r.door*30;addLog(`Двері покращено до ${r.door}-го рівня.`)}
   if(kind==='pc'){if(r.pc>=7){addLog('Комп’ютер уже досяг максимального 7-го рівня.');return}if(!canAfford(40+r.pc*10,4))return;spend(40+r.pc*10,4);r.pc++;addLog(`Комп’ютер поліпшено до рівня ${r.pc}.`)}
   render();
 }
@@ -133,8 +134,8 @@ function steal(){
  r.coins-=take;state.coins+=take;state.obsession=Math.min(100,state.obsession+12);addLog(`Ти вкрав/вкрала ${take} монет у ${npcForRoom(r.id)?.name||'суперника'}. Нав’язливість зросла.`);render()
 }
 function npcForRoom(roomId){return state.npcs.find(n=>n.room===roomId)}
-function nextTurn(){
- if(state.gameOver)return;state.turn++;
+async function nextTurn(){
+ if(state.gameOver||state.hunterMoving)return;state.turn++;
  for(const r of state.rooms){if(!r.alive)continue;r.coins+=r.moneytree*(8+r.moneytree*2);r.energy+=r.energyGen*(4+r.energyGen);if(r.owner==='player'){state.coins+=r.moneytree*(8+r.moneytree*2);state.energy+=r.energyGen*(4+r.energyGen)}}
  // NPC make independent choices; they do not steal from other NPCs.
  for(const n of state.npcs){if(!n.alive)continue;const r=state.rooms[n.room];n.turns++;r.concession=Math.min(100,r.concession+1);
@@ -144,25 +145,53 @@ function nextTurn(){
    else if(r.moneytree<4&&r.coins>60){r.coins-=50+r.moneytree*10;r.moneytree++}
    else if(r.energyGen<5&&r.coins>55){r.coins-=45+r.energyGen*10;r.energyGen++}
  }
- // The hunter occasionally pressures a random living rival.
- const alive=state.npcs.filter(n=>n.alive);
- if(alive.length&&Math.random()<(.25+state.difficulty*.12)){
-   const target=alive[Math.floor(Math.random()*alive.length)],rr=state.rooms[target.room];
-   const damage=4+state.hunterLevel*2+Math.floor(Math.random()*5);target.hp-=damage;state.obsession=Math.min(100,state.obsession+3);
-   addLog(`Мисливець атакує ${target.name}: −${damage} здоров’я.`);
-   if(target.hp<=0){target.alive=false;rr.alive=false;rr.owner=null;addLog(`${target.name} вибуває з матчу.`)}
+ // Усі живі суперники реально рухаються по сітці до мисливця.
+ for(const n of state.npcs){
+   if(!n.alive)continue;
+   if(state.hunterRoom===null){n.lastRoom=n.room;continue}
+   const old=n.pos??n.room, target=state.hunterRoom;
+   if(old!==target){n.pos=stepToward(old,target);animateRunner(`npc-${n.id}`,n.pos,n.profile===1?'cat1':n.profile===2?'dog1':'hikka template','enemy-runner');addLog(`${n.name} біжить з кімнати ${old+1} до кімнати ${n.pos+1}.`);await wait(500)}
+   if((n.pos??n.room)===state.hunterRoom){
+     if((n.pos??n.room)===0){const dmg=5+state.difficulty*2+Math.floor(Math.random()*5);state.doorHp=Math.max(0,state.doorHp-dmg);state.obsession=Math.min(100,state.obsession+4);addLog(`${n.name} б’є у двері! −${dmg} міцності дверей.`);flashDoor();if(state.doorHp<=0){const hit=5+state.difficulty*2;state.hp=Math.max(0,state.hp-hit);state.doorHp=0;addLog(`Двері проламані! Мисливець отримує −${hit} HP.`)}}
+     else {const dmg=4+state.hunterLevel*2+Math.floor(Math.random()*4);n.hp-=dmg;state.obsession=Math.min(100,state.obsession+3);addLog(`Мисливець відбивається від ${n.name}: −${dmg} HP ворогу.`);if(n.hp<=0){n.alive=false;state.rooms[n.room].owner=null;addLog(`${n.name} вибуває з матчу.`)}}
+   }
  }
- if(Math.random()<.25+state.difficulty*.08){const damage=2+state.difficulty+Math.floor(Math.random()*4);state.hp=Math.max(0,state.hp-damage);state.obsession=Math.min(100,state.obsession+4);addLog(`Мисливець зазнав шкоди: −${damage} HP.`)}
+ if(state.hp<=0){state.gameOver=true;addLog('Здоров’я мисливця вичерпано. Матч завершено.')}
  if(state.hp<=0){state.gameOver=true;addLog('Здоров’я мисливця вичерпано. Матч завершено.')}
  else if(!state.npcs.some(n=>n.alive)){state.gameOver=true;addLog('Усі суперники вибули! Ти переміг/перемогла.')}
  else if(state.obsession>=100){state.gameOver=true;addLog('Нав’язливість досягла межі — мисливець втрачає контроль.')}
  render();
 }
+function roomCenter(roomId){
+ const arena=$('arena'), room=arena.querySelectorAll('.room')[roomId]; if(!room)return {x:arena.clientWidth/2,y:arena.clientHeight/2};
+ const a=arena.getBoundingClientRect(),b=room.getBoundingClientRect();return {x:b.left-a.left+b.width/2,y:b.top-a.top+b.height*.56};
+}
+function placeRunner(node,roomId){const p=roomCenter(roomId);node.style.left=p.x+'px';node.style.top=p.y+'px';node.dataset.room=roomId}
+function renderActors(){
+ const arena=$('arena');arena.querySelectorAll('.runner').forEach(n=>n.remove());state.runnerNodes={};
+ if(state.hunterRoom!==null){const h=asset('hunter','runner hunter-runner');h.classList.add('running');h.dataset.actor='hunter';arena.appendChild(h);state.runnerNodes.hunter=h;placeRunner(h,state.hunterRoom);h.classList.remove('running')}
+ for(const n of state.npcs){if(!n.alive)continue;const sprite=n.profile===1?'cat1':n.profile===2?'dog1':'hikka template';const node=asset(sprite,'runner enemy-runner');node.dataset.actor='npc-'+n.id;arena.appendChild(node);state.runnerNodes['npc-'+n.id]=node;placeRunner(node,n.pos??n.room)}
+}
+function animateRunner(key,roomId,sprite,cls){const node=state.runnerNodes[key];if(!node)return;node.classList.add('running');placeRunner(node,roomId);setTimeout(()=>node.classList.remove('running'),520)}
+function stepToward(from,to){const fr=Math.floor(from/4),fc=from%4,tr=Math.floor(to/4),tc=to%4;if(fc!==tc)return from+(tc>fc?1:-1);if(fr!==tr)return from+(tr>fr?4:-4);return from}
+function wait(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
+async function moveHunterTo(target){
+ if(state.gameOver||state.hunterMoving)return;
+ state.hunterMoving=true;state.selected=target;
+ if(state.hunterRoom===null){const arena=$('arena'),h=asset('hunter','runner hunter-runner running');h.dataset.actor='hunter';arena.appendChild(h);state.runnerNodes.hunter=h;state.hunterRoom=11;placeRunner(h,11);}
+ const start=state.hunterRoom;let current=start;
+ while(current!==target){current=stepToward(current,target);state.hunterRoom=current;const h=state.runnerNodes.hunter;if(h){h.classList.add('running');placeRunner(h,current)}await wait(490)}
+ const h=state.runnerNodes.hunter;if(h)h.classList.remove('running');state.hunterMoving=false;
+ const rival=state.npcs.find(n=>n.alive&&(n.pos??n.room)===target);
+ if(rival){const dmg=6+state.hunterLevel*3+rival.turns%4;rival.hp-=dmg;state.obsession=Math.min(100,state.obsession+5);addLog(`Мисливець добігає до кімнати ${target+1} й атакує ${rival.name}: −${dmg} HP.`);if(rival.hp<=0){rival.alive=false;state.rooms[rival.room].owner=null;addLog(`${rival.name} вибуває з матчу.`)}}else addLog(`Мисливець добіг до кімнати ${target+1}.`);
+ render();
+}
+function flashDoor(){const room=$('arena').querySelector('.room');if(room){room.classList.add('door-hit');setTimeout(()=>room.classList.remove('door-hit'),500)}}
 function renderArena(){
  const arena=$('arena');arena.innerHTML='';
  state.rooms.forEach((r,i)=>{
    const el=document.createElement('div');el.className='room'+(i===state.selected?' selected':'')+(r.owner==='player'?' player-room':'')+(r.owner&&r.owner!=='player'?' enemy-room':'');
-   el.addEventListener('click',()=>{state.selected=i;render()});
+   el.addEventListener('click',()=>{state.selected=i;render();moveHunterTo(i)});
    // Build each room from the supplied wall, floor, and levelled-door sprites.
    el.appendChild(asset('floor','floor'));
    const wallTop=asset('wall','room-wall wall-top');el.appendChild(wallTop);
@@ -175,13 +204,11 @@ function renderArena(){
    const label=document.createElement('div');label.className='room-label';label.textContent=r.owner==='player'?'Твоя кімната':r.owner?'Кімната '+i:'Вільна кімната';el.appendChild(label);
    const items=document.createElement('div');items.className='room-items';
    if(r.owner==='player'){
-     items.appendChild(asset('hunter'));
      items.appendChild(asset(r.pc<=2?`pc${r.pc}`:'pc2'));
      if(r.weapon)items.appendChild(asset(`weapon${r.weapon}`,'small'));
      if(r.moneytree)items.appendChild(asset(`moneytree${r.moneytree}`,'small'));
      if(r.energyGen)items.appendChild(asset(`energy${r.energyGen}`,'small'));
    } else if(r.owner&&r.alive){
-     const n=npcForRoom(i);if(n)items.appendChild(asset(n.profile===1?'cat1':n.profile===2?'dog1':'hikka template'));
      if(r.weapon)items.appendChild(asset(`weapon${r.weapon}`,'small'));
      if(r.moneytree)items.appendChild(asset(`moneytree${r.moneytree}`,'small'));
      if(r.energyGen)items.appendChild(asset(`energy${r.energyGen}`,'small'));
@@ -189,7 +216,7 @@ function renderArena(){
      items.appendChild(asset('wall','small'));
    }
    el.appendChild(items);
-   const footer=document.createElement('div');footer.className='room-footer';footer.innerHTML=`<span class="badge">🪙 ${r.coins}</span><span class="badge">PC ${r.pc}/7</span>`;el.appendChild(footer);arena.appendChild(el);
+   const footer=document.createElement('div');footer.className='room-footer';footer.innerHTML=`<span class="badge">🪙 ${r.coins}</span><span class="badge">PC ${r.pc}/7</span>${i===0?`<span class="badge">🚪 ${state.doorHp}/${state.maxDoorHp}</span>`:''}`;el.appendChild(footer);arena.appendChild(el);
  });
 }
 function renderNpcs(){
@@ -203,8 +230,8 @@ function render(){
  $('coins').textContent=state.coins;$('energy').textContent=state.energy;$('hp').textContent=`${state.hp}/${state.maxHp}`;$('hpBar').style.width=`${state.hp/state.maxHp*100}%`;$('obsession').textContent=state.obsession+'%';$('obsBar').style.width=state.obsession+'%';
  $('hunterDesc').textContent=`Мисливець рівня ${state.hunterLevel} · шкода/тиск зростає з рівнем`;
  const r=selectedRoom(),own=isPlayerRoom(r);
- $('selectedRoomInfo').innerHTML=`<b>${own?'Твоя кімната':r.owner?'Кімната суперника':'Порожня кімната'}</b><br>Комп’ютер: ${r.pc}/7 · Зброя: ${r.weapon}/8<br>Генератор монет: ${r.moneytree}/4 · Енергія: ${r.energyGen}/5<br>Монети кімнати: ${r.coins}${r.owner&&r.owner!=='player'?'<br><span class="hint">Тут можна спробувати крадіжку.</span>':''}`;
- ['buildWeapon','upgradeWeapon','buildMoney','buildEnergy','upgradePc','restBtn'].forEach(id=>$(id).disabled=!own||state.gameOver);
+ $('selectedRoomInfo').innerHTML=`<b>${own?'Твоя кімната':r.owner?'Кімната суперника':'Порожня кімната'}</b><br>Комп’ютер: ${r.pc}/7 · Зброя: ${r.weapon}/8 · Двері: ${r.door}/6<br>Міцність дверей: ${r.id===0?state.doorHp:r.doorHp}/${r.id===0?state.maxDoorHp:100+r.door*30}<br>Генератор монет: ${r.moneytree}/4 · Енергія: ${r.energyGen}/5<br>Монети кімнати: ${r.coins}${r.owner&&r.owner!=='player'?'<br><span class="hint">Тут можна спробувати крадіжку.</span>':''}`;
+ ['buildWeapon','upgradeWeapon','buildMoney','buildEnergy','upgradePc','restBtn','upgradeDoorBtn'].forEach(id=>$(id).disabled=!own||state.gameOver||state.hunterMoving);
  $('buildWeapon').textContent=r.weapon?'Покращити зброю · '+(35+r.weapon*8)+' монет':'Побудувати зброю · 45 монет';
  $('upgradeWeapon').classList.add('hidden');
  $('buildMoney').textContent=r.moneytree?'Поліпшити генератор монет · '+(35+r.moneytree*10):'Побудувати генератор монет · 50';
@@ -232,7 +259,7 @@ $('startBtn').addEventListener('click',startGame);
 $('restartBtn').addEventListener('click',()=>{ $('game').classList.add('hidden');$('setup').classList.remove('hidden');state.started=false;});
 $('helpBtn').addEventListener('click',()=>$('helpModal').classList.remove('hidden'));
 $('closeHelp').addEventListener('click',()=>$('helpModal').classList.add('hidden'));
-$('buildWeapon').addEventListener('click',()=>build('weapon'));$('upgradeWeapon').addEventListener('click',()=>build('weapon'));
+$('upgradeDoorBtn').addEventListener('click',()=>build('door'));$('buildWeapon').addEventListener('click',()=>build('weapon'));$('upgradeWeapon').addEventListener('click',()=>build('weapon'));
 $('buildMoney').addEventListener('click',()=>build('money'));$('buildEnergy').addEventListener('click',()=>build('energy'));$('upgradePc').addEventListener('click',()=>build('pc'));
 $('restBtn').addEventListener('click',rest);$('stealBtn').addEventListener('click',steal);$('endTurnBtn').addEventListener('click',nextTurn);
 $('gachaBtn').addEventListener('click',openGacha);$('rollBtn').addEventListener('click',rollGacha);$('closeModal').addEventListener('click',()=>$('modal').classList.add('hidden'));
