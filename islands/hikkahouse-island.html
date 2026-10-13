@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Islands — прототип гри</title>
+<style>
+:root{--bg:#111827;--panel:#1d2940;--panel2:#263653;--line:#415575;--text:#f4f7ff;--muted:#b9c7df;--gold:#ffd166;--mint:#7ce0bb;--red:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#263b5b 0,#101725 68%);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+button,select{font:inherit}button{border:1px solid #62789e;background:#344a6d;color:white;border-radius:10px;padding:9px 12px;cursor:pointer;transition:.15s}button:hover{filter:brightness(1.15);transform:translateY(-1px)}button:disabled{opacity:.4;cursor:not-allowed;transform:none}.primary{background:#4366a3;border-color:#7896c7}.gold{background:#8c6826;border-color:#d4ae58}.danger{background:#783b4c;border-color:#b96b7d}
+header{padding:18px 20px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;max-width:1400px;margin:auto}h1{font-size:clamp(23px,3vw,34px);margin:0;letter-spacing:.02em}h2{font-size:18px;margin:0 0 10px}h3{font-size:15px;margin:0 0 8px}.subtitle{color:var(--muted);font-size:13px}.layout{display:grid;grid-template-columns:minmax(240px,300px) minmax(320px,1fr) minmax(230px,290px);gap:14px;padding:12px 18px 24px;max-width:1400px;margin:auto}.panel{background:linear-gradient(145deg,rgba(37,53,81,.97),rgba(24,35,55,.97));border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 12px 35px #0003;min-width:0}.stack{display:grid;gap:12px}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.stat{padding:9px;background:#101a2a;border:1px solid #344765;border-radius:10px}.stat span{display:block;color:var(--muted);font-size:12px}.stat strong{font-size:19px}.bar{height:8px;background:#0d1522;border-radius:20px;overflow:hidden;margin-top:5px}.bar i{display:block;height:100%;background:var(--mint);width:50%;transition:width .2s}.bar.red i{background:var(--red)}.actions{display:flex;gap:7px;flex-wrap:wrap}.action-list{display:grid;gap:7px}.hint{font-size:12px;color:var(--muted)}.field{display:grid;gap:5px;margin:8px 0}.field label{font-size:12px;color:var(--muted)}select{background:#101a2a;color:white;border:1px solid #52698e;border-radius:9px;padding:9px;width:100%}
+.arena-wrap{overflow:auto}.arena{position:relative;min-width:540px;aspect-ratio:1.25;background:#0c1420;border:2px solid #647a9b;border-radius:13px;overflow:hidden;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);gap:3px;padding:4px;background-image:linear-gradient(#17243a,#0e1827)}.room{position:relative;border:1px solid #465b73;border-radius:5px;min-height:120px;overflow:hidden;background:#29354a;cursor:pointer}.room.selected{outline:3px solid var(--gold);outline-offset:-3px}.room .floor{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.42;image-rendering:auto}.room:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 45%,#0c1420bb)}.room-label{position:absolute;z-index:2;top:5px;left:6px;font-size:11px;background:#0b1320c9;padding:2px 5px;border-radius:5px}.room-items{position:absolute;z-index:2;inset:26px 5px 23px;display:flex;justify-content:center;align-items:center;gap:4px;flex-wrap:wrap}.room-items img{width:32%;max-height:54px;object-fit:contain;filter:drop-shadow(0 2px 2px #0008)}.room-items .small{width:24%;max-height:34px}.room-footer{position:absolute;z-index:3;bottom:4px;left:5px;right:5px;display:flex;justify-content:space-between;gap:3px;font-size:10px;color:#e5edf9}.badge{background:#17243be8;border-radius:5px;padding:2px 4px}.player-room{border-color:#ffd166}.enemy-room{border-color:#c77b8c}.log{height:200px;overflow:auto;display:flex;flex-direction:column-reverse;gap:6px;font-size:12px}.log p{margin:0;padding:7px 8px;background:#111c2d;border-radius:8px;color:#d5e0f4}.npc-card{display:flex;gap:9px;align-items:center;padding:8px;background:#111c2d;border-radius:10px;margin-bottom:7px}.npc-card img{width:40px;height:40px;object-fit:contain}.npc-card .info{flex:1;min-width:0}.npc-card strong{display:block;font-size:13px}.npc-card small{color:var(--muted)}.screen{max-width:1400px;margin:0 auto;padding:0 18px 12px}.setup{max-width:720px;margin:35px auto;padding:22px}.setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hidden{display:none!important}.modal{position:fixed;inset:0;z-index:20;background:#050913cc;display:grid;place-items:center;padding:15px}.modal-box{width:min(520px,100%);padding:22px;border-radius:18px;border:1px solid #637da4;background:linear-gradient(145deg,#2b3d5c,#141f32);text-align:center;box-shadow:0 20px 80px #0009}.gacha-orb{width:130px;height:130px;margin:15px auto;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%,#fff7c7,#f7c75e 22%,#a46ad0 55%,#3b4e9d 80%);box-shadow:0 0 30px #b89aff88;animation:float 2s ease-in-out infinite}.gacha-orb img{max-width:76%;max-height:76%;object-fit:contain}.reward{font-size:20px;color:var(--gold);font-weight:700;margin:10px}.notice{padding:9px;border:1px solid #4a668e;border-radius:10px;background:#14223a;color:#d6e5ff;font-size:12px}.footer{max-width:1400px;margin:auto;padding:0 18px 24px;color:#8fa3c4;font-size:12px}@keyframes float{50%{transform:translateY(-7px) rotate(4deg)}}@media(max-width:1000px){.layout{grid-template-columns:1fr 1.5fr}.right-col{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}}@media(max-width:700px){.layout{grid-template-columns:1fr;padding:10px}.right-col{grid-column:auto;display:grid;grid-template-columns:1fr}.arena{min-width:500px}.setup-grid{grid-template-columns:1fr}header{padding:14px}.screen{padding:0 10px 10px}}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>🏝️ ISLANDS</h1><div class="subtitle">Стратегія виживання · ранній прототип</div></div>
+  <div class="actions"><button id="restartBtn">Нова гра</button><button id="helpBtn">Як грати</button></div>
+</header>
+
+<section id="setup" class="panel setup">
+  <h2>Підготовка до матчу</h2>
+  <p class="subtitle">Обери тип мисливця й суперників. Усі кімнати мають однакову базову форму; суперники розвиваються самостійно.</p>
+  <div class="setup-grid">
+    <div class="field"><label for="hunterLevel">Рівень мисливця</label><select id="hunterLevel"><option value="1">Рівень 1 — початківець</option><option value="2">Рівень 2 — досвідчений</option><option value="3">Рівень 3 — небезпечний</option><option value="4">Рівень 4 — елітний</option></select></div>
+    <div class="field"><label for="npcCount">Кількість NPC-суперників</label><select id="npcCount"><option value="3">3 суперники</option><option value="5" selected>5 суперників</option><option value="7">7 суперників</option></select></div>
+    <div class="field"><label for="difficulty">Поведінка суперників</label><select id="difficulty"><option value="1">Спокійна</option><option value="2" selected>Збалансована</option><option value="3">Агресивна</option></select></div>
+    <div class="field"><label for="startingCoins">Стартові монети</label><select id="startingCoins"><option value="100">100</option><option value="150" selected>150</option><option value="220">220</option></select></div>
+  </div>
+  <div class="notice">Крадіжки доступні тільки гравцеві. NPC не крадуть речі один в одного. Гача — декоративна ігрова механіка без платежів.</div>
+  <div class="actions" style="margin-top:15px"><button class="primary" id="startBtn">Почати матч</button></div>
+</section>
+
+<main id="game" class="layout hidden">
+  <aside class="stack">
+    <section class="panel">
+      <h2>Твій стан</h2>
+      <div class="stats">
+        <div class="stat"><span>Монети</span><strong id="coins">150</strong></div>
+        <div class="stat"><span>Енергія</span><strong id="energy">20</strong></div>
+        <div class="stat"><span>Здоров’я мисливця</span><strong id="hp">40/40</strong><div class="bar red"><i id="hpBar"></i></div></div>
+        <div class="stat"><span>Нав’язливість</span><strong id="obsession">0%</strong><div class="bar"><i id="obsBar"></i></div></div>
+      </div>
+      <p class="hint" id="hunterDesc">Мисливець рівня 1</p>
+    </section>
+    <section class="panel">
+      <h2>Обрана кімната</h2>
+      <div id="selectedRoomInfo" class="hint">Обери кімнату на полі.</div>
+      <div class="action-list" style="margin-top:10px">
+        <button id="buildWeapon">Побудувати зброю · 45 монет</button>
+        <button id="upgradeWeapon">Поліпшити зброю · 35 монет</button>
+        <button id="buildMoney">Побудувати генератор монет · 50</button>
+        <button id="buildEnergy">Побудувати генератор енергії · 45</button>
+        <button id="upgradePc">Поліпшити комп’ютер · 40</button>
+        <button id="restBtn">Відпочити й відновити сили</button>
+        <button id="stealBtn" class="gold">Вкрасти предмет у сусіда</button>
+      </div>
+      <p class="hint">Комп’ютер замінює ліжко. Його рівень — до 7, зброї — до 8. Ресурси та ціни в цій версії тестові.</p>
+    </section>
+  </aside>
+
+  <section class="panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <div><h2>Острів і кімнати</h2><div class="subtitle">Натисни на кімнату, щоб вибрати її</div></div>
+      <div class="actions"><button id="gachaBtn" class="gold">✦ Відкрити гачу</button><button id="endTurnBtn" class="primary">Наступний хід</button></div>
+    </div>
+    <div class="arena-wrap"><div id="arena" class="arena"></div></div>
+    <p class="hint">Мета прототипу: розвивати кімнату, стежити за ресурсами й пережити атаки мисливця. Зараз це покрокова тестова модель, не фінальний баланс.</p>
+  </section>
+
+  <aside class="stack right-col">
+    <section class="panel"><h2>Суперники</h2><div id="npcList"></div></section>
+    <section class="panel"><h2>Події матчу</h2><div id="log" class="log" aria-live="polite"></div></section>
+  </aside>
+</main>
+<div class="footer">Прототип для GitHub Pages · Усі дані зберігаються лише під час відкритої сторінки.</div>
+
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <h2 id="modalTitle">Гача</h2>
+    <div class="gacha-orb" id="gachaOrb">✦</div>
+    <div id="modalText">Випробуй удачу.</div>
+    <div class="actions" style="justify-content:center;margin-top:16px"><button id="rollBtn" class="gold">Відкрити · 30 монет</button><button id="closeModal">Закрити</button></div>
+  </div>
+</div>
+<div id="helpModal" class="modal hidden" role="dialog" aria-modal="true"><div class="modal-box" style="text-align:left"><h2>Як грати</h2><p>1. Вибери кімнату на полі.</p><p>2. Купуй генератори, комп’ютер і зброю. Генератори приносять ресурси з кожним ходом.</p><p>3. Крадіжка доступна лише гравцеві й може забрати ресурс із кімнати NPC.</p><p>4. Суперники розвиваються автоматично. Мисливець може атакувати, а його здоров’я обмежене.</p><p>5. Гача витрачає ігрові монети, не справжні гроші.</p><div class="actions"><button id="closeHelp" class="primary">Зрозуміло</button></div></div></div>
+
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const state = {started:false,turn:1,coins:150,energy:20,hp:40,maxHp:40,obsession:0,hunterLevel:1,difficulty:2,selected:0,rooms:[],npcs:[],log:[],gameOver:false};
+const ASSET_EXTS = ['png','gif','webp','jpg','jpeg','svg'];
+const imageCache = {};
+function assetCandidates(name){return ASSET_EXTS.map(ext => `../assets/${name}.${ext}`)}
+function asset(name, cls=''){
+  const img=document.createElement('img'); img.alt=name; if(cls)img.className=cls;
+  const candidates=assetCandidates(name); let index=0;
+  img.onerror=()=>{index++; if(index<candidates.length)img.src=candidates[index]; else {img.onerror=null;img.style.display='none';}};
+  img.src=candidates[0]; return img;
+}
+function addLog(message){state.log.unshift(`Хід ${state.turn}: ${message}`);state.log=state.log.slice(0,40);renderLog()}
+function newRoom(id,owner){
+  return {id,owner,coins:0,energy:0,pc:1,weapon:0,moneytree:0,energyGen:0,door:1,concession:0,alive:true,resting:false};
+}
+function startGame(){
+  state.started=true;state.turn=1;state.hunterLevel=+$('hunterLevel').value;state.difficulty=+$('difficulty').value;
+  state.coins=+$('startingCoins').value;state.energy=20;state.maxHp=28+state.hunterLevel*4;state.hp=state.maxHp;state.obsession=0;state.gameOver=false;state.selected=0;
+  const count=+$('npcCount').value;state.rooms=Array.from({length:12},(_,i)=>newRoom(i,i===0?'player':(i<=count?'npc'+i:null)));
+  state.npcs=[];
+  for(let i=1;i<=count;i++){const r=state.rooms[i];r.coins=50+Math.floor(Math.random()*35);r.energy=15+Math.floor(Math.random()*15);r.pc=1+Math.floor(Math.random()*2);r.moneytree=Math.random()<.5?1:0;r.energyGen=Math.random()<.35?1:0;r.weapon=Math.random()<.35?1:0;
+    state.npcs.push({id:i,room:i,name:['Мандрівник','Скиталка','Острів’янин','Механік','Тінь','Вартовий','Мрійник'][i-1]||`NPC ${i}`,hp:30+Math.floor(Math.random()*15),maxHp:45,alive:true,profile:Math.ceil(Math.random()*3),turns:0});}
+  $('setup').classList.add('hidden');$('game').classList.remove('hidden');state.log=[];addLog(`Матч почався. Мисливець рівня ${state.hunterLevel}, суперників: ${count}.`);render();
+}
+function playerRoom(){return state.rooms[0]}
+function selectedRoom(){return state.rooms[state.selected]}
+function isPlayerRoom(r){return r&&r.owner==='player'}
+function canAfford(coins,energy=0){if(state.coins<coins||state.energy<energy){addLog('Не вистачає ресурсів для цієї дії.');return false}return true}
+function spend(coins,energy=0){state.coins-=coins;state.energy-=energy}
+function build(kind){
+  if(state.gameOver)return;const r=selectedRoom();if(!isPlayerRoom(r)){addLog('Будувати можна лише у власній кімнаті.');return}
+  if(kind==='weapon'){if(r.weapon>=8){addLog('Зброя вже максимального 8-го рівня.');return}if(!canAfford(r.weapon?35+r.weapon*8:45,5))return;spend(r.weapon?35+r.weapon*8:45,5);r.weapon++;addLog(`Зброю поліпшено до рівня ${r.weapon}.`)}
+  if(kind==='money'){if(r.moneytree>=4){addLog('Генератор монет уже 4-го рівня.');return}if(!canAfford(r.moneytree?35+r.moneytree*10:50,3))return;spend(r.moneytree?35+r.moneytree*10:50,3);r.moneytree++;addLog(`Генератор монет: рівень ${r.moneytree}.`)}
+  if(kind==='energy'){if(r.energyGen>=5){addLog('Генератор енергії вже 5-го рівня.');return}if(!canAfford(r.energyGen?30+r.energyGen*10:45,2))return;spend(r.energyGen?30+r.energyGen*10:45,2);r.energyGen++;addLog(`Генератор енергії: рівень ${r.energyGen}.`)}
+  if(kind==='pc'){if(r.pc>=7){addLog('Комп’ютер уже досяг максимального 7-го рівня.');return}if(!canAfford(40+r.pc*10,4))return;spend(40+r.pc*10,4);r.pc++;addLog(`Комп’ютер поліпшено до рівня ${r.pc}.`)}
+  render();
+}
+function rest(){if(state.gameOver)return;const r=selectedRoom();if(!isPlayerRoom(r)){addLog('Можна відпочивати лише у власній кімнаті.');return}const healed=Math.min(state.maxHp-state.hp,4+state.hunterLevel*2);state.hp+=healed;state.energy=Math.min(100,state.energy+8);r.resting=true;addLog(`Мисливець відпочив: +${healed} здоров’я, +8 енергії.`);render()}
+function steal(){
+ if(state.gameOver)return;const r=selectedRoom();if(!r||!r.owner||r.owner==='player'||!r.alive){addLog('Обери кімнату живого суперника.');return}
+ const take=Math.min(r.coins,15+state.hunterLevel*3);
+ if(take<=0){addLog('У цій кімнаті немає монет для крадіжки.');return}
+ r.coins-=take;state.coins+=take;state.obsession=Math.min(100,state.obsession+12);addLog(`Ти вкрав/вкрала ${take} монет у ${npcForRoom(r.id)?.name||'суперника'}. Нав’язливість зросла.`);render()
+}
+function npcForRoom(roomId){return state.npcs.find(n=>n.room===roomId)}
+function nextTurn(){
+ if(state.gameOver)return;state.turn++;
+ for(const r of state.rooms){if(!r.alive)continue;r.coins+=r.moneytree*(8+r.moneytree*2);r.energy+=r.energyGen*(4+r.energyGen);if(r.owner==='player'){state.coins+=r.moneytree*(8+r.moneytree*2);state.energy+=r.energyGen*(4+r.energyGen)}}
+ // NPC make independent choices; they do not steal from other NPCs.
+ for(const n of state.npcs){if(!n.alive)continue;const r=state.rooms[n.room];n.turns++;r.concession=Math.min(100,r.concession+1);
+   const roll=Math.random(); if(n.hp<20&&roll<.25){n.hp=Math.min(n.maxHp,n.hp+8);addLog(`${n.name} відновлює сили.`)}
+   else if(r.pc<7&&r.coins>45&&roll<.62){const cost=40+r.pc*10;r.coins-=cost;r.pc++;addLog(`${n.name} поліпшує комп’ютер до ${r.pc}-го рівня.`)}
+   else if(r.weapon<8&&r.coins>55&&roll<.82){r.coins-=45+r.weapon*8;r.weapon++;addLog(`${n.name} розвиває зброю до ${r.weapon}-го рівня.`)}
+   else if(r.moneytree<4&&r.coins>60){r.coins-=50+r.moneytree*10;r.moneytree++}
+   else if(r.energyGen<5&&r.coins>55){r.coins-=45+r.energyGen*10;r.energyGen++}
+ }
+ // The hunter occasionally pressures a random living rival.
+ const alive=state.npcs.filter(n=>n.alive);
+ if(alive.length&&Math.random()<(.25+state.difficulty*.12)){
+   const target=alive[Math.floor(Math.random()*alive.length)],rr=state.rooms[target.room];
+   const damage=4+state.hunterLevel*2+Math.floor(Math.random()*5);target.hp-=damage;state.obsession=Math.min(100,state.obsession+3);
+   addLog(`Мисливець атакує ${target.name}: −${damage} здоров’я.`);
+   if(target.hp<=0){target.alive=false;rr.alive=false;rr.owner=null;addLog(`${target.name} вибуває з матчу.`)}
+ }
+ if(Math.random()<.25+state.difficulty*.08){const damage=2+state.difficulty+Math.floor(Math.random()*4);state.hp=Math.max(0,state.hp-damage);state.obsession=Math.min(100,state.obsession+4);addLog(`Мисливець зазнав шкоди: −${damage} HP.`)}
+ if(state.hp<=0){state.gameOver=true;addLog('Здоров’я мисливця вичерпано. Матч завершено.')}
+ else if(!state.npcs.some(n=>n.alive)){state.gameOver=true;addLog('Усі суперники вибули! Ти переміг/перемогла.')}
+ else if(state.obsession>=100){state.gameOver=true;addLog('Нав’язливість досягла межі — мисливець втрачає контроль.')}
+ render();
+}
+function renderArena(){
+ const arena=$('arena');arena.innerHTML='';
+ state.rooms.forEach((r,i)=>{
+   const el=document.createElement('div');el.className='room'+(i===state.selected?' selected':'')+(r.owner==='player'?' player-room':'')+(r.owner&&r.owner!=='player'?' enemy-room':'');
+   el.addEventListener('click',()=>{state.selected=i;render()});
+   const floor=asset('floor','floor');el.appendChild(floor);
+   const label=document.createElement('div');label.className='room-label';label.textContent=r.owner==='player'?'Твоя кімната':r.owner?'Кімната '+(i):'Порожня кімната';el.appendChild(label);
+   const items=document.createElement('div');items.className='room-items';
+   if(r.owner==='player'){items.appendChild(asset('hunter'));items.appendChild(asset(r.pc<=2?`pc${r.pc}`:'pc2'));if(r.weapon)items.appendChild(asset(`weapon${r.weapon}`,'small'));if(r.moneytree)items.appendChild(asset(`moneytree${r.moneytree}`,'small'));if(r.energyGen)items.appendChild(asset(`energy${r.energyGen}`,'small'))}
+   else if(r.owner&&r.alive){const n=npcForRoom(i);if(n)items.appendChild(asset(n.profile===1?'cat1':n.profile===2?'dog1':'hikka template'));items.appendChild(asset(`door${Math.min(6,Math.max(1,r.pc-1))}`,'small'));if(r.weapon)items.appendChild(asset(`weapon${r.weapon}`,'small'));if(r.moneytree)items.appendChild(asset(`moneytree${r.moneytree}`,'small'))}
+   else {items.appendChild(asset('wall','small'))}
+   el.appendChild(items);
+   const footer=document.createElement('div');footer.className='room-footer';footer.innerHTML=`<span class="badge">🪙 ${r.coins}</span><span class="badge">PC ${r.pc}/7</span>`;el.appendChild(footer);arena.appendChild(el);
+ });
+}
+function renderNpcs(){
+ const box=$('npcList');box.innerHTML='';
+ state.npcs.forEach(n=>{const r=state.rooms[n.room],card=document.createElement('div');card.className='npc-card';card.appendChild(asset(n.profile===1?'cat1':n.profile===2?'dog1':'hikka template'));
+ const info=document.createElement('div');info.className='info';info.innerHTML=`<strong>${n.name} ${n.alive?'':'— вибув/вибула'}</strong><small>HP ${Math.max(0,n.hp)}/${n.maxHp} · PC ${r.pc}/7 · зброя ${r.weapon}/8</small><div class="bar red"><i style="width:${Math.max(0,n.hp)/n.maxHp*100}%"></i></div>`;
+ card.appendChild(info);if(n.alive){const b=document.createElement('button');b.textContent='Обрати';b.title='Вибрати кімнату цього суперника';b.addEventListener('click',()=>{state.selected=n.room;render()});card.appendChild(b)}box.appendChild(card)});
+}
+function renderLog(){const log=$('log');log.innerHTML='';state.log.forEach(t=>{const p=document.createElement('p');p.textContent=t;log.appendChild(p)})}
+function render(){
+ $('coins').textContent=state.coins;$('energy').textContent=state.energy;$('hp').textContent=`${state.hp}/${state.maxHp}`;$('hpBar').style.width=`${state.hp/state.maxHp*100}%`;$('obsession').textContent=state.obsession+'%';$('obsBar').style.width=state.obsession+'%';
+ $('hunterDesc').textContent=`Мисливець рівня ${state.hunterLevel} · шкода/тиск зростає з рівнем`;
+ const r=selectedRoom(),own=isPlayerRoom(r);
+ $('selectedRoomInfo').innerHTML=`<b>${own?'Твоя кімната':r.owner?'Кімната суперника':'Порожня кімната'}</b><br>Комп’ютер: ${r.pc}/7 · Зброя: ${r.weapon}/8<br>Генератор монет: ${r.moneytree}/4 · Енергія: ${r.energyGen}/5<br>Монети кімнати: ${r.coins}${r.owner&&r.owner!=='player'?'<br><span class="hint">Тут можна спробувати крадіжку.</span>':''}`;
+ ['buildWeapon','upgradeWeapon','buildMoney','buildEnergy','upgradePc','restBtn'].forEach(id=>$(id).disabled=!own||state.gameOver);
+ $('buildWeapon').textContent=r.weapon?'Покращити зброю · '+(35+r.weapon*8)+' монет':'Побудувати зброю · 45 монет';
+ $('upgradeWeapon').classList.add('hidden');
+ $('buildMoney').textContent=r.moneytree?'Поліпшити генератор монет · '+(35+r.moneytree*10):'Побудувати генератор монет · 50';
+ $('buildEnergy').textContent=r.energyGen?'Поліпшити генератор енергії · '+(30+r.energyGen*10):'Побудувати генератор енергії · 45';
+ $('upgradePc').textContent='Поліпшити комп’ютер · '+(40+r.pc*10);
+ $('stealBtn').disabled=own||!r.owner||!r.alive||state.gameOver;
+ $('endTurnBtn').disabled=state.gameOver;
+ renderArena();renderNpcs();renderLog();
+}
+function openGacha(){if(state.gameOver)return;$('modal').classList.remove('hidden');$('modalTitle').textContent='Острівна гача';$('modalText').textContent='Витрать 30 ігрових монет і отримай випадкову нагороду.';$('gachaOrb').innerHTML='✦';$('rollBtn').disabled=false}
+function rollGacha(){
+ if(state.coins<30){$('modalText').textContent='Не вистачає монет. Розвивай генератор або заверши хід.';return}
+ state.coins-=30;$('rollBtn').disabled=true;
+ const rewards=[
+  {name:'+60 монет',run:()=>state.coins+=60},
+  {name:'+25 енергії',run:()=>state.energy=Math.min(100,state.energy+25)},
+  {name:'+12 здоров’я',run:()=>state.hp=Math.min(state.maxHp,state.hp+12)},
+  {name:'Нав’язливість −15%',run:()=>state.obsession=Math.max(0,state.obsession-15)},
+  {name:'Комп’ютер +1 рівень',run:()=>{const r=playerRoom();if(r.pc<7)r.pc++;else state.coins+=35}},
+  {name:'Зброя +1 рівень',run:()=>{const r=playerRoom();if(r.weapon<8)r.weapon++;else state.coins+=35}}
+ ];
+ const prize=rewards[Math.floor(Math.random()*rewards.length)];prize.run();$('modalText').innerHTML=`Нагорода: <div class="reward">${prize.name}</div>`;$('gachaOrb').innerHTML='🎁';addLog(`Гача: ${prize.name}.`);render()
+}
+$('startBtn').addEventListener('click',startGame);
+$('restartBtn').addEventListener('click',()=>{ $('game').classList.add('hidden');$('setup').classList.remove('hidden');state.started=false;});
+$('helpBtn').addEventListener('click',()=>$('helpModal').classList.remove('hidden'));
+$('closeHelp').addEventListener('click',()=>$('helpModal').classList.add('hidden'));
+$('buildWeapon').addEventListener('click',()=>build('weapon'));$('upgradeWeapon').addEventListener('click',()=>build('weapon'));
+$('buildMoney').addEventListener('click',()=>build('money'));$('buildEnergy').addEventListener('click',()=>build('energy'));$('upgradePc').addEventListener('click',()=>build('pc'));
+$('restBtn').addEventListener('click',rest);$('stealBtn').addEventListener('click',steal);$('endTurnBtn').addEventListener('click',nextTurn);
+$('gachaBtn').addEventListener('click',openGacha);$('rollBtn').addEventListener('click',rollGacha);$('closeModal').addEventListener('click',()=>$('modal').classList.add('hidden'));
+})();
+</script>
+</body>
+</html>
