@@ -24,7 +24,7 @@ const CHARACTERS=[
  {name:'Персонаж 9',price:700,portrait:'hikka a template.png',idle:'hikka a template.png',walk:'dummywalkinglegs.gif',sit:'hikka a template.png'},
  {name:'Персонаж 10',price:900,portrait:'hikka template.png',idle:'hikka template.png',walk:'dummywalkinglegs.gif',sit:'hikka template.png'}
 ];
-const ASSET_DIR='Assets/';
+const ASSET_DIR='assets/';
 const assetURL=name=>ASSET_DIR+String(name).split('/').map(encodeURIComponent).join('/');
 const characterURL=(id,mode='portrait')=>assetURL((CHARACTERS[id]||CHARACTERS[0])[mode]);
 const characterImages={};
