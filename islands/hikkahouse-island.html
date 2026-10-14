@@ -2,6 +2,11 @@
 'use strict';
 const $=id=>document.getElementById(id), clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>a+Math.random()*(b-a),pick=a=>a[Math.floor(Math.random()*a.length)];
 const difficulty=['Легко','Нормально','Складно','Жах',...Array.from({length:10},(_,i)=>`Маячня ${i+1}`),'Нісенітниця','Дурчак','Дурчак дурний'];
+// Єдиний каталог персонажів для магазину, аватара та Canvas.
+// Для нових персонажів змініть img на точну назву файлу у папці Assets.
+// Поки що останні 8 слотів використовують тимчасові картинки.
+// Єдиний каталог. Назви спрайтів відповідають надісланому користувачем коду.
+// Нові файли лежать у GitHub-папці Assets. Ніяких автоматичних перейменувань.
 const CHARACTERS=[
  {name:'Yani Kuroneko',price:0,portrait:'yaniidle.gif',idle:'yaniidle.gif',walk:'yaniwalk.gif',sit:'yani.png'},
  {name:'Akira Bakeneko',price:60,portrait:'akiraidle.gif',idle:'akiraidle.gif',walk:'akirawalk.gif',sit:'akira.png'},
@@ -14,6 +19,8 @@ const CHARACTERS=[
  {name:'Персонаж 9',price:700,portrait:'hikka a template.png',idle:'hikka a template.png',walk:'dummywalkinglegs.gif',sit:'hikka a template.png'},
  {name:'Jinni Matsumatsu',price:900,portrait:'jinniidle.gif',idle:'jinniidle.gif',walk:'jinniwalk.gif',sit:'jinni.png'}
 ];
+// GitHub Pages: шукаємо фактичну папку без перейменування файлів.
+// Сторінка islands/hikkahouse-island.html, тому коренева папка ресурсів розташована на рівень вище.
 let ASSET_DIR='';
 const assetURL=name=>ASSET_DIR+String(name).split('/').map(encodeURIComponent).join('/');
 function locateAssets(){
@@ -29,6 +36,7 @@ function locateAssets(){
   probe(0);
  });
 }
+
 const characterURL=(id,mode='portrait')=>assetURL((CHARACTERS[id]||CHARACTERS[0])[mode]);
 const characterImages={};
 function preloadCharacter(id){
@@ -42,8 +50,8 @@ function preloadCharacter(id){
   characterImages[id][mode]=picture;
  }
 }
-const images={};const filenames=['floor.png','wall.png','time.png','hunter.png','hunter resting.png','kolyadun.png','kolyadunwalk.gif','kolyadunfight.gif','kolposy.gif',...Array.from({length:6},(_,i)=>`door${i+1}.png`),...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),...Array.from({length:5},(_,i)=>`energy${i+1}.png`),...Array.from({length:4},(_,i)=>`moneytree${i+1}.${i===3?'gif':'png'}`),...[1,2,3,4,6,7].map(i=>`pc${i}.png`),...Array.from({length:3},(_,i)=>`cat${i+1}.png`),...Array.from({length:3},(_,i)=>`dog${i+1}.png`)];
-function loadAssets(){
+// Завантажуємо спрайти лише після визначення папки ресурсів.
+const images={};const filenames=['floor.png','wall.png','time.png','hunter.png','hunter resting.png','kolyadun.png','kolyadunwalk.gif','kolyadunfight.gif','kolposy.gif',...Array.from({length:6},(_,i)=>`door${i+1}.png`),...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),...Array.from({length:5},(_,i)=>`energy${i+1}.png`),...Array.from({length:4},(_,i)=>`moneytree${i+1}.${i===3?'gif':'png'}`),...[1,2,3,4,6,7].map(i=>`pc${i}.png`),...Array.from({length:3},(_,i)=>`cat${i+1}.png`),...Array.from({length:3},(_,i)=>`dog${i+1}.png`)];function loadAssets(){
  CHARACTERS.forEach((_,id)=>preloadCharacter(id));
  filenames.forEach(f=>{let im=new Image();im.src=assetURL(f);images[f]=im;im.addEventListener('load',()=>{if(game&&W&&H)draw()})});
  document.querySelectorAll('.token-icon,.skin-token-icon').forEach(i=>i.src=assetURL('tokens.png'));
@@ -59,9 +67,10 @@ let W=0,H=0,dpr=1,cell=38,ox=0,oy=0,zoom=1,camera={x:9.5,y:12},lastTime=0,acc=0,
 let logicTimer=null, lastLogic=0, lastDraw=0, lastActiveFrame=0;
 
 function sound(type='tap'){if(!soundOn)return;try{audio??=new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const t=audio.currentTime,o=audio.createOscillator(),g=audio.createGain();o.type=type==='hit'?'sawtooth':'sine';const f={tap:470,coin:770,shoot:630,hit:115,repair:510,win:880,lose:140,build:370,door:290}[type]||440;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(Math.max(80,f*(type==='win'?1.5:.63)),t+.14);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(type==='hit'?.055:.032,t+.016);g.gain.exponentialRampToValueAtTime(.0001,t+.18);o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+.19)}catch{}}
-function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2300)}
+function toast(msg){const el=$('toast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2300)}
 const KYIV=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Kyiv',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());const STORE_KEY='hikka-house-save-v1';let save={date:KYIV(),tokens:0,wins:0,level:0,magic:3,skins:[0],skin:0,boosts:[],runFinishedDay:null};try{save={...save,...JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}}catch{}function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify(save))}catch{}}function daySync(){const day=KYIV();if(save.date!==day){save.date=day;save.level=0;save.boosts=[];save.runFinishedDay=null;persist();toast('Новий день! Складність і бусти скинуто.')} }daySync();
 const roomDefs=Array.from({length:6},(_,i)=>{const side=i<3?'left':'right',row=i%3,x=side==='left'?0:12,y=1+row*8;return{id:i,side,row,x,y,doorX:side==='left'?6:12,doorY:y+3,pcX:side==='left'?2:16,pcY:y+3,occupant:null,door:90,maxDoor:90,doorLv:1,pcLv:1,items:new Map(),access:0,chain:false,puddle:false,poop:false,alive:true}});
+// Ранні боси: Колядуна можна зустріти на перших чотирьох складностях.
 const BOSS_ROSTER=[{id:'kolyadun',name:'Колядун',idle:'kolyadun.png',walk:'kolyadunwalk.gif',attack:'kolyadunfight.gif'}];
 function bossForDifficulty(level){return level<=3?BOSS_ROSTER[0]:{id:'hunter',name:'Нав’язливий гість',idle:'hunter.png',walk:'hunter.png',attack:'hunter.png'}}
 const C=19,R=25;let game=null,modalAction=null,modalCloseFn=null,selectedTab='База',drag=null,pressed=null;
@@ -69,25 +78,21 @@ const costs={weapon:{gold:12},energy:{gold:80},magic:{gold:30},money:{energy:16}
 const catalog=[{type:'weapon',name:'Зброя',tab:'База',img:'weapon1.png'},{type:'energy',name:'Генератор енергії',tab:'База',img:'energy1.png'},{type:'magic',name:'Маджика',tab:'База',emoji:'🎲'},{type:'money',name:'Монетне дерево',tab:'Монетки',img:'moneytree1.png'},{type:'chain',name:'Ланцюг',tab:'Тримачі',emoji:'⛓️',door:true},{type:'puddle',name:'Калюжа',tab:'Тримачі',emoji:'💧',door:true},{type:'poop',name:'Відлякувач',tab:'Тримачі',emoji:'💩',door:true},{type:'safe',name:'Сейф',tab:'Інше',emoji:'🔒'},{type:'cache',name:'Кеш',tab:'Інше',emoji:'💾'},{type:'trap',name:'Капкан',tab:'Інше',emoji:'🪤'},{type:'clock',name:'Годинник',tab:'Інше',img:'time.png'},{type:'distance',name:'Дистанція',tab:'Інше',emoji:'📡'}];
 const fallbacks={magic:'🎲',safe:'🔒',cache:'💾',trap:'🪤',clock:'⏰',distance:'📡',notebook:'📓',cockroach:'🪳',box:'📦',tamagotchi:'🐣',partner:'🤝',chain:'⛓️',puddle:'💧',poop:'💩'};
 function assetFor(item) {if (!item) return null;if (item.type === 'clock') return 'time.png';if(item.type==='partner')return `pc${[1,2,3,4,4,6,7][clamp((item.lv||1)-1,0,6)]}.png`;let lv=clamp(item.lv||1,1,8);if(item.type==='weapon')return `weapon${lv}.png`;if(item.type==='energy')return `energy${clamp(lv,1,5)}.png`;if(item.type==='money')return `moneytree${clamp(lv,1,4)}.${lv>=4?'gif':'png'}`;if(['cat','dog'].includes(item.type))return `${item.type}${clamp(lv,1,3)}.png`;return null}
-function drawImg(name,x,y,w=cell,h=cell){const im=images[name];if(im&&im.complete&&im.naturalWidth){ctx.drawImage(im,x,y,w,h);return true}return false}
-function iconImage(item,x,y,size){const name=assetFor(item);if(name&&drawImg(name,x,y,size,size))return;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`${size*.68}px sans-serif`;ctx.fillText(fallbacks[item.type]||'❔',x+size/2,y+size/2)}
+function drawImg(name,x,y,w=cell,h=cell){const im=images[name];if(im&&im.complete&&im.naturalWidth){ctx.drawImage(im,x,y,w,h);return true}return false}function iconImage(item,x,y,size){const name=assetFor(item);if(name&&drawImg(name,x,y,size,size))return;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`${size*.68}px sans-serif`;ctx.fillText(fallbacks[item.type]||'❔',x+size/2,y+size/2)}
 function makePlayer(id,npc=false){return{id,npc,name:npc?['Lurker','SilentFox','NoSignal','Nebula','404_sleep'][id-1]:'copy_pasta',x:9.5,y:12.5,path:[],room:null,targetRoom:null,seated:false,alive:true,speed:npc?2.0:4.7,score:0,action:'idle',walk:0,decision:rand(1,3),gold:25,energy:0,skin:npc?Math.floor(Math.random()*CHARACTERS.length):save.skin}}
+// Legacy save compatibility: never erase purchases or reset progress.
 if(!Array.isArray(save.skins))save.skins=[0];
 if(!Array.isArray(save.boosts))save.boosts=[];
 if(!Number.isInteger(Number(save.skin))||Number(save.skin)<0||Number(save.skin)>=CHARACTERS.length)save.skin=0;
 else save.skin=Number(save.skin);
-const doors=roomDefs.map(r=>({x:r.doorX,y:r.doorY}));
-function avoidCoinNumbers(value){const amount=Math.max(0,Math.floor(Number(value)||0));return amount===63||amount===68?amount+1:amount}
+const doors=roomDefs.map(r=>({x:r.doorX,y:r.doorY}));function avoidCoinNumbers(value){const amount=Math.max(0,Math.floor(Number(value)||0));return amount===63||amount===68?amount+1:amount}
 function newGame(lv){const rooms=roomDefs.map(d=>({...d,items:new Map(),occupant:null,door:90,maxDoor:90,doorLv:1,pcLv:1,alive:true,chain:false,puddle:false,poop:false,access:0}));const players=Array.from({length:6},(_,i)=>makePlayer(i,i!==0));const boss=bossForDifficulty(lv);const g={level:lv,boss,servants:[],phase:'claim',time:0,countdown:25,gold:28,energy:0,rooms,players,hunter:{x:9.5,y:.5,hp:180+lv*32,maxHp:180+lv*32,level:1,state:'rest',target:null,path:[],attack:0,rest:5,active:false,stun:0,shotCd:0,anim:0,retreats:0,abilityCd:14,servantCd:18},effects:[],projectiles:[],pets:[],selected:null,magicUsed:0,magicRolls:{},petStrike:0,boxClaims:new Set(),tick:0,npcTick:0,elapsed:0,lastResult:null,boosts:save.boosts.slice(),targetCam:null,mikola:{active:false,x:9.5,y:12.5,until:0,nextAt:55,cooldown:0},olexiy:{active:false,x:9.5,y:12.5,until:0,nextAt:70}};for(const r of rooms){const slots=buildTiles(r);const starter=['trap','energy','money','distance','clock','box'][r.id];r.items.set(slots[0].join(','),{type:starter,lv:1,starter:true});}let coins=avoidCoinNumbers(g.gold);Object.defineProperty(g,'gold',{enumerable:true,configurable:true,get(){return coins},set(value){coins=avoidCoinNumbers(value)}});return g}
 function buildTiles(r){const cols=r.side==='left'?[1,2,3,4,5]:[13,14,15,16,17];const rows=[r.y+1,r.y+2,r.y+3,r.y+4,r.y+5];const slots=[];for(const y of rows)for(const x of cols){if(y===r.pcY&&x===r.pcX)continue;slots.push([x,y]);}return slots}
-function inRoom(r,x,y){return x>=r.x&&x<=r.x+6&&y>=r.y&&y<=r.y+6}
-function tileType(x,y){if(x<0||y<0||x>=C||y>=R)return'void';if(y===0||y===24)return x===9?'rest':'wall';for(const r of game?.rooms||roomDefs){if(!inRoom(r,x,y))continue;if(x===r.doorX&&y===r.doorY)return'door';if(x===r.x||x===r.x+6||y===r.y||y===r.y+6)return'wall';return'room'}return'corridor'}
-function pass(x,y,p=null){const tile=tileType(x,y);if(tile==='corridor'||tile==='room')return true;if(tile==='door'){const room=game.rooms.find(r=>r.doorX===x&&r.doorY===y);return room&&room.alive&&(room.occupant===null||room.occupant===p?.id)&&!(room.occupant!==null&&game.players[room.occupant].seated)}return false}
+function inRoom(r,x,y){return x>=r.x&&x<=r.x+6&&y>=r.y&&y<=r.y+6}function tileType(x,y){if(x<0||y<0||x>=C||y>=R)return'void';if(y===0||y===24)return x===9?'rest':'wall';for(const r of game?.rooms||roomDefs){if(!inRoom(r,x,y))continue;if(x===r.doorX&&y===r.doorY)return'door';if(x===r.x||x===r.x+6||y===r.y||y===r.y+6)return'wall';return'room'}return'corridor'}function pass(x,y,p=null){const tile=tileType(x,y);if(tile==='corridor'||tile==='room')return true;if(tile==='door'){const room=game.rooms.find(r=>r.doorX===x&&r.doorY===y);return room&&room.alive&&(room.occupant===null||room.occupant===p?.id)&&!(room.occupant!==null&&game.players[room.occupant].seated)}return false}
 function bfs(sx,sy,ex,ey,entity){sx=clamp(Math.floor(sx),0,C-1);sy=clamp(Math.floor(sy),0,R-1);ex=clamp(Math.floor(ex),0,C-1);ey=clamp(Math.floor(ey),0,R-1);const visited=new Set([`${sx},${sy}`]),q=[[sx,sy]],parent={};for(let i=0;i<q.length;i++){const [x,y]=q[i];if(x===ex&&y===ey){const path=[];let k=`${x},${y}`;while(parent[k]){const [a,b]=k.split(',').map(Number);path.unshift({x:a+.5,y:b+.5});k=parent[k]}return path}for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy,k=`${nx},${ny}`;if(!visited.has(k)&&pass(nx,ny,entity)){visited.add(k);parent[k]=`${x},${y}`;q.push([nx,ny])}}}return []}
 function travel(ent,dt){if(!ent.path.length){ent.action=ent.seated?'sit':'idle';return}const to=ent.path[0],dx=to.x-ent.x,dy=to.y-ent.y,d=Math.hypot(dx,dy),step=ent.speed*dt;ent.action='walk';ent.walk+=dt;if(d<=step){ent.x=to.x;ent.y=to.y;ent.path.shift()}else{ent.x+=dx/d*step;ent.y+=dy/d*step}}
-function focus(x,y){camera.x=x;camera.y=y}
-function playerRoom(){return game&&game.players[0].room!==null?game.rooms[game.players[0].room]:null}
-function ownerRoom(p){return p.room!==null?game.rooms[p.room]:null}
+function focus(x,y){camera.x=x;camera.y=y}function playerRoom(){return game&&game.players[0].room!==null?game.rooms[game.players[0].room]:null}function ownerRoom(p){return p.room!==null?game.rooms[p.room]:null}
+// Кімнату займаємо лише після фізичного прибуття до ПК.
 function assignRoom(p,r){
  if(!game||p.seated||!r?.alive||r.occupant!==null)return false;
  const path=bfs(p.x,p.y,r.pcX,r.pcY,p);
@@ -107,33 +112,14 @@ function ensureRoomRoute(p){
 }
 function sit(p,r){
  if(!r||!r.alive||r.occupant!==null&&r.occupant!==p.id||p.targetRoom!==r.id)return;
+ // Тільки тут кімната стає зайнятою.
  r.occupant=p.id;p.room=r.id;p.targetRoom=null;
  p.seated=true;p.path=[];p.x=r.pcX+.5;p.y=r.pcY+.5;
  r.access=0;p.action='sit';sound('door');
- if(!p.npc){game.phase='defend';$('tip').textContent='Покращуйте ПК, двері та захист!';toast('Ви за ПК! Двері зачинено. Будуйте оборону.')}
+ if(!p.npc){game.phase='defend';const tip=$('tip');if(tip)tip.textContent='Покращуйте ПК, двері та захист!';toast('Ви за ПК! Двері зачинено. Будуйте оборону.')}
 }
-function start(lv){
- for(const im of playerVisuals.values())im.remove();playerVisuals.clear();
- for(const im of servantVisuals.values())im.remove();servantVisuals.clear();
- if(bossAnimated){bossAnimated.hidden=true;bossDisplayedState='';}
- activePointers.clear();pressed=null;gesture=null;daySync();zoom=1;camera={x:9.5,y:12};
- game=newGame(lv);
- $('home').hidden=true;$('game').hidden=false;$('hud').hidden=false;
- $('phase').textContent=difficulty[lv].toUpperCase();$('boostBtn').hidden=false;
- renderPlayers();renderTabs();renderPalette();closeModal();focus(9.5,12.5);
- for(const p of game.players.slice(1)){p.decision=rand(2.0,5.5)}
- resize();draw();lastTime=performance.now();update(0);startSimulation();
- toast('25 секунд, щоб зайняти кімнату!');
-}
-function openHome(){
- for(const im of playerVisuals.values())im.remove();playerVisuals.clear();
- for(const im of servantVisuals.values())im.remove();servantVisuals.clear();
- if(bossAnimated){bossAnimated.hidden=true;bossDisplayedState='';}
- if(logicTimer!==null){clearInterval(logicTimer);logicTimer=null}
- if(raf){cancelAnimationFrame(raf);raf=0}
- game=null;$('home').hidden=false;$('game').hidden=true;$('hud').hidden=true;
- $('phase').textContent='ГОЛОВНЕ МЕНЮ';closeModal();renderHome();
-}
+function start(lv){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();if(bossAnimated){bossAnimated.hidden=true;bossDisplayedState=''}activePointers.clear();pressed=null;gesture=null;daySync();zoom=1;camera={x:9.5,y:12};game=newGame(lv);$('home').hidden=true;$('game').hidden=false;$('hud').hidden=false;$('phase').textContent=difficulty[lv].toUpperCase();$('boostBtn').hidden=false;renderPlayers();renderTabs();renderPalette();closeModal();focus(9.5,12.5);for(const p of game.players.slice(1)){p.decision=rand(2.0,5.5)}resize();draw();lastTime=performance.now();update(0);startSimulation();toast('25 секунд, щоб зайняти кімнату!')}
+function openHome(){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();if(bossAnimated){bossAnimated.hidden=true;bossDisplayedState=''}if(logicTimer!==null){clearInterval(logicTimer);logicTimer=null}if(raf){cancelAnimationFrame(raf);raf=0}game=null;$('home').hidden=false;$('game').hidden=true;$('hud').hidden=true;$('phase').textContent='ГОЛОВНЕ МЕНЮ';closeModal();renderHome()}
 function spend(price,p=game){if(!p||p.gold<(price.gold||0)||p.energy<(price.energy||0)){toast('Недостатньо монет або енергії');sound('hit');return false}p.gold-=price.gold||0;p.energy-=price.energy||0;return true}
 function costLabel(cost){return [(cost.gold||0)?`🪙${cost.gold}`:'',(cost.energy||0)?`⚡${cost.energy}`:''].filter(Boolean).join(' ')||'Безкоштовно'}
 function build(room,x,y,type){if(!game||!room?.alive||room.occupant===null)return false;if(!game.players[room.occupant]?.seated){toast('Спершу потрібно сісти за ПК');return false;}const actor=game.players[room.occupant];if(actor.npc&&!game.boosts.includes('help')){toast('Будувати в кімнаті NPC не можна без бусту «Допомога»');return false}const def=catalog.find(c=>c.type===type);if(!def)return false;if(def.door){if(room!==playerRoom()){toast('Тримачі ставляться на власні двері');return false}if(room[type]){toast('Вже встановлено');return false}if(!spend(costs[type]))return false;room[type]=true;effect(room.doorX+.5,room.doorY+.5,'✨');sound('build');return true}
@@ -175,8 +161,7 @@ function floorClick(x,y){
  }else if(!p.seated&&p.room===null&&pass(ix,iy,p))p.path=bfs(p.x,p.y,ix,iy,p);
 }
 function openBuildMenu(r,x,y){const opts=catalog.filter(c=>c.tab===selectedTab&&!c.door);const content=`<p>Клітинка ${x+1}:${y+1} • Кімната ${r.id+1}. Виберіть предмет.</p><div class="buy-options">${opts.map((i,k)=>`<button data-build="${k}">${i.img?`<img src="${assetURL(i.img)}">`:`<span style="font-size:27px">${i.emoji||'❔'}</span>`}<b>${i.name}</b><span>${costLabel(costs[i.type])}</span></button>`).join('')}</div>`;modal('🏗️ Будівництво',content,[{name:'Закрити',fn:closeModal}]);$('modalContent').querySelectorAll('[data-build]').forEach(b=>b.onclick=()=>{const o=opts[+b.dataset.build];if(build(r,x,y,o.type))closeModal()})}
-function modal(title,content,buttons=[],force=false){$('modalRoot').hidden=false;$('modalTitle').textContent=title;$('modalContent').innerHTML=content;$('modalClose').hidden=force;$('modalActions').innerHTML='';$('modalClose').onclick=closeModal;for(const b of buttons){const el=document.createElement('button');el.textContent=b.name;el.className=b.primary?'primary':'';el.disabled=!!b.disabled;el.onclick=b.fn;$('modalActions').append(el)}}
-function closeModal(){$('modalRoot').hidden=true}
+function modal(title,content,buttons=[],force=false){$('modalRoot').hidden=false;$('modalTitle').textContent=title;$('modalContent').innerHTML=content;$('modalClose').hidden=force;$('modalActions').innerHTML='';$('modalClose').onclick=closeModal;for(const b of buttons){const el=document.createElement('button');el.textContent=b.name;el.className=b.primary?'primary':'';el.disabled=!!b.disabled;el.onclick=b.fn;$('modalActions').append(el)}}function closeModal(){$('modalRoot').hidden=true}
 function renderTabs(){$('tabs').innerHTML=['База','Монетки','Тримачі','Інше'].map(t=>`<button class="${selectedTab===t?'active':''}" data-tab="${t}">${t}</button>`).join('');$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{selectedTab=b.dataset.tab;renderTabs();renderPalette()})}
 function renderPalette(){if(!game)return;$('palette').innerHTML='';for(const def of catalog.filter(c=>c.tab===selectedTab)){const b=document.createElement('button');b.className='item';b.innerHTML=`${def.img?`<img src="${assetURL(def.img)}" draggable="false">`:`<span class="emoji">${def.emoji}</span>`}<b>${def.name}</b><small>${costLabel(costs[def.type])}</small>`;b.title='Перетягніть предмет або клацніть для вибору';b.addEventListener('pointerdown',e=>{if(e.button!==0)return;drag={type:def.type,startX:e.clientX,startY:e.clientY,active:false};try{b.setPointerCapture(e.pointerId)}catch{}});b.addEventListener('pointermove',e=>{if(drag&&Math.hypot(e.clientX-drag.startX,e.clientY-drag.startY)>8)drag.active=true});b.addEventListener('pointerup',e=>{if(!drag)return;const d=drag;drag=null;if(d.active){const bounds=canvas.getBoundingClientRect();if(e.clientX>=bounds.left&&e.clientX<=bounds.right&&e.clientY>=bounds.top&&e.clientY<=bounds.bottom){const pos=screenToWorld(e.clientX-bounds.left,e.clientY-bounds.top),r=roomAt(Math.floor(pos.x),Math.floor(pos.y));if(r){if(build(r,Math.floor(pos.x),Math.floor(pos.y),d.type))toast('Предмет встановлено')}else toast('Перетягніть предмет у свою кімнату')}else toast('Перетягніть на клітинку карти')}else{const r=playerRoom();if(!r)return toast('Спочатку сядьте за ПК');if(def.door){build(r,r.doorX,r.doorY,def.type);return}const free=buildTiles(r).find(([x,y])=>!r.items.has(`${x},${y}`));if(free){game.selected={r,x:free[0],y:free[1]};toast('Виберіть або перетягніть на потрібну клітинку');}else toast('Немає вільних клітинок')}});$('palette').append(b)}}
 function renderPlayers(){if(!game)return;$('players').innerHTML=game.players.map(p=>`<button class="player-icon ${p.alive?'':'dead'} ${p.room!==null&&game.rooms[p.room]?.door/game.rooms[p.room]?.maxDoor<.28?'danger':''}" data-player="${p.id}" title="${p.name}"><img src="${characterURL(p.skin,'idle')}"></button>`).join('');$('players').querySelectorAll('button').forEach(b=>b.onclick=()=>{const p=game.players[+b.dataset.player];focus(p.x,p.y)})}
@@ -207,10 +192,12 @@ function npcEconomy(){if(!game)return;for(const p of game.players.filter(p=>p.np
  }}
 function nearestHunterDoor(r){const dx=r.side==='left'?r.doorX+1.5:r.doorX-.5;return{x:dx,y:r.doorY+.5}}
 function hunterPath(x,y){const h=game.hunter;h.path=bfs(h.x,h.y,x,y,null);h.speed=1.55+Math.min(game.level*.065,.65)}
+// Добовий бонус «Микола»: переслідує гостя, відволікає від дверей, не завдає шкоди.
 function updateMikola(dt){
  const g=game;if(!g?.boosts.includes('mikola')||g.phase==='ended')return;
  const n=g.mikola,h=g.hunter;
  if(n.active){
+  // Микола біжить за гостем і залишається видимим до завершення погоні.
   const dx=h.x-n.x,dy=h.y-n.y,d=Math.hypot(dx,dy);
   if(d>.85){const step=Math.min(d-.85,3.6*dt);if(d>0){n.x+=dx/d*step;n.y+=dy/d*step}}
   if(g.time>=n.until||!h.active||h.hp<=0){
@@ -229,6 +216,8 @@ function updateMikola(dt){
  h.speed=2.65;
  effect(n.x,n.y,'🍺 Микола!');toast('Микола вибіг! Гість утікає від нього!');
 }
+// Добовий бонус «Барахольщик Олексій»: намагається продати гостю барахло.
+// Не завдає шкоди; не запускається одночасно з Миколою.
 function updateOlexiy(dt){
  const g=game;if(!g?.boosts.includes('olexiy')||g.phase==='ended')return;
  const a=g.olexiy,h=g.hunter;
@@ -251,6 +240,7 @@ function updateOlexiy(dt){
  effect(a.x,a.y,'📦 Олексій!');toast('Олексій нав’язує гостю барахло! Гість тікає!');
 }
 function updateHunter(dt){const h=game.hunter,g=game;if(!h.active)return;h.anim+=dt;h.abilityCd-=dt;
+// Приманка, капкан і годинник діють в реальному часі біля дверей, не під час відпочинку.
 if(h.state==='attack' && h.target!==null){const rr=g.rooms[h.target];if(rr){
  for(const it of rr.items.values()){
  if(it.type==='cockroach'&&(it.strikes||0)<(g.boosts.includes('cockroach')?2:1)){it.strikes=(it.strikes||0)+1;h.hp=Math.max(0,h.hp-20);h.stun=Math.max(h.stun,1.2);effect(h.x,h.y,'🪳 -20');continue;} 
@@ -272,6 +262,7 @@ const target=servant||h;
 let evaded=false;
  if(servant&&servant.dodgeCd<=0&&Math.random()<.52){evaded=dodgeServant(servant)}
  g.projectiles.push({x:x+.5,y:y+.5,tx:target.x,ty:target.y,life:.21,max:.21,dmg,target,evaded});sound('shoot')}}}
+// Посіпаки Колядуна: окремі HP, рух до дверей, слабкі удари і перехоплення куль.
 function summonServant(r){
  const g=game,h=g.hunter;
  if(g.boss.id!=='kolyadun'||h.level<2||g.servants.length>=Math.max(1,Math.min(3,h.level)-(g.boosts.includes('fewer')?1:0)))return;
@@ -284,6 +275,7 @@ function servantTarget(m){
  const eligible=game.rooms.filter(r=>r.alive&&r.occupant!==null&&game.players[r.occupant]?.seated);
  if(!eligible.length)return null;
  let current=eligible.find(r=>r.id===m.target);
+ // Посіпака не зациклюється на одних дверях. Кожні 7–13 с може перейти до інших.
  if(!current||game.time>=m.switchAt){
   const other=eligible.filter(r=>r.id!==m.target);
   if(other.length){
@@ -296,6 +288,7 @@ function servantTarget(m){
  }
  return current;
 }
+// Маневр убік по доступних клітинках коридору. Посіпака не проходить крізь стіни.
 function dodgeServant(m){
  const x=Math.floor(m.x),y=Math.floor(m.y);
  const choices=[];
@@ -349,13 +342,19 @@ function specialHunter(dt,r){
  const available=[...r.items.entries()];
  const obj=pick(available.length?available:[[null,null]])?.[1];
  const action=game.level%7;
- if(action===0&&skill){if(obj){obj.jammed=5;effect(h.x,h.y,'🚫')}}
- else if(action===1&&skill){h.hp=Math.min(h.maxHp,h.hp+12);effect(h.x,h.y,'+12👁')}
- else if(action===2&&skill){h.stun=0;effect(h.x,h.y,'👥')}
- else if(action===3&&skill){if(obj?.type==='weapon'){obj.jammed=5;effect(h.x,h.y,'🔧')}}
- else if(action===4&&skill){if(r.occupant===0)game.energy=Math.max(0,game.energy-2);effect(h.x,h.y,'⚡')}
- else if(action===5&&skill){r.door=Math.max(0,r.door-2);effect(h.x,h.y,'👻')}
- else if(action===6&&skill){h.stun=0;effect(h.x,h.y,'🌀')}
+ if(action===0&&skill){if(obj){obj.jammed=5;effect(h.x,h.y,'🚫')}} // seller: jam equipment
+ else if(action===1&&skill){h.hp=Math.min(h.maxHp,h.hp+12);effect(h.x,h.y,'+12👁')} // parent: heals
+ else if(action===2&&skill){h.stun=0;effect(h.x,h.y,'👥')} // summoning marker (advanced AI placeholder)
+ else if(action===3&&skill){if(obj?.type==='weapon'){obj.jammed=5;effect(h.x,h.y,'🔧')}} // neighbor: debris
+ else if(action===4&&skill){if(r.occupant===0)game.energy=Math.max(0,game.energy-2);effect(h.x,h.y,'⚡')} // grandfather
+ else if(action===5&&skill){r.door=Math.max(0,r.door-2);effect(h.x,h.y,'👻')} // caroler
+ else if(action===6&&skill){h.stun=0;effect(h.x,h.y,'🌀')} // grandmother marker
+ // Trap and slow devices affect the hunter only near the door, never while resting.
+ for(const it of r.items.values()){
+   // Капкан та годинник тепер обробляються у updateHunter щокадру.
+  // Тарган запускається в updateHunter для всіх типів босів.
+   // Тварини рухаються та атакують через updatePets.
+ }
 }
 function updatePets(dt){
  if(!game)return;
@@ -368,11 +367,13 @@ function updatePets(dt){
    if(!item.pet){item.pet={x:home.x,y:home.y,cd:0};}
    const pet=item.pet;
    pet.cd=Math.max(0,pet.cd-dt);
+   // During rest and retreat, pets go back to their own tile instead of dealing damage.
    const chase=!!(h.active&&h.hp>0&&h.state!=='rest'&&h.state!=='retreat'&&r.alive&&r.occupant!==null);
    const door={x:r.doorX+.5,y:r.doorY+.5};
    const outside=nearestHunterDoor(r);
    const distance=Math.hypot(outside.x-h.x,outside.y-h.y);
    const pursue=chase&&distance<10;
+   // Waypoints prevent pets from cutting diagonally through walls.
    const inside= r.side==='left'?pet.x<=r.doorX+.6:pet.x>=r.doorX+.4;
    let target=home;
    if(pursue){
@@ -386,6 +387,7 @@ function updatePets(dt){
    const dx=target.x-pet.x,dy=target.y-pet.y,d=Math.hypot(dx,dy);
    const movement=(item.type==='dog'?4.0:4.6)*dt;
    if(d>.02){const f=Math.min(1,movement/d);pet.x+=dx*f;pet.y+=dy*f;}
+   // Damage only when physically near the active hunter, never at a distance.
    if(chase&&Math.hypot(pet.x-h.x,pet.y-h.y)<1.25&&pet.cd<=0){
     const damage=(item.type==='dog'?3:2)*(item.lv||1);
     h.hp=Math.max(0,h.hp-damage);effect(h.x,h.y,`-${damage}🐾`);
@@ -394,6 +396,7 @@ function updatePets(dt){
   }
  }
 }
+
 function boostValue(type){const entries=game?.boosts.filter(b=>b.startsWith(type+':'))||[];return entries.length?Math.max(...entries.map(b=>Number(b.split(':')[1])||0)):0}
 function retreatHunter(){const h=game.hunter;h.retreats++;h.state='retreat';h.target=null;h.path=bfs(h.x,h.y,9, h.y<12?1:23,null);h.path.push({x:9.5,y:h.y<12?.5:24.5});toast('Гість тікає відновлювати нав’язливість!')}
 function projectiles(dt){
@@ -449,15 +452,10 @@ $('heroName').textContent=selected.name;
 $('skins').innerHTML=CHARACTERS.map((character,i)=>`<div class="skin-wrap"><button class="skin ${save.skin===i?'selected':''}" data-skin="${i}"><img src="${characterURL(i,'portrait')}" alt="${character.name}"><b>${character.name}</b><span>${save.skins.includes(i)?save.skin===i?'Обрано':'Обрати':`<span class="skin-price"><img src="${assetURL('tokens.png')}" class="skin-token-icon" alt="Токени"> ${character.price}</span>`}</span></button></div>`).join('');
 $('skins').querySelectorAll('[data-skin]').forEach(button=>button.onclick=()=>{const id=Number(button.dataset.skin),character=CHARACTERS[id];if(!character)return;if(!save.skins.includes(id)){if(save.tokens<character.price)return toast('Недостатньо токенів');save.tokens-=character.price;save.skins.push(id)}save.skin=id;persist();renderHome()});
 }
-function infoModal(){modal('Вітання',`<p>Вітаю, дорогі гравці! Ця гра присвячена персонажам, які полюбляють усамітнення, і може містити елементи жахів для інтровертів. Підліткам варто запитати дозволу перед грою.</p>`,[{name:'Підтвердити',primary:true,fn:rulesModal}],true)}
-function rulesModal(){modal('ЯК ГРАТИ',`<ul><li>У Вас 25 секунд, щоб зайняти кімнату, підійти до ПК і сісти.</li><li>NPC займають інші кімнати, а двері автоматично зачиняються.</li><li>Підвищуйте рівень ПК, дверей, зброї та генераторів.</li><li>Перетягніть предмет із панелі на клітинку або натисніть на порожнє місце.</li><li>Лагодьте двері 🔧, поки мисливець атакує.</li><li>Після перемоги Ви отримуєте токени для магазину персонажів.</li><li>Керування: WASD, стрілки, тап по карті або джойстик.</li></ul>`,[{name:'Прийняти',primary:true,fn:()=>{closeModal();if(!save.tutorial){save.tokens+=10;toast('За навчання отримано 10 токенів!')}save.tutorial=true;persist();renderHome()}}],true)}
+
+function infoModal(){modal('Вітання',`<p>Вітаю, дорогі гравці! Ця гра присвячена персонажам, які полюбляють усамітнення, і може містити елементи жахів для інтровертів. Підліткам варто запитати дозволу перед грою.</p>`,[{name:'Підтвердити',primary:true,fn:rulesModal}],true)}function rulesModal(){modal('ЯК ГРАТИ',`<ul><li>У Вас 25 секунд, щоб зайняти кімнату, підійти до ПК і сісти.</li><li>NPC займають інші кімнати, а двері автоматично зачиняються.</li><li>Підвищуйте рівень ПК, дверей, зброї та генераторів.</li><li>Перетягніть предмет із панелі на клітинку або натисніть на порожнє місце.</li><li>Лагодьте двері 🔧, поки мисливець атакує.</li><li>Після перемоги Ви отримуєте токени для магазину персонажів.</li><li>Керування: WASD, стрілки, тап по карті або джойстик.</li></ul>`,[{name:'Прийняти',primary:true,fn:()=>{closeModal();if(!save.tutorial){save.tokens+=10;toast('За навчання отримано 10 токенів!')}save.tutorial=true;persist();renderHome()}}],true)}
 function difficultyModal(){daySync();modal('Оберіть складність',`<p>Новий день: рівень прогресу скидається. Поточна доступна складність: <b>${difficulty[save.level]}</b>.</p><div class="difficulty-list">${difficulty.map((d,i)=>`<button data-lv="${i}" ${i>save.level?'disabled':''} class="${i<=save.level?'unlocked':''}">${d}<span>${i>save.level?'🔒':'▶'}</span></button>`).join('')}</div>`,[{name:'Закрити',fn:closeModal}]);$('modalContent').querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>start(+b.dataset.lv))}
-$('enterBtn').onclick=difficultyModal;
-$('quitBtn').onclick=()=>{if(!game)return openHome();modal('Покинути матч?',`<p>Прогрес поточного матчу не збережеться.</p>`,[{name:'Залишитися',fn:closeModal},{name:'Вийти',primary:true,fn:openHome}])};
-$('boostBtn').onclick=()=>modal('✨ Добові бусти',`<p>${save.boosts.length?save.boosts.map(value=>{const [id,num]=value.split(':');const b=boosts.find(b=>b.id===id);return `${b?.name||id}${num?' +'+num:''}`}).join(' • '):'Поки немає. Бонуси випадають після перемоги.'}</p>`,[{name:'Закрити',fn:closeModal}]);
-$('soundBtn').onclick=()=>{soundOn=!soundOn;$('soundBtn').textContent=soundOn?'🔊':'🔇';if(soundOn)sound('tap')};
-$('focusMe').onclick=()=>{if(game){const p=game.players[0];focus(p.x,p.y)}};
-$('repairBtn').onclick=()=>{const r=playerRoom();if(!r||!game.players[0].seated)return toast('Спочатку займіть кімнату');const price={gold:16+Math.floor(r.doorLv*7)};if(r.door>=r.maxDoor)return toast('Двері повністю відремонтовані');if(spend(price)){r.door=Math.min(r.maxDoor,r.door+55);sound('repair');effect(r.doorX+.5,r.doorY+.5,'🔧')}};
+
 const MIN_ZOOM=.5, MAX_ZOOM=7.5;
 function zoomAt(nextZoom, screenX=W/2, screenY=H/2){
  if(!W||!H)return;
@@ -470,13 +468,12 @@ function zoomAt(nextZoom, screenX=W/2, screenY=H/2){
  camera.y=anchor.y-(screenY-H/2)/cell;
  transform();
 }
-$('zoomIn').onclick=()=>{zoomAt(zoom*1.3);try{draw()}catch(e){console.error('Zoom draw:',e)};updateDiagnostic()};
-$('zoomOut').onclick=()=>{zoomAt(zoom/1.3);try{draw()}catch(e){console.error('Zoom draw:',e)};updateDiagnostic()};
 function resize(){if(!canvas)return;const rc=canvas.getBoundingClientRect();if(rc.width<=0||rc.height<=0)return;dpr=Math.min(devicePixelRatio||1,1.5);W=rc.width;H=rc.height;canvas.width=Math.ceil(W*dpr);canvas.height=Math.ceil(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0)}
-window.addEventListener('resize',resize);
 function transform(){cell=clamp(Math.min(W/20.3,H/26)*zoom,5,180);ox=W/2-camera.x*cell;oy=H/2-camera.y*cell;return{cell,ox,oy}}
 function screenToWorld(x,y){transform();return{x:(x-ox)/cell,y:(y-oy)/cell}}
 function eventWorld(e){const r=canvas.getBoundingClientRect();return screenToWorld(e.clientX-r.left,e.clientY-r.top)}
+
+// Один палець рухає карту, два пальці масштабують відносно точки між ними.
 const activePointers=new Map();
 let gesture=null;
 let suppressTap=false;
@@ -539,6 +536,7 @@ function setupCanvasEvents(){
   if(canTap){lastHandledTap=performance.now();const pos=screenToWorld(px,py);floorClick(pos.x,pos.y)}
  }
  let lastHandledTap=0;
+ // Canvas pointerup handles mouse and touch taps; keyboard-generated clicks remain supported.
  canvas.addEventListener('click',e=>{
   if(!game||e.detail!==0)return;
   const pos=eventWorld(e);floorClick(pos.x,pos.y);
@@ -551,9 +549,8 @@ function setupCanvasEvents(){
   zoomAt(zoom*(e.deltaY<0?1.12:1/1.12),e.clientX-rc.left,e.clientY-rc.top);
  },{passive:false});
 }
-window.addEventListener('keydown',e=>{if(!game||!$('modalRoot').hidden)return;const keys={w:[0,-1],ArrowUp:[0,-1],s:[0,1],ArrowDown:[0,1],a:[-1,0],ArrowLeft:[-1,0],d:[1,0],ArrowRight:[1,0]};const d=keys[e.key];if(!d)return;e.preventDefault();stepPlayer(...d)});
 function stepPlayer(dx,dy){if(!game)return;const p=game.players[0];if(p.seated)return;const x=Math.floor(p.x)+dx,y=Math.floor(p.y)+dy;if(pass(x,y,p))p.path=bfs(p.x,p.y,x,y,p)}
-$('joystick').querySelectorAll('button').forEach(b=>{const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[b.dataset.dir];b.addEventListener('pointerdown',e=>{e.preventDefault();stepPlayer(...d)})});
+
 function updateBossAnimation(){
  const h=game?.hunter;
  if(!h?.active || game?.boss?.id!=='kolyadun' || $('game').hidden || !bossAnimated){
@@ -571,6 +568,7 @@ function updateBossAnimation(){
  bossAnimated.style.top=(oy+h.y*cell-size/2)+'px';
  bossAnimated.hidden=false;
 }
+
 function syncServantVisuals(){
  const shell=$('arenaShell');
  if(!game||$('game').hidden){for(const im of servantVisuals.values())im.remove();servantVisuals.clear();return}
@@ -597,6 +595,7 @@ function syncPlayerVisuals(){
   if(!im){
    im=document.createElement('img');im.className='player-animated';im.alt=p.name;im.draggable=false;
    im.addEventListener('error',()=>{
+     // Якщо потрібного GIF немає, пробуємо портрет, але не ховаємо персонажа.
      if(im.dataset.fallback==='portrait'){
        im.dataset.fallback='marker';im.removeAttribute('src');
        im.style.display='none';
@@ -610,6 +609,7 @@ function syncPlayerVisuals(){
    shell.append(im);playerVisuals.set(p.id,im)
   }
   const url=characterURL(p.skin,mode);
+  // Не перезавантажуємо GIF щокадру: це скидало б анімацію на перший кадр.
   if(im.dataset.sprite!==url){im.dataset.sprite=url;im.dataset.fallback='';im.style.display='';im.src=url}
   const size=cell*.77;
   im.style.width=size+'px';im.style.height=size+'px';
@@ -618,6 +618,7 @@ function syncPlayerVisuals(){
  }
 }
 function draw(){if(!game||!W||!ctx){if(bossAnimated)bossAnimated.hidden=true;syncServantVisuals();return;}transform();updateBossAnimation();syncServantVisuals();syncPlayerVisuals();ctx.clearRect(0,0,W,H);ctx.fillStyle='#0b1020';ctx.fillRect(0,0,W,H);ctx.save();ctx.translate(ox,oy);ctx.lineWidth=1;const tile=cell;for(let y=0;y<R;y++)for(let x=0;x<C;x++){const t=tileType(x,y),px=x*tile,py=y*tile;ctx.fillStyle=t==='void'?'#080b15':t==='wall'?'#292f49':t==='rest'?'#34324d':t==='corridor'?'#222c3e':t==='room'?'#2f3c50':'#36445a';ctx.fillRect(px,py,tile,tile);if(t==='corridor'||t==='room'||t==='door'){ctx.globalAlpha=t==='corridor'?.65:1;drawImg('floor.png',px,py,tile,tile);ctx.globalAlpha=1}if(t==='wall')drawImg('wall.png',px,py,tile,tile);ctx.strokeStyle='#74829b25';ctx.strokeRect(px+.5,py+.5,tile,tile)}
+// Rest zones at both ends of the corridor.
 for(const y of [0,24]){if(!drawImg('hunter resting.png',9*tile,y*tile,tile,tile)){}ctx.strokeStyle='#bda2ff';ctx.lineWidth=2;ctx.strokeRect(9*tile+1,y*tile+1,tile-2,tile-2)}
 for(const r of game.rooms){const dx=r.doorX*tile,dy=r.doorY*tile;if(!r.alive){ctx.fillStyle='#ff454744';ctx.fillRect((r.x+1)*tile,(r.y+1)*tile,5*tile,5*tile)}for(const [x,y] of buildTiles(r)){const px=x*tile,py=y*tile;if(!r.items.has(`${x},${y}`)){ctx.fillStyle=r.occupant===0?'#6ae4c322':'#aeb6cb13';ctx.fillRect(px+4,py+4,tile-8,tile-8);ctx.fillStyle=r.occupant===0?'#7be5c8a5':'#b9c2db50';ctx.font=`${tile*.31}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('+',px+tile/2,py+tile/2)}else iconImage(r.items.get(`${x},${y}`),px+2,py+2,tile-4)}const pcname=`pc${[1,2,3,4,4,6,7][clamp(r.pcLv-1,0,6)]}.png`;drawImg(pcname,r.pcX*tile,r.pcY*tile,tile,tile);ctx.fillStyle='#111a2db9';ctx.fillRect((r.x+1)*tile,(r.y+.18)*tile,4.7*tile,.53*tile);ctx.textAlign='left';ctx.fillStyle='#fff';ctx.font=`bold ${Math.max(9,tile*.23)}px system-ui`;ctx.fillText(`${r.id+1} ${r.occupant===null?'Вільна':game.players[r.occupant]?.name||'?'}`,(r.x+1.18)*tile,(r.y+.56)*tile);
 const open=r.occupant===null||(!game.players[r.occupant]?.seated&&r.alive);ctx.save();if(open){ctx.globalAlpha=.85;ctx.translate(r.side==='left'?-tile*.65:tile*.65,0)}drawImg(`door${clamp(r.doorLv,1,6)}.png`,dx,dy,tile,tile);ctx.restore();if(r.chain||r.puddle||r.poop){ctx.font=`${tile*.22}px sans-serif`;ctx.textAlign='center';ctx.fillText(`${r.chain?'⛓️':''}${r.puddle?'💧':''}${r.poop?'💩':''}`,dx+tile/2,dy+tile*.73)}ctx.fillStyle='#171c2d';ctx.fillRect(dx,dy-5,tile,4);ctx.fillStyle=r.door/r.maxDoor<.3?'#ff6274':'#69e8ae';ctx.fillRect(dx,dy-5,tile*clamp(r.door/r.maxDoor,0,1),4)}
@@ -636,77 +637,96 @@ for(const r of game.rooms)for(const it of r.items.values()){
  const px=it.pet.x*tile,py=it.pet.y*tile;
  drawImg(`${it.type}${clamp(it.lv||1,1,3)}.png`,px-tile*.35,py-tile*.35,tile*.7,tile*.7);
 }
+
 if(h.active){const hsize=tile*.95;ctx.save();ctx.translate(h.x*tile,h.y*tile);if(h.state==='attack'){ctx.rotate(Math.sin(h.anim*17)*.2);ctx.translate(Math.sin(h.anim*22)*tile*.11,0)}else if(h.state==='hunt'||h.state==='retreat')ctx.translate(0,Math.sin(h.anim*10)*tile*.06);const bossSprite=h.state==='attack'?game.boss.attack:(h.state==='hunt'||h.state==='retreat')?game.boss.walk:game.boss.idle;if((game.boss.id==='kolyadun'&&(!bossAnimated||!bossAnimated.complete))||(game.boss.id!=='kolyadun'&&!drawImg(bossSprite,-hsize/2,-hsize/2,hsize,hsize))){ctx.fillStyle='#ef8da9';ctx.beginPath();ctx.arc(0,0,hsize*.34,0,Math.PI*2);ctx.fill();ctx.font=`bold ${Math.max(12,tile*.4)}px sans-serif`;ctx.fillStyle='#271021';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('👁',0,0);}ctx.restore();const bx=h.x*tile-tile*.65,by=h.y*tile-tile*.75;ctx.fillStyle='#0d1223';ctx.fillRect(bx,by,tile*1.3,7);ctx.fillStyle='#f46a92';ctx.fillRect(bx,by,tile*1.3*clamp(h.hp/h.maxHp,0,1),7);ctx.textAlign='center';ctx.font=`bold ${Math.max(9,tile*.22)}px sans-serif`;ctx.fillStyle='#ffc9d7';ctx.fillText(`👁 ${h.level} ${h.state==='rest'?'💤':''}`,h.x*tile,by-5)}
-for(const m of game.servants||[]){const sx=m.x*tile,sy=m.y*tile;ctx.save();ctx.globalAlpha=.93;ctx.font=`${tile*.62}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.restore();ctx.fillStyle='#351e38';ctx.fillRect(sx-tile*.27,sy-tile*.46,tile*.54,3);ctx.fillStyle='#fda4bf';ctx.fillRect(sx-tile*.27,sy-tile*.46,tile*.54*clamp(m.hp/m.maxHp,0,1),3)}
+// Маленькі посіпаки мають власний індикатор здоров'я.
+for(const m of game.servants||[]){const sx=m.x*tile,sy=m.y*tile;ctx.save();ctx.globalAlpha=.93;ctx.font=`${tile*.62}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';/* GIF анімується окремим HTML-спрайтом */ctx.restore();ctx.fillStyle='#351e38';ctx.fillRect(sx-tile*.27,sy-tile*.46,tile*.54,3);ctx.fillStyle='#fda4bf';ctx.fillRect(sx-tile*.27,sy-tile*.46,tile*.54*clamp(m.hp/m.maxHp,0,1),3)}
 for(const p of game.projectiles){const t=1-p.life/p.max;ctx.strokeStyle='#ffe67e';ctx.lineWidth=Math.max(1,cell*.06);ctx.beginPath();ctx.moveTo(p.x*tile,p.y*tile);ctx.lineTo((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile);ctx.stroke();ctx.fillStyle='#fff6ad';ctx.beginPath();ctx.arc((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile,Math.max(2,tile*.07),0,Math.PI*2);ctx.fill()}
 for(const e of game.effects){const a=e.life/e.max;ctx.globalAlpha=clamp(a,0,1);ctx.fillStyle='#fce893';ctx.textAlign='center';ctx.font=`bold ${Math.max(11,tile*.28)}px system-ui`;ctx.fillText(e.t,e.x*tile,(e.y-.5*(1-a))*tile);ctx.globalAlpha=1}
 ctx.restore();}
 
+// ===== НАДІЙНИЙ ЦИКЛ ДЛЯ BRAVE =====
 function updateDiagnostic(){
-  const e=$('hikkaDiagnostic');if(!e)return;
-  if(!game){e.textContent='Немає матчу';return}
-  const p=game.players[0];
-  e.textContent=`t:${game.time.toFixed(1)} zoom:${zoom.toFixed(2)} x:${p.x.toFixed(1)} y:${p.y.toFixed(1)} ${p.action||'idle'}`;
+ const e=$('hikkaDiagnostic');if(!e)return;
+ if(!game){e.textContent='Немає матчу';return}
+ const p=game.players[0];
+ e.textContent=`t:${game.time.toFixed(1)} zoom:${zoom.toFixed(2)} x:${p.x.toFixed(1)} y:${p.y.toFixed(1)} ${p.action||'idle'}`;
 }
 function logicTick(){
-  if(!game||game.phase==='ended')return;
-  const now=performance.now();
-  lastActiveFrame=now;
-  const dt=Math.min(0.05,Math.max(0.008,(now-(lastLogic||now-16))/1000));
-  lastLogic=now;
-  try{update(dt)}catch(err){
-    console.error('[Hikka House] logic:',err);
-    const note=$('tip');if(note)note.textContent='Помилка симуляції: '+(err?.message||err);
-  }
-  updateDiagnostic();
+ if(!game||game.phase==='ended')return;
+ const now=performance.now();
+ lastActiveFrame=now;
+ const dt=Math.min(0.05,Math.max(0.008,(now-(lastLogic||now-16))/1000));
+ lastLogic=now;
+ try{update(dt)}catch(err){
+  console.error('[Hikka House] logic:',err);
+  const note=$('tip');if(note)note.textContent='Помилка симуляції: '+(err?.message||err);
+ }
+ updateDiagnostic();
 }
 function drawFrame(now){
-  raf=requestAnimationFrame(drawFrame);
-  if(!game||game.phase==='ended')return;
-  lastActiveFrame=now;
-  if(now-lastDraw<48)return;
-  lastDraw=now;
-  try{
-    if(W&&H){transform();syncPlayerVisuals();draw()}
-  }catch(err){
-    if(now-(window.__lastDrawErr||0)>2000){
-      console.error('[Hikka House] draw:',err);
-      window.__lastDrawErr=now;
-    }
+ raf=requestAnimationFrame(drawFrame);
+ if(!game||game.phase==='ended')return;
+ lastActiveFrame=now;
+ if(now-lastDraw<48)return;
+ lastDraw=now;
+ try{
+  if(W&&H){transform();syncPlayerVisuals();draw()}
+ }catch(err){
+  if(now-(window.__lastDrawErr||0)>2000){
+   console.error('[Hikka House] draw:',err);
+   window.__lastDrawErr=now;
   }
+ }
 }
 function startSimulation(){
-  if(logicTimer!==null){clearInterval(logicTimer);logicTimer=null}
-  if(raf){cancelAnimationFrame(raf);raf=0}
-  lastLogic=performance.now();
-  lastDraw=0;
-  lastActiveFrame=performance.now();
-  logicTimer=setInterval(logicTick,1000/60);
-  raf=requestAnimationFrame(drawFrame);
+ if(logicTimer!==null){clearInterval(logicTimer);logicTimer=null}
+ if(raf){cancelAnimationFrame(raf);raf=0}
+ lastLogic=performance.now();
+ lastDraw=0;
+ lastActiveFrame=performance.now();
+ logicTimer=setInterval(logicTick,1000/60);
+ raf=requestAnimationFrame(drawFrame);
 }
 
 function initDOM(){
-  canvas=document.getElementById('arena');
-  ctx=canvas?canvas.getContext('2d'):null;
-  bossAnimated=document.getElementById('bossAnimated');
-  if(!canvas||!ctx){
-    console.error('Hikka House: #arena не знайдено. Скрипт має бути в кінці body.');
-    return false;
-  }
-  setupCanvasEvents();
-  return true;
+ canvas=document.getElementById('arena');
+ ctx=canvas?canvas.getContext('2d'):null;
+ bossAnimated=document.getElementById('bossAnimated');
+ if(!canvas||!ctx){
+  console.error('Hikka House: #arena не знайдено. Скрипт має бути в кінці <body>.');
+  return false;
+ }
+ setupCanvasEvents();
+ return true;
+}
+
+function bindUI(){
+ const enter=$('enterBtn'); if(enter) enter.onclick=difficultyModal;
+ const quit=$('quitBtn'); if(quit) quit.onclick=()=>{if(!game)return openHome();modal('Покинути матч?',`<p>Прогрес поточного матчу не збережеться.</p>`,[{name:'Залишитися',fn:closeModal},{name:'Вийти',primary:true,fn:openHome}])};
+ const boost=$('boostBtn'); if(boost) boost.onclick=()=>modal('✨ Добові бусти',`<p>${save.boosts.length?save.boosts.map(value=>{const [id,num]=value.split(':');const b=boosts.find(b=>b.id===id);return `${b?.name||id}${num?' +'+num:''}`}).join(' • '):'Поки немає. Бонуси випадають після перемоги.'}</p>`,[{name:'Закрити',fn:closeModal}]);
+ const soundB=$('soundBtn'); if(soundB) soundB.onclick=()=>{soundOn=!soundOn;soundB.textContent=soundOn?'🔊':'🔇';if(soundOn)sound('tap')};
+ const focusB=$('focusMe'); if(focusB) focusB.onclick=()=>{if(game){const p=game.players[0];focus(p.x,p.y)}};
+ const repair=$('repairBtn'); if(repair) repair.onclick=()=>{const r=playerRoom();if(!r||!game.players[0].seated)return toast('Спочатку займіть кімнату');const price={gold:16+Math.floor(r.doorLv*7)};if(r.door>=r.maxDoor)return toast('Двері повністю відремонтовані');if(spend(price)){r.door=Math.min(r.maxDoor,r.door+55);sound('repair');effect(r.doorX+.5,r.doorY+.5,'🔧')}};
+ const zi=$('zoomIn'); if(zi) zi.onclick=()=>{zoomAt(zoom*1.3);try{draw()}catch(e){}updateDiagnostic()};
+ const zo=$('zoomOut'); if(zo) zo.onclick=()=>{zoomAt(zoom/1.3);try{draw()}catch(e){}updateDiagnostic()};
+ const joy=$('joystick');
+ if(joy) joy.querySelectorAll('button').forEach(b=>{const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[b.dataset.dir];b.addEventListener('pointerdown',e=>{e.preventDefault();stepPlayer(...d)})});
+ window.addEventListener('keydown',e=>{if(!game||!$('modalRoot')?.hidden)return;const keys={w:[0,-1],ArrowUp:[0,-1],s:[0,1],ArrowDown:[0,1],a:[-1,0],ArrowLeft:[-1,0],d:[1,0],ArrowRight:[1,0]};const d=keys[e.key];if(!d)return;e.preventDefault();stepPlayer(...d)});
+ window.addEventListener('resize',resize);
 }
 
 function boot(){
-  if(!initDOM())return;
-  resize();
-  locateAssets().then(folder=>{ASSET_DIR=folder;loadAssets();});
-  if(!save.tutorial)infoModal();
+ if(!initDOM())return;
+ bindUI();
+ resize();
+ locateAssets().then(folder=>{ASSET_DIR=folder;loadAssets();});
+ if(!save.tutorial)infoModal();
 }
 
 if(document.readyState==='loading'){
-  document.addEventListener('DOMContentLoaded',boot);
+ document.addEventListener('DOMContentLoaded',boot);
 }else{
-  boot();
+ boot();
 }
 </script>
