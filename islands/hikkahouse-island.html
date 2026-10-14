@@ -1,37 +1,4 @@
-<!doctype html><html lang="uk"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"><meta name="theme-color" content="#101326"><meta name="description" content="Hikka House — браузерна tower defense гра"><title>Hikka House</title><style>:root{color-scheme:dark;--bg:#0e1020;--panel:#1b2035;--panel2:#272d47;--line:#3c4769;--text:#f5f2fa;--muted:#adb6cf;--pink:#ff739e;--mint:#6ae4c3;--gold:#ffd478;--purple:#bda2ff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 30% 0%,#26204a 0%,#101326 50%,#0c1020 100%);font-family:Inter,ui-sans-serif,system-ui,Segoe UI,sans-serif;color:var(--text)}button{font:inherit;cursor:pointer;color:inherit}button:disabled{opacity:.42;cursor:not-allowed}button:not(:disabled):active{transform:translateY(1px)}[hidden]{display:none!important}.topbar{height:65px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px clamp(10px,2vw,30px);border-bottom:1px solid #ffffff20;background:#101526e8;position:relative;z-index:5}.brand{display:flex;align-items:center;gap:9px;white-space:nowrap}.brand>span{display:grid;place-items:center;width:37px;height:37px;border-radius:10px;background:#ff739e;color:#251529;font-size:30px}.brand b{letter-spacing:1.5px}.brand em{color:var(--pink);font-style:normal}.brand small{font-size:10px;color:var(--muted);margin-left:10px}.top-actions{display:flex;gap:7px}.top-actions button,.gamebar button,.zoom button,.modal-header button{border:1px solid var(--line);background:var(--panel2);padding:9px 12px;border-radius:10px}.hud{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}.hud span,.home-stats span{padding:8px 13px;border:1px solid #ffffff20;border-radius:9px;background:#232844;color:#eee}.hud b{font-variant-numeric:tabular-nums}.home{max-width:1150px;margin:auto;padding:25px 20px}.hero{min-height:380px;display:grid;grid-template-columns:38% 1fr;align-items:center;border:1px solid #ffffff20;border-radius:22px;background:linear-gradient(110deg,#252044,#161b31);overflow:hidden}.hero-art{height:100%;min-height:380px;background:repeating-linear-gradient(0deg,#38405d 0 35px,#303954 35px 38px);display:flex;align-items:center;justify-content:center;position:relative}.hero-art img{width:min(260px,78%);max-height:310px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 8px 15px #000a);z-index:2}.hero-door{position:absolute;right:12%;font-size:90px;opacity:.55}.hero-copy{padding:35px}.eyebrow{font-size:12px;font-weight:800;letter-spacing:2px;color:var(--mint)}h1{font-size:clamp(50px,7vw,100px);line-height:.88;letter-spacing:-4px;margin:15px 0 25px}h1 strong{color:var(--pink)}.hero-copy p{max-width:520px;font-size:16px;line-height:1.6;color:#cbd0e1}.home-stats{display:flex;flex-wrap:wrap;gap:9px;margin:24px 0}.primary{background:linear-gradient(135deg,#f76b94,#e74d7f);box-shadow:0 5px 22px #ff739e35;border:0;border-radius:12px;padding:12px 20px;font-weight:850}.big{font-size:18px;padding:15px 45px}.smallprint{color:var(--muted);font-size:12px;margin-top:12px}.home-bottom{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.sidebox{background:#171d32;border:1px solid #ffffff20;border-radius:16px;padding:18px;min-height:185px}.sidebox h3{margin:0 0 15px}.leader{display:flex;justify-content:space-between;align-items:center;padding:6px 4px;border-bottom:1px solid #ffffff10;font-size:13px}.leader b{color:var(--gold)}.skin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:10px}.skin{background:#272d47;border:1px solid var(--line);border-radius:10px;padding:7px;min-width:83px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px}.skin img{width:48px;height:48px;image-rendering:pixelated}.skin.selected{border-color:var(--mint)}.skin-wrap{display:flex;flex-direction:column;align-items:center;gap:5px}.skin-upload{border:1px dashed #7282aa;background:#252c46;color:#d9e6fa;border-radius:7px;padding:5px;font-size:10px;cursor:pointer}.hero-name{position:absolute;bottom:17px;left:10px;right:10px;text-align:center;background:#131b34c9;border-radius:9px;padding:5px;font-weight:800;z-index:3}#game{height:calc(100dvh - 65px);min-height:420px;display:flex;flex-direction:column}.gamebar{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#1a2036;border-bottom:1px solid #ffffff20;min-height:59px}.players{display:flex;gap:5px;flex:1;justify-content:center}.player-icon{position:relative;width:38px;height:38px;padding:2px;background:#303852;border:1px solid #505d7e;border-radius:8px}.player-icon img{width:100%;height:100%;image-rendering:pixelated}.player-icon.dead:after{content:'❌';position:absolute;inset:0;display:grid;place-items:center;background:#0b0d18a8;font-size:25px}.player-icon.danger{animation:shake .2s infinite}.game-tip{font-size:12px;color:var(--gold);max-width:205px;text-align:center}.game-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;min-height:0;flex:1}.arena-shell{position:relative;min-height:0;background:#0b0f1b;overflow:hidden;touch-action:none}#arena{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair;image-rendering:pixelated}.build-sidebar{background:var(--panel);border-left:1px solid var(--line);padding:12px;overflow:auto}.sidebar-heading{display:grid;gap:4px}.sidebar-heading small,.sidebar-hint{font-size:11px;color:var(--muted);line-height:1.5}.tabs{display:flex;flex-wrap:wrap;gap:4px;margin:12px 0}.tabs button{flex:1;background:#252b45;border:1px solid #3d496c;border-radius:7px;font-size:11px;padding:7px 3px}.tabs button.active{background:#4d426e;border-color:var(--pink)}.palette{display:grid;grid-template-columns:1fr 1fr;gap:8px}.item{background:var(--panel2);border:1px solid #3d4966;border-radius:10px;padding:9px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;user-select:none;touch-action:none}.item:hover{border-color:var(--pink)}.item img{width:54px;height:54px;object-fit:contain;image-rendering:pixelated}.item .emoji{font-size:31px;height:54px;display:grid;place-items:center}.item b{font-size:11px;text-align:center}.item small{color:var(--gold);font-size:10px}.sidebar-hint{margin:12px 1px}.selected-info{border:1px solid var(--line);border-radius:10px;padding:10px;font-size:12px;line-height:1.5}.joystick{position:absolute;bottom:20px;left:18px;display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.48}.joystick>div{display:flex;gap:4px}.joystick button{width:43px;height:40px;border-radius:11px;border:1px solid #c4cae755;background:#171e36c9;font-size:19px;touch-action:none}.zoom{position:absolute;right:12px;bottom:15px;display:flex;gap:6px}.zoom button{font-size:20px;padding:5px 12px}.boss-animated{position:absolute;left:0;top:0;z-index:2;pointer-events:none;image-rendering:pixelated;object-fit:contain;transform-origin:center center}.float-tooltip{position:absolute;pointer-events:none;background:#11172ae8;color:white;padding:7px;border-radius:7px;border:1px solid #ffffff44;font-size:12px}.modal-root{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:15px}.modal-backdrop{position:absolute;inset:0;background:#070a15d9;backdrop-filter:blur(4px)}.modal{position:relative;width:min(520px,100%);max-height:88dvh;overflow:auto;border:1px solid #606180;border-radius:18px;padding:22px;background:linear-gradient(135deg,#292541,#1a2037);box-shadow:0 20px 70px #000b}.modal-header{display:flex;justify-content:space-between;align-items:center;gap:10px}.modal-header h2{margin:0 0 13px;font-size:24px}.modal-header button{padding:6px 11px}.modal p,.modal li{color:#cdd3e7;line-height:1.6;font-size:14px}.modal ul{padding-left:21px}.modal #modalActions{display:flex;gap:8px;justify-content:flex-end;margin-top:17px;flex-wrap:wrap}.modal button:not(.primary){border:1px solid var(--line);background:var(--panel2);padding:10px 12px;border-radius:10px}.difficulty-list{display:grid;grid-template-columns:1fr 1fr;gap:7px;max-height:53dvh;overflow:auto}.difficulty-list button{display:flex;justify-content:space-between;text-align:left}.difficulty-list button.unlocked{border-color:var(--mint)}.buy-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:45vh;overflow:auto}.buy-options button{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px}.buy-options img{height:45px;width:45px;image-rendering:pixelated}.upgrade-cost{color:var(--gold)}.toast{position:fixed;bottom:17px;left:50%;transform:translateX(-50%);padding:12px 18px;background:#29364c;border:1px solid var(--mint);border-radius:12px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:40;text-align:center;max-width:90vw}.toast.show{opacity:1}@keyframes shake{25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}@media(max-width:900px){.game-layout{grid-template-columns:minmax(0,1fr) 225px}.palette{grid-template-columns:1fr 1fr}.game-tip{display:none}.brand small{display:none}.build-sidebar{padding:7px}}@media(max-width:650px){.topbar{height:57px}.brand b{font-size:13px}.hud{gap:3px}.hud span{font-size:11px;padding:5px}.top-actions{gap:3px}.top-actions button{padding:6px}.home{padding:10px}.hero{display:block}.hero-art{min-height:130px;height:130px}.hero-art img{width:100px}.hero-door{font-size:50px}.hero-copy{padding:18px}h1{font-size:55px}.home-bottom{grid-template-columns:1fr}#game{height:calc(100dvh - 57px)}.gamebar{min-height:46px;padding:4px;gap:3px}.gamebar button{font-size:11px;padding:7px 5px}.players{gap:1px}.player-icon{width:27px;height:29px}.game-layout{display:flex;flex-direction:column}.arena-shell{height:62%;min-height:190px;flex:1}.build-sidebar{height:180px;flex:0 0 auto;border-left:0;border-top:1px solid var(--line)}.palette{display:flex;overflow:auto}.item{min-width:90px}.item img{width:38px;height:38px}.item .emoji{height:38px}.sidebar-hint,.selected-info{display:none}.tabs{margin:6px 0}.joystick{left:8px;bottom:9px}.joystick button{width:36px;height:33px}.modal{padding:15px}.modal-header h2{font-size:20px}} 
-
-/* Мобільний HUD, зручний для гри у портретному режимі */
-.income-hud{color:var(--mint)!important}
-@media(max-width:650px){
- .topbar{height:105px;min-height:105px;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:45px 52px;column-gap:5px;align-items:center;padding:3px 8px 5px}
- .brand{grid-column:1;grid-row:1;min-width:0}
- .top-actions{grid-column:2;grid-row:1;justify-self:end}
- .hud:not([hidden]){grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;width:100%;margin:0;align-self:stretch}
- .hud span{min-width:0;display:flex;gap:2px;flex-direction:column;align-items:center;justify-content:center;padding:3px 1px;border-radius:7px;font-size:12px;line-height:1.14;white-space:nowrap}
- .hud b{font-size:13px;line-height:1.25}
- #game{height:calc(100dvh - 105px)}
- .gamebar{min-height:46px}
- .arena-shell{min-height:210px}
- .zoom{right:8px;bottom:8px;z-index:4}
- .zoom button{min-width:40px;min-height:40px}
-}
-@media(min-width:651px){.income-hud{display:flex!important}}
-/* Іконки власної валюти та Маджики */
-.token-icon,.magic-icon{width:20px;height:20px;object-fit:contain;vertical-align:middle;image-rendering:pixelated;flex-shrink:0}
-.home-stats .token-icon,.home-stats .magic-icon{margin-right:4px}
-.hud .token-icon{margin-right:3px}
-@media(max-width:650px){.hud .token-icon{width:18px;height:18px;margin-right:0}}
-
-/* Ціна персонажа: окрема маленька іконка, не портрет */
-.skin-price{display:inline-flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap}
-.skin .skin-token-icon{width:16px;height:16px;max-width:16px;max-height:16px;object-fit:contain;image-rendering:pixelated;flex:0 0 16px}
-/* Анімовані персонажі відтворюються HTML-елементами, а не статичними кадрами Canvas */
-.player-animated{will-change:transform;position:absolute;left:0;top:0;z-index:2;pointer-events:none;object-fit:contain;image-rendering:pixelated;transform-origin:center center}
-</style></head><body>
-<div id="app"><header class="topbar"><div class="brand"><span>⌂</span><b>HIKKA <em>HOUSE</em></b><small id="phase">ГОЛОВНЕ МЕНЮ</small></div><div class="hud" id="hud" hidden><span title="Монети за поточну гру"><img src="../assets/tokens.png" class="token-icon" alt="Монети"> <b id="gold">0</b></span><span class="income-hud" title="Заробіток монет за секунду">📈 +<b id="incomeRate">0</b>/с</span><span title="Енергія">⚡ <b id="energy">0</b></span><span title="До появи гостя / до кінця матчу">⏳ <b id="clock">25</b></span><span title="Рівень нав'язливого гостя">👁️ <b id="hunterLevel">1</b></span></div><div class="top-actions"><button id="soundBtn" aria-label="Увімкнути або вимкнути звук">🔊</button><button id="boostBtn" title="Добові бусти">✨</button><button id="quitBtn" title="Повернутись у меню">↩</button></div></header>
-<section id="home" class="home"><div class="hero"><div class="hero-art"><img src=""><div class="hero-door">🚪</div><div id="heroName" class="hero-name"></div></div><div class="hero-copy"><div class="eyebrow">ТИХЕ МІСЦЕ. НЕПРОХАНІ ГОСТІ.</div><h1>HIKKA<br><strong>HOUSE</strong></h1><p>Захопи кімнату. Сідай за ПК. Зачини двері. Нехай нав'язливий гість пошукає собі іншу аудиторію.</p><div class="home-stats"><span><img src="../assets/tokens.png" class="token-icon" alt="Токени">Токени <b id="tokens">0</b></span><span><img src="../assets/magican.png" class="magic-icon" alt="Маджика"> Маджика <b id="magicCount">3</b>/5</span><span>🏆 Перемоги <b id="wins">0</b></span></div><button class="primary big" id="enterBtn">УВІЙТИ →</button><div class="smallprint">Щоденне оновлення рівня о 00:00 за Києвом</div></div></div><div class="home-bottom"><div class="sidebox"><h3>🏆 Рейтинг сьогодні</h3><div id="leaders"></div></div><div class="sidebox"><h3>🛍️ Магазин персонажів · 10 на вибір</h3><div class="skin-grid" id="skins"></div></div></div></section>
-<section id="game" hidden><div class="gamebar"><button id="focusMe">🎯 Моя кімната</button><div id="players" class="players"></div><div class="game-tip" id="tip">Знайдіть кімнату та натисніть на ПК</div><button id="repairBtn" title="Лагодити двері">🔧 Двері</button></div><div class="game-layout"><div class="arena-shell" id="arenaShell"><canvas id="arena" aria-label="Карта Hikka House" tabindex="0"></canvas><img id="bossAnimated" class="boss-animated" alt="Колядун" hidden><div id="floatTooltip" class="float-tooltip" hidden></div><div class="joystick" id="joystick"><button data-dir="up">▲</button><div><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div></div><div class="zoom"><button id="zoomIn">+</button><button id="zoomOut">−</button></div><div id="hikkaDiagnostic" aria-live="off" title="Діагностика: час гри / масштаб / координати персонажа" style="position:absolute;top:6px;left:6px;z-index:4;background:#12182de0;color:#d7ffe9;padding:4px 7px;border-radius:6px;font:11px monospace;pointer-events:none">Очікування запуску…</div></div><aside class="build-sidebar"><div class="sidebar-heading"><b>БУДІВНИЦТВО</b><small>Перетягуйте предмети на клітинку</small></div><div id="tabs" class="tabs"></div><div id="palette" class="palette"></div><div class="sidebar-hint">💡 Клік по порожній клітинці теж відкриває магазин. Для пересування: WASD, стрілки або натисніть на підлогу.</div><div id="selectedInfo" class="selected-info">Оберіть кімнату, щоб розпочати.</div></aside></div></section>
-<div id="modalRoot" class="modal-root" hidden><div class="modal-backdrop"></div><div class="modal" role="dialog" aria-modal="true"><div class="modal-header"><h2 id="modalTitle"></h2><button id="modalClose" aria-label="Закрити">✕</button></div><div id="modalContent"></div><div id="modalActions"></div></div></div><div class="toast" id="toast" role="status"></div></div><script>/* Hikka House — vanilla JavaScript, Canvas 2D, no external dependencies. */
+<script>/* Hikka House — vanilla JavaScript, Canvas 2D, no external dependencies. */
 'use strict';
 const $=id=>document.getElementById(id), clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>a+Math.random()*(b-a),pick=a=>a[Math.floor(Math.random()*a.length)];
 const difficulty=['Легко','Нормально','Складно','Жах',...Array.from({length:10},(_,i)=>`Маячня ${i+1}`),'Нісенітниця','Дурчак','Дурчак дурний'];
@@ -147,7 +114,7 @@ function sit(p,r){
  if(!p.npc){game.phase='defend';$('tip').textContent='Покращуйте ПК, двері та захист!';toast('Ви за ПК! Двері зачинено. Будуйте оборону.')}
 }
 function start(lv){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';activePointers.clear();pressed=null;gesture=null;daySync();zoom=1;camera={x:9.5,y:12};game=newGame(lv);$('home').hidden=true;$('game').hidden=false;$('hud').hidden=false;$('phase').textContent=difficulty[lv].toUpperCase();$('boostBtn').hidden=false;renderPlayers();renderTabs();renderPalette();closeModal();focus(9.5,12.5);for(const p of game.players.slice(1)){p.decision=rand(2.0,5.5)}resize();draw();lastTime=performance.now();update(0);startSimulation();toast('25 секунд, щоб зайняти кімнату!')}
-function openHome(){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';game=null;$('home').hidden=false;$('game').hidden=true;$('hud').hidden=true;$('phase').textContent='ГОЛОВНЕ МЕНЮ';closeModal();renderHome()}
+function openHome(){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';if(logicTimer!==null){clearInterval(logicTimer);logicTimer=null}if(raf){cancelAnimationFrame(raf);raf=0}game=null;$('home').hidden=false;$('game').hidden=true;$('hud').hidden=true;$('phase').textContent='ГОЛОВНЕ МЕНЮ';closeModal();renderHome()}
 function spend(price,p=game){if(!p||p.gold<(price.gold||0)||p.energy<(price.energy||0)){toast('Недостатньо монет або енергії');sound('hit');return false}p.gold-=price.gold||0;p.energy-=price.energy||0;return true}
 function costLabel(cost){return [(cost.gold||0)?`🪙${cost.gold}`:'',(cost.energy||0)?`⚡${cost.energy}`:''].filter(Boolean).join(' ')||'Безкоштовно'}
 function build(room,x,y,type){if(!game||!room?.alive||room.occupant===null)return false;if(!game.players[room.occupant]?.seated){toast('Спершу потрібно сісти за ПК');return false;}const actor=game.players[room.occupant];if(actor.npc&&!game.boosts.includes('help')){toast('Будувати в кімнаті NPC не можна без бусту «Допомога»');return false}const def=catalog.find(c=>c.type===type);if(!def)return false;if(def.door){if(room!==playerRoom()){toast('Тримачі ставляться на власні двері');return false}if(room[type]){toast('Вже встановлено');return false}if(!spend(costs[type]))return false;room[type]=true;effect(room.doorX+.5,room.doorY+.5,'✨');sound('build');return true}
@@ -664,71 +631,71 @@ for(const m of game.servants||[]){const sx=m.x*tile,sy=m.y*tile;ctx.save();ctx.g
 for(const p of game.projectiles){const t=1-p.life/p.max;ctx.strokeStyle='#ffe67e';ctx.lineWidth=Math.max(1,cell*.06);ctx.beginPath();ctx.moveTo(p.x*tile,p.y*tile);ctx.lineTo((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile);ctx.stroke();ctx.fillStyle='#fff6ad';ctx.beginPath();ctx.arc((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile,Math.max(2,tile*.07),0,Math.PI*2);ctx.fill()}
 for(const e of game.effects){const a=e.life/e.max;ctx.globalAlpha=clamp(a,0,1);ctx.fillStyle='#fce893';ctx.textAlign='center';ctx.font=`bold ${Math.max(11,tile*.28)}px system-ui`;ctx.fillText(e.t,e.x*tile,(e.y-.5*(1-a))*tile);ctx.globalAlpha=1}
 ctx.restore();}
-// Єдиний цикл матчу: одна подія оновлює координати, час, економіку і кадр.
-// Не запускати окремі RAF/таймери, що можуть змагатися за стан гри.
-let simulationTimer=null, simulationLast=0;
-// Єдиний цикл для Chromium / Brave: логіка й малювання не блокують одне одного.
-let frameClock=0, drawClock=0, logicAccumulator=0, lastFrameError=0;
-let lastActiveFrame=0;
+
+// ===== НАДІЙНИЙ ЦИКЛ ДЛЯ BRAVE =====
+// Логіка на setInterval (стабільно), малювання на RAF
+let logicTimer = null;
+let lastLogic = 0;
+let lastDraw = 0;
+let lastActiveFrame = 0;
+
 function updateDiagnostic(){
- const e=$('hikkaDiagnostic');if(!e)return;
- if(!game){e.textContent='Немає матчу';return}
- const p=game.players[0];
- e.textContent=`t:${game.time.toFixed(1)} zoom:${zoom.toFixed(2)} x:${p.x.toFixed(1)} y:${p.y.toFixed(1)} ${p.action||'idle'}`;
+  const e = $('hikkaDiagnostic');
+  if (!e) return;
+  if (!game) { e.textContent = 'Немає матчу'; return; }
+  const p = game.players[0];
+  e.textContent = `t:${game.time.toFixed(1)} zoom:${zoom.toFixed(2)} x:${p.x.toFixed(1)} y:${p.y.toFixed(1)} ${p.action||'idle'}`;
 }
-// Якщо Brave не викликає кадри, резервний цикл підтримує симуляцію.
-// Тільки один із двох шляхів оновлює її в кожен момент.
-setInterval(()=>{
- if(!game||game.phase==='ended')return;
- const now=performance.now();
- if(now-lastActiveFrame>350){
-   try{update(Math.min(.1,Math.max(.016,(now-(window.__hikkaFallbackTime||now-70))/1000)));
-     if(W&&H){transform();syncPlayerVisuals();draw()}
-   }catch(err){console.error('[Hikka House] Резервний цикл:',err);const e=$('hikkaDiagnostic');if(e)e.textContent='ПОМИЛКА: '+err.message}
-   window.__hikkaFallbackTime=now;
-   frameClock=now;logicAccumulator=0;
- }else window.__hikkaFallbackTime=now;
- updateDiagnostic();
-},100);
-function simulationFrame(now){
-  lastActiveFrame=performance.now();
-  raf=requestAnimationFrame(simulationFrame);
-  if(!game||game.phase==='ended'){frameClock=now;return;}
-  const elapsed=frameClock?Math.min((now-frameClock)/1000,.15):0;
-  frameClock=now;
-  logicAccumulator=Math.min(logicAccumulator+elapsed,.20);
-  // Дрібні однакові кроки не залежать від швидкості FPS.
-  let steps=0;
-  while(logicAccumulator>=1/60&&steps<10){
-    try{update(1/60)}catch(err){
-      console.error('[Hikka House] Помилка симуляції:',err);
-      const note=$('tip');if(note)note.textContent='Помилка симуляції: '+(err?.message||err);
-      logicAccumulator=0;break;
+
+function logicTick(){
+  if (!game || game.phase === 'ended') return;
+  const now = performance.now();
+  lastActiveFrame = now;
+  const dt = Math.min(0.05, Math.max(0.008, (now - (lastLogic || now - 16)) / 1000));
+  lastLogic = now;
+  try {
+    update(dt);
+  } catch (err) {
+    console.error('[Hikka House] logic:', err);
+    const note = $('tip');
+    if (note) note.textContent = 'Помилка симуляції: ' + (err?.message || err);
+  }
+  updateDiagnostic();
+}
+
+function drawFrame(now){
+  raf = requestAnimationFrame(drawFrame);
+  if (!game || game.phase === 'ended') return;
+  lastActiveFrame = now;
+  // малюємо максимум ~20 FPS
+  if (now - lastDraw < 48) return;
+  lastDraw = now;
+  try {
+    if (W && H) {
+      transform();
+      syncPlayerVisuals();
+      draw();
     }
-    logicAccumulator-=1/60;
-    steps++;
-  }
-  // GIF updates are independent from canvas drawing failures.
-  try{if(W&&H){transform();syncPlayerVisuals()}}catch(err){
-    if(now-lastFrameError>2000){console.error('[Hikka House] Player sprite sync:',err);lastFrameError=now;}
-  }
-  // Канвас обмежений до 20 FPS, GIF є незалежними HTML-зображеннями.
-  if(now-drawClock>=50){
-    drawClock=now;
-    try{draw()}catch(err){
-      if(now-lastFrameError>2000){console.error('[Hikka House] Помилка відображення:',err);lastFrameError=now;}
-      // Не припиняємо оновлення координат та таймера через помилку малювання.
+  } catch (err) {
+    if (now - (window.__lastDrawErr || 0) > 2000) {
+      console.error('[Hikka House] draw:', err);
+      window.__lastDrawErr = now;
     }
   }
 }
+
 function startSimulation(){
-  if(simulationTimer!==null){clearInterval(simulationTimer);simulationTimer=null}
-  if(raf){cancelAnimationFrame(raf);raf=0}
-  frameClock=0;drawClock=0;logicAccumulator=0;lastActiveFrame=performance.now();
-  raf=requestAnimationFrame(simulationFrame);
+  if (logicTimer !== null) { clearInterval(logicTimer); logicTimer = null; }
+  if (raf) { cancelAnimationFrame(raf); raf = 0; }
+  lastLogic = performance.now();
+  lastDraw = 0;
+  lastActiveFrame = performance.now();
+  // 60 логічних тіків на секунду — стабільно в Brave
+  logicTimer = setInterval(logicTick, 1000 / 60);
+  raf = requestAnimationFrame(drawFrame);
 }
 
 resize();
 locateAssets().then(folder=>{ASSET_DIR=folder;loadAssets();});
 if(!save.tutorial)infoModal();
-</script></body></html>
+</script>
