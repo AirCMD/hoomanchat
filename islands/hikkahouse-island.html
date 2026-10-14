@@ -130,7 +130,7 @@ function ensureRoomRoute(p){
  }
 }
 function sit(p,r){if(!r||r.occupant!==p.id)return;p.seated=true;p.path=[];p.x=r.pcX+.5;p.y=r.pcY+.5;r.access=0;p.action='sit';sound('door');if(!p.npc){game.phase='defend';$('tip').textContent='Покращуйте ПК, двері та захист!';toast('Ви за ПК! Двері зачинено. Будуйте оборону.')} }
-function start(lv){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';activePointers.clear();pressed=null;gesture=null;daySync();zoom=1;camera={x:9.5,y:12};game=newGame(lv);$('home').hidden=true;$('game').hidden=false;$('hud').hidden=false;$('phase').textContent=difficulty[lv].toUpperCase();$('boostBtn').hidden=false;renderPlayers();renderTabs();renderPalette();closeModal();focus(9.5,12.5);for(const p of game.players.slice(1)){const free=game.rooms.filter(r=>r.occupant===null);if(free.length)assignRoom(p,pick(free));p.decision=rand(.9,4)}resize();draw();requestAnimationFrame(()=>{if(game&&!$('game').hidden){resize();draw()}});lastTime=performance.now();update(0);startSimulation();if(!raf)raf=requestAnimationFrame(frame);toast('25 секунд, щоб зайняти кімнату!')}
+function start(lv){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';activePointers.clear();pressed=null;gesture=null;daySync();zoom=1;camera={x:9.5,y:12};game=newGame(lv);$('home').hidden=true;$('game').hidden=false;$('hud').hidden=false;$('phase').textContent=difficulty[lv].toUpperCase();$('boostBtn').hidden=false;renderPlayers();renderTabs();renderPalette();closeModal();focus(9.5,12.5);for(const p of game.players.slice(1)){const free=game.rooms.filter(r=>r.occupant===null);if(free.length)assignRoom(p,pick(free));p.decision=rand(.9,4)}resize();draw();requestAnimationFrame(()=>{if(game&&!$('game').hidden){resize();draw()}});lastTime=performance.now();update(0);startSimulation();toast('25 секунд, щоб зайняти кімнату!')}
 function openHome(){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';game=null;$('home').hidden=false;$('game').hidden=true;$('hud').hidden=true;$('phase').textContent='ГОЛОВНЕ МЕНЮ';closeModal();renderHome()}
 function spend(price,p=game){if(!p||p.gold<(price.gold||0)||p.energy<(price.energy||0)){toast('Недостатньо монет або енергії');sound('hit');return false}p.gold-=price.gold||0;p.energy-=price.energy||0;return true}
 function costLabel(cost){return [(cost.gold||0)?`🪙${cost.gold}`:'',(cost.energy||0)?`⚡${cost.energy}`:''].filter(Boolean).join(' ')||'Безкоштовно'}
@@ -649,35 +649,35 @@ for(const m of game.servants||[]){const sx=m.x*tile,sy=m.y*tile;ctx.save();ctx.g
 for(const p of game.projectiles){const t=1-p.life/p.max;ctx.strokeStyle='#ffe67e';ctx.lineWidth=Math.max(1,cell*.06);ctx.beginPath();ctx.moveTo(p.x*tile,p.y*tile);ctx.lineTo((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile);ctx.stroke();ctx.fillStyle='#fff6ad';ctx.beginPath();ctx.arc((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile,Math.max(2,tile*.07),0,Math.PI*2);ctx.fill()}
 for(const e of game.effects){const a=e.life/e.max;ctx.globalAlpha=clamp(a,0,1);ctx.fillStyle='#fce893';ctx.textAlign='center';ctx.font=`bold ${Math.max(11,tile*.28)}px system-ui`;ctx.fillText(e.t,e.x*tile,(e.y-.5*(1-a))*tile);ctx.globalAlpha=1}
 ctx.restore();}
-// Один часовий механізм симуляції: RAF та резервний таймер не дублюють рух.
+// Єдиний цикл матчу: одна подія оновлює координати, час, економіку і кадр.
+// Не запускати окремі RAF/таймери, що можуть змагатися за стан гри.
 let simulationTimer=null, simulationLast=0;
-function simulationStep(now=performance.now()){
- if(!game||game.phase==='ended'){simulationLast=now;return}
- if(!simulationLast){simulationLast=now;return}
- const delta=now-simulationLast;
- if(delta<12)return; // той самий крок не можна виконувати двічі
+function simulationStep(){
+ if(!game||game.phase==='ended')return;
+ const now=performance.now();
+ const dt=simulationLast?clamp((now-simulationLast)/1000,0,.09):.033;
  simulationLast=now;
- const dt=clamp(delta/1000,0,.08);
- try{update(dt)}catch(err){
-   console.error('[Hikka House] Помилка симуляції:',err);
-   const note=$('tip');if(note)note.textContent='Помилка гри: '+(err?.message||err);
+ try{
+   update(dt);
+ }catch(err){
+   console.error('[Hikka House] Помилка логіки:',err);
+   const note=$('tip');if(note)note.textContent='ПОМИЛКА ЛОГІКИ: '+(err?.message||err);
+   return;
+ }
+ try{
+   draw();
+ }catch(err){
+   if(!simulationStep.lastDrawError||now-simulationStep.lastDrawError>3000){
+     console.error('[Hikka House] Помилка малювання:',err);
+     simulationStep.lastDrawError=now;
+   }
  }
 }
 function startSimulation(){
- simulationLast=performance.now();
  if(simulationTimer!==null)clearInterval(simulationTimer);
- // Резервний крок, коли requestAnimationFrame не запускається.
- simulationTimer=setInterval(()=>{const now=performance.now();simulationStep(now);if(now-(frame.lastDrawAt||0)>150){try{draw()}catch(err){console.error("[Hikka House] Резервний кадр:",err)}}},50);
-}
-function frame(now){
- raf=requestAnimationFrame(frame);
- frame.lastDrawAt=now;
- simulationStep(now);
- try{draw()}catch(err){
-   if(!frame.lastDrawError||now-frame.lastDrawError>5000){
-     console.error('[Hikka House] Draw failure:',err);frame.lastDrawError=now;
-   }
- }
+ if(raf){cancelAnimationFrame(raf);raf=0;}
+ simulationLast=performance.now();
+ simulationTimer=setInterval(simulationStep,33);
 }
 
 resize();
