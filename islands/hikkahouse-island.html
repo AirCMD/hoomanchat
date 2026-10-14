@@ -154,7 +154,7 @@ function floorClick(x,y){
   if(ix===r.doorX&&iy===r.doorY){if(!p.seated&&r.occupant===null){if(assignRoom(p,r)){p.autoSit=true;toast('Персонаж біжить до ПК');}return;}upgrade(r,ix,iy);return}
   if(ix===r.pcX&&iy===r.pcY){
    if(r.occupant===null&&!p.seated){
-     assignRoom(p,r);p.autoSit=true;toast('Персонаж прямує до вільного ПК');
+     if(assignRoom(p,r)){p.autoSit=true;toast('Персонаж прямує до вільного ПК');}
     } else if(r.occupant===p.id&&!p.seated){
     if(Math.hypot(p.x-(ix+.5),p.y-(iy+.5))<1.9)sit(p,r);
     else {p.path=bfs(p.x,p.y,ix,iy,p);toast('Підійдіть до ПК')}
@@ -166,7 +166,7 @@ function floorClick(x,y){
    if(r.items.has(`${ix},${iy}`)){upgrade(r,ix,iy);return}
    if(buildTiles(r).some(a=>a[0]===ix&&a[1]===iy)){game.selected={r,x:ix,y:iy};openBuildMenu(r,ix,iy);return}
   }else{
-   if(r.occupant===null){assignRoom(p,r);p.autoSit=true;toast('Вільна кімната! Персонаж прямує до ПК.');return}
+   if(r.occupant===null){if(assignRoom(p,r)){p.autoSit=true;toast('Вільна кімната! Персонаж прямує до ПК.')}return}
    else if(r.occupant!==p.id){toast('Кімната вже зайнята');return}
    p.path=bfs(p.x,p.y,r.pcX,r.pcY,p);
   }
@@ -542,8 +542,9 @@ function finishCanvasPointer(e,cancel=false){
  if(canTap){lastHandledTap=performance.now();const pos=screenToWorld(px,py);floorClick(pos.x,pos.y)}
 }
 let lastHandledTap=0;
+// Canvas pointerup handles mouse and touch taps; keyboard-generated clicks remain supported.
 canvas.addEventListener('click',e=>{
- if(!game||e.detail===0||performance.now()-lastHandledTap<350)return;
+ if(!game||e.detail!==0)return;
  const pos=eventWorld(e);floorClick(pos.x,pos.y);
 });
 canvas.addEventListener('pointerup',e=>finishCanvasPointer(e));
@@ -604,7 +605,9 @@ function syncPlayerVisuals(){
        im.style.display='none';
      }else{
        im.dataset.fallback='portrait';
-       im.src=characterURL(p.skin,'portrait');
+       const fallback=characterURL(p.skin,'portrait');
+       if(im.src.endsWith(encodeURI((CHARACTERS[p.skin]||CHARACTERS[0]).portrait))){im.dataset.fallback='marker';im.style.display='none'}
+       else im.src=fallback;
      }
    });
    shell.append(im);playerVisuals.set(p.id,im)
@@ -646,7 +649,13 @@ for(const m of game.servants||[]){const sx=m.x*tile,sy=m.y*tile;ctx.save();ctx.g
 for(const p of game.projectiles){const t=1-p.life/p.max;ctx.strokeStyle='#ffe67e';ctx.lineWidth=Math.max(1,cell*.06);ctx.beginPath();ctx.moveTo(p.x*tile,p.y*tile);ctx.lineTo((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile);ctx.stroke();ctx.fillStyle='#fff6ad';ctx.beginPath();ctx.arc((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile,Math.max(2,tile*.07),0,Math.PI*2);ctx.fill()}
 for(const e of game.effects){const a=e.life/e.max;ctx.globalAlpha=clamp(a,0,1);ctx.fillStyle='#fce893';ctx.textAlign='center';ctx.font=`bold ${Math.max(11,tile*.28)}px system-ui`;ctx.fillText(e.t,e.x*tile,(e.y-.5*(1-a))*tile);ctx.globalAlpha=1}
 ctx.restore();}
-function frame(now){raf=requestAnimationFrame(frame);const dt=clamp((now-lastTime)/1000,0,.05);lastTime=now;if(game&&game.phase!=='ended')update(dt);draw()}
+function frame(now){
+ raf=requestAnimationFrame(frame);
+ const dt=clamp((now-lastTime)/1000,0,.05);lastTime=now;
+ // Separate simulation and rendering so one broken sprite never stalls movement.
+ try{if(game&&game.phase!=='ended')update(dt)}catch(err){console.error('[Hikka House] Update failure:',err)}
+ try{draw()}catch(err){if(!frame.lastDrawError||now-frame.lastDrawError>5000){console.error('[Hikka House] Draw failure:',err);frame.lastDrawError=now}}
+}
 resize();
 locateAssets().then(folder=>{ASSET_DIR=folder;loadAssets();});
 if(!save.tutorial)infoModal();
