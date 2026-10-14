@@ -113,8 +113,8 @@ function inRoom(r,x,y){return x>=r.x&&x<=r.x+6&&y>=r.y&&y<=r.y+6}function tileTy
 function bfs(sx,sy,ex,ey,entity){sx=clamp(Math.floor(sx),0,C-1);sy=clamp(Math.floor(sy),0,R-1);ex=clamp(Math.floor(ex),0,C-1);ey=clamp(Math.floor(ey),0,R-1);const visited=new Set([`${sx},${sy}`]),q=[[sx,sy]],parent={};for(let i=0;i<q.length;i++){const [x,y]=q[i];if(x===ex&&y===ey){const path=[];let k=`${x},${y}`;while(parent[k]){const [a,b]=k.split(',').map(Number);path.unshift({x:a+.5,y:b+.5});k=parent[k]}return path}for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy,k=`${nx},${ny}`;if(!visited.has(k)&&pass(nx,ny,entity)){visited.add(k);parent[k]=`${x},${y}`;q.push([nx,ny])}}}return []}
 function travel(ent,dt){if(!ent.path.length){ent.action='idle';return}const to=ent.path[0],dx=to.x-ent.x,dy=to.y-ent.y,d=Math.hypot(dx,dy),step=ent.speed*dt;ent.action='walk';ent.walk+=dt;if(d<=step){ent.x=to.x;ent.y=to.y;ent.path.shift()}else{ent.x+=dx/d*step;ent.y+=dy/d*step}}
 function focus(x,y){camera.x=x;camera.y=y}function playerRoom(){return game&&game.players[0].room!==null?game.rooms[game.players[0].room]:null}function ownerRoom(p){return p.room!==null?game.rooms[p.room]:null}
-function assignRoom(p,r){if(r.occupant!==null||!r.alive)return false;r.occupant=p.id;p.room=r.id;p.path=bfs(p.x,p.y,r.pcX,r.pcY,p);r.access=1;return true}function sit(p,r){if(!r||r.occupant!==p.id)return;p.seated=true;p.path=[];p.x=r.pcX+.5;p.y=r.pcY+.5;r.access=0;p.action='sit';sound('door');if(!p.npc){game.phase='defend';$('tip').textContent='Покращуйте ПК, двері та захист!';toast('Ви за ПК! Двері зачинено. Будуйте оборону.')} }
-function start(lv){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';activePointers.clear();pressed=null;gesture=null;daySync();zoom=1;camera={x:9.5,y:12};game=newGame(lv);$('home').hidden=true;$('game').hidden=false;$('hud').hidden=false;$('phase').textContent=difficulty[lv].toUpperCase();$('boostBtn').hidden=false;renderPlayers();renderTabs();renderPalette();closeModal();focus(9.5,12.5);for(const p of game.players.slice(1)){p.decision=rand(.9,4)}resize();draw();requestAnimationFrame(()=>{if(game&&!$('game').hidden){resize();draw()}});lastTime=performance.now();if(!raf)raf=requestAnimationFrame(frame);toast('25 секунд, щоб зайняти кімнату!')}
+function assignRoom(p,r){if(r.occupant!==null||!r.alive)return false;r.occupant=p.id;p.room=r.id;p.path=bfs(p.x,p.y,r.pcX,r.pcY,p);r.access=1;if(!p.path.length&&Math.hypot(p.x-r.pcX-.5,p.y-r.pcY-.5)>.6){r.occupant=null;p.room=null;return false}return true}function sit(p,r){if(!r||r.occupant!==p.id)return;p.seated=true;p.path=[];p.x=r.pcX+.5;p.y=r.pcY+.5;r.access=0;p.action='sit';sound('door');if(!p.npc){game.phase='defend';$('tip').textContent='Покращуйте ПК, двері та захист!';toast('Ви за ПК! Двері зачинено. Будуйте оборону.')} }
+function start(lv){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';activePointers.clear();pressed=null;gesture=null;daySync();zoom=1;camera={x:9.5,y:12};game=newGame(lv);$('home').hidden=true;$('game').hidden=false;$('hud').hidden=false;$('phase').textContent=difficulty[lv].toUpperCase();$('boostBtn').hidden=false;renderPlayers();renderTabs();renderPalette();closeModal();focus(9.5,12.5);for(const p of game.players.slice(1)){const free=game.rooms.filter(r=>r.occupant===null);if(free.length)assignRoom(p,pick(free));p.decision=rand(.9,4)}resize();draw();requestAnimationFrame(()=>{if(game&&!$('game').hidden){resize();draw()}});lastTime=performance.now();if(!raf)raf=requestAnimationFrame(frame);toast('25 секунд, щоб зайняти кімнату!')}
 function openHome(){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';game=null;$('home').hidden=false;$('game').hidden=true;$('hud').hidden=true;$('phase').textContent='ГОЛОВНЕ МЕНЮ';closeModal();renderHome()}
 function spend(price,p=game){if(!p||p.gold<(price.gold||0)||p.energy<(price.energy||0)){toast('Недостатньо монет або енергії');sound('hit');return false}p.gold-=price.gold||0;p.energy-=price.energy||0;return true}
 function costLabel(cost){return [(cost.gold||0)?`🪙${cost.gold}`:'',(cost.energy||0)?`⚡${cost.energy}`:''].filter(Boolean).join(' ')||'Безкоштовно'}
@@ -135,7 +135,7 @@ function floorClick(x,y){
  if(!game)return;
  const ix=Math.floor(x),iy=Math.floor(y),r=roomAt(ix,iy),p=game.players[0];
  if(r){
-  if(ix===r.doorX&&iy===r.doorY){upgrade(r,ix,iy);return}
+  if(ix===r.doorX&&iy===r.doorY){if(!p.seated&&r.occupant===null){if(assignRoom(p,r)){p.autoSit=true;toast('Персонаж біжить до ПК');}return;}upgrade(r,ix,iy);return}
   if(ix===r.pcX&&iy===r.pcY){
    if(r.occupant===null&&!p.seated){
      assignRoom(p,r);p.autoSit=true;toast('Персонаж прямує до вільного ПК');
@@ -574,10 +574,23 @@ function syncPlayerVisuals(){
   const mode=p.seated?'sit':p.action==='walk'?'walk':'idle';
   const filename=(CHARACTERS[p.skin]||CHARACTERS[0])[mode];
   if(!/\.gif$/i.test(filename)){if(im)im.hidden=true;continue}
-  if(!im){im=document.createElement('img');im.className='player-animated';im.alt=p.name;im.draggable=false;shell.append(im);playerVisuals.set(p.id,im)}
+  if(!im){
+   im=document.createElement('img');im.className='player-animated';im.alt=p.name;im.draggable=false;
+   im.addEventListener('error',()=>{
+     // Якщо потрібного GIF немає, пробуємо портрет, але не ховаємо персонажа.
+     if(im.dataset.fallback==='portrait'){
+       im.dataset.fallback='marker';im.removeAttribute('src');
+       im.style.display='none';
+     }else{
+       im.dataset.fallback='portrait';
+       im.src=characterURL(p.skin,'portrait');
+     }
+   });
+   shell.append(im);playerVisuals.set(p.id,im)
+  }
   const url=characterURL(p.skin,mode);
   // Не перезавантажуємо GIF щокадру: це скидало б анімацію на перший кадр.
-  if(im.dataset.sprite!==url){im.src=url;im.dataset.sprite=url}
+  if(im.dataset.sprite!==url){im.dataset.sprite=url;im.dataset.fallback='';im.style.display='';im.src=url}
   const size=cell*.77;
   im.style.width=size+'px';im.style.height=size+'px';
   im.style.left=(ox+p.x*cell-size/2)+'px';
@@ -596,7 +609,7 @@ for(const m of game.servants){
  ctx.fillStyle=m.hp/m.maxHp<.35?'#ff5b71':'#7ae6ab';
  ctx.fillRect(barX,barY,tile*.52*clamp(m.hp/m.maxHp,0,1),Math.max(3,tile*.09));
 }
-for(const p of game.players){if(!p.alive)continue;ctx.save();const s=tile*.77,px=p.x*tile-s/2+(p.seated?tile*.18:0),py=p.y*tile-s/2;const cid=p.skin;const mode=p.seated?'sit':p.action==='walk'?'walk':'idle';const filename=(CHARACTERS[cid]||CHARACTERS[0])[mode];const bounce=p.action==='walk'?Math.sin(p.walk*13)*tile*.04:Math.sin(game.time*2+p.id)*tile*.014;if(p.seated){ctx.globalAlpha=.9;ctx.translate(0,tile*.07)}const sprite=characterImages[cid]?.[mode];if(/\.gif$/i.test(filename)){/* GIF відображає syncPlayerVisuals */}else if(sprite&&sprite.complete&&sprite.naturalWidth){ctx.drawImage(sprite,px,py+bounce,s,s)}else{ctx.fillStyle='#896eab';ctx.fillRect(px,py+bounce,s,s)}ctx.restore();ctx.textAlign='center';ctx.font=`${Math.max(9,tile*.21)}px sans-serif`;ctx.fillStyle=p.npc?'#e4d7ff':'#7cf8d0';ctx.fillText(p.name,p.x*tile,p.y*tile-tile*.3)}
+for(const p of game.players){if(!p.alive)continue;ctx.save();const s=tile*.77,px=p.x*tile-s/2+(p.seated?tile*.18:0),py=p.y*tile-s/2;const cid=p.skin;const mode=p.seated?'sit':p.action==='walk'?'walk':'idle';const filename=(CHARACTERS[cid]||CHARACTERS[0])[mode];const bounce=p.action==='walk'?Math.sin(p.walk*13)*tile*.04:Math.sin(game.time*2+p.id)*tile*.014;if(p.seated){ctx.globalAlpha=.9;ctx.translate(0,tile*.07)}const sprite=characterImages[cid]?.[mode];if(/\.gif$/i.test(filename)){const overlay=playerVisuals.get(p.id);if(!overlay||overlay.dataset.fallback==='marker'){ctx.fillStyle=p.npc?'#a892cc':'#79dbbb';ctx.fillRect(px,py+bounce,s,s);ctx.fillStyle='#101526';ctx.font=`bold ${Math.max(9,tile*.3)}px sans-serif`;ctx.textAlign='center';ctx.fillText(p.name.slice(0,1),px+s/2,py+bounce+s*.7)}}else if(sprite&&sprite.complete&&sprite.naturalWidth){ctx.drawImage(sprite,px,py+bounce,s,s)}else{ctx.fillStyle='#896eab';ctx.fillRect(px,py+bounce,s,s)}ctx.restore();ctx.textAlign='center';ctx.font=`${Math.max(9,tile*.21)}px sans-serif`;ctx.fillStyle=p.npc?'#e4d7ff':'#7cf8d0';ctx.fillText(p.name,p.x*tile,p.y*tile-tile*.3)}
 const h=game.hunter;
 if(game.mikola?.active){const n=game.mikola;ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`${Math.max(15,tile*.8)}px sans-serif`;ctx.fillText('🍺',n.x*tile,n.y*tile);ctx.font=`bold ${Math.max(9,tile*.23)}px sans-serif`;ctx.fillStyle='#ffe3a3';ctx.fillText('Микола',n.x*tile,(n.y-.54)*tile);ctx.restore()}
 if(game.olexiy?.active){const a=game.olexiy;ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`${Math.max(15,tile*.8)}px sans-serif`;ctx.fillText('📦',a.x*tile,a.y*tile);ctx.font=`bold ${Math.max(9,tile*.23)}px sans-serif`;ctx.fillStyle='#f8dea9';ctx.fillText('Олексій',a.x*tile,(a.y-.54)*tile);ctx.restore()}
@@ -612,7 +625,7 @@ for(const m of game.servants||[]){const sx=m.x*tile,sy=m.y*tile;ctx.save();ctx.g
 for(const p of game.projectiles){const t=1-p.life/p.max;ctx.strokeStyle='#ffe67e';ctx.lineWidth=Math.max(1,cell*.06);ctx.beginPath();ctx.moveTo(p.x*tile,p.y*tile);ctx.lineTo((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile);ctx.stroke();ctx.fillStyle='#fff6ad';ctx.beginPath();ctx.arc((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile,Math.max(2,tile*.07),0,Math.PI*2);ctx.fill()}
 for(const e of game.effects){const a=e.life/e.max;ctx.globalAlpha=clamp(a,0,1);ctx.fillStyle='#fce893';ctx.textAlign='center';ctx.font=`bold ${Math.max(11,tile*.28)}px system-ui`;ctx.fillText(e.t,e.x*tile,(e.y-.5*(1-a))*tile);ctx.globalAlpha=1}
 ctx.restore();}
-function frame(now){raf=requestAnimationFrame(frame);const dt=clamp((now-lastTime)/1000,0,.05);lastTime=now;if(game&&game.phase!=='ended'&&$('modalRoot').hidden)update(dt);draw()}
+function frame(now){raf=requestAnimationFrame(frame);const dt=clamp((now-lastTime)/1000,0,.05);lastTime=now;if(game&&game.phase!=='ended')update(dt);draw()}
 resize();
 locateAssets().then(folder=>{ASSET_DIR=folder;loadAssets();});
 if(!save.tutorial)infoModal();
