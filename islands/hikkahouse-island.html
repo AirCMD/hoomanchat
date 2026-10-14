@@ -1,4 +1,37 @@
-<script>/* Hikka House — vanilla JavaScript, Canvas 2D, no external dependencies. */
+<!doctype html><html lang="uk"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"><meta name="theme-color" content="#101326"><meta name="description" content="Hikka House — браузерна tower defense гра"><title>Hikka House</title><style>:root{color-scheme:dark;--bg:#0e1020;--panel:#1b2035;--panel2:#272d47;--line:#3c4769;--text:#f5f2fa;--muted:#adb6cf;--pink:#ff739e;--mint:#6ae4c3;--gold:#ffd478;--purple:#bda2ff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 30% 0%,#26204a 0%,#101326 50%,#0c1020 100%);font-family:Inter,ui-sans-serif,system-ui,Segoe UI,sans-serif;color:var(--text)}button{font:inherit;cursor:pointer;color:inherit}button:disabled{opacity:.42;cursor:not-allowed}button:not(:disabled):active{transform:translateY(1px)}[hidden]{display:none!important}.topbar{height:65px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px clamp(10px,2vw,30px);border-bottom:1px solid #ffffff20;background:#101526e8;position:relative;z-index:5}.brand{display:flex;align-items:center;gap:9px;white-space:nowrap}.brand>span{display:grid;place-items:center;width:37px;height:37px;border-radius:10px;background:#ff739e;color:#251529;font-size:30px}.brand b{letter-spacing:1.5px}.brand em{color:var(--pink);font-style:normal}.brand small{font-size:10px;color:var(--muted);margin-left:10px}.top-actions{display:flex;gap:7px}.top-actions button,.gamebar button,.zoom button,.modal-header button{border:1px solid var(--line);background:var(--panel2);padding:9px 12px;border-radius:10px}.hud{display:flex;gap:9px;flex-wrap:wrap;justify-content:center}.hud span,.home-stats span{padding:8px 13px;border:1px solid #ffffff20;border-radius:9px;background:#232844;color:#eee}.hud b{font-variant-numeric:tabular-nums}.home{max-width:1150px;margin:auto;padding:25px 20px}.hero{min-height:380px;display:grid;grid-template-columns:38% 1fr;align-items:center;border:1px solid #ffffff20;border-radius:22px;background:linear-gradient(110deg,#252044,#161b31);overflow:hidden}.hero-art{height:100%;min-height:380px;background:repeating-linear-gradient(0deg,#38405d 0 35px,#303954 35px 38px);display:flex;align-items:center;justify-content:center;position:relative}.hero-art img{width:min(260px,78%);max-height:310px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 8px 15px #000a);z-index:2}.hero-door{position:absolute;right:12%;font-size:90px;opacity:.55}.hero-copy{padding:35px}.eyebrow{font-size:12px;font-weight:800;letter-spacing:2px;color:var(--mint)}h1{font-size:clamp(50px,7vw,100px);line-height:.88;letter-spacing:-4px;margin:15px 0 25px}h1 strong{color:var(--pink)}.hero-copy p{max-width:520px;font-size:16px;line-height:1.6;color:#cbd0e1}.home-stats{display:flex;flex-wrap:wrap;gap:9px;margin:24px 0}.primary{background:linear-gradient(135deg,#f76b94,#e74d7f);box-shadow:0 5px 22px #ff739e35;border:0;border-radius:12px;padding:12px 20px;font-weight:850}.big{font-size:18px;padding:15px 45px}.smallprint{color:var(--muted);font-size:12px;margin-top:12px}.home-bottom{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.sidebox{background:#171d32;border:1px solid #ffffff20;border-radius:16px;padding:18px;min-height:185px}.sidebox h3{margin:0 0 15px}.leader{display:flex;justify-content:space-between;align-items:center;padding:6px 4px;border-bottom:1px solid #ffffff10;font-size:13px}.leader b{color:var(--gold)}.skin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:10px}.skin{background:#272d47;border:1px solid var(--line);border-radius:10px;padding:7px;min-width:83px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px}.skin img{width:48px;height:48px;image-rendering:pixelated}.skin.selected{border-color:var(--mint)}.skin-wrap{display:flex;flex-direction:column;align-items:center;gap:5px}.skin-upload{border:1px dashed #7282aa;background:#252c46;color:#d9e6fa;border-radius:7px;padding:5px;font-size:10px;cursor:pointer}.hero-name{position:absolute;bottom:17px;left:10px;right:10px;text-align:center;background:#131b34c9;border-radius:9px;padding:5px;font-weight:800;z-index:3}#game{height:calc(100dvh - 65px);min-height:420px;display:flex;flex-direction:column}.gamebar{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#1a2036;border-bottom:1px solid #ffffff20;min-height:59px}.players{display:flex;gap:5px;flex:1;justify-content:center}.player-icon{position:relative;width:38px;height:38px;padding:2px;background:#303852;border:1px solid #505d7e;border-radius:8px}.player-icon img{width:100%;height:100%;image-rendering:pixelated}.player-icon.dead:after{content:'❌';position:absolute;inset:0;display:grid;place-items:center;background:#0b0d18a8;font-size:25px}.player-icon.danger{animation:shake .2s infinite}.game-tip{font-size:12px;color:var(--gold);max-width:205px;text-align:center}.game-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;min-height:0;flex:1}.arena-shell{position:relative;min-height:0;background:#0b0f1b;overflow:hidden;touch-action:none}#arena{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair;image-rendering:pixelated}.build-sidebar{background:var(--panel);border-left:1px solid var(--line);padding:12px;overflow:auto}.sidebar-heading{display:grid;gap:4px}.sidebar-heading small,.sidebar-hint{font-size:11px;color:var(--muted);line-height:1.5}.tabs{display:flex;flex-wrap:wrap;gap:4px;margin:12px 0}.tabs button{flex:1;background:#252b45;border:1px solid #3d496c;border-radius:7px;font-size:11px;padding:7px 3px}.tabs button.active{background:#4d426e;border-color:var(--pink)}.palette{display:grid;grid-template-columns:1fr 1fr;gap:8px}.item{background:var(--panel2);border:1px solid #3d4966;border-radius:10px;padding:9px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;user-select:none;touch-action:none}.item:hover{border-color:var(--pink)}.item img{width:54px;height:54px;object-fit:contain;image-rendering:pixelated}.item .emoji{font-size:31px;height:54px;display:grid;place-items:center}.item b{font-size:11px;text-align:center}.item small{color:var(--gold);font-size:10px}.sidebar-hint{margin:12px 1px}.selected-info{border:1px solid var(--line);border-radius:10px;padding:10px;font-size:12px;line-height:1.5}.joystick{position:absolute;bottom:20px;left:18px;display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.48}.joystick>div{display:flex;gap:4px}.joystick button{width:43px;height:40px;border-radius:11px;border:1px solid #c4cae755;background:#171e36c9;font-size:19px;touch-action:none}.zoom{position:absolute;right:12px;bottom:15px;display:flex;gap:6px}.zoom button{font-size:20px;padding:5px 12px}.boss-animated{position:absolute;left:0;top:0;z-index:2;pointer-events:none;image-rendering:pixelated;object-fit:contain;transform-origin:center center}.float-tooltip{position:absolute;pointer-events:none;background:#11172ae8;color:white;padding:7px;border-radius:7px;border:1px solid #ffffff44;font-size:12px}.modal-root{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:15px}.modal-backdrop{position:absolute;inset:0;background:#070a15d9;backdrop-filter:blur(4px)}.modal{position:relative;width:min(520px,100%);max-height:88dvh;overflow:auto;border:1px solid #606180;border-radius:18px;padding:22px;background:linear-gradient(135deg,#292541,#1a2037);box-shadow:0 20px 70px #000b}.modal-header{display:flex;justify-content:space-between;align-items:center;gap:10px}.modal-header h2{margin:0 0 13px;font-size:24px}.modal-header button{padding:6px 11px}.modal p,.modal li{color:#cdd3e7;line-height:1.6;font-size:14px}.modal ul{padding-left:21px}.modal #modalActions{display:flex;gap:8px;justify-content:flex-end;margin-top:17px;flex-wrap:wrap}.modal button:not(.primary){border:1px solid var(--line);background:var(--panel2);padding:10px 12px;border-radius:10px}.difficulty-list{display:grid;grid-template-columns:1fr 1fr;gap:7px;max-height:53dvh;overflow:auto}.difficulty-list button{display:flex;justify-content:space-between;text-align:left}.difficulty-list button.unlocked{border-color:var(--mint)}.buy-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-height:45vh;overflow:auto}.buy-options button{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px}.buy-options img{height:45px;width:45px;image-rendering:pixelated}.upgrade-cost{color:var(--gold)}.toast{position:fixed;bottom:17px;left:50%;transform:translateX(-50%);padding:12px 18px;background:#29364c;border:1px solid var(--mint);border-radius:12px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:40;text-align:center;max-width:90vw}.toast.show{opacity:1}@keyframes shake{25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}@media(max-width:900px){.game-layout{grid-template-columns:minmax(0,1fr) 225px}.palette{grid-template-columns:1fr 1fr}.game-tip{display:none}.brand small{display:none}.build-sidebar{padding:7px}}@media(max-width:650px){.topbar{height:57px}.brand b{font-size:13px}.hud{gap:3px}.hud span{font-size:11px;padding:5px}.top-actions{gap:3px}.top-actions button{padding:6px}.home{padding:10px}.hero{display:block}.hero-art{min-height:130px;height:130px}.hero-art img{width:100px}.hero-door{font-size:50px}.hero-copy{padding:18px}h1{font-size:55px}.home-bottom{grid-template-columns:1fr}#game{height:calc(100dvh - 57px)}.gamebar{min-height:46px;padding:4px;gap:3px}.gamebar button{font-size:11px;padding:7px 5px}.players{gap:1px}.player-icon{width:27px;height:29px}.game-layout{display:flex;flex-direction:column}.arena-shell{height:62%;min-height:190px;flex:1}.build-sidebar{height:180px;flex:0 0 auto;border-left:0;border-top:1px solid var(--line)}.palette{display:flex;overflow:auto}.item{min-width:90px}.item img{width:38px;height:38px}.item .emoji{height:38px}.sidebar-hint,.selected-info{display:none}.tabs{margin:6px 0}.joystick{left:8px;bottom:9px}.joystick button{width:36px;height:33px}.modal{padding:15px}.modal-header h2{font-size:20px}} 
+
+/* Мобільний HUD, зручний для гри у портретному режимі */
+.income-hud{color:var(--mint)!important}
+@media(max-width:650px){
+ .topbar{height:105px;min-height:105px;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:45px 52px;column-gap:5px;align-items:center;padding:3px 8px 5px}
+ .brand{grid-column:1;grid-row:1;min-width:0}
+ .top-actions{grid-column:2;grid-row:1;justify-self:end}
+ .hud:not([hidden]){grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;width:100%;margin:0;align-self:stretch}
+ .hud span{min-width:0;display:flex;gap:2px;flex-direction:column;align-items:center;justify-content:center;padding:3px 1px;border-radius:7px;font-size:12px;line-height:1.14;white-space:nowrap}
+ .hud b{font-size:13px;line-height:1.25}
+ #game{height:calc(100dvh - 105px)}
+ .gamebar{min-height:46px}
+ .arena-shell{min-height:210px}
+ .zoom{right:8px;bottom:8px;z-index:4}
+ .zoom button{min-width:40px;min-height:40px}
+}
+@media(min-width:651px){.income-hud{display:flex!important}}
+/* Іконки власної валюти та Маджики */
+.token-icon,.magic-icon{width:20px;height:20px;object-fit:contain;vertical-align:middle;image-rendering:pixelated;flex-shrink:0}
+.home-stats .token-icon,.home-stats .magic-icon{margin-right:4px}
+.hud .token-icon{margin-right:3px}
+@media(max-width:650px){.hud .token-icon{width:18px;height:18px;margin-right:0}}
+
+/* Ціна персонажа: окрема маленька іконка, не портрет */
+.skin-price{display:inline-flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap}
+.skin .skin-token-icon{width:16px;height:16px;max-width:16px;max-height:16px;object-fit:contain;image-rendering:pixelated;flex:0 0 16px}
+/* Анімовані персонажі відтворюються HTML-елементами, а не статичними кадрами Canvas */
+.player-animated{will-change:transform;position:absolute;left:0;top:0;z-index:2;pointer-events:none;object-fit:contain;image-rendering:pixelated;transform-origin:center center}
+</style></head><body>
+<div id="app"><header class="topbar"><div class="brand"><span>⌂</span><b>HIKKA <em>HOUSE</em></b><small id="phase">ГОЛОВНЕ МЕНЮ</small></div><div class="hud" id="hud" hidden><span title="Монети за поточну гру"><img src="../assets/tokens.png" class="token-icon" alt="Монети"> <b id="gold">0</b></span><span class="income-hud" title="Заробіток монет за секунду">📈 +<b id="incomeRate">0</b>/с</span><span title="Енергія">⚡ <b id="energy">0</b></span><span title="До появи гостя / до кінця матчу">⏳ <b id="clock">25</b></span><span title="Рівень нав'язливого гостя">👁️ <b id="hunterLevel">1</b></span></div><div class="top-actions"><button id="soundBtn" aria-label="Увімкнути або вимкнути звук">🔊</button><button id="boostBtn" title="Добові бусти">✨</button><button id="quitBtn" title="Повернутись у меню">↩</button></div></header>
+<section id="home" class="home"><div class="hero"><div class="hero-art"><img src=""><div class="hero-door">🚪</div><div id="heroName" class="hero-name"></div></div><div class="hero-copy"><div class="eyebrow">ТИХЕ МІСЦЕ. НЕПРОХАНІ ГОСТІ.</div><h1>HIKKA<br><strong>HOUSE</strong></h1><p>Захопи кімнату. Сідай за ПК. Зачини двері. Нехай нав'язливий гість пошукає собі іншу аудиторію.</p><div class="home-stats"><span><img src="../assets/tokens.png" class="token-icon" alt="Токени">Токени <b id="tokens">0</b></span><span><img src="../assets/magican.png" class="magic-icon" alt="Маджика"> Маджика <b id="magicCount">3</b>/5</span><span>🏆 Перемоги <b id="wins">0</b></span></div><button class="primary big" id="enterBtn">УВІЙТИ →</button><div class="smallprint">Щоденне оновлення рівня о 00:00 за Києвом</div></div></div><div class="home-bottom"><div class="sidebox"><h3>🏆 Рейтинг сьогодні</h3><div id="leaders"></div></div><div class="sidebox"><h3>🛍️ Магазин персонажів · 10 на вибір</h3><div class="skin-grid" id="skins"></div></div></div></section>
+<section id="game" hidden><div class="gamebar"><button id="focusMe">🎯 Моя кімната</button><div id="players" class="players"></div><div class="game-tip" id="tip">Знайдіть кімнату та натисніть на ПК</div><button id="repairBtn" title="Лагодити двері">🔧 Двері</button></div><div class="game-layout"><div class="arena-shell" id="arenaShell"><canvas id="arena" aria-label="Карта Hikka House" tabindex="0"></canvas><img id="bossAnimated" class="boss-animated" alt="Колядун" hidden><div id="floatTooltip" class="float-tooltip" hidden></div><div class="joystick" id="joystick"><button data-dir="up">▲</button><div><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div></div><div class="zoom"><button id="zoomIn">+</button><button id="zoomOut">−</button></div><div id="hikkaDiagnostic" aria-live="off" title="Діагностика: час гри / масштаб / координати персонажа" style="position:absolute;top:6px;left:6px;z-index:4;background:#12182de0;color:#d7ffe9;padding:4px 7px;border-radius:6px;font:11px monospace;pointer-events:none">Очікування запуску…</div></div><aside class="build-sidebar"><div class="sidebar-heading"><b>БУДІВНИЦТВО</b><small>Перетягуйте предмети на клітинку</small></div><div id="tabs" class="tabs"></div><div id="palette" class="palette"></div><div class="sidebar-hint">💡 Клік по порожній клітинці теж відкриває магазин. Для пересування: WASD, стрілки або натисніть на підлогу.</div><div id="selectedInfo" class="selected-info">Оберіть кімнату, щоб розпочати.</div></aside></div></section>
+<div id="modalRoot" class="modal-root" hidden><div class="modal-backdrop"></div><div class="modal" role="dialog" aria-modal="true"><div class="modal-header"><h2 id="modalTitle"></h2><button id="modalClose" aria-label="Закрити">✕</button></div><div id="modalContent"></div><div id="modalActions"></div></div></div><div class="toast" id="toast" role="status"></div></div><script>/* Hikka House — vanilla JavaScript, Canvas 2D, no external dependencies. */
 'use strict';
 const $=id=>document.getElementById(id), clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rand=(a,b)=>a+Math.random()*(b-a),pick=a=>a[Math.floor(Math.random()*a.length)];
 const difficulty=['Легко','Нормально','Складно','Жах',...Array.from({length:10},(_,i)=>`Маячня ${i+1}`),'Нісенітниця','Дурчак','Дурчак дурний'];
@@ -59,15 +92,10 @@ const images={};const filenames=['floor.png','wall.png','time.png','hunter.png',
  renderHome();
 }
 
-let canvas, ctx, bossAnimated;
-let bossDisplayedState='';
-const servantVisuals=new Map();
-const playerVisuals=new Map();
-let W=0,H=0,dpr=1,cell=38,ox=0,oy=0,zoom=1,camera={x:9.5,y:12},lastTime=0,acc=0,raf=0,soundOn=true,audio=null,toastTimer;
-let logicTimer=null, lastLogic=0, lastDraw=0, lastActiveFrame=0;
-
+const bossAnimated=$('bossAnimated');let bossDisplayedState='';const servantVisuals=new Map();const playerVisuals=new Map();
+const canvas=$('arena'),ctx=canvas?canvas.getContext('2d'):null;let W=0,H=0,dpr=1,cell=38,ox=0,oy=0,zoom=1,camera={x:9.5,y:12},lastTime=0,acc=0,raf=0,soundOn=true,audio=null,toastTimer;
 function sound(type='tap'){if(!soundOn)return;try{audio??=new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const t=audio.currentTime,o=audio.createOscillator(),g=audio.createGain();o.type=type==='hit'?'sawtooth':'sine';const f={tap:470,coin:770,shoot:630,hit:115,repair:510,win:880,lose:140,build:370,door:290}[type]||440;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(Math.max(80,f*(type==='win'?1.5:.63)),t+.14);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(type==='hit'?.055:.032,t+.016);g.gain.exponentialRampToValueAtTime(.0001,t+.18);o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+.19)}catch{}}
-function toast(msg){const el=$('toast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2300)}
+function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2300)}
 const KYIV=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Kyiv',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());const STORE_KEY='hikka-house-save-v1';let save={date:KYIV(),tokens:0,wins:0,level:0,magic:3,skins:[0],skin:0,boosts:[],runFinishedDay:null};try{save={...save,...JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}}catch{}function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify(save))}catch{}}function daySync(){const day=KYIV();if(save.date!==day){save.date=day;save.level=0;save.boosts=[];save.runFinishedDay=null;persist();toast('Новий день! Складність і бусти скинуто.')} }daySync();
 const roomDefs=Array.from({length:6},(_,i)=>{const side=i<3?'left':'right',row=i%3,x=side==='left'?0:12,y=1+row*8;return{id:i,side,row,x,y,doorX:side==='left'?6:12,doorY:y+3,pcX:side==='left'?2:16,pcY:y+3,occupant:null,door:90,maxDoor:90,doorLv:1,pcLv:1,items:new Map(),access:0,chain:false,puddle:false,poop:false,alive:true}});
 // Ранні боси: Колядуна можна зустріти на перших чотирьох складностях.
@@ -86,9 +114,9 @@ if(!Array.isArray(save.boosts))save.boosts=[];
 if(!Number.isInteger(Number(save.skin))||Number(save.skin)<0||Number(save.skin)>=CHARACTERS.length)save.skin=0;
 else save.skin=Number(save.skin);
 const doors=roomDefs.map(r=>({x:r.doorX,y:r.doorY}));function avoidCoinNumbers(value){const amount=Math.max(0,Math.floor(Number(value)||0));return amount===63||amount===68?amount+1:amount}
-function newGame(lv){const rooms=roomDefs.map(d=>({...d,items:new Map(),occupant:null,door:90,maxDoor:90,doorLv:1,pcLv:1,alive:true,chain:false,puddle:false,poop:false,access:0}));const players=Array.from({length:6},(_,i)=>makePlayer(i,i!==0));const boss=bossForDifficulty(lv);const g={level:lv,boss,servants:[],phase:'claim',time:0,countdown:25,gold:28,energy:0,rooms,players,hunter:{x:9.5,y:.5,hp:180+lv*32,maxHp:180+lv*32,level:1,state:'rest',target:null,path:[],attack:0,rest:5,active:false,stun:0,shotCd:0,anim:0,retreats:0,abilityCd:14,servantCd:18},effects:[],projectiles:[],pets:[],selected:null,magicUsed:0,magicRolls:{},petStrike:0,boxClaims:new Set(),tick:0,npcTick:0,elapsed:0,lastResult:null,boosts:save.boosts.slice(),targetCam:null,mikola:{active:false,x:9.5,y:12.5,until:0,nextAt:55,cooldown:0},olexiy:{active:false,x:9.5,y:12.5,until:0,nextAt:70}};for(const r of rooms){const slots=buildTiles(r);const starter=['trap','energy','money','distance','clock','box'][r.id];r.items.set(slots[0].join(','),{type:starter,lv:1,starter:true});}let coins=avoidCoinNumbers(g.gold);Object.defineProperty(g,'gold',{enumerable:true,configurable:true,get(){return coins},set(value){coins=avoidCoinNumbers(value)}});return g}
+function newGame(lv){const rooms=roomDefs.map(d=>({...d,items:new Map(),occupant:null,door:90,maxDoor:90,doorLv:1,pcLv:1,alive:true,chain:false,puddle:false,poop:false,access:0}));const players=Array.from({length:6},(_,i)=>makePlayer(i,i!==0));const boss=bossForDifficulty(lv);const g={level:lv,boss,servants:[],phase:'claim',time:0,countdown:25,gold:28,energy:0,rooms,players,hunter:{x:9.5,y:.5,hp:180+lv*32,maxHp:180+lv*32,level:1,state:'rest',target:null,path:[],attack:0,rest:5,active:false,stun:0,shotCd:0,anim:0,retreats:0,abilityCd:14,servantCd:18},effects:[],projectiles:[],pets:[],selected:null,magicUsed:0,magicRolls:{},petStrike:0,boxClaims:new Set(),tick:0,npcTick:0,elapsed:0,lastResult:null,boosts:save.boosts.slice(),targetCam:null,mikola:{active:false,x:9.5,y:12.5,until:0,nextAt:55,cooldown:0},olexsy:{active:false,x:9.5,y:12.5,until:0,nextAt:70}};for(const r of rooms){const slots=buildTiles(r);const starter=['trap','energy','money','distance','clock','box'][r.id];r.items.set(slots[0].join(','),{type:starter,lv:1,starter:true});}let coins=avoidCoinNumbers(g.gold);Object.defineProperty(g,'gold',{enumerable:true,configurable:true,get(){return coins},set(value){coins=avoidCoinNumbers(value)}});return g}
 function buildTiles(r){const cols=r.side==='left'?[1,2,3,4,5]:[13,14,15,16,17];const rows=[r.y+1,r.y+2,r.y+3,r.y+4,r.y+5];const slots=[];for(const y of rows)for(const x of cols){if(y===r.pcY&&x===r.pcX)continue;slots.push([x,y]);}return slots}
-function inRoom(r,x,y){return x>=r.x&&x<=r.x+6&&y>=r.y&&y<=r.y+6}function tileType(x,y){if(x<0||y<0||x>=C||y>=R)return'void';if(y===0||y===24)return x===9?'rest':'wall';for(const r of game?.rooms||roomDefs){if(!inRoom(r,x,y))continue;if(x===r.doorX&&y===r.doorY)return'door';if(x===r.x||x===r.x+6||y===r.y||y===r.y+6)return'wall';return'room'}return'corridor'}function pass(x,y,p=null){const tile=tileType(x,y);if(tile==='corridor'||tile==='room')return true;if(tile==='door'){const room=game.rooms.find(r=>r.doorX===x&&r.doorY===y);return room&&room.alive&&(room.occupant===null||room.occupant===p?.id)&&!(room.occupant!==null&&game.players[room.occupant].seated)}return false}
+function inRoom(r,x,y){return x>=r.x&&x<=r.x+6&&y>=r.y&&y<=r.y+6}function tileType(x,y){if(x<0||y<0||x>=C||y>=R)return'void';if(y===0||y===24)return x===9?'rest':'wall';for(const r of game?.rooms||roomDefs){if(!inRoom(r,x,y))continue;if(x===r.doorX&&y===r.doorY)return'door';if(x===r.x||x===r.x+6||y===r.y||y===r.y+6)return'wall';return'room'}return'corridor'}function pass(x,y,p=null){const tile=tileType(x,y);if(tile==='corridor'||tile==='room')return true;if(tile==='door'){const room=game.rooms.find(r=>r.doorX===x&&r.doorY===y);return room.alive&&(room.occupant===null||room.occupant===p?.id)&&!(room.occupant!==null&&game.players[room.occupant].seated)}return false}
 function bfs(sx,sy,ex,ey,entity){sx=clamp(Math.floor(sx),0,C-1);sy=clamp(Math.floor(sy),0,R-1);ex=clamp(Math.floor(ex),0,C-1);ey=clamp(Math.floor(ey),0,R-1);const visited=new Set([`${sx},${sy}`]),q=[[sx,sy]],parent={};for(let i=0;i<q.length;i++){const [x,y]=q[i];if(x===ex&&y===ey){const path=[];let k=`${x},${y}`;while(parent[k]){const [a,b]=k.split(',').map(Number);path.unshift({x:a+.5,y:b+.5});k=parent[k]}return path}for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy,k=`${nx},${ny}`;if(!visited.has(k)&&pass(nx,ny,entity)){visited.add(k);parent[k]=`${x},${y}`;q.push([nx,ny])}}}return []}
 function travel(ent,dt){if(!ent.path.length){ent.action=ent.seated?'sit':'idle';return}const to=ent.path[0],dx=to.x-ent.x,dy=to.y-ent.y,d=Math.hypot(dx,dy),step=ent.speed*dt;ent.action='walk';ent.walk+=dt;if(d<=step){ent.x=to.x;ent.y=to.y;ent.path.shift()}else{ent.x+=dx/d*step;ent.y+=dy/d*step}}
 function focus(x,y){camera.x=x;camera.y=y}function playerRoom(){return game&&game.players[0].room!==null?game.rooms[game.players[0].room]:null}function ownerRoom(p){return p.room!==null?game.rooms[p.room]:null}
@@ -116,10 +144,10 @@ function sit(p,r){
  r.occupant=p.id;p.room=r.id;p.targetRoom=null;
  p.seated=true;p.path=[];p.x=r.pcX+.5;p.y=r.pcY+.5;
  r.access=0;p.action='sit';sound('door');
- if(!p.npc){game.phase='defend';const tip=$('tip');if(tip)tip.textContent='Покращуйте ПК, двері та захист!';toast('Ви за ПК! Двері зачинено. Будуйте оборону.')}
+ if(!p.npc){game.phase='defend';$('tip').textContent='Покращуйте ПК, двері та захист!';toast('Ви за ПК! Двері зачинено. Будуйте оборону.')}
 }
-function start(lv){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();if(bossAnimated){bossAnimated.hidden=true;bossDisplayedState=''}activePointers.clear();pressed=null;gesture=null;daySync();zoom=1;camera={x:9.5,y:12};game=newGame(lv);$('home').hidden=true;$('game').hidden=false;$('hud').hidden=false;$('phase').textContent=difficulty[lv].toUpperCase();$('boostBtn').hidden=false;renderPlayers();renderTabs();renderPalette();closeModal();focus(9.5,12.5);for(const p of game.players.slice(1)){p.decision=rand(2.0,5.5)}resize();draw();lastTime=performance.now();update(0);startSimulation();toast('25 секунд, щоб зайняти кімнату!')}
-function openHome(){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();if(bossAnimated){bossAnimated.hidden=true;bossDisplayedState=''}if(logicTimer!==null){clearInterval(logicTimer);logicTimer=null}if(raf){cancelAnimationFrame(raf);raf=0}game=null;$('home').hidden=false;$('game').hidden=true;$('hud').hidden=true;$('phase').textContent='ГОЛОВНЕ МЕНЮ';closeModal();renderHome()}
+function start(lv){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';activePointers.clear();pressed=null;gesture=null;daySync();zoom=1;camera={x:9.5,y:12};game=newGame(lv);$('home').hidden=true;$('game').hidden=false;$('hud').hidden=false;$('phase').textContent=difficulty[lv].toUpperCase();$('boostBtn').hidden=false;renderPlayers();renderTabs();renderPalette();closeModal();focus(9.5,12.5);for(const p of game.players.slice(1)){p.decision=rand(2.0,5.5)}resize();draw();lastTime=performance.now();update(0);startSimulation();toast('25 секунд, щоб зайняти кімнату!')}
+function openHome(){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';game=null;$('home').hidden=false;$('game').hidden=true;$('hud').hidden=true;$('phase').textContent='ГОЛОВНЕ МЕНЮ';closeModal();renderHome()}
 function spend(price,p=game){if(!p||p.gold<(price.gold||0)||p.energy<(price.energy||0)){toast('Недостатньо монет або енергії');sound('hit');return false}p.gold-=price.gold||0;p.energy-=price.energy||0;return true}
 function costLabel(cost){return [(cost.gold||0)?`🪙${cost.gold}`:'',(cost.energy||0)?`⚡${cost.energy}`:''].filter(Boolean).join(' ')||'Безкоштовно'}
 function build(room,x,y,type){if(!game||!room?.alive||room.occupant===null)return false;if(!game.players[room.occupant]?.seated){toast('Спершу потрібно сісти за ПК');return false;}const actor=game.players[room.occupant];if(actor.npc&&!game.boosts.includes('help')){toast('Будувати в кімнаті NPC не можна без бусту «Допомога»');return false}const def=catalog.find(c=>c.type===type);if(!def)return false;if(def.door){if(room!==playerRoom()){toast('Тримачі ставляться на власні двері');return false}if(room[type]){toast('Вже встановлено');return false}if(!spend(costs[type]))return false;room[type]=true;effect(room.doorX+.5,room.doorY+.5,'✨');sound('build');return true}
@@ -447,16 +475,14 @@ function offerBoost(){
 function renderHome(){daySync();$('tokens').textContent=save.tokens;$('wins').textContent=save.wins;$('magicCount').textContent=save.magic;
 const bots=[['NoSignal',1200],['Nebula',950],['SilentFox',760],['Lurker',520],['404_sleep',300],['copy_pasta',save.wins*120]];bots.sort((a,b)=>b[1]-a[1]);$('leaders').innerHTML=bots.map(([n,v],i)=>`<div class="leader"><span>${i+1}. ${n}</span><b>${v} 🏆</b></div>`).join('');
 const selected=CHARACTERS[save.skin]||CHARACTERS[0];
-const portrait=document.querySelector('.hero-art img');if(portrait){portrait.src=characterURL(save.skin,'portrait');portrait.alt=selected.name;}
-$('heroName').textContent=selected.name;
+const portrait=document.querySelector('.hero-art img');portrait.src=characterURL(save.skin,'portrait');portrait.alt=selected.name;$('heroName').textContent=selected.name;
 $('skins').innerHTML=CHARACTERS.map((character,i)=>`<div class="skin-wrap"><button class="skin ${save.skin===i?'selected':''}" data-skin="${i}"><img src="${characterURL(i,'portrait')}" alt="${character.name}"><b>${character.name}</b><span>${save.skins.includes(i)?save.skin===i?'Обрано':'Обрати':`<span class="skin-price"><img src="${assetURL('tokens.png')}" class="skin-token-icon" alt="Токени"> ${character.price}</span>`}</span></button></div>`).join('');
 $('skins').querySelectorAll('[data-skin]').forEach(button=>button.onclick=()=>{const id=Number(button.dataset.skin),character=CHARACTERS[id];if(!character)return;if(!save.skins.includes(id)){if(save.tokens<character.price)return toast('Недостатньо токенів');save.tokens-=character.price;save.skins.push(id)}save.skin=id;persist();renderHome()});
 }
 
 function infoModal(){modal('Вітання',`<p>Вітаю, дорогі гравці! Ця гра присвячена персонажам, які полюбляють усамітнення, і може містити елементи жахів для інтровертів. Підліткам варто запитати дозволу перед грою.</p>`,[{name:'Підтвердити',primary:true,fn:rulesModal}],true)}function rulesModal(){modal('ЯК ГРАТИ',`<ul><li>У Вас 25 секунд, щоб зайняти кімнату, підійти до ПК і сісти.</li><li>NPC займають інші кімнати, а двері автоматично зачиняються.</li><li>Підвищуйте рівень ПК, дверей, зброї та генераторів.</li><li>Перетягніть предмет із панелі на клітинку або натисніть на порожнє місце.</li><li>Лагодьте двері 🔧, поки мисливець атакує.</li><li>Після перемоги Ви отримуєте токени для магазину персонажів.</li><li>Керування: WASD, стрілки, тап по карті або джойстик.</li></ul>`,[{name:'Прийняти',primary:true,fn:()=>{closeModal();if(!save.tutorial){save.tokens+=10;toast('За навчання отримано 10 токенів!')}save.tutorial=true;persist();renderHome()}}],true)}
 function difficultyModal(){daySync();modal('Оберіть складність',`<p>Новий день: рівень прогресу скидається. Поточна доступна складність: <b>${difficulty[save.level]}</b>.</p><div class="difficulty-list">${difficulty.map((d,i)=>`<button data-lv="${i}" ${i>save.level?'disabled':''} class="${i<=save.level?'unlocked':''}">${d}<span>${i>save.level?'🔒':'▶'}</span></button>`).join('')}</div>`,[{name:'Закрити',fn:closeModal}]);$('modalContent').querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>start(+b.dataset.lv))}
-
-const MIN_ZOOM=.5, MAX_ZOOM=7.5;
+$('enterBtn').onclick=difficultyModal;$('quitBtn').onclick=()=>{if(!game)return openHome();modal('Покинути матч?',`<p>Прогрес поточного матчу не збережеться.</p>`,[{name:'Залишитися',fn:closeModal},{name:'Вийти',primary:true,fn:openHome}])};$('boostBtn').onclick=()=>modal('✨ Добові бусти',`<p>${save.boosts.length?save.boosts.map(value=>{const [id,num]=value.split(':');const b=boosts.find(b=>b.id===id);return `${b?.name||id}${num?' +'+num:''}`}).join(' • '):'Поки немає. Бонуси випадають після перемоги.'}</p>`,[{name:'Закрити',fn:closeModal}]);$('soundBtn').onclick=()=>{soundOn=!soundOn;$('soundBtn').textContent=soundOn?'🔊':'🔇';if(soundOn)sound('tap')};$('focusMe').onclick=()=>{if(game){const p=game.players[0];focus(p.x,p.y)}};$('repairBtn').onclick=()=>{const r=playerRoom();if(!r||!game.players[0].seated)return toast('Спочатку займіть кімнату');const price={gold:16+Math.floor(r.doorLv*7)};if(r.door>=r.maxDoor)return toast('Двері повністю відремонтовані');if(spend(price)){r.door=Math.min(r.maxDoor,r.door+55);sound('repair');effect(r.doorX+.5,r.doorY+.5,'🔧')}};const MIN_ZOOM=.5, MAX_ZOOM=7.5;
 function zoomAt(nextZoom, screenX=W/2, screenY=H/2){
  if(!W||!H)return;
  const anchor=screenToWorld(screenX,screenY);
@@ -468,11 +494,9 @@ function zoomAt(nextZoom, screenX=W/2, screenY=H/2){
  camera.y=anchor.y-(screenY-H/2)/cell;
  transform();
 }
-function resize(){if(!canvas)return;const rc=canvas.getBoundingClientRect();if(rc.width<=0||rc.height<=0)return;dpr=Math.min(devicePixelRatio||1,1.5);W=rc.width;H=rc.height;canvas.width=Math.ceil(W*dpr);canvas.height=Math.ceil(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0)}
-function transform(){cell=clamp(Math.min(W/20.3,H/26)*zoom,5,180);ox=W/2-camera.x*cell;oy=H/2-camera.y*cell;return{cell,ox,oy}}
-function screenToWorld(x,y){transform();return{x:(x-ox)/cell,y:(y-oy)/cell}}
-function eventWorld(e){const r=canvas.getBoundingClientRect();return screenToWorld(e.clientX-r.left,e.clientY-r.top)}
-
+$('zoomIn').onclick=()=>{zoomAt(zoom*1.3);try{draw()}catch(e){console.error('Zoom draw:',e)};updateDiagnostic()};
+$('zoomOut').onclick=()=>{zoomAt(zoom/1.3);try{draw()}catch(e){console.error('Zoom draw:',e)};updateDiagnostic()};
+function resize(){const rc=canvas.getBoundingClientRect();if(rc.width<=0||rc.height<=0)return;dpr=Math.min(devicePixelRatio||1,1.5);W=rc.width;H=rc.height;canvas.width=Math.ceil(W*dpr);canvas.height=Math.ceil(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0)}window.addEventListener('resize',resize);function transform(){cell=clamp(Math.min(W/20.3,H/26)*zoom,5,180);ox=W/2-camera.x*cell;oy=H/2-camera.y*cell;return{cell,ox,oy}}function screenToWorld(x,y){transform();return{x:(x-ox)/cell,y:(y-oy)/cell}}function eventWorld(e){const r=canvas.getBoundingClientRect();return screenToWorld(e.clientX-r.left,e.clientY-r.top)}
 // Один палець рухає карту, два пальці масштабують відносно точки між ними.
 const activePointers=new Map();
 let gesture=null;
@@ -482,79 +506,75 @@ function pointerMidpoint(){
  return {x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2,
  distance:Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y)};
 }
-function setupCanvasEvents(){
- if(!canvas)return;
- canvas.addEventListener('pointerdown',e=>{
-  if(!game || (e.pointerType==='mouse' && e.button!==0))return;
-  e.preventDefault();
-  const rect=canvas.getBoundingClientRect();
-  activePointers.set(e.pointerId,{x:e.clientX-rect.left,y:e.clientY-rect.top});
-  try{canvas.setPointerCapture(e.pointerId)}catch{}
-  if(activePointers.size===1){
-    pressed={x:e.clientX,y:e.clientY,cameraX:camera.x,cameraY:camera.y,panning:false,id:e.pointerId};
-    gesture=null;
-  }else if(activePointers.size>=2){
-    suppressTap=true;pressed=null;
-    const mid=pointerMidpoint();
-    gesture={startDistance:Math.max(1,mid.distance),startZoom:zoom,
-             anchor:screenToWorld(mid.x,mid.y)};
-  }
- });
- canvas.addEventListener('pointermove',e=>{
-  if(!activePointers.has(e.pointerId))return;
-  const rect=canvas.getBoundingClientRect();
-  activePointers.set(e.pointerId,{x:e.clientX-rect.left,y:e.clientY-rect.top});
-  if(activePointers.size>=2 && gesture){
-    e.preventDefault();
-    const mid=pointerMidpoint();
-    zoom=clamp(gesture.startZoom*mid.distance/gesture.startDistance,MIN_ZOOM,MAX_ZOOM);
-    transform();
-    camera.x=gesture.anchor.x-(mid.x-W/2)/cell;
-    camera.y=gesture.anchor.y-(mid.y-H/2)/cell;
-    transform();
-    return;
-  }
-  if(!pressed||pressed.id!==e.pointerId)return;
-  const dx=e.clientX-pressed.x,dy=e.clientY-pressed.y;
-  if(Math.hypot(dx,dy)>9)pressed.panning=true;
-  if(pressed.panning){
-    transform();
-    camera.x=pressed.cameraX-dx/cell;
-    camera.y=pressed.cameraY-dy/cell;
-  }
- });
- function finishCanvasPointer(e,cancel=false){
-  if(!activePointers.has(e.pointerId))return;
-  const canTap= !cancel && activePointers.size===1 && pressed &&
-               pressed.id===e.pointerId && !pressed.panning && !suppressTap;
-  const r=canvas.getBoundingClientRect();
-  const px=e.clientX-r.left,py=e.clientY-r.top;
-  activePointers.delete(e.pointerId);
-  if(activePointers.size<2)gesture=null;
-  pressed=null;
-  if(activePointers.size===0)suppressTap=false;
-  if(canTap){lastHandledTap=performance.now();const pos=screenToWorld(px,py);floorClick(pos.x,pos.y)}
+canvas.addEventListener('pointerdown',e=>{
+ if(!game || (e.pointerType==='mouse' && e.button!==0))return;
+ e.preventDefault();
+ const rect=canvas.getBoundingClientRect();
+ activePointers.set(e.pointerId,{x:e.clientX-rect.left,y:e.clientY-rect.top});
+ try{canvas.setPointerCapture(e.pointerId)}catch{}
+ if(activePointers.size===1){
+   pressed={x:e.clientX,y:e.clientY,cameraX:camera.x,cameraY:camera.y,panning:false,id:e.pointerId};
+   gesture=null;
+ }else if(activePointers.size>=2){
+   suppressTap=true;pressed=null;
+   const mid=pointerMidpoint();
+   gesture={startDistance:Math.max(1,mid.distance),startZoom:zoom,
+            anchor:screenToWorld(mid.x,mid.y)};
  }
- let lastHandledTap=0;
- // Canvas pointerup handles mouse and touch taps; keyboard-generated clicks remain supported.
- canvas.addEventListener('click',e=>{
-  if(!game||e.detail!==0)return;
-  const pos=eventWorld(e);floorClick(pos.x,pos.y);
- });
- canvas.addEventListener('pointerup',e=>finishCanvasPointer(e));
- canvas.addEventListener('pointercancel',e=>finishCanvasPointer(e,true));
- canvas.addEventListener('lostpointercapture',e=>finishCanvasPointer(e,true));
- canvas.addEventListener('wheel',e=>{
-  e.preventDefault();const rc=canvas.getBoundingClientRect();
-  zoomAt(zoom*(e.deltaY<0?1.12:1/1.12),e.clientX-rc.left,e.clientY-rc.top);
- },{passive:false});
+});
+canvas.addEventListener('pointermove',e=>{
+ if(!activePointers.has(e.pointerId))return;
+ const rect=canvas.getBoundingClientRect();
+ activePointers.set(e.pointerId,{x:e.clientX-rect.left,y:e.clientY-rect.top});
+ if(activePointers.size>=2 && gesture){
+   e.preventDefault();
+   const mid=pointerMidpoint();
+   zoom=clamp(gesture.startZoom*mid.distance/gesture.startDistance,MIN_ZOOM,MAX_ZOOM);
+   transform();
+   camera.x=gesture.anchor.x-(mid.x-W/2)/cell;
+   camera.y=gesture.anchor.y-(mid.y-H/2)/cell;
+   transform();
+   return;
+ }
+ if(!pressed||pressed.id!==e.pointerId)return;
+ const dx=e.clientX-pressed.x,dy=e.clientY-pressed.y;
+ if(Math.hypot(dx,dy)>9)pressed.panning=true;
+ if(pressed.panning){
+   transform();
+   camera.x=pressed.cameraX-dx/cell;
+   camera.y=pressed.cameraY-dy/cell;
+ }
+});
+function finishCanvasPointer(e,cancel=false){
+ if(!activePointers.has(e.pointerId))return;
+ const canTap= !cancel && activePointers.size===1 && pressed &&
+              pressed.id===e.pointerId && !pressed.panning && !suppressTap;
+ const r=canvas.getBoundingClientRect();
+ const px=e.clientX-r.left,py=e.clientY-r.top;
+ activePointers.delete(e.pointerId);
+ if(activePointers.size<2)gesture=null;
+ pressed=null;
+ if(activePointers.size===0)suppressTap=false;
+ if(canTap){lastHandledTap=performance.now();const pos=screenToWorld(px,py);floorClick(pos.x,pos.y)}
 }
-function stepPlayer(dx,dy){if(!game)return;const p=game.players[0];if(p.seated)return;const x=Math.floor(p.x)+dx,y=Math.floor(p.y)+dy;if(pass(x,y,p))p.path=bfs(p.x,p.y,x,y,p)}
-
+let lastHandledTap=0;
+// Canvas pointerup handles mouse and touch taps; keyboard-generated clicks remain supported.
+canvas.addEventListener('click',e=>{
+ if(!game||e.detail!==0)return;
+ const pos=eventWorld(e);floorClick(pos.x,pos.y);
+});
+canvas.addEventListener('pointerup',e=>finishCanvasPointer(e));
+canvas.addEventListener('pointercancel',e=>finishCanvasPointer(e,true));
+canvas.addEventListener('lostpointercapture',e=>finishCanvasPointer(e,true));
+canvas.addEventListener('wheel',e=>{
+ e.preventDefault();const rc=canvas.getBoundingClientRect();
+ zoomAt(zoom*(e.deltaY<0?1.12:1/1.12),e.clientX-rc.left,e.clientY-rc.top);
+},{passive:false});
+window.addEventListener('keydown',e=>{if(!game||!$('modalRoot').hidden)return;const keys={w:[0,-1],ArrowUp:[0,-1],s:[0,1],ArrowDown:[0,1],a:[-1,0],ArrowLeft:[-1,0],d:[1,0],ArrowRight:[1,0]};const d=keys[e.key];if(!d)return;e.preventDefault();stepPlayer(...d)});function stepPlayer(dx,dy){if(!game)return;const p=game.players[0];if(p.seated)return;const x=Math.floor(p.x)+dx,y=Math.floor(p.y)+dy;if(pass(x,y,p))p.path=bfs(p.x,p.y,x,y,p)}$('joystick').querySelectorAll('button').forEach(b=>{const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[b.dataset.dir];b.addEventListener('pointerdown',e=>{e.preventDefault();stepPlayer(...d)})});
 function updateBossAnimation(){
  const h=game?.hunter;
- if(!h?.active || game?.boss?.id!=='kolyadun' || $('game').hidden || !bossAnimated){
-   if(bossAnimated)bossAnimated.hidden=true;bossDisplayedState='';return;
+ if(!h?.active || game?.boss?.id!=='kolyadun' || $('game').hidden){
+   bossAnimated.hidden=true;bossDisplayedState='';return;
  }
  const mode=h.state==='attack'?'attack':(h.state==='hunt'||h.state==='retreat')?'walk':'idle';
  const filename=game.boss[mode];
@@ -617,7 +637,7 @@ function syncPlayerVisuals(){
   im.hidden=false;
  }
 }
-function draw(){if(!game||!W||!ctx){if(bossAnimated)bossAnimated.hidden=true;syncServantVisuals();return;}transform();updateBossAnimation();syncServantVisuals();syncPlayerVisuals();ctx.clearRect(0,0,W,H);ctx.fillStyle='#0b1020';ctx.fillRect(0,0,W,H);ctx.save();ctx.translate(ox,oy);ctx.lineWidth=1;const tile=cell;for(let y=0;y<R;y++)for(let x=0;x<C;x++){const t=tileType(x,y),px=x*tile,py=y*tile;ctx.fillStyle=t==='void'?'#080b15':t==='wall'?'#292f49':t==='rest'?'#34324d':t==='corridor'?'#222c3e':t==='room'?'#2f3c50':'#36445a';ctx.fillRect(px,py,tile,tile);if(t==='corridor'||t==='room'||t==='door'){ctx.globalAlpha=t==='corridor'?.65:1;drawImg('floor.png',px,py,tile,tile);ctx.globalAlpha=1}if(t==='wall')drawImg('wall.png',px,py,tile,tile);ctx.strokeStyle='#74829b25';ctx.strokeRect(px+.5,py+.5,tile,tile)}
+function draw(){if(!game||!W){bossAnimated.hidden=true;syncServantVisuals();return;}transform();updateBossAnimation();syncServantVisuals();syncPlayerVisuals();ctx.clearRect(0,0,W,H);ctx.fillStyle='#0b1020';ctx.fillRect(0,0,W,H);ctx.save();ctx.translate(ox,oy);ctx.lineWidth=1;const tile=cell;for(let y=0;y<R;y++)for(let x=0;x<C;x++){const t=tileType(x,y),px=x*tile,py=y*tile;ctx.fillStyle=t==='void'?'#080b15':t==='wall'?'#292f49':t==='rest'?'#34324d':t==='corridor'?'#222c3e':t==='room'?'#2f3c50':'#36445a';ctx.fillRect(px,py,tile,tile);if(t==='corridor'||t==='room'||t==='door'){ctx.globalAlpha=t==='corridor'?.65:1;drawImg('floor.png',px,py,tile,tile);ctx.globalAlpha=1}if(t==='wall')drawImg('wall.png',px,py,tile,tile);ctx.strokeStyle='#74829b25';ctx.strokeRect(px+.5,py+.5,tile,tile)}
 // Rest zones at both ends of the corridor.
 for(const y of [0,24]){if(!drawImg('hunter resting.png',9*tile,y*tile,tile,tile)){}ctx.strokeStyle='#bda2ff';ctx.lineWidth=2;ctx.strokeRect(9*tile+1,y*tile+1,tile-2,tile-2)}
 for(const r of game.rooms){const dx=r.doorX*tile,dy=r.doorY*tile;if(!r.alive){ctx.fillStyle='#ff454744';ctx.fillRect((r.x+1)*tile,(r.y+1)*tile,5*tile,5*tile)}for(const [x,y] of buildTiles(r)){const px=x*tile,py=y*tile;if(!r.items.has(`${x},${y}`)){ctx.fillStyle=r.occupant===0?'#6ae4c322':'#aeb6cb13';ctx.fillRect(px+4,py+4,tile-8,tile-8);ctx.fillStyle=r.occupant===0?'#7be5c8a5':'#b9c2db50';ctx.font=`${tile*.31}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('+',px+tile/2,py+tile/2)}else iconImage(r.items.get(`${x},${y}`),px+2,py+2,tile-4)}const pcname=`pc${[1,2,3,4,4,6,7][clamp(r.pcLv-1,0,6)]}.png`;drawImg(pcname,r.pcX*tile,r.pcY*tile,tile,tile);ctx.fillStyle='#111a2db9';ctx.fillRect((r.x+1)*tile,(r.y+.18)*tile,4.7*tile,.53*tile);ctx.textAlign='left';ctx.fillStyle='#fff';ctx.font=`bold ${Math.max(9,tile*.23)}px system-ui`;ctx.fillText(`${r.id+1} ${r.occupant===null?'Вільна':game.players[r.occupant]?.name||'?'}`,(r.x+1.18)*tile,(r.y+.56)*tile);
@@ -638,14 +658,17 @@ for(const r of game.rooms)for(const it of r.items.values()){
  drawImg(`${it.type}${clamp(it.lv||1,1,3)}.png`,px-tile*.35,py-tile*.35,tile*.7,tile*.7);
 }
 
-if(h.active){const hsize=tile*.95;ctx.save();ctx.translate(h.x*tile,h.y*tile);if(h.state==='attack'){ctx.rotate(Math.sin(h.anim*17)*.2);ctx.translate(Math.sin(h.anim*22)*tile*.11,0)}else if(h.state==='hunt'||h.state==='retreat')ctx.translate(0,Math.sin(h.anim*10)*tile*.06);const bossSprite=h.state==='attack'?game.boss.attack:(h.state==='hunt'||h.state==='retreat')?game.boss.walk:game.boss.idle;if((game.boss.id==='kolyadun'&&(!bossAnimated||!bossAnimated.complete))||(game.boss.id!=='kolyadun'&&!drawImg(bossSprite,-hsize/2,-hsize/2,hsize,hsize))){ctx.fillStyle='#ef8da9';ctx.beginPath();ctx.arc(0,0,hsize*.34,0,Math.PI*2);ctx.fill();ctx.font=`bold ${Math.max(12,tile*.4)}px sans-serif`;ctx.fillStyle='#271021';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('👁',0,0);}ctx.restore();const bx=h.x*tile-tile*.65,by=h.y*tile-tile*.75;ctx.fillStyle='#0d1223';ctx.fillRect(bx,by,tile*1.3,7);ctx.fillStyle='#f46a92';ctx.fillRect(bx,by,tile*1.3*clamp(h.hp/h.maxHp,0,1),7);ctx.textAlign='center';ctx.font=`bold ${Math.max(9,tile*.22)}px sans-serif`;ctx.fillStyle='#ffc9d7';ctx.fillText(`👁 ${h.level} ${h.state==='rest'?'💤':''}`,h.x*tile,by-5)}
+if(h.active){const hsize=tile*.95;ctx.save();ctx.translate(h.x*tile,h.y*tile);if(h.state==='attack'){ctx.rotate(Math.sin(h.anim*17)*.2);ctx.translate(Math.sin(h.anim*22)*tile*.11,0)}else if(h.state==='hunt'||h.state==='retreat')ctx.translate(0,Math.sin(h.anim*10)*tile*.06);const bossSprite=h.state==='attack'?game.boss.attack:(h.state==='hunt'||h.state==='retreat')?game.boss.walk:game.boss.idle;if((game.boss.id==='kolyadun'&&!bossAnimated.complete)||(game.boss.id!=='kolyadun'&&!drawImg(bossSprite,-hsize/2,-hsize/2,hsize,hsize))){ctx.fillStyle='#ef8da9';ctx.beginPath();ctx.arc(0,0,hsize*.34,0,Math.PI*2);ctx.fill();ctx.font=`bold ${Math.max(12,tile*.4)}px sans-serif`;ctx.fillStyle='#271021';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('👁',0,0);}ctx.restore();const bx=h.x*tile-tile*.65,by=h.y*tile-tile*.75;ctx.fillStyle='#0d1223';ctx.fillRect(bx,by,tile*1.3,7);ctx.fillStyle='#f46a92';ctx.fillRect(bx,by,tile*1.3*clamp(h.hp/h.maxHp,0,1),7);ctx.textAlign='center';ctx.font=`bold ${Math.max(9,tile*.22)}px sans-serif`;ctx.fillStyle='#ffc9d7';ctx.fillText(`👁 ${h.level} ${h.state==='rest'?'💤':''}`,h.x*tile,by-5)}
 // Маленькі посіпаки мають власний індикатор здоров'я.
 for(const m of game.servants||[]){const sx=m.x*tile,sy=m.y*tile;ctx.save();ctx.globalAlpha=.93;ctx.font=`${tile*.62}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';/* GIF анімується окремим HTML-спрайтом */ctx.restore();ctx.fillStyle='#351e38';ctx.fillRect(sx-tile*.27,sy-tile*.46,tile*.54,3);ctx.fillStyle='#fda4bf';ctx.fillRect(sx-tile*.27,sy-tile*.46,tile*.54*clamp(m.hp/m.maxHp,0,1),3)}
 for(const p of game.projectiles){const t=1-p.life/p.max;ctx.strokeStyle='#ffe67e';ctx.lineWidth=Math.max(1,cell*.06);ctx.beginPath();ctx.moveTo(p.x*tile,p.y*tile);ctx.lineTo((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile);ctx.stroke();ctx.fillStyle='#fff6ad';ctx.beginPath();ctx.arc((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile,Math.max(2,tile*.07),0,Math.PI*2);ctx.fill()}
 for(const e of game.effects){const a=e.life/e.max;ctx.globalAlpha=clamp(a,0,1);ctx.fillStyle='#fce893';ctx.textAlign='center';ctx.font=`bold ${Math.max(11,tile*.28)}px system-ui`;ctx.fillText(e.t,e.x*tile,(e.y-.5*(1-a))*tile);ctx.globalAlpha=1}
 ctx.restore();}
-
-// ===== НАДІЙНИЙ ЦИКЛ ДЛЯ BRAVE =====
+// Єдиний цикл матчу: одна подія оновлює координати, час, економіку і кадр.
+// Не запускати окремі RAF/таймери, що можуть змагатися за стан гри.
+let simulationTimer=null, simulationLast=0;
+// === НАДІЙНИЙ ЦИКЛ ДЛЯ BRAVE (мінімальна правка) ===
+let logicTimer=null, lastLogic=0, lastDraw=0, lastActiveFrame=0;
 function updateDiagnostic(){
  const e=$('hikkaDiagnostic');if(!e)return;
  if(!game){e.textContent='Немає матчу';return}
@@ -689,44 +712,8 @@ function startSimulation(){
  raf=requestAnimationFrame(drawFrame);
 }
 
-function initDOM(){
- canvas=document.getElementById('arena');
- ctx=canvas?canvas.getContext('2d'):null;
- bossAnimated=document.getElementById('bossAnimated');
- if(!canvas||!ctx){
-  console.error('Hikka House: #arena не знайдено. Скрипт має бути в кінці <body>.');
-  return false;
- }
- setupCanvasEvents();
- return true;
-}
 
-function bindUI(){
- const enter=$('enterBtn'); if(enter) enter.onclick=difficultyModal;
- const quit=$('quitBtn'); if(quit) quit.onclick=()=>{if(!game)return openHome();modal('Покинути матч?',`<p>Прогрес поточного матчу не збережеться.</p>`,[{name:'Залишитися',fn:closeModal},{name:'Вийти',primary:true,fn:openHome}])};
- const boost=$('boostBtn'); if(boost) boost.onclick=()=>modal('✨ Добові бусти',`<p>${save.boosts.length?save.boosts.map(value=>{const [id,num]=value.split(':');const b=boosts.find(b=>b.id===id);return `${b?.name||id}${num?' +'+num:''}`}).join(' • '):'Поки немає. Бонуси випадають після перемоги.'}</p>`,[{name:'Закрити',fn:closeModal}]);
- const soundB=$('soundBtn'); if(soundB) soundB.onclick=()=>{soundOn=!soundOn;soundB.textContent=soundOn?'🔊':'🔇';if(soundOn)sound('tap')};
- const focusB=$('focusMe'); if(focusB) focusB.onclick=()=>{if(game){const p=game.players[0];focus(p.x,p.y)}};
- const repair=$('repairBtn'); if(repair) repair.onclick=()=>{const r=playerRoom();if(!r||!game.players[0].seated)return toast('Спочатку займіть кімнату');const price={gold:16+Math.floor(r.doorLv*7)};if(r.door>=r.maxDoor)return toast('Двері повністю відремонтовані');if(spend(price)){r.door=Math.min(r.maxDoor,r.door+55);sound('repair');effect(r.doorX+.5,r.doorY+.5,'🔧')}};
- const zi=$('zoomIn'); if(zi) zi.onclick=()=>{zoomAt(zoom*1.3);try{draw()}catch(e){}updateDiagnostic()};
- const zo=$('zoomOut'); if(zo) zo.onclick=()=>{zoomAt(zoom/1.3);try{draw()}catch(e){}updateDiagnostic()};
- const joy=$('joystick');
- if(joy) joy.querySelectorAll('button').forEach(b=>{const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[b.dataset.dir];b.addEventListener('pointerdown',e=>{e.preventDefault();stepPlayer(...d)})});
- window.addEventListener('keydown',e=>{if(!game||!$('modalRoot')?.hidden)return;const keys={w:[0,-1],ArrowUp:[0,-1],s:[0,1],ArrowDown:[0,1],a:[-1,0],ArrowLeft:[-1,0],d:[1,0],ArrowRight:[1,0]};const d=keys[e.key];if(!d)return;e.preventDefault();stepPlayer(...d)});
- window.addEventListener('resize',resize);
-}
-
-function boot(){
- if(!initDOM())return;
- bindUI();
- resize();
- locateAssets().then(folder=>{ASSET_DIR=folder;loadAssets();});
- if(!save.tutorial)infoModal();
-}
-
-if(document.readyState==='loading'){
- document.addEventListener('DOMContentLoaded',boot);
-}else{
- boot();
-}
-</script>
+resize();
+locateAssets().then(folder=>{ASSET_DIR=folder;loadAssets();});
+if(!save.tutorial)infoModal();
+</script></body></html>
