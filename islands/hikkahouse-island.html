@@ -26,7 +26,7 @@
 .skin-price{display:inline-flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap}
 .skin .skin-token-icon{width:16px;height:16px;max-width:16px;max-height:16px;object-fit:contain;image-rendering:pixelated;flex:0 0 16px}
 /* Анімовані персонажі відтворюються HTML-елементами, а не статичними кадрами Canvas */
-.player-animated{will-change:left,top;contain:layout style;position:absolute;left:0;top:0;z-index:2;pointer-events:none;object-fit:contain;image-rendering:pixelated;transform-origin:center center}
+.player-animated{will-change:transform;position:absolute;left:0;top:0;z-index:2;pointer-events:none;object-fit:contain;image-rendering:pixelated;transform-origin:center center}
 </style></head><body>
 <div id="app"><header class="topbar"><div class="brand"><span>⌂</span><b>HIKKA <em>HOUSE</em></b><small id="phase">ГОЛОВНЕ МЕНЮ</small></div><div class="hud" id="hud" hidden><span title="Монети за поточну гру"><img src="../assets/tokens.png" class="token-icon" alt="Монети"> <b id="gold">0</b></span><span class="income-hud" title="Заробіток монет за секунду">📈 +<b id="incomeRate">0</b>/с</span><span title="Енергія">⚡ <b id="energy">0</b></span><span title="До появи гостя / до кінця матчу">⏳ <b id="clock">25</b></span><span title="Рівень нав'язливого гостя">👁️ <b id="hunterLevel">1</b></span></div><div class="top-actions"><button id="soundBtn" aria-label="Увімкнути або вимкнути звук">🔊</button><button id="boostBtn" title="Добові бусти">✨</button><button id="quitBtn" title="Повернутись у меню">↩</button></div></header>
 <section id="home" class="home"><div class="hero"><div class="hero-art"><img src=""><div class="hero-door">🚪</div><div id="heroName" class="hero-name"></div></div><div class="hero-copy"><div class="eyebrow">ТИХЕ МІСЦЕ. НЕПРОХАНІ ГОСТІ.</div><h1>HIKKA<br><strong>HOUSE</strong></h1><p>Захопи кімнату. Сідай за ПК. Зачини двері. Нехай нав'язливий гість пошукає собі іншу аудиторію.</p><div class="home-stats"><span><img src="../assets/tokens.png" class="token-icon" alt="Токени">Токени <b id="tokens">0</b></span><span><img src="../assets/magican.png" class="magic-icon" alt="Маджика"> Маджика <b id="magicCount">3</b>/5</span><span>🏆 Перемоги <b id="wins">0</b></span></div><button class="primary big" id="enterBtn">УВІЙТИ →</button><div class="smallprint">Щоденне оновлення рівня о 00:00 за Києвом</div></div></div><div class="home-bottom"><div class="sidebox"><h3>🏆 Рейтинг сьогодні</h3><div id="leaders"></div></div><div class="sidebox"><h3>🛍️ Магазин персонажів · 10 на вибір</h3><div class="skin-grid" id="skins"></div></div></div></section>
@@ -107,7 +107,12 @@ const catalog=[{type:'weapon',name:'Зброя',tab:'База',img:'weapon1.png'
 const fallbacks={magic:'🎲',safe:'🔒',cache:'💾',trap:'🪤',clock:'⏰',distance:'📡',notebook:'📓',cockroach:'🪳',box:'📦',tamagotchi:'🐣',partner:'🤝',chain:'⛓️',puddle:'💧',poop:'💩'};
 function assetFor(item) {if (!item) return null;if (item.type === 'clock') return 'time.png';if(item.type==='partner')return `pc${[1,2,3,4,4,6,7][clamp((item.lv||1)-1,0,6)]}.png`;let lv=clamp(item.lv||1,1,8);if(item.type==='weapon')return `weapon${lv}.png`;if(item.type==='energy')return `energy${clamp(lv,1,5)}.png`;if(item.type==='money')return `moneytree${clamp(lv,1,4)}.${lv>=4?'gif':'png'}`;if(['cat','dog'].includes(item.type))return `${item.type}${clamp(lv,1,3)}.png`;return null}
 function drawImg(name,x,y,w=cell,h=cell){const im=images[name];if(im&&im.complete&&im.naturalWidth){ctx.drawImage(im,x,y,w,h);return true}return false}function iconImage(item,x,y,size){const name=assetFor(item);if(name&&drawImg(name,x,y,size,size))return;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`${size*.68}px sans-serif`;ctx.fillText(fallbacks[item.type]||'❔',x+size/2,y+size/2)}
-function makePlayer(id,npc=false){return{id,npc,name:npc?['Lurker','SilentFox','NoSignal','Nebula','404_sleep'][id-1]:'copy_pasta',x:9.5,y:12.5,path:[],room:null,seated:false,alive:true,speed:npc?2.0:4.7,score:0,action:'idle',walk:0,decision:rand(1,3),gold:25,energy:0,skin:npc?Math.floor(Math.random()*CHARACTERS.length):save.skin}}
+function makePlayer(id,npc=false){return{id,npc,name:npc?['Lurker','SilentFox','NoSignal','Nebula','404_sleep'][id-1]:'copy_pasta',x:9.5,y:12.5,path:[],room:null,targetRoom:null,seated:false,alive:true,speed:npc?2.0:4.7,score:0,action:'idle',walk:0,decision:rand(1,3),gold:25,energy:0,skin:npc?Math.floor(Math.random()*CHARACTERS.length):save.skin}}
+// Legacy save compatibility: never erase purchases or reset progress.
+if(!Array.isArray(save.skins))save.skins=[0];
+if(!Array.isArray(save.boosts))save.boosts=[];
+if(!Number.isInteger(Number(save.skin))||Number(save.skin)<0||Number(save.skin)>=CHARACTERS.length)save.skin=0;
+else save.skin=Number(save.skin);
 const doors=roomDefs.map(r=>({x:r.doorX,y:r.doorY}));function avoidCoinNumbers(value){const amount=Math.max(0,Math.floor(Number(value)||0));return amount===63||amount===68?amount+1:amount}
 function newGame(lv){const rooms=roomDefs.map(d=>({...d,items:new Map(),occupant:null,door:90,maxDoor:90,doorLv:1,pcLv:1,alive:true,chain:false,puddle:false,poop:false,access:0}));const players=Array.from({length:6},(_,i)=>makePlayer(i,i!==0));const boss=bossForDifficulty(lv);const g={level:lv,boss,servants:[],phase:'claim',time:0,countdown:25,gold:28,energy:0,rooms,players,hunter:{x:9.5,y:.5,hp:180+lv*32,maxHp:180+lv*32,level:1,state:'rest',target:null,path:[],attack:0,rest:5,active:false,stun:0,shotCd:0,anim:0,retreats:0,abilityCd:14,servantCd:18},effects:[],projectiles:[],pets:[],selected:null,magicUsed:0,magicRolls:{},petStrike:0,boxClaims:new Set(),tick:0,npcTick:0,elapsed:0,lastResult:null,boosts:save.boosts.slice(),targetCam:null,mikola:{active:false,x:9.5,y:12.5,until:0,nextAt:55,cooldown:0},olexsy:{active:false,x:9.5,y:12.5,until:0,nextAt:70}};for(const r of rooms){const slots=buildTiles(r);const starter=['trap','energy','money','distance','clock','box'][r.id];r.items.set(slots[0].join(','),{type:starter,lv:1,starter:true});}let coins=avoidCoinNumbers(g.gold);Object.defineProperty(g,'gold',{enumerable:true,configurable:true,get(){return coins},set(value){coins=avoidCoinNumbers(value)}});return g}
 function buildTiles(r){const cols=r.side==='left'?[1,2,3,4,5]:[13,14,15,16,17];const rows=[r.y+1,r.y+2,r.y+3,r.y+4,r.y+5];const slots=[];for(const y of rows)for(const x of cols){if(y===r.pcY&&x===r.pcX)continue;slots.push([x,y]);}return slots}
@@ -115,24 +120,33 @@ function inRoom(r,x,y){return x>=r.x&&x<=r.x+6&&y>=r.y&&y<=r.y+6}function tileTy
 function bfs(sx,sy,ex,ey,entity){sx=clamp(Math.floor(sx),0,C-1);sy=clamp(Math.floor(sy),0,R-1);ex=clamp(Math.floor(ex),0,C-1);ey=clamp(Math.floor(ey),0,R-1);const visited=new Set([`${sx},${sy}`]),q=[[sx,sy]],parent={};for(let i=0;i<q.length;i++){const [x,y]=q[i];if(x===ex&&y===ey){const path=[];let k=`${x},${y}`;while(parent[k]){const [a,b]=k.split(',').map(Number);path.unshift({x:a+.5,y:b+.5});k=parent[k]}return path}for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy,k=`${nx},${ny}`;if(!visited.has(k)&&pass(nx,ny,entity)){visited.add(k);parent[k]=`${x},${y}`;q.push([nx,ny])}}}return []}
 function travel(ent,dt){if(!ent.path.length){ent.action=ent.seated?'sit':'idle';return}const to=ent.path[0],dx=to.x-ent.x,dy=to.y-ent.y,d=Math.hypot(dx,dy),step=ent.speed*dt;ent.action='walk';ent.walk+=dt;if(d<=step){ent.x=to.x;ent.y=to.y;ent.path.shift()}else{ent.x+=dx/d*step;ent.y+=dy/d*step}}
 function focus(x,y){camera.x=x;camera.y=y}function playerRoom(){return game&&game.players[0].room!==null?game.rooms[game.players[0].room]:null}function ownerRoom(p){return p.room!==null?game.rooms[p.room]:null}
-function assignRoom(p,r){if(r.occupant!==null||!r.alive)return false;r.occupant=p.id;p.room=r.id;p.path=bfs(p.x,p.y,r.pcX,r.pcY,p);r.access=1;if(!p.path.length&&Math.hypot(p.x-r.pcX-.5,p.y-r.pcY-.5)>.6){r.occupant=null;p.room=null;return false}return true}// Відновлюємо маршрут до ПК, якщо стороння подія обнулила шлях.
+// Кімнату займаємо лише після фізичного прибуття до ПК.
+function assignRoom(p,r){
+ if(!game||p.seated||!r?.alive||r.occupant!==null)return false;
+ const path=bfs(p.x,p.y,r.pcX,r.pcY,p);
+ if(!path.length&&Math.hypot(p.x-r.pcX-.5,p.y-r.pcY-.5)>.6)return false;
+ p.targetRoom=r.id;p.path=path;p.action=path.length?'walk':'idle';
+ return true;
+}
 function ensureRoomRoute(p){
- if(!game||!p.alive||p.seated||p.room===null)return;
- const r=game.rooms[p.room];
- if(!r||!r.alive||r.occupant!==p.id)return;
+ if(!game||!p.alive||p.seated||p.targetRoom===null)return;
+ const r=game.rooms[p.targetRoom];
+ if(!r||!r.alive||r.occupant!==null&&r.occupant!==p.id){
+  p.targetRoom=null;p.path=[];p.decision=rand(.5,1.8);return;
+ }
  const distance=Math.hypot(p.x-(r.pcX+.5),p.y-(r.pcY+.5));
  if(distance<.53){sit(p,r);return}
- if(!p.path.length){
-  p.path=bfs(p.x,p.y,r.pcX,r.pcY,p);
-  if(!p.path.length){
-   const entry=nearestHunterDoor(r);
-   const midway=bfs(p.x,p.y,Math.floor(entry.x),r.doorY,p);
-   if(midway.length)p.path=midway.concat(bfs(entry.x,entry.y,r.pcX,r.pcY,p));
-  }
- }
+ if(!p.path.length)p.path=bfs(p.x,p.y,r.pcX,r.pcY,p);
 }
-function sit(p,r){if(!r||r.occupant!==p.id)return;p.seated=true;p.path=[];p.x=r.pcX+.5;p.y=r.pcY+.5;r.access=0;p.action='sit';sound('door');if(!p.npc){game.phase='defend';$('tip').textContent='Покращуйте ПК, двері та захист!';toast('Ви за ПК! Двері зачинено. Будуйте оборону.')} }
-function start(lv){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';activePointers.clear();pressed=null;gesture=null;daySync();zoom=1;camera={x:9.5,y:12};game=newGame(lv);$('home').hidden=true;$('game').hidden=false;$('hud').hidden=false;$('phase').textContent=difficulty[lv].toUpperCase();$('boostBtn').hidden=false;renderPlayers();renderTabs();renderPalette();closeModal();focus(9.5,12.5);for(const p of game.players.slice(1)){const free=game.rooms.filter(r=>r.occupant===null);if(free.length)assignRoom(p,pick(free));p.decision=rand(.9,4)}resize();draw();lastTime=performance.now();update(0);startSimulation();toast('25 секунд, щоб зайняти кімнату!')}
+function sit(p,r){
+ if(!r||!r.alive||r.occupant!==null&&r.occupant!==p.id||p.targetRoom!==r.id)return;
+ // Тільки тут кімната стає зайнятою.
+ r.occupant=p.id;p.room=r.id;p.targetRoom=null;
+ p.seated=true;p.path=[];p.x=r.pcX+.5;p.y=r.pcY+.5;
+ r.access=0;p.action='sit';sound('door');
+ if(!p.npc){game.phase='defend';$('tip').textContent='Покращуйте ПК, двері та захист!';toast('Ви за ПК! Двері зачинено. Будуйте оборону.')}
+}
+function start(lv){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';activePointers.clear();pressed=null;gesture=null;daySync();zoom=1;camera={x:9.5,y:12};game=newGame(lv);$('home').hidden=true;$('game').hidden=false;$('hud').hidden=false;$('phase').textContent=difficulty[lv].toUpperCase();$('boostBtn').hidden=false;renderPlayers();renderTabs();renderPalette();closeModal();focus(9.5,12.5);for(const p of game.players.slice(1)){p.decision=rand(2.0,5.5)}resize();draw();lastTime=performance.now();update(0);startSimulation();toast('25 секунд, щоб зайняти кімнату!')}
 function openHome(){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';game=null;$('home').hidden=false;$('game').hidden=true;$('hud').hidden=true;$('phase').textContent='ГОЛОВНЕ МЕНЮ';closeModal();renderHome()}
 function spend(price,p=game){if(!p||p.gold<(price.gold||0)||p.energy<(price.energy||0)){toast('Недостатньо монет або енергії');sound('hit');return false}p.gold-=price.gold||0;p.energy-=price.energy||0;return true}
 function costLabel(cost){return [(cost.gold||0)?`🪙${cost.gold}`:'',(cost.energy||0)?`⚡${cost.energy}`:''].filter(Boolean).join(' ')||'Безкоштовно'}
@@ -157,7 +171,7 @@ function floorClick(x,y){
   if(ix===r.pcX&&iy===r.pcY){
    if(r.occupant===null&&!p.seated){
      if(assignRoom(p,r)){p.autoSit=true;toast('Персонаж прямує до вільного ПК');}
-    } else if(r.occupant===p.id&&!p.seated){
+    } else if(p.targetRoom===r.id&&!p.seated){
     if(Math.hypot(p.x-(ix+.5),p.y-(iy+.5))<1.9)sit(p,r);
     else {p.path=bfs(p.x,p.y,ix,iy,p);toast('Підійдіть до ПК')}
    } else if(p.seated)upgrade(r,ix,iy);
@@ -168,8 +182,8 @@ function floorClick(x,y){
    if(r.items.has(`${ix},${iy}`)){upgrade(r,ix,iy);return}
    if(buildTiles(r).some(a=>a[0]===ix&&a[1]===iy)){game.selected={r,x:ix,y:iy};openBuildMenu(r,ix,iy);return}
   }else{
-   if(r.occupant===null){if(assignRoom(p,r)){p.autoSit=true;toast('Вільна кімната! Персонаж прямує до ПК.')}return}
-   else if(r.occupant!==p.id){toast('Кімната вже зайнята');return}
+   if(r.occupant===null){if(p.targetRoom!==r.id&&assignRoom(p,r)){p.autoSit=true;toast('Вільна кімната! Персонаж прямує до ПК.')}return}
+   else if(r.occupant!==null&&r.occupant!==p.id){toast('Кімната вже зайнята');return}
    p.path=bfs(p.x,p.y,r.pcX,r.pcY,p);
   }
  }else if(!p.seated&&p.room===null&&pass(ix,iy,p))p.path=bfs(p.x,p.y,ix,iy,p);
@@ -179,7 +193,7 @@ function modal(title,content,buttons=[],force=false){$('modalRoot').hidden=false
 function renderTabs(){$('tabs').innerHTML=['База','Монетки','Тримачі','Інше'].map(t=>`<button class="${selectedTab===t?'active':''}" data-tab="${t}">${t}</button>`).join('');$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{selectedTab=b.dataset.tab;renderTabs();renderPalette()})}
 function renderPalette(){if(!game)return;$('palette').innerHTML='';for(const def of catalog.filter(c=>c.tab===selectedTab)){const b=document.createElement('button');b.className='item';b.innerHTML=`${def.img?`<img src="${assetURL(def.img)}" draggable="false">`:`<span class="emoji">${def.emoji}</span>`}<b>${def.name}</b><small>${costLabel(costs[def.type])}</small>`;b.title='Перетягніть предмет або клацніть для вибору';b.addEventListener('pointerdown',e=>{if(e.button!==0)return;drag={type:def.type,startX:e.clientX,startY:e.clientY,active:false};try{b.setPointerCapture(e.pointerId)}catch{}});b.addEventListener('pointermove',e=>{if(drag&&Math.hypot(e.clientX-drag.startX,e.clientY-drag.startY)>8)drag.active=true});b.addEventListener('pointerup',e=>{if(!drag)return;const d=drag;drag=null;if(d.active){const bounds=canvas.getBoundingClientRect();if(e.clientX>=bounds.left&&e.clientX<=bounds.right&&e.clientY>=bounds.top&&e.clientY<=bounds.bottom){const pos=screenToWorld(e.clientX-bounds.left,e.clientY-bounds.top),r=roomAt(Math.floor(pos.x),Math.floor(pos.y));if(r){if(build(r,Math.floor(pos.x),Math.floor(pos.y),d.type))toast('Предмет встановлено')}else toast('Перетягніть предмет у свою кімнату')}else toast('Перетягніть на клітинку карти')}else{const r=playerRoom();if(!r)return toast('Спочатку сядьте за ПК');if(def.door){build(r,r.doorX,r.doorY,def.type);return}const free=buildTiles(r).find(([x,y])=>!r.items.has(`${x},${y}`));if(free){game.selected={r,x:free[0],y:free[1]};toast('Виберіть або перетягніть на потрібну клітинку');}else toast('Немає вільних клітинок')}});$('palette').append(b)}}
 function renderPlayers(){if(!game)return;$('players').innerHTML=game.players.map(p=>`<button class="player-icon ${p.alive?'':'dead'} ${p.room!==null&&game.rooms[p.room]?.door/game.rooms[p.room]?.maxDoor<.28?'danger':''}" data-player="${p.id}" title="${p.name}"><img src="${characterURL(p.skin,'idle')}"></button>`).join('');$('players').querySelectorAll('button').forEach(b=>b.onclick=()=>{const p=game.players[+b.dataset.player];focus(p.x,p.y)})}
-function update(dt){if(!game)return;daySync();let g=game;g.time+=dt;g.tick+=dt;g.npcTick+=dt;const me=g.players[0];if(g.phase==='claim'||g.phase==='defend'){g.countdown=Math.max(0,25-g.time);for(const p of g.players){if(!p.alive||p.seated)continue;ensureRoomRoute(p);if(p.npc&&p.room===null){p.decision-=dt;if(p.decision<=0){const free=g.rooms.filter(r=>r.occupant===null);if(free.length){const r=pick(free);assignRoom(p,r)}p.decision=2}}travel(p,dt);if(p.room!==null){const r=g.rooms[p.room];if(Math.hypot(p.x-(r.pcX+.5),p.y-(r.pcY+.5))<.53){if(p.npc||p.autoSit){p.autoSit=false;sit(p,r)}else if(p.action==='walk'&&p.path.length===0){toast('Натисніть на ПК, щоб сісти')}}}}if(g.time>=25&&!me.seated){if(me.room!==null&&Math.hypot(me.x-(g.rooms[me.room].pcX+.5),me.y-(g.rooms[me.room].pcY+.5))<1.25)sit(me,g.rooms[me.room]);else{finish(false,'Ви не встигли зайняти кімнату');return}}if(g.time>=25&&!g.hunter.active){g.hunter.active=true;g.hunter.state='hunt';g.hunter.rest=0;toast(`${g.boss.name} вийшов у коридор!`)}if(g.tick>=1){g.tick-=1;if(me.seated&&me.alive){const r=playerRoom();const gain=2*Math.pow(2,r.pcLv-1);g.gold+=gain;me.score+=gain;effect(r.pcX+.5,r.pcY+.25,`+${gain}🪙`)}for(const r of g.rooms){if(!r.alive||r.occupant===null||!g.players[r.occupant].seated)continue;for(const [key,item] of r.items){const [x,y]=key.split(',').map(Number);if(item.type==='energy'){const v=Math.pow(2,Math.min(item.lv,5)-1);if(r.occupant===0)g.energy+=v;effect(x+.5,y+.3,`+${v}⚡`)}if(item.type==='money'){const v=2*Math.pow(3,Math.min(item.lv,4)-1);if(r.occupant===0)g.gold+=v;effect(x+.5,y+.3,`+${v}🪙`)}if(item.type==='partner'&&r.occupant===0){const bonus=2*Math.pow(2,(item.lv||1)-1);g.gold+=bonus;effect(x+.5,y+.3,`+${bonus}🪙`)}if(item.type==='notebook'&&Math.floor(g.time)%7===0){if(r.occupant===0){g.gold+=5;g.energy+=5}}if(item.type==='safe'&&g.hunter.state==='attack'&&g.hunter.target===r.id&&r.occupant===0)g.gold+=2; if(item.type==='tamagotchi'&&g.hunter.state==='attack'&&g.hunter.target===r.id&&r.occupant===0)g.gold+=g.boosts.includes('tamagotchi')?50:25;} }if(g.time>25&&Math.floor(g.time)%39===0&&g.hunter.level<1+Math.floor(g.level/2)+4){g.hunter.level++;g.hunter.maxHp+=25;g.hunter.hp=Math.min(g.hunter.maxHp,g.hunter.hp+25);toast(`Нав'язливість гостя: рівень ${g.hunter.level}`)}}if(g.npcTick>3){g.npcTick=0;npcEconomy();renderPlayers()}updateMikola(dt);updateOlexiy(dt);updateHunter(dt);updateServants(dt);updatePets(dt);projectiles(dt);for(const e of g.effects)e.life-=dt;g.effects=g.effects.filter(e=>e.life>0);if(g.time>400)finish(true,'Ви протрималися до ранку!')} const ownRoom=playerRoom();
+function update(dt){if(!game)return;daySync();let g=game;g.time+=dt;g.tick+=dt;g.npcTick+=dt;const me=g.players[0];if(g.phase==='claim'||g.phase==='defend'){g.countdown=Math.max(0,25-g.time);for(const p of g.players){if(!p.alive||p.seated)continue;ensureRoomRoute(p);if(p.npc&&p.room===null){p.decision-=dt;if(p.decision<=0){const free=g.rooms.filter(r=>r.occupant===null&&!g.players.some(q=>q!==p&&q.targetRoom===r.id));if(free.length){const r=pick(free);assignRoom(p,r)}p.decision=rand(1.2,3)}}travel(p,dt);if(p.targetRoom!==null){const r=g.rooms[p.targetRoom];if(Math.hypot(p.x-(r.pcX+.5),p.y-(r.pcY+.5))<.53){p.autoSit=false;sit(p,r)}}}if(g.time>=25&&!me.seated){if(me.targetRoom!==null&&Math.hypot(me.x-(g.rooms[me.targetRoom].pcX+.5),me.y-(g.rooms[me.targetRoom].pcY+.5))<1.25)sit(me,g.rooms[me.targetRoom]);else{finish(false,'Ви не встигли зайняти кімнату');return}}if(g.time>=25&&!g.hunter.active){g.hunter.active=true;g.hunter.state='hunt';g.hunter.rest=0;toast(`${g.boss.name} вийшов у коридор!`)}if(g.tick>=1){g.tick-=1;if(me.seated&&me.alive){const r=playerRoom();const gain=2*Math.pow(2,r.pcLv-1);g.gold+=gain;me.score+=gain;effect(r.pcX+.5,r.pcY+.25,`+${gain}🪙`)}for(const r of g.rooms){if(!r.alive||r.occupant===null||!g.players[r.occupant].seated)continue;for(const [key,item] of r.items){const [x,y]=key.split(',').map(Number);if(item.type==='energy'){const v=Math.pow(2,Math.min(item.lv,5)-1);if(r.occupant===0)g.energy+=v;effect(x+.5,y+.3,`+${v}⚡`)}if(item.type==='money'){const v=2*Math.pow(3,Math.min(item.lv,4)-1);if(r.occupant===0)g.gold+=v;effect(x+.5,y+.3,`+${v}🪙`)}if(item.type==='partner'&&r.occupant===0){const bonus=2*Math.pow(2,(item.lv||1)-1);g.gold+=bonus;effect(x+.5,y+.3,`+${bonus}🪙`)}if(item.type==='notebook'&&Math.floor(g.time)%7===0){if(r.occupant===0){g.gold+=5;g.energy+=5}}if(item.type==='safe'&&g.hunter.state==='attack'&&g.hunter.target===r.id&&r.occupant===0)g.gold+=2; if(item.type==='tamagotchi'&&g.hunter.state==='attack'&&g.hunter.target===r.id&&r.occupant===0)g.gold+=g.boosts.includes('tamagotchi')?50:25;} }if(g.time>25&&Math.floor(g.time)%39===0&&g.hunter.level<1+Math.floor(g.level/2)+4){g.hunter.level++;g.hunter.maxHp+=25;g.hunter.hp=Math.min(g.hunter.maxHp,g.hunter.hp+25);toast(`Нав'язливість гостя: рівень ${g.hunter.level}`)}}if(g.npcTick>3){g.npcTick=0;npcEconomy();renderPlayers()}updateMikola(dt);updateOlexiy(dt);updateHunter(dt);updateServants(dt);updatePets(dt);projectiles(dt);for(const e of g.effects)e.life-=dt;g.effects=g.effects.filter(e=>e.life>0);if(g.time>400)finish(true,'Ви протрималися до ранку!')} const ownRoom=playerRoom();
  let incomeRate=0;
  if(ownRoom?.alive&&me.seated&&me.alive){
    incomeRate=2*Math.pow(2,ownRoom.pcLv-1);
@@ -619,8 +633,7 @@ function syncPlayerVisuals(){
   if(im.dataset.sprite!==url){im.dataset.sprite=url;im.dataset.fallback='';im.style.display='';im.src=url}
   const size=cell*.77;
   im.style.width=size+'px';im.style.height=size+'px';
-  im.style.left=(ox+p.x*cell-size/2)+'px';
-  im.style.top=(oy+p.y*cell-size/2)+'px';
+  im.style.transform='translate3d('+(ox+p.x*cell-size/2)+'px,'+(oy+p.y*cell-size/2)+'px,0)';
   im.hidden=false;
  }
 }
@@ -672,6 +685,10 @@ function simulationFrame(now){
     }
     logicAccumulator-=1/60;
     steps++;
+  }
+  // GIF updates are independent from canvas drawing failures.
+  try{if(W&&H){transform();syncPlayerVisuals()}}catch(err){
+    if(now-lastFrameError>2000){console.error('[Hikka House] Player sprite sync:',err);lastFrameError=now;}
   }
   // Канвас обмежений до 20 FPS, GIF є незалежними HTML-зображеннями.
   if(now-drawClock>=50){
