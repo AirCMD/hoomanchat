@@ -130,7 +130,7 @@ function ensureRoomRoute(p){
  }
 }
 function sit(p,r){if(!r||r.occupant!==p.id)return;p.seated=true;p.path=[];p.x=r.pcX+.5;p.y=r.pcY+.5;r.access=0;p.action='sit';sound('door');if(!p.npc){game.phase='defend';$('tip').textContent='Покращуйте ПК, двері та захист!';toast('Ви за ПК! Двері зачинено. Будуйте оборону.')} }
-function start(lv){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';activePointers.clear();pressed=null;gesture=null;daySync();zoom=1;camera={x:9.5,y:12};game=newGame(lv);$('home').hidden=true;$('game').hidden=false;$('hud').hidden=false;$('phase').textContent=difficulty[lv].toUpperCase();$('boostBtn').hidden=false;renderPlayers();renderTabs();renderPalette();closeModal();focus(9.5,12.5);for(const p of game.players.slice(1)){const free=game.rooms.filter(r=>r.occupant===null);if(free.length)assignRoom(p,pick(free));p.decision=rand(.9,4)}resize();draw();requestAnimationFrame(()=>{if(game&&!$('game').hidden){resize();draw()}});lastTime=performance.now();if(!raf)raf=requestAnimationFrame(frame);toast('25 секунд, щоб зайняти кімнату!')}
+function start(lv){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';activePointers.clear();pressed=null;gesture=null;daySync();zoom=1;camera={x:9.5,y:12};game=newGame(lv);$('home').hidden=true;$('game').hidden=false;$('hud').hidden=false;$('phase').textContent=difficulty[lv].toUpperCase();$('boostBtn').hidden=false;renderPlayers();renderTabs();renderPalette();closeModal();focus(9.5,12.5);for(const p of game.players.slice(1)){const free=game.rooms.filter(r=>r.occupant===null);if(free.length)assignRoom(p,pick(free));p.decision=rand(.9,4)}resize();draw();requestAnimationFrame(()=>{if(game&&!$('game').hidden){resize();draw()}});lastTime=performance.now();update(0);startSimulation();if(!raf)raf=requestAnimationFrame(frame);toast('25 секунд, щоб зайняти кімнату!')}
 function openHome(){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();bossAnimated.hidden=true;bossDisplayedState='';game=null;$('home').hidden=false;$('game').hidden=true;$('hud').hidden=true;$('phase').textContent='ГОЛОВНЕ МЕНЮ';closeModal();renderHome()}
 function spend(price,p=game){if(!p||p.gold<(price.gold||0)||p.energy<(price.energy||0)){toast('Недостатньо монет або енергії');sound('hit');return false}p.gold-=price.gold||0;p.energy-=price.energy||0;return true}
 function costLabel(cost){return [(cost.gold||0)?`🪙${cost.gold}`:'',(cost.energy||0)?`⚡${cost.energy}`:''].filter(Boolean).join(' ')||'Безкоштовно'}
@@ -649,13 +649,32 @@ for(const m of game.servants||[]){const sx=m.x*tile,sy=m.y*tile;ctx.save();ctx.g
 for(const p of game.projectiles){const t=1-p.life/p.max;ctx.strokeStyle='#ffe67e';ctx.lineWidth=Math.max(1,cell*.06);ctx.beginPath();ctx.moveTo(p.x*tile,p.y*tile);ctx.lineTo((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile);ctx.stroke();ctx.fillStyle='#fff6ad';ctx.beginPath();ctx.arc((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile,Math.max(2,tile*.07),0,Math.PI*2);ctx.fill()}
 for(const e of game.effects){const a=e.life/e.max;ctx.globalAlpha=clamp(a,0,1);ctx.fillStyle='#fce893';ctx.textAlign='center';ctx.font=`bold ${Math.max(11,tile*.28)}px system-ui`;ctx.fillText(e.t,e.x*tile,(e.y-.5*(1-a))*tile);ctx.globalAlpha=1}
 ctx.restore();}
+// Симуляція працює незалежно від requestAnimationFrame та GIF/Canvas.
+let simulationTimer=null, simulationLast=0;
+function simulationStep(){
+ const now=performance.now();
+ const dt=clamp((now-simulationLast)/1000,0,.1);
+ simulationLast=now;
+ if(!game||game.phase==='ended')return;
+ try{update(dt)}catch(err){
+   console.error('[Hikka House] Помилка симуляції:',err);
+   const note=$('tip');
+   if(note)note.textContent='Помилка гри: '+(err?.message||err);
+ }
+ // Навіть якщо браузер призупиняє RAF, карта та GIF-позиції оновлюються.
+ try{draw()}catch(err){console.error('[Hikka House] Помилка кадру:',err)}
+}
+function startSimulation(){
+ simulationLast=performance.now();
+ if(simulationTimer!==null)clearInterval(simulationTimer);
+ simulationTimer=setInterval(simulationStep,33);
+}
 function frame(now){
  raf=requestAnimationFrame(frame);
- const dt=clamp((now-lastTime)/1000,0,.05);lastTime=now;
- // Separate simulation and rendering so one broken sprite never stalls movement.
- try{if(game&&game.phase!=='ended')update(dt)}catch(err){console.error('[Hikka House] Update failure:',err)}
+ // RAF відповідає лише за плавність. Він більше не керує часом і доходом.
  try{draw()}catch(err){if(!frame.lastDrawError||now-frame.lastDrawError>5000){console.error('[Hikka House] Draw failure:',err);frame.lastDrawError=now}}
 }
+
 resize();
 locateAssets().then(folder=>{ASSET_DIR=folder;loadAssets();});
 if(!save.tutorial)infoModal();
