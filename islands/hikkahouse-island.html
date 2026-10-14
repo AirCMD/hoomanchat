@@ -649,30 +649,35 @@ for(const m of game.servants||[]){const sx=m.x*tile,sy=m.y*tile;ctx.save();ctx.g
 for(const p of game.projectiles){const t=1-p.life/p.max;ctx.strokeStyle='#ffe67e';ctx.lineWidth=Math.max(1,cell*.06);ctx.beginPath();ctx.moveTo(p.x*tile,p.y*tile);ctx.lineTo((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile);ctx.stroke();ctx.fillStyle='#fff6ad';ctx.beginPath();ctx.arc((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile,Math.max(2,tile*.07),0,Math.PI*2);ctx.fill()}
 for(const e of game.effects){const a=e.life/e.max;ctx.globalAlpha=clamp(a,0,1);ctx.fillStyle='#fce893';ctx.textAlign='center';ctx.font=`bold ${Math.max(11,tile*.28)}px system-ui`;ctx.fillText(e.t,e.x*tile,(e.y-.5*(1-a))*tile);ctx.globalAlpha=1}
 ctx.restore();}
-// Симуляція працює незалежно від requestAnimationFrame та GIF/Canvas.
+// Один часовий механізм симуляції: RAF та резервний таймер не дублюють рух.
 let simulationTimer=null, simulationLast=0;
-function simulationStep(){
- const now=performance.now();
- const dt=clamp((now-simulationLast)/1000,0,.1);
+function simulationStep(now=performance.now()){
+ if(!game||game.phase==='ended'){simulationLast=now;return}
+ if(!simulationLast){simulationLast=now;return}
+ const delta=now-simulationLast;
+ if(delta<12)return; // той самий крок не можна виконувати двічі
  simulationLast=now;
- if(!game||game.phase==='ended')return;
+ const dt=clamp(delta/1000,0,.08);
  try{update(dt)}catch(err){
    console.error('[Hikka House] Помилка симуляції:',err);
-   const note=$('tip');
-   if(note)note.textContent='Помилка гри: '+(err?.message||err);
+   const note=$('tip');if(note)note.textContent='Помилка гри: '+(err?.message||err);
  }
- // Навіть якщо браузер призупиняє RAF, карта та GIF-позиції оновлюються.
- try{draw()}catch(err){console.error('[Hikka House] Помилка кадру:',err)}
 }
 function startSimulation(){
  simulationLast=performance.now();
  if(simulationTimer!==null)clearInterval(simulationTimer);
- simulationTimer=setInterval(simulationStep,33);
+ // Резервний крок, коли requestAnimationFrame не запускається.
+ simulationTimer=setInterval(()=>{const now=performance.now();simulationStep(now);if(now-(frame.lastDrawAt||0)>150){try{draw()}catch(err){console.error("[Hikka House] Резервний кадр:",err)}}},50);
 }
 function frame(now){
  raf=requestAnimationFrame(frame);
- // RAF відповідає лише за плавність. Він більше не керує часом і доходом.
- try{draw()}catch(err){if(!frame.lastDrawError||now-frame.lastDrawError>5000){console.error('[Hikka House] Draw failure:',err);frame.lastDrawError=now}}
+ frame.lastDrawAt=now;
+ simulationStep(now);
+ try{draw()}catch(err){
+   if(!frame.lastDrawError||now-frame.lastDrawError>5000){
+     console.error('[Hikka House] Draw failure:',err);frame.lastDrawError=now;
+   }
+ }
 }
 
 resize();
