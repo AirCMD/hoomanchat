@@ -42,7 +42,7 @@ const CHARACTERS=[
  {name:'Hiki Komori',price:220,portrait:'hikiidle.gif',idle:'hikiidle.gif',walk:'hikiwalk.gif',sit:'hiki.png'},
  {name:'Jura Kun',price:300,portrait:'juraidle.gif',idle:'juraidle.gif',walk:'jurawalk.gif',sit:'jura.png'},
  {name:'Sayuri Kit',price:400,portrait:'sayuriidle.gif',idle:'sayuriidle.gif',walk:'sayuriwalk.gif',sit:'sayuri.png'},
- {name:'Персонаж 8',price:550,portrait:'hikka template.png',idle:'hikka template.png',walk:'dummywalkinglegs.gif',sit:'hikka template.png'},
+ {name:'Derek Q',price:550,portrait:'derekidle.gif',idle:'derekidle.gif',walk:'derekwalk.gif',sit:'derek.png'},
  {name:'Персонаж 9',price:700,portrait:'hikka a template.png',idle:'hikka a template.png',walk:'dummywalkinglegs.gif',sit:'hikka a template.png'},
  {name:'Jinni Matsumatsu',price:900,portrait:'jinniidle.gif',idle:'jinniidle.gif',walk:'jinniwalk.gif',sit:'jinni.png'}
 ];
@@ -247,30 +247,57 @@ if(item.jammed>0||(!servant&&dist>range))continue;
 item.cool=Math.max(.26,1.13-(item.lv-1)*.085);
 const dmg=4+(item.lv-1)*3+(r.occupant===0?boostValue('weapon'):0);
 const target=servant||h;
-g.projectiles.push({x:x+.5,y:y+.5,tx:target.x,ty:target.y,life:.21,max:.21,dmg,target});sound('shoot')}}}
+let evaded=false;
+ if(servant&&servant.dodgeCd<=0&&Math.random()<.52){evaded=dodgeServant(servant)}
+ g.projectiles.push({x:x+.5,y:y+.5,tx:target.x,ty:target.y,life:.21,max:.21,dmg,target,evaded});sound('shoot')}}}
 // Посіпаки Колядуна: окремі HP, рух до дверей, слабкі удари і перехоплення куль.
 function summonServant(r){
  const g=game,h=g.hunter;
  if(g.boss.id!=='kolyadun'||h.level<2||g.servants.length>=Math.max(1,Math.min(3,h.level)-(g.boosts.includes('fewer')?1:0)))return;
  const hp=18+Math.min(8,g.level);
  g.servants.push({x:h.x,y:h.y,hp,maxHp:hp,target:r.id,hitCd:1.6,
-   path:[],speed:2.1,anim:0,attackAnim:0,shotCd:0,walk:0,action:'walk',dead:false});
+   path:[],speed:3.15,anim:0,attackAnim:0,shotCd:0,walk:0,action:'walk',dead:false, switchAt:g.time+rand(7,13), dodgeCd:rand(.3,1), dodges:0});
  effect(h.x,h.y,'👻');toast('Колядун покликав посіпаку!');sound('hit');
 }
 function servantTarget(m){
- const current=game.rooms[m.target];
- if(current?.alive&&current.occupant!==null&&game.players[current.occupant]?.seated)return current;
  const eligible=game.rooms.filter(r=>r.alive&&r.occupant!==null&&game.players[r.occupant]?.seated);
  if(!eligible.length)return null;
- const r=eligible.reduce((best,r)=>Math.hypot(m.x-nearestHunterDoor(r).x,m.y-nearestHunterDoor(r).y)<Math.hypot(m.x-nearestHunterDoor(best).x,m.y-nearestHunterDoor(best).y)?r:best,eligible[0]);
- m.target=r.id;m.path=[];return r;
+ let current=eligible.find(r=>r.id===m.target);
+ // Посіпака не зациклюється на одних дверях. Кожні 7–13 с може перейти до інших.
+ if(!current||game.time>=m.switchAt){
+  const other=eligible.filter(r=>r.id!==m.target);
+  if(other.length){
+   const ranked=other.map(r=>({r,weight:1/(2+Math.hypot(m.x-nearestHunterDoor(r).x,m.y-nearestHunterDoor(r).y))}));
+   const sum=ranked.reduce((n,v)=>n+v.weight,0);let roll=rand(0,sum);
+   for(const entry of ranked){roll-=entry.weight;if(roll<=0){current=entry.r;break}}
+   current=current||ranked[ranked.length-1].r;
+  }else current=eligible[0];
+  m.target=current.id;m.path=[];m.switchAt=game.time+rand(7,13);m.hitCd=Math.max(m.hitCd,.65);
+ }
+ return current;
+}
+// Маневр убік по доступних клітинках коридору. Посіпака не проходить крізь стіни.
+function dodgeServant(m){
+ const x=Math.floor(m.x),y=Math.floor(m.y);
+ const choices=[];
+ for(const [dx,dy] of [[-1,0],[1,0],[0,-1],[0,1]]){
+  const nx=x+dx,ny=y+dy;
+  if(tileType(nx,ny)!=='corridor')continue;
+  const path=bfs(m.x,m.y,nx,ny,null);
+  if(path.length)choices.push(path);
+ }
+ if(!choices.length)return false;
+ m.path=pick(choices);m.dodgeUntil=game.time+0.45;m.dodgeCd=rand(.85,1.5);m.dodges++;
+ effect(m.x,m.y,'💨');return true;
 }
 function updateServants(dt){
  if(!game||game.phase==='ended'||!game.servants?.length)return;
  for(const m of game.servants){
   if(m.hp<=0)continue;
   const r=servantTarget(m);if(!r)continue;
+  m.dodgeCd=Math.max(0,(m.dodgeCd||0)-dt);
   const dest=nearestHunterDoor(r);m.anim+=dt;
+  if(m.path.length&&game.time<(m.dodgeUntil||0)){travel(m,dt);continue}
   if(Math.hypot(m.x-dest.x,m.y-dest.y)>.68){
    m.action='walk';m.hitCd=Math.max(.35,m.hitCd);
    if(!m.path.length)m.path=bfs(m.x,m.y,Math.floor(dest.x),Math.floor(dest.y),null);
@@ -362,7 +389,7 @@ function boostValue(type){const entries=game?.boosts.filter(b=>b.startsWith(type
 function retreatHunter(){const h=game.hunter;h.retreats++;h.state='retreat';h.target=null;h.path=bfs(h.x,h.y,9, h.y<12?1:23,null);h.path.push({x:9.5,y:h.y<12?.5:24.5});toast('Гість тікає відновлювати нав’язливість!')}
 function projectiles(dt){
  for(const p of game.projectiles){p.life-=dt;
-  if(p.life<=0&&p.target&&p.target.hp>0){
+  if(p.life<=0&&!p.evaded&&p.target&&p.target.hp>0){
    p.target.hp=Math.max(0,p.target.hp-p.dmg);
    effect(p.target.x,p.target.y,`-${p.dmg}`);
   }
