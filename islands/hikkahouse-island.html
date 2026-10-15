@@ -27,6 +27,32 @@
 .skin .skin-token-icon{width:16px;height:16px;max-width:16px;max-height:16px;object-fit:contain;image-rendering:pixelated;flex:0 0 16px}
 /* Анімовані персонажі відтворюються HTML-елементами, а не статичними кадрами Canvas */
 .player-animated{will-change:transform;position:absolute;left:0;top:0;z-index:2;pointer-events:none;object-fit:contain;image-rendering:pixelated;transform-origin:center center}
+
+/* Головний екран на телефонах: повнорозмірне прев’ю героя, як на ПК. */
+@media (max-width:650px){
+  #home .hero{display:flex;flex-direction:column;align-items:stretch;overflow:hidden}
+  #home .hero-art{
+    width:100%;height:clamp(325px,112vw,530px);min-height:325px;
+    flex:none;position:relative;overflow:hidden;
+    border-radius:0;background:repeating-linear-gradient(0deg,#38405d 0 35px,#303954 35px 38px)
+  }
+  #home .hero-art > img{
+    position:relative;z-index:2;width:min(66%,280px);height:79%;max-height:none;
+    object-fit:contain;object-position:center center;image-rendering:pixelated;
+    filter:drop-shadow(0 8px 15px #000a)
+  }
+  #home .hero-door{right:8%;top:41%;font-size:clamp(55px,17vw,86px);opacity:.65;z-index:1}
+  #home .hero-name{
+    position:absolute;z-index:3;bottom:13px;left:12px;right:12px;
+    padding:9px 6px;text-align:center;font-size:clamp(14px,4.4vw,19px);
+    line-height:1.2;background:#131b34dc;border-radius:10px
+  }
+  #home .hero-copy{width:100%;padding:20px 18px 24px}
+}
+@media(max-width:380px){
+  #home .hero-art{height:106vw;min-height:315px}
+  #home .hero-art > img{width:70%;height:79%}
+}
 </style></head><body>
 <div id="app"><header class="topbar"><div class="brand"><span>⌂</span><b>HIKKA <em>HOUSE</em></b><small id="phase">ГОЛОВНЕ МЕНЮ</small></div><div class="hud" id="hud" hidden><span title="Монети за поточну гру"><img src="../assets/tokens.png" class="token-icon" alt="Монети"> <b id="gold">0</b></span><span class="income-hud" title="Заробіток монет за секунду">📈 +<b id="incomeRate">0</b>/с</span><span title="Енергія">⚡ <b id="energy">0</b></span><span title="До появи гостя / до кінця матчу">⏳ <b id="clock">25</b></span><span title="Рівень нав'язливого гостя">👁️ <b id="hunterLevel">1</b></span></div><div class="top-actions"><button id="soundBtn" aria-label="Увімкнути або вимкнути звук">🔊</button><button id="boostBtn" title="Добові бусти">✨</button><button id="quitBtn" title="Повернутись у меню">↩</button></div></header>
 <section id="home" class="home"><div class="hero"><div class="hero-art"><img src=""><div class="hero-door">🚪</div><div id="heroName" class="hero-name"></div></div><div class="hero-copy"><div class="eyebrow">ТИХЕ МІСЦЕ. НЕПРОХАНІ ГОСТІ.</div><h1>HIKKA<br><strong>HOUSE</strong></h1><p>Захопи кімнату. Сідай за ПК. Зачини двері. Нехай нав'язливий гість пошукає собі іншу аудиторію.</p><div class="home-stats"><span><img src="../assets/tokens.png" class="token-icon" alt="Токени">Токени <b id="tokens">0</b></span><span><img src="../assets/magican.png" class="magic-icon" alt="Маджика"> Маджика <b id="magicCount">3</b>/5</span><span>🏆 Перемоги <b id="wins">0</b></span></div><button class="primary big" id="enterBtn">УВІЙТИ →</button><div class="smallprint">Щоденне оновлення рівня о 00:00 за Києвом</div></div></div><div class="home-bottom"><div class="sidebox"><h3>🏆 Рейтинг сьогодні</h3><div id="leaders"></div></div><div class="sidebox"><h3>🛍️ Магазин персонажів · 10 на вибір</h3><div class="skin-grid" id="skins"></div></div></div></section>
