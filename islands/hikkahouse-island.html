@@ -103,9 +103,9 @@ let currentMap='classic';
 const MAPS={
  classic:{title:'🏠 Звичайна мапа',width:19,height:25,centerX:9.5,centerY:12.5,restBottom:24,floor:'floor.png',roomFloor:'floor.png',wall:'wall.png',axis:'vertical'},
  winter:{title:'❄️ Крижаний корпус',width:29,height:28,centerX:14.5,centerY:13.5,restBottom:27,floor:'icefloor.png',roomFloor:'snowfloor.png',wall:'snowwall.png',axis:'vertical'},
- autumn:{title:'🍂 Старий гуртожиток',width:33,height:30,centerX:16.5,centerY:14.5,restBottom:29,floor:'autumnfloor.png',roomFloor:'woodfloor.png',wall:'autumnbrkwall.png',axis:'vertical'},
- spring:{title:'🌿 Зарослий будинок',width:33,height:30,centerX:16.5,centerY:14.5,restBottom:29,floor:'grassfloor.png',roomFloor:'woodfloor.png',wall:'wallbrk.png',axis:'vertical'},
- desert:{title:'🏜️ Загублений комплекс',width:34,height:29,centerX:17.5,centerY:14.5,restBottom:28,floor:'mudfloor.png',roomFloor:'tilefloor.png',wall:'wallbrk.png',axis:'horizontal'}
+ autumn:{title:'🍂 Старий гуртожиток',width:34,height:32,centerX:16.5,centerY:14.5,restBottom:31,floor:'autumnfloor.png',roomFloor:'woodfloor.png',wall:'autumnbrkwall.png',axis:'vertical'},
+ spring:{title:'🌿 Зарослий будинок',width:34,height:32,centerX:16.5,centerY:14.5,restBottom:31,floor:'grassfloor.png',roomFloor:'woodfloor.png',wall:'wallbrk.png',axis:'vertical'},
+ desert:{title:'🏜️ Загублений комплекс',width:35,height:30,centerX:17.5,centerY:14.5,restBottom:29,floor:'mudfloor.png',roomFloor:'tilefloor.png',wall:'wallbrk.png',axis:'horizontal'}
 };
 const CUSTOM_MAPS=new Set(['autumn','spring','desert']);
 let mapGrid=null;
@@ -113,27 +113,51 @@ function mapCfg(){return MAPS[currentMap]}
 function restPoints(){const cfg=mapCfg();return cfg.axis==='horizontal'?[{x:.5,y:cfg.centerY},{x:cfg.width-.5,y:cfg.centerY}]:[{x:cfg.centerX,y:.5},{x:cfg.centerX,y:cfg.restBottom+.5}]}
 function nearestRest(point){const pts=restPoints();return pts.reduce((best,p)=>Math.hypot(p.x-point.x,p.y-point.y)<Math.hypot(best.x-point.x,best.y-point.y)?p:best)}
 function hunterRestY(bottom=false){return bottom?mapCfg().restBottom+.5:.5}
+// Авторські асиметричні плани. # = підлога кімнати, . = вирізана частина.
+// Кімнати мають різну площу та контури, без регулярної сітки із шести прямокутників.
+const ROOM_LAYOUTS={
+ autumn:[
+  {x:2,y:2,side:'right',rows:['######','######','#####.','####..','####..']},
+  {x:24,y:4,side:'left',rows:['.####','#####','#####','#####','###..']},
+  {x:3,y:12,side:'top',rows:['######','######','..####','..####']},
+  {x:23,y:14,side:'left',rows:['#####.','######','######','.#####','.####.']},
+  {x:2,y:23,side:'right',rows:['####','####','####','####','##..']},
+  {x:22,y:24,side:'top',rows:['..#####','#######','#######','#####..']}
+ ],
+ spring:[
+  {x:3,y:4,side:'bottom',rows:['.#####','######','######','####..']},
+  {x:18,y:2,side:'left',rows:['####','####','####','####','####','##..']},
+  {x:25,y:11,side:'bottom',rows:['#####','#####','#####','..###']},
+  {x:2,y:16,side:'right',rows:['######','######','###...','###...','###...']},
+  {x:13,y:22,side:'top',rows:['.#####','######','######','#####.']},
+  {x:26,y:23,side:'left',rows:['####','####','###.','###.']}
+ ],
+ desert:[
+  {x:3,y:2,side:'bottom',rows:['#######','#######','..#####','..#####']},
+  {x:16,y:3,side:'right',rows:['#####','#####','#####','#####','..###']},
+  {x:27,y:3,side:'left',rows:['####','####','####','##..']},
+  {x:2,y:22,side:'right',rows:['#####','#####','#####','###..']},
+  {x:13,y:19,side:'top',rows:['######','######','######','####..','####..']},
+  {x:25,y:22,side:'top',rows:['.######','#######','#######','#####..']}
+ ]
+};
 function makeCustomRoom(id){
- const horizontal=currentMap==='desert',group=id<3,index=id%3;
- const x=horizontal?2+index*10:(group?24:2);
- const y=horizontal?(group?20:2):2+index*9;
- const entrance=horizontal?(group?'top':'bottom'):(group?'left':'right');
- const doorX=horizontal?x+3:(group?x:x+6),doorY=horizontal?(group?y:y+6):y+3;
- // Кожен ряд маски описує внутрішню частину кімнати 5x5. Безпечний прохід до ПК залишається.
- const shapes=[
-  ['.###.','#####','#####','#####','.###.'],
-  ['#####','#####','#####','.####','..###'],
-  ['..###','.####','#####','#####','..###'],
-  ['#####','#####','#####','####.','###..'],
-  ['.###.','#####','#####','#####','#####'],
-  ['###..','####.','#####','#####','.###.']
- ];
- const variant=currentMap==='spring'?(id+2)%6:currentMap==='desert'?(id+4)%6:id;
- const mask=shapes[variant];const cells=[];
- for(let cy=0;cy<5;cy++)for(let cx=0;cx<5;cx++)if(mask[cy][cx]==='#')cells.push([x+1+cx,y+1+cy]);
- // ПК не ставимо на вирізану клітинку, а двері ведуть до центрального внутрішнього проходу.
- const pcX=x+3,pcY=y+3;
- return {id,side:entrance,row:index,x,y,doorX,doorY,pcX,pcY,cells,occupant:null,door:90,maxDoor:90,doorLv:1,pcLv:1,items:new Map(),access:0,chain:false,puddle:false,poop:false,alive:true};
+ const def=ROOM_LAYOUTS[currentMap][id],cells=[];
+ for(let j=0;j<def.rows.length;j++)for(let i=0;i<def.rows[j].length;i++)
+  if(def.rows[j][i]==='#')cells.push([def.x+i,def.y+j]);
+ const minX=Math.min(...cells.map(t=>t[0])),maxX=Math.max(...cells.map(t=>t[0]));
+ const minY=Math.min(...cells.map(t=>t[1])),maxY=Math.max(...cells.map(t=>t[1]));
+ // Для дверей обираємо справжню зовнішню грань маски, яка сполучає ПК з коридором.
+ const along=def.side==='left'||def.side==='right';
+ const candidates=cells.filter(([x,y])=>along?(def.side==='left'?x===minX:x===maxX):(def.side==='top'?y===minY:y===maxY));
+ const middle=candidates[Math.floor(candidates.length/2)];
+ const vec={left:[-1,0],right:[1,0],top:[0,-1],bottom:[0,1]}[def.side];
+ const doorX=middle[0]+vec[0],doorY=middle[1]+vec[1];
+ // ПК обирається із центральної частини, не на дверях.
+ const middleX=(minX+maxX)/2,middleY=(minY+maxY)/2;
+ const pc=[...cells].sort((a,b)=>Math.hypot(a[0]-middleX,a[1]-middleY)-Math.hypot(b[0]-middleX,b[1]-middleY))[0];
+ return {id,side:def.side,row:id,x:minX,y:minY,doorX,doorY,pcX:pc[0],pcY:pc[1],cells,
+  occupant:null,door:90,maxDoor:90,doorLv:1,pcLv:1,items:new Map(),access:0,chain:false,puddle:false,poop:false,alive:true};
 }
 function roomForMap(id){
  if(CUSTOM_MAPS.has(currentMap))return makeCustomRoom(id);
@@ -145,34 +169,22 @@ function roomForMap(id){
  return {id,side,row,x,y,doorX:side==='left'?6:12,doorY:y+3,pcX:side==='left'?2:16,pcY:y+3,occupant:null,door:90,maxDoor:90,doorLv:1,pcLv:1,items:new Map(),access:0,chain:false,puddle:false,poop:false,alive:true};
 }
 function buildMapGrid(){
- const grid=Array.from({length:R},()=>Array(C).fill('wall'));
- const paint=(x,y,v)=>{if(x>=0&&x<C&&y>=0&&y<R)grid[y][x]=v};
- if(currentMap==='desert'){
-  // Широкий горизонтальний коридор; перегородки не суцільні, є кілька проходів.
-  for(let y=9;y<=19;y++)for(let x=1;x<C-1;x++)paint(x,y,'corridor');
-  for(let x=1;x<C-1;x++)paint(x,14,'corridor');
-  for(const x of [10,21])for(let y=10;y<=18;y++)if(![11,14,17].includes(y))paint(x,y,'wall');
-  for(let x=0;x<C;x++)if(x===0||x===C-1)paint(x,14,'rest');
- }else{
-  // Центральна вертикальна магістраль, з бічними проходами між перегородками.
-  for(let y=1;y<R-1;y++)for(let x=9;x<=23;x++)paint(x,y,'corridor');
-  const walls=currentMap==='autumn'?[13,19]:[12,20];
-  for(const x of walls)for(let y=3;y<R-3;y++)if(![5,6,13,14,22,23].includes(y))paint(x,y,'wall');
-  paint(16,0,'rest');paint(16,R-1,'rest');
- }
- // Вписуємо кімнати за фактичним переліком клітинок, без прямокутних припущень.
- for(const r of roomDefs){
-  for(const [x,y] of r.cells)paint(x,y,'room');
-  paint(r.doorX,r.doorY,'door');
- }
- // Поруч із кожною дверною клітинкою має бути гарантований зовнішній прохід.
- for(const r of roomDefs){
-  const [dx,dy]=r.side==='left'?[-1,0]:r.side==='right'?[1,0]:r.side==='top'?[0,-1]:[0,1];
-  // Напрямок визначений за стороною входу (зовні кімнати).
-  const outward=r.side==='left'?[-1,0]:r.side==='right'?[1,0]:r.side==='top'?[0,-1]:[0,1];
-  const x=r.doorX+outward[0],y=r.doorY+outward[1];
-  if(x>=0&&x<C&&y>=0&&y<R&&grid[y][x]==='wall')paint(x,y,'corridor');
- }
+ const grid=Array.from({length:R},()=>Array(C).fill('corridor'));
+ const inside=(x,y)=>x>=0&&x<C&&y>=0&&y<R;
+ const paint=(x,y,v)=>{if(inside(x,y))grid[y][x]=v};
+ // На відміну від старої мапи: відкриті звивисті простори, без суцільних
+ // перегородок через усю локацію. Стіни відділяють конкретні кімнати.
+ for(let x=0;x<C;x++){paint(x,0,'wall');paint(x,R-1,'wall')}
+ for(let y=0;y<R;y++){paint(0,y,'wall');paint(C-1,y,'wall')}
+ for(const r of roomDefs){for(const [x,y] of r.cells)paint(x,y,'room')}
+ // Обводимо тільки безпосередній контур кімнат, а не весь вільний простір.
+ for(const r of roomDefs)for(const [x,y] of r.cells)
+  for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+   const nx=x+dx,ny=y+dy;
+   if(inside(nx,ny)&&grid[ny][nx]==='corridor')paint(nx,ny,'wall');
+  }
+ for(const r of roomDefs)paint(r.doorX,r.doorY,'door');
+ const rests=restPoints();for(const p of rests)paint(Math.floor(p.x),Math.floor(p.y),'rest');
  return grid;
 }
 function chooseMap(mapId){
@@ -759,7 +771,7 @@ function syncPlayerVisuals(){
 function draw(){if(!game||!W){if(bossAnimated){bossAnimated.hidden=true}syncServantVisuals();return;}transform();updateBossAnimation();syncPsychiatristVisual();syncServantVisuals();syncPlayerVisuals();ctx.clearRect(0,0,W,H);ctx.fillStyle='#0b1020';ctx.fillRect(0,0,W,H);ctx.save();ctx.translate(ox,oy);ctx.lineWidth=1;const tile=cell;for(let y=0;y<R;y++)for(let x=0;x<C;x++){const t=tileType(x,y),px=x*tile,py=y*tile;ctx.fillStyle=t==='void'?'#080b15':t==='wall'?'#292f49':t==='rest'?'#34324d':t==='corridor'?'#222c3e':t==='room'?'#2f3c50':'#36445a';ctx.fillRect(px,py,tile,tile);if(t==='corridor'||t==='room'||t==='door'){ctx.globalAlpha=t==='corridor'?.65:1;drawImg(t==='room'||t==='door'?mapCfg().roomFloor:mapCfg().floor,px,py,tile,tile);ctx.globalAlpha=1}if(t==='wall')drawImg(mapCfg().wall,px,py,tile,tile);ctx.strokeStyle='#74829b25';ctx.strokeRect(px+.5,py+.5,tile,tile)}
 // Rest zones at both ends of the corridor.
 for(const rest of restPoints()){const rx=Math.floor(rest.x),ry=Math.floor(rest.y);drawImg('hunter resting.png',rx*tile,ry*tile,tile,tile);ctx.strokeStyle='#bda2ff';ctx.lineWidth=2;ctx.strokeRect(rx*tile+1,ry*tile+1,tile-2,tile-2)}
-for(const r of game.rooms){const dx=r.doorX*tile,dy=r.doorY*tile;if(!r.alive){ctx.fillStyle='#ff454744';(r.cells?r.cells.forEach(([cx,cy])=>ctx.fillRect(cx*tile,cy*tile,tile,tile)):ctx.fillRect((r.x+1)*tile,(r.y+1)*tile,5*tile,5*tile))}for(const [x,y] of buildTiles(r)){const px=x*tile,py=y*tile;if(!r.items.has(`${x},${y}`)){ctx.fillStyle=r.occupant===0?'#6ae4c322':'#aeb6cb13';ctx.fillRect(px+4,py+4,tile-8,tile-8);ctx.fillStyle=r.occupant===0?'#7be5c8a5':'#b9c2db50';ctx.font=`${tile*.31}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('+',px+tile/2,py+tile/2)}else iconImage(r.items.get(`${x},${y}`),px+2,py+2,tile-4)}const pcname=`pc${[1,2,3,4,4,6,7][clamp(r.pcLv-1,0,6)]}.png`;drawImg(pcname,r.pcX*tile,r.pcY*tile,tile,tile);ctx.fillStyle='#111a2db9';ctx.fillRect((r.x+1)*tile,(r.y+.18)*tile,4.7*tile,.53*tile);ctx.textAlign='left';ctx.fillStyle='#fff';ctx.font=`bold ${Math.max(9,tile*.23)}px system-ui`;ctx.fillText(`${r.id+1} ${r.occupant===null?'Вільна':game.players[r.occupant]?.name||'?'}`,(r.x+1.18)*tile,(r.y+.56)*tile);
+for(const r of game.rooms){const dx=r.doorX*tile,dy=r.doorY*tile;if(!r.alive){ctx.fillStyle='#ff454744';(r.cells?r.cells.forEach(([cx,cy])=>ctx.fillRect(cx*tile,cy*tile,tile,tile)):ctx.fillRect((r.x+1)*tile,(r.y+1)*tile,5*tile,5*tile))}for(const [x,y] of buildTiles(r)){const px=x*tile,py=y*tile;if(!r.items.has(`${x},${y}`)){ctx.fillStyle=r.occupant===0?'#6ae4c322':'#aeb6cb13';ctx.fillRect(px+4,py+4,tile-8,tile-8);ctx.fillStyle=r.occupant===0?'#7be5c8a5':'#b9c2db50';ctx.font=`${tile*.31}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('+',px+tile/2,py+tile/2)}else iconImage(r.items.get(`${x},${y}`),px+2,py+2,tile-4)}const pcname=`pc${[1,2,3,4,4,6,7][clamp(r.pcLv-1,0,6)]}.png`;drawImg(pcname,r.pcX*tile,r.pcY*tile,tile,tile);ctx.fillStyle='#111a2db9';ctx.fillRect((r.cells?r.x:r.x+1)*tile,(r.y+.18)*tile,(r.cells?4:4.7)*tile,.53*tile);ctx.textAlign='left';ctx.fillStyle='#fff';ctx.font=`bold ${Math.max(9,tile*.23)}px system-ui`;ctx.fillText(`${r.id+1} ${r.occupant===null?'Вільна':game.players[r.occupant]?.name||'?'}`,(r.x+1.18)*tile,(r.y+.56)*tile);
 const open=r.occupant===null||(!game.players[r.occupant]?.seated&&r.alive);ctx.save();if(open){ctx.globalAlpha=.85;ctx.translate(r.side==='left'?-tile*.65:r.side==='right'?tile*.65:0,r.side==='top'?-tile*.65:r.side==='bottom'?tile*.65:0)}drawImg(`door${clamp(r.doorLv,1,6)}.png`,dx,dy,tile,tile);ctx.restore();if(r.chain||r.puddle||r.poop){ctx.font=`${tile*.22}px sans-serif`;ctx.textAlign='center';ctx.fillText(`${r.chain?'⛓️':''}${r.puddle?'💧':''}${r.poop?'💩':''}`,dx+tile/2,dy+tile*.73)}ctx.fillStyle='#171c2d';ctx.fillRect(dx,dy-5,tile,4);ctx.fillStyle=r.door/r.maxDoor<.3?'#ff6274':'#69e8ae';ctx.fillRect(dx,dy-5,tile*clamp(r.door/r.maxDoor,0,1),4)}
 for(const m of game.servants){
  const barX=m.x*tile-tile*.26,barY=m.y*tile-tile*.43;
