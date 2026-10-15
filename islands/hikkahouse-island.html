@@ -229,14 +229,19 @@ function preloadCharacter(id){
  }
 }
 // Завантажуємо спрайти лише після визначення папки ресурсів.
-const images={};const filenames=['floor.png','wall.png','icefloor.png','snowfloor.png','snowwall.png','autumnbrkwall.png','woodfloor.png','autumnfloor.png','grassfloor.png','wallbrk.png','tilefloor.png','mudfloor.png','time.png','hunter.png','hunter resting.png','kolyadun.png','kolyadunwalk.gif','kolyadunfight.gif','kolposy.gif',...Array.from({length:6},(_,i)=>`door${i+1}.png`),...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),...Array.from({length:5},(_,i)=>`energy${i+1}.png`),...Array.from({length:4},(_,i)=>`moneytree${i+1}.${i===3?'gif':'png'}`),...[1,2,3,4,6,7].map(i=>`pc${i}.png`),...Array.from({length:3},(_,i)=>`cat${i+1}.png`),...Array.from({length:3},(_,i)=>`dog${i+1}.png`)];function loadAssets(){
+const images={};const filenames=['floor.png','wall.png','icefloor.png','snowfloor.png','snowwall.png','autumnbrkwall.png','woodfloor.png','autumnfloor.png','grassfloor.png','wallbrk.png','tilefloor.png','mudfloor.png','time.png','hunter.png','hunter resting.png','kolyadun.png','kolyadunwalk.gif','kolyadunfight.gif','kolposy.gif',...Array.from({length:6},(_,i)=>`door${i+1}.png`),...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),...Array.from({length:5},(_,i)=>`energy${i+1}.png`),...Array.from({length:4},(_,i)=>`moneytree${i+1}.${i===3?'gif':'png'}`),...[1,2,3,4,6,7].map(i=>`pc${i}.png`),...Array.from({length:3},(_,i)=>`cat${i+1}.png`),...Array.from({length:3},(_,i)=>`dog${i+1}.png`)];let hikkaGameAssetsStarted=false;
+function loadGameAssets(){
+ if(hikkaGameAssetsStarted)return;
+ hikkaGameAssetsStarted=true;
  CHARACTERS.forEach((_,id)=>preloadCharacter(id));
- filenames.forEach(f=>{let im=new Image();im.src=assetURL(f);images[f]=im;im.addEventListener('load',()=>{if(game&&W&&H)draw()})});
+ filenames.forEach(f=>{let im=new Image();images[f]=im;im.addEventListener('load',()=>{if(game&&W&&H)draw()});im.src=assetURL(f)});
+ psychiatristAnimated.src=assetURL('psywalk.gif');
+ mykolaAnimated.src=assetURL('mykolawalk.gif');
+ olexiyAnimated.src=assetURL('oleksiywalk.gif');
+}
+function loadAssets(){
  document.querySelectorAll('.token-icon,.skin-token-icon').forEach(i=>i.src=assetURL('tokens.png'));
  document.querySelectorAll('.magic-icon').forEach(i=>i.src=assetURL('magican.png'));
-  psychiatristAnimated.src=assetURL('psywalk.gif');
-  mykolaAnimated.src=assetURL('mykolawalk.gif');
-  olexiyAnimated.src=assetURL('oleksiywalk.gif');
  renderHome();
 }
 
@@ -456,7 +461,8 @@ function cancelMatchmaking(){
  $('matchOverlay').hidden=true;
 }
 function start(lv){
- cancelMatchmaking();
+  loadGameAssets(); // Підбір триває 15 секунд: завантажуємо ресурси матчу в цей час.
+  cancelMatchmaking();
  const ticket=matchTicket;
  const names=[...MATCH_NICKS].sort(()=>Math.random()-.5).slice(0,5);
  // Гравець завжди на першому місці, інші персонажі й ніки вибираються на цей матч.
@@ -873,7 +879,7 @@ function renderHome(){daySync();$('tokens').textContent=save.tokens;$('wins').te
 const bots=[['NoSignal',1200],['Nebula',950],['SilentFox',760],['Lurker',520],['404_sleep',300],['copy_pasta',save.wins*120]];bots.sort((a,b)=>b[1]-a[1]);$('leaders').innerHTML=bots.map(([n,v],i)=>`<div class="leader"><span>${i+1}. ${n}</span><b>${v} 🏆</b></div>`).join('');
 const selected=CHARACTERS[save.skin]||CHARACTERS[0];
 const portrait=document.querySelector('.hero-art img');portrait.src=characterURL(save.skin,'portrait');portrait.alt=selected.name;$('heroName').textContent=selected.name;
-$('skins').innerHTML=CHARACTERS.map((character,i)=>`<div class="skin-wrap"><button class="skin ${save.skin===i?'selected':''}" data-skin="${i}"><img src="${characterURL(i,'portrait')}" alt="${character.name}"><b>${character.name}</b><span>${save.skins.includes(i)?save.skin===i?'Обрано':'Обрати':`<span class="skin-price"><img src="${assetURL('tokens.png')}" class="skin-token-icon" alt="Токени"> ${character.price}</span>`}</span></button></div>`).join('');
+$('skins').innerHTML=CHARACTERS.map((character,i)=>`<div class="skin-wrap"><button class="skin ${save.skin===i?'selected':''}" data-skin="${i}"><img src="${characterURL(i,'portrait')}" loading="lazy" decoding="async" alt="${character.name}"><b>${character.name}</b><span>${save.skins.includes(i)?save.skin===i?'Обрано':'Обрати':`<span class="skin-price"><img src="${assetURL('tokens.png')}" class="skin-token-icon" alt="Токени"> ${character.price}</span>`}</span></button></div>`).join('');
 $('skins').querySelectorAll('[data-skin]').forEach(button=>button.onclick=()=>{const id=Number(button.dataset.skin),character=CHARACTERS[id];if(!character)return;if(!save.skins.includes(id)){if(save.tokens<character.price)return toast('Недостатньо токенів');save.tokens-=character.price;save.skins.push(id)}save.skin=id;persist();renderHome()});
 }
 
@@ -1159,18 +1165,28 @@ const HIKKA_WINDOW_SCENES=[
 ];
 const HIKKA_SCENE_MS=180000;
 const HIKKA_IMAGES=new Map();
+const HIKKA_IMAGE_REQUESTS=new Map();
 let hikkaSceneIndex=-1,hikkaVisibleLayer=0,hikkaWindowTimer=null;
 let hikkaMouseX=0,hikkaMouseY=0,hikkaSmoothX=0,hikkaSmoothY=0,hikkaParallaxRaf=0;
 let hikkaCurrentBackground=null,hikkaCurrentWindow=null;
 const hikkaImageCSS=file=>file?`url("${HIKKA_IMAGES.get(file)}")`:'none';
 function hikkaLoadImage(file){
-  return new Promise(resolve=>{
-    const img=new Image();
-    img.onload=()=>{HIKKA_IMAGES.set(file,assetURL(file));resolve(true)};
-    img.onerror=()=>resolve(false);
-    img.src=assetURL(file);
-  });
+ if(HIKKA_IMAGES.has(file))return Promise.resolve(true);
+ if(HIKKA_IMAGE_REQUESTS.has(file))return HIKKA_IMAGE_REQUESTS.get(file);
+ const promise=new Promise(resolve=>{
+   const img=new Image();
+   img.decoding='async';
+   img.onload=async()=>{
+     try{if(img.decode)await img.decode()}catch{}
+     HIKKA_IMAGES.set(file,assetURL(file));resolve(true);
+   };
+   img.onerror=()=>resolve(false);
+   img.src=assetURL(file);
+ });
+ HIKKA_IMAGE_REQUESTS.set(file,promise);
+ return promise;
 }
+
 function hikkaSetScene(index,immediate=false){
   const art=document.querySelector('#home .hero-art');
   const scene=HIKKA_WINDOW_SCENES[index];
@@ -1238,23 +1254,41 @@ function hikkaStartParallax(){
     if(!hikkaParallaxRaf)hikkaParallaxRaf=requestAnimationFrame(hikkaParallaxFrame);
   });
 }
+// На старті завантажуємо одну сцену, а не всі 13 великих PNG одночасно.
+// Решта сцен завантажується поступово після появи заставки.
+let hikkaSceneLoading=false;
 async function hikkaInitWindows(){
-  hikkaStartParallax();
-  const files=['backgroundhikkahouse.png',...HIKKA_WINDOW_SCENES.flatMap(s=>[s.background,s.window])];
-  await Promise.all([...new Set(files)].map(hikkaLoadImage));
-  hikkaCurrentBackground=HIKKA_IMAGES.has('backgroundhikkahouse.png')?'backgroundhikkahouse.png':null;
-  const first=HIKKA_WINDOW_SCENES.findIndex(s=>HIKKA_IMAGES.has(s.background)||HIKKA_IMAGES.has(s.window));
-  if(first<0){
-    if(hikkaCurrentBackground){
-      $('hikkaBackgroundA').style.backgroundImage=hikkaImageCSS(hikkaCurrentBackground);
-      $('hikkaBackgroundA').classList.add('no-fade','active');
-    }
-    console.info('Немає готових сцен: використовується запасний backgroundhikkahouse.png.');
-    return;
-  }
-  hikkaSetScene(first,true);
-  if(hikkaWindowTimer)clearInterval(hikkaWindowTimer);
-  hikkaWindowTimer=setInterval(hikkaAdvanceScene,HIKKA_SCENE_MS);
+ hikkaStartParallax();
+ // Запасний фон готуємо незалежно, щоб не блокувати першу денну пару.
+ const fallbackPromise=hikkaLoadImage('backgroundhikkahouse.png').then(ok=>{
+   if(ok&&!hikkaCurrentBackground){
+     hikkaCurrentBackground='backgroundhikkahouse.png';
+     if(hikkaSceneIndex<0){
+       const el=$('hikkaBackgroundA');
+       el.style.backgroundImage=hikkaImageCSS(hikkaCurrentBackground);
+       el.classList.add('no-fade','active');
+     }
+   }
+ });
+ // Перевага першому ранковому стану, якщо він відсутній — наступному доступному.
+ for(let i=0;i<HIKKA_WINDOW_SCENES.length;i++){
+   const scene=HIKKA_WINDOW_SCENES[i];
+   const ready=await Promise.all([hikkaLoadImage(scene.background),hikkaLoadImage(scene.window)]);
+   if(ready.some(Boolean)){
+     await fallbackPromise;
+     hikkaSetScene(i,true);
+     break;
+   }
+ }
+ if(hikkaWindowTimer)clearInterval(hikkaWindowTimer);
+ if(hikkaSceneIndex>=0)hikkaWindowTimer=setInterval(hikkaAdvanceScene,HIKKA_SCENE_MS);
+ // Кожна наступна пара — після попередньої, а не 12 конкурентних запитів.
+ // Невелика пауза дозволяє браузеру відмалювати перший екран.
+ const rest=HIKKA_WINDOW_SCENES.map((scene,i)=>({scene,i})).filter(x=>x.i!==hikkaSceneIndex);
+ for(const {scene} of rest){
+   await new Promise(resolve=>setTimeout(resolve,300));
+   await Promise.all([hikkaLoadImage(scene.background),hikkaLoadImage(scene.window)]);
+ }
 }
 
 resize();
