@@ -104,6 +104,22 @@
 @media(prefers-reduced-motion:reduce){
   #home .hero-copy h1,.topbar .brand b{animation:none}
 }
+
+/* Власна заставка Hikka House: фон під персонажем і дверима, адаптивний для ПК та телефону. */
+#home .hero-art{
+  background-image:var(--hikka-hero-background, repeating-linear-gradient(0deg,#38405d 0 35px,#303954 35px 38px));
+  background-size:cover;
+  background-position:center center;
+  background-repeat:no-repeat;
+}
+@media(max-width:650px){
+  #home .hero-art{
+    background-image:var(--hikka-hero-background, repeating-linear-gradient(0deg,#38405d 0 35px,#303954 35px 38px));
+    background-size:cover;
+    background-position:center center;
+    background-repeat:no-repeat;
+  }
+}
 </style></head><body>
 <div id="app"><header class="topbar"><div class="brand"><span>⌂</span><b>HIKKA <em>HOUSE</em></b><small id="phase">ГОЛОВНЕ МЕНЮ</small></div><div class="hud" id="hud" hidden><span title="Монети за поточну гру"><img src="../assets/tokens.png" class="token-icon" alt="Монети"> <b id="gold">0</b></span><span class="income-hud" title="Заробіток монет за секунду">📈 +<b id="incomeRate">0</b>/с</span><span title="Енергія">⚡ <b id="energy">0</b></span><span title="До появи гостя / до кінця матчу">⏳ <b id="clock">25</b></span><span title="Рівень нав'язливого гостя">👁️ <b id="hunterLevel">1</b></span></div><div class="top-actions"><button id="soundBtn" aria-label="Увімкнути або вимкнути звук">🔊</button><button id="boostBtn" title="Добові бусти">✨</button><button id="quitBtn" title="Повернутись у меню">↩</button></div></header>
 <section id="home" class="home"><div class="hero"><div class="hero-art"><img src=""><div class="hero-door">🚪</div><div id="heroName" class="hero-name"></div></div><div class="hero-copy"><div class="eyebrow">ТИХЕ МІСЦЕ. НЕПРОХАНІ ГОСТІ.</div><h1>HIKKA<br><strong>HOUSE</strong></h1><p>Захопи кімнату. Сідай за ПК. Зачини двері. Нехай нав'язливий гість пошукає собі іншу аудиторію.</p><div class="home-stats"><span><img src="../assets/tokens.png" class="token-icon" alt="Токени">Токени <b id="tokens">0</b></span><span><img src="../assets/magican.png" class="magic-icon" alt="Маджика"> Маджика <b id="magicCount">3</b>/5</span><span>🏆 Перемоги <b id="wins">0</b></span></div><button class="primary big" id="enterBtn">УВІЙТИ →</button><div class="smallprint">Щоденне оновлення рівня о 00:00 за Києвом</div></div></div><div class="home-bottom"><div class="sidebox"><h3>🏆 Рейтинг сьогодні</h3><div id="leaders"></div></div><div class="sidebox"><h3>🛍️ Магазин персонажів · 10 на вибір</h3><div class="skin-grid" id="skins"></div></div></div></section>
@@ -1091,6 +1107,16 @@ function startSimulation(){
 
 
 resize();
-locateAssets().then(folder=>{ASSET_DIR=folder;loadAssets();});
+locateAssets().then(folder=>{
+ ASSET_DIR=folder;
+ const heroArt=document.querySelector('#home .hero-art');
+ if(heroArt){
+   const background=new Image();
+   background.onload=()=>heroArt.style.setProperty('--hikka-hero-background',`url("${assetURL('backgroundhikkahouse.png')}")`);
+   background.onerror=()=>console.warn('Не знайдено backgroundhikkahouse.png у папці Assets. Залишено стандартний фон.');
+   background.src=assetURL('backgroundhikkahouse.png');
+ }
+ loadAssets();
+});
 if(!save.tutorial)infoModal();
 </script></body></html>
