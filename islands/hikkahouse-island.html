@@ -67,8 +67,8 @@
 .match-slot{border:1px solid #515b7b;border-radius:11px;background:#242c45;padding:8px 3px;min-width:0;opacity:.35;transform:scale(.94);transition:opacity .25s,transform .25s,border-color .25s}
 .match-slot.joined{opacity:1;transform:scale(1);border-color:#79ddc1}
 .match-slot.mine{border-color:#ffc975}
-.match-slot img{width:min(76px,100%);aspect-ratio:1;object-fit:cover;image-rendering:pixelated;border-radius:8px;background:#151b30}
-.match-slot .nick{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:clamp(9px,1.35vw,12px);margin-top:5px}
+.match-slot .unknown-portrait{width:min(76px,100%);aspect-ratio:1;display:grid;place-items:center;background:#151b30;border-radius:8px;border:1px solid #596889;color:#f5de9a;font-size:clamp(28px,5vw,49px);font-weight:900;margin:auto}.match-slot img{width:min(76px,100%);aspect-ratio:1;object-fit:cover;image-rendering:pixelated;border-radius:8px;background:#151b30}
+.match-slot:not(.joined) .nick{color:#bac5d8}.match-slot .nick{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:clamp(9px,1.35vw,12px);margin-top:5px}
 .match-counter{font-size:14px;color:#bed4e6}
 @media(max-width:650px){.match-overlay{padding:12px 8px}.match-card{gap:10px}.match-roster{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.match-boss img{height:min(26vh,160px);width:min(26vh,160px)}.match-slot{padding:5px 3px}.match-slot img{width:clamp(42px,13vw,65px)}.match-slot .nick{font-size:10px}.match-versus{font-size:31px}}
 </style></head><body>
@@ -102,7 +102,7 @@ const MINI_PORTRAITS=['yanimini.png','akiramini.png','katemini.png','kentmini.pn
 function miniPortraitCandidates(id){
  const c=CHARACTERS[id]||CHARACTERS[0];
  const stem=c.sit.replace(/\.[^.]+$/,'');
- return [...new Set([MINI_PORTRAITS[id],stem+'portrait.png',stem+'icon.png',c.portrait])].filter(Boolean).map(assetURL);
+ return [...new Set([MINI_PORTRAITS[id],stem+'mini.png',stem+'_mini.png',stem+'-mini.png',stem+'portrait.png',stem+'_portrait.png',stem+'icon.png',c.portrait])].filter(Boolean).map(assetURL);
 }
 function setMiniPortrait(im,id){
  const urls=miniPortraitCandidates(id);let index=0;
@@ -379,10 +379,10 @@ function start(lv){
  $('matchRoster').replaceChildren();
  for(let i=0;i<6;i++){
   const slot=document.createElement('div');slot.className='match-slot'+(i===0?' mine':'');
-  const img=document.createElement('img');img.alt=matchRosterPlan[i].name;
-  setMiniPortrait(img,matchRosterPlan[i].skin);
+  const unknown=document.createElement('span');unknown.className='unknown-portrait';unknown.textContent='?';unknown.setAttribute('aria-label','Невідомий учасник');
+  const img=document.createElement('img');img.alt='';img.hidden=true;
   const nick=document.createElement('span');nick.className='nick';nick.textContent='Очікування...';
-  slot.append(img,nick);$('matchRoster').append(slot);
+  slot.append(unknown,img,nick);$('matchRoster').append(slot);
  }
  $('matchOverlay').hidden=false;
  const begun=performance.now();
@@ -391,7 +391,11 @@ function start(lv){
   const elapsed=(performance.now()-begun)/1000;
   const count=Math.min(6,1+Math.floor(elapsed/2));
   [...$('matchRoster').children].forEach((slot,i)=>{
-   if(i<count){slot.classList.add('joined');slot.querySelector('.nick').textContent=matchRosterPlan[i].name}
+   if(i<count&&!slot.classList.contains('joined')){
+    slot.classList.add('joined');slot.querySelector('.nick').textContent=matchRosterPlan[i].name;
+    slot.querySelector('.unknown-portrait').hidden=true;
+    const img=slot.querySelector('img');img.hidden=false;img.alt=matchRosterPlan[i].name;setMiniPortrait(img,matchRosterPlan[i].skin);
+   }
   });
   $('matchCounter').textContent=`Учасників: ${count}/6 • Початок за ${Math.max(0,Math.ceil(15-elapsed))} с`;
   if(elapsed>=15){
