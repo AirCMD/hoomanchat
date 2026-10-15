@@ -96,13 +96,12 @@ const CHARACTERS=[
  {name:'Kornel Vus',price:700,portrait:'kornelidle.gif',idle:'kornelidle.gif',walk:'kornelwalk.gif',sit:'kornel.png'},
  {name:'Jinni Matsumatsu',price:900,portrait:'jinniidle.gif',idle:'jinniidle.gif',walk:'jinniwalk.gif',sit:'jinni.png'}
 ];
-// Якщо фактичні назви мініпортретів інші, запишіть їх тут у порядку CHARACTERS.
-// Пошук: <ім'я>mini.png, <ім'я>portrait.png, <ім'я>icon.png, далі звичайний портрет.
-const MINI_PORTRAITS=['yanimini.png','akiramini.png','katemini.png','kentmini.png','hikimini.png','juramini.png','sayurimini.png','derekmini.png','kornelmini.png','jinnimini.png'];
+// Мініпортрети в папці Assets: <ім’я>port.png. Якщо файл відсутній, використовується звичайний портрет.
+const MINI_PORTRAITS=['yaniport.png','akiraport.png','kateport.png','kentport.png','hikiport.png','juraport.png','sayuriport.png','derekport.png','kornelport.png','jinniport.png'];
 function miniPortraitCandidates(id){
  const c=CHARACTERS[id]||CHARACTERS[0];
  const stem=c.sit.replace(/\.[^.]+$/,'');
- return [...new Set([MINI_PORTRAITS[id],stem+'mini.png',stem+'_mini.png',stem+'-mini.png',stem+'portrait.png',stem+'_portrait.png',stem+'icon.png',c.portrait])].filter(Boolean).map(assetURL);
+ return [...new Set([MINI_PORTRAITS[id],stem+'port.png',c.portrait])].filter(Boolean).map(assetURL);
 }
 function setMiniPortrait(im,id){
  const urls=miniPortraitCandidates(id);let index=0;
