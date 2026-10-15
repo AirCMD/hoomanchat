@@ -120,9 +120,21 @@
     background-repeat:no-repeat;
   }
 }
+
+/* Заставка: дві незалежні пари шарів, один синхронний fade. */
+#home .hero-art{isolation:isolate;overflow:hidden;background:repeating-linear-gradient(0deg,#38405d 0 35px,#303954 35px 38px)!important}
+#home .hero-art::before{content:none!important}
+#home .hero-art .hikka-window-layer,
+#home .hero-art .hikka-background-layer{position:absolute;pointer-events:none;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;transition:opacity 4s ease;will-change:opacity}
+#home .hero-art .hikka-window-layer{inset:-7%;z-index:0;transform:translate3d(var(--window-parallax-x,0px),var(--window-parallax-y,0px),0);will-change:transform,opacity}
+#home .hero-art .hikka-background-layer{inset:0;z-index:1}
+#home .hero-art .hikka-window-layer.active,
+#home .hero-art .hikka-background-layer.active{opacity:1}
+#home .hero-art .no-fade{transition:none!important}
+@media(prefers-reduced-motion:reduce){#home .hero-art .hikka-window-layer,#home .hero-art .hikka-background-layer{transition:none!important}#home .hero-art .hikka-window-layer{transform:none!important}}
 </style></head><body>
 <div id="app"><header class="topbar"><div class="brand"><span>⌂</span><b>HIKKA <em>HOUSE</em></b><small id="phase">ГОЛОВНЕ МЕНЮ</small></div><div class="hud" id="hud" hidden><span title="Монети за поточну гру"><img src="../assets/tokens.png" class="token-icon" alt="Монети"> <b id="gold">0</b></span><span class="income-hud" title="Заробіток монет за секунду">📈 +<b id="incomeRate">0</b>/с</span><span title="Енергія">⚡ <b id="energy">0</b></span><span title="До появи гостя / до кінця матчу">⏳ <b id="clock">25</b></span><span title="Рівень нав'язливого гостя">👁️ <b id="hunterLevel">1</b></span></div><div class="top-actions"><button id="soundBtn" aria-label="Увімкнути або вимкнути звук">🔊</button><button id="boostBtn" title="Добові бусти">✨</button><button id="quitBtn" title="Повернутись у меню">↩</button></div></header>
-<section id="home" class="home"><div class="hero"><div class="hero-art"><img src=""><div id="heroName" class="hero-name"></div></div><div class="hero-copy"><div class="eyebrow">ТИХЕ МІСЦЕ. НЕПРОХАНІ ГОСТІ.</div><h1>HIKKA<br><strong>HOUSE</strong></h1><p>Захопи кімнату. Сідай за ПК. Зачини двері. Нехай нав'язливий гість пошукає собі іншу аудиторію.</p><div class="home-stats"><span><img src="../assets/tokens.png" class="token-icon" alt="Токени">Токени <b id="tokens">0</b></span><span><img src="../assets/magican.png" class="magic-icon" alt="Маджика"> Маджика <b id="magicCount">3</b>/5</span><span>🏆 Перемоги <b id="wins">0</b></span></div><button class="primary big" id="enterBtn">УВІЙТИ →</button><div class="smallprint">Щоденне оновлення рівня о 00:00 за Києвом</div></div></div><div class="home-bottom"><div class="sidebox"><h3>🏆 Рейтинг сьогодні</h3><div id="leaders"></div></div><div class="sidebox"><h3>🛍️ Магазин персонажів · 10 на вибір</h3><div class="skin-grid" id="skins"></div></div></div></section>
+<section id="home" class="home"><div class="hero"><div class="hero-art"><div class="hikka-window-layer" id="hikkaWindowA" aria-hidden="true"></div><div class="hikka-window-layer" id="hikkaWindowB" aria-hidden="true"></div><div class="hikka-background-layer" id="hikkaBackgroundA" aria-hidden="true"></div><div class="hikka-background-layer" id="hikkaBackgroundB" aria-hidden="true"></div><img src=""><div id="heroName" class="hero-name"></div></div><div class="hero-copy"><div class="eyebrow">ТИХЕ МІСЦЕ. НЕПРОХАНІ ГОСТІ.</div><h1>HIKKA<br><strong>HOUSE</strong></h1><p>Захопи кімнату. Сідай за ПК. Зачини двері. Нехай нав'язливий гість пошукає собі іншу аудиторію.</p><div class="home-stats"><span><img src="../assets/tokens.png" class="token-icon" alt="Токени">Токени <b id="tokens">0</b></span><span><img src="../assets/magican.png" class="magic-icon" alt="Маджика"> Маджика <b id="magicCount">3</b>/5</span><span>🏆 Перемоги <b id="wins">0</b></span></div><button class="primary big" id="enterBtn">УВІЙТИ →</button><div class="smallprint">Щоденне оновлення рівня о 00:00 за Києвом</div></div></div><div class="home-bottom"><div class="sidebox"><h3>🏆 Рейтинг сьогодні</h3><div id="leaders"></div></div><div class="sidebox"><h3>🛍️ Магазин персонажів · 10 на вибір</h3><div class="skin-grid" id="skins"></div></div></div></section>
 <section id="game" hidden><div class="gamebar"><button id="focusMe">🎯 Моя кімната</button><div id="players" class="players"></div><div class="game-tip" id="tip">Знайдіть кімнату та натисніть на ПК</div><button id="repairBtn" title="Лагодити двері">🔧 Двері</button></div><div class="game-layout"><div class="arena-shell" id="arenaShell"><canvas id="arena" aria-label="Карта Hikka House" tabindex="0"></canvas><img id="bossAnimated" class="boss-animated" alt="Колядун" hidden><img id="psychiatristAnimated" class="boss-animated" alt="Психіатр" hidden><img id="mykolaAnimated" class="boss-animated" alt="Микола" hidden><img id="olexiyAnimated" class="boss-animated" alt="Олексій" hidden><div id="floatTooltip" class="float-tooltip" hidden></div><div class="joystick" id="joystick"><button data-dir="up">▲</button><div><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button></div></div><div class="zoom"><button id="zoomIn">+</button><button id="zoomOut">−</button></div><div id="hikkaDiagnostic" aria-live="off" title="Діагностика: час гри / масштаб / координати персонажа" style="position:absolute;top:6px;left:6px;z-index:4;background:#12182de0;color:#d7ffe9;padding:4px 7px;border-radius:6px;font:11px monospace;pointer-events:none">Очікування запуску…</div></div><aside class="build-sidebar"><div class="sidebar-heading"><b>БУДІВНИЦТВО</b><small>Перетягуйте предмети на клітинку</small></div><div id="tabs" class="tabs"></div><div id="palette" class="palette"></div><div class="sidebar-hint">💡 Клік по порожній клітинці теж відкриває магазин. Для пересування: WASD, стрілки або натисніть на підлогу.</div><div id="selectedInfo" class="selected-info">Оберіть кімнату, щоб розпочати.</div></aside></div></section>
 <div id="matchOverlay" class="match-overlay" hidden role="status" aria-live="off"><div class="match-card"><div class="match-title">ПОШУК УЧАСНИКІВ</div><div class="match-boss"><img id="matchBossImg" alt="Гість"><b id="matchBossName"></b></div><div class="match-versus">ПРОТИ</div><div class="match-roster" id="matchRoster"></div><div class="match-counter" id="matchCounter">Підключення...</div></div></div><div id="modalRoot" class="modal-root" hidden><div class="modal-backdrop"></div><div class="modal" role="dialog" aria-modal="true"><div class="modal-header"><h2 id="modalTitle"></h2><button id="modalClose" aria-label="Закрити">✕</button></div><div id="modalContent"></div><div id="modalActions"></div></div></div><div class="toast" id="toast" role="status"></div></div><script>/* Hikka House — vanilla JavaScript, Canvas 2D, no external dependencies. */
 'use strict';
@@ -1106,17 +1118,122 @@ function startSimulation(){
 }
 
 
+
+// Жива заставка. Одна пара сцен = основний фон + пейзаж/інтер'єр за вікном.
+// Стани перемикаються кожні 3 хвилини, обидва шари згасають/з'являються 4 секунди.
+const HIKKA_WINDOW_SCENES=[
+  {key:'morning',background:'backgroundmorning.png',window:'windowmorning.png'},
+  {key:'day',background:'backgroundday.png',window:'windowday.png'},
+  {key:'noon',background:'backgroundnoon.png',window:'windownoon.png'},
+  {key:'evening',background:'backgroundevening.png',window:'windowevening.png'},
+  {key:'night',background:'backgroundnight.png',window:'windownight.png'},
+  {key:'dawn',background:'backgrounddawn.png',window:'windowdawn.png'}
+];
+const HIKKA_SCENE_MS=180000;
+const HIKKA_IMAGES=new Map();
+let hikkaSceneIndex=-1,hikkaVisibleLayer=0,hikkaWindowTimer=null;
+let hikkaMouseX=0,hikkaMouseY=0,hikkaSmoothX=0,hikkaSmoothY=0,hikkaParallaxRaf=0;
+let hikkaCurrentBackground=null,hikkaCurrentWindow=null;
+const hikkaImageCSS=file=>file?`url("${HIKKA_IMAGES.get(file)}")`:'none';
+function hikkaLoadImage(file){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{HIKKA_IMAGES.set(file,assetURL(file));resolve(true)};
+    img.onerror=()=>resolve(false);
+    img.src=assetURL(file);
+  });
+}
+function hikkaSetScene(index,immediate=false){
+  const art=document.querySelector('#home .hero-art');
+  const scene=HIKKA_WINDOW_SCENES[index];
+  if(!art||!scene)return;
+  // Якщо файл стану відсутній, зберігаємо попередній для відповідного шару.
+  const background=HIKKA_IMAGES.has(scene.background)?scene.background:hikkaCurrentBackground;
+  const window=HIKKA_IMAGES.has(scene.window)?scene.window:hikkaCurrentWindow;
+  if(!background&&!window)return;
+  const next=hikkaSceneIndex<0?0:1-hikkaVisibleLayer;
+  const incomingBackground=$(`hikkaBackground${next?'B':'A'}`);
+  const incomingWindow=$(`hikkaWindow${next?'B':'A'}`);
+  const outgoingBackground=$(`hikkaBackground${hikkaVisibleLayer?'B':'A'}`);
+  const outgoingWindow=$(`hikkaWindow${hikkaVisibleLayer?'B':'A'}`);
+  const incoming=[incomingBackground,incomingWindow];
+  if(immediate)incoming.forEach(layer=>layer.classList.add('no-fade'));
+  // Картинку нижнього шару задаємо до початку fade, тому вона не миготить.
+  incomingBackground.style.backgroundImage=hikkaImageCSS(background);
+  incomingWindow.style.backgroundImage=hikkaImageCSS(window);
+  // Переводимо пару спереду назад лише після завершення попереднього fade.
+  incoming.forEach(layer=>layer.classList.add('active'));
+  if(hikkaSceneIndex>=0){
+    outgoingBackground.classList.remove('active');
+    outgoingWindow.classList.remove('active');
+  }
+  hikkaVisibleLayer=next;
+  hikkaSceneIndex=index;
+  hikkaCurrentBackground=background;
+  hikkaCurrentWindow=window;
+  art.dataset.windowScene=scene.key;
+  if(immediate)requestAnimationFrame(()=>requestAnimationFrame(()=>incoming.forEach(layer=>layer.classList.remove('no-fade'))));
+}
+function hikkaAdvanceScene(){
+  // Пропускаємо лише стани, для яких немає ні фону, ні картинки вікон.
+  for(let step=1;step<=HIKKA_WINDOW_SCENES.length;step++){
+    const index=(hikkaSceneIndex+step)%HIKKA_WINDOW_SCENES.length;
+    const scene=HIKKA_WINDOW_SCENES[index];
+    if(HIKKA_IMAGES.has(scene.background)||HIKKA_IMAGES.has(scene.window)){
+      hikkaSetScene(index);return;
+    }
+  }
+}
+function hikkaParallaxFrame(){
+  hikkaParallaxRaf=0;
+  const art=document.querySelector('#home .hero-art');
+  if(!art||$('home').hidden||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const isNight=art.dataset.windowScene==='night';
+  const x=hikkaMouseX*(isNight?3:14),y=hikkaMouseY*(isNight?2:7);
+  hikkaSmoothX+=(x-hikkaSmoothX)*.12;
+  hikkaSmoothY+=(y-hikkaSmoothY)*.12;
+  art.style.setProperty('--window-parallax-x',hikkaSmoothX.toFixed(2)+'px');
+  art.style.setProperty('--window-parallax-y',hikkaSmoothY.toFixed(2)+'px');
+  if(Math.abs(x-hikkaSmoothX)>.05||Math.abs(y-hikkaSmoothY)>.05)hikkaParallaxRaf=requestAnimationFrame(hikkaParallaxFrame);
+}
+function hikkaStartParallax(){
+  const art=document.querySelector('#home .hero-art');if(!art)return;
+  art.addEventListener('pointermove',event=>{
+    if(event.pointerType==='touch'&&event.buttons===0)return;
+    const r=art.getBoundingClientRect();
+    hikkaMouseX=Math.max(-1,Math.min(1,((event.clientX-r.left)/r.width-.5)*2));
+    hikkaMouseY=Math.max(-1,Math.min(1,((event.clientY-r.top)/r.height-.5)*2));
+    if(!hikkaParallaxRaf)hikkaParallaxRaf=requestAnimationFrame(hikkaParallaxFrame);
+  },{passive:true});
+  art.addEventListener('pointerleave',()=>{
+    hikkaMouseX=0;hikkaMouseY=0;
+    if(!hikkaParallaxRaf)hikkaParallaxRaf=requestAnimationFrame(hikkaParallaxFrame);
+  });
+}
+async function hikkaInitWindows(){
+  hikkaStartParallax();
+  const files=['backgroundhikkahouse.png',...HIKKA_WINDOW_SCENES.flatMap(s=>[s.background,s.window])];
+  await Promise.all([...new Set(files)].map(hikkaLoadImage));
+  hikkaCurrentBackground=HIKKA_IMAGES.has('backgroundhikkahouse.png')?'backgroundhikkahouse.png':null;
+  const first=HIKKA_WINDOW_SCENES.findIndex(s=>HIKKA_IMAGES.has(s.background)||HIKKA_IMAGES.has(s.window));
+  if(first<0){
+    if(hikkaCurrentBackground){
+      $('hikkaBackgroundA').style.backgroundImage=hikkaImageCSS(hikkaCurrentBackground);
+      $('hikkaBackgroundA').classList.add('no-fade','active');
+    }
+    console.info('Немає готових сцен: використовується запасний backgroundhikkahouse.png.');
+    return;
+  }
+  hikkaSetScene(first,true);
+  if(hikkaWindowTimer)clearInterval(hikkaWindowTimer);
+  hikkaWindowTimer=setInterval(hikkaAdvanceScene,HIKKA_SCENE_MS);
+}
+
 resize();
 locateAssets().then(folder=>{
  ASSET_DIR=folder;
- const heroArt=document.querySelector('#home .hero-art');
- if(heroArt){
-   const background=new Image();
-   background.onload=()=>heroArt.style.setProperty('--hikka-hero-background',`url("${assetURL('backgroundhikkahouse.png')}")`);
-   background.onerror=()=>console.warn('Не знайдено backgroundhikkahouse.png у папці Assets. Залишено стандартний фон.');
-   background.src=assetURL('backgroundhikkahouse.png');
- }
  loadAssets();
+ hikkaInitWindows();
 });
 if(!save.tutorial)infoModal();
 </script></body></html>
