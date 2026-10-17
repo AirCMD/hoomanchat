@@ -264,7 +264,7 @@ const sixAnimated=$('sixAnimated');const olexiyAnimated=$('olexiyAnimated');cons
 const canvas=$('arena'),ctx=canvas?canvas.getContext('2d'):null;let W=0,H=0,dpr=1,cell=38,ox=0,oy=0,zoom=1,camera={x:9.5,y:12},lastTime=0,acc=0,raf=0,soundOn=true,audio=null,toastTimer;
 function sound(type='tap'){if(!soundOn)return;try{audio??=new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const t=audio.currentTime,o=audio.createOscillator(),g=audio.createGain();o.type=type==='hit'?'sawtooth':'sine';const f={tap:470,coin:770,shoot:630,hit:115,repair:510,win:880,lose:140,build:370,door:290}[type]||440;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(Math.max(80,f*(type==='win'?1.5:.63)),t+.14);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(type==='hit'?.055:.032,t+.016);g.gain.exponentialRampToValueAtTime(.0001,t+.18);o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+.19)}catch{}}
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2300)}
-const KYIV=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Kyiv',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());const STORE_KEY='hikka-house-save-v1';let save={date:KYIV(),tokens:0,wins:0,level:0,magic:3,skins:[0],skin:0,boosts:[],runFinishedDay:null};try{save={...save,...JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}}catch{}function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify(save))}catch{}}function daySync(){const day=KYIV();if(save.date!==day){save.date=day;save.level=0;save.boosts=[];save.runFinishedDay=null;persist();toast('Новий день! Складність і бусти скинуто.')} }daySync();
+const KYIV=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Kyiv',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());const STORE_KEY='hikka-house-save-v1';let save={date:KYIV(),tokens:0,wins:0,level:0,magic:3,skins:[0],skin:0,boosts:[],runFinishedDay:null};try{save={...save,...JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}}catch{}function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify(save))}catch{}}function daySync(){const day=KYIV();if(save.date!==day){save.date=day;save.level=0;save.boosts=[];save.runFinishedDay=null;save.dailyLeaderboard=null;persist();toast('Новий день! Складність і бусти скинуто.')} }daySync();
 let C=19,R=25;
 let currentMap='classic';
 const MAPS={
@@ -477,6 +477,28 @@ function sit(p,r){
 }
 const MATCH_NICKS=['dreaming_romance','void_kitten','404_sleep','no_signal','nebula_202','silent_fox','lurker_net','ai_ta','alter_core','blue_comet','den_chik','fedir_tkch','inna_king','ira_lynx','jane_dust','la_cyber','lexy_lel','nazar_dai','sakurai_agatsuma','soft_static','sara_rosemay','water_blue','yoyo_tchi'];
 let matchRosterPlan=null,matchTimer=null,matchTicket=0;
+// Місцевий рейтинг тільки за київську добу. Старі фіктивні результати не переносимо.
+function ensureDailyLeaderboard(){
+ const day=KYIV();
+ if(save.dailyLeaderboard?.date===day&&Array.isArray(save.dailyLeaderboard.entries))return save.dailyLeaderboard;
+ const names=[...MATCH_NICKS].sort(()=>Math.random()-.5).slice(0,5);
+ save.dailyLeaderboard={date:day,entries:[{name:'copy_pasta',score:0},...names.map(name=>({name,score:0}))]};
+ persist();return save.dailyLeaderboard;
+}
+function recordMatchScores(){
+ if(!game?.players)return;
+ const board=ensureDailyLeaderboard();
+ for(const p of game.players){
+  const name=p.name;
+  if(!name)continue;
+  const score=Math.max(0,Math.floor(Number(p.score)||0));
+  let entry=board.entries.find(e=>e.name===name);
+  if(!entry){entry={name,score:0};board.entries.push(entry)}
+  entry.score+=score;
+ }
+ persist();
+}
+
 function cancelMatchmaking(){
  matchTicket++;
  if(matchTimer!==null){clearInterval(matchTimer);matchTimer=null}
@@ -903,7 +925,7 @@ function projectiles(dt){
  for(const m of killed)effect(m.x,m.y,'✨');
  game.servants=game.servants.filter(m=>m.hp>0);
 }
-function finish(win,msg){if(!game||game.phase==='ended')return;game.phase='ended';game.lastResult=win;if(win){save.wins++;save.tokens+=20+game.level*8;save.level=Math.max(save.level,Math.min(difficulty.length-1,game.level+1));save.runFinishedDay=KYIV()}else{save.level=Math.max(0,Math.min(save.level,game.level-1));}save.magic=Math.min(5,save.magic+1);persist();sound(win?'win':'lose');renderHome();modal(win?'🏆 Перемога!':'💀 Поразка',`<p>${msg}</p><p>${win?`Отримано <b>${20+game.level*8}</b> токенів та +1 Маджика.`:'Ви повертаєтеся на попередню доступну складність. Отримано +1 Маджика.'}</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>{openHome();if(win)offerBoost()}}],true)}
+function finish(win,msg){if(!game||game.phase==='ended')return;game.phase='ended';game.lastResult=win;daySync();recordMatchScores();if(win){save.wins++;save.tokens+=20+game.level*8;save.level=Math.max(save.level,Math.min(difficulty.length-1,game.level+1));save.runFinishedDay=KYIV()}else{save.level=Math.max(0,Math.min(save.level,game.level-1));}save.magic=Math.min(5,save.magic+1);persist();sound(win?'win':'lose');renderHome();modal(win?'🏆 Перемога!':'💀 Поразка',`<p>${msg}</p><p>${win?`Отримано <b>${20+game.level*8}</b> токенів та +1 Маджика.`:'Ви повертаєтеся на попередню доступну складність. Отримано +1 Маджика.'}</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>{openHome();if(win)offerBoost()}}],true)}
 const BOOST_STEPS=[1,2,3,5,10,15,25,30];
 const boosts=[
  {id:'door',name:'🚪 Сила дверей',hint:'Зменшує шкоду дверям: +1, +2, +3, +5, +10, +15, +25, +30'},
@@ -943,7 +965,7 @@ function offerBoost(){
  });
 }
 function renderHome(){daySync();$('tokens').textContent=save.tokens;$('wins').textContent=save.wins;$('magicCount').textContent=save.magic;
-const bots=[['NoSignal',1200],['Nebula',950],['SilentFox',760],['Lurker',520],['404_sleep',300],['copy_pasta',save.wins*120]];bots.sort((a,b)=>b[1]-a[1]);$('leaders').innerHTML=bots.map(([n,v],i)=>`<div class="leader"><span>${i+1}. ${n}</span><b>${v} 🏆</b></div>`).join('');
+const leaderboard=ensureDailyLeaderboard().entries.slice().sort((a,b)=>b.score-a.score);$('leaders').innerHTML=leaderboard.map((entry,i)=>`<div class="leader"><span>${i+1}. ${entry.name}</span><b>${Math.floor(entry.score)} 🏆</b></div>`).join('');
 const selected=CHARACTERS[save.skin]||CHARACTERS[0];
 const portrait=document.querySelector('.hero-art img');portrait.src=characterURL(save.skin,'portrait');portrait.alt=selected.name;$('heroName').textContent=selected.name;
 $('skins').innerHTML=CHARACTERS.map((character,i)=>`<div class="skin-wrap"><button class="skin ${save.skin===i?'selected':''}" data-skin="${i}"><img src="${characterURL(i,'portrait')}" loading="lazy" decoding="async" alt="${character.name}"><b>${character.name}</b><span>${save.skins.includes(i)?save.skin===i?'Обрано':'Обрати':`<span class="skin-price"><img src="${assetURL('tokens.png')}" class="skin-token-icon" alt="Токени"> ${character.price}</span>`}</span></button></div>`).join('');
