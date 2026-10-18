@@ -564,7 +564,7 @@ function start(lv){
  paint();matchTimer=setInterval(paint,150);
 }
 function beginMatch(lv){for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of foregroundPcVisuals.values())im.remove();foregroundPcVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();if(bossAnimated){bossAnimated.hidden=true}psychiatristAnimated.hidden=true;mykolaAnimated.hidden=true;olexiyAnimated.hidden=true;sixAnimated.hidden=true;bossDisplayedState='';activePointers.clear();pressed=null;gesture=null;daySync();zoom=1;camera={x:mapCfg().centerX,y:mapCfg().centerY};game=newGame(lv);$('home').hidden=true;$('game').hidden=false;$('hud').hidden=false;$('phase').textContent=difficulty[lv].toUpperCase()+' • '+mapCfg().title;$('boostBtn').hidden=false;renderPlayers();renderTabs();renderPalette();closeModal();focus(mapCfg().centerX,mapCfg().centerY);for(const p of game.players.slice(1)){p.decision=rand(2.0,5.5)}resize();draw();lastTime=performance.now();update(0);startSimulation();toast('25 секунд, щоб зайняти кімнату!')}
-function openHome(){cancelMatchmaking();matchRosterPlan=null;if(logicTimer!==null){clearInterval(logicTimer);logicTimer=null}if(raf){cancelAnimationFrame(raf);raf=0}for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of foregroundPcVisuals.values())im.remove();foregroundPcVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();if(bossAnimated){bossAnimated.hidden=true}psychiatristAnimated.hidden=true;mykolaAnimated.hidden=true;olexiyAnimated.hidden=true;sixAnimated.hidden=true;bossDisplayedState='';game=null;$('home').hidden=false;$('game').hidden=true;$('hud').hidden=true;$('phase').textContent='ГОЛОВНЕ МЕНЮ';closeModal();renderHome()}
+function openHome(){cancelMatchmaking();matchRosterPlan=null;if(logicTimer!==null){clearInterval(logicTimer);logicTimer=null}if(raf){cancelAnimationFrame(raf);raf=0}for(const im of playerVisuals.values())im.remove();playerVisuals.clear();for(const im of foregroundPcVisuals.values())im.remove();foregroundPcVisuals.clear();for(const im of servantVisuals.values())im.remove();servantVisuals.clear();if(bossAnimated){bossAnimated.hidden=true}psychiatristAnimated.hidden=true;mykolaAnimated.hidden=true;olexiyAnimated.hidden=true;sixAnimated.hidden=true;bossDisplayedState='';game=null;if(document.getElementById('hikkaDevPanel'))document.getElementById('hikkaDevPanel').hidden=true;$('home').hidden=false;$('game').hidden=true;$('hud').hidden=true;$('phase').textContent='ГОЛОВНЕ МЕНЮ';closeModal();renderHome()}
 function spend(price,p=game){if(!p||p.gold<(price.gold||0)||p.energy<(price.energy||0)){toast('Недостатньо монет або енергії');sound('hit');return false}p.gold-=price.gold||0;p.energy-=price.energy||0;return true}
 function coinMarkup(value){return `<span class="coin-price"><img src="${assetURL('coin.png')}" class="coin-icon" alt="Монети">${value}</span>`}
 function costLabel(cost){return [(cost.gold||0)?`<span class="coin-price"><img src="${assetURL('coin.png')}" class="coin-icon" alt="Монети">${cost.gold}</span>`:'',(cost.energy||0)?`⚡${cost.energy}`:''].filter(Boolean).join(' ')||'Безкоштовно'}
@@ -1090,7 +1090,7 @@ function projectiles(dt){
  for(const m of killed)effect(m.x,m.y,'✨');
  game.servants=game.servants.filter(m=>m.hp>0);
 }
-function finish(win,msg){if(!game||game.phase==='ended')return;game.phase='ended';game.lastResult=win;daySync();recordMatchScores();if(win){save.wins++;save.tokens+=20+game.level*8;save.level=Math.max(save.level,Math.min(difficulty.length-1,game.level+1));save.runFinishedDay=KYIV()}else{save.level=Math.max(0,Math.min(save.level,game.level-1));}persist();sound(win?'win':'lose');renderHome();modal(win?'🏆 Перемога!':'💀 Поразка',`<p>${msg}</p><p>${win?`Отримано <b>${20+game.level*8}</b> токенів.`:'Ви повертаєтеся на попередню доступну складність. Спробуйте ще раз!'}</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>{openHome();if(win)offerBoost()}}],true)}
+function finish(win,msg){if(!game||game.phase==='ended')return;game.phase='ended';game.lastResult=win;daySync();if(game.devTest){sound(win?'win':'lose');modal(win?'🧪 Тест завершено':'🧪 Тест завершено',`<p>${msg}</p><p>Тестовий матч: рейтинг, токени й прогрес не змінені.</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>openHome()}],true);return}recordMatchScores();if(win){save.wins++;save.tokens+=20+game.level*8;save.level=Math.max(save.level,Math.min(difficulty.length-1,game.level+1));save.runFinishedDay=KYIV()}else{save.level=Math.max(0,Math.min(save.level,game.level-1));}persist();sound(win?'win':'lose');renderHome();modal(win?'🏆 Перемога!':'💀 Поразка',`<p>${msg}</p><p>${win?`Отримано <b>${20+game.level*8}</b> токенів.`:'Ви повертаєтеся на попередню доступну складність. Спробуйте ще раз!'}</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>{openHome();if(win)offerBoost()}}],true)}
 const BOOST_STEPS=[1,2,3,5,10,15,25,30];
 const boosts=[
  {id:'door',name:'🚪 Сила дверей',hint:'Зменшує шкоду дверям: +1, +2, +3, +5, +10, +15, +25, +30'},
@@ -1666,4 +1666,31 @@ locateAssets().then(folder=>{
  hikkaInitWindows();
 });
 if(!save.tutorial)infoModal();
+
+
+// === Локальний тестовий режим: F8. Не впливає на збережений прогрес. ===
+(function initHikkaDevMode(){
+ const style=document.createElement('style');
+ style.textContent=`#hikkaDevPanel[hidden]{display:none!important}#hikkaDevPanel{position:fixed;right:12px;top:65px;z-index:9999;width:min(320px,calc(100vw - 24px));max-height:calc(100vh - 90px);overflow:auto;padding:12px;background:#151b30f5;border:1px solid #9baaff;border-radius:13px;color:#fff;box-shadow:0 12px 40px #0009;font:13px system-ui,sans-serif}#hikkaDevPanel h3{margin:0 0 7px;font-size:15px}#hikkaDevPanel p{margin:0 0 9px;color:#c2c9e5;font-size:12px}#hikkaDevPanel .dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}#hikkaDevPanel button{padding:8px 5px;border:1px solid #626f99;border-radius:7px;background:#303c5e;color:white;cursor:pointer;font-size:12px}#hikkaDevPanel button:hover{background:#435583}#hikkaDevPanel select{width:100%;background:#222b48;color:white;border:1px solid #6a7ea9;border-radius:6px;padding:6px;margin:5px 0 9px}#hikkaDevPanel .dev-close{float:right;width:30px;padding:3px}#hikkaDevPanel .dev-alert{color:#ffcb94}`;
+ document.head.appendChild(style);
+ const panel=document.createElement('div');panel.id='hikkaDevPanel';panel.hidden=true;
+ panel.innerHTML=`<button class="dev-close" data-dev="close" aria-label="Закрити">×</button><h3>🧪 Тест Hikka House · F8</h3><p class="dev-alert">Тестові матчі не дають токенів, рейтингу чи відкриття складностей. Вмикайте перед тестуванням.</p><div class="dev-grid"><button data-dev="room">🏠 Зайняти кімнату</button><button data-dev="resources">💰 +5000 / ⚡ +500</button><button data-dev="boss">👁️ Запустити боса</button><button data-dev="servant">👻 Викликати колпоса</button><button data-dev="door">🛡️ Відновити двері</button><button data-dev="magic">✨ Перевірити Маджику</button></div><p id="hikkaDevStatus" style="margin-top:9px">F8 закриває цю панель.</p>`;
+ document.body.appendChild(panel);
+ function status(message){const el=document.getElementById('hikkaDevStatus');if(el)el.textContent=message;}
+ function room(){if(!game)return null;return playerRoom()||game.rooms.find(r=>r.alive&&r.occupant===null)||null;}
+ function testStart(){if(!game||game.phase==='ended')return false;game.devTest=true;return true;}
+ function occupy(){const r=room();if(!r)return status('Немає доступної кімнати.');const p=game.players[0];if(p.seated)return status('Ваша кімната вже зайнята.');p.targetRoom=r.id;p.path=[];sit(p,r);focus(p.x,p.y);renderPlayers();status('Кімнату зайнято. Тепер можна ставити предмети.');}
+ const actions={
+  close(){panel.hidden=true},
+  room(){if(testStart())occupy()},
+  resources(){if(!testStart())return;game.gold+=5000;game.energy+=500;status('Додано 5000 монет і 500 енергії лише в цьому тесті.');},
+  boss(){if(!testStart())return;const h=game.hunter;if(!game.players[0].seated)occupy();if(game.time<25)game.time=25;h.active=true;h.state='hunt';h.rest=0;h.stun=0;h.path=[];status('Бос активований.');},
+  servant(){if(!testStart())return;if(game.boss.id!=='kolyadun')return status('Колпоси доступні лише для Колядуна. Запустіть рівень із Колядуна.');if(!game.players[0].seated)occupy();const r=playerRoom();if(!r)return status('Не вдалося зайняти кімнату.');game.hunter.level=Math.max(2,game.hunter.level);const before=game.servants.length;summonServant(r);status(game.servants.length>before?'Колпос викликаний біля Колядуна.':'Досягнуто ліміт колпосів.');},
+  door(){if(!testStart())return;if(!game.players[0].seated)occupy();const r=playerRoom();if(!r)return;r.door=r.maxDoor;r.defenseJammed=0;status('Двері Вашої кімнати відновлені.');},
+  magic(){if(!testStart())return;if(!game.players[0].seated)occupy();const r=playerRoom();if(!r)return;if(game.magicUsed>=3)return status('Маджика: усі 3 використання вже витрачено.');const free=buildTiles(r).find(([x,y])=>!r.items.has(`${x},${y}`));if(!free)return status('Немає вільної клітинки в кімнаті.');const before=game.magicUsed;const result=build(r,free[0],free[1],'magic');status(result&&game.magicUsed>before?`Маджика використана: ${game.magicUsed}/3. Перевірте новий предмет у кімнаті.`:'Не вдалося використати Маджику.');}
+ };
+ panel.addEventListener('click',e=>{const btn=e.target.closest('button[data-dev]');if(btn&&actions[btn.dataset.dev])actions[btn.dataset.dev]();});
+ window.addEventListener('keydown',e=>{if(e.key!=='F8')return;e.preventDefault();if(!game||game.phase==='ended'){toast('Запустіть матч, щоб відкрити тестовий режим.');return}panel.hidden=!panel.hidden;if(!panel.hidden){game.devTest=true;status('Тестовий режим увімкнено. Прогрес цього матчу не зберігатиметься.');}});
+})();
+
 </script></body></html>
