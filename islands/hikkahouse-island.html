@@ -133,7 +133,10 @@
 #home .hero-art .hikka-window-layer,
 #home .hero-art .hikka-background-layer{position:absolute;pointer-events:none;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;transition:opacity 4s ease;will-change:opacity}
 #home .hero-art .hikka-window-layer{inset:-7%;z-index:0;transform:translate3d(var(--window-parallax-x,0px),var(--window-parallax-y,0px),0);will-change:transform,opacity}
-#home .hero-art .hikka-background-layer{inset:0;z-index:1}
+#home .hero-art .hikka-background-layer{inset:0;z-index:1;transition-duration:.75s}
+#home .hero-art .hikka-window-layer{transition-duration:1.15s}
+.hikka-tilt-button{position:absolute;z-index:9;right:12px;bottom:12px;background:#161b34de;border:1px solid #ffffff77;color:white;padding:8px 10px;border-radius:10px;font:600 12px system-ui;cursor:pointer;touch-action:manipulation}
+
 #home .hero-art .hikka-window-layer.active,
 #home .hero-art .hikka-background-layer.active{opacity:1}
 #home .hero-art .no-fade{transition:none!important}
@@ -1739,7 +1742,7 @@ const HIKKA_IMAGES=new Map();
 const HIKKA_IMAGE_REQUESTS=new Map();
 let hikkaSceneIndex=-1,hikkaVisibleLayer=0,hikkaWindowTimer=null;
 let hikkaMouseX=0,hikkaMouseY=0,hikkaSmoothX=0,hikkaSmoothY=0,hikkaParallaxRaf=0;
-let hikkaCurrentBackground=null,hikkaCurrentWindow=null;
+let hikkaCurrentBackground=null,hikkaCurrentWindow=null,hikkaWindowSwitchTimeout=null;
 const hikkaImageCSS=file=>file?`url("${HIKKA_IMAGES.get(file)}")`:'none';
 function hikkaLoadImage(file){
  if(HIKKA_IMAGES.has(file))return Promise.resolve(true);
@@ -1762,32 +1765,35 @@ function hikkaSetScene(index,immediate=false){
   const art=document.querySelector('#home .hero-art');
   const scene=HIKKA_WINDOW_SCENES[index];
   if(!art||!scene)return;
-  // Якщо файл стану відсутній, зберігаємо попередній для відповідного шару.
+  if(hikkaWindowSwitchTimeout){clearTimeout(hikkaWindowSwitchTimeout);hikkaWindowSwitchTimeout=null;}
   const background=HIKKA_IMAGES.has(scene.background)?scene.background:hikkaCurrentBackground;
-  const window=HIKKA_IMAGES.has(scene.window)?scene.window:hikkaCurrentWindow;
-  if(!background&&!window)return;
+  const windowFile=HIKKA_IMAGES.has(scene.window)?scene.window:hikkaCurrentWindow;
+  if(!background&&!windowFile)return;
   const next=hikkaSceneIndex<0?0:1-hikkaVisibleLayer;
   const incomingBackground=$(`hikkaBackground${next?'B':'A'}`);
   const incomingWindow=$(`hikkaWindow${next?'B':'A'}`);
   const outgoingBackground=$(`hikkaBackground${hikkaVisibleLayer?'B':'A'}`);
   const outgoingWindow=$(`hikkaWindow${hikkaVisibleLayer?'B':'A'}`);
-  const incoming=[incomingBackground,incomingWindow];
-  if(immediate)incoming.forEach(layer=>layer.classList.add('no-fade'));
-  // Картинку нижнього шару задаємо до початку fade, тому вона не миготить.
   incomingBackground.style.backgroundImage=hikkaImageCSS(background);
-  incomingWindow.style.backgroundImage=hikkaImageCSS(window);
-  // Переводимо пару спереду назад лише після завершення попереднього fade.
-  incoming.forEach(layer=>layer.classList.add('active'));
-  if(hikkaSceneIndex>=0){
-    outgoingBackground.classList.remove('active');
-    outgoingWindow.classList.remove('active');
+  incomingWindow.style.backgroundImage=hikkaImageCSS(windowFile);
+  if(immediate){incomingBackground.classList.add('no-fade');incomingWindow.classList.add('no-fade');}
+  // Room fades first; outside view changes only after the interior has settled.
+  incomingBackground.classList.add('active');
+  if(hikkaSceneIndex>=0)outgoingBackground.classList.remove('active');
+  if(immediate){
+    incomingWindow.classList.add('active');
+    if(hikkaSceneIndex>=0)outgoingWindow.classList.remove('active');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{incomingBackground.classList.remove('no-fade');incomingWindow.classList.remove('no-fade')}));
+  }else{
+    hikkaWindowSwitchTimeout=setTimeout(()=>{
+      incomingWindow.classList.add('active');
+      outgoingWindow.classList.remove('active');
+      hikkaWindowSwitchTimeout=null;
+    },950);
   }
-  hikkaVisibleLayer=next;
-  hikkaSceneIndex=index;
-  hikkaCurrentBackground=background;
-  hikkaCurrentWindow=window;
+  hikkaVisibleLayer=next;hikkaSceneIndex=index;
+  hikkaCurrentBackground=background;hikkaCurrentWindow=windowFile;
   art.dataset.windowScene=scene.key;
-  if(immediate)requestAnimationFrame(()=>requestAnimationFrame(()=>incoming.forEach(layer=>layer.classList.remove('no-fade'))));
 }
 function hikkaAdvanceScene(){
   // Пропускаємо лише стани, для яких немає ні фону, ні картинки вікон.
@@ -1825,6 +1831,33 @@ function hikkaStartParallax(){
     if(!hikkaParallaxRaf)hikkaParallaxRaf=requestAnimationFrame(hikkaParallaxFrame);
   });
 }
+
+// Mobile tilt parallax. Activates only after a direct user gesture (iOS permission).
+(function initMobileTilt(){
+ if(!('DeviceOrientationEvent' in window)||!matchMedia('(pointer:coarse)').matches)return;
+ const sceneArt=document.querySelector('#home .hero-art');if(!sceneArt)return;
+ const btn=document.createElement('button');btn.type='button';btn.className='hikka-tilt-button';btn.textContent='📱 Паралакс від нахилу';btn.setAttribute('aria-label','Увімкнути рух фону від нахилу телефона');
+ sceneArt.appendChild(btn);
+ let enabled=false,started=false,baseline=null;
+ const clampTilt=n=>Math.max(-1,Math.min(1,n));
+ const onTilt=e=>{
+   if(!enabled||!Number.isFinite(e.gamma)||!Number.isFinite(e.beta))return;
+   if(!baseline)baseline={gamma:e.gamma,beta:e.beta};
+   hikkaMouseX=clampTilt((e.gamma-baseline.gamma)/20);
+   hikkaMouseY=clampTilt((e.beta-baseline.beta)/25);
+   if(!hikkaParallaxRaf)hikkaParallaxRaf=requestAnimationFrame(hikkaParallaxFrame);
+ };
+ btn.addEventListener('click',async()=>{
+  if(enabled){enabled=false;hikkaMouseX=0;hikkaMouseY=0;baseline=null;btn.textContent='📱 Паралакс від нахилу';if(!hikkaParallaxRaf)hikkaParallaxRaf=requestAnimationFrame(hikkaParallaxFrame);;return}
+  try{
+   if(typeof DeviceOrientationEvent.requestPermission==='function'){const response=await DeviceOrientationEvent.requestPermission();if(response!=='granted'){btn.textContent='Датчики не дозволені';return}}
+   enabled=true;baseline=null;btn.textContent='📱 Нахил увімкнено ✓';
+   if(!started){window.addEventListener('deviceorientation',onTilt,{passive:true});started=true}
+  }catch(err){btn.textContent='Не вдалося ввімкнути нахил'}
+ });
+ window.addEventListener('orientationchange',()=>{baseline=null},{passive:true});
+})();
+
 // На старті завантажуємо одну сцену, а не всі 13 великих PNG одночасно.
 // Решта сцен завантажується поступово після появи заставки.
 let hikkaSceneLoading=false;
@@ -1931,3 +1964,4 @@ if(!save.tutorial)infoModal();
 })();
 
 </script></body></html>
+
