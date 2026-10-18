@@ -238,7 +238,7 @@ function preloadCharacter(id){
  }
 }
 // Завантажуємо спрайти лише після визначення папки ресурсів.
-const images={};const filenames=['cocroach.png','cocroachwalk.gif','trap.png','chain.png','seyf.png','coin.png','cash.png','wdrop.png','tamagotchi.png','magican.png','floor.png','wall.png','icefloor.png','snowfloor.png','snowwall.png','autumnbrkwall.png','woodfloor.png','autumnfloor.png','grassfloor.png','wallbrk.png','tilefloor.png','mudfloor.png','time.png','hunter.png','hunter resting.png','kolyadun.png','kolyadunwalk.gif','kolyadunfight.gif','kolposy.gif','hella.png','hellawalk.gif','hellafight.gif','hellatransform.gif','hector.png','hectorwalk.gif','hectorfight.gif','evgen.png','evgenwalk.gif','evgenfight.gif','marichka.png','marichkawalk.gif','marichkafight.gif','box.png','six.png',...Array.from({length:6},(_,i)=>`door${i+1}.png`),...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),...Array.from({length:5},(_,i)=>`energy${i+1}.png`),...Array.from({length:4},(_,i)=>`moneytree${i+1}.${i===3?'gif':'png'}`),...[1,2,3,4,5,6,7].map(i=>`pc${i}.png`),...Array.from({length:3},(_,i)=>`cat${i+1}.png`),...Array.from({length:3},(_,i)=>`dog${i+1}.png`)];let hikkaGameAssetsStarted=false;
+const images={};const filenames=['cocroach.png','cocroachwalk.gif','trap.png','chain.png','seyf.png','coin.png','cash.png','wdrop.png','tamagotchi.png','magican.png','floor.png','wall.png','icefloor.png','snowfloor.png','snowwall.png','autumnbrkwall.png','woodfloor.png','autumnfloor.png','grassfloor.png','wallbrk.png','tilefloor.png','mudfloor.png','time.png','hunter.png','hunter resting.png','kolyadun.png','kolyadunwalk.gif','kolyadunfight.gif','kolposy.gif','hella.png','hellawalk.gif','hellafight.gif','hellatransform.gif','hector.png','hectorwalk.gif','hectorfight.gif','evgen.png','evgenwalk.gif','evgenfight.gif','marichka.png','marichkawalk.gif','marichkafight.gif','moriy.png','moriywalk.gif','moriyfight.gif','anton.png','antonwalk.gif','antonfight.gif','deara.png','dearawalk.gif','dearafight.gif','box.png','six.png',...Array.from({length:6},(_,i)=>`door${i+1}.png`),...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),...Array.from({length:5},(_,i)=>`energy${i+1}.png`),...Array.from({length:4},(_,i)=>`moneytree${i+1}.${i===3?'gif':'png'}`),...[1,2,3,4,5,6,7].map(i=>`pc${i}.png`),...Array.from({length:3},(_,i)=>`cat${i+1}.png`),...Array.from({length:3},(_,i)=>`dog${i+1}.png`)];let hikkaGameAssetsStarted=false;
 function loadGameAssets(){
  if(hikkaGameAssetsStarted)return;
  hikkaGameAssetsStarted=true;
@@ -407,7 +407,8 @@ const BOSS_ROSTER=[
  {id:'hella',name:'Гелла',idle:'hella.png',walk:'hellawalk.gif',attack:'hellafight.gif',transform:'hellatransform.gif'},
  {id:'hector',name:'Гектор',idle:'hector.png',walk:'hectorwalk.gif',attack:'hectorfight.gif'},
  {id:'evgen',name:'Євген',idle:'evgen.png',walk:'evgenwalk.gif',attack:'evgenfight.gif'},
- {id:'marichka',name:'Марічка',idle:'marichka.png',walk:'marichkawalk.gif',attack:'marichkafight.gif'}
+ {id:'marichka',name:'Марічка',idle:'marichka.png',walk:'marichkawalk.gif',attack:'marichkafight.gif'},
+ {id:'moriy',name:'Морій',idle:'moriy.png',walk:'moriywalk.gif',attack:'moriyfight.gif'}
 ];
 function bossForDifficulty(level){
  if(level<=3)return BOSS_ROSTER[0];
@@ -851,6 +852,14 @@ function marichkaChangeRoom(h){
 function updateHunter(dt){
  const h=game.hunter,g=game;
  if(g.phase==='ended'||!h.active)return;
+ if(g.boss.id==='moriy'){
+  h.servantCd=Math.max(0,(h.servantCd||0)-dt);
+  if(h.servantCd<=0){
+   const available=['anton','deara'].filter(kind=>!g.servants.some(m=>m.kind===kind&&m.hp>0));
+   if(available.length){summonServant(g.rooms[h.target]||g.rooms.find(r=>r.alive&&r.occupant!==null)||g.rooms[0],available[0]);h.servantCd=9;}
+   else h.servantCd=8;
+  }
+ }
  if(g.devTest&&g.devImmortal)h.hp=Math.max(1,h.hp);
  if(h.hp<=0){finish(true,`${g.boss.name} прогнано!`);return}
  h.anim+=dt;h.abilityCd-=dt;h.transform=Math.max(0,(h.transform||0)-dt);
@@ -993,17 +1002,18 @@ function chooseServantRoom(m,excludeId=null){
  for(const e of ranked){roll-=e.weight;if(roll<=0)return e.r}
  return ranked[ranked.length-1].r;
 }
-function summonServant(r){
+function summonServant(r,acolyte=null){
  const g=game,h=g.hunter;
- if(g.boss.id!=='kolyadun'||h.level<2||g.servants.length>=Math.max(1,Math.min(3,h.level)-(g.boosts.includes('fewer')?1:0)))return;
- const hp=55+Math.min(45,g.level*5);
- const m={x:h.x,y:h.y,hp,maxHp:hp,target:null,hitCd:1.6,
+ if(acolyte){if(g.boss.id!=='moriy'||g.servants.some(s=>s.kind===acolyte&&s.hp>0)||g.servants.filter(s=>s.kind==='anton'||s.kind==='deara').length>=2)return;}
+ else if(g.boss.id!=='kolyadun'||h.level<2||g.servants.length>=Math.max(1,Math.min(3,h.level)-(g.boosts.includes('fewer')?1:0)))return;
+ const hp=acolyte?65+Math.min(40,g.level*4):55+Math.min(45,g.level*5);
+ const m={x:h.x,y:h.y,hp,maxHp:hp,kind:acolyte||'kolpos',target:null,hitCd:1.6,
   path:[],speed:3.9,spawnShieldUntil:g.time+1.1,anim:0,attackAnim:0,shotCd:0,walk:0,action:'walk',dead:false,
   switchAt:g.time+rand(9,14),dodgeCd:rand(.2,.5),dodges:0,routeTarget:null,attackStarted:0,
   retreatMode:false,retreatCooldown:0,healRemain:0,healsUsed:0,healFx:0};
  const room=chooseServantRoom(m);m.target=room?.id??r.id;
  g.servants.push(m);
- effect(h.x,h.y,'👻');toast('Колядун покликав посіпаку!');sound('hit');
+ effect(h.x,h.y,'👻');toast(acolyte?`Морій покликав ${acolyte==='anton'?'Антона':'Деару'}!`:'Колядун покликав посіпаку!');sound('hit');
 }
 function servantTarget(m){
  const eligible=game.rooms.filter(r=>r.alive&&r.occupant!==null&&game.players[r.occupant]?.seated);
@@ -1112,14 +1122,14 @@ function updateServants(dt){
    m.action='attack';m.path=[];m.attackAnim+=dt;m.hitCd-=dt;
    if(m.hitCd<=0){
     m.hitCd+=1.8;
-    const damage=1.5*(r.chain&&!(r.defenseJammed>0)?(game.boosts.includes('chain')?.4:.6):1)*(r.occupant===0?1/(1+boostValue('door')*.12):1);
+    const damage=(m.kind==='anton'?1.65:m.kind==='deara'?1.4:1.5)*(r.chain&&!(r.defenseJammed>0)?(game.boosts.includes('chain')?.4:.6):1)*(r.occupant===0?1/(1+boostValue('door')*.12):1);
     r.door=Math.max(0,r.door-damage);
     effect(r.doorX+.5,r.doorY+.5,'💥');sound('hit');
     if(r.puddle&&!(r.defenseJammed>0)){m.hp-=1.1;effect(m.x,m.y,'-1')}
     if(r.door<=0){
      r.alive=false;const owner=game.players[r.occupant];if(owner){owner.alive=false;owner.seated=false}
      effect(r.doorX+.5,r.doorY+.5,'💀');renderPlayers();
-     if(r.occupant===0){finish(false,'Посіпака Колядуна зламав Ваші двері');return}
+     if(r.occupant===0){finish(false,m.kind==='anton'?'Антон зламав Ваші двері':m.kind==='deara'?'Деара зламала Ваші двері':'Посіпака Колядуна зламав Ваші двері');return}
      m.target=null;m.path=[];
     }
    }
@@ -1513,7 +1523,9 @@ function syncServantVisuals(){
  for(const [servant,im] of servantVisuals){if(!living.has(servant)){im.remove();servantVisuals.delete(servant)}}
  for(const servant of living){
   let im=servantVisuals.get(servant);
-  if(!im){im=document.createElement('img');im.src=assetURL('kolposy.gif');im.alt='Посіпака Колядуна';im.draggable=false;Object.assign(im.style,{position:'absolute',pointerEvents:'none',imageRendering:'pixelated',zIndex:'3',objectFit:'contain'});shell.appendChild(im);servantVisuals.set(servant,im)}
+  if(!im){im=document.createElement('img');im.alt=servant.kind==='anton'?'Антон':servant.kind==='deara'?'Деара':'Колпос';im.draggable=false;Object.assign(im.style,{position:'absolute',pointerEvents:'none',imageRendering:'pixelated',zIndex:'3',objectFit:'contain'});shell.appendChild(im);servantVisuals.set(servant,im)}
+  const wanted=servant.kind==='anton'?(servant.action==='attack'?'antonfight.gif':'antonwalk.gif'):servant.kind==='deara'?(servant.action==='attack'?'dearafight.gif':'dearawalk.gif'):'kolposy.gif';
+  if(im.dataset.sprite!==wanted){im.dataset.sprite=wanted;im.src=assetURL(wanted)}
   const size=cell*.65;
   im.style.width=size+'px';im.style.height=size+'px';
   im.style.left=(ox+servant.x*cell-size/2)+'px';
@@ -1910,7 +1922,7 @@ if(!save.tutorial)infoModal();
  style.textContent=`#hikkaDevPanel[hidden]{display:none!important}#hikkaDevPanel{position:fixed;right:12px;top:65px;z-index:9999;width:min(320px,calc(100vw - 24px));max-height:calc(100vh - 90px);overflow:auto;padding:12px;background:#151b30f5;border:1px solid #9baaff;border-radius:13px;color:#fff;box-shadow:0 12px 40px #0009;font:13px system-ui,sans-serif}#hikkaDevPanel h3{margin:0 0 7px;font-size:15px}#hikkaDevPanel p{margin:0 0 9px;color:#c2c9e5;font-size:12px}#hikkaDevPanel .dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}#hikkaDevPanel button{padding:8px 5px;border:1px solid #626f99;border-radius:7px;background:#303c5e;color:white;cursor:pointer;font-size:12px}#hikkaDevPanel button:hover{background:#435583}#hikkaDevPanel select{width:100%;background:#222b48;color:white;border:1px solid #6a7ea9;border-radius:6px;padding:6px;margin:5px 0 9px}#hikkaDevPanel .dev-close{float:right;width:30px;padding:3px}#hikkaDevPanel .dev-alert{color:#ffcb94}`;
  document.head.appendChild(style);
  const panel=document.createElement('div');panel.id='hikkaDevPanel';panel.hidden=true;
- panel.innerHTML=`<button class="dev-close" data-dev="close" aria-label="Закрити">×</button><h3>🧪 Тест Hikka House · F8</h3><p class="dev-alert">Тестові матчі не дають токенів, рейтингу чи відкриття складностей. Вмикайте перед тестуванням.</p><div class="dev-grid"><button data-dev="room">🏠 Зайняти кімнату</button><button data-dev="resources">💰 +5000 / ⚡ +500</button><button data-dev="boss">👁️ Запустити боса</button><button data-dev="servant">👻 Викликати колпоса</button><button data-dev="door">🛡️ Відновити двері</button><button data-dev="magic">✨ Перевірити Маджику</button><button data-dev="magicReset">♻️ Скинути Маджику</button><button data-dev="cat">🐈 Додати кота</button><button data-dev="dog">🐕 Додати собаку</button><button data-dev="petChase">🏃 Тест погоні тварин</button><button data-dev="immortal" id="hikkaDevImmortal" aria-pressed="false">🛡️ Безсмертя: ВИМК.</button></div><label for="hikkaDevBossSelect" style="display:block;margin-top:10px">👁️ Обрати боса для тесту</label><select id="hikkaDevBossSelect"><option value="kolyadun">Колядун</option><option value="hella">Гелла</option><option value="hector">Гектор</option><option value="evgen">Євген</option><option value="marichka">Марічка</option></select><button data-dev="switchBoss" style="width:100%;margin-bottom:9px">🔄 Замінити боса в матчі</button><p id="hikkaDevStatus" style="margin-top:9px">F8 закриває цю панель.</p>`;
+ panel.innerHTML=`<button class="dev-close" data-dev="close" aria-label="Закрити">×</button><h3>🧪 Тест Hikka House · F8</h3><p class="dev-alert">Тестові матчі не дають токенів, рейтингу чи відкриття складностей. Вмикайте перед тестуванням.</p><div class="dev-grid"><button data-dev="room">🏠 Зайняти кімнату</button><button data-dev="resources">💰 +5000 / ⚡ +500</button><button data-dev="boss">👁️ Запустити боса</button><button data-dev="servant">👻 Викликати посіпак</button><button data-dev="door">🛡️ Відновити двері</button><button data-dev="magic">✨ Перевірити Маджику</button><button data-dev="magicReset">♻️ Скинути Маджику</button><button data-dev="cat">🐈 Додати кота</button><button data-dev="dog">🐕 Додати собаку</button><button data-dev="petChase">🏃 Тест погоні тварин</button><button data-dev="immortal" id="hikkaDevImmortal" aria-pressed="false">🛡️ Безсмертя: ВИМК.</button></div><label for="hikkaDevBossSelect" style="display:block;margin-top:10px">👁️ Обрати боса для тесту</label><select id="hikkaDevBossSelect"><option value="kolyadun">Колядун</option><option value="hella">Гелла</option><option value="hector">Гектор</option><option value="evgen">Євген</option><option value="marichka">Марічка</option><option value="moriy">Морій</option></select><button data-dev="switchBoss" style="width:100%;margin-bottom:9px">🔄 Замінити боса в матчі</button><p id="hikkaDevStatus" style="margin-top:9px">F8 закриває цю панель.</p>`;
  document.body.appendChild(panel);
  function status(message){const el=document.getElementById('hikkaDevStatus');if(el)el.textContent=message;}
  function room(){if(!game)return null;return playerRoom()||game.rooms.find(r=>r.alive&&r.occupant===null)||null;}
@@ -1926,7 +1938,7 @@ if(!save.tutorial)infoModal();
   room(){if(testStart())occupy()},
   resources(){if(!testStart())return;game.gold+=5000;game.energy+=500;status('Додано 5000 монет і 500 енергії лише в цьому тесті.');},
   boss(){if(!testStart())return;const h=game.hunter;if(!game.players[0].seated)occupy();if(game.time<25)game.time=25;h.active=true;h.state='hunt';h.rest=0;h.stun=0;h.path=[];status('Бос активований.');},
-  servant(){if(!testStart())return;if(game.boss.id!=='kolyadun')return status('Колпоси доступні лише для Колядуна. Запустіть рівень із Колядуна.');if(!game.players[0].seated)occupy();const r=playerRoom();if(!r)return status('Не вдалося зайняти кімнату.');game.hunter.level=Math.max(2,game.hunter.level);const before=game.servants.length;summonServant(r);status(game.servants.length>before?'Колпос викликаний біля Колядуна.':'Досягнуто ліміт колпосів.');},
+  servant(){if(!testStart())return;if(game.boss.id!=='kolyadun'&&game.boss.id!=='moriy')return status('Посіпаки доступні для Колядуна та Морія.');if(!game.players[0].seated)occupy();const r=playerRoom();if(!r)return status('Не вдалося зайняти кімнату.');game.hunter.level=Math.max(2,game.hunter.level);const before=game.servants.length;if(game.boss.id==='moriy'){for(const kind of ['anton','deara'])summonServant(r,kind)}else summonServant(r);status(game.servants.length>before?game.boss.id==='moriy'?'Антон і Деара викликані (якщо були доступні).':'Колпос викликаний біля Колядуна.':'Досягнуто ліміт посіпак.');},
   door(){if(!testStart())return;if(!game.players[0].seated)occupy();const r=playerRoom();if(!r)return;r.door=r.maxDoor;r.defenseJammed=0;status('Двері Вашої кімнати відновлені.');},
   pet(type){
    if(!testStart())return;
@@ -1956,7 +1968,7 @@ if(!save.tutorial)infoModal();
   },
   immortal(){if(!testStart())return;game.devImmortal=!game.devImmortal;if(game.devImmortal)game.hunter.hp=Math.max(1,game.hunter.hp);syncPanel();status(game.devImmortal?'Бос невразливий: HP не падає нижче 1. Атаки та здібності працюють.':'Невразливість вимкнена: бос знову може загинути.');},
   magicReset(){if(!testStart())return;let removed=0;for(const r of game.rooms){for(const [key,item] of r.items){if(item.source==='magic'){r.items.delete(key);removed++;}}}game.magicUsed=0;game.magicRolls={};renderPalette();status(`Маджику скинуто: 0/3. Прибрано ${removed} випадкових предметів. Куплені в магазині збережено.`);},
-  switchBoss(){if(!testStart())return;const value=document.getElementById('hikkaDevBossSelect').value;const boss=BOSS_ROSTER.find(b=>b.id===value);if(!boss)return status('Боса не знайдено.');const h=game.hunter;game.boss=boss;game.servants=[];game.projectiles=[];for(const im of servantVisuals.values())im.remove();servantVisuals.clear();h.hp=h.maxHp;h.state='hunt';h.active=true;h.stun=0;h.transform=0;h.roachFightTime=0;h.roachPreviousState=null;h.healShown=0;h.healFxCd=0;h.target=null;h.path=[];h.attack=0;h.abilityCd=14;h.servantCd=18;h.retreats=0;h.rest=0;h.marichkaSwitchAt=0;h.marichkaLastTarget=null;if(game.time<25)game.time=25;if(!game.players[0].seated)occupy();bossDisplayedState='';if(bossAnimated){bossAnimated.hidden=true;bossAnimated.removeAttribute('src');}syncPanel();status(`Активний бос: ${boss.name}. HP відновлено, стара атака й колпоси скинуті. Невразливість: ${game.devImmortal?'увімкнена':'вимкнена'}.`);},
+  switchBoss(){if(!testStart())return;const value=document.getElementById('hikkaDevBossSelect').value;const boss=BOSS_ROSTER.find(b=>b.id===value);if(!boss)return status('Боса не знайдено.');const h=game.hunter;game.boss=boss;game.servants=[];game.projectiles=[];for(const im of servantVisuals.values())im.remove();servantVisuals.clear();h.hp=h.maxHp;h.state='hunt';h.active=true;h.stun=0;h.transform=0;h.roachFightTime=0;h.roachPreviousState=null;h.healShown=0;h.healFxCd=0;h.target=null;h.path=[];h.attack=0;h.abilityCd=14;h.servantCd=boss.id==='moriy'?2:18;h.retreats=0;h.rest=0;h.marichkaSwitchAt=0;h.marichkaLastTarget=null;if(game.time<25)game.time=25;if(!game.players[0].seated)occupy();bossDisplayedState='';if(bossAnimated){bossAnimated.hidden=true;bossAnimated.removeAttribute('src');}syncPanel();status(`Активний бос: ${boss.name}. HP відновлено, стара атака й колпоси скинуті. Невразливість: ${game.devImmortal?'увімкнена':'вимкнена'}.`);},
   magic(){if(!testStart())return;if(!game.players[0].seated)occupy();const r=playerRoom();if(!r)return;if(game.magicUsed>=3)return status('Маджика: усі 3 використання вже витрачено.');const free=buildTiles(r).find(([x,y])=>!r.items.has(`${x},${y}`));if(!free)return status('Немає вільної клітинки в кімнаті.');const before=game.magicUsed;const result=build(r,free[0],free[1],'magic');status(result&&game.magicUsed>before?`Маджика використана: ${game.magicUsed}/3. Перевірте новий предмет у кімнаті.`:'Не вдалося використати Маджику.');}
  };
  panel.addEventListener('click',e=>{const btn=e.target.closest('button[data-dev]');if(btn&&actions[btn.dataset.dev])actions[btn.dataset.dev]();});
@@ -1964,4 +1976,3 @@ if(!save.tutorial)infoModal();
 })();
 
 </script></body></html>
-
