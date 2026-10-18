@@ -937,7 +937,8 @@ function summonServant(r){
  const hp=55+Math.min(45,g.level*5);
  const m={x:h.x,y:h.y,hp,maxHp:hp,target:null,hitCd:1.6,
   path:[],speed:3.9,spawnShieldUntil:g.time+1.1,anim:0,attackAnim:0,shotCd:0,walk:0,action:'walk',dead:false,
-  switchAt:g.time+rand(9,14),dodgeCd:rand(.2,.5),dodges:0,routeTarget:null,attackStarted:0};
+  switchAt:g.time+rand(9,14),dodgeCd:rand(.2,.5),dodges:0,routeTarget:null,attackStarted:0,
+  retreatMode:false,retreatCooldown:0,healRemain:0,healsUsed:0,healFx:0};
  const room=chooseServantRoom(m);m.target=room?.id??r.id;
  g.servants.push(m);
  effect(h.x,h.y,'👻');toast('Колядун покликав посіпаку!');sound('hit');
@@ -975,10 +976,51 @@ function dodgeServant(m){
  m.path=pick(safe).path;m.dodgeUntil=game.time+.65;m.dodgeCd=rand(.8,1.35);m.dodges++;
  effect(m.x,m.y,'💨');return true;
 }
+// Поранені колпоси відступають фізично, лікуються в безпечній зоні та повертаються в бій.
+// Відпочинок Колядуна дає їм додаткову можливість відновитися, але не воскресає вбитих.
+function beginServantRetreat(m){
+ if(m.hp<=0||m.retreatMode||m.healsUsed>=2)return false;
+ m.retreatMode=true;m.healsUsed++;m.healRemain=7.5;m.healFx=0;
+ m.retreatCooldown=17;m.target=null;m.routeTarget=null;m.path=[];
+ m.action='walk';m.switchAt=game.time+rand(10,16);
+ const points=restPoints();
+ // Обираємо досяжне місце відпочинку замість телепортації крізь стіни.
+ const candidates=points.map(p=>({point:p,path:bfs(m.x,m.y,Math.floor(p.x),Math.floor(p.y),null)}))
+   .filter(c=>c.path.length||Math.hypot(m.x-c.point.x,m.y-c.point.y)<1.4)
+   .sort((a,b)=>a.path.length-b.path.length);
+ m.restPoint=candidates[0]?.point||null;
+ m.path=candidates[0]?.path||[];
+ effect(m.x,m.y,'💨');return true;
+}
+function updateServantRecovery(m,dt){
+ if(!m.retreatMode)return false;
+ m.retreatCooldown=Math.max(0,m.retreatCooldown-dt);
+ if((m.trapStun||0)>0){m.trapStun=Math.max(0,m.trapStun-dt);return true}
+ if(m.path.length){m.action='walk';travel(m,dt);return true}
+ const h=game.hunter;
+ const nearKolyadun=h.active&&['rest','retreat'].includes(h.state)&&Math.hypot(m.x-h.x,m.y-h.y)<2;
+ m.action='idle';m.healRemain-=dt;
+ const healRate=m.maxHp*(nearKolyadun?.19:.12);
+ const before=m.hp;m.hp=Math.min(m.maxHp,m.hp+healRate*dt);
+ m.healFx-=dt;
+ if(m.healFx<=0&&m.hp>before){effect(m.x,m.y-.25,'💚');m.healFx=1.2}
+ if(m.hp>=m.maxHp*.88||m.healRemain<=0){
+  m.retreatMode=false;m.path=[];m.restPoint=null;m.target=null;
+  m.routeTarget=null;m.dodgeUntil=0;m.dodgeCd=.5;
+  m.switchAt=game.time+rand(10,16);
+ }
+ return true;
+}
 function updateServants(dt){
  if(!game||game.phase==='ended'||!game.servants?.length)return;
  for(const m of game.servants){
   if(m.hp<=0)continue;
+  m.retreatCooldown=Math.max(0,(m.retreatCooldown||0)-dt);
+  if(updateServantRecovery(m,dt))continue;
+  // Тільки живий колпос може втекти. За малих HP він зберігає шанс вижити.
+  if(m.hp<m.maxHp*.36&&m.retreatCooldown<=0&&beginServantRetreat(m))continue;
+  // Колпос, який вчасно ухилився, може піти підлікувати рани до нового штурму.
+  if(m.hp<m.maxHp*.53&&m.dodges>0&&m.retreatCooldown<=0&&Math.random()<dt*.7&&beginServantRetreat(m))continue;
   const r=servantTarget(m);if(!r)continue;
   m.dodgeCd=Math.max(0,(m.dodgeCd||0)-dt);
   if((m.trapStun||0)>0){m.trapStun=Math.max(0,m.trapStun-dt);continue;}
