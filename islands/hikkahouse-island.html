@@ -821,6 +821,30 @@ function updateSix(dt){
  fleeHunter('six');
  effect(n.x,n.y,'Шістка!');toast('Шістка летить за гостем! Гість тікає!');
 }
+// Марічка регулярно міняє цілі: не зациклюється на дверях гравця.
+// Вона надає перевагу іншим зайнятим кімнатам, але може нападати й на гравця.
+function chooseMarichkaRoom(previous=null){
+ const g=game;
+ const rooms=g.rooms.filter(r=>r.alive&&r.occupant!==null&&g.players[r.occupant]?.alive&&g.players[r.occupant]?.seated);
+ if(!rooms.length)return null;
+ const alternatives=rooms.filter(r=>r.id!==previous);
+ const pool=alternatives.length?alternatives:rooms;
+ const npcRooms=pool.filter(r=>r.occupant!==0);
+ if(npcRooms.length&&Math.random()<.72)return pick(npcRooms);
+ return pick(pool);
+}
+function marichkaChangeRoom(h){
+ const old=h.target;
+ const next=chooseMarichkaRoom(old);
+ if(!next||next.id===old)return false;
+ h.target=next.id;
+ h.state='hunt';h.path=[];h.attack=0;
+ h.marichkaAttackTime=0;
+ h.marichkaSwitchAt=game.time+rand(12,17);
+ const pt=nearestHunterDoor(next);
+ hunterPath(Math.floor(pt.x),Math.floor(pt.y));
+ return true;
+}
 function updateHunter(dt){
  const h=game.hunter,g=game;
  if(g.phase==='ended'||!h.active)return;
@@ -859,9 +883,35 @@ if(h.state==='transform'){
  if(h.transform<=0){h.state='attack';h.attack=0;}
  else return;
 }
-if(h.state==='hunt'){if(h.target===null||!g.rooms[h.target]?.alive||!g.rooms[h.target]?.occupant&&g.rooms[h.target]?.occupant!==0){const eligible=g.rooms.filter(r=>r.alive&&r.occupant!==null&&g.players[r.occupant].seated);if(!eligible.length)return;const weighted=eligible.flatMap(r=>Array.from({length:r.occupant===0&&g.boosts.includes('incognito')?1:3},()=>r));h.target=pick(weighted).id;const pt=nearestHunterDoor(g.rooms[h.target]);hunterPath(Math.floor(pt.x),Math.floor(pt.y));}const targetRoom=g.rooms[h.target];const slow=targetRoom?.items&&[...targetRoom.items.values()].some(i=>i.type==='clock')?0.76:1;
+if(h.state==='hunt'){if(h.target===null||!g.rooms[h.target]?.alive||!g.rooms[h.target]?.occupant&&g.rooms[h.target]?.occupant!==0){
+ if(g.boss.id==='marichka'){
+  const next=chooseMarichkaRoom(h.marichkaLastTarget??null);
+  if(!next)return;
+  h.target=next.id;
+  h.marichkaSwitchAt=g.time+rand(12,17);
+  h.marichkaLastTarget=next.id;
+ }else{
+  const eligible=g.rooms.filter(r=>r.alive&&r.occupant!==null&&g.players[r.occupant].seated);
+  if(!eligible.length)return;
+  const weighted=eligible.flatMap(r=>Array.from({length:r.occupant===0&&g.boosts.includes('incognito')?1:3},()=>r));
+  h.target=pick(weighted).id;
+ }
+ const pt=nearestHunterDoor(g.rooms[h.target]);hunterPath(Math.floor(pt.x),Math.floor(pt.y));}
+ if(g.boss.id==='marichka'&&g.time>=(h.marichkaSwitchAt||Infinity)&&!(h.lureUntil>g.time)){
+  marichkaChangeRoom(h);
+ }const targetRoom=g.rooms[h.target];const slow=targetRoom?.items&&[...targetRoom.items.values()].some(i=>i.type==='clock')?0.76:1;
  const oldSpeed=h.speed;h.speed*=slow;travel(h,dt);h.speed=oldSpeed;const r=g.rooms[h.target],pt=nearestHunterDoor(r);if(Math.hypot(h.x-pt.x,h.y-pt.y)<.85){h.attack=0;h.path=[];if(g.boss.id==='kolyadun'&&Math.random()<.65){h.state='attack';const carols=['Колядун: коляд, коляд, колядниця!','Колядун: файна з медом паляниця.','Колядун: відчиніть, дитина колядує!'];toast(pick(carols));}else if(g.boss.id==='hella'){if(g.boss.transform){h.state='transform';h.transform=2.5;}else h.state='attack';if(Math.random()<.65){const hellaLines=['Гелла: мені потрібен столик! Відчиняй!','Гелла: я знаю що ти вдома!','Гелла: мені треба залишити з тобою дитину!'];toast(pick(hellaLines));}}else if(g.boss.id==='evgen'){h.state='attack';}else if(g.boss.id==='hector'){h.state='attack';if(Math.random()<.72){const hectorLines=['Гектор: Привіт, моє хороше. Дідо прийшов.','Гектор: Відчиняй двері, гімно мале!','Гектор: Ти пропонуєш пиріжок, а воно ще й огризається'];toast(pick(hectorLines));}}else{h.state='attack';}} }
-if(h.state==='attack'){const r=g.rooms[h.target];if(!r||!r.alive){h.state='hunt';h.target=null;return}if(r.occupant===0&&g.boosts.includes('psychiatrist')&&!g.psychiatristUsed&&r.door/r.maxDoor<=.35){g.psychiatristUsed=true;g.psychiatristAppear={x:r.side==='left'?r.doorX+1.5:r.doorX-.5,y:r.doorY+.5,fromX:r.side==='left'?r.doorX+1.5:r.doorX-.5,fromY:r.side==='left'?r.doorY+.5:r.doorY+.5,toX:h.x,toY:h.y,start:g.time,until:g.time+2.5};retreatHunter();toast('Психіатр відігнав гостя!');return;}const slowed=[...r.items.values()].some(it=>it.type==='clock');h.attack+=dt*(slowed?.75:1);if(g.boss.id==='hella'){const regenPerSecond=h.maxHp*(h.level>=3?.013:.01);const before=h.hp;h.hp=Math.min(h.maxHp,h.hp+regenPerSecond*dt);h.healShown=(h.healShown||0)+(h.hp-before);h.healFxCd=(h.healFxCd||0)-dt;if(h.healFxCd<=0){if(h.healShown>=.5)effect(h.x,h.y-.35,'💚');h.healShown=0;h.healFxCd=1.4;}}specialHunter(dt,r);if(g.boss.id==='kolyadun'&&h.level>=2){h.servantCd-=dt;if(h.servantCd<=0&&g.servants.length<Math.max(1,Math.min(3,h.level)-(g.boosts.includes('fewer')?1:0))){summonServant(r);h.servantCd=Math.max(13,25-g.level)+(g.boosts.includes('fewer')?12:0)}}const attackInterval=g.boss.id==='hella'?.72:(g.boss.id==='hector'?1.12:g.boss.id==='evgen'?.95:1.05);if(h.attack>=attackInterval){h.attack-=attackInterval;let damage=(g.boss.id==='hella'?7.5:(g.boss.id==='hector'?5.7:g.boss.id==='evgen'?6.6:6))*(r.chain&&!(r.defenseJammed>0)?(g.boosts.includes('chain')?.4:.6):1)*(r.occupant===0?1/(1+boostValue('door')*.12):1);r.door=Math.max(0,r.door-damage);effect(r.doorX+.5,r.doorY+.5,'💥');sound('hit');if(g.boss.id==='hector'&&Math.random()<.18)toast('Гектор: Відчиняй двері, гімно мале!');if(r.puddle&&!(r.defenseJammed>0)){h.hp-=1.1;effect(h.x,h.y,'-1')}if(r.occupant===0&&g.boosts.includes('tamagotchi'))g.gold+=15;if(r.door<=0){r.alive=false;const p=g.players[r.occupant];if(p){p.alive=false;p.seated=false}effect(r.doorX+.5,r.doorY+.5,'💀');if(r.occupant===0){finish(false,g.boss.id==='hella'?`${g.boss.name} зламала Ваші двері`:['hector','evgen'].includes(g.boss.id)?`${g.boss.name} зламав Ваші двері`:'Мисливець зламав Ваші двері');return}h.state='hunt';h.target=null;renderPlayers()}else if(r.poop&&!(r.defenseJammed>0)&&Math.random()<.3){retreatHunter()}}}
+if(h.state==='attack'){
+ // Марічка не сидить вічно біля одних дверей: після серії ударів переходить до іншої кімнати.
+ if(g.boss.id==='marichka'){
+  if(!h.marichkaSwitchAt)h.marichkaSwitchAt=g.time+rand(12,17);
+  if(g.time>=h.marichkaSwitchAt&&!(h.lureUntil>g.time)){
+   h.marichkaLastTarget=h.target;
+   if(marichkaChangeRoom(h))return;
+   h.marichkaSwitchAt=g.time+rand(9,13);
+  }
+ }
+ const r=g.rooms[h.target];if(!r||!r.alive){h.state='hunt';h.target=null;return}if(r.occupant===0&&g.boosts.includes('psychiatrist')&&!g.psychiatristUsed&&r.door/r.maxDoor<=.35){g.psychiatristUsed=true;g.psychiatristAppear={x:r.side==='left'?r.doorX+1.5:r.doorX-.5,y:r.doorY+.5,fromX:r.side==='left'?r.doorX+1.5:r.doorX-.5,fromY:r.side==='left'?r.doorY+.5:r.doorY+.5,toX:h.x,toY:h.y,start:g.time,until:g.time+2.5};retreatHunter();toast('Психіатр відігнав гостя!');return;}const slowed=[...r.items.values()].some(it=>it.type==='clock');h.attack+=dt*(slowed?.75:1);if(g.boss.id==='hella'){const regenPerSecond=h.maxHp*(h.level>=3?.013:.01);const before=h.hp;h.hp=Math.min(h.maxHp,h.hp+regenPerSecond*dt);h.healShown=(h.healShown||0)+(h.hp-before);h.healFxCd=(h.healFxCd||0)-dt;if(h.healFxCd<=0){if(h.healShown>=.5)effect(h.x,h.y-.35,'💚');h.healShown=0;h.healFxCd=1.4;}}specialHunter(dt,r);if(g.boss.id==='kolyadun'&&h.level>=2){h.servantCd-=dt;if(h.servantCd<=0&&g.servants.length<Math.max(1,Math.min(3,h.level)-(g.boosts.includes('fewer')?1:0))){summonServant(r);h.servantCd=Math.max(13,25-g.level)+(g.boosts.includes('fewer')?12:0)}}const attackInterval=g.boss.id==='hella'?.72:(g.boss.id==='hector'?1.12:g.boss.id==='evgen'?.95:1.05);if(h.attack>=attackInterval){h.attack-=attackInterval;let damage=(g.boss.id==='hella'?7.5:(g.boss.id==='hector'?5.7:g.boss.id==='evgen'?6.6:6))*(r.chain&&!(r.defenseJammed>0)?(g.boosts.includes('chain')?.4:.6):1)*(r.occupant===0?1/(1+boostValue('door')*.12):1);r.door=Math.max(0,r.door-damage);effect(r.doorX+.5,r.doorY+.5,'💥');sound('hit');if(g.boss.id==='hector'&&Math.random()<.18)toast('Гектор: Відчиняй двері, гімно мале!');if(r.puddle&&!(r.defenseJammed>0)){h.hp-=1.1;effect(h.x,h.y,'-1')}if(r.occupant===0&&g.boosts.includes('tamagotchi'))g.gold+=15;if(r.door<=0){r.alive=false;const p=g.players[r.occupant];if(p){p.alive=false;p.seated=false}effect(r.doorX+.5,r.doorY+.5,'💀');if(r.occupant===0){finish(false,g.boss.id==='hella'?`${g.boss.name} зламала Ваші двері`:['hector','evgen'].includes(g.boss.id)?`${g.boss.name} зламав Ваші двері`:'Мисливець зламав Ваші двері');return}h.state='hunt';h.target=null;renderPlayers()}else if(r.poop&&!(r.defenseJammed>0)&&Math.random()<.3){retreatHunter()}}}
 if(g.devTest&&g.devImmortal)h.hp=Math.max(1,h.hp);if(h.hp<=0){finish(true,'Нав’язливого гостя вигнано!');return}if(h.hp<h.maxHp*(.30+Math.min(h.level*.025,.17))&&h.retreats<2+Math.floor(g.level/4)){retreatHunter();return}
 }
 function updateWeapons(dt){
@@ -1864,7 +1914,7 @@ if(!save.tutorial)infoModal();
    if(![...r.items.values()].some(it=>it.type==='cat'||it.type==='dog'))return status('Спершу додайте кота або собаку кнопкою F8.');
    const h=game.hunter;
    const point=nearestHunterDoor(r);
-   h.x=point.x;h.y=point.y;h.active=true;h.state='hunt';h.target=r.id;h.path=[];h.rest=0;h.stun=0;
+   h.x=point.x;h.y=point.y;h.active=true;h.state='hunt';h.target=r.id;h.path=[];h.rest=0;h.stun=0;if(game.boss.id==='marichka')h.marichkaSwitchAt=game.time+14;
    if(game.time<25)game.time=25;
    // Запускаємо маршрут і продовжуємо існуючу логіку переслідування.
    hunterPath(Math.floor(point.x),Math.floor(point.y));
@@ -1873,7 +1923,7 @@ if(!save.tutorial)infoModal();
   },
   immortal(){if(!testStart())return;game.devImmortal=!game.devImmortal;if(game.devImmortal)game.hunter.hp=Math.max(1,game.hunter.hp);syncPanel();status(game.devImmortal?'Бос невразливий: HP не падає нижче 1. Атаки та здібності працюють.':'Невразливість вимкнена: бос знову може загинути.');},
   magicReset(){if(!testStart())return;let removed=0;for(const r of game.rooms){for(const [key,item] of r.items){if(item.source==='magic'){r.items.delete(key);removed++;}}}game.magicUsed=0;game.magicRolls={};renderPalette();status(`Маджику скинуто: 0/3. Прибрано ${removed} випадкових предметів. Куплені в магазині збережено.`);},
-  switchBoss(){if(!testStart())return;const value=document.getElementById('hikkaDevBossSelect').value;const boss=BOSS_ROSTER.find(b=>b.id===value);if(!boss)return status('Боса не знайдено.');const h=game.hunter;game.boss=boss;game.servants=[];game.projectiles=[];for(const im of servantVisuals.values())im.remove();servantVisuals.clear();h.hp=h.maxHp;h.state='hunt';h.active=true;h.stun=0;h.transform=0;h.roachFightTime=0;h.roachPreviousState=null;h.healShown=0;h.healFxCd=0;h.target=null;h.path=[];h.attack=0;h.abilityCd=14;h.servantCd=18;h.retreats=0;h.rest=0;if(game.time<25)game.time=25;if(!game.players[0].seated)occupy();bossDisplayedState='';if(bossAnimated){bossAnimated.hidden=true;bossAnimated.removeAttribute('src');}syncPanel();status(`Активний бос: ${boss.name}. HP відновлено, стара атака й колпоси скинуті. Невразливість: ${game.devImmortal?'увімкнена':'вимкнена'}.`);},
+  switchBoss(){if(!testStart())return;const value=document.getElementById('hikkaDevBossSelect').value;const boss=BOSS_ROSTER.find(b=>b.id===value);if(!boss)return status('Боса не знайдено.');const h=game.hunter;game.boss=boss;game.servants=[];game.projectiles=[];for(const im of servantVisuals.values())im.remove();servantVisuals.clear();h.hp=h.maxHp;h.state='hunt';h.active=true;h.stun=0;h.transform=0;h.roachFightTime=0;h.roachPreviousState=null;h.healShown=0;h.healFxCd=0;h.target=null;h.path=[];h.attack=0;h.abilityCd=14;h.servantCd=18;h.retreats=0;h.rest=0;h.marichkaSwitchAt=0;h.marichkaLastTarget=null;if(game.time<25)game.time=25;if(!game.players[0].seated)occupy();bossDisplayedState='';if(bossAnimated){bossAnimated.hidden=true;bossAnimated.removeAttribute('src');}syncPanel();status(`Активний бос: ${boss.name}. HP відновлено, стара атака й колпоси скинуті. Невразливість: ${game.devImmortal?'увімкнена':'вимкнена'}.`);},
   magic(){if(!testStart())return;if(!game.players[0].seated)occupy();const r=playerRoom();if(!r)return;if(game.magicUsed>=3)return status('Маджика: усі 3 використання вже витрачено.');const free=buildTiles(r).find(([x,y])=>!r.items.has(`${x},${y}`));if(!free)return status('Немає вільної клітинки в кімнаті.');const before=game.magicUsed;const result=build(r,free[0],free[1],'magic');status(result&&game.magicUsed>before?`Маджика використана: ${game.magicUsed}/3. Перевірте новий предмет у кімнаті.`:'Не вдалося використати Маджику.');}
  };
  panel.addEventListener('click',e=>{const btn=e.target.closest('button[data-dev]');if(btn&&actions[btn.dataset.dev])actions[btn.dataset.dev]();});
