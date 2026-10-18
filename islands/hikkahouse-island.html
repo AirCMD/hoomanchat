@@ -865,7 +865,7 @@ item.cool=Math.max(.26,1.13-(item.lv-1)*.085);
 const dmg=4+(item.lv-1)*3+(r.occupant===0?boostValue('weapon'):0);
 const target=servant||h;
 let evaded=false;
- if(servant&&servant.dodgeCd<=0&&Math.random()<.52){evaded=dodgeServant(servant)}
+ if(servant&&servant.dodgeCd<=0&&Math.random()<.78){evaded=dodgeServant(servant)}
  g.projectiles.push({x:x+.5,y:y+.5,tx:target.x,ty:target.y,life:.21,max:.21,dmg,target,evaded});sound('shoot')}}}
 // Посіпаки Колядуна: окремі HP, рух до дверей, слабкі удари і перехоплення куль.
 // Вибір безпечнішого шляху: кожна клітинка отримує штраф за чужі турелі в радіусі.
@@ -912,43 +912,67 @@ function servantSafePath(m,door){
  }
  return bfs(m.x,m.y,tx,ty,null);
 }
+// Колпоси обирають власні кімнати, змінюють цілі й реагують на загрозу турелей.
+function chooseServantRoom(m,excludeId=null){
+ const rooms=game.rooms.filter(r=>r.alive&&r.occupant!==null&&game.players[r.occupant]?.seated);
+ if(!rooms.length)return null;
+ let pool=rooms.filter(r=>r.id!==excludeId);
+ if(!pool.length)pool=rooms;
+ // Кімнату Колядуна уникаємо, доки залишаються інші зайняті кімнати.
+ const alternate=pool.filter(r=>r.id!==game.hunter.target);
+ if(alternate.length)pool=alternate;
+ const ranked=pool.map(r=>{
+  const d=Math.hypot(m.x-nearestHunterDoor(r).x,m.y-nearestHunterDoor(r).y);
+  const others=game.servants.filter(s=>s!==m&&s.hp>0&&s.target===r.id).length;
+  const underAttack=game.hunter.target===r.id?1.8:1;
+  return {r,weight:1/(3+d)/(1+others*1.9)/underAttack};
+ });
+ let roll=rand(0,ranked.reduce((n,e)=>n+e.weight,0));
+ for(const e of ranked){roll-=e.weight;if(roll<=0)return e.r}
+ return ranked[ranked.length-1].r;
+}
 function summonServant(r){
  const g=game,h=g.hunter;
  if(g.boss.id!=='kolyadun'||h.level<2||g.servants.length>=Math.max(1,Math.min(3,h.level)-(g.boosts.includes('fewer')?1:0)))return;
  const hp=55+Math.min(45,g.level*5);
- g.servants.push({x:h.x,y:h.y,hp,maxHp:hp,target:r.id,hitCd:1.6,
-   path:[],speed:3.9,spawnShieldUntil:g.time+1.1,anim:0,attackAnim:0,shotCd:0,walk:0,action:'walk',dead:false, switchAt:g.time+rand(24,34), dodgeCd:rand(.3,1), dodges:0});
+ const m={x:h.x,y:h.y,hp,maxHp:hp,target:null,hitCd:1.6,
+  path:[],speed:3.9,spawnShieldUntil:g.time+1.1,anim:0,attackAnim:0,shotCd:0,walk:0,action:'walk',dead:false,
+  switchAt:g.time+rand(9,14),dodgeCd:rand(.2,.5),dodges:0,routeTarget:null,attackStarted:0};
+ const room=chooseServantRoom(m);m.target=room?.id??r.id;
+ g.servants.push(m);
  effect(h.x,h.y,'👻');toast('Колядун покликав посіпаку!');sound('hit');
 }
 function servantTarget(m){
  const eligible=game.rooms.filter(r=>r.alive&&r.occupant!==null&&game.players[r.occupant]?.seated);
  if(!eligible.length)return null;
  let current=eligible.find(r=>r.id===m.target);
- // Посіпака не зациклюється на одних дверях. Кожні 7–13 с може перейти до інших.
- if(!current||(game.time>=m.switchAt&&Math.hypot(m.x-nearestHunterDoor(current).x,m.y-nearestHunterDoor(current).y)>4)){
-  const other=eligible.filter(r=>r.id!==m.target);
-  if(other.length){
-   const ranked=other.map(r=>({r,weight:1/(2+Math.hypot(m.x-nearestHunterDoor(r).x,m.y-nearestHunterDoor(r).y))}));
-   const sum=ranked.reduce((n,v)=>n+v.weight,0);let roll=rand(0,sum);
-   for(const entry of ranked){roll-=entry.weight;if(roll<=0){current=entry.r;break}}
-   current=current||ranked[ranked.length-1].r;
-  }else current=eligible[0];
-  m.target=current.id;m.path=[];m.switchAt=game.time+rand(24,34);m.hitCd=Math.max(m.hitCd,.65);
+ // Навіть біля дверей колпос іноді має змінити ціль, інакше він б'є лише одну кімнату.
+ if(!current||game.time>=m.switchAt){
+  const next=chooseServantRoom(m,current?.id);
+  if(next){current=next;m.target=next.id;m.path=[];m.routeTarget=null;m.attackStarted=0;}
+  m.switchAt=game.time+rand(10,16);
+  m.hitCd=Math.max(m.hitCd,.45);
  }
  return current;
 }
-// Маневр убік по доступних клітинках коридору. Посіпака не проходить крізь стіни.
 function dodgeServant(m){
  const x=Math.floor(m.x),y=Math.floor(m.y);
+ const towers=[];
+ for(const r of game.rooms){
+  if(!r.alive||r.occupant===null||!game.players[r.occupant]?.seated)continue;
+  for(const [key,it] of r.items){if(it.type==='weapon'&&(it.jammed||0)<=0){const [tx,ty]=key.split(',').map(Number);towers.push({x:tx+.5,y:ty+.5,lv:it.lv||1});}}
+ }
  const choices=[];
  for(const [dx,dy] of [[-1,0],[1,0],[0,-1],[0,1]]){
-  const nx=x+dx,ny=y+dy;
-  if(tileType(nx,ny)!=='corridor')continue;
-  const path=bfs(m.x,m.y,nx,ny,null);
-  if(path.length)choices.push(path);
+  const nx=x+dx,ny=y+dy;if(tileType(nx,ny)!=='corridor')continue;
+  const path=bfs(m.x,m.y,nx,ny,null);if(!path.length)continue;
+  const danger=towers.reduce((sum,t)=>sum+(Math.hypot(nx+.5-t.x,ny+.5-t.y)<5?1+t.lv*.18:0),0);
+  choices.push({path,danger});
  }
  if(!choices.length)return false;
- m.path=pick(choices);m.dodgeUntil=game.time+0.45;m.dodgeCd=rand(.85,1.5);m.dodges++;
+ choices.sort((a,b)=>a.danger-b.danger);
+ const safe=choices.filter(c=>c.danger<=choices[0].danger+.5);
+ m.path=pick(safe).path;m.dodgeUntil=game.time+.65;m.dodgeCd=rand(.8,1.35);m.dodges++;
  effect(m.x,m.y,'💨');return true;
 }
 function updateServants(dt){
@@ -959,13 +983,25 @@ function updateServants(dt){
   m.dodgeCd=Math.max(0,(m.dodgeCd||0)-dt);
   if((m.trapStun||0)>0){m.trapStun=Math.max(0,m.trapStun-dt);continue;}
   const dest=nearestHunterDoor(r);m.anim+=dt;
+  // Ухиляється від небезпечної турелі навіть ДО пострілу.
+  if(m.dodgeCd<=0&&game.time>=(m.dodgeUntil||0)){
+   let danger=false;
+   for(const rr of game.rooms){if(!rr.alive||rr.occupant===null||!game.players[rr.occupant]?.seated)continue;
+    for(const [key,it] of rr.items){if(it.type!=='weapon'||(it.jammed||0)>0)continue;
+     const [tx,ty]=key.split(',').map(Number);
+     if(Math.hypot(tx+.5-m.x,ty+.5-m.y)<4.5&&Math.random()<.30){danger=true;break;}}
+    if(danger)break;
+   }
+   if(danger)dodgeServant(m);
+  }
   if(Math.hypot(m.x-dest.x,m.y-dest.y)<1.3){
    const trap=[...r.items.values()].find(it=>it.type==='trap'&&(it.cool||0)<=0);
    if(trap){trap.cool=24;m.trapStun=game.boosts.includes('trap')?3.2:1.5;effect(m.x,m.y,'🪤 СТОП!');continue;}
   }
-  if(m.path.length&&game.time<(m.dodgeUntil||0)){travel(m,dt);continue}
+  if(m.path.length&&game.time<(m.dodgeUntil||0)){m.action='walk';travel(m,dt);continue;}
   if(Math.hypot(m.x-dest.x,m.y-dest.y)>.68){
    m.action='walk';m.hitCd=Math.max(.35,m.hitCd);
+   if(m.routeTarget!==r.id){m.path=[];m.routeTarget=r.id;}
    if(!m.path.length)m.path=servantSafePath(m,dest);
    travel(m,dt);
   }else{
