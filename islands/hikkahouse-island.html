@@ -235,7 +235,7 @@ function preloadCharacter(id){
  }
 }
 // Завантажуємо спрайти лише після визначення папки ресурсів.
-const images={};const filenames=['cocroach.png','cocroachwalk.gif','trap.png','chain.png','seyf.png','coin.png','cash.png','wdrop.png','tamagotchi.png','magican.png','floor.png','wall.png','icefloor.png','snowfloor.png','snowwall.png','autumnbrkwall.png','woodfloor.png','autumnfloor.png','grassfloor.png','wallbrk.png','tilefloor.png','mudfloor.png','time.png','hunter.png','hunter resting.png','kolyadun.png','kolyadunwalk.gif','kolyadunfight.gif','kolposy.gif','hella.png','hellawalk.gif','hellafight.gif','hellatransform.gif','hector.png','hectorwalk.gif','hectorfight.gif','evgen.png','evgenwalk.gif','evgenfight.gif','box.png','six.png',...Array.from({length:6},(_,i)=>`door${i+1}.png`),...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),...Array.from({length:5},(_,i)=>`energy${i+1}.png`),...Array.from({length:4},(_,i)=>`moneytree${i+1}.${i===3?'gif':'png'}`),...[1,2,3,4,5,6,7].map(i=>`pc${i}.png`),...Array.from({length:3},(_,i)=>`cat${i+1}.png`),...Array.from({length:3},(_,i)=>`dog${i+1}.png`)];let hikkaGameAssetsStarted=false;
+const images={};const filenames=['cocroach.png','cocroachwalk.gif','trap.png','chain.png','seyf.png','coin.png','cash.png','wdrop.png','tamagotchi.png','magican.png','floor.png','wall.png','icefloor.png','snowfloor.png','snowwall.png','autumnbrkwall.png','woodfloor.png','autumnfloor.png','grassfloor.png','wallbrk.png','tilefloor.png','mudfloor.png','time.png','hunter.png','hunter resting.png','kolyadun.png','kolyadunwalk.gif','kolyadunfight.gif','kolposy.gif','hella.png','hellawalk.gif','hellafight.gif','hellatransform.gif','hector.png','hectorwalk.gif','hectorfight.gif','evgen.png','evgenwalk.gif','evgenfight.gif','marichka.png','marichkawalk.gif','marichkafight.gif','box.png','six.png',...Array.from({length:6},(_,i)=>`door${i+1}.png`),...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),...Array.from({length:5},(_,i)=>`energy${i+1}.png`),...Array.from({length:4},(_,i)=>`moneytree${i+1}.${i===3?'gif':'png'}`),...[1,2,3,4,5,6,7].map(i=>`pc${i}.png`),...Array.from({length:3},(_,i)=>`cat${i+1}.png`),...Array.from({length:3},(_,i)=>`dog${i+1}.png`)];let hikkaGameAssetsStarted=false;
 function loadGameAssets(){
  if(hikkaGameAssetsStarted)return;
  hikkaGameAssetsStarted=true;
@@ -403,13 +403,15 @@ const BOSS_ROSTER=[
  {id:'kolyadun',name:'Колядун',idle:'kolyadun.png',walk:'kolyadunwalk.gif',attack:'kolyadunfight.gif'},
  {id:'hella',name:'Гелла',idle:'hella.png',walk:'hellawalk.gif',attack:'hellafight.gif',transform:'hellatransform.gif'},
  {id:'hector',name:'Гектор',idle:'hector.png',walk:'hectorwalk.gif',attack:'hectorfight.gif'},
- {id:'evgen',name:'Євген',idle:'evgen.png',walk:'evgenwalk.gif',attack:'evgenfight.gif'}
+ {id:'evgen',name:'Євген',idle:'evgen.png',walk:'evgenwalk.gif',attack:'evgenfight.gif'},
+ {id:'marichka',name:'Марічка',idle:'marichka.png',walk:'marichkawalk.gif',attack:'marichkafight.gif'}
 ];
 function bossForDifficulty(level){
  if(level<=3)return BOSS_ROSTER[0];
  if(level<=7)return BOSS_ROSTER[1];
  if(level<=11)return BOSS_ROSTER[2];
  if(level<=15)return BOSS_ROSTER[3];
+ if(level<=16)return BOSS_ROSTER[4];
  return {id:'hunter',name:'Нав’язливий гість',idle:'hunter.png',walk:'hunter.png',attack:'hunter.png'}
 }
 let game=null,modalAction=null,modalCloseFn=null,selectedTab='База',drag=null,pressed=null;
@@ -825,6 +827,13 @@ function updateHunter(dt){
  if(g.devTest&&g.devImmortal)h.hp=Math.max(1,h.hp);
  if(h.hp<=0){finish(true,`${g.boss.name} прогнано!`);return}
  h.anim+=dt;h.abilityCd-=dt;h.transform=Math.max(0,(h.transform||0)-dt);
+ if(h.state==='roachfight'){
+  h.roachFightTime=Math.max(0,(h.roachFightTime||0)-dt);
+  if(h.roachFightTime>0)return;
+  h.state=h.roachPreviousState==='attack'?'attack':'hunt';
+  h.roachPreviousState=null;
+  if(h.state==='hunt'&&h.target!==null){const rr=g.rooms[h.target];if(rr?.alive){const pt=nearestHunterDoor(rr);hunterPath(Math.floor(pt.x),Math.floor(pt.y));}else h.target=null;}
+ }
 // Капкан спрацьовує, коли гість підходить до входу, навіть перед першою атакою.
 if(h.target!==null&&['hunt','transform','attack'].includes(h.state)&&h.stun<=0){
  const rr=g.rooms[h.target];
@@ -832,7 +841,7 @@ if(h.target!==null&&['hunt','transform','attack'].includes(h.state)&&h.stun<=0){
   const dp=nearestHunterDoor(rr);
   if(Math.hypot(h.x-dp.x,h.y-dp.y)<1.35){
    const trap=[...rr.items.values()].find(it=>it.type==='trap'&&(it.cool||0)<=0);
-   if(trap){
+   if(trap&&g.boss.id!=='marichka'){
     h.stun=g.boosts.includes('trap')?3.2:1.5;
     trap.cool=24;
     effect(h.x,h.y,'🪤 СТОП!');
@@ -1175,7 +1184,8 @@ function updateCockroaches(dt){
   const [sx,sy]=key.split(',').map(Number),home={x:sx+.5,y:sy+.5};
   if(!it.bug)it.bug={x:home.x,y:home.y,path:[],routeKey:'',active:false,returning:false,chaseUntil:0};
   const b=it.bug,limit=game.boosts.includes('cockroach')?2:1;
-  const canChase=h.active&&h.hp>0&&r.alive&&h.state!=='rest'&&(it.strikes||0)<limit;
+  const frightened=game.boss.id==='marichka'&&(b.scaredUntil||0)>game.time;
+  const canChase=h.active&&h.hp>0&&r.alive&&h.state!=='rest'&&!frightened&&(it.strikes||0)<limit;
   const nearDoor=Math.hypot(h.x-(r.doorX+.5),h.y-(r.doorY+.5))<8;
   if(canChase&&nearDoor){
    b.chaseUntil=game.time+10;
@@ -1195,7 +1205,13 @@ function updateCockroaches(dt){
    if(d<=step){b.x=n.x;b.y=n.y;b.path.shift()}
    else{b.x+=(n.x-b.x)/d*step;b.y+=(n.y-b.y)/d*step}
   }
-  if(chasing&&Math.hypot(b.x-h.x,b.y-h.y)<1.15){
+  if(chasing&&game.boss.id==='marichka'&&h.state!=='roachfight'&&h.stun<=0&&Math.hypot(b.x-h.x,b.y-h.y)<1.65){
+   // Марічка дістає хлопалку; тарган лякається й фізично біжить назад.
+   h.roachPreviousState=h.state;h.state='roachfight';h.roachFightTime=1.05;h.path=[];
+   b.scaredUntil=game.time+8;b.chaseUntil=0;b.returning=true;b.path=[];b.routeKey='';
+   effect(h.x,h.y,'💥');effect(b.x,b.y,'🪳💨');
+  }
+  if(chasing&&game.boss.id!=='marichka'&&Math.hypot(b.x-h.x,b.y-h.y)<1.15){
    it.strikes=(it.strikes||0)+1;
    h.hp=Math.max(0,h.hp-20);h.stun=Math.max(h.stun,1.2);
    effect(h.x,h.y,'🪳 -20');b.chaseUntil=0;b.returning=true;b.path=[];b.routeKey='';
@@ -1382,7 +1398,7 @@ function updateBossAnimation(){
  if(!h?.active || !bossUsesOverlay() || $('game').hidden){
    if(bossAnimated){bossAnimated.hidden=true}bossDisplayedState='';return;
  }
- const mode=h.state==='transform'&&game.boss.transform?'transform':(h.state==='attack'?'attack':(h.state==='hunt'||h.state==='retreat')?'walk':'idle');
+ const mode=h.state==='transform'&&game.boss.transform?'transform':(['attack','roachfight'].includes(h.state)?'attack':(h.state==='hunt'||h.state==='retreat')?'walk':'idle');
  const filename=game.boss[mode]||game.boss.attack||game.boss.walk||game.boss.idle;
  if(bossDisplayedState!==mode){
    bossDisplayedState=mode;
@@ -1587,7 +1603,7 @@ for(const r of game.rooms)for(const it of r.items.values()){
 
 for(const r of game.rooms)for(const it of r.items.values()){if(it.type!=='cockroach'||!it.bug?.active)continue;const b=it.bug;const size=tile*.72;const sprite=b.path?.length?'cocroachwalk.gif':'cocroach.png';if(!drawImg(sprite,b.x*tile-size/2,b.y*tile-size/2,size,size)){ctx.font=`${tile*.55}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('🪳',b.x*tile,b.y*tile)}}
 
-if(h.active){const hsize=tile*.95;ctx.save();ctx.translate(h.x*tile,h.y*tile);if(h.state==='attack'){ctx.rotate(Math.sin(h.anim*17)*.2);ctx.translate(Math.sin(h.anim*22)*tile*.11,0)}else if(h.state==='hunt'||h.state==='retreat')ctx.translate(0,Math.sin(h.anim*10)*tile*.06);const bossSprite=h.state==='attack'?game.boss.attack:(h.state==='hunt'||h.state==='retreat')?game.boss.walk:game.boss.idle;if(!bossUsesOverlay()&&!drawImg(bossSprite,-hsize/2,-hsize/2,hsize,hsize)){ctx.fillStyle='#ef8da9';ctx.beginPath();ctx.arc(0,0,hsize*.34,0,Math.PI*2);ctx.fill();ctx.font=`bold ${Math.max(12,tile*.4)}px sans-serif`;ctx.fillStyle='#271021';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('👁',0,0);}ctx.restore();const bx=h.x*tile-tile*.65,by=h.y*tile-tile*.75;ctx.fillStyle='#0d1223';ctx.fillRect(bx,by,tile*1.3,7);ctx.fillStyle='#f46a92';ctx.fillRect(bx,by,tile*1.3*clamp(h.hp/h.maxHp,0,1),7);ctx.textAlign='center';ctx.font=`bold ${Math.max(9,tile*.22)}px sans-serif`;ctx.fillStyle='#ffc9d7';ctx.fillText(`👁 ${h.level} ${h.state==='rest'?'💤':''}`,h.x*tile,by-5)}
+if(h.active){const hsize=tile*.95;ctx.save();ctx.translate(h.x*tile,h.y*tile);if(h.state==='attack'||h.state==='roachfight'){ctx.rotate(Math.sin(h.anim*17)*.2);ctx.translate(Math.sin(h.anim*22)*tile*.11,0)}else if(h.state==='hunt'||h.state==='retreat')ctx.translate(0,Math.sin(h.anim*10)*tile*.06);const bossSprite=(h.state==='attack'||h.state==='roachfight')?game.boss.attack:(h.state==='hunt'||h.state==='retreat')?game.boss.walk:game.boss.idle;if(!bossUsesOverlay()&&!drawImg(bossSprite,-hsize/2,-hsize/2,hsize,hsize)){ctx.fillStyle='#ef8da9';ctx.beginPath();ctx.arc(0,0,hsize*.34,0,Math.PI*2);ctx.fill();ctx.font=`bold ${Math.max(12,tile*.4)}px sans-serif`;ctx.fillStyle='#271021';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('👁',0,0);}ctx.restore();const bx=h.x*tile-tile*.65,by=h.y*tile-tile*.75;ctx.fillStyle='#0d1223';ctx.fillRect(bx,by,tile*1.3,7);ctx.fillStyle='#f46a92';ctx.fillRect(bx,by,tile*1.3*clamp(h.hp/h.maxHp,0,1),7);ctx.textAlign='center';ctx.font=`bold ${Math.max(9,tile*.22)}px sans-serif`;ctx.fillStyle='#ffc9d7';ctx.fillText(`👁 ${h.level} ${h.state==='rest'?'💤':''}`,h.x*tile,by-5)}
 // Маленькі посіпаки мають власний індикатор здоров'я.
 for(const m of game.servants||[]){const sx=m.x*tile,sy=m.y*tile;ctx.save();ctx.globalAlpha=.93;ctx.font=`${tile*.62}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';/* GIF анімується окремим HTML-спрайтом */ctx.restore();ctx.fillStyle='#351e38';ctx.fillRect(sx-tile*.27,sy-tile*.46,tile*.54,3);ctx.fillStyle='#fda4bf';ctx.fillRect(sx-tile*.27,sy-tile*.46,tile*.54*clamp(m.hp/m.maxHp,0,1),3)}
 for(const p of game.projectiles){const t=1-p.life/p.max;ctx.strokeStyle='#ffe67e';ctx.lineWidth=Math.max(1,cell*.06);ctx.beginPath();ctx.moveTo(p.x*tile,p.y*tile);ctx.lineTo((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile);ctx.stroke();ctx.fillStyle='#fff6ad';ctx.beginPath();ctx.arc((p.x+(p.tx-p.x)*t)*tile,(p.y+(p.ty-p.y)*t)*tile,Math.max(2,tile*.07),0,Math.PI*2);ctx.fill()}
@@ -1811,7 +1827,7 @@ if(!save.tutorial)infoModal();
  style.textContent=`#hikkaDevPanel[hidden]{display:none!important}#hikkaDevPanel{position:fixed;right:12px;top:65px;z-index:9999;width:min(320px,calc(100vw - 24px));max-height:calc(100vh - 90px);overflow:auto;padding:12px;background:#151b30f5;border:1px solid #9baaff;border-radius:13px;color:#fff;box-shadow:0 12px 40px #0009;font:13px system-ui,sans-serif}#hikkaDevPanel h3{margin:0 0 7px;font-size:15px}#hikkaDevPanel p{margin:0 0 9px;color:#c2c9e5;font-size:12px}#hikkaDevPanel .dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}#hikkaDevPanel button{padding:8px 5px;border:1px solid #626f99;border-radius:7px;background:#303c5e;color:white;cursor:pointer;font-size:12px}#hikkaDevPanel button:hover{background:#435583}#hikkaDevPanel select{width:100%;background:#222b48;color:white;border:1px solid #6a7ea9;border-radius:6px;padding:6px;margin:5px 0 9px}#hikkaDevPanel .dev-close{float:right;width:30px;padding:3px}#hikkaDevPanel .dev-alert{color:#ffcb94}`;
  document.head.appendChild(style);
  const panel=document.createElement('div');panel.id='hikkaDevPanel';panel.hidden=true;
- panel.innerHTML=`<button class="dev-close" data-dev="close" aria-label="Закрити">×</button><h3>🧪 Тест Hikka House · F8</h3><p class="dev-alert">Тестові матчі не дають токенів, рейтингу чи відкриття складностей. Вмикайте перед тестуванням.</p><div class="dev-grid"><button data-dev="room">🏠 Зайняти кімнату</button><button data-dev="resources">💰 +5000 / ⚡ +500</button><button data-dev="boss">👁️ Запустити боса</button><button data-dev="servant">👻 Викликати колпоса</button><button data-dev="door">🛡️ Відновити двері</button><button data-dev="magic">✨ Перевірити Маджику</button><button data-dev="magicReset">♻️ Скинути Маджику</button><button data-dev="cat">🐈 Додати кота</button><button data-dev="dog">🐕 Додати собаку</button><button data-dev="petChase">🏃 Тест погоні тварин</button><button data-dev="immortal" id="hikkaDevImmortal" aria-pressed="false">🛡️ Безсмертя: ВИМК.</button></div><label for="hikkaDevBossSelect" style="display:block;margin-top:10px">👁️ Обрати боса для тесту</label><select id="hikkaDevBossSelect"><option value="kolyadun">Колядун</option><option value="hella">Гелла</option><option value="hector">Гектор</option><option value="evgen">Євген</option></select><button data-dev="switchBoss" style="width:100%;margin-bottom:9px">🔄 Замінити боса в матчі</button><p id="hikkaDevStatus" style="margin-top:9px">F8 закриває цю панель.</p>`;
+ panel.innerHTML=`<button class="dev-close" data-dev="close" aria-label="Закрити">×</button><h3>🧪 Тест Hikka House · F8</h3><p class="dev-alert">Тестові матчі не дають токенів, рейтингу чи відкриття складностей. Вмикайте перед тестуванням.</p><div class="dev-grid"><button data-dev="room">🏠 Зайняти кімнату</button><button data-dev="resources">💰 +5000 / ⚡ +500</button><button data-dev="boss">👁️ Запустити боса</button><button data-dev="servant">👻 Викликати колпоса</button><button data-dev="door">🛡️ Відновити двері</button><button data-dev="magic">✨ Перевірити Маджику</button><button data-dev="magicReset">♻️ Скинути Маджику</button><button data-dev="cat">🐈 Додати кота</button><button data-dev="dog">🐕 Додати собаку</button><button data-dev="petChase">🏃 Тест погоні тварин</button><button data-dev="immortal" id="hikkaDevImmortal" aria-pressed="false">🛡️ Безсмертя: ВИМК.</button></div><label for="hikkaDevBossSelect" style="display:block;margin-top:10px">👁️ Обрати боса для тесту</label><select id="hikkaDevBossSelect"><option value="kolyadun">Колядун</option><option value="hella">Гелла</option><option value="hector">Гектор</option><option value="evgen">Євген</option><option value="marichka">Марічка</option></select><button data-dev="switchBoss" style="width:100%;margin-bottom:9px">🔄 Замінити боса в матчі</button><p id="hikkaDevStatus" style="margin-top:9px">F8 закриває цю панель.</p>`;
  document.body.appendChild(panel);
  function status(message){const el=document.getElementById('hikkaDevStatus');if(el)el.textContent=message;}
  function room(){if(!game)return null;return playerRoom()||game.rooms.find(r=>r.alive&&r.occupant===null)||null;}
@@ -1857,7 +1873,7 @@ if(!save.tutorial)infoModal();
   },
   immortal(){if(!testStart())return;game.devImmortal=!game.devImmortal;if(game.devImmortal)game.hunter.hp=Math.max(1,game.hunter.hp);syncPanel();status(game.devImmortal?'Бос невразливий: HP не падає нижче 1. Атаки та здібності працюють.':'Невразливість вимкнена: бос знову може загинути.');},
   magicReset(){if(!testStart())return;let removed=0;for(const r of game.rooms){for(const [key,item] of r.items){if(item.source==='magic'){r.items.delete(key);removed++;}}}game.magicUsed=0;game.magicRolls={};renderPalette();status(`Маджику скинуто: 0/3. Прибрано ${removed} випадкових предметів. Куплені в магазині збережено.`);},
-  switchBoss(){if(!testStart())return;const value=document.getElementById('hikkaDevBossSelect').value;const boss=BOSS_ROSTER.find(b=>b.id===value);if(!boss)return status('Боса не знайдено.');const h=game.hunter;game.boss=boss;game.servants=[];game.projectiles=[];for(const im of servantVisuals.values())im.remove();servantVisuals.clear();h.hp=h.maxHp;h.state='hunt';h.active=true;h.stun=0;h.transform=0;h.healShown=0;h.healFxCd=0;h.target=null;h.path=[];h.attack=0;h.abilityCd=14;h.servantCd=18;h.retreats=0;h.rest=0;if(game.time<25)game.time=25;if(!game.players[0].seated)occupy();bossDisplayedState='';if(bossAnimated){bossAnimated.hidden=true;bossAnimated.removeAttribute('src');}syncPanel();status(`Активний бос: ${boss.name}. HP відновлено, стара атака й колпоси скинуті. Невразливість: ${game.devImmortal?'увімкнена':'вимкнена'}.`);},
+  switchBoss(){if(!testStart())return;const value=document.getElementById('hikkaDevBossSelect').value;const boss=BOSS_ROSTER.find(b=>b.id===value);if(!boss)return status('Боса не знайдено.');const h=game.hunter;game.boss=boss;game.servants=[];game.projectiles=[];for(const im of servantVisuals.values())im.remove();servantVisuals.clear();h.hp=h.maxHp;h.state='hunt';h.active=true;h.stun=0;h.transform=0;h.roachFightTime=0;h.roachPreviousState=null;h.healShown=0;h.healFxCd=0;h.target=null;h.path=[];h.attack=0;h.abilityCd=14;h.servantCd=18;h.retreats=0;h.rest=0;if(game.time<25)game.time=25;if(!game.players[0].seated)occupy();bossDisplayedState='';if(bossAnimated){bossAnimated.hidden=true;bossAnimated.removeAttribute('src');}syncPanel();status(`Активний бос: ${boss.name}. HP відновлено, стара атака й колпоси скинуті. Невразливість: ${game.devImmortal?'увімкнена':'вимкнена'}.`);},
   magic(){if(!testStart())return;if(!game.players[0].seated)occupy();const r=playerRoom();if(!r)return;if(game.magicUsed>=3)return status('Маджика: усі 3 використання вже витрачено.');const free=buildTiles(r).find(([x,y])=>!r.items.has(`${x},${y}`));if(!free)return status('Немає вільної клітинки в кімнаті.');const before=game.magicUsed;const result=build(r,free[0],free[1],'magic');status(result&&game.magicUsed>before?`Маджика використана: ${game.magicUsed}/3. Перевірте новий предмет у кімнаті.`:'Не вдалося використати Маджику.');}
  };
  panel.addEventListener('click',e=>{const btn=e.target.closest('button[data-dev]');if(btn&&actions[btn.dataset.dev])actions[btn.dataset.dev]();});
