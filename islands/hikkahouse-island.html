@@ -872,9 +872,9 @@ function servantSafePath(m,door){
 function summonServant(r){
  const g=game,h=g.hunter;
  if(g.boss.id!=='kolyadun'||h.level<2||g.servants.length>=Math.max(1,Math.min(3,h.level)-(g.boosts.includes('fewer')?1:0)))return;
- const hp=18+Math.min(8,g.level);
+ const hp=55+Math.min(45,g.level*5);
  g.servants.push({x:h.x,y:h.y,hp,maxHp:hp,target:r.id,hitCd:1.6,
-   path:[],speed:3.15,anim:0,attackAnim:0,shotCd:0,walk:0,action:'walk',dead:false, switchAt:g.time+rand(17,24), dodgeCd:rand(.3,1), dodges:0});
+   path:[],speed:3.9,spawnShieldUntil:g.time+1.1,anim:0,attackAnim:0,shotCd:0,walk:0,action:'walk',dead:false, switchAt:g.time+rand(24,34), dodgeCd:rand(.3,1), dodges:0});
  effect(h.x,h.y,'👻');toast('Колядун покликав посіпаку!');sound('hit');
 }
 function servantTarget(m){
@@ -890,7 +890,7 @@ function servantTarget(m){
    for(const entry of ranked){roll-=entry.weight;if(roll<=0){current=entry.r;break}}
    current=current||ranked[ranked.length-1].r;
   }else current=eligible[0];
-  m.target=current.id;m.path=[];m.switchAt=game.time+rand(17,24);m.hitCd=Math.max(m.hitCd,.65);
+  m.target=current.id;m.path=[];m.switchAt=game.time+rand(24,34);m.hitCd=Math.max(m.hitCd,.65);
  }
  return current;
 }
@@ -1075,8 +1075,10 @@ function retreatHunter(){const h=game.hunter;h.retreats++;fleeHunter('psychiatri
 function projectiles(dt){
  for(const p of game.projectiles){p.life-=dt;
   if(p.life<=0&&!p.evaded&&p.target&&p.target.hp>0){
-   p.target.hp=Math.max(0,p.target.hp-p.dmg);
-   effect(p.target.x,p.target.y,`-${p.dmg}`);
+   const isKolpos=game.servants.includes(p.target);
+   // Посіпака отримує меншу шкоду від одного пострілу, але не має імунітету.
+   const dealt=isKolpos?(game.time<(p.target.spawnShieldUntil||0)?0:Math.min(12,Math.max(1,Math.round(p.dmg*.65)))):p.dmg;
+   if(dealt>0){p.target.hp=Math.max(0,p.target.hp-dealt);effect(p.target.x,p.target.y,`-${dealt}`)};
   }
  }
  game.projectiles=game.projectiles.filter(p=>p.life>0);
