@@ -21,20 +21,82 @@
 @media(max-width:560px){.hh-music-control{font-size:11px;padding:8px}}
 
 .top #hhMusicButton{margin-left:auto}@media(max-width:560px){.top{flex-wrap:wrap}.top #hhMusicButton{order:3}}
+
+/* Інформаційні розділи: довгі тексти не обтинаються та мають прокрутку. */
+.content[hidden],.sprite[hidden]{display:none!important}
+.info-content{justify-content:flex-start;overflow:auto;max-height:min(80vh,760px);gap:12px;padding:clamp(20px,3vw,37px)}
+.info-copy{font-size:14px;line-height:1.7;color:#d8dcf0;overflow-wrap:anywhere}
+.info-copy h3{font-family:'Russo One',sans-serif;font-size:17px;margin:20px 0 5px;color:#ffd5e2}
+.info-copy p{margin:9px 0}.info-copy ul{margin:7px 0 14px;padding-left:20px}.info-copy li{margin:7px 0}
+.info-copy .info-lead{font-size:16px;color:#f5e5f0}
+.info-copy code{overflow-wrap:anywhere;font-size:12px;background:#1c2038;padding:2px 5px;border-radius:4px}
+.author-placeholder{padding:13px 15px;border:1px dashed #ff9fc0a0;border-radius:11px;background:#ff739e13;color:#ffdae6}
+.small-note{color:#b8c5dd;font-size:12px}.save-tools{display:flex;flex-wrap:wrap;gap:9px;margin:15px 0}
+.save-tools .control{font-size:13px;text-align:center}.import-label{display:inline-flex;align-items:center;cursor:pointer}
+@media(max-width:760px){.info-content{max-height:none;overflow:visible}.info-copy{font-size:14px}}
 </style></head><body>
 <header class="top"><div class="brand">HIKKA <b>HOUSE</b> · БЕСТІАРІЙ</div><button id="hhMusicButton" class="hh-music-control" type="button" aria-label="Увімкнути або вимкнути фонову мелодію">♪ Музика: вимк.</button><a href="hikkahouse-island.html" class="return" id="returnLink">← До гри</a></header>
-<main><div class="heading"><div><h1>ПРО ПЕРСОНАЖІВ</h1><p>Мешканці, непрохані гості та ті, хто втручається в їхні справи.</p></div><nav class="tabs" aria-label="Категорії персонажів"><button class="tab" data-group="hiki" aria-selected="true">Хікі</button><button class="tab" data-group="boss" aria-selected="false">Боси</button><button class="tab" data-group="helper" aria-selected="false">Помічники</button></nav></div>
-<section class="folio"><div class="art" id="art"><div class="window" id="w0"></div><div class="window" id="w1"></div><div class="background" id="b0"></div><div class="background" id="b1"></div><div class="flare"></div><img class="sprite" id="sprite" alt=""><div class="art-label" id="typeLabel">МЕШКАНЦІ БУДИНКУ</div></div><article class="content" aria-live="polite"><div class="eyebrow" id="kind">Герої</div><h2 class="title" id="name"></h2><p class="desc" id="desc"></p><div class="pager"><button class="control" id="prev" aria-label="Попередній персонаж">← Назад</button><div class="number" id="counter">01 / 10</div><button class="control" id="next" aria-label="Наступний персонаж">Далі →</button></div><div class="dots" id="dots" aria-label="Пагінація"></div><div class="tip">Перегортайте стрілками клавіатури або кнопками. Фон змінюється кожні три хвилини.</div></article></section></main>
+<main><div class="heading"><div><h1>ПРО ПЕРСОНАЖІВ</h1><p>Мешканці, непрохані гості та ті, хто втручається в їхні справи.</p></div><nav class="tabs" aria-label="Категорії персонажів"><button class="tab" data-group="hiki" aria-selected="true">Хікі</button><button class="tab" data-group="boss" aria-selected="false">Боси</button><button class="tab" data-group="helper" aria-selected="false">Помічники</button><button class="tab" data-group="about" aria-selected="false">Про гру</button><button class="tab" data-group="story" aria-selected="false">Сюжет</button></nav></div>
+<section class="folio"><div class="art" id="art"><div class="window" id="w0"></div><div class="window" id="w1"></div><div class="background" id="b0"></div><div class="background" id="b1"></div><div class="flare"></div><img class="sprite" id="sprite" alt=""><div class="art-label" id="typeLabel">МЕШКАНЦІ БУДИНКУ</div></div><article class="content" aria-live="polite"><div class="eyebrow" id="kind">Герої</div><h2 class="title" id="name"></h2><p class="desc" id="desc"></p><div class="pager"><button class="control" id="prev" aria-label="Попередній персонаж">← Назад</button><div class="number" id="counter">01 / 10</div><button class="control" id="next" aria-label="Наступний персонаж">Далі →</button></div><div class="dots" id="dots" aria-label="Пагінація"></div><div class="tip">Перегортайте стрілками клавіатури або кнопками. Фон змінюється кожні три хвилини.</div></article><article class="content info-content" id="infoContent" hidden aria-live="polite"><div class="eyebrow" id="infoKind"></div><h2 class="title" id="infoTitle"></h2><div class="info-copy" id="infoCopy"></div></article></section></main>
 <script>
 const characters=[{"group": "hiki", "name": "Yani Kuroneko", "sprite": "yaniidle.gif", "alt": "yani.png", "desc": "Ігрова героїня. Обирайте Яні, займайте кімнату та захищайте її від непроханих гостей."}, {"group": "hiki", "name": "Akira Bakeneko", "sprite": "akiraidle.gif", "alt": "akira.png", "desc": "Ігровий герой. Акіра захищає особистий простір і намагається пережити ніч за своїм ПК."}, {"group": "hiki", "name": "Kate Chan", "sprite": "kateidle.gif", "alt": "kate.png", "desc": "Один із доступних ігрових персонажів Hikka House. Сидить за ПК і розвиває оборону своєї кімнати."}, {"group": "hiki", "name": "Kent White", "sprite": "kentidle.gif", "alt": "kent.png", "desc": "Один із мешканців Hikka House. Заробляє монети за ПК та зміцнює кімнату перед нападом."}, {"group": "hiki", "name": "Hiki Komori", "sprite": "hikiidle.gif", "alt": "hiki.png", "desc": "Ігровий персонаж із команди хікі. Його завдання — встояти перед нав’язливими відвідувачами."}, {"group": "hiki", "name": "Jura Kun", "sprite": "juraidle.gif", "alt": "jura.png", "desc": "Ігровий персонаж, якого можна обрати перед матчем. Будує оборону й захищає двері."}, {"group": "hiki", "name": "Sayuri Kit", "sprite": "sayuriidle.gif", "alt": "sayuri.png", "desc": "Ігрова героїня Hikka House. Оберіть її, щоб витримати навалу непроханих гостей."}, {"group": "hiki", "name": "Derek Q", "sprite": "derekidle.gif", "alt": "derek.png", "desc": "Ігровий герой. Сила захисту залежить від побудованої оборони та рішень під час матчу."}, {"group": "hiki", "name": "Kornel Vus", "sprite": "kornelidle.gif", "alt": "kornel.png", "desc": "Один із доступних хікі. Може розвивати ПК, двері та захисні пристрої."}, {"group": "hiki", "name": "Jinni Matsumatsu", "sprite": "jinniidle.gif", "alt": "jinni.png", "desc": "Ігровий персонаж Hikka House. Перемагає, якщо зуміє захистити кімнату до кінця ночі."}, {"group": "boss", "name": "Колядун", "sprite": "kolyadunwalk.gif", "alt": "kolyadun.png", "desc": "Непроханий гість, у якому дитина співає колядки, а батько наполегливо домовляється про гроші. Викликає колпосів, які можуть нападати на різні кімнати, ухилятися й відступати для лікування."}, {"group": "boss", "name": "Гелла", "sprite": "hellawalk.gif", "alt": "hella.png", "desc": "Нав’язлива мати з дитячим візком. Перед нападом трансформується, швидко б’є по дверях і відновлює здоров’я під час атаки."}, {"group": "boss", "name": "Гектор", "sprite": "hectorwalk.gif", "alt": "hector.png", "desc": "Надокучливий дідусь із пиріжками. Заводить нескінченні розмови, краде накопичену енергію мешканців і завдяки цьому лікується."}, {"group": "boss", "name": "Євген", "sprite": "evgenwalk.gif", "alt": "evgen.png", "desc": "Сусід, який постійно щось ремонтує та вимагає допомоги. Може тимчасово блокувати зброю й захисні пристрої кімнати."}, {"group": "boss", "name": "Марічка", "sprite": "marichkawalk.gif", "alt": "marichka.png", "desc": "Допитлива сусідка, яка втручається в чужі справи й знаходить мешканців за активністю. Обходить капкани, змінює кімнати та відганяє тарганів хлопалкою."}, {"group": "boss", "name": "Морій", "sprite": "moriywalk.gif", "alt": "moriy.png", "desc": "Нав’язливий проповідник і лідер групи адептів. Наполегливо прагне навернути мешканців до своєї віри, закликаючи: «Ви увіруєте!». Разом із ним приходять Антон і Деара."}, {"group": "helper", "name": "Психіатр", "sprite": "psywalk.gif", "alt": null, "desc": "Допоміжний персонаж, який може врятувати відвідувача кімнати від критичного нападу: з’являється та проганяє боса."}, {"group": "helper", "name": "Микола", "sprite": "mykolawalk.gif", "alt": null, "desc": "Непроханий, але корисний у потрібний момент знайомий. Пропонує гостям випити, і ті можуть утекти."}, {"group": "helper", "name": "Олексій", "sprite": "oleksiywalk.gif", "alt": null, "desc": "Майстер торгу на барахолці. Своїми пропозиціями й торгом здатен налякати навіть наполегливих відвідувачів."}, {"group": "helper", "name": "Шістка", "sprite": "sixwalk.gif", "alt": "six.png", "desc": "Дівчина, яка прагне дружби та вміє дивно пересуватися над землею. Відлякує гостей, а Геллі також завдає невеликої шкоди."}, {"group": "helper", "name": "Колпос", "sprite": "kolposy.gif", "alt": null, "desc": "Посіпака Колядуна. Обирає кімнати, обходить загрозливі місця, ухиляється від турелей та може відступити для відновлення сил."}, {"group": "helper", "name": "Антон", "sprite": "antonwalk.gif", "alt": "anton.png", "desc": "Вірний адепт Морія, завдяки його чарівній посмішці чимало людей стали вірянами."}, {"group": "helper", "name": "Деара", "sprite": "dearawalk.gif", "alt": "deara.png", "desc": "Вірна адептка Морія. Зачаровує словами майбутніх вірян."}];
+
+// Тексти на інформаційних вкладках можна редагувати тут, не змінюючи решту гри.
+const ABOUT_CONTENT=`
+<p class="info-lead">Hikka House — сатирична гра про захист особистого простору. Оберіть мешканця, займіть кімнату, розвивайте комп’ютер, споруджуйте оборону та переживіть візити надто наполегливих гостей.</p>
+<h3>Перед грою</h3>
+<p>Це вигаданий комедійно-моторошний світ. Персонажі, події та їхні надмірні реакції є частиною сатири, а не порадою щодо реальної поведінки.</p>
+<h3>Застереження щодо вмісту</h3>
+<p>Гра може викликати дискомфорт у людей, чутливих до певних зображень, звуків або тем:</p>
+<ul>
+<li><strong>Таргани та комахи:</strong> зображення таргана і його руху. Може бути неприємно людям з ентомофобією або страхом тарганів.</li>
+<li><strong>Нав’язливе переслідування та порушення кордонів:</strong> гості переслідують мешканців, вимагають відчинити двері й погрожують їх зламати.</li>
+<li><strong>Моторошні перетворення:</strong> зокрема, трансформація Гелли й напружені сцени нападу.</li>
+<li><strong>Темрява та тривожна атмосфера:</strong> нічні сцени, небезпека й відчуття замкненого простору можуть бути неприємними при чутливості до темряви чи клаустрофобічних сюжетів.</li>
+<li><strong>Звуки та рух:</strong> удари, звукові ефекти, рухомі GIF і паралакс можуть дратувати людей, чутливих до різких звуків, анімації або руху зображення.</li>
+<li><strong>Соціально чутливі теми:</strong> висміювання нав’язливості, сімейного тиску, настирливого проповідництва та порушення особистих меж.</li>
+</ul>
+<p>Звукові ефекти та музику можна вимкнути окремими кнопками. Якщо рух зображення викликає дискомфорт, не вмикайте нахил телефона; також можна ввімкнути системне налаштування зменшення анімації.</p>
+<h3>Як зберігається прогрес</h3>
+<p><strong>Прогрес зберігається локально в браузері, а не в ігровому обліковому записі на сервері.</strong> Для нього використовується <code>localStorage</code> цього сайту. Зокрема, там зберігаються токени, відкриті персонажі, налаштування та ігрові результати.</p>
+<p>Це <strong>не звичайний кеш картинок</strong> і не окремий файл, який можна просто знайти в «Завантаженнях». Видалення даних сайту, використання приватного режиму, зміна браузера, пристрою або адреси сайту можуть зробити збереження недоступним. Саме кешування сторінки не гарантує збереження прогресу.</p>
+<p><strong>Рекомендація:</strong> регулярно створюйте резервну копію через кнопку нижче. Збережіть отриманий файл <code>.json</code> у безпечному місці. Для перенесення прогресу на інший пристрій відкрийте той самий сайт та імпортуйте файл.</p>
+<div class="save-tools"><button type="button" class="control" id="exportSave">⬇ Зберегти копію прогресу</button><label class="control import-label" for="importSave">⬆ Відновити з файлу<input id="importSave" type="file" accept=".json,application/json" hidden></label></div>
+<p class="small-note" id="saveStatus" role="status">Резервна копія містить локальні дані гри. Не публікуйте її без потреби. Імпорт замінить поточний прогрес у цьому браузері.</p>
+<h3>Від авторки</h3>
+<p class="author-placeholder">[Місце для Вашого тексту: як виникла ідея Hikka House, кому присвячено гру, що надихнуло на персонажів, побажання гравцям.]</p>
+`;
+const STORY_CONTENT=`
+<p class="info-lead">У будинку Hikka House мешкають люди, які цінують тишу, власну кімнату та право побути наодинці.</p>
+<p>Але спокій тут довго не триває. У коридорах з’являються непрохані гості: Колядун зі своїми посіпаками, Гелла, Гектор, Євген, Марічка, Морій з адептами та інші надто наполегливі відвідувачі.</p>
+<p>Кожен із них має власні причини стукати у двері. У мешканців натомість є комп’ютер, захисні пристрої, помічники та просте бажання, щоб їх нарешті залишили у спокої.</p>
+<h3>Продовження сюжету</h3>
+<p class="author-placeholder">[Тут авторка допише основний сюжет: історію будинку, зв’язки персонажів, причину появи гостей і можливу розв’язку.]</p>
+<p class="small-note">Текст цієї вкладки є чернеткою: Ви можете переписати його без змін механік гри.</p>
+`;
 const groups={hiki:{title:'ІГРОВІ ПЕРСОНАЖІ',eyebrow:'Мешканець Hikka House'},boss:{title:'НЕПРОХАНІ ГОСТІ',eyebrow:'Бос'},helper:{title:'ПОМІЧНИКИ ТА ПОСІПАКИ',eyebrow:'Персонаж світу Hikka House'}};
 const scenes=[['morning','backgroundmorning.png','windowmorning.png'],['day','backgroundday.png','windowday.png'],['noon','backgroundnoon.png','windownoon.png'],['evening','backgroundevening.png','windowevening.png'],['night','backgroundnight.png','windownight.png'],['dawn','backgrounddawn.png','windowdawn.png']];
 const assets=['../assets/','../Assets/'];let assetRoot=assets[0];
 function imagePath(file){return assetRoot+file}
 function spriteSource(file,alternate){const im=new Image();im.onload=()=>{if(document.getElementById('sprite').dataset.file===file)document.getElementById('sprite').src=im.src};im.onerror=()=>{if(im.dataset.fallback!=='1'){im.dataset.fallback='1';im.src=assets.find(r=>r!==assetRoot)+file}else if(alternate&&file!==alternate)spriteSource(alternate,null)};im.src=imagePath(file)}
 let group='hiki',index=0;
-function render(){const list=characters.filter(c=>c.group===group),p=list[index];if(!p)return;document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.group===group)));document.getElementById('typeLabel').textContent=groups[group].title;document.getElementById('kind').textContent=groups[group].eyebrow;document.getElementById('name').textContent=p.name;document.getElementById('desc').textContent=p.desc;document.getElementById('counter').textContent=String(index+1).padStart(2,'0')+' / '+String(list.length).padStart(2,'0');const image=document.getElementById('sprite');image.dataset.file=p.sprite;image.alt=p.name;image.classList.add('changing');spriteSource(p.sprite,p.alt);requestAnimationFrame(()=>image.classList.remove('changing'));const dots=document.getElementById('dots');dots.replaceChildren();list.forEach((_,i)=>{const b=document.createElement('button');b.className='dot'+(i===index?' current':'');b.title=String(i+1);b.setAttribute('aria-label','Персонаж '+(i+1));b.onclick=()=>{index=i;render()};dots.append(b)})}
-function move(n){const count=characters.filter(c=>c.group===group).length;index=(index+n+count)%count;render()}
+function render(){
+ const info=group==='about'||group==='story';
+ document.querySelector('.folio > article.content:not(.info-content)').hidden=info;
+ document.getElementById('infoContent').hidden=!info;
+ document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.group===group)));
+ const sprite=document.getElementById('sprite');
+ if(info){
+  sprite.hidden=true;
+  document.getElementById('typeLabel').textContent=group==='about'?'ПРО ГРУ':'ІСТОРІЯ БУДИНКУ';
+  document.getElementById('infoKind').textContent=group==='about'?'Hikka House · інформація та безпека':'Hikka House · сюжет';
+  document.getElementById('infoTitle').textContent=group==='about'?'Про гру':'Сюжет';
+  document.getElementById('infoCopy').innerHTML=group==='about'?ABOUT_CONTENT:STORY_CONTENT;
+  return;
+ }
+ sprite.hidden=false;
+ const list=characters.filter(c=>c.group===group),p=list[index];if(!p)return;document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.group===group)));document.getElementById('typeLabel').textContent=groups[group].title;document.getElementById('kind').textContent=groups[group].eyebrow;document.getElementById('name').textContent=p.name;document.getElementById('desc').textContent=p.desc;document.getElementById('counter').textContent=String(index+1).padStart(2,'0')+' / '+String(list.length).padStart(2,'0');const image=document.getElementById('sprite');image.dataset.file=p.sprite;image.alt=p.name;image.classList.add('changing');spriteSource(p.sprite,p.alt);requestAnimationFrame(()=>image.classList.remove('changing'));const dots=document.getElementById('dots');dots.replaceChildren();list.forEach((_,i)=>{const b=document.createElement('button');b.className='dot'+(i===index?' current':'');b.title=String(i+1);b.setAttribute('aria-label','Персонаж '+(i+1));b.onclick=()=>{index=i;render()};dots.append(b)})}
+function move(n){if(group==='about'||group==='story')return;const count=characters.filter(c=>c.group===group).length;index=(index+n+count)%count;render()}
 document.getElementById('prev').onclick=()=>move(-1);document.getElementById('next').onclick=()=>move(1);document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{group=b.dataset.group;index=0;render()});window.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){e.preventDefault();move(-1)}if(e.key==='ArrowRight'){e.preventDefault();move(1)}});
 // The asset root is probed once before scenes start.
 const probe=new Image();probe.onload=()=>{assetRoot=assets[0];start()};probe.onerror=()=>{assetRoot=assets[1];start()};probe.src=assets[0]+'backgroundmorning.png';
@@ -83,6 +145,40 @@ const art=document.getElementById('art');art.addEventListener('pointermove',e=>{
   }catch(err){btn.textContent='Не вдалося ввімкнути нахил'}
  });
  window.addEventListener('orientationchange',()=>{baseline=null},{passive:true});
+})();
+
+
+// Експорт/імпорт локального збереження. Не торкається даних інших сайтів.
+(function setupBackup(){
+ const SAVE_KEY='hikka-house-save-v1';
+ function status(message){const el=document.getElementById('saveStatus');if(el)el.textContent=message}
+ document.addEventListener('click',e=>{
+  if(e.target?.id!=='exportSave')return;
+  try{
+   const raw=localStorage.getItem(SAVE_KEY);
+   if(!raw){status('У цьому браузері ще немає збереженого прогресу. Спочатку запустіть гру.');return}
+   const save=JSON.parse(raw);
+   if(!save||typeof save!=='object'||Array.isArray(save))throw Error('Некоректне збереження');
+   const json=JSON.stringify({format:'hikka-house-save-backup',version:1,exportedAt:new Date().toISOString(),save},null,2);
+   const url=URL.createObjectURL(new Blob([json],{type:'application/json;charset=utf-8'}));
+   const a=document.createElement('a');a.href=url;a.download='hikka-house-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+   status('Копію створено. Збережіть JSON-файл у надійному місці.');
+  }catch(err){status('Не вдалося експортувати прогрес. Перевірте налаштування браузера.')}
+ });
+ document.addEventListener('change',async e=>{
+  if(e.target?.id!=='importSave')return;
+  const input=e.target, file=input.files?.[0];if(!file)return;
+  try{
+   if(file.size>2_000_000)throw Error('Завеликий файл');
+   const backup=JSON.parse(await file.text());
+   if(backup?.format!=='hikka-house-save-backup'||backup.version!==1||!backup.save||typeof backup.save!=='object'||Array.isArray(backup.save))throw Error('Невідомий формат файлу');
+   if(!Array.isArray(backup.save.skins)||typeof backup.save.tokens!=='number'||!Number.isFinite(backup.save.tokens))throw Error('Неправильні дані прогресу');
+   if(!confirm('Замінити поточний прогрес у цьому браузері даними з резервної копії? Це неможливо скасувати без старого файлу.'))return;
+   localStorage.setItem(SAVE_KEY,JSON.stringify(backup.save));
+   status('Прогрес відновлено. Поверніться до гри та оновіть сторінку.');
+  }catch(err){status('Імпорт не виконано: файл не є дійсною резервною копією Hikka House.')}
+  finally{input.value=''}
+ });
 })();
 
 function start(){render();showScene(0,true);sceneTimer=setInterval(nextScene,180000)}
