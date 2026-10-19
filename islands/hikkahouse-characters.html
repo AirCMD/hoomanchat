@@ -11,8 +11,18 @@
 @media (min-width:761px) and (max-width:1100px){.content{padding:clamp(22px,3vw,38px)}.content .title{font-size:clamp(25px,3.3vw,39px)}}
 @media (max-width:760px){.content .title{font-size:clamp(27px,7vw,43px)}}
 @media (max-width:360px){.content{padding:18px}.content .title{font-size:clamp(24px,7.2vw,31px)}}
+
+
+/* Фонове аудіо з YouTube: плеєр не перекриває інтерактивні елементи. */
+.hh-music-control{display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;padding:9px 12px;border:1px solid #a7a0cd77;border-radius:11px;background:#222747e8;color:#fff;font:700 12px system-ui;cursor:pointer;box-shadow:0 4px 18px #080b1a55}
+.hh-music-control:focus-visible{outline:2px solid #7be4ca;outline-offset:2px}
+.hh-music-host{position:fixed;left:-200px;top:-200px;width:200px;height:200px;opacity:0;pointer-events:none;overflow:hidden;z-index:-1}
+.hh-music-host iframe{width:200px;height:200px;border:0}
+@media(max-width:560px){.hh-music-control{font-size:11px;padding:8px}}
+
+.top #hhMusicButton{margin-left:auto}@media(max-width:560px){.top{flex-wrap:wrap}.top #hhMusicButton{order:3}}
 </style></head><body>
-<header class="top"><div class="brand">HIKKA <b>HOUSE</b> · БЕСТІАРІЙ</div><a href="hikkahouse-island.html" class="return" id="returnLink">← До гри</a></header>
+<header class="top"><div class="brand">HIKKA <b>HOUSE</b> · БЕСТІАРІЙ</div><button id="hhMusicButton" class="hh-music-control" type="button" aria-label="Увімкнути або вимкнути фонову мелодію">♪ Музика: вимк.</button><a href="hikkahouse-island.html" class="return" id="returnLink">← До гри</a></header>
 <main><div class="heading"><div><h1>ПРО ПЕРСОНАЖІВ</h1><p>Мешканці, непрохані гості та ті, хто втручається в їхні справи.</p></div><nav class="tabs" aria-label="Категорії персонажів"><button class="tab" data-group="hiki" aria-selected="true">Хікі</button><button class="tab" data-group="boss" aria-selected="false">Боси</button><button class="tab" data-group="helper" aria-selected="false">Помічники</button></nav></div>
 <section class="folio"><div class="art" id="art"><div class="window" id="w0"></div><div class="window" id="w1"></div><div class="background" id="b0"></div><div class="background" id="b1"></div><div class="flare"></div><img class="sprite" id="sprite" alt=""><div class="art-label" id="typeLabel">МЕШКАНЦІ БУДИНКУ</div></div><article class="content" aria-live="polite"><div class="eyebrow" id="kind">Герої</div><h2 class="title" id="name"></h2><p class="desc" id="desc"></p><div class="pager"><button class="control" id="prev" aria-label="Попередній персонаж">← Назад</button><div class="number" id="counter">01 / 10</div><button class="control" id="next" aria-label="Наступний персонаж">Далі →</button></div><div class="dots" id="dots" aria-label="Пагінація"></div><div class="tip">Перегортайте стрілками клавіатури або кнопками. Фон змінюється кожні три хвилини.</div></article></section></main>
 <script>
@@ -76,4 +86,55 @@ const art=document.getElementById('art');art.addEventListener('pointermove',e=>{
 })();
 
 function start(){render();showScene(0,true);sceneTimer=setInterval(nextScene,180000)}
-</script></body></html>
+</script>
+<script id="hh-background-music-script">
+(()=>{
+ 'use strict';
+ const VIDEO_ID='KYnK6bn9yIc';
+ const STORAGE_KEY='hikka-house-background-music-v1';
+ const POSITION_KEY='hikka-house-background-music-position-v1';
+ const btn=document.getElementById('hhMusicButton');
+ if(!btn)return;
+ const host=document.createElement('div');host.id='hhMusicHost';host.className='hh-music-host';host.setAttribute('aria-hidden','true');
+ const frameTarget=document.createElement('div');frameTarget.id='hhMusicPlayer';host.append(frameTarget);document.body.append(host);
+ let player=null,apiLoading=false,ready=false,enabled=false,requested=false;
+ let resume=0;
+ try{enabled=localStorage.getItem(STORAGE_KEY)==='on';const raw=sessionStorage.getItem(POSITION_KEY);if(raw){const p=JSON.parse(raw);if(p&&Date.now()-p.at<120000&&Number.isFinite(p.sec))resume=Math.max(0,p.sec)}}catch(e){}
+ function label(){btn.textContent=enabled?'♫ Музика: увімк.':'♪ Музика: вимк.';btn.setAttribute('aria-pressed',String(enabled));btn.title='Фонова мелодія з YouTube. Натисніть для перемикання.';}
+ function remember(){try{localStorage.setItem(STORAGE_KEY,enabled?'on':'off')}catch(e){}}
+ function savePosition(){if(!ready||!player||!enabled)return;try{const sec=player.getCurrentTime();sessionStorage.setItem(POSITION_KEY,JSON.stringify({sec,at:Date.now()}))}catch(e){}}
+ function startPlayer(){
+   if(!enabled)return;
+   if(ready&&player){try{player.unMute();player.playVideo()}catch(e){}return;}
+   if(apiLoading)return;apiLoading=true;
+   window.hhMusicApiReady=()=>{if(!window.YT?.Player)return;
+     player=new YT.Player('hhMusicPlayer',{height:'200',width:'200',videoId:VIDEO_ID,playerVars:{autoplay:0,controls:0,loop:1,playlist:VIDEO_ID,playsinline:1,rel:0,iv_load_policy:3,disablekb:1,origin:location.origin.startsWith('http')?location.origin:undefined},events:{
+       onReady:e=>{ready=true;if(resume>0){try{e.target.seekTo(resume,true)}catch(err){}}if(enabled){try{e.target.unMute();e.target.playVideo()}catch(err){}}},
+       onStateChange:e=>{if(e.data===YT.PlayerState.ENDED&&enabled){try{e.target.seekTo(0,true);e.target.playVideo()}catch(err){}}},
+       onError:()=>{btn.title='Не вдалося відтворити відео через YouTube. Перевірте доступність відео і блокувальники.'}
+     }});
+   };
+   if(window.YT?.Player){window.hhMusicApiReady();return;}
+   const prior=window.onYouTubeIframeAPIReady;window.onYouTubeIframeAPIReady=()=>{if(typeof prior==='function')prior();window.hhMusicApiReady()};
+   const script=document.createElement('script');script.src='https://www.youtube.com/iframe_api';script.async=true;script.onerror=()=>{apiLoading=false;btn.title='YouTube API заблоковано або немає інтернету.'};document.head.append(script);
+ }
+ btn.addEventListener('click',()=>{
+   enabled=!enabled;requested=true;remember();label();
+   if(enabled)startPlayer();else if(ready&&player){savePosition();try{player.pauseVideo()}catch(e){}}
+ });
+ label();
+ // Спроба продовжити дозволене раніше відтворення. Браузер може вимагати нового натискання.
+ if(enabled){startPlayer();}
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')savePosition()});
+ window.addEventListener('pagehide',savePosition);
+ // Не граємо під час матчу: фонова мелодія належить саме головному меню.
+ if(document.getElementById('home')){
+   const home=document.getElementById('home');
+   const observer=new MutationObserver(()=>{
+     if(!ready||!player)return;
+     try{if(home.hidden){savePosition();player.pauseVideo()}else if(enabled)player.playVideo()}catch(e){}
+   });observer.observe(home,{attributes:true,attributeFilter:['hidden']});
+ }
+})();
+</script>
+</body></html>
