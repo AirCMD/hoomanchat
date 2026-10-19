@@ -34,6 +34,18 @@
 .small-note{color:#b8c5dd;font-size:12px}.save-tools{display:flex;flex-wrap:wrap;gap:9px;margin:15px 0}
 .save-tools .control{font-size:13px;text-align:center}.import-label{display:inline-flex;align-items:center;cursor:pointer}
 @media(max-width:760px){.info-content{max-height:none;overflow:visible}.info-copy{font-size:14px}}
+
+/* Інформаційні вкладки: сцена стає горизонтальною обкладинкою над текстом,
+   замість порожньої половини сторінки. Картки персонажів не змінюються. */
+.folio.info-mode{grid-template-columns:minmax(0,1fr);grid-template-rows:clamp(190px,27vw,300px) auto;overflow:hidden}
+.folio.info-mode .art{min-height:0;height:100%;width:100%;isolation:isolate}
+.folio.info-mode .art .window{inset:-12% -4%;background-position:center 47%;background-size:cover}
+.folio.info-mode .art .background{inset:0;background-position:center 45%;background-size:cover}
+.folio.info-mode .art-label{left:clamp(17px,4vw,50px);right:auto;bottom:clamp(16px,2.5vw,27px);max-width:calc(100% - 34px);padding:10px 18px;background:#10182cdb}
+.folio.info-mode .info-content{width:100%;max-width:100%;max-height:none;overflow:visible;padding:clamp(24px,4vw,56px);min-width:0}
+.folio.info-mode .info-copy{max-width:940px;width:100%;font-size:clamp(14px,1.5vw,16px)}
+.folio.info-mode .info-copy h3{font-size:clamp(17px,1.8vw,21px)}
+@media(max-width:760px){.folio.info-mode{grid-template-rows:clamp(175px,39vw,240px) auto}.folio.info-mode .art{min-height:0;max-height:none;height:100%}.folio.info-mode .info-content{padding:clamp(19px,5vw,27px)}}
 </style></head><body>
 <header class="top"><div class="brand">HIKKA <b>HOUSE</b> · БЕСТІАРІЙ</div><button id="hhMusicButton" class="hh-music-control" type="button" aria-label="Увімкнути або вимкнути фонову мелодію">♪ Музика: вимк.</button><a href="hikkahouse-island.html" class="return" id="returnLink">← До гри</a></header>
 <main><div class="heading"><div><h1>ПРО ПЕРСОНАЖІВ</h1><p>Мешканці, непрохані гості та ті, хто втручається в їхні справи.</p></div><nav class="tabs" aria-label="Категорії персонажів"><button class="tab" data-group="hiki" aria-selected="true">Хікі</button><button class="tab" data-group="boss" aria-selected="false">Боси</button><button class="tab" data-group="helper" aria-selected="false">Помічники</button><button class="tab" data-group="about" aria-selected="false">Про гру</button><button class="tab" data-group="story" aria-selected="false">Сюжет</button></nav></div>
@@ -82,6 +94,7 @@ function spriteSource(file,alternate){const im=new Image();im.onload=()=>{if(doc
 let group='hiki',index=0;
 function render(){
  const info=group==='about'||group==='story';
+ document.querySelector('.folio').classList.toggle('info-mode',info);
  document.querySelector('.folio > article.content:not(.info-content)').hidden=info;
  document.getElementById('infoContent').hidden=!info;
  document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.group===group)));
