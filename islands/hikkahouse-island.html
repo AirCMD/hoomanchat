@@ -699,25 +699,78 @@ function update(dt){if(!game)return;daySync();let g=game;g.time+=dt;for(const r 
  $('incomeRate').textContent=incomeRate%1?incomeRate.toFixed(1):incomeRate;
  $('gold').textContent=Math.floor(g.gold);$('energy').textContent=Math.floor(g.energy);$('clock').textContent=g.time<25?Math.ceil(g.countdown):formatTime(Math.max(0,400-g.time));$('hunterLevel').textContent=g.hunter.level;const r=playerRoom();$('selectedInfo').textContent=r?`Ваша кімната №${r.id+1} • 🚪 ${Math.ceil(r.door)}/${r.maxDoor} • 💻 рівень ${r.pcLv} • Зайнятих клітинок: ${r.items.size}/10`:'Знайдіть вільну кімнату та натисніть на ПК.'}
 function formatTime(s){return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`}
-function npcEconomy(){if(!game)return;for(const p of game.players.filter(p=>p.npc&&p.alive&&p.seated)){
- const r=ownerRoom(p);if(!r)continue;
- p.gold+=hhPrice(HH_PC_INCOME,r.pcLv-1)*3;
- for(const it of r.items.values()){if(it.type==='energy')p.energy+=Math.pow(2,Math.min(it.lv,5)-1)*3;if(it.type==='money')p.gold+=2*Math.pow(3,Math.min(it.lv,4)-1)*3}
- // Боти зміцнюють двері за тією ж формулою цін, що й гравець.
- // Залишаємо гроші для початкового розвитку ПК, але не ігноруємо оборону до кінця гри.
- if(r.door<r.maxDoor*.6&&p.gold>=12){r.door=Math.min(r.maxDoor,r.door+25);p.gold-=12;continue}
- const doorPrice=hhDoorPrice(r.doorLv);
- if(r.doorLv<9&&p.gold>=doorPrice.gold&&p.energy>=doorPrice.energy&&
-    (r.doorLv<2&&game.time>=45||r.pcLv>=3&&game.time>=65||r.door/r.maxDoor<.82)){
-  p.gold-=doorPrice.gold;p.energy-=doorPrice.energy;
-  r.doorLv++;r.maxDoor=hhDoorHp(r.doorLv);r.door=r.maxDoor;
-  effect(r.doorX+.5,r.doorY+.5,'⬆🚪');continue;
+function npcEconomy(){
+ if(!game)return;
+ for(const p of game.players.filter(p=>p.npc&&p.alive&&p.seated)){
+  const r=ownerRoom(p);if(!r)continue;
+  p.gold+=hhPrice(HH_PC_INCOME,r.pcLv-1)*3;
+  for(const it of r.items.values()){
+   if(it.type==='energy')p.energy+=Math.pow(2,Math.min(it.lv,5)-1)*3;
+   if(it.type==='money')p.gold+=2*Math.pow(3,Math.min(it.lv,4)-1)*3;
+  }
+  const danger=game.hunter.active&&game.hunter.target===r.id&&
+   ['hunt','attack','transform'].includes(game.hunter.state);
+  const doorPrice=hhDoorPrice(r.doorLv);
+  const pcPrice=r.pcLv<10?hhPcPrice(r.pcLv):null;
+  const pcUnlocked=r.pcLv<10&&r.doorLv>=hhPrice(HH_DOOR_REQUIRED,r.pcLv);
+  const affordable=price=>price&&p.gold>=(price.gold||0)&&p.energy>=(price.energy||0);
+  // NPC економлять гроші на ПК/двері. Не купують зброю, поки ці цілі доступні.
+  if(danger&&r.door<r.maxDoor*.48&&p.gold>=12){
+   p.gold-=12;r.door=Math.min(r.maxDoor,r.door+25);continue;
+  }
+  const requiredForNextPc=r.pcLv<10?hhPrice(HH_DOOR_REQUIRED,r.pcLv):9;
+  const needDoor=r.doorLv<9&&(r.doorLv<requiredForNextPc||
+    (danger&&r.door/r.maxDoor<.7)||r.doorLv<2);
+  if(needDoor&&affordable(doorPrice)){
+   p.gold-=doorPrice.gold;p.energy-=doorPrice.energy||0;
+   r.doorLv++;r.maxDoor=hhDoorHp(r.doorLv);r.door=r.maxDoor;
+   effect(r.doorX+.5,r.doorY+.5,'⬆🚪');continue;
+  }
+  if(pcUnlocked&&affordable(pcPrice)){
+   p.gold-=pcPrice.gold;p.energy-=pcPrice.energy||0;r.pcLv++;continue;
+  }
+  const all=[...r.items.values()];
+  const generators=all.filter(it=>it.type==='energy');
+  const weapons=all.filter(it=>it.type==='weapon');
+  const free=buildTiles(r).filter(([x,y])=>!r.items.has(`${x},${y}`))
+   .sort((a,b)=>Math.abs(a[0]-r.doorX)-Math.abs(b[0]-r.doorX));
+  // Енергетика стає пріоритетом, щойно економіка розвинена достатньо.
+  const energyNeeded=r.pcLv>=4&&
+    (r.doorLv>=5||r.pcLv>=7||generators.length===0);
+  if(energyNeeded){
+   const next=generators.filter(it=>it.lv<5)
+     .sort((a,b)=>(a.lv||1)-(b.lv||1))[0];
+   const price=next?hhCost(hhPrice(HH_ENERGY_COST,next.lv||1)):null;
+   if(next&&affordable(price)){
+    p.gold-=price.gold;p.energy-=price.energy||0;next.lv++;continue;
+   }
+   if(generators.length<2&&free.length&&p.gold>=costs.energy.gold){
+    const [x,y]=free[0];p.gold-=costs.energy.gold;
+    r.items.set(`${x},${y}`,{type:'energy',lv:1,cool:0});continue;
+   }
+   // Копимо на покращення генератора замість спаму дешевої зброї.
+   if(next&&(next.lv<3||p.gold<(price?.gold||Infinity)))continue;
+  }
+  // Зброя потрібна, але не повинна витісняти економіку.
+  const canArm=game.time>=105&&r.pcLv>=5&&r.doorLv>=3&&
+    (!energyNeeded||generators.some(it=>it.lv>=2));
+  if(canArm&&weapons.length<Math.min(2,game.time>=245?2:1)&&free.length){
+   if(p.gold>=costs.weapon.gold&&
+      (!pcPrice||p.gold>=pcPrice.gold*.6||danger)){
+    const [x,y]=free[0];p.gold-=costs.weapon.gold;
+    r.items.set(`${x},${y}`,{type:'weapon',lv:1,cool:0});continue;
+   }
+  }
+  if(canArm&&weapons.length){
+   const weapon=weapons.find(it=>it.lv<8);
+   if(weapon&&game.time>=135){
+    const price=hhPrice(HH_WEAPON_COST,weapon.lv);
+    const savings=pcPrice&&pcUnlocked?pcPrice.gold*.65:0;
+    if(p.gold>=price+savings){p.gold-=price;weapon.lv++;continue;}
+   }
+  }
  }
- if(r.pcLv<10&&r.doorLv>=hhPrice(HH_DOOR_REQUIRED,r.pcLv)){const price=hhPcPrice(r.pcLv);if(p.gold>=price.gold&&p.energy>=price.energy){p.gold-=price.gold;p.energy-=price.energy;r.pcLv++;continue}}
- const free=buildTiles(r).filter(([x,y])=>!r.items.has(`${x},${y}`)).sort((a,b)=>Math.abs(a[0]-r.doorX)-Math.abs(b[0]-r.doorX));
- if(free.length){const [x,y]=free[0];const type=[...r.items.values()].some(it=>it.type==='energy')&&game.time>85&&r.pcLv>=3?'weapon':'energy';const cost=costs[type];if(p.gold>=(cost.gold||0)&&p.energy>=(cost.energy||0)){p.gold-=cost.gold||0;p.energy-=cost.energy||0;r.items.set(`${x},${y}`,{type,lv:1,cool:0});continue}}
- for(const it of r.items.values())if(it.type==='weapon'&&it.lv<8){const cost=hhPrice(HH_WEAPON_COST,it.lv);if(p.gold>=cost){p.gold-=cost;it.lv++;break}}
- }}
+}
 function nearestHunterDoor(r){if(CUSTOM_MAPS.has(currentMap)){const d=r.side==='left'?[-1,0]:r.side==='right'?[1,0]:r.side==='top'?[0,-1]:[0,1];return{x:r.doorX+.5+d[0],y:r.doorY+.5+d[1]}}const dx=r.side==='left'?r.doorX+1.5:r.doorX-.5;return{x:dx,y:r.doorY+.5}}
 function hunterPath(x,y){const h=game.hunter;h.path=bfs(h.x,h.y,x,y,null);h.speed=1.55+Math.min(game.level*.065,.65)}
 // Маршрути панічної втечі завжди складаються з реальних прохідних клітинок.
@@ -991,6 +1044,29 @@ if(h.state==='hunt'){if(h.target===null||!g.rooms[h.target]?.alive||!g.rooms[h.t
  }const targetRoom=g.rooms[h.target];const slow=targetRoom?.items&&[...targetRoom.items.values()].some(i=>i.type==='clock')?0.76:1;
  const oldSpeed=h.speed;h.speed*=slow;travel(h,dt);h.speed=oldSpeed;const r=g.rooms[h.target],pt=nearestHunterDoor(r);if(Math.hypot(h.x-pt.x,h.y-pt.y)<.85){h.attack=0;h.path=[];if(g.boss.id==='kolyadun'&&Math.random()<.65){h.state='attack';const carols=['Колядун: коляд, коляд, колядниця!','Колядун: файна з медом паляниця.','Колядун: відчиніть, дитина колядує!'];toast(pick(carols));}else if(g.boss.id==='hella'){if(g.boss.transform){h.state='transform';h.transform=2.5;}else h.state='attack';if(Math.random()<.65){const hellaLines=['Гелла: мені потрібен столик! Відчиняй!','Гелла: я знаю що ти вдома!','Гелла: мені треба залишити з тобою дитину!'];toast(pick(hellaLines));}}else if(g.boss.id==='evgen'){h.state='attack';}else if(g.boss.id==='hector'){h.state='attack';if(Math.random()<.72){const hectorLines=['Гектор: Привіт, моє хороше. Дідо прийшов.','Гектор: Відчиняй двері, гімно мале!','Гектор: Ти пропонуєш пиріжок, а воно ще й огризається'];toast(pick(hectorLines));}}else if(g.boss.id==='seller'){h.state='attack';if(Math.random()<.7){const sellerLines=['Продавець: Доброго дня! У вас старі вікна.','Продавець: Лише 5 хвилин про вигідну пропозицію!','Продавець: У нас акція саме для вашої квартири!'];toast(pick(sellerLines));}}else{h.state='attack';}} }
 if(h.state==='attack'){
+ // Не даємо босові всю ніч бити тільки одні двері, ігноруючи решту будинку.
+ // Марічка і Продавець мають власну механіку зміни кімнат.
+ if(g.boss.id!=='marichka'&&g.boss.id!=='seller'){
+  if(h.lastAttackRoom!==h.target){
+   h.lastAttackRoom=h.target;h.attackRoomUntil=g.time+rand(19,27);
+   h.visitedRooms=h.visitedRooms||{};
+   h.visitedRooms[h.target]=(h.visitedRooms[h.target]||0)+1;
+  }
+  if(g.time>=(h.attackRoomUntil||Infinity)){
+   const candidates=g.rooms.filter(room=>room.id!==h.target&&room.alive&&
+     room.occupant!==null&&g.players[room.occupant]?.seated);
+   if(candidates.length){
+    const least=Math.min(...candidates.map(room=>h.visitedRooms?.[room.id]||0));
+    const fresh=candidates.filter(room=>(h.visitedRooms?.[room.id]||0)===least);
+    const next=pick(fresh);
+    h.target=next.id;h.state='hunt';h.attack=0;h.path=[];
+    const pt=nearestHunterDoor(next);hunterPath(Math.floor(pt.x),Math.floor(pt.y));
+    h.lastAttackRoom=null;
+    return;
+   }
+   h.attackRoomUntil=g.time+rand(12,18);
+  }
+ }
  // Марічка не сидить вічно біля одних дверей: після серії ударів переходить до іншої кімнати.
  if(g.boss.id==='marichka'){
   if(!h.marichkaSwitchAt)h.marichkaSwitchAt=g.time+rand(12,17);
@@ -2071,7 +2147,7 @@ if(!save.tutorial)infoModal();
   },
   immortal(){if(!testStart())return;game.devImmortal=!game.devImmortal;if(game.devImmortal)game.hunter.hp=Math.max(1,game.hunter.hp);syncPanel();status(game.devImmortal?'Бос невразливий: HP не падає нижче 1. Атаки та здібності працюють.':'Невразливість вимкнена: бос знову може загинути.');},
   magicReset(){if(!testStart())return;let removed=0;for(const r of game.rooms){for(const [key,item] of r.items){if(item.source==='magic'){r.items.delete(key);removed++;}}}game.magicUsed=0;game.magicRolls={};renderPalette();status(`Маджику скинуто: 0/3. Прибрано ${removed} випадкових предметів. Куплені в магазині збережено.`);},
-  switchBoss(){if(!testStart())return;const value=document.getElementById('hikkaDevBossSelect').value;const boss=BOSS_ROSTER.find(b=>b.id===value);if(!boss)return status('Боса не знайдено.');const h=game.hunter;game.boss=boss;game.servants=[];game.projectiles=[];for(const im of servantVisuals.values())im.remove();servantVisuals.clear();h.hp=h.maxHp;h.state='hunt';h.active=true;h.stun=0;h.transform=0;h.roachFightTime=0;h.roachPreviousState=null;h.healShown=0;h.healFxCd=0;h.target=null;h.path=[];h.attack=0;h.abilityCd=14;h.servantCd=boss.id==='moriy'?2:18;h.teleportCd=boss.id==='seller'?4:999;h.sellerDodgeCd=0;h.sellerArrival=0;h.retreats=0;h.rest=0;h.marichkaSwitchAt=0;h.marichkaLastTarget=null;if(game.time<25)game.time=25;if(!game.players[0].seated)occupy();bossDisplayedState='';if(bossAnimated){bossAnimated.hidden=true;bossAnimated.removeAttribute('src');}syncPanel();status(`Активний бос: ${boss.name}. HP відновлено, стара атака й колпоси скинуті. Невразливість: ${game.devImmortal?'увімкнена':'вимкнена'}.`);},
+  switchBoss(){if(!testStart())return;const value=document.getElementById('hikkaDevBossSelect').value;const boss=BOSS_ROSTER.find(b=>b.id===value);if(!boss)return status('Боса не знайдено.');const h=game.hunter;game.boss=boss;game.servants=[];game.projectiles=[];for(const im of servantVisuals.values())im.remove();servantVisuals.clear();h.hp=h.maxHp;h.state='hunt';h.active=true;h.stun=0;h.transform=0;h.roachFightTime=0;h.roachPreviousState=null;h.healShown=0;h.healFxCd=0;h.target=null;h.path=[];h.attack=0;h.abilityCd=14;h.servantCd=boss.id==='moriy'?2:18;h.teleportCd=boss.id==='seller'?4:999;h.sellerDodgeCd=0;h.sellerArrival=0;h.retreats=0;h.rest=0;h.marichkaSwitchAt=0;h.marichkaLastTarget=null;h.lastAttackRoom=null;h.attackRoomUntil=0;h.visitedRooms={};if(game.time<25)game.time=25;if(!game.players[0].seated)occupy();bossDisplayedState='';if(bossAnimated){bossAnimated.hidden=true;bossAnimated.removeAttribute('src');}syncPanel();status(`Активний бос: ${boss.name}. HP відновлено, стара атака й колпоси скинуті. Невразливість: ${game.devImmortal?'увімкнена':'вимкнена'}.`);},
   magic(){if(!testStart())return;if(!game.players[0].seated)occupy();const r=playerRoom();if(!r)return;if(game.magicUsed>=3)return status('Маджика: усі 3 використання вже витрачено.');const free=buildTiles(r).find(([x,y])=>!r.items.has(`${x},${y}`));if(!free)return status('Немає вільної клітинки в кімнаті.');const before=game.magicUsed;const result=build(r,free[0],free[1],'magic');status(result&&game.magicUsed>before?`Маджика використана: ${game.magicUsed}/3. Перевірте новий предмет у кімнаті.`:'Не вдалося використати Маджику.');}
  };
  panel.addEventListener('click',e=>{const btn=e.target.closest('button[data-dev]');if(btn&&actions[btn.dataset.dev])actions[btn.dataset.dev]();});
