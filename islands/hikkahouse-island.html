@@ -660,7 +660,40 @@ function magicPrize(){
   if(boostedTypes.has(type)&&game.boosts.some(b=>b.split(':')[0]===type))entry[1]=baseWeight*3;
  }
  let options=pool.filter(([t])=>!['cache','box','cockroach'].includes(t)||!game.magicRolls[t]);if((game.magicRolls.weapon||0)>=2)options=options.filter(([t])=>t!=='weapon');let total=options.reduce((a,b)=>a+b[1],0),roll=rand(0,total),type='weapon';for(const [t,w] of options){roll-=w;if(roll<=0){type=t;break}}game.magicRolls[type]=(game.magicRolls[type]||0)+1;let lv=type==='energy'?Math.ceil(rand(1,5)):type==='money'?Math.ceil(rand(1,4)):['cat','dog'].includes(type)?Math.ceil(rand(1,3)):1;if(type==='reborn'){const dead=game.players.find(p=>p.npc&&!p.alive);if(dead){dead.alive=true;let r=game.rooms[dead.room];r.alive=true;r.door=r.maxDoor;dead.seated=true}else{type='weapon'}}return {type,lv,cool:0,claimed:false,source:'magic'}}
-function upgrade(r,x,y){if(!game)return;const onDoor=x===r.doorX&&y===r.doorY,onPc=x===r.pcX&&y===r.pcY;let item=r.items.get(`${x},${y}`);const owned=r===playerRoom();if(!owned&&!game.boosts.includes('help')&&!game.boosts.includes('steal'))return toast('Чужа кімната');if(onDoor||onPc){
+// Покинута кімната NPC: речі зберігаються, їх можна продавати лише вручну.
+// Повертаємо половину початкової ціни та вартості покращень у тих самих ресурсах.
+function abandonedItemRefund(item){
+ const lv=Math.max(1,Math.floor(item.lv||1));
+ const spent={gold:costs[item.type]?.gold||0,energy:costs[item.type]?.energy||0};
+ for(let level=1;level<lv;level++){
+  let price=null;
+  if(item.type==='weapon')price=hhCost(hhPrice(HH_WEAPON_COST,level));
+  else if(item.type==='energy')price=hhCost(hhPrice(HH_ENERGY_COST,level));
+  else if(item.type==='money')price=hhCost(0,hhPrice(HH_MONEY_TREE_ENERGY_COST,level-1));
+  else if(['distance','partner'].includes(item.type))price=hhCost(Math.ceil((item.type==='partner'?24:52)*Math.pow(2.04,level-1)),level>=4?16*(level-2):0);
+  if(price){spent.gold+=price.gold||0;spent.energy+=price.energy||0;}
+ }
+ return {gold:Math.floor(spent.gold*.5),energy:Math.floor(spent.energy*.5)};
+}
+function abandonedRoomItem(r,x,y){
+ const item=r.items.get(`${x},${y}`);
+ if(!item||r.occupant===null||r.occupant===0||r.alive||game.players[r.occupant]?.alive)return false;
+ const refund=abandonedItemRefund(item);
+ const name=catalog.find(c=>c.type===item.type)?.name||fallbacks[item.type]||item.type;
+ modal('📦 Майно вибулого NPC',`<p>${name} • рівень ${item.lv||1}</p><p>NPC програв, тому предмет залишився в його кімнаті. Ви можете продати його за <b>${costLabel(refund)}</b> (50% вкладених ресурсів).</p>`,[
+  {name:'Продати',disabled:!refund.gold&&!refund.energy,fn:()=>{
+   // Повторна перевірка, щоб не продавати після оживлення NPC.
+   if(r.alive||game.players[r.occupant]?.alive||r.items.get(`${x},${y}`)!==item){closeModal();return;}
+   game.gold+=refund.gold;game.energy+=refund.energy;
+   r.items.delete(`${x},${y}`);sound('coin');effect(x+.5,y+.5,'💰');closeModal();
+  }},
+  {name:'Залишити',fn:closeModal}
+ ]);
+ return true;
+}
+function upgrade(r,x,y){if(!game)return;
+ if(r.items.has(`${x},${y}`)&&abandonedRoomItem(r,x,y))return;
+const onDoor=x===r.doorX&&y===r.doorY,onPc=x===r.pcX&&y===r.pcY;let item=r.items.get(`${x},${y}`);const owned=r===playerRoom();if(!owned&&!game.boosts.includes('help')&&!game.boosts.includes('steal'))return toast('Чужа кімната');if(onDoor||onPc){
  const lv=onDoor?r.doorLv:r.pcLv,max=onDoor?9:10;
  const price=onDoor?hhDoorPrice(lv):hhPcPrice(lv);
  const requiredDoor=onPc?hhPrice(HH_DOOR_REQUIRED,lv):0;
@@ -1225,7 +1258,7 @@ if(h.state==='attack'){
    if(h.doorBurstRoom!==r.id){h.doorBurstUntil=0;h.doorBurstPending=false;}
    else if(g.time<h.doorBurstUntil){h.attack=0;return;}
    else{h.doorBurstUntil=0;h.doorBurstPending=true;h.attack=5;}
- }else if(h.level>=2&&g.time>=(h.nextDoorBurstAt||Infinity)&&
+ }else if(h.level>=5&&g.time>=(h.nextDoorBurstAt||Infinity)&&
           r.door>0&&r.door/r.maxDoor>.15){
    h.doorBurstRoom=r.id;h.doorBurstUntil=g.time+1.35;
    h.nextDoorBurstAt=g.time+rand(25,36);
