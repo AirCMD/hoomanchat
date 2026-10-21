@@ -266,6 +266,26 @@ function loadAssets(){
 const sixAnimated=$('sixAnimated');const olexiyAnimated=$('olexiyAnimated');const mykolaAnimated=$('mykolaAnimated');const psychiatristAnimated=$('psychiatristAnimated');const bossAnimated=$('bossAnimated');let bossDisplayedState='';const servantVisuals=new Map();const playerVisuals=new Map();const foregroundPcVisuals=new Map();
 const canvas=$('arena'),ctx=canvas?canvas.getContext('2d'):null;let W=0,H=0,dpr=1,cell=38,ox=0,oy=0,zoom=1,camera={x:9.5,y:12},lastTime=0,acc=0,raf=0,soundOn=true,audio=null,toastTimer;
 function sound(type='tap'){if(!soundOn)return;try{audio??=new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const t=audio.currentTime,o=audio.createOscillator(),g=audio.createGain();o.type=type==='hit'?'sawtooth':'sine';const f={tap:470,coin:770,shoot:630,hit:115,repair:510,win:880,lose:140,build:370,door:290}[type]||440;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(Math.max(80,f*(type==='win'?1.5:.63)),t+.14);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(type==='hit'?.055:.032,t+.016);g.gain.exponentialRampToValueAtTime(.0001,t+.18);o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+.19)}catch{}}
+function doorBurstWarning(){
+ if(!soundOn)return;
+ try{
+  audio??=new (window.AudioContext||window.webkitAudioContext)();
+  if(audio.state==='suspended')audio.resume();
+  const t=audio.currentTime;
+  for(let i=0;i<3;i++){
+   const osc=audio.createOscillator(),gain=audio.createGain();
+   osc.type='square';
+   const at=t+i*.23;
+   osc.frequency.setValueAtTime(410-i*65,at);
+   osc.frequency.exponentialRampToValueAtTime(235-i*32,at+.14);
+   gain.gain.setValueAtTime(.0001,at);
+   gain.gain.exponentialRampToValueAtTime(.035,at+.012);
+   gain.gain.exponentialRampToValueAtTime(.0001,at+.17);
+   osc.connect(gain);gain.connect(audio.destination);
+   osc.start(at);osc.stop(at+.18);
+  }
+ }catch(e){}
+}
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2300)}
 const KYIV=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Kyiv',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());const STORE_KEY='hikka-house-save-v1';let save={date:KYIV(),tokens:0,wins:0,level:0,magic:3,skins:[0],skin:0,boosts:[],dailyBoostClaims:0,runFinishedDay:null};try{save={...save,...JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}}catch{}function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify(save))}catch{}}function daySync(){const day=KYIV();if(save.date!==day){save.date=day;save.level=0;save.boosts=[];save.dailyBoostClaims=0;save.runFinishedDay=null;save.dailyLeaderboard=null;persist();toast('Новий день! Складність і бусти скинуто.')} }daySync();
 let C=19,R=25;
@@ -1174,7 +1194,7 @@ if(h.state==='attack'){
     const least=Math.min(...candidates.map(room=>h.visitedRooms?.[room.id]||0));
     const fresh=candidates.filter(room=>(h.visitedRooms?.[room.id]||0)===least);
     const next=pick(fresh);
-    h.target=next.id;h.state='hunt';h.attack=0;h.path=[];
+    h.target=next.id;h.state='hunt';h.attack=0;h.path=[];h.doorBurstUntil=0;h.doorBurstPending=false;
     const pt=nearestHunterDoor(next);hunterPath(Math.floor(pt.x),Math.floor(pt.y));
     h.lastAttackRoom=null;
     return;
@@ -1194,12 +1214,31 @@ if(h.state==='attack'){
  const r=g.rooms[h.target];if(!r||!r.alive){h.state='hunt';h.target=null;return}
  const exactDoor=nearestHunterDoor(r);
  if(Math.hypot(h.x-exactDoor.x,h.y-exactDoor.y)>.48){
-   h.state='hunt';h.attack=0;
+   h.state='hunt';h.attack=0;h.doorBurstUntil=0;h.doorBurstPending=false;
    if(exactDoor.x>=0)hunterPath(Math.floor(exactDoor.x),Math.floor(exactDoor.y));
    if(!h.path.length)h.target=null;
    return;
  }
- if(r.occupant===0&&g.boosts.includes('psychiatrist')&&!g.psychiatristUsed&&r.door/r.maxDoor<=.35){g.psychiatristUsed=true;g.psychiatristAppear={x:r.side==='left'?r.doorX+1.5:r.doorX-.5,y:r.doorY+.5,fromX:r.side==='left'?r.doorX+1.5:r.doorX-.5,fromY:r.side==='left'?r.doorY+.5:r.doorY+.5,toX:h.x,toY:h.y,start:g.time,until:g.time+2.5};retreatHunter();toast('Психіатр відігнав гостя!');return;}const slowed=[...r.items.values()].some(it=>it.type==='clock');h.attack+=dt*(slowed?.75:1);if(g.boss.id==='hella'){const regenPerSecond=h.maxHp*(h.level>=3?.013:.01);const before=h.hp;h.hp=Math.min(h.maxHp,h.hp+regenPerSecond*dt);h.healShown=(h.healShown||0)+(h.hp-before);h.healFxCd=(h.healFxCd||0)-dt;if(h.healFxCd<=0){if(h.healShown>=.5)effect(h.x,h.y-.35,'💚');h.healShown=0;h.healFxCd=1.4;}}specialHunter(dt,r);if(h.state!=='attack'||h.target!==r.id)return;if(g.boss.id==='kolyadun'&&h.level>=2){h.servantCd-=dt;if(h.servantCd<=0&&g.servants.length<Math.max(1,Math.min(3,h.level)-(g.boosts.includes('fewer')?1:0))){summonServant(r);h.servantCd=Math.max(13,25-g.level)+(g.boosts.includes('fewer')?12:0)}}const attackInterval=g.boss.id==='hella'?.72:(g.boss.id==='hector'?1.12:g.boss.id==='evgen'?.95:1.05);if(h.attack>=attackInterval){h.attack-=attackInterval;let damage=(g.boss.id==='hella'?7.5:(g.boss.id==='hector'?5.7:g.boss.id==='evgen'?6.6:6))*(r.chain&&!(r.defenseJammed>0)?(g.boosts.includes('chain')?.4:.6):1)*(r.occupant===0?1/(1+boostValue('door')*.12):1);r.door=Math.max(0,r.door-damage);effect(r.doorX+.5,r.doorY+.5,'💥');sound('hit');if(g.boss.id==='hector'&&Math.random()<.18)toast('Гектор: Відчиняй двері, гімно мале!');if(r.puddle&&!(r.defenseJammed>0)){h.hp-=1.1;effect(h.x,h.y,'-1')}if(r.occupant===0&&g.boosts.includes('tamagotchi'))g.gold+=15;if(r.door<=0){r.alive=false;const p=g.players[r.occupant];if(p){p.alive=false;p.seated=false}effect(r.doorX+.5,r.doorY+.5,'💀');if(r.occupant===0){finish(false,g.boss.id==='hella'?`${g.boss.name} зламала Ваші двері`:['hector','evgen'].includes(g.boss.id)?`${g.boss.name} зламав Ваші двері`:'Мисливець зламав Ваші двері');return}h.state='hunt';h.target=null;renderPlayers()}else if(r.poop&&!(r.defenseJammed>0)&&Math.random()<.3){retreatHunter()}}}
+ if(r.occupant===0&&g.boosts.includes('psychiatrist')&&!g.psychiatristUsed&&r.door/r.maxDoor<=.35){g.psychiatristUsed=true;g.psychiatristAppear={x:r.side==='left'?r.doorX+1.5:r.doorX-.5,y:r.doorY+.5,fromX:r.side==='left'?r.doorX+1.5:r.doorX-.5,fromY:r.side==='left'?r.doorY+.5:r.doorY+.5,toX:h.x,toY:h.y,start:g.time,until:g.time+2.5};retreatHunter();toast('Психіатр відігнав гостя!');return;}const slowed=[...r.items.values()].some(it=>it.type==='clock');
+ // Попередження і коротка пауза перед разовим посиленим ударом.
+ if(h.doorBurstUntil){
+   if(h.doorBurstRoom!==r.id){h.doorBurstUntil=0;h.doorBurstPending=false;}
+   else if(g.time<h.doorBurstUntil){h.attack=0;return;}
+   else{h.doorBurstUntil=0;h.doorBurstPending=true;h.attack=5;}
+ }else if(h.level>=2&&g.time>=(h.nextDoorBurstAt||Infinity)&&
+          r.door>0&&r.door/r.maxDoor>.15){
+   h.doorBurstRoom=r.id;h.doorBurstUntil=g.time+1.35;
+   h.nextDoorBurstAt=g.time+rand(25,36);
+   h.doorBurstPending=false;h.attack=0;
+   doorBurstWarning();effect(r.doorX+.5,r.doorY+.5,'⚠️');
+   if(r.occupant===0)toast('⚠️ Гість готується вибити двері!');
+   return;
+ }
+ h.attack+=dt*(slowed?.75:1);if(g.boss.id==='hella'){const regenPerSecond=h.maxHp*(h.level>=3?.013:.01);const before=h.hp;h.hp=Math.min(h.maxHp,h.hp+regenPerSecond*dt);h.healShown=(h.healShown||0)+(h.hp-before);h.healFxCd=(h.healFxCd||0)-dt;if(h.healFxCd<=0){if(h.healShown>=.5)effect(h.x,h.y-.35,'💚');h.healShown=0;h.healFxCd=1.4;}}specialHunter(dt,r);if(h.state!=='attack'||h.target!==r.id)return;if(g.boss.id==='kolyadun'&&h.level>=2){h.servantCd-=dt;if(h.servantCd<=0&&g.servants.length<Math.max(1,Math.min(3,h.level)-(g.boosts.includes('fewer')?1:0))){summonServant(r);h.servantCd=Math.max(13,25-g.level)+(g.boosts.includes('fewer')?12:0)}}if(!h.nextDoorBurstAt)h.nextDoorBurstAt=g.time+rand(18,28);const attackInterval=g.boss.id==='hella'?.72:(g.boss.id==='hector'?1.12:g.boss.id==='evgen'?.95:1.05);if(h.attack>=attackInterval){h.attack-=attackInterval;let damage=(g.boss.id==='hella'?7.5:(g.boss.id==='hector'?5.7:g.boss.id==='evgen'?6.6:6))*(r.chain&&!(r.defenseJammed>0)?(g.boosts.includes('chain')?.4:.6):1)*(r.occupant===0?1/(1+boostValue('door')*.12):1);damage*=1+(h.level>=5?.10+Math.min(h.level-5,10)*.025:0);
+ const isDoorBurst=!!h.doorBurstPending;
+ if(isDoorBurst){damage*=1.15;h.doorBurstPending=false;}
+ r.door=Math.max(0,r.door-damage);
+ effect(r.doorX+.5,r.doorY+.5,isDoorBurst?'💢':'💥');sound('hit');if(g.boss.id==='hector'&&Math.random()<.18)toast('Гектор: Відчиняй двері, гімно мале!');if(r.puddle&&!(r.defenseJammed>0)){h.hp-=1.1;effect(h.x,h.y,'-1')}if(r.occupant===0&&g.boosts.includes('tamagotchi'))g.gold+=15;if(r.door<=0){r.alive=false;const p=g.players[r.occupant];if(p){p.alive=false;p.seated=false}effect(r.doorX+.5,r.doorY+.5,'💀');if(r.occupant===0){finish(false,g.boss.id==='hella'?`${g.boss.name} зламала Ваші двері`:['hector','evgen'].includes(g.boss.id)?`${g.boss.name} зламав Ваші двері`:'Мисливець зламав Ваші двері');return}h.state='hunt';h.target=null;renderPlayers()}else if(r.poop&&!(r.defenseJammed>0)&&Math.random()<.3){retreatHunter()}}}
 if(g.devTest&&g.devImmortal)h.hp=Math.max(1,h.hp);if(h.hp<=0){finish(true,'Нав’язливого гостя вигнано!');return}if(h.hp<h.maxHp*(.30+Math.min(h.level*.025,.17))&&h.retreats<2+Math.floor(g.level/4)){retreatHunter();return}
 }
 function updateWeapons(dt){
@@ -2276,7 +2315,7 @@ if(!save.tutorial)infoModal();
   },
   immortal(){if(!testStart())return;game.devImmortal=!game.devImmortal;if(game.devImmortal)game.hunter.hp=Math.max(1,game.hunter.hp);syncPanel();status(game.devImmortal?'Бос невразливий: HP не падає нижче 1. Атаки та здібності працюють.':'Невразливість вимкнена: бос знову може загинути.');},
   magicReset(){if(!testStart())return;let removed=0;for(const r of game.rooms){for(const [key,item] of r.items){if(item.source==='magic'){r.items.delete(key);removed++;}}}game.magicUsed=0;game.magicRolls={};renderPalette();status(`Маджику скинуто: 0/3. Прибрано ${removed} випадкових предметів. Куплені в магазині збережено.`);},
-  switchBoss(){if(!testStart())return;const value=document.getElementById('hikkaDevBossSelect').value;const boss=BOSS_ROSTER.find(b=>b.id===value);if(!boss)return status('Боса не знайдено.');const h=game.hunter;game.boss=boss;game.servants=[];game.projectiles=[];for(const im of servantVisuals.values())im.remove();servantVisuals.clear();h.hp=h.maxHp;h.state='hunt';h.active=true;h.stun=0;h.transform=0;h.roachFightTime=0;h.roachPreviousState=null;h.healShown=0;h.healFxCd=0;h.target=null;h.path=[];h.attack=0;h.abilityCd=14;h.servantCd=boss.id==='moriy'?2:18;h.teleportCd=boss.id==='seller'?4:999;h.sellerDodgeCd=0;h.sellerArrival=0;h.sellerVisual=null;h.sellerVisualUntil=0;h.retreats=0;h.rest=0;h.marichkaSwitchAt=0;h.marichkaLastTarget=null;h.lastAttackRoom=null;h.attackRoomUntil=0;h.visitedRooms={};if(game.time<25)game.time=25;if(!game.players[0].seated)occupy();bossDisplayedState='';if(bossAnimated){bossAnimated.hidden=true;bossAnimated.removeAttribute('src');}syncPanel();status(`Активний бос: ${boss.name}. HP відновлено, стара атака й колпоси скинуті. Невразливість: ${game.devImmortal?'увімкнена':'вимкнена'}.`);},
+  switchBoss(){if(!testStart())return;const value=document.getElementById('hikkaDevBossSelect').value;const boss=BOSS_ROSTER.find(b=>b.id===value);if(!boss)return status('Боса не знайдено.');const h=game.hunter;game.boss=boss;game.servants=[];game.projectiles=[];for(const im of servantVisuals.values())im.remove();servantVisuals.clear();h.hp=h.maxHp;h.state='hunt';h.active=true;h.stun=0;h.transform=0;h.roachFightTime=0;h.roachPreviousState=null;h.healShown=0;h.healFxCd=0;h.target=null;h.path=[];h.attack=0;h.abilityCd=14;h.servantCd=boss.id==='moriy'?2:18;h.teleportCd=boss.id==='seller'?4:999;h.sellerDodgeCd=0;h.sellerArrival=0;h.sellerVisual=null;h.sellerVisualUntil=0;h.doorBurstUntil=0;h.doorBurstPending=false;h.nextDoorBurstAt=game.time+rand(18,28);h.retreats=0;h.rest=0;h.marichkaSwitchAt=0;h.marichkaLastTarget=null;h.lastAttackRoom=null;h.attackRoomUntil=0;h.visitedRooms={};if(game.time<25)game.time=25;if(!game.players[0].seated)occupy();bossDisplayedState='';if(bossAnimated){bossAnimated.hidden=true;bossAnimated.removeAttribute('src');}syncPanel();status(`Активний бос: ${boss.name}. HP відновлено, стара атака й колпоси скинуті. Невразливість: ${game.devImmortal?'увімкнена':'вимкнена'}.`);},
   magic(){if(!testStart())return;if(!game.players[0].seated)occupy();const r=playerRoom();if(!r)return;if(game.magicUsed>=3)return status('Маджика: усі 3 використання вже витрачено.');const free=buildTiles(r).find(([x,y])=>!r.items.has(`${x},${y}`));if(!free)return status('Немає вільної клітинки в кімнаті.');const before=game.magicUsed;const result=build(r,free[0],free[1],'magic');status(result&&game.magicUsed>before?`Маджика використана: ${game.magicUsed}/3. Перевірте новий предмет у кімнаті.`:'Не вдалося використати Маджику.');}
  };
  panel.addEventListener('click',e=>{const btn=e.target.closest('button[data-dev]');if(btn&&actions[btn.dataset.dev])actions[btn.dataset.dev]();});
