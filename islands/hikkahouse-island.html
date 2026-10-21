@@ -238,7 +238,7 @@ function preloadCharacter(id){
  }
 }
 // Завантажуємо спрайти лише після визначення папки ресурсів.
-const images={};const filenames=['cocroach.png','cocroachwalk.gif','trap.png','chain.png','seyf.png','coin.png','cash.png','wdrop.png','tamagotchi.png','magican.png','floor.png','wall.png','icefloor.png','snowfloor.png','snowwall.png','autumnbrkwall.png','woodfloor.png','autumnfloor.png','grassfloor.png','wallbrk.png','tilefloor.png','mudfloor.png','time.png','hunter.png','hunter resting.png','kolyadun.png','kolyadunwalk.gif','kolyadunfight.gif','kolposy.gif','hella.png','hellawalk.gif','hellafight.gif','hellatransform.gif','hector.png','hectorwalk.gif','hectorfight.gif','evgen.png','evgenwalk.gif','evgenfight.gif','marichka.png','marichkawalk.gif','marichkafight.gif','moriy.png','moriywalk.gif','moriyfight.gif','anton.png','antonwalk.gif','antonfight.gif','deara.png','dearawalk.gif','dearafight.gif','box.png','six.png',...Array.from({length:6},(_,i)=>`door${i+1}.png`),...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),...Array.from({length:5},(_,i)=>`energy${i+1}.png`),...Array.from({length:4},(_,i)=>`moneytree${i+1}.${i===3?'gif':'png'}`),...[1,2,3,4,5,6,7].map(i=>`pc${i}.png`),...Array.from({length:3},(_,i)=>`cat${i+1}.png`),...Array.from({length:3},(_,i)=>`dog${i+1}.png`)];let hikkaGameAssetsStarted=false;
+const images={};const filenames=['distance.png','notebook.png','poop.png','cocroach.png','cocroachwalk.gif','trap.png','chain.png','seyf.png','coin.png','cash.png','wdrop.png','tamagotchi.png','magican.png','floor.png','wall.png','icefloor.png','snowfloor.png','snowwall.png','autumnbrkwall.png','woodfloor.png','autumnfloor.png','grassfloor.png','wallbrk.png','tilefloor.png','mudfloor.png','time.png','hunter.png','hunter resting.png','kolyadun.png','kolyadunwalk.gif','kolyadunfight.gif','kolposy.gif','hella.png','hellawalk.gif','hellafight.gif','hellatransform.gif','hector.png','hectorwalk.gif','hectorfight.gif','evgen.png','evgenwalk.gif','evgenfight.gif','marichka.png','marichkawalk.gif','marichkafight.gif','moriy.png','moriywalk.gif','moriyfight.gif','anton.png','antonwalk.gif','antonfight.gif','deara.png','dearawalk.gif','dearafight.gif','box.png','six.png',...Array.from({length:6},(_,i)=>`door${i+1}.png`),...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),...Array.from({length:5},(_,i)=>`energy${i+1}.png`),...Array.from({length:4},(_,i)=>`moneytree${i+1}.${i===3?'gif':'png'}`),...[1,2,3,4,5,6,7].map(i=>`pc${i}.png`),...Array.from({length:3},(_,i)=>`cat${i+1}.png`),...Array.from({length:3},(_,i)=>`dog${i+1}.png`)];let hikkaGameAssetsStarted=false;
 function loadGameAssets(){
  if(hikkaGameAssetsStarted)return;
  hikkaGameAssetsStarted=true;
@@ -494,7 +494,7 @@ if(!Array.isArray(save.boosts))save.boosts=[];
 if(!Number.isInteger(Number(save.skin))||Number(save.skin)<0||Number(save.skin)>=CHARACTERS.length)save.skin=0;
 else save.skin=Number(save.skin);
 const doors=roomDefs.map(r=>({x:r.doorX,y:r.doorY}));function avoidCoinNumbers(value){const amount=Math.max(0,Math.floor(Number(value)||0));return amount===63||amount===68?amount+1:amount}
-function newGame(lv){const rooms=roomDefs.map(d=>({...d,items:new Map(),occupant:null,door:75,maxDoor:75,doorLv:1,pcLv:1,alive:true,chain:false,puddle:false,poop:false,access:0,defenseJammed:0}));const players=Array.from({length:6},(_,i)=>makePlayer(i,i!==0));if(matchRosterPlan)players.forEach((p,i)=>{p.name=matchRosterPlan[i].name;p.skin=matchRosterPlan[i].skin});const boss=bossForDifficulty(lv);const calendarWave=(Math.floor(Date.parse(KYIV()+'T12:00:00')/86400000)%7);const growthInterval=Math.max(19,47-calendarWave*3-lv*.7);const g={level:lv,boss,hunterGrowthInterval:growthInterval,nextHunterGrowth:growthInterval,hunterAttackProgress:0,servants:[],phase:'claim',time:0,countdown:25,gold:16,energy:0,rooms,players,hunter:{x:restPoints()[0].x,y:restPoints()[0].y,hp:180+lv*32,maxHp:180+lv*32,level:1,state:'rest',target:null,path:[],attack:0,rest:5,active:false,stun:0,shotCd:0,anim:0,retreats:0,abilityCd:14,servantCd:18,teleportCd:999,sellerDodgeCd:0,sellerArrival:0,sellerVisual:null,sellerVisualUntil:0,transform:0},effects:[],projectiles:[],pets:[],selected:null,magicUsed:0,magicRolls:{},petStrike:0,boxClaims:new Set(),tick:0,npcTick:0,elapsed:0,lastResult:null,boosts:save.boosts.slice(),targetCam:null,mikola:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:55,cooldown:0},olexiy:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:70},six:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:85,hit:false}};// Кожен новий матч має інше розташування та набір початкових предметів.
+function newGame(lv){const rooms=roomDefs.map(d=>({...d,items:new Map(),occupant:null,door:75,maxDoor:75,doorLv:1,pcLv:1,alive:true,chain:false,puddle:false,poop:false,access:0,defenseJammed:0}));const players=Array.from({length:6},(_,i)=>makePlayer(i,i!==0));if(matchRosterPlan)players.forEach((p,i)=>{p.name=matchRosterPlan[i].name;p.skin=matchRosterPlan[i].skin});const boss=bossForDifficulty(lv);const calendarWave=(Math.floor(Date.parse(KYIV()+'T12:00:00')/86400000)%7);const growthInterval=Math.max(17,34-calendarWave*2-lv*.65);const g={level:lv,boss,hunterGrowthInterval:growthInterval,nextHunterGrowth:growthInterval,hunterAttackProgress:0,servants:[],phase:'claim',time:0,countdown:25,gold:16,energy:0,rooms,players,hunter:{x:restPoints()[0].x,y:restPoints()[0].y,hp:180+lv*32,maxHp:180+lv*32,level:1,state:'rest',target:null,path:[],attack:0,rest:5,active:false,stun:0,shotCd:0,anim:0,retreats:0,abilityCd:14,servantCd:18,teleportCd:999,sellerDodgeCd:0,sellerArrival:0,sellerVisual:null,sellerVisualUntil:0,transform:0},effects:[],projectiles:[],pets:[],selected:null,magicUsed:0,magicRolls:{},petStrike:0,boxClaims:new Set(),tick:0,npcTick:0,elapsed:0,lastResult:null,boosts:save.boosts.slice(),targetCam:null,mikola:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:55,cooldown:0},olexiy:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:70},six:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:85,hit:false}};// Кожен новий матч має інше розташування та набір початкових предметів.
  // Не переносимо вже побудовані речі під час вибору кімнати у поточному матчі.
  const starterTypes=['trap','energy','money','distance','clock','box'];
  for(let i=starterTypes.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[starterTypes[i],starterTypes[j]]=[starterTypes[j],starterTypes[i]]}
@@ -987,6 +987,7 @@ function panicRoute(h){
 }
 function fleeHunter(reason){
  const h=game.hunter;h.path=panicRoute(h);h.fleeReason=reason;
+ if(['mikola','olexiy','six'].includes(reason))game.helperFleeLockUntil=game.time+32;
  h.state=reason==='mikola'?'mikola_flee':reason==='olexiy'?'olexiy_flee':reason==='six'?'six_flee':'retreat';
  h.target=null;h.speed=2.65;h.attack=0;
 }
@@ -1011,7 +1012,7 @@ function updateMikola(dt){
   }
   return;
  }
- if(g.time<n.nextAt||!h.active||h.state==='rest'||h.state==='retreat'||h.state==='mikola_flee'||h.state==='olexiy_flee'||h.state==='six_flee'||h.stun>0)return;
+ if(g.time<n.nextAt||(g.helperFleeLockUntil||0)>g.time||!h.active||h.state==='rest'||h.state==='retreat'||h.state==='mikola_flee'||h.state==='olexiy_flee'||h.state==='six_flee'||h.stun>0)return;
  n.active=true;n.until=g.time+6;n.x=h.x+(h.x<mapCfg().centerX?-1:1);n.y=h.y;
  fleeHunter('mikola');
  effect(n.x,n.y,'🍺 Микола!');toast('Микола вибіг! Гість утікає від нього!');
@@ -1031,7 +1032,7 @@ function updateOlexiy(dt){
   }
   return;
  }
- if(g.time<a.nextAt||!h.active||['rest','retreat','mikola_flee','olexiy_flee','six_flee'].includes(h.state)||g.mikola?.active||g.six?.active||h.stun>0)return;
+ if(g.time<a.nextAt||(g.helperFleeLockUntil||0)>g.time||!h.active||['rest','retreat','mikola_flee','olexiy_flee','six_flee'].includes(h.state)||g.mikola?.active||g.six?.active||h.stun>0)return;
  a.active=true;a.until=g.time+5.5;a.x=h.x+(h.x<mapCfg().centerX?-1:1);a.y=h.y;
  fleeHunter('olexiy');
  effect(a.x,a.y,'📦 Олексій!');toast('Олексій нав’язує гостю барахло! Гість тікає!');
@@ -1057,7 +1058,7 @@ function updateSix(dt){
   }
   return;
  }
- if(g.time<n.nextAt||!h.active||['rest','retreat','mikola_flee','olexiy_flee','six_flee'].includes(h.state)||g.mikola?.active||g.olexiy?.active||h.stun>0)return;
+ if(g.time<n.nextAt||(g.helperFleeLockUntil||0)>g.time||!h.active||['rest','retreat','mikola_flee','olexiy_flee','six_flee'].includes(h.state)||g.mikola?.active||g.olexiy?.active||h.stun>0)return;
  n.active=true;n.hit=false;n.until=g.time+6;
  n.x=h.x+(h.x<mapCfg().centerX?-1:1);n.y=h.y;
  fleeHunter('six');
