@@ -425,6 +425,8 @@ const HH_DOOR_COST=[null,{gold:16},{gold:34},{gold:70},{gold:145},{gold:290},{go
 const HH_WEAPON_DAMAGE=[6,9,17,34,70,140,280,560];
 const HH_WEAPON_COST=[8,18,42,90,185,370,740,1480];
 const HH_ENERGY_COST=[128,960,1980,4080,8160];
+// Монетне дерево використовує енергію, генератор використовує монети.
+const HH_MONEY_TREE_ENERGY_COST=[16,48,112];
 const HH_DOOR_REQUIRED=[1,1,1,2,3,4,5,6,7,8];
 const hhPrice=(arr,lv)=>arr[Math.min(lv,arr.length-1)]??arr[arr.length-1];
 const hhCost=(gold,energy=0)=>({gold,energy});
@@ -651,7 +653,7 @@ if(item.type==='cache' && owned){
  {name:'Приманити гостя',fn:()=>{const h=game.hunter;if(!h.active||h.state==='rest'||h.state==='retreat')return toast('Гість зараз відновлює нав’язливість');h.target=r.id;h.state='hunt';h.lureUntil=game.boosts.includes('cache')?game.time+30:game.time+8;const pt=nearestHunterDoor(r);hunterPath(Math.floor(pt.x),Math.floor(pt.y));effect(x+.5,y+.5,'💾');sound('door');closeModal()}},{name:'Закрити',fn:closeModal}]);return;
 }
 if(item.type==='box'){return modal('📦 Коробка',`<p>${item.claimed?'Монету вже забрано. Коробка залишиться до кінця гри.':'Всередині одна монета.'}</p>`,[{name:'Забрати 1 монету',disabled:item.claimed,fn:()=>{game.gold+=1;item.claimed=true;sound('coin');closeModal()}},{name:'Закрити',fn:closeModal}])}
-const upgraded=['weapon','energy','money','distance','partner'].includes(item.type);const max=item.type==='weapon'?8:item.type==='energy'?5:item.type==='money'?4:item.type==='partner'?7:3;const cost=item.type==='weapon'?hhCost(hhPrice(HH_WEAPON_COST,item.lv||1)):item.type==='energy'?hhCost(hhPrice(HH_ENERGY_COST,item.lv||1)):hhCost(Math.ceil((item.type==='partner'?24:52)*Math.pow(2.04,(item.lv||1)-1)),(item.lv||1)>=4?16*((item.lv||1)-2):0);let body=`<p>${catalog.find(c=>c.type===item.type)?.name||item.type} • Рівень ${item.lv||1}/${upgraded?max:1}</p>${upgraded?`<p>Покращення: <span class="upgrade-cost">${costLabel(cost)}</span></p>`:''}`;modal('📦 Предмет',body,[...(upgraded?[{name:'⬆ Покращити',disabled:item.lv>=max||!owned&&!game.boosts.includes('help'),fn:()=>{if(spend(cost)){item.lv++;sound('build');if(!owned)npcReaction(r,'build');upgrade(r,x,y)}}}]:[]),{name:'Продати',disabled:item.type==='box'||(!owned&&!game.boosts.includes('steal')),fn:()=>{if(!owned){game.gold+=10}else game.gold+=Math.round((costs[item.type]?.gold||12)*.45);r.items.delete(`${x},${y}`);sound('coin');closeModal();if(!owned)npcReaction(r,'theft')}},{name:'Закрити',fn:closeModal}])}
+const upgraded=['weapon','energy','money','distance','partner'].includes(item.type);const max=item.type==='weapon'?8:item.type==='energy'?5:item.type==='money'?4:item.type==='partner'?7:3;const cost=item.type==='weapon'?hhCost(hhPrice(HH_WEAPON_COST,item.lv||1)):item.type==='energy'?hhCost(hhPrice(HH_ENERGY_COST,item.lv||1)):item.type==='money'?hhCost(0,hhPrice(HH_MONEY_TREE_ENERGY_COST,(item.lv||1)-1)):hhCost(Math.ceil((item.type==='partner'?24:52)*Math.pow(2.04,(item.lv||1)-1)),(item.lv||1)>=4?16*((item.lv||1)-2):0);let body=`<p>${catalog.find(c=>c.type===item.type)?.name||item.type} • Рівень ${item.lv||1}/${upgraded?max:1}</p>${upgraded?`<p>Покращення: <span class="upgrade-cost">${costLabel(cost)}</span></p>`:''}`;modal('📦 Предмет',body,[...(upgraded?[{name:'⬆ Покращити',disabled:item.lv>=max||!owned&&!game.boosts.includes('help'),fn:()=>{if(spend(cost)){item.lv++;sound('build');if(!owned)npcReaction(r,'build');upgrade(r,x,y)}}}]:[]),{name:'Продати',disabled:item.type==='box'||(!owned&&!game.boosts.includes('steal')),fn:()=>{if(!owned){game.gold+=10}else game.gold+=Math.round((costs[item.type]?.gold||12)*.45);r.items.delete(`${x},${y}`);sound('coin');closeModal();if(!owned)npcReaction(r,'theft')}},{name:'Закрити',fn:closeModal}])}
 function effect(x,y,t){if(game)game.effects.push({x,y,t,life:.7,max:.7})}
 function roomAt(x,y){return game?.rooms.find(r=>inRoom(r,x,y))}
 function floorClick(x,y){
@@ -1559,20 +1561,22 @@ const BOOST_ITEM_ICONS={
  cockroach:'cocroach.png',
  psychiatrist:'psywalk.gif',
  mikola:'mykolawalk.gif',
+ olexiy:'oleksiywalk.gif',
  oleksiy:'oleksiywalk.gif',
  six:'sixwalk.gif',
  door:'door1.png',
  weapon:'weapon1.png'
 };
+function boostKey(b){return String(b?.id||'').trim().toLowerCase()}
 function boostText(b){return String(b.name||'').replace(/^[^\p{L}\p{N}]+/u,'').trim()}
 function boostDisplayName(b){
- const icon=BOOST_ITEM_ICONS[b.id];
+ const icon=BOOST_ITEM_ICONS[boostKey(b)];
  return icon
   ? `<span class="boost-img-label"><img src="${assetURL(icon)}" alt="" class="boost-item-icon" loading="eager"> ${boostText(b)}</span>`
   : b.name;
 }
 function boostChoiceIcon(b){
- const icon=BOOST_ITEM_ICONS[b.id];
+ const icon=BOOST_ITEM_ICONS[boostKey(b)];
  return icon?`<img src="${assetURL(icon)}" alt="" class="boost-choice-icon" loading="eager">`:'';
 }
 function boostTier(id){return Math.min(BOOST_STEPS.length,save.boosts.filter(v=>v.split(':')[0]===id).length)}
