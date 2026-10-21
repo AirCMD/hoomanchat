@@ -1286,7 +1286,9 @@ if(h.state==='attack'){
  if(g.hunterAttackProgress>=g.nextHunterGrowth&&h.level<1+Math.floor(g.level/2)+4){
   g.hunterAttackProgress-=g.nextHunterGrowth;
   h.level++;h.maxHp+=25;h.hp=Math.min(h.maxHp,h.hp+25);
-  g.nextHunterGrowth=g.hunterGrowthInterval;
+  // На вищих рівнях бос потребує поступово менше ударів для нового рівня.
+  // Поріг скорочується на 4% за рівень, максимум на 24%, з урахуванням доби й складності.
+  g.nextHunterGrowth=g.hunterGrowthInterval*(1-Math.min(0.24,(h.level-1)*0.04));
   toast(`Нав'язливість гостя: рівень ${h.level}`);
  }
  effect(r.doorX+.5,r.doorY+.5,isDoorBurst?'💢':'💥');sound('hit');if(g.boss.id==='hector'&&Math.random()<.18)toast('Гектор: Відчиняй двері, гімно мале!');if(r.puddle&&!(r.defenseJammed>0)){h.hp-=1.1;effect(h.x,h.y,'-1')}if(r.occupant===0&&g.boosts.includes('tamagotchi'))g.gold+=15;if(r.door<=0){r.alive=false;const p=g.players[r.occupant];if(p){p.alive=false;p.seated=false}effect(r.doorX+.5,r.doorY+.5,'💀');if(r.occupant===0){finish(false,g.boss.id==='hella'?`${g.boss.name} зламала Ваші двері`:['hector','evgen'].includes(g.boss.id)?`${g.boss.name} зламав Ваші двері`:'Мисливець зламав Ваші двері');return}h.state='hunt';h.target=null;renderPlayers()}else if(r.poop&&!(r.defenseJammed>0)&&Math.random()<.3){retreatHunter()}}}
