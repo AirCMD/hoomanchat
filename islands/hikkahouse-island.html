@@ -717,7 +717,10 @@ function npcEconomy(){
    firstAttackAt:null,
    reactionGuns:0,
    lastGunTime:-100,
-   lastEnergyTime:-100
+   lastEnergyTime:-100,
+   lastUtilityTime:-100,
+   utilityStyle:Math.random(),
+   treeTarget:Math.random()<.7?1:2
   };
   const plan=p.npcPlan,h=game.hunter;
   const danger=h.active&&h.target===r.id&&['hunt','attack','transform'].includes(h.state);
@@ -778,6 +781,63 @@ function npcEconomy(){
   }
   if(pcUnlocked&&affordable(pcPrice)){
    p.gold-=pcPrice.gold;p.energy-=pcPrice.energy||0;r.pcLv++;continue;
+  }
+  // NPC самостійно користуються доступними предметами магазину.
+  // Здібності зі щасливих випадінь Маджики не створюємо з повітря.
+  const itemCount=type=>[...r.items.values()].filter(it=>it.type===type).length;
+  const buyUtility=(type)=>{
+   const price=costs[type],slots=free();
+   if(!price||!slots.length||!affordable(price))return false;
+   const [x,y]=slots[0];
+   p.gold-=price.gold||0;p.energy-=price.energy||0;
+   r.items.set(`${x},${y}`,{type,lv:1,cool:0,source:'shop'});
+   plan.lastUtilityTime=game.time;return true;
+  };
+  const buyDoorUtility=type=>{
+   const price=costs[type];
+   if(r[type]||!affordable(price))return false;
+   p.gold-=price.gold||0;p.energy-=price.energy||0;
+   r[type]=true;plan.lastUtilityTime=game.time;
+   return true;
+  };
+  const utilitiesReady=game.time>=52&&game.time-plan.lastUtilityTime>=rand(15,23);
+  const economyStable=r.pcLv>=3&&r.doorLv>=2;
+  const wantsDefense=attacked||danger;
+  // Монетне дерево купуємо за енергію тільки після першого генератора.
+  const tree=[...r.items.values()].find(it=>it.type==='money'&&it.lv<4);
+  const treeCost=tree?hhPrice(HH_MONEY_TREE_ENERGY_COST,tree.lv-1):0;
+  if(utilitiesReady&&generators.length>0&&economyStable){
+   if(tree&&p.energy>=treeCost&&r.pcLv>=4&&game.time>=75){
+    p.energy-=treeCost;tree.lv++;plan.lastUtilityTime=game.time;continue;
+   }
+   if(itemCount('money')<plan.treeTarget&&p.energy>=costs.money.energy&&
+      (p.gold>=costs.energy.gold*.45||generators.some(it=>it.lv>=2))){
+    if(buyUtility('money'))continue;
+   }
+  }
+  // Засоби захисту від ударів по дверях: не раніше появи загрози
+  // або коли кімната вже має базову економіку.
+  if(utilitiesReady&&economyStable){
+   if(wantsDefense&&danger&&r.door/r.maxDoor<.8&&!r.chain&&
+     r.doorLv>=3&&buyDoorUtility('chain'))continue;
+   if(wantsDefense&&itemCount('clock')===0&&p.energy>=costs.clock.energy&&
+      r.doorLv>=3&&buyUtility('clock'))continue;
+   if(wantsDefense&&itemCount('trap')===0&&p.energy>=costs.trap.energy&&
+      game.time>=85&&buyUtility('trap'))continue;
+   if(attacked&&itemCount('safe')===0&&p.gold>=costs.safe.gold+Math.min(72,doorPrice?.gold||0)&&
+      game.time>=95&&buyUtility('safe'))continue;
+   if(attacked&&itemCount('cache')===0&&p.gold>=costs.cache.gold+45&&
+      !danger&&plan.utilityStyle>.45&&buyUtility('cache'))continue;
+   if(attacked&&r.doorLv>=4&&!r.puddle&&p.energy>=costs.puddle.energy+8&&
+      plan.utilityStyle>.55&&buyDoorUtility('puddle'))continue;
+   if(attacked&&r.doorLv>=4&&!r.poop&&p.gold>=costs.poop.gold+60&&
+      plan.utilityStyle<.35&&buyDoorUtility('poop'))continue;
+   // Дистанція має сенс лише там, де є турель.
+   if(weapons.length&&itemCount('distance')===0&&game.time>=130&&
+      p.gold>=costs.distance.gold+70&&buyUtility('distance'))continue;
+   // Сейф корисний також до першої атаки, але не ціною економіки.
+   if(!attacked&&game.time>=155&&r.pcLv>=6&&itemCount('safe')===0&&
+      p.gold>=costs.safe.gold+140&&plan.utilityStyle>.65&&buyUtility('safe'))continue;
   }
   // Не купуємо зброю за рахунок грошей, потрібних на близьке покращення.
   const nextGoal=generators.length===0&&wantsEnergy?costs.energy.gold:
