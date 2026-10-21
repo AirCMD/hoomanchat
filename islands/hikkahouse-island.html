@@ -1319,10 +1319,20 @@ if(h.state==='attack'){
  }else if(r.poop&&!(r.defenseJammed>0)&&Math.random()<.3){retreatHunter()}}}
 if(g.devTest&&g.devImmortal)h.hp=Math.max(1,h.hp);if(h.hp<=0){finish(true,'Нав’язливого гостя вигнано!');return}if(h.hp<h.maxHp*(.30+Math.min(h.level*.025,.17))&&h.retreats<2+Math.floor(g.level/4)){retreatHunter();return}
 }
+// Одна клітинка карти складається з 4×4 малих клітинок.
+// Значення дальності вказані в малих клітинках, а координати гри — у великих.
+const HH_RANGE_SUBCELLS_PER_TILE=4;
+const HH_WEAPON_RANGE_SUBCELLS=[4.5,4.5,5,5.5,6,6.5,7,7.5];
+function weaponRange(item,room){
+ const level=Math.max(1,Math.min(8,item.lv||1));
+ const bonus=[...room.items.values()].filter(i=>i.type==='distance')
+   .reduce((n,i)=>n+.75*(i.lv||1),0);
+ return (HH_WEAPON_RANGE_SUBCELLS[level-1]+bonus)/HH_RANGE_SUBCELLS_PER_TILE;
+}
 function updateWeapons(dt){
  if(!game||game.phase==='ended')return;
  const g=game,h=g.hunter;
- for(const r of g.rooms){if(!r.alive||r.occupant===null||!g.players[r.occupant].seated)continue;for(const [key,item] of r.items){if(item.type!=='weapon')continue;item.cool=(item.cool||0)-dt;item.jammed=Math.max(0,(item.jammed||0)-dt);if(item.cool>0)continue;const [x,y]=key.split(',').map(Number),dist=Math.hypot(x+.5-h.x,y+.5-h.y);const range=4.5+[...r.items.values()].filter(v=>v.type==='distance').reduce((n,i)=>n+.75*(i.lv||1),0);const servant=g.servants.filter(m=>m.hp>0&&Math.hypot(m.x-(x+.5),m.y-(y+.5))<=range)
+ for(const r of g.rooms){if(!r.alive||r.occupant===null||!g.players[r.occupant].seated)continue;for(const [key,item] of r.items){if(item.type!=='weapon')continue;item.cool=(item.cool||0)-dt;item.jammed=Math.max(0,(item.jammed||0)-dt);if(item.cool>0)continue;const [x,y]=key.split(',').map(Number),dist=Math.hypot(x+.5-h.x,y+.5-h.y);const range=weaponRange(item,r);const servant=g.servants.filter(m=>m.hp>0&&Math.hypot(m.x-(x+.5),m.y-(y+.5))<=range)
   .sort((a,b)=>Math.hypot(a.x-(x+.5),a.y-(y+.5))-Math.hypot(b.x-(x+.5),b.y-(y+.5)))[0];
 if(item.jammed>0||(!servant&&dist>range))continue;
 item.cool=Math.max(1.05,2-(item.lv-1)*.11);
@@ -1341,11 +1351,11 @@ function servantSafePath(m,door){
  const towers=[];
  for(const r of game.rooms){
   if(!r.alive||r.occupant===null||!game.players[r.occupant]?.seated)continue;
-  const bonus=[...r.items.values()].filter(i=>i.type==='distance').reduce((n,i)=>n+.75*(i.lv||1),0);
+
   for(const [key,item] of r.items){
    if(item.type!=='weapon'||(item.jammed||0)>0)continue;
    const [x,y]=key.split(',').map(Number);
-   towers.push({x:x+.5,y:y+.5,range:4.5+bonus,weight:Math.min(5,1+(item.lv||1)*.4)});
+   towers.push({x:x+.5,y:y+.5,range:weaponRange(item,r),weight:Math.min(5,1+(item.lv||1)*.4)});
   }
  }
  const key=(x,y)=>`${x},${y}`;
