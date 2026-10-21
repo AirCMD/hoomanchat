@@ -939,6 +939,28 @@ function nearestHunterDoor(r){
  // Відсутність зовнішнього коридору має блокувати атаку, а не бити стіну.
  return{x:-999,y:-999};
 }
+// Окремий маршрут проникнення: після руйнування входу він завжди прохідний.
+// На деяких картах клітинки кімнати зберігаються окремо від mapGrid.
+function breachRoute(h,room){
+ const sx=Math.floor(h.x),sy=Math.floor(h.y),ex=room.pcX,ey=room.pcY;
+ const cells=new Set((room.cells||buildTiles(room)).map(([x,y])=>`${x},${y}`));
+ cells.add(`${ex},${ey}`);cells.add(`${room.doorX},${room.doorY}`);
+ const q=[[sx,sy]],seen=new Set([`${sx},${sy}`]),prev=new Map();
+ for(let k=0;k<q.length;k++){
+  const [x,y]=q[k],key=`${x},${y}`;
+  if(x===ex&&y===ey){const result=[];let t=key;while(prev.has(t)){const [a,b]=t.split(',').map(Number);result.unshift({x:a+.5,y:b+.5});t=prev.get(t)}return result;}
+  for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+   const nx=x+dx,ny=y+dy,id=`${nx},${ny}`;
+   if(seen.has(id)||nx<0||ny<0||nx>=C||ny>=R)continue;
+   const permitted=cells.has(id)||(['corridor','rest'].includes(tileType(nx,ny))&&!room.cells?.some(([cx,cy])=>cx===nx&&cy===ny));
+   if(!permitted)continue;
+   seen.add(id);prev.set(id,key);q.push([nx,ny]);
+  }
+ }
+ // Якщо мапа має нестандартну геометрію, йдемо від розбитих дверей
+ // до ПК по кімнаті; не залишаємо гостя назавжди в стані breach.
+ return [{x:room.doorX+.5,y:room.doorY+.5},{x:ex+.5,y:ey+.5}];
+}
 function hunterPath(x,y){const h=game.hunter;h.path=bfs(h.x,h.y,x,y,null);h.speed=1.55+Math.min(game.level*.065,.65)}
 // Маршрути панічної втечі завжди складаються з реальних прохідних клітинок.
 // Жодного прямого руху крізь стіни та жодних нескінченних петель.
@@ -1149,7 +1171,7 @@ function updateHunter(dt){
      if(room.occupant===0){finish(false,`${g.boss.name} дістався Вашого персонажа!`);return;}
      return;
    }
-   if(!h.path.length){h.path=bfs(h.x,h.y,room.pcX,room.pcY,null);}
+   if(!h.path.length){h.path=breachRoute(h,room);}
    if(h.path.length){h.speed=1.55+Math.min(g.level*.065,.65);travel(h,dt);}
    return;
  }
@@ -1312,7 +1334,7 @@ if(h.state==='attack'){
  r.door=0;r.breached=true;
  h.state='breach';h.breachTarget=r.id;h.breachPathRetries=0;
  h.doorBurstUntil=0;h.doorBurstPending=false;h.attack=0;
- h.path=bfs(h.x,h.y,r.pcX,r.pcY,null);
+ h.path=breachRoute(h,r);
  effect(r.doorX+.5,r.doorY+.5,'💥');
  if(r.occupant===0)toast('Двері знищено! Гість увірвався до кімнати!');
  renderPlayers();
@@ -1333,9 +1355,12 @@ function weaponRange(item,room){
 function updateWeapons(dt){
  if(!game||game.phase==='ended')return;
  const g=game,h=g.hunter;
- for(const r of g.rooms){if(!r.alive||r.occupant===null||!g.players[r.occupant].seated)continue;for(const [key,item] of r.items){if(item.type!=='weapon')continue;item.cool=(item.cool||0)-dt;item.jammed=Math.max(0,(item.jammed||0)-dt);if(item.cool>0)continue;const [x,y]=key.split(',').map(Number),dist=Math.hypot(x+.5-h.x,y+.5-h.y);const range=weaponRange(item,r);const servant=g.servants.filter(m=>m.hp>0&&Math.hypot(m.x-(x+.5),m.y-(y+.5))<=range)
+ for(const r of g.rooms){if(!r.alive||r.occupant===null||!g.players[r.occupant].seated)continue;for(const [key,item] of r.items){if(item.type!=='weapon')continue;item.cool=(item.cool||0)-dt;item.jammed=Math.max(0,(item.jammed||0)-dt);const [x,y]=key.split(',').map(Number),dist=Math.hypot(x+.5-h.x,y+.5-h.y);const range=weaponRange(item,r);const servant=g.servants.filter(m=>m.hp>0&&Math.hypot(m.x-(x+.5),m.y-(y+.5))<=range)
   .sort((a,b)=>Math.hypot(a.x-(x+.5),a.y-(y+.5))-Math.hypot(b.x-(x+.5),b.y-(y+.5)))[0];
-if(item.jammed>0||(!servant&&dist>range))continue;
+if(item.jammed>0||(!servant&&dist>range)){item.readyTarget=null;item.cool=0;continue;}
+const targetKey=servant?`m:${servant.kind}:${servant.x|0}:${servant.y|0}`:'boss';
+if(item.readyTarget!==targetKey){item.cool=0;item.readyTarget=targetKey;}
+if(item.cool>0)continue;
 item.cool=Math.max(1.05,2-(item.lv-1)*.11);
 const dmg=hhPrice(HH_WEAPON_DAMAGE,item.lv-1)+(r.occupant===0?boostValue('weapon'):0);
 const target=servant||h;
@@ -2078,7 +2103,7 @@ function draw(){if(!game||!W){if(bossAnimated){bossAnimated.hidden=true}syncServ
 // Rest zones at both ends of the corridor.
 for(const rest of restPoints()){const rx=Math.floor(rest.x),ry=Math.floor(rest.y);drawImg('hunter resting.png',rx*tile,ry*tile,tile,tile);ctx.strokeStyle='#bda2ff';ctx.lineWidth=2;ctx.strokeRect(rx*tile+1,ry*tile+1,tile-2,tile-2)}
 for(const r of game.rooms){const dx=r.doorX*tile,dy=r.doorY*tile;if(!r.alive){ctx.fillStyle='#ff454744';(r.cells?r.cells.forEach(([cx,cy])=>ctx.fillRect(cx*tile,cy*tile,tile,tile)):ctx.fillRect((r.x+1)*tile,(r.y+1)*tile,5*tile,5*tile))}for(const [x,y] of buildTiles(r)){const px=x*tile,py=y*tile;if(!r.items.has(`${x},${y}`)){ctx.fillStyle=r.occupant===0?'#6ae4c322':'#aeb6cb13';ctx.fillRect(px+4,py+4,tile-8,tile-8);ctx.fillStyle=r.occupant===0?'#7be5c8a5':'#b9c2db50';ctx.font=`${tile*.31}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('+',px+tile/2,py+tile/2)}else {const placed=r.items.get(`${x},${y}`);if(!(['cat','dog'].includes(placed.type)&&placed.pet)&&!(placed.type==='cockroach'&&placed.bug?.active))iconImage(placed,px+2,py+2,tile-4,r)}}const pcname=pcSpriteName(r.pcLv);drawImg(pcname,r.pcX*tile,r.pcY*tile,tile,tile);drawRoomOwnerLabel(r,tile);
-if(r.door>0){const open=r.occupant===null||(!game.players[r.occupant]?.seated&&r.alive);ctx.save();if(open){ctx.globalAlpha=.85;ctx.translate(r.side==='left'?-tile*.65:r.side==='right'?tile*.65:0,r.side==='top'?-tile*.65:r.side==='bottom'?tile*.65:0)}drawImg(`door${clamp(r.doorLv,1,6)}.png`,dx,dy,tile,tile);ctx.restore();if(r.chain||r.puddle||r.poop){
+if(r.door>0&&!r.breached){const open=r.occupant===null||(!game.players[r.occupant]?.seated&&r.alive);ctx.save();if(open){ctx.globalAlpha=.85;ctx.translate(r.side==='left'?-tile*.65:r.side==='right'?tile*.65:0,r.side==='top'?-tile*.65:r.side==='bottom'?tile*.65:0)}drawImg(`door${clamp(r.doorLv,1,6)}.png`,dx,dy,tile,tile);ctx.restore();if(r.chain||r.puddle||r.poop){
  // Кожне дверне поліпшення малюємо окремо, без емодзі калюжі.
  if(r.puddle)drawImg('wdrop.png',dx+tile*.25,dy+tile*.48,tile*.5,tile*.44);
  ctx.font=`${tile*.22}px sans-serif`;
