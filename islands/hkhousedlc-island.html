@@ -3,10 +3,10 @@
 <style>
 :root{color-scheme:dark;--bg:#10142b;--panel:#202540;--line:#586183;--pink:#ff88b7;--mint:#72e8c7;--ink:#faf5ff;--muted:#b7bfd8}*{box-sizing:border-box}body{margin:0;color:var(--ink);font:15px/1.55 system-ui,Segoe UI,sans-serif;background:radial-gradient(ellipse at 20% -10%,#453357 0%,#16192f 45%,#0d1021 100%);min-height:100vh}button,textarea{font:inherit}button{cursor:pointer;color:inherit;background:#303753;border:1px solid var(--line);border-radius:12px;padding:11px 16px}button:hover:not(:disabled){background:#474161;border-color:var(--pink)}button:disabled{opacity:.48;cursor:not-allowed}.primary{background:#865478;border-color:#ff9eca}.primary:hover{background:#a45f89!important}header{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:18px clamp(15px,3vw,38px);background:#101326d9;border-bottom:1px solid #ffffff25}h1,h2,h3,p{margin:0}.brand{font-size:21px;letter-spacing:1px;font-weight:950}.brand b{color:var(--pink)}.small{color:var(--muted);font-size:12px}.stats{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.chip{background:#313950;border:1px solid #727a9a;border-radius:999px;padding:7px 13px;font-weight:750}main{max-width:1170px;margin:auto;padding:30px clamp(15px,3vw,30px)}.intro{max-width:740px;margin-bottom:24px}.intro h1{font-size:clamp(25px,4vw,44px);margin-bottom:10px}.intro p{color:var(--muted)}.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.mode{min-width:0;text-align:left;min-height:245px;display:flex;flex-direction:column;gap:12px;align-items:start;padding:24px;background:linear-gradient(145deg,#303454,#20233d);border-radius:18px}.mode .emoji{font-size:36px}.mode strong{font-size:21px}.mode span:nth-child(3){color:#c9c9df}.mode em{font-style:normal;font-weight:700;color:var(--mint);margin-top:auto}.mode.active{border-color:var(--pink)}.surface{background:#1e243d;border:1px solid #67708e;border-radius:18px;padding:24px;margin-top:20px}.surface[hidden],section[hidden],dialog:not([open]){display:none!important}.line{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.space{justify-content:space-between}.sub{color:var(--muted);max-width:780px;margin:9px 0 18px}.app-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(270px,.65fr);gap:18px}.apartment{position:relative;min-height:405px;isolation:isolate;overflow:hidden;border-radius:15px;border:3px solid #6d5b81;background:linear-gradient(180deg,#2a315d 0%,#2d355e 58%,#524c69 58%,#524c69 100%);display:flex;justify-content:space-around;align-items:flex-end;gap:8px;padding:12px}.apartment>*{position:relative;z-index:2}.apartment-parallax{position:absolute!important;inset:0;z-index:0!important;pointer-events:none;overflow:hidden;background:#262e55}.hh-layer{position:absolute;inset:-8%;opacity:0;will-change:transform,opacity;transition:opacity 4s ease-in-out;transform:translate3d(0,0,0) scale(1.05)}.hh-layer.no-fade{transition:none!important}.hh-layer.is-visible{opacity:1}.hh-bg{background-position:center;background-size:cover;background-repeat:no-repeat}.hh-window{background-position:center;background-size:cover;background-repeat:no-repeat;mix-blend-mode:normal}.hh-window:empty{pointer-events:none}@media(prefers-reduced-motion:reduce){.hh-layer{transition:none!important}}.desk-pc{position:absolute;left:2%;bottom:70px;width:44%;height:245px;display:flex;align-items:flex-end;justify-content:center;z-index:1;pointer-events:none}.desk-pc img{width:100%;height:100%;object-fit:contain;object-position:center bottom;image-rendering:pixelated;filter:drop-shadow(0 10px 7px #04061288)}.desk-pc[hidden]{display:none}.char{border:0;background:transparent;padding:8px;min-width:0;width:48%;display:flex;flex-direction:column;align-items:center;justify-content:end;gap:3px;height:320px;z-index:3}.char img{object-fit:contain;image-rendering:pixelated;width:100%;height:245px;filter:drop-shadow(0 12px 7px #08091b88)}.char:hover{background:#ffffff1c!important}.char:active{transform:scale(.98)}.char b{background:#181c34dd;border:1px solid #ffffff40;border-radius:8px;padding:5px 14px}.char .fallback{font-size:78px;line-height:190px}.shop{display:grid;gap:10px}.shop button{text-align:left;display:flex;justify-content:space-between;align-items:center;gap:10px}.shop small{display:block;color:var(--muted)}.pc-collection{margin-top:8px;padding:12px;border:1px solid #67708e;border-radius:12px;background:#252c49}.pc-collection[hidden]{display:none}.pc-collection h4{margin:0 0 8px;font-size:14px}.pc-collection p{margin:0 0 10px;color:var(--muted);font-size:12px}.pc-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.pc-choice{padding:8px;border-radius:10px;text-align:center;display:grid;gap:6px;justify-items:center;align-content:start}.pc-choice .pc-name{font-size:12px;line-height:1.2}.pc-choice .pc-thumb{width:100%;height:72px;border-radius:8px;border:1px solid #ffffff1f;background:linear-gradient(180deg,#39405f,#252b45);display:flex;align-items:center;justify-content:center;overflow:hidden}.pc-choice .pc-thumb img{max-width:100%;max-height:100%;object-fit:contain;image-rendering:pixelated}.pc-choice.locked .pc-thumb{filter:grayscale(1);opacity:.6}.pc-choice.locked .pc-name{color:var(--muted)}.pc-choice.is-active{border-color:var(--pink);background:#4d4166}.statsrow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0 20px}.stat{background:#303650;border-radius:12px;padding:10px;min-width:0}.stat b{display:block;font-size:20px}.stat span{color:var(--muted);font-size:12px}.notification{min-height:25px;color:var(--mint);margin:12px 0}.dialogbody{background:#202641;border:1px solid #8282a9;color:var(--ink);border-radius:18px;width:min(580px,calc(100vw - 30px));padding:24px;max-height:90vh;overflow:auto}.dialogbody h2{margin-bottom:12px}.dialogbody textarea{display:block;width:100%;min-height:110px;margin:12px 0;resize:vertical;background:#0d1325;color:var(--ink);padding:12px;border:1px solid #7a7fa1;border-radius:8px;word-break:break-all}.dialogbody::backdrop{background:#030612bd}.tip{font-size:12px;color:#c5c8d9;margin-top:12px}#flash{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#343e59;border:1px solid #93cbbd;padding:11px 19px;border-radius:12px;box-shadow:0 12px 30px #0006;z-index:30;max-width:90vw;text-align:center}#flash[hidden]{display:none}.status{color:var(--mint)}footer{color:var(--muted);font-size:12px;padding:22px;text-align:center}@media(max-width:780px){.modes,.app-grid{grid-template-columns:1fr}.mode{min-height:175px}.apartment{min-height:320px}.desk-pc{left:1%;bottom:46px;width:44%;height:170px}.char{height:255px}.char img{height:190px}.pc-options{grid-template-columns:repeat(2,minmax(0,1fr))}.pc-choice .pc-thumb{height:58px}.statsrow{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
-/* Напросилися! — ізольовані стилі, що не впливають на клікер */
-.nv-hud{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.nv-board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}.nv-room{position:relative;min-width:0;height:285px;border:3px solid #666d92;border-radius:13px;overflow:hidden;background:#383753;cursor:pointer;isolation:isolate}.nv-room.selected{border-color:#ff9ecb;box-shadow:0 0 0 2px #ff9eca45}.nv-room::before{content:"";position:absolute;inset:0 0 18%;background-image:url('../Assets/woodfloor.png');background-size:100px;opacity:.16;pointer-events:none}.nv-room::after{content:"";position:absolute;inset:auto 0 0;height:29%;background:linear-gradient(145deg,#6a5676,#392e50);clip-path:polygon(0 28%,100% 28%,100% 100%,0 100%);pointer-events:none}.nv-title{position:absolute;z-index:4;top:8px;left:8px;background:#10152bdc;border-radius:6px;padding:3px 7px;font-size:12px}.nv-guest{position:absolute;z-index:2;left:26%;bottom:22%;width:50%;height:48%;display:flex;align-items:end;justify-content:center;transition:left .35s linear,bottom .35s linear;pointer-events:none}.nv-guest img{max-height:100%;max-width:100%;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 5px 3px #0009)}.nv-guest.running{width:32%;height:39%}.nv-pc{position:absolute;z-index:3;bottom:16%;left:31%;width:43%;height:29%;object-fit:contain;image-rendering:pixelated;pointer-events:none}.nv-door{position:absolute;z-index:5;bottom:9%;left:5%;height:38%;width:21%;border:4px solid #74566d;background:linear-gradient(125deg,#bd99a7,#65465d);border-radius:6px;box-shadow:inset -8px 0 #321d3470;display:flex;align-items:center;justify-content:center;font-size:12px;text-align:center;color:white;text-shadow:0 1px 3px #000}.nv-door.broken{transform:rotate(-16deg) translate(-6px,10px);opacity:.45}.nv-hp{position:absolute;z-index:6;bottom:4px;left:6px;right:6px;height:8px;border-radius:5px;background:#180f26;overflow:hidden}.nv-hp>span{display:block;background:#f47e9d;height:100%;transition:width .15s}.nv-boss{position:absolute;z-index:6;bottom:13%;left:5%;height:36%;width:27%;object-fit:contain;image-rendering:pixelated;pointer-events:none;filter:drop-shadow(0 3px 3px #0008)}.nv-summons{position:absolute;z-index:6;bottom:14%;right:6%;font-size:21px;text-shadow:0 2px 5px #0009}.nv-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.nv-toolbar select{background:#303753;border:1px solid #7d87a6;color:white;padding:9px;border-radius:8px}.nv-toolbar button{padding:9px 12px}.nv-room.complete .nv-title{color:#72e8c7}.nv-room .nv-placeholder{font-size:38px}.nv-room .nv-status{position:absolute;z-index:5;top:36px;right:7px;background:#171b32c9;padding:2px 6px;border-radius:5px;font-size:11px}.nv-room:focus-visible{outline:3px solid #fff;outline-offset:2px}@media(max-width:780px){.nv-board{grid-template-columns:1fr}.nv-room{height:250px}.nv-toolbar{align-items:stretch}.nv-toolbar button{flex:1 1 45%}}@media(prefers-reduced-motion:reduce){.nv-guest,.nv-hp>span{transition:none}}
+/* Напросилися!: ті ж клітинкові мапи й текстури, що в класичній грі */
+.nv-hud,.nv-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}.nv-toolbar select{padding:10px;background:#303753;color:white;border:1px solid #7d87a6;border-radius:8px}.nv-map-shell{position:relative;width:100%;height:min(67vh,650px);min-height:370px;background:#0b0f1b;border:2px solid #66708f;border-radius:14px;overflow:hidden;touch-action:pan-y}.nv-map-canvas{display:block;width:100%;height:100%;image-rendering:pixelated;cursor:crosshair}.nv-map-tip{position:absolute;left:10px;bottom:10px;background:#111729e8;border-radius:7px;padding:5px 9px;font-size:12px;pointer-events:none}.nv-map-shell:focus-visible{outline:3px solid #72e8c7}.nv-toolbar button{padding:10px}.nv-next-map{color:#72e8c7}@media(max-width:780px){.nv-map-shell{height:min(64vh,510px);min-height:310px}.nv-toolbar button{flex:1 1 40%}}
 </style></head><body>
-<header><div><div class="brand">HIKKA <b>HOUSE</b> · DLC</div><div class="small">Інший бік будинку · прототип 0.2.0</div></div><div class="stats"><span class="chip">🎟️ <span id="tokens">0</span> токенів</span><button id="importButton">Імпорт із класичної гри</button><a href="hikkahouse-island.html" style="color:#f4c8de">← Класична гра</a></div></header>
+<header><div><div class="brand">HIKKA <b>HOUSE</b> · DLC</div><div class="small">Інший бік будинку · прототип 0.2.1</div></div><div class="stats"><span class="chip">🎟️ <span id="tokens">0</span> токенів</span><button id="importButton">Імпорт із класичної гри</button><a href="hikkahouse-island.html" style="color:#f4c8de">← Класична гра</a></div></header>
 <main><div class="intro"><h1>Три історії. Один будинок.</h1><p>Тут формується окрема частина Hikka House. Токени можна перенести персональним кодом із класичної гри. DLC зберігає прогрес незалежно від неї.</p></div>
 <div class="modes"><button class="mode active" data-mode="apartment"><span class="emoji">🏠</span><strong>Квартира Яні та Акіри</strong><span>Перший робочий режим: взаємодій із персонажами, затишок і розвиток квартири.</span><em>▶ Грати в прототип</em></button><button class="mode" data-mode="boss"><span class="emoji">⚔️</span><strong>Кооперативна кімната боса</strong><span>Спільна оборона від сильного непроханого гостя.</span><em>Підготовка режиму</em></button><button class="mode" data-mode="intruder"><span class="emoji">🚪</span><strong>Напросилися!</strong><span>Хікі тепер боси. Проривайся до кімнат гостей, телепортуйся та викликай помічників.</span><em>▶ Грати у прототип</em></button></div>
 <section id="apartment" class="surface"><div class="line space"><div><h2>Квартира Яні та Акіри</h2><p class="sub">Натискай на Яні чи Акіру, щоб отримувати очки затишку. Поліпшуй квартиру та заробляй невелику кількість DLC-токенів за досягнення.</p></div><button id="resetApartment">Скинути лише квартиру</button></div>
@@ -15,10 +15,10 @@
 <section id="boss" class="surface" hidden><h2>⚔️ Кооперативна кімната боса</h2><p class="sub">Основа режиму створена: окремий екран і місце для майбутньої кооперативної оборони. Бойову механіку та мережевий кооператив ще не реалізовано.</p></section>
 <section id="intruder" class="surface" hidden>
  <div class="line space"><div><h2>🚪 Напросилися!</h2><p class="sub">П’ять рівнів. Гості ховаються за ПК, а хікі цього разу руйнують двері. Виберіть кімнату, бийте двері, телепортуйтеся та викликайте помічників. NPC-боси атакують самостійно.</p></div><button id="nvRestart">↻ Почати рівень знову</button></div>
- <div class="nv-hud"><span class="chip" id="nvLevel">Рівень 1 / 5</span><span class="chip" id="nvDoors">Двері: 0 / 3</span><span class="chip" id="nvEnergy">Енергія: 100</span><span class="chip" id="nvTimer">00:00</span></div>
- <div class="nv-board" id="nvBoard" aria-label="Кімнати з гостями"></div>
+ <div class="nv-hud"><span class="chip" id="nvLevel">Рівень 1 / 5</span><span class="chip" id="nvDoors">Двері: 0 / 6</span><span class="chip" id="nvEnergy">Енергія: 100</span><span class="chip" id="nvTimer">00:00</span></div>
+ <div class="nv-map-shell" id="nvMapShell" tabindex="0" aria-label="Мапа Hikka House з шістьма кімнатами"><canvas id="nvMapCanvas" class="nv-map-canvas"></canvas><span class="nv-map-tip">Натисніть на двері кімнати для вибору цілі</span></div>
  <div class="nv-toolbar"><label for="nvBoss">Ваш бос</label><select id="nvBoss"><option value="hiki">Гікі</option><option value="akira">Акіра</option><option value="jinni">Джинні</option></select><button id="nvHit" class="primary">💥 Трощити двері</button><button id="nvTeleport">✦ Телепортація · 25 енергії</button><button id="nvKittens">🐱 Кошенята · 20</button><button id="nvMinions">👥 Посіпаки · 30</button><button id="nvAdepts">🕯️ Адепти · 35</button></div>
- <p class="small">Вибір кімнати: натисніть на неї. Гості іноді виходять з-за ПК і бігають по колу. Для персонажів використовуються лише idle/walk, а для гостей — PNG.</p>
+ <p class="small">Вибір кімнати: натисніть на двері на мапі. Гості іноді виходять з-за ПК і бігають по колу. Для персонажів використовуються лише idle/walk, а для гостей — PNG.</p>
  <p class="notification" id="nvMessage" aria-live="polite">Оберіть кімнату та починайте напад.</p><div class="line" id="nvNextWrap" hidden><button class="primary" id="nvNext">Наступний рівень →</button></div>
 </section>
 </main><footer>Hikka House DLC · локальне збереження · у разі очищення даних сайту прогрес може зникнути</footer>
@@ -106,46 +106,110 @@ render();
 
 // DLC «Напросилися!»: локальний однокористувацький прототип з NPC-босами.
 (function initNaproSylisia(){
- const MAX_LEVEL=5,ROOMS=3,KEY_LEVEL='hikka-dlc-naprosylysia-level-v1';
+ const MAX=5,SAVE='hikka-dlc-naprosylysia-level-v1';
  const $n=id=>document.getElementById(id);
- const sprites={hiki:{idle:'hikiidle.gif',walk:'hikiwalk.gif'},akira:{idle:'akiraidle.gif',walk:'akirawalk.gif'},jinni:{idle:'jinniidle.gif',walk:'jinniwalk.gif'}};
- const npcKeys=['akira','jinni'];
- const guestSprites=['hikiport.png','akiraport.png','jiniport.png','dogport.png','psyport.png','mykolaport.png'];
- const pcSprites=['pc2.png','pc3.png','pc4.png','pc5.png','pc6.png','pc8.png','pc9.png','pc10.png'];
- let level=1,rooms=[],selected=0,energy=100,seconds=0,done=false,activated=false,gameTimer=null,helpers=[],npcStep=0,boss='hiki';
- try{level=Math.max(1,Math.min(MAX_LEVEL,parseInt(localStorage.getItem(KEY_LEVEL)||'1',10)||1))}catch{}
- function asset(img,names){const files=names.flatMap(name=>['../Assets/'+name,'../assets/'+name]);let i=0;img.onerror=()=>{i++;if(i<files.length)img.src=files[i];else{img.onerror=null;img.hidden=true}};img.src=files[0]}
- function spriteFor(room,key,moving){const im=room.node.querySelector('.nv-boss');if(!im||!key)return;const file=(sprites[key]||sprites.hiki)[moving?'walk':'idle'];if(im.dataset.file!==file){im.dataset.file=file;im.hidden=false;asset(im,[file,(sprites[key]||sprites.hiki).idle])}}
- function makeRoom(i){const node=document.createElement('div');node.className='nv-room';node.tabIndex=0;node.setAttribute('role','button');node.setAttribute('aria-label','Вибрати кімнату '+(i+1));node.innerHTML='<span class="nv-title">Кімната '+(i+1)+'</span><span class="nv-status">Гість за ПК</span><div class="nv-guest"><img alt="Гість" /></div><img class="nv-pc" alt="ПК гостя"/><div class="nv-door">Двері</div><img class="nv-boss" alt="Хікі-бос"/><div class="nv-summons"></div><div class="nv-hp"><span></span></div>';
- node.onclick=()=>{selected=i;render()};node.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selected=i;render()}};
- const room={i,node,hp:100+(level-1)*55,maxHp:100+(level-1)*55,broken:false,running:false,angle:0,walkCounter:0,guestTicks:4+i,helperPower:0};
- const guest=node.querySelector('.nv-guest img');asset(guest,[guestSprites[(i+level-1)%guestSprites.length],'hikiport.png']);
- asset(node.querySelector('.nv-pc'),[pcSprites[(i+level)%pcSprites.length]]);
- $n('nvBoard').append(node);return room;
+ const MAPS=[
+  {key:'classic',name:'Звичайна мапа',w:19,h:25,floor:'floor.png',roomFloor:'floor.png',wall:'wall.png'},
+  {key:'winter',name:'Крижаний корпус',w:29,h:28,floor:'icefloor.png',roomFloor:'snowfloor.png',wall:'snowwall.png'},
+  {key:'autumn',name:'Старий гуртожиток',w:34,h:32,floor:'autumnfloor.png',roomFloor:'woodfloor.png',wall:'autumnbrkwall.png'},
+  {key:'spring',name:'Зарослий будинок',w:34,h:32,floor:'grassfloor.png',roomFloor:'woodfloor.png',wall:'wallbrk.png'},
+  {key:'desert',name:'Загублений комплекс',w:35,h:30,floor:'mudfloor.png',roomFloor:'tilefloor.png',wall:'wallbrk.png'}
+ ];
+ // Маски, позиції й сторони дверей перенесені з ROOM_LAYOUTS класичної Hikka House.
+ const LAYOUTS={
+  autumn:[{x:2,y:2,side:'right',rows:['######','######','#####.','####..','####..']},{x:24,y:4,side:'left',rows:['.####','#####','#####','#####','###..']},{x:3,y:12,side:'top',rows:['######','######','..####','..####']},{x:23,y:14,side:'left',rows:['#####.','######','######','.#####','.####.']},{x:2,y:23,side:'right',rows:['####','####','####','####','##..']},{x:22,y:24,side:'top',rows:['..#####','#######','#######','#####..']}],
+  spring:[{x:3,y:4,side:'bottom',rows:['.#####','######','######','####..']},{x:18,y:2,side:'left',rows:['####','####','####','####','####','##..']},{x:25,y:11,side:'bottom',rows:['#####','#####','#####','..###']},{x:2,y:16,side:'right',rows:['######','######','###...','###...','###...']},{x:13,y:22,side:'top',rows:['.#####','######','######','#####.']},{x:26,y:23,side:'left',rows:['####','####','###.','###.']}],
+  desert:[{x:3,y:2,side:'bottom',rows:['#######','#######','..#####','..#####']},{x:16,y:3,side:'right',rows:['#####','#####','#####','#####','..###']},{x:27,y:3,side:'left',rows:['####','####','####','##..']},{x:2,y:22,side:'right',rows:['#####','#####','#####','###..']},{x:13,y:19,side:'top',rows:['######','######','######','####..','####..']},{x:25,y:22,side:'top',rows:['.######','#######','#######','#####..']}]
+ };
+ const CHAR={hiki:['hikiidle.gif','hikiwalk.gif'],akira:['akiraidle.gif','akirawalk.gif'],jinni:['jinniidle.gif','jinniwalk.gif']};
+ const GUESTS=['hiki.png','akira.png','jinni.png','kate.png','kent.png','derek.png'];
+ const PCS=['pc2.png','pc3.png','pc4.png','pc5.png','pc6.png','pc8.png'];
+ const canvas=$n('nvMapCanvas'),shell=$n('nvMapShell'),ctx=canvas.getContext('2d');
+ let level=1,rooms=[],grid=[],assets=new Map(),boss='hiki',energy=100,seconds=0,done=false,active=false,selected=0,timer=null,helpers=[],attacks=0;
+ try{level=Math.max(1,Math.min(MAX,+localStorage.getItem(SAVE)||1))}catch{}
+ function loadImage(name){if(assets.has(name))return;const im=new Image();let i=0;const paths=['../Assets/','../assets/'];im.onload=()=>draw();im.onerror=()=>{if(++i<paths.length)im.src=paths[i]+name};im.src=paths[0]+name;assets.set(name,im)}
+ [...new Set([...MAPS.flatMap(m=>[m.floor,m.roomFloor,m.wall]),...GUESTS,...PCS,...Object.values(CHAR).flat(),'door1.png','door2.png','door3.png','door4.png','door5.png','door6.png'])].forEach(loadImage);
+ function makeRoom(i,map){
+  let cells=[],side,x,y,doorX,doorY,pcX,pcY;
+  if(LAYOUTS[map.key]){
+   const d=LAYOUTS[map.key][i];side=d.side;
+   d.rows.forEach((line,j)=>[...line].forEach((v,k)=>{if(v==='#')cells.push([d.x+k,d.y+j])}));
+   const xx=cells.map(v=>v[0]),yy=cells.map(v=>v[1]);x=Math.min(...xx);y=Math.min(...yy);
+   const minX=x,maxX=Math.max(...xx),minY=y,maxY=Math.max(...yy);
+   const edge=cells.filter(([cx,cy])=>side==='left'?cx===minX:side==='right'?cx===maxX:side==='top'?cy===minY:cy===maxY);
+   const middle=edge[Math.floor(edge.length/2)];const v={left:[-1,0],right:[1,0],top:[0,-1],bottom:[0,1]}[side];
+   doorX=middle[0]+v[0];doorY=middle[1]+v[1];
+   const midX=(minX+maxX)/2,midY=(minY+maxY)/2;const pc=[...cells].sort((a,b)=>Math.hypot(a[0]-midX,a[1]-midY)-Math.hypot(b[0]-midX,b[1]-midY))[0];pcX=pc[0];pcY=pc[1];
+  }else if(map.key==='winter'){
+   const left=i<3,row=i%3;x=left?2:20;y=(left?2:4)+row*8;side=left?'left':'right';doorX=left?8:20;doorY=y+3;pcX=left?4:24;pcY=y+3;
+   for(let dy=0;dy<6;dy++)for(let dx=0;dx<6;dx++)cells.push([x+dx,y+dy]);
+  }else{
+   side=i<3?'left':'right';const left=i<3;const row=i%3;x=left?0:12;y=1+row*8;doorX=left?6:12;doorY=y+3;pcX=left?2:16;pcY=y+3;
+   for(let dy=0;dy<6;dy++)for(let dx=0;dx<6;dx++)cells.push([x+dx,y+dy]);
+  }
+  const maxHp=95+(level-1)*42;
+  return {i,side,x,y,cells,doorX,doorY,pcX,pcY,hp:maxHp,maxHp,broken:false,running:false,angle:i,guestTicks:5+i};
  }
+ function createGrid(map){
+  grid=Array.from({length:map.h},(_,y)=>Array.from({length:map.w},(_,x)=>x===0||y===0||x===map.w-1||y===map.h-1?'wall':'corridor'));
+  const inside=(x,y)=>x>=0&&x<map.w&&y>=0&&y<map.h;
+  if(LAYOUTS[map.key]){
+   for(const r of rooms)for(const [x,y] of r.cells)if(inside(x,y))grid[y][x]='room';
+   for(const r of rooms)for(const [x,y] of r.cells)for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+    const nx=x+dx,ny=y+dy;if(inside(nx,ny)&&grid[ny][nx]==='corridor')grid[ny][nx]='wall';
+   }
+   const obstacles={autumn:[[15,7,2,1],[19,11,1,3],[12,20,2,1],[19,25,1,2],[9,10,1,2]],spring:[[10,8,2,1],[16,12,1,2],[22,19,2,1],[10,25,1,2],[27,7,1,2]],desert:[[10,12,1,2],[22,12,2,1],[16,15,1,2],[8,18,2,1],[28,18,1,2]]};
+   for(const [x,y,w,h] of obstacles[map.key]||[])for(let yy=y;yy<y+h;yy++)for(let xx=x;xx<x+w;xx++)if(inside(xx,yy)&&grid[yy][xx]==='corridor'&&!rooms.some(r=>Math.abs(r.doorX-xx)+Math.abs(r.doorY-yy)<=2))grid[yy][xx]='wall';
+  }else{
+   for(const r of rooms){for(const [x,y] of r.cells)if(inside(x,y))grid[y][x]='room';
+    for(const [x,y] of r.cells)for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const xx=x+dx,yy=y+dy;if(inside(xx,yy)&&grid[yy][xx]==='corridor')grid[yy][xx]='wall'}
+   }
+  }
+  rooms.forEach(r=>{if(inside(r.doorX,r.doorY))grid[r.doorY][r.doorX]='door'});
+ }
+ function init(){clearInterval(timer);const m=MAPS[level-1];rooms=Array.from({length:6},(_,i)=>makeRoom(i,m));createGrid(m);selected=0;energy=100;seconds=0;done=false;helpers=[];attacks=0;$n('nvNextWrap').hidden=true;$n('nvNext').textContent=level===MAX?'Знову з першої мапи':'Наступна мапа →';message(m.name+'. Шість кімнат. Натисніть двері, щоб вибрати ціль.');render();if(active)timer=setInterval(tick,1000)}
  function message(s){$n('nvMessage').textContent=s}
- function createLevel(){clearInterval(gameTimer);$n('nvBoard').replaceChildren();selected=0;energy=100;seconds=0;done=false;helpers=[];npcStep=0;rooms=Array.from({length:ROOMS},(_,i)=>makeRoom(i));$n('nvNextWrap').hidden=true;$n('nvNext').textContent=level===MAX_LEVEL?'Пройти знову':'Наступний рівень →';message('Рівень '+level+'. Оберіть кімнату та починайте напад.');render();if(activated)startTimer()}
- function render(){const count=rooms.filter(r=>r.broken).length;$n('nvLevel').textContent='Рівень '+level+' / '+MAX_LEVEL;$n('nvDoors').textContent='Двері: '+count+' / '+ROOMS;$n('nvEnergy').textContent='Енергія: '+Math.floor(energy);$n('nvTimer').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');
- rooms.forEach(r=>{r.node.classList.toggle('selected',selected===r.i);r.node.classList.toggle('complete',r.broken);const door=r.node.querySelector('.nv-door');door.classList.toggle('broken',r.broken);door.textContent=r.broken?'Вибито':'Двері';r.node.querySelector('.nv-hp span').style.width=(100*r.hp/r.maxHp)+'%';r.node.querySelector('.nv-status').textContent=r.running?'Гість бігає':'Гість за ПК';const g=r.node.querySelector('.nv-guest');g.classList.toggle('running',r.running);g.style.left=r.running?(34+22*Math.cos(r.angle))+'%':'26%';g.style.bottom=r.running?(29+10*Math.sin(r.angle))+'%':'22%';r.node.querySelector('.nv-summons').textContent=helpers.filter(h=>h.target===r.i&&h.ttl>0).map(h=>h.emoji).join('');spriteFor(r,selected===r.i?boss: npcKeys[r.i%npcKeys.length],!r.broken&&(seconds%2===0));});
- for(const id of ['nvHit','nvTeleport','nvKittens','nvMinions','nvAdepts'])$n(id).disabled=done;
+ function dimensions(){const m=MAPS[level-1];const ratio=window.devicePixelRatio||1;const w=shell.clientWidth,h=shell.clientHeight;canvas.width=Math.max(1,Math.round(w*ratio));canvas.height=Math.max(1,Math.round(h*ratio));ctx.setTransform(ratio,0,0,ratio,0,0);const tile=Math.min(w/m.w,h/m.h);return {m,tile,ox:(w-tile*m.w)/2,oy:(h-tile*m.h)/2,w,h}}
+ function img(file,x,y,w,h){const i=assets.get(file);if(i&&i.complete&&i.naturalWidth){ctx.drawImage(i,x,y,w,h);return true}return false}
+ function draw(){if(!rooms.length)return;const {m,tile,ox,oy,w,h}=dimensions();ctx.clearRect(0,0,w,h);ctx.fillStyle='#0d1326';ctx.fillRect(0,0,w,h);ctx.imageSmoothingEnabled=false;
+  for(let y=0;y<m.h;y++)for(let x=0;x<m.w;x++){const t=grid[y][x],px=ox+x*tile,py=oy+y*tile;
+   const file=t==='wall'?m.wall:t==='room'?m.roomFloor:m.floor;
+   if(!img(file,px,py,tile+.3,tile+.3)){ctx.fillStyle=t==='wall'?'#40465e':t==='room'?'#7a6483':'#323950';ctx.fillRect(px,py,tile+.3,tile+.3)}
+  }
+  for(const r of rooms){const dx=ox+r.doorX*tile,dy=oy+r.doorY*tile;
+   ctx.fillStyle=r.broken?'#3a2948':'#7e4e68';ctx.fillRect(dx,dy,tile,tile);
+   if(!r.broken)img('door'+Math.min(6,1+Math.floor((r.maxHp-r.hp)/r.maxHp*5))+'.png',dx,dy,tile,tile);
+   if(r.i===selected){ctx.strokeStyle='#72e8c7';ctx.lineWidth=Math.max(2,tile*.12);ctx.strokeRect(dx+1,dy+1,tile-2,tile-2)}
+   const px=ox+r.pcX*tile,py=oy+r.pcY*tile;
+   const gx=r.running?r.pcX+Math.cos(r.angle)*1.2:r.pcX;
+   const gy=r.running?r.pcY+Math.sin(r.angle)*1.1:r.pcY;
+   const guestX=ox*1+gx*tile,guestY=oy+gy*tile;
+   // PNG гостя за ПК; під час прогулянки PNG рухається по кімнаті.
+   if(!r.running)img(GUESTS[(level+r.i-1)%GUESTS.length],guestX-tile*.15,guestY-tile*.9,tile*1.3,tile*1.6);
+   if(!r.running)img(PCS[r.i%PCS.length],px-tile*.22,py-tile*.07,tile*1.5,tile*1.1);
+   if(r.running)img(GUESTS[(level+r.i-1)%GUESTS.length],guestX-tile*.22,guestY-tile*.35,tile*1.3,tile*1.4);
+   const hpw=tile*2.4,hpx=dx+tile/2-hpw/2,hpy=dy-tile*.30;ctx.fillStyle='#281628';ctx.fillRect(hpx,hpy,hpw,Math.max(3,tile*.2));ctx.fillStyle=r.broken?'#72e8c7':'#ff7b9e';ctx.fillRect(hpx,hpy,hpw*(1-r.hp/r.maxHp),Math.max(3,tile*.2));
+   ctx.textAlign='center';ctx.font=`${Math.max(9,Math.round(tile*.45))}px system-ui`;ctx.fillStyle='#f7f2ff';ctx.fillText(String(r.i+1),dx+tile/2,dy-tile*.38);
+  }
+  const current=rooms[selected];if(current){const x=ox+current.doorX*tile,y=oy+current.doorY*tile;const frame=attacks%2?'walk':'idle';const f=CHAR[boss][frame==='walk'?1:0];if(!img(f,x-tile*1.15,y-tile*.9,tile*1.1,tile*1.8)){ctx.fillStyle='#ff88b7';ctx.beginPath();ctx.arc(x-tile*.5,y,tile*.38,0,Math.PI*2);ctx.fill()}}
+  for(const h of helpers){const r=rooms[h.target];if(!r)continue;ctx.font=`${Math.max(12,tile*.8)}px sans-serif`;ctx.textAlign='center';ctx.fillText(h.emoji,ox+(r.doorX+.4)*tile,oy+(r.doorY-0.5)*tile)}
  }
- function damage(room,amount){if(done||room.broken)return;room.hp=Math.max(0,room.hp-amount);if(room.hp===0){room.broken=true;message('Кімната '+(room.i+1)+': двері вибито!');if(rooms.every(r=>r.broken)){done=true;clearInterval(gameTimer);$n('nvNextWrap').hidden=false;if(level===MAX_LEVEL)message('Усі 5 рівнів пройдено! Напросилися!');else message('Рівень '+level+' завершено. Можна перейти далі.')}}render()}
- function spend(n){if(done)return false;if(energy<n){message('Бракує енергії: потрібно '+n);return false}energy-=n;return true}
- function startTimer(){clearInterval(gameTimer);gameTimer=setInterval(()=>{if(document.hidden||done||$n('intruder').hidden)return;seconds++;energy=Math.min(100,energy+3+level*.4);rooms.forEach(r=>{if(r.broken)return;r.guestTicks--;if(r.guestTicks<=0){r.running=!r.running;r.guestTicks=r.running?4:6+((r.i+seconds)%5)}if(r.running)r.angle+=.6});helpers.forEach(h=>{if(h.ttl>0){h.ttl--;damage(rooms[h.target],h.power)}});helpers=helpers.filter(h=>h.ttl>0);if(seconds%2===0){const target=rooms[(npcStep++)%ROOMS];if(!target.broken)damage(target,2+level)}render()},1000)}
- function activate(){if(activated)return;activated=true;createLevel()}
- $n('nvHit').onclick=()=>{activate();damage(rooms[selected],12+level*3);message('Бос атакує двері кімнати '+(selected+1))};
- $n('nvTeleport').onclick=()=>{activate();if(!spend(25))return;selected=(selected+1)%ROOMS;message('Телепортація до кімнати '+(selected+1));render()};
- const summon=(cost,emoji,power,ttl,label)=>{activate();if(!spend(cost))return;helpers.push({target:selected,emoji,power:power+level,ttl});message(label+' допомагають атакувати двері кімнати '+(selected+1));render()};
- $n('nvKittens').onclick=()=>summon(20,'🐱',3,5,'Кошенята');
- $n('nvMinions').onclick=()=>summon(30,'👥',6,5,'Посіпаки');
- $n('nvAdepts').onclick=()=>summon(35,'🕯️',8,5,'Адепти');
- $n('nvBoss').onchange=e=>{boss=e.target.value;render()};
- $n('nvRestart').onclick=()=>{activated=true;createLevel()};
- $n('nvNext').onclick=()=>{if(!done)return;level=level<MAX_LEVEL?level+1:1;try{localStorage.setItem(KEY_LEVEL,String(level))}catch{}activated=true;createLevel()};
- // Доступність стану одразу після перемикання режимів, без активного таймера на прихованих екранах.
- const originalSwitch=switchMode;
- switchMode=function(mode){originalSwitch(mode);if(mode==='intruder'){activate();render()}};
- createLevel();
+ function render(){const count=rooms.filter(r=>r.broken).length;$n('nvLevel').textContent=`Рівень ${level} / ${MAX} · ${MAPS[level-1].name}`;$n('nvDoors').textContent=`Двері: ${count} / 6`;$n('nvEnergy').textContent=`Енергія: ${Math.floor(energy)}`;$n('nvTimer').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');for(const id of ['nvHit','nvTeleport','nvKittens','nvMinions','nvAdepts'])$n(id).disabled=done;draw()}
+ function damage(r,n){if(done||!r||r.broken)return;r.hp=Math.max(0,r.hp-n);if(!r.hp){r.broken=true;message(`Кімната ${r.i+1}: двері вибито!`)}if(rooms.every(r=>r.broken)){done=true;clearInterval(timer);$n('nvNextWrap').hidden=false;message(level===MAX?'Усі п’ять мап пройдено!':'Усі шість дверей вибито. Наступна мапа відкрита.')}render()}
+ function spend(n){if(done)return false;if(energy<n){message(`Потрібно ${n} енергії`);return false}energy-=n;return true}
+ function tick(){if(document.hidden||done||$n('intruder').hidden)return;seconds++;energy=Math.min(100,energy+3+level*.4);for(const r of rooms){if(r.broken)continue;r.guestTicks--;if(r.guestTicks<=0){r.running=!r.running;r.guestTicks=r.running?4:6+r.i%4}if(r.running)r.angle+=.45}for(const h of helpers)if(h.ttl-->0)damage(rooms[h.target],h.power);helpers=helpers.filter(h=>h.ttl>0);if(seconds%2===0)damage(rooms[(Math.floor(seconds/2)-1)%6],2+level);render()}
+ function activate(){if(active)return;active=true;init()}
+ function choose(x,y){const q=dimensions();const gx=(x-q.ox)/q.tile,gy=(y-q.oy)/q.tile;const closest=[...rooms].sort((a,b)=>Math.hypot(a.doorX+.5-gx,a.doorY+.5-gy)-Math.hypot(b.doorX+.5-gx,b.doorY+.5-gy))[0];if(closest){selected=closest.i;message('Обрано двері кімнати '+(selected+1));render()}}
+ canvas.addEventListener('click',e=>{activate();const r=canvas.getBoundingClientRect();choose(e.clientX-r.left,e.clientY-r.top)});
+ shell.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown'){selected=(selected+1)%6;render();e.preventDefault()}if(e.key==='ArrowLeft'||e.key==='ArrowUp'){selected=(selected+5)%6;render();e.preventDefault()}});
+ $n('nvHit').onclick=()=>{activate();attacks++;damage(rooms[selected],12+level*3)};
+ $n('nvTeleport').onclick=()=>{activate();if(!spend(25))return;selected=(selected+1)%6;message('Телепортація до кімнати '+(selected+1));render()};
+ const summon=(cost,emoji,power,label)=>{activate();if(!spend(cost))return;helpers.push({target:selected,power:power+level,emoji,ttl:5});message(label+' атакують двері '+(selected+1));render()};
+ $n('nvKittens').onclick=()=>summon(20,'🐱',3,'Кошенята');$n('nvMinions').onclick=()=>summon(30,'👥',6,'Посіпаки');$n('nvAdepts').onclick=()=>summon(35,'🕯️',8,'Адепти');
+ $n('nvBoss').onchange=e=>{boss=e.target.value;render()};$n('nvRestart').onclick=()=>{active=true;init()};
+ $n('nvNext').onclick=()=>{if(!done)return;level=level<MAX?level+1:1;try{localStorage.setItem(SAVE,String(level))}catch{}active=true;init()};
+ const originalSwitch=switchMode;switchMode=function(mode){originalSwitch(mode);if(mode==='intruder'){activate();render()}};
+ window.addEventListener('resize',()=>{if(active)draw()});init();
 })();
 
 </script></body></html> 
