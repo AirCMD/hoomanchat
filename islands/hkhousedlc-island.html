@@ -305,15 +305,20 @@ render();
  function sendTeamTo(room){if(!room)return false;const me=bossUnits[0];const ok=me&&!me.out&&goTo(me,room);if(ok){bossUnits.slice(1).forEach((u,i)=>{if(!u.out&&u.hp>0&&!u.raidRoom){goTo(u,room);u.flankSide=i===0?-1:1;u.flankChangeAt=seconds+1.5+Math.random()*2.5;}})}return !!ok}
  function goTo(unit,room){unit.raidRoom=undefined;const target=approach(room);unit.target=room.i;unit.path=pathTo(unit,target);unit.moving=unit.path.length>0;unit.swing=0;return unit.path.length>0||Math.hypot(unit.x-target.x,unit.y-target.y)<.4}
  function routeInside(unit,r){
-  const allowed=new Set(r.cells.map(([x,y])=>x+','+y));allowed.add(r.doorX+','+r.doorY);
+  const occupied=new Set(r.structures.map(it=>it.x+','+it.y));
+  const allowed=new Set(r.cells.filter(([x,y])=>!occupied.has(x+','+y)).map(([x,y])=>x+','+y));allowed.add(r.doorX+','+r.doorY);
   for(let y=0;y<grid.length;y++)for(let x=0;x<grid[y].length;x++)if(grid[y][x]==='corridor')allowed.add(x+','+y);
-  const start=[Math.floor(unit.x),Math.floor(unit.y)],dest=[r.pcX,r.pcY];const key=(x,y)=>x+','+y;
+  const start=[Math.floor(unit.x),Math.floor(unit.y)];
+  const spots=r.cells.filter(([x,y])=>allowed.has(x+','+y));
+  spots.sort((a,b)=>Math.hypot(a[0]-r.pcX,a[1]-r.pcY)-Math.hypot(b[0]-r.pcX,b[1]-r.pcY));
+  const dest=spots.find(([x,y])=>Math.abs(x-r.doorX)+Math.abs(y-r.doorY)>1)||[r.pcX,r.pcY];
+  const key=(x,y)=>x+','+y;
   const queue=[start],seen=new Set([key(...start)]),parent=new Map();
   for(let i=0;i<queue.length;i++){const [x,y]=queue[i],k=key(x,y);if(x===dest[0]&&y===dest[1]){let path=[];let cur=k;while(parent.has(cur)){const [a,b]=cur.split(',').map(Number);path.unshift([a+.5,b+.5]);cur=parent.get(cur)}return path}
    for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const a=x+dx,b=y+dy,t=key(a,b);if(allowed.has(t)&&!seen.has(t)){seen.add(t);parent.set(t,[x,y]);queue.push([a,b])}}}
   return [];
  }
- function startSockRaid(){if(!playing||done)return;const r=rooms[selected],u=bossUnits[0];if(!r?.broken||r.result){message('Спочатку зламайте двері обраної кімнати.');return}if(u.out){message('Ваш хікі вибув.');return}const path=routeInside(u,r);if(!path.length&&Math.hypot(u.x-r.pcX-.5,u.y-r.pcY-.5)>.7){message('Не вдалося знайти прохід до кімнати.');return}u.target=r.i;u.path=path;u.moving=path.length>0;u.raidRoom=r.i;message('Хікі заходить до кімнати '+(r.i+1)+' зі шкарпетками!');render()}
+ function startSockRaid(roomId=selected){if(!playing||done)return;const r=rooms[roomId],u=bossUnits[0];if(!r?.broken||r.result){message('Спочатку зламайте двері обраної кімнати.');return}if(u.out){message('Ваш хікі вибув.');return}const path=routeInside(u,r);if(!path.length&&!r.cells.some(([x,y])=>Math.floor(u.x)===x&&Math.floor(u.y)===y)){message('Не вдалося знайти прохід до кімнати.');return}u.target=r.i;u.path=path;u.moving=path.length>0;u.raidRoom=r.i;selected=r.i;message('Хікі заходить до кімнати '+(r.i+1)+' зі шкарпетками!');render()}
  function scatterSocks(r){if(r.result)return;const available=r.cells.filter(([x,y])=>!(x===r.pcX&&y===r.pcY)&&!r.structures.some(it=>it.x===x&&it.y===y));const clothes=['weapon1.png','weapon2.png','weapon3.png','weapon5.png','weapon6.png'];r.socks=available.map(([x,y])=>({x,y,file:clothes[Math.floor(Math.random()*clothes.length)],rot:(Math.random()-.5)*.38}));r.result='win';r.broken=true;r.hp=0;showVictory('ПЕРЕМОГА В КІМНАТІ',`${r.guestName} · речі розкидані`);message(`Кімната ${r.i+1} пройдена. Речі по всій кімнаті!`);finishIfResolved()}
  function startMatch(){clearInterval(matchTimer);playing=false;matchRemaining=5;const overlay=$n('nvMatch'),slots=$n('nvMatchSlots');overlay.hidden=false;slots.replaceChildren();defenders().forEach((def,i)=>{const f=def.file;const span=document.createElement('span'),im=document.createElement('img'),small=document.createElement('small');im.src='../Assets/'+f;im.onerror=()=>{im.onerror=null;im.src='../assets/'+f};small.textContent=def.name;span.append(im,small);span.style.opacity='.35';slots.append(span)});
   const advance=()=>{const joined=6-matchRemaining;for(let i=0;i<joined;i++)if(slots.children[i])slots.children[i].style.opacity='1';$n('nvMatchCount').textContent=matchRemaining;if(matchRemaining--<=0){clearInterval(matchTimer);overlay.hidden=true;playing=true;message('Шестеро резидентів у кімнатах. Ваші хікі атакують двері!')}};
@@ -357,10 +362,11 @@ render();
      el.src=roots[root]+names[idx];};tryLoad();
    }
    el.hidden=false;
-   const w=q.tile*1.15,h=q.tile*1.4;
+   const w=q.tile*.95,h=q.tile*1.18;
+   el.style.objectFit='contain';
    el.style.width=w+'px';el.style.height=h+'px';
-   el.style.left=(q.ox+r.guestX*q.tile-w*.10)+'px';
-   el.style.top=(q.oy+r.guestY*q.tile-h*.46)+'px';
+   el.style.left=(q.ox+(r.guestX+.5)*q.tile-w*.5)+'px';
+   el.style.top=(q.oy+(r.guestY+1)*q.tile-h)+'px';
   }
  }
  function syncHelperSprites(q){
@@ -414,22 +420,24 @@ render();
  function img(file,x,y,w,h){const i=assets.get(file);if(i&&i.complete&&i.naturalWidth){ctx.drawImage(i,x,y,w,h);return true}return false}
  function draw(){if(!rooms.length)return;const {m,tile,ox,oy,w,h}=dimensions();ctx.clearRect(0,0,w,h);ctx.fillStyle='#0d1326';ctx.fillRect(0,0,w,h);ctx.imageSmoothingEnabled=false;
   for(let y=0;y<m.h;y++)for(let x=0;x<m.w;x++){const t=grid[y][x],px=ox+x*tile,py=oy+y*tile;
-   const file=t==='wall'?m.wall:t==='room'?m.roomFloor:m.floor;
+   const openedDoor=t==='door'&&rooms.some(r=>r.broken&&r.doorX===x&&r.doorY===y);
+   const file=openedDoor?m.floor:t==='wall'?m.wall:t==='room'?m.roomFloor:m.floor;
    if(!img(file,px,py,tile+.3,tile+.3)){ctx.fillStyle=t==='wall'?'#40465e':t==='room'?'#7a6483':'#323950';ctx.fillRect(px,py,tile+.3,tile+.3)}
   }
   for(const r of rooms){const dx=ox+r.doorX*tile,dy=oy+r.doorY*tile;
-   ctx.fillStyle=r.result==='lose'?'#573246':r.broken?'#3a2948':'#7e4e68';ctx.fillRect(dx,dy,tile,tile);
-   if(!r.broken)img('door'+Math.min(6,1+Math.floor((r.maxHp-r.hp)/r.maxHp*5))+'.png',dx,dy,tile,tile);
+   if(!r.broken){
+    if(!img('door'+Math.min(6,1+Math.floor((r.maxHp-r.hp)/r.maxHp*5))+'.png',dx,dy,tile,tile)){ctx.fillStyle='#7e4e68';ctx.fillRect(dx,dy,tile,tile)}
+   }
    if(r.result){ctx.save();ctx.fillStyle=r.result==='win'?'#72e8c7':'#ff8c9c';ctx.font=`bold ${Math.max(10,tile*.68)}px system-ui`;ctx.textAlign='center';ctx.fillText(r.result==='win'?'✓':'✕',dx+tile*.50,dy+tile*.70);ctx.restore()}if(r.i===selected){ctx.strokeStyle='#72e8c7';ctx.lineWidth=Math.max(2,tile*.12);ctx.strokeRect(dx+1,dy+1,tile-2,tile-2)}
    const px=ox+r.pcX*tile,py=oy+r.pcY*tile;
    // Гість сидить ЗА комп'ютером. Коли підводиться, рухається лише клітинками власної кімнати.
    let gx=r.pcX,gy=r.pcY;
    if(r.running){gx=r.guestX;gy=r.guestY}
    const guestX=ox+gx*tile,guestY=oy+gy*tile;
-   if(!r.running)img(r.guestFile,guestX-tile*.10,guestY-tile*.75,tile*1.2,tile*1.5);
+   if(!r.running)img(r.guestFile,guestX+tile*.025,guestY-tile*.18,tile*.95,tile*1.18);
    img(PCS[Math.min(PCS.length-1,Math.max(0,r.pcLevel-1))],px-tile*.22,py-tile*.07,tile*1.5,tile*1.1);
    for(const thing of r.structures){const x=ox+thing.x*tile,y=oy+thing.y*tile;const file=thing.type==='weapon'?'weapon'+Math.min(8,thing.lv)+'.png':thing.type==='energy'?'energy1.png':thing.type==='money'?'moneytree1.png':'trap.png';img(file,x,y,tile,tile);}
-   if(r.fort){ctx.fillStyle='#b78f5999';ctx.fillRect(dx,dy+tile*.75,tile*(.2+r.fort*.14),tile*.20)}if(r.weapon)img('weapon1.png',px+tile*.17,py+tile*.08,tile*.80,tile*.80)
+   if(r.fort&&!r.broken){ctx.fillStyle='#b78f5999';ctx.fillRect(dx,dy+tile*.75,tile*(.2+r.fort*.14),tile*.20)}if(r.weapon)img('weapon1.png',px+tile*.17,py+tile*.08,tile*.80,tile*.80)
    // Речі після проникнення: по одному оригінальному спрайту на кожній вільній клітинці.
    for(const sock of r.socks){const sx=ox+sock.x*tile,sy=oy+sock.y*tile;ctx.save();ctx.translate(sx+tile*.5,sy+tile*.5);ctx.rotate(sock.rot);img(sock.file,-tile*.43,-tile*.43,tile*.86,tile*.86);ctx.restore();}
    const hpw=tile*2.4,hpx=dx+tile/2-hpw/2,hpy=dy-tile*.30;ctx.fillStyle='#281628';ctx.fillRect(hpx,hpy,hpw,Math.max(3,tile*.2));ctx.fillStyle=r.result==='lose'?'#bd718b':r.broken?'#72e8c7':'#ff7b9e';ctx.fillRect(hpx,hpy,hpw*(1-r.hp/r.maxHp),Math.max(3,tile*.2));
@@ -442,7 +450,10 @@ render();
  function render(){const count=rooms.filter(r=>r.result==='win').length;const rr=rooms[selected];$n('nvRoomResult').textContent=rr?`Кімната ${selected+1} · ${rr.guestName} · ${rr.result==='win'?'ПЕРЕМОГА':rr.result==='lose'?'ПОРАЗКА':rr.broken?'ДВЕРІ ЗЛАМАНО · увійдіть!':'триває'}`:'Оберіть кімнату';$n('nvSocks').disabled=!rr||!rr.broken||!!rr.result||!playing||done||!!bossUnits[0]?.out;$n('nvMarkWin').disabled=!rr||rr.result==='win'||!playing||done;$n('nvMarkLoss').disabled=!rr||rr.result==='lose'||!playing||done;$n('nvLevel').textContent=`Рівень ${level} / ${MAX} · ${MAPS[level-1].name}`;$n('nvDoors').textContent=`Двері: ${count} / 6`;$n('nvEnergy').textContent=`Енергія: ${Math.floor(energy)}`;$n('nvTimer').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(Math.floor(seconds%60)).padStart(2,'0');for(const id of ['nvHit','nvTeleport','nvKittens','nvDogs','nvMinions','nvAdepts'])$n(id).disabled=done;draw()}
  function showVictory(title,detail,final=false,loss=false){clearTimeout(victoryTimeout);const pop=$n('nvVictoryPopup');pop.hidden=false;pop.classList.toggle('lost',loss);$n('nvVictoryTitle').textContent=title;$n('nvVictoryDetail').textContent=detail;$n('nvVictoryActions').hidden=!final;if(!final)victoryTimeout=setTimeout(()=>{if(!$n('nvVictoryActions').hidden)return;pop.hidden=true},2300)}
  function finishIfResolved(){if(!rooms.every(r=>r.result))return;done=true;playing=false;clearInterval(timer);const won=rooms.every(r=>r.result==='win');$n('nvNextWrap').hidden=!won;const msg=won?(level===MAX?'Усі п’ять мап пройдені!':'Усі шість кімнат пройдено. Наступну мапу відкрито.'):'Одна чи більше кімнат залишилися непрохідними.';message(msg);showVictory(won?'ПЕРЕМОГА!':'ПОРАЗКА',msg,true,!won)}
- function damage(r,n){if(done||!playing||!r||r.broken||r.result)return;r.hp=Math.max(0,r.hp-n);if(!r.hp){r.broken=true;r.hp=0;message(`Двері кімнати ${r.i+1} вибито! Тепер увійдіть і розкидайте шкарпетки.`);if(bossUnits[0].target===r.i)bossUnits[0].path=[]}render()}
+ function damage(r,n){if(done||!playing||!r||r.broken||r.result)return;r.hp=Math.max(0,r.hp-n);if(!r.hp){r.broken=true;r.hp=0;message(`Двері кімнати ${r.i+1} вибито! Тепер увійдіть і розкидайте шкарпетки.`);// Вибиті двері відкривають прохід: команда зупиняє атаку, гравець іде всередину.
+   const attacker=bossUnits[0];
+   if(attacker&&!attacker.out){attacker.path=[];startSockRaid(r.i)}
+  }render()}
  function spend(n){if(done||!playing)return false;if(energy<n){message(`Потрібно ${n} енергії`);return false}energy-=n;return true}
  function tick(){if(document.hidden||done||!playing||$n('intruder').hidden)return;
   const dt=.1;seconds+=dt;energy=Math.min(100,energy+dt*(3+level*.4));
@@ -507,7 +518,13 @@ render();
   for(const [i,u] of bossUnits.entries())if(i>0&&u.moving&&seconds>=(u.flankChangeAt||0)){u.flankSide=Math.random()<.28?-1*(u.flankSide||(i===1?-1:1)):(u.flankSide||(i===1?-1:1));u.flankChangeAt=seconds+2+Math.random()*3.5;}
   for(const unit of bossUnits){if(unit.out||unit.hp<=0)continue;
    if(unit.raidRoom!==undefined){const raid=rooms[unit.raidRoom];if(unit.path.length){const [tx,ty]=unit.path[0],dx=tx-unit.x,dy=ty-unit.y,dist=Math.hypot(dx,dy),step=dt*unit.speed;if(dist<=step){unit.x=tx;unit.y=ty;unit.path.shift()}else{unit.x+=dx/dist*step;unit.y+=dy/dist*step}unit.moving=true;continue}unit.moving=false;unit.raidRoom=undefined;if(raid&&!raid.result)scatterSocks(raid);continue}
-   let r=rooms[unit.target];if(!r||r.result||r.broken){r=rooms.find(a=>!a.result&&!a.broken);if(r)goTo(unit,r);else continue}
+   let r=rooms[unit.target];if(!r||r.result||r.broken){
+    if(r?.broken&&!r.result){
+     if(unit===bossUnits[0]&&!unit.raidRoom){startSockRaid(r.i)}
+     unit.path=[];unit.moving=false;continue;
+    }
+    r=rooms.find(a=>!a.result&&!a.broken);if(r)goTo(unit,r);else continue
+   }
    if(unit.path.length){const [tx,ty]=unit.path[0],dx=tx-unit.x,dy=ty-unit.y,dist=Math.hypot(dx,dy),step=dt*unit.speed;if(dist<=step){unit.x=tx;unit.y=ty;unit.path.shift()}else{unit.x+=dx/dist*step;unit.y+=dy/dist*step}unit.moving=true;unit.swing=0;continue}
    unit.moving=false;const pos=approach(r);if(Math.hypot(unit.x-pos.x,unit.y-pos.y)>.65){goTo(unit,r);continue}
    unit.swing+=dt;if(unit.swing>=1.15+(unit===bossUnits[0]?0:.35)){unit.swing=0;damage(r,(unit===bossUnits[0]?11:6)+level);if(r.weapon&&Math.random()<.18)unit.swing=-.5}
