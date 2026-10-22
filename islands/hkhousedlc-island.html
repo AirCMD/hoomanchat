@@ -190,11 +190,22 @@ render();
  // Хікі є нападниками. Колишні боси є гостями-захисниками в кімнатах.
  const CHAR={hiki:['hikiidle.gif','hikiwalk.gif'],akira:['akiraidle.gif','akirawalk.gif'],jinni:['jinniidle.gif','jinniwalk.gif'],yani:['yaniidle.gif','yaniwalk.gif'],kate:['kateidle.gif','katewalk.gif'],kent:['kentidle.gif','kentwalk.gif'],jura:['juraidle.gif','jurawalk.gif'],sayuri:['sayuriidle.gif','sayuriwalk.gif'],derek:['derekidle.gif','derekwalk.gif'],kornel:['kornelidle.gif','kornelwalk.gif']};
  const HIKI_BOSSES=['hiki','akira','jinni','yani','kate','kent'];
- // Підтверджені PNG непроханих гостей з класичної гри. Два доступні види тимчасово повторюються;
- // не підміняти гостей PNG хікі. Інші спрайти гостей додамо, коли їхні імена файлів будуть відомі.
- const DEFENDER_ROSTER=[{name:'Колядун',file:'kolyadun.png',walk:'kolyadunwalk.gif'},{name:'Гелла',file:'hella.png',walk:'hellawalk.gif'},{name:'Гектор',file:'hector.png',walk:'hectorwalk.gif'},{name:'Євген',file:'evgen.png',walk:'evgenwalk.gif'},{name:'Марічка',file:'marichka.png',walk:'marichkawalk.gif'},{name:'Морій',file:'moriy.png',walk:'moriywalk.gif'},{name:'Продавець',file:'seller.png',walk:'sellerwalk.gif'}];
- const defenders=()=>Array.from({length:6},(_,i)=>DEFENDER_ROSTER[(i+level-1)%DEFENDER_ROSTER.length]);
- const GUESTS=DEFENDER_ROSTER.map(d=>d.file);
+ // Оригінальні десять резидентів із Hikka House.
+ const DEFENDER_ROSTER=[
+  {name:'Колядун',file:'kolyadun.png',walk:'kolyadunwalk.gif',fight:'kolyadunfight.gif'},
+  {name:'Гелла',file:'hella.png',walk:'hellawalk.gif',fight:'hellafight.gif'},
+  {name:'Гектор',file:'hector.png',walk:'hectorwalk.gif',fight:'hectorfight.gif'},
+  {name:'Євген',file:'evgen.png',walk:'evgenwalk.gif',fight:'evgenfight.gif'},
+  {name:'Марічка',file:'marichka.png',walk:'marichkawalk.gif',fight:'marichkafight.gif'},
+  {name:'Морій',file:'moriy.png',walk:'moriywalk.gif',fight:'moriyfight.gif'},
+  {name:'Продавець',file:'seller.png',walk:'sellerwalk.gif',fight:'sellerfight.gif'},
+  {name:'Голова ОСББ',file:'osbb.png',walk:'osbbwalk.gif',fight:'osbbfight.gif'},
+  {name:'Кур’єр, який заблукав',file:'courier.png',walk:'courierwalk.gif',fight:'courierfight.gif'},
+  {name:'Бабка з кошенятами',file:'catgranny.png',walk:'catgrannywalk.gif',fight:'catgrannyrelease.gif'}
+ ];
+ let residentSelection=[];
+ const defenders=()=>residentSelection;
+ const GUESTS=DEFENDER_ROSTER.flatMap(d=>[d.file,d.walk,d.fight]);
  const PCS=['pc2.png','pc3.png','pc4.png','pc5.png','pc6.png','pc8.png'];
  // Віряни Морія з оригінального Hikka House: Антон і Деара.
  const HELPER_ASSETS={kitten:['cat1.png','cat2.png','cat3.png'],dog:['dog1.png','dog2.png','dog3.png'],minion:['kolposy.gif'],adept:[['antonwalk.gif','anton.png'],['dearawalk.gif','deara.png']]};
@@ -202,7 +213,7 @@ render();
  let level=1,rooms=[],grid=[],assets=new Map(),helperVisuals=new Map(),guestVisuals=new Map(),boss='hiki',energy=100,seconds=0,done=false,active=false,selected=0,timer=null,helpers=[],attacks=0,bossUnits=[],bossImages=[],zoom=1,matchTimer=null,matchRemaining=5,playing=false,lastMove=0,cameraX=0,cameraY=0,activePointers=new Map(),panGesture=null,pinchGesture=null,suppressMapClick=false;
  try{level=Math.max(1,Math.min(MAX,+localStorage.getItem(SAVE)||1))}catch{}
  function loadImage(name){if(assets.has(name))return;const im=new Image();let i=0;const paths=['../Assets/','../assets/'];im.onload=()=>draw();im.onerror=()=>{if(++i<paths.length)im.src=paths[i]+name};im.src=paths[0]+name;assets.set(name,im)}
- [...new Set([...MAPS.flatMap(m=>[m.floor,m.roomFloor,m.wall]),...GUESTS,...PCS,...Object.values(CHAR).flat(),'cat1.png','cat2.png','cat3.png','dog1.png','dog2.png','dog3.png','kolposy.gif','weapon1.png','antonwalk.gif','anton.png','dearawalk.gif','deara.png','door1.png','door2.png','door3.png','door4.png','door5.png','door6.png'])].forEach(loadImage);
+ [...new Set([...MAPS.flatMap(m=>[m.floor,m.roomFloor,m.wall]),...GUESTS,...PCS,...Object.values(CHAR).flat(),'cat1.png','cat2.png','cat3.png','dog1.png','dog2.png','dog3.png','kolposy.gif',...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),'energy1.png','moneytree1.png','trap.png','time.png','antonwalk.gif','anton.png','dearawalk.gif','deara.png','door1.png','door2.png','door3.png','door4.png','door5.png','door6.png'])].forEach(loadImage);
  function makeRoom(i,map){
   let cells=[],side,x,y,doorX,doorY,pcX,pcY;
   if(LAYOUTS[map.key]){
@@ -222,7 +233,7 @@ render();
    for(let dy=0;dy<6;dy++)for(let dx=0;dx<6;dx++)cells.push([x+dx,y+dy]);
   }
   const maxHp=95+(level-1)*42;
-  return {i,side,x,y,cells,doorX,doorY,pcX,pcY,hp:maxHp,maxHp,broken:false,running:false,angle:i,guestTicks:5+i,guestFile:defenders()[i].file,guestWalk:defenders()[i].walk,guestName:defenders()[i].name,result:null,guestX:pcX,guestY:pcY,fort:0,weapon:0,buildTicks:4+i};
+  return {i,side,x,y,cells,doorX,doorY,pcX,pcY,hp:maxHp,maxHp,broken:false,running:false,angle:i,guestTicks:5+i,guestFile:defenders()[i].file,guestWalk:defenders()[i].walk,guestFight:defenders()[i].fight,guestName:defenders()[i].name,guestFightUntil:0,guestFightCooldown:2+Math.random()*5,result:null,guestX:pcX,guestY:pcY,fort:0,weapon:0,buildTicks:4+i,pcLevel:1,doorLevel:1,coins:18+Math.round(Math.random()*12),power:0,structures:[],buildPlan:['cautious','economist','defender','chaotic'][i%4],weaponCooldown:0};
  }
  function createGrid(map){
   grid=Array.from({length:map.h},(_,y)=>Array.from({length:map.w},(_,x)=>x===0||y===0||x===map.w-1||y===map.h-1?'wall':'corridor'));
@@ -291,9 +302,9 @@ render();
   const advance=()=>{const joined=6-matchRemaining;for(let i=0;i<joined;i++)if(slots.children[i])slots.children[i].style.opacity='1';$n('nvMatchCount').textContent=matchRemaining;if(matchRemaining--<=0){clearInterval(matchTimer);overlay.hidden=true;playing=true;message('Шестеро резидентів у кімнатах. Ваші хікі атакують двері!')}};
   advance();matchTimer=setInterval(advance,1000);
  }
- function init(){clearInterval(timer);clearInterval(matchTimer);const m=MAPS[level-1];rooms=Array.from({length:6},(_,i)=>makeRoom(i,m));createGrid(m);selected=0;energy=100;seconds=0;done=false;helpers=[];attacks=0;zoom=1;cameraX=m.w/2;cameraY=m.h/2;activePointers.clear();panGesture=null;pinchGesture=null;
+ function init(){clearInterval(timer);clearInterval(matchTimer);residentSelection=[...DEFENDER_ROSTER].sort(()=>Math.random()-.5).slice(0,6);const m=MAPS[level-1];rooms=Array.from({length:6},(_,i)=>makeRoom(i,m));createGrid(m);selected=0;energy=100;seconds=0;done=false;helpers=[];attacks=0;zoom=1;cameraX=m.w/2;cameraY=m.h/2;activePointers.clear();panGesture=null;pinchGesture=null;
   const starts=[[m.w/2,m.h/2],[m.w/2+1,m.h/2],[m.w/2-1,m.h/2]].map(([x,y])=>{let best=null,dist=Infinity;grid.forEach((line,j)=>line.forEach((v,i)=>{const d=Math.hypot(x-i,y-j);if(v==='corridor'&&d<dist){best=[i+.5,j+.5];dist=d}}));return best||[m.w/2,m.h/2]});
-  bossUnits=[boss,...HIKI_BOSSES.filter(id=>id!==boss).slice(0,2)].map((id,i)=>({id,target:i,x:starts[i][0],y:starts[i][1],path:[],moving:false,swing:0,attackDelay:0,speed:i===0?2.8:2.25}));
+  bossUnits=[boss,...HIKI_BOSSES.filter(id=>id!==boss).slice(0,2)].map((id,i)=>({id,target:i,x:starts[i][0],y:starts[i][1],path:[],moving:false,swing:0,attackDelay:0,speed:i===0?2.8:2.25,hp:i===0?140:110,out:false}));
   bossUnits.forEach((u,i)=>goTo(u,rooms[i]));setupBossSprites();$n('nvNextWrap').hidden=true;$n('nvNext').textContent=level===MAX?'Знову з першої мапи':'Наступна мапа →';message(m.name+'. За 5 секунд підберуться 6 резидентів.');render();if(active){startMatch();timer=setInterval(tick,100)}}
  function message(s){$n('nvMessage').textContent=s}
  function setupBossSprites(){sprites.replaceChildren();helperVisuals.clear();guestVisuals.clear();bossImages=bossUnits.map((u,i)=>{const el=document.createElement('img');el.alt='';el.dataset.file='';el.style.zIndex=i===0?'3':'2';sprites.append(el);return el})}
@@ -309,10 +320,11 @@ render();
     el.style.zIndex='4';el.style.pointerEvents='none';
     guestVisuals.set(r.i,el);sprites.append(el);
    }
-   if(el.dataset.file!==r.guestWalk){
-    el.dataset.file=r.guestWalk;
+   const wanted=r.guestFightUntil>seconds?r.guestFight:r.guestWalk;
+   if(el.dataset.file!==wanted){
+    el.dataset.file=wanted;
     let idx=0;const roots=['../Assets/','../assets/'];
-    const names=[r.guestWalk,r.guestFile];
+    const names=[wanted,r.guestWalk,r.guestFile];
     const tryLoad=()=>{if(idx>=names.length){el.hidden=true;return}
      let root=0;el.onerror=()=>{if(++root<roots.length)el.src=roots[root]+names[idx];else{idx++;tryLoad()}};
      el.src=roots[root]+names[idx];};tryLoad();
@@ -388,7 +400,8 @@ render();
    if(r.running){gx=r.guestX;gy=r.guestY}
    const guestX=ox+gx*tile,guestY=oy+gy*tile;
    if(!r.running)img(r.guestFile,guestX-tile*.10,guestY-tile*.75,tile*1.2,tile*1.5);
-   img(PCS[r.i%PCS.length],px-tile*.22,py-tile*.07,tile*1.5,tile*1.1);
+   img(PCS[Math.min(PCS.length-1,Math.max(0,r.pcLevel-1))],px-tile*.22,py-tile*.07,tile*1.5,tile*1.1);
+   for(const thing of r.structures){const x=ox+thing.x*tile,y=oy+thing.y*tile;const file=thing.type==='weapon'?'weapon'+Math.min(8,thing.lv)+'.png':thing.type==='energy'?'energy1.png':thing.type==='money'?'moneytree1.png':'trap.png';img(file,x,y,tile,tile);}
    if(r.fort){ctx.fillStyle='#b78f5999';ctx.fillRect(dx,dy+tile*.75,tile*(.2+r.fort*.14),tile*.20)}if(r.weapon)img('weapon1.png',px+tile*.17,py+tile*.08,tile*.80,tile*.80)
    const hpw=tile*2.4,hpx=dx+tile/2-hpw/2,hpy=dy-tile*.30;ctx.fillStyle='#281628';ctx.fillRect(hpx,hpy,hpw,Math.max(3,tile*.2));ctx.fillStyle=r.result==='lose'?'#bd718b':r.broken?'#72e8c7':'#ff7b9e';ctx.fillRect(hpx,hpy,hpw*(1-r.hp/r.maxHp),Math.max(3,tile*.2));
    ctx.textAlign='center';ctx.font=`${Math.max(9,Math.round(tile*.45))}px system-ui`;ctx.fillStyle='#f7f2ff';ctx.fillText(String(r.i+1),dx+tile/2,dy-tile*.38);
@@ -403,20 +416,65 @@ render();
  function spend(n){if(done||!playing)return false;if(energy<n){message(`Потрібно ${n} енергії`);return false}energy-=n;return true}
  function tick(){if(document.hidden||done||!playing||$n('intruder').hidden)return;
   const dt=.1;seconds+=dt;energy=Math.min(100,energy+dt*(3+level*.4));
-  for(const r of rooms){r.guestTicks-=dt;if(r.guestTicks<=0){r.running=!r.running;r.guestTicks=r.running?3.4:5+r.i%3}if(r.running){
-    const candidates=r.cells.filter(([x,y])=>!(x===r.pcX&&y===r.pcY));
+  for(const r of rooms){
+   if(r.result)continue;
+   r.guestTicks-=dt;
+   if(r.guestTicks<=0){r.running=!r.running;r.guestTicks=r.running?2.8+Math.random()*2.2:4+Math.random()*5;
+    if(r.running)r.guestFightCooldown=1.1+Math.random()*1.8;
+   }
+   if(r.running){
+    r.guestFightCooldown-=dt;
+    if(r.guestFightCooldown<=0){r.guestFightUntil=seconds+.65+Math.random()*.8;r.guestFightCooldown=3+Math.random()*4;}
+    const candidates=r.cells.filter(([x,y])=>!(x===r.pcX&&y===r.pcY)&&!r.structures.some(it=>it.x===x&&it.y===y));
     if(candidates.length){
      if(!r.guestTarget||Math.hypot(r.guestX-r.guestTarget[0],r.guestY-r.guestTarget[1])<.12){
-      // Ходимо лише до сусідніх прохідних клітинок кімнати, без стрибків через стіни.
       const near=candidates.filter(([x,y])=>Math.abs(x-Math.round(r.guestX))+Math.abs(y-Math.round(r.guestY))===1);
       r.guestTarget=(near.length?near:candidates)[Math.floor(Math.random()*(near.length||candidates.length))];
      }
      const dx=r.guestTarget[0]-r.guestX,dy=r.guestTarget[1]-r.guestY,d=Math.hypot(dx,dy),step=dt*1.45;
      if(d>step){r.guestX+=dx/d*step;r.guestY+=dy/d*step}else{r.guestX=r.guestTarget[0];r.guestY=r.guestTarget[1];r.guestTarget=null}
     }
-   }else{r.guestTarget=null;r.guestX+=(r.pcX-r.guestX)*.2;r.guestY+=(r.pcY-r.guestY)*.2}
-   r.buildTicks-=dt;if(!r.result&&r.buildTicks<=0){r.buildTicks=6+Math.random()*7;r.fort=Math.min(3,r.fort+1);if(Math.random()<.4)r.weapon=1;r.maxHp+=8;r.hp+=8;message('Бос у кімнаті '+(r.i+1)+' незграбно зміцнив двері.')}}
-  for(const unit of bossUnits){let r=rooms[unit.target];if(!r||r.result){r=rooms.find(a=>!a.result);if(r)goTo(unit,r);else continue}
+   }else{r.guestTarget=null;r.guestX+=(r.pcX-r.guestX)*.2;r.guestY+=(r.pcY-r.guestY)*.2;}
+   r.coins+=dt*(.8+r.pcLevel*.75+r.structures.filter(it=>it.type==='money').length*1.6);
+   r.power+=dt*r.structures.filter(it=>it.type==='energy').length*.8;
+   r.buildTicks-=dt;
+   if(r.buildTicks<=0){
+    // Як NPC оригінальної Hikka House: витрачаємо накопичені монети,
+    // а не створюємо укріплення кожні кілька секунд із повітря.
+    const occupied=new Set(r.structures.map(it=>it.x+','+it.y));
+    const tiles=r.cells.filter(([x,y])=>!(x===r.pcX&&y===r.pcY)&&!occupied.has(x+','+y)&&Math.abs(x-r.doorX)+Math.abs(y-r.doorY)>1);
+    const weapons=r.structures.filter(it=>it.type==='weapon');
+    let action=null;
+    const danger=bossUnits.some(u=>u.target===r.i&&Math.hypot(u.x-r.doorX,u.y-r.doorY)<3.5);
+    if(danger&&r.doorLevel<6&&r.coins>=16+r.doorLevel*24&&Math.random()<.65)action='door';
+    else if(r.pcLevel<6&&r.coins>=20+r.pcLevel*18&&Math.random()<.4)action='pc';
+    else if(tiles.length&&weapons.length<(r.buildPlan==='defender'?3:2)&&r.coins>=28&&Math.random()<.6)action='weapon';
+    else if(tiles.length&&!r.structures.some(it=>it.type==='energy')&&r.coins>=32)action='energy';
+    else if(tiles.length&&!r.structures.some(it=>it.type==='money')&&r.coins>=24&&r.buildPlan==='economist')action='money';
+    else if(r.doorLevel<7&&r.coins>=16+r.doorLevel*24)action='door';
+    else if(tiles.length&&r.coins>=28)action=['weapon','energy','money','trap'][Math.floor(Math.random()*4)];
+    if(action==='door'){
+     r.coins-=16+r.doorLevel*24;r.doorLevel++;r.fort=r.doorLevel;
+     const bonus=25+18*r.doorLevel;r.maxHp+=bonus;r.hp+=bonus;
+    }else if(action==='pc'){
+     r.coins-=20+r.pcLevel*18;r.pcLevel++;
+    }else if(tiles.length&&action){
+     const price=action==='weapon'?28:action==='energy'?32:24;
+     if(r.coins>=price){r.coins-=price;const [x,y]=tiles[Math.floor(Math.random()*tiles.length)];r.structures.push({type:action,x,y,lv:1});if(action==='weapon')r.weapon=weapons.length+1;}
+    }else if(weapons.length&&r.coins>=38&&weapons[0].lv<8){r.coins-=38;weapons[0].lv++;}
+    r.buildTicks=5+Math.random()*7+(r.buildPlan==='chaotic'?3:0);
+   }
+   // Побудовані турелі реально обстрілюють нападників, які наблизилися.
+   r.weaponCooldown-=dt;
+   if(r.weaponCooldown<=0){
+    const guns=r.structures.filter(it=>it.type==='weapon');
+    const nearby=bossUnits.filter(u=>u.target===r.i&&u.hp>0&&Math.hypot(u.x-r.doorX,u.y-r.doorY)<4.5);
+    if(guns.length&&nearby.length){const victim=nearby[Math.floor(Math.random()*nearby.length)];victim.hp=Math.max(0,victim.hp-2*guns.length-guns.reduce((n,g)=>n+g.lv,0));r.weaponCooldown=1.5+Math.random()*1.5;
+     if(victim.hp<=0){victim.out=true;victim.path=[];victim.moving=false;if(victim===bossUnits[0]){message('Ваш хікі вибув під обстрілом! Матч програно.');rooms.filter(q=>!q.result).forEach(q=>q.result='lose');finishIfResolved();}}
+    }
+   }
+  }
+  for(const unit of bossUnits){if(unit.out||unit.hp<=0)continue;let r=rooms[unit.target];if(!r||r.result){r=rooms.find(a=>!a.result);if(r)goTo(unit,r);else continue}
    if(unit.path.length){const [tx,ty]=unit.path[0],dx=tx-unit.x,dy=ty-unit.y,dist=Math.hypot(dx,dy),step=dt*unit.speed;if(dist<=step){unit.x=tx;unit.y=ty;unit.path.shift()}else{unit.x+=dx/dist*step;unit.y+=dy/dist*step}unit.moving=true;unit.swing=0;continue}
    unit.moving=false;const pos=approach(r);if(Math.hypot(unit.x-pos.x,unit.y-pos.y)>.65){goTo(unit,r);continue}
    unit.swing+=dt;if(unit.swing>=1.15+(unit===bossUnits[0]?0:.35)){unit.swing=0;damage(r,(unit===bossUnits[0]?11:6)+level);if(r.weapon&&Math.random()<.18)unit.swing=-.5}
