@@ -836,7 +836,7 @@ function update(dt){if(!game)return;daySync();let g=game;g.time+=dt;for(const r 
   if(g.time-(room.lastDoorHitAt??0)<3.5)continue;
   room.door=Math.min(room.maxDoor,room.door+Math.max(.4,room.maxDoor*.005)*dt);
  }
- g.tick+=dt;g.npcTick+=dt;for(const p of g.players){if(p.alive&&p.seated)p.survivalSeconds+=dt}const me=g.players[0];if(g.phase==='claim'||g.phase==='defend'){g.countdown=Math.max(0,25-g.time);for(const p of g.players){if(!p.alive||p.seated)continue;ensureRoomRoute(p);if(p.npc&&p.room===null){p.decision-=dt;if(p.decision<=0){const free=g.rooms.filter(r=>r.occupant===null&&!g.players.some(q=>q!==p&&q.targetRoom===r.id));if(free.length){const r=pick(free);assignRoom(p,r)}p.decision=rand(1.2,3)}}travel(p,dt);if(p.targetRoom!==null){const r=g.rooms[p.targetRoom];if(Math.hypot(p.x-(r.pcX+.5),p.y-(r.pcY+.5))<.53){p.autoSit=false;sit(p,r)}}}if(g.time>=25&&!me.seated){if(me.targetRoom!==null&&Math.hypot(me.x-(g.rooms[me.targetRoom].pcX+.5),me.y-(g.rooms[me.targetRoom].pcY+.5))<1.25)sit(me,g.rooms[me.targetRoom]);else{finish(false,'Ви не встигли зайняти кімнату');return}}if(g.time>=25&&!g.hunter.active){g.hunter.active=true;g.hunter.state='hunt';g.hunter.rest=0;toast(`${g.boss.name} вийшов у коридор!`)}if(g.tick>=1){g.tick-=1;if(me.seated&&me.alive){const r=playerRoom();const gain=hhPrice(HH_PC_INCOME,r.pcLv-1);g.gold+=gain;effect(r.pcX+.5,r.pcY+.25,`+${gain}#coin`)}for(const r of g.rooms){if(!r.alive||r.occupant===null||!g.players[r.occupant].seated)continue;for(const [key,item] of r.items){const [x,y]=key.split(',').map(Number);if(item.type==='energy'){const v=Math.pow(2,Math.min(item.lv,5)-1);if(r.occupant===0)g.energy+=v;effect(x+.5,y+.3,`+${v}⚡`)}if(item.type==='money'){const v=2*Math.pow(3,Math.min(item.lv,4)-1);if(r.occupant===0)g.gold+=v;effect(x+.5,y+.3,`+${v}#coin`)}if(item.type==='partner'&&r.occupant===0){const bonus=hhPrice(HH_PC_INCOME,(item.lv||1)-1);g.gold+=bonus;effect(x+.5,y+.3,`+${bonus}#coin`)}if(item.type==='notebook'&&Math.floor(g.time)%7===0){if(r.occupant===0){g.gold+=5;g.energy+=5}}if(item.type==='safe'&&g.hunter.state==='attack'&&g.hunter.target===r.id&&r.occupant===0)g.gold+=2; if(item.type==='tamagotchi'&&g.hunter.state==='attack'&&g.hunter.target===r.id&&r.occupant===0)g.gold+=g.boosts.includes('tamagotchi')?50:25;} }}if(g.npcTick>3){g.npcTick=0;npcEconomy();renderPlayers()}updateMikola(dt);updateOlexiy(dt);updateSix(dt);updateHunter(dt);updateServants(dt);updateGrannyKittens(dt);updatePets(dt);updateCockroaches(dt);updateWeapons(dt);projectiles(dt);if(g.devTest&&g.devImmortal)g.hunter.hp=Math.max(1,g.hunter.hp);for(const e of g.effects)e.life-=dt;g.effects=g.effects.filter(e=>e.life>0);if(g.time>400)finish(true,'Ви протрималися до ранку!')} const ownRoom=playerRoom();
+ g.tick+=dt;g.npcTick+=dt;for(const p of g.players){if(p.alive&&p.seated)p.survivalSeconds+=dt}const me=g.players[0];if(g.phase==='claim'||g.phase==='defend'){g.countdown=Math.max(0,25-g.time);for(const p of g.players){if(!p.alive||p.seated)continue;ensureRoomRoute(p);if(p.npc&&p.room===null){p.decision-=dt;if(p.decision<=0){const free=g.rooms.filter(r=>r.occupant===null&&!g.players.some(q=>q!==p&&q.targetRoom===r.id));if(free.length){const r=pick(free);assignRoom(p,r)}p.decision=rand(1.2,3)}}travel(p,dt);if(p.targetRoom!==null){const r=g.rooms[p.targetRoom];if(Math.hypot(p.x-(r.pcX+.5),p.y-(r.pcY+.5))<.53){p.autoSit=false;sit(p,r)}}}if(g.time>=25&&!me.seated){if(me.targetRoom!==null&&Math.hypot(me.x-(g.rooms[me.targetRoom].pcX+.5),me.y-(g.rooms[me.targetRoom].pcY+.5))<1.25)sit(me,g.rooms[me.targetRoom]);else{finish(false,'Ви не встигли зайняти кімнату');return}}if(g.time>=25&&!g.hunter.active){g.hunter.active=true;g.hunter.state='hunt';g.hunter.rest=0;toast(`${g.boss.name} вийшов у коридор!`)}if(g.tick>=1){g.tick-=1;if(me.seated&&me.alive){const r=playerRoom();const gain=hhPrice(HH_PC_INCOME,r.pcLv-1);g.gold+=gain;effect(r.pcX+.5,r.pcY+.25,`+${gain}#coin`)}for(const r of g.rooms){if(!r.alive||r.occupant===null||!g.players[r.occupant].seated)continue;for(const [key,item] of r.items){const [x,y]=key.split(',').map(Number);if(item.type==='energy'){const v=Math.pow(2,Math.min(item.lv,5)-1);if(r.occupant===0)g.energy+=v;effect(x+.5,y+.3,`+${v}⚡`)}if(item.type==='money'){const v=2*Math.pow(3,Math.min(item.lv,4)-1);if(r.occupant===0)g.gold+=v;effect(x+.5,y+.3,`+${v}#coin`)}if(item.type==='partner'&&r.occupant===0){const bonus=hhPrice(HH_PC_INCOME,(item.lv||1)-1);g.gold+=bonus;effect(x+.5,y+.3,`+${bonus}#coin`)}if(item.type==='notebook'&&Math.floor(g.time)%7===0){if(r.occupant===0){g.gold+=5;g.energy+=5}}if(item.type==='safe'&&g.hunter.state==='attack'&&g.hunter.target===r.id&&r.occupant===0)g.gold+=2; if(item.type==='tamagotchi'&&g.hunter.state==='attack'&&g.hunter.target===r.id&&r.occupant===0)g.gold+=g.boosts.includes('tamagotchi')?50:25;} }}if(g.npcTick>3){g.npcTick=0;npcEconomy();renderPlayers()}updateMikola(dt);updateOlexiy(dt);updateSix(dt);updateHunter(dt);updateServants(dt);updatePets(dt);updateGrannyKittens(dt);updateCockroaches(dt);updateWeapons(dt);projectiles(dt);if(g.devTest&&g.devImmortal)g.hunter.hp=Math.max(1,g.hunter.hp);for(const e of g.effects)e.life-=dt;g.effects=g.effects.filter(e=>e.life>0);if(g.time>400)finish(true,'Ви протрималися до ранку!')} const ownRoom=playerRoom();
  let incomeRate=0;
  if(ownRoom?.alive&&me.seated&&me.alive){
    incomeRate=2*Math.pow(2,ownRoom.pcLv-1);
@@ -1997,8 +1997,17 @@ function updatePets(dt){
   const dist=Math.hypot(h.x-p.x,h.y-p.y);
   // Більш тривала погоня: тварина не здається відразу, щойно бос відбіг від дверей.
   if(active&&Math.hypot(h.x-(r.doorX+.5),h.y-(r.doorY+.5))<12)p.chaseUntil=game.time+8;
+  // Тварини з Маджики активно підбігають до кошенят, що атакують двері
+  // або переслідують Миколу, Олексія чи Шістку. Кошенят усередині кімнат не чіпають.
+  const kittenTargets=item.source==='magic'&&game.boss.id==='catgranny'?
+   game.kittens.filter(k=>!k.inside&&!k.leaving&&
+    Math.hypot(k.x-(r.doorX+.5),k.y-(r.doorY+.5))<12):[];
+  kittenTargets.sort((a,b)=>Math.hypot(a.x-p.x,a.y-p.y)-Math.hypot(b.x-p.x,b.y-p.y));
+  const chasedKitten=kittenTargets[0]||null;
+  if(chasedKitten)p.chaseUntil=game.time+8;
   const chasing=active&&game.time<p.chaseUntil;
-  let destination=chasing?{x:h.x,y:h.y}:home;
+  let destination=chasedKitten?{x:chasedKitten.x,y:chasedKitten.y}:
+   chasing?{x:h.x,y:h.y}:home;
   // Не шукаємо шлях до клітинки, зайнятої стіною або чужою кімнатою.
   let tx=Math.floor(destination.x),ty=Math.floor(destination.y);
   if(!['corridor','rest'].includes(tileType(tx,ty))&&!(tx===r.doorX&&ty===r.doorY)&&!(inRoom(r,tx,ty)&&tileType(tx,ty)==='room')){
@@ -2011,6 +2020,16 @@ function updatePets(dt){
    const step=(item.type==='dog'?4.5:5.1)*dt;
    if(d<=step){p.x=next.x;p.y=next.y;p.path.shift()}else{p.x+=dx/d*step;p.y+=dy/d*step}
   }else if(!chasing&&Math.hypot(p.x-home.x,p.y-home.y)<.12){p.x=home.x;p.y=home.y}
+  // Близькість домашньої тварини примушує кошенят назавжди тікати.
+  // Не видаляємо миттєво: вони фізично добігають до виходу.
+  if(item.source==='magic'&&game.boss.id==='catgranny'){
+   for(const k of game.kittens){
+    if(k.inside||k.leaving||Math.hypot(p.x-k.x,p.y-k.y)>2.2)continue;
+    k.leaving=true;k.leaveDeadline=game.time+12;
+    k.helperKind=null;k.expiresAt=game.time;
+    effect(k.x,k.y,'🐾💨');
+   }
+  }
   if(chasing&&Math.hypot(p.x-h.x,p.y-h.y)<1.25&&p.cd<=0){
    const damage=(item.type==='dog'?3:2)*(item.lv||1);
    h.hp=Math.max(0,h.hp-damage);effect(h.x,h.y,`-${damage}🐾`);
