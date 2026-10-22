@@ -74,7 +74,7 @@
  <div class="nv-game-layout">
   <aside class="nv-side nv-side-left" aria-label="Керування хікі">
    <h3>Керування</h3>
-   <div class="nv-toolbar"><label for="nvBoss">Ваш хікі</label><select id="nvBoss"><option value="hiki">Гікі</option><option value="akira">Акіра</option><option value="jinni">Джинні</option></select><button id="nvHit" class="primary">🏃 Бігти й трощити</button><button id="nvSocks" type="button" disabled>🧦 Увійти й розкидати шкарпетки</button></div>
+   <div class="nv-toolbar"><label for="nvBoss">Ваш хікі</label><select id="nvBoss"><option value="hiki">Гікі Коморі</option><option value="akira">Акіра Бакенеко</option><option value="jinni">Джинні Мацумацу</option><option value="yani">Яні Куронеко</option><option value="kate">Кейт Чан</option><option value="kent">Кент Вайт</option><option value="jura">Джура Кун</option><option value="sayuri">Саюрі Кіт</option><option value="derek">Дерек К’ю</option><option value="kornel">Корнел Вус</option></select><button id="nvHit" class="primary">🏃 Бігти й трощити</button><button id="nvSocks" type="button" disabled>🧦 Увійти й розкидати шкарпетки</button></div>
    <h3>Здібності</h3>
    <div class="nv-toolbar"><button id="nvTeleport">✦ Телепортація · 25 енергії</button><button id="nvKittens"><img class="nv-ui-sprite" src="../Assets/cat1.png" onerror="this.onerror=null;this.src='../assets/cat1.png'" alt=""/> Три коти · 20</button><button id="nvDogs"><img class="nv-ui-sprite" src="../Assets/dog1.png" onerror="this.onerror=null;this.src='../assets/dog1.png'" alt=""/> Три собаки · 25</button><button id="nvMinions"><img class="nv-ui-sprite" src="../Assets/oleksiywalk.gif" onerror="this.onerror=null;this.src='../assets/oleksiywalk.gif'" alt=""/> Олексій · 30</button><button id="nvAdepts"><img class="nv-ui-sprite" src="../Assets/mykolawalk.gif" onerror="this.onerror=null;this.src='../assets/mykolawalk.gif'" alt=""/> Микола · 35</button></div>
   </aside>
@@ -194,7 +194,8 @@ render();
  };
  // Хікі є нападниками. Колишні боси є гостями-захисниками в кімнатах.
  const CHAR={hiki:['hikiidle.gif','hikiwalk.gif'],akira:['akiraidle.gif','akirawalk.gif'],jinni:['jinniidle.gif','jinniwalk.gif'],yani:['yaniidle.gif','yaniwalk.gif'],kate:['kateidle.gif','katewalk.gif'],kent:['kentidle.gif','kentwalk.gif'],jura:['juraidle.gif','jurawalk.gif'],sayuri:['sayuriidle.gif','sayuriwalk.gif'],derek:['derekidle.gif','derekwalk.gif'],kornel:['kornelidle.gif','kornelwalk.gif']};
- const HIKI_BOSSES=['hiki','akira','jinni','yani','kate','kent'];
+ const HIKI_BOSSES=Object.keys(CHAR);
+ const shuffledHikis=()=>{const ids=[...HIKI_BOSSES];for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]];}return ids;};
  // Оригінальні десять резидентів із Hikka House.
  const DEFENDER_ROSTER=[
   {name:'Колядун',file:'kolyadun.png',walk:'kolyadunwalk.gif',fight:'kolyadunfight.gif'},
@@ -352,13 +353,43 @@ render();
  }
  function startSockRaid(roomId=selected){if(!playing||done)return;const r=rooms[roomId],u=bossUnits[0];if(!r?.broken||r.result){message('Спочатку зламайте двері обраної кімнати.');return}if(u.out){message('Ваш хікі вибув.');return}const path=routeInside(u,r);if(!path.length&&!r.cells.some(([x,y])=>Math.floor(u.x)===x&&Math.floor(u.y)===y)){message('Не вдалося знайти прохід до кімнати.');return}u.target=r.i;u.path=path;u.moving=path.length>0;u.raidRoom=r.i;selected=r.i;message('Хікі заходить до кімнати '+(r.i+1)+' зі шкарпетками!');render()}
  function scatterSocks(r){if(r.result)return;const available=r.cells.filter(([x,y])=>!(x===r.pcX&&y===r.pcY)&&!r.structures.some(it=>it.x===x&&it.y===y));const clothes=['weapon1.png','weapon2.png','weapon3.png','weapon5.png','weapon6.png'];r.socks=available.map(([x,y])=>({x,y,file:clothes[Math.floor(Math.random()*clothes.length)],rot:(Math.random()-.5)*.38}));r.result='win';r.broken=true;r.hp=0;showVictory('ПЕРЕМОГА В КІМНАТІ',`${r.guestName} · речі розкидані`);message(`Кімната ${r.i+1} пройдена. Хікі виходить у коридор.`);const me=bossUnits[0];if(me&&!me.out)exitFromRoom(me,r);finishIfResolved()}
- function startMatch(){clearInterval(matchTimer);playing=false;matchRemaining=5;const overlay=$n('nvMatch'),slots=$n('nvMatchSlots');overlay.hidden=false;slots.replaceChildren();defenders().forEach((def,i)=>{const f=def.file;const span=document.createElement('span'),im=document.createElement('img'),small=document.createElement('small');im.src='../Assets/'+f;im.onerror=()=>{im.onerror=null;im.src='../assets/'+f};small.textContent=def.name;span.append(im,small);span.style.opacity='.35';slots.append(span)});
-  const advance=()=>{const joined=6-matchRemaining;for(let i=0;i<joined;i++)if(slots.children[i])slots.children[i].style.opacity='1';$n('nvMatchCount').textContent=matchRemaining;if(matchRemaining--<=0){clearInterval(matchTimer);overlay.hidden=true;playing=true;message('Шестеро резидентів у кімнатах. Ваші хікі атакують двері!')}};
-  advance();matchTimer=setInterval(advance,1000);
+ function startMatch(){
+  clearInterval(matchTimer);playing=false;matchRemaining=5;
+  const overlay=$n('nvMatch'),slots=$n('nvMatchSlots');
+  overlay.hidden=false;slots.replaceChildren();
+  // До відкриття кожен резидент прихований за знаком питання, як у лобі класичної гри.
+  defenders().forEach((def)=>{
+   const span=document.createElement('span'),im=document.createElement('img'),small=document.createElement('small');
+   im.alt='';im.hidden=true;im.dataset.file=def.file;
+   small.textContent='?';span.append(im,small);slots.append(span);
+  });
+  let halfSeconds=0;
+  $n('nvMatchCount').textContent='5';
+  const reveal=(index)=>{
+   const slot=slots.children[index];if(!slot)return;
+   const im=slot.querySelector('img'),small=slot.querySelector('small'),def=defenders()[index];
+   if(!def||!im.hidden)return;
+   im.onerror=()=>{if(im.dataset.fallback)return;im.dataset.fallback='1';im.src='../assets/'+def.file};
+   im.src='../Assets/'+def.file;im.hidden=false;small.textContent=def.name;
+  };
+  matchTimer=setInterval(()=>{
+   halfSeconds++;
+   // По одному випадковому резиденту відкривається впродовж п'яти секунд.
+   const shouldReveal=Math.min(6,Math.floor(halfSeconds*6/10));
+   for(let i=0;i<shouldReveal;i++)reveal(i);
+   matchRemaining=Math.max(0,Math.ceil((10-halfSeconds)/2));
+   $n('nvMatchCount').textContent=matchRemaining;
+   if(halfSeconds>=10){
+    for(let i=0;i<6;i++)reveal(i);
+    clearInterval(matchTimer);matchTimer=null;overlay.hidden=true;playing=true;
+    message('Шестеро резидентів у кімнатах. Ваші хікі атакують двері!');
+   }
+  },500);
  }
  function init(){clearInterval(timer);clearInterval(matchTimer);clearTimeout(victoryTimeout);$n('nvVictoryPopup').hidden=true;residentSelection=[...DEFENDER_ROSTER].sort(()=>Math.random()-.5).slice(0,6);const m=MAPS[level-1];rooms=Array.from({length:6},(_,i)=>makeRoom(i,m));createGrid(m);selected=0;energy=100;seconds=0;done=false;helpers=[];attacks=0;zoom=1;cameraX=m.w/2;cameraY=m.h/2;activePointers.clear();panGesture=null;pinchGesture=null;
+  boss=shuffledHikis()[0];$n('nvBoss').value=boss;
   const starts=[[m.w/2,m.h/2],[m.w/2+1,m.h/2],[m.w/2-1,m.h/2]].map(([x,y])=>{let best=null,dist=Infinity;grid.forEach((line,j)=>line.forEach((v,i)=>{const d=Math.hypot(x-i,y-j);if(v==='corridor'&&d<dist){best=[i+.5,j+.5];dist=d}}));return best||[m.w/2,m.h/2]});
-  bossUnits=[boss,...HIKI_BOSSES.filter(id=>id!==boss).slice(0,2)].map((id,i)=>({id,target:i,x:starts[i][0],y:starts[i][1],path:[],moving:false,swing:0,attackDelay:0,speed:i===0?2.8:2.25,hp:i===0?140:110,out:false}));
+  bossUnits=[boss,...shuffledHikis().filter(id=>id!==boss).slice(0,2)].map((id,i)=>({id,target:i,x:starts[i][0],y:starts[i][1],path:[],moving:false,swing:0,attackDelay:0,speed:i===0?2.8:2.25,hp:i===0?140:110,out:false}));
   bossUnits.forEach((u,i)=>goTo(u,rooms[i]));setupBossSprites();$n('nvNextWrap').hidden=true;$n('nvNext').textContent=level===MAX?'Знову з першої мапи':'Наступна мапа →';message(m.name+'. За 5 секунд підберуться 6 резидентів.');render();if(active){startMatch();timer=setInterval(tick,100)}}
  function message(s){$n('nvMessage').textContent=s}
  function setupBossSprites(){sprites.replaceChildren();helperVisuals.clear();guestVisuals.clear();bossImages=bossUnits.map((u,i)=>{const el=document.createElement('img');el.alt='';el.dataset.file='';el.style.zIndex=i===0?'3':'2';sprites.append(el);return el})}
@@ -625,7 +656,7 @@ render();
  const summonTrio=(cost,kind,power,label)=>{activate();if(!spend(cost))return;const files=[...HELPER_ASSETS[kind]];for(let j=files.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[files[j],files[k]]=[files[k],files[j]];}files.forEach((file,i)=>helpers.push({id:nextHelperId++,target:selected,power:power+level,kind,label:label+' '+(i+1),asset:file,ttl:5,cooldown:1+i*.12}));message(label+' (3) атакують двері '+(selected+1));render()};
  $n('nvKittens').onclick=()=>summonTrio(20,'kitten',3,'Коти');
  $n('nvDogs').onclick=()=>summonTrio(25,'dog',4,'Собаки');$n('nvMinions').onclick=()=>summon(30,'oleksiy',6,'Олексій');$n('nvAdepts').onclick=()=>summon(35,'mykola',5,'Микола');
- $n('nvBoss').onchange=e=>{boss=e.target.value;if(bossUnits.length){bossUnits[0].id=CHAR[boss]?boss:'hiki';const others=HIKI_BOSSES.filter(id=>id!==boss);bossUnits.slice(1).forEach((u,i)=>u.id=others[i%others.length])}render()};$n('nvRestart').onclick=()=>{active=true;init()};$n('nvExit').onclick=()=>leaveGame();
+ $n('nvBoss').onchange=e=>{boss=e.target.value;if(bossUnits.length){bossUnits[0].id=CHAR[boss]?boss:'hiki';const others=shuffledHikis().filter(id=>id!==boss);bossUnits.slice(1).forEach((u,i)=>u.id=others[i])}render()};$n('nvRestart').onclick=()=>{active=true;init()};$n('nvExit').onclick=()=>leaveGame();
  $n('nvNext').onclick=()=>{if(!done)return;level=level<MAX?level+1:1;try{localStorage.setItem(SAVE,String(level))}catch{}active=true;init()};
  // Пряме відкриття ігрового режиму, незалежне від глобальних обробників меню.
   function enterGame(){
