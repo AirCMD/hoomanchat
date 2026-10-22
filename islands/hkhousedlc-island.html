@@ -16,8 +16,25 @@
 .nv-match[hidden]{display:none!important}.nv-match>strong{font-size:clamp(16px,3vw,29px);color:#ffb7ce}.nv-match-number{font-size:clamp(60px,12vw,120px);font-weight:900;color:#ffcf8f;line-height:1}
 .nv-match-slots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;width:min(740px,100%)}.nv-match-slots>span{display:grid;justify-items:center;gap:3px;border:1px solid #6a708f;background:#272e4b;border-radius:10px;padding:9px 3px;min-width:0}.nv-match-slots img{width:65px;max-width:100%;height:70px;object-fit:contain;image-rendering:pixelated}.nv-match-slots small{font-size:10px}
 @media(max-width:600px){.nv-match-slots{grid-template-columns:repeat(3,1fr)}#intruder.nv-fullscreen{padding:7px}#intruder.nv-fullscreen .sub{display:none}}
+
+/* DLC 0.2.7: компоновка ігрового екрана за принципом Hikka House. */
+#intruder.nv-fullscreen .nv-game-layout{display:grid;grid-template-columns:clamp(190px,19vw,245px) minmax(0,1fr) clamp(185px,18vw,235px);gap:12px;flex:1;min-height:0;width:100%;align-items:stretch}
+#intruder.nv-fullscreen .nv-side{min-width:0;overflow-y:auto;overflow-x:hidden;background:#1e243d;border:1px solid #56617f;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:9px}
+#intruder.nv-fullscreen .nv-side h3{font-size:14px;margin:0;padding-bottom:5px;border-bottom:1px solid #ffffff25}
+#intruder.nv-fullscreen .nv-side .nv-toolbar{display:flex;flex-direction:column;align-items:stretch;gap:9px;margin:0}
+#intruder.nv-fullscreen .nv-side .nv-toolbar button,#intruder.nv-fullscreen .nv-side .nv-toolbar select{width:100%;min-width:0;text-align:left;white-space:normal}
+#intruder.nv-fullscreen .nv-map-area{min-width:0;min-height:0;display:flex;flex-direction:column;gap:6px}
+#intruder.nv-fullscreen .nv-map-area .nv-map-shell{flex:1;min-height:260px;height:auto;width:100%;min-width:0}
+#intruder.nv-fullscreen .nv-map-controls{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#1e243d;border-radius:8px;padding:5px 10px;font-size:12px;color:#c3cbe1}
+#intruder.nv-fullscreen .nv-map-controls>div{display:flex;gap:7px}
+#intruder.nv-fullscreen .nv-map-controls button{padding:4px 15px;font-size:20px;line-height:1.2}
+#intruder.nv-fullscreen .nv-room-state .chip{white-space:normal;display:block;line-height:1.4}
+#intruder.nv-fullscreen .nv-result-controls{display:grid;gap:9px}
+#intruder.nv-fullscreen .nv-result-controls button{white-space:normal;text-align:center}
+@media(max-width:900px){#intruder.nv-fullscreen .nv-game-layout{grid-template-columns:160px minmax(0,1fr) 155px;gap:6px}#intruder.nv-fullscreen .nv-side{padding:8px}#intruder.nv-fullscreen .nv-side .nv-toolbar button{font-size:12px;padding:8px 5px}}
+@media(max-width:650px){#intruder.nv-fullscreen .nv-game-layout{display:flex;flex-direction:column;overflow:auto;flex:1;min-height:0}#intruder.nv-fullscreen .nv-map-area{order:0;flex:none;height:52vh;min-height:260px}#intruder.nv-fullscreen .nv-side-left{order:1}#intruder.nv-fullscreen .nv-side-right{order:2}#intruder.nv-fullscreen .nv-side{flex:none;overflow:visible}#intruder.nv-fullscreen .nv-side .nv-toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center}#intruder.nv-fullscreen .nv-side .nv-toolbar label{grid-column:1/-1}#intruder.nv-fullscreen .nv-map-area .nv-map-shell{min-height:220px}}
 </style></head><body>
-<header><div><div class="brand">HIKKA <b>HOUSE</b> · DLC</div><div class="small">Інший бік будинку · прототип 0.2.6</div></div><div class="stats"><span class="chip">🎟️ <span id="tokens">0</span> токенів</span><button id="importButton">Імпорт із класичної гри</button><a href="hikkahouse-island.html" style="color:#f4c8de">← Класична гра</a></div></header>
+<header><div><div class="brand">HIKKA <b>HOUSE</b> · DLC</div><div class="small">Інший бік будинку · прототип 0.2.7</div></div><div class="stats"><span class="chip">🎟️ <span id="tokens">0</span> токенів</span><button id="importButton">Імпорт із класичної гри</button><a href="hikkahouse-island.html" style="color:#f4c8de">← Класична гра</a></div></header>
 <main><div class="intro"><h1>Три історії. Один будинок.</h1><p>Тут формується окрема частина Hikka House. Токени можна перенести персональним кодом із класичної гри. DLC зберігає прогрес незалежно від неї.</p></div>
 <div class="modes"><button class="mode active" data-mode="apartment"><span class="emoji">🏠</span><strong>Квартира Яні та Акіри</strong><span>Перший робочий режим: взаємодій із персонажами, затишок і розвиток квартири.</span><em>▶ Грати в прототип</em></button><button class="mode" data-mode="boss"><span class="emoji">⚔️</span><strong>Кооперативна кімната боса</strong><span>Спільна оборона від сильного непроханого гостя.</span><em>Підготовка режиму</em></button><button class="mode" data-mode="intruder"><span class="emoji">🚪</span><strong>Напросилися!</strong><span>Хікі тепер нападники. Проривайся до кімнат гостей, телепортуйся та викликай помічників.</span><em>▶ Грати у прототип</em></button></div>
 <section id="apartment" class="surface"><div class="line space"><div><h2>Квартира Яні та Акіри</h2><p class="sub">Натискай на Яні чи Акіру, щоб отримувати очки затишку. Поліпшуй квартиру та заробляй невелику кількість DLC-токенів за досягнення.</p></div><button id="resetApartment">Скинути лише квартиру</button></div>
@@ -27,9 +44,24 @@
 <section id="intruder" class="surface" hidden>
  <div class="line space"><div><h2>🚪 Напросилися!</h2><p class="sub">П’ять рівнів. Шестеро колишніх босів захищають свої кімнати. Ви та двоє NPC-хікі біжите коридорами, ламаєте двері й викликаєте помічників. Захисники невміло будують укріплення та зброю.</p></div><div class="line"><button id="nvRestart">↻ Перезапуск</button><button id="nvExit">✕ До меню DLC</button></div></div>
  <div class="nv-hud"><span class="chip" id="nvLevel">Рівень 1 / 5</span><span class="chip" id="nvDoors">Двері: 0 / 6</span><span class="chip" id="nvEnergy">Енергія: 100</span><span class="chip" id="nvTimer">00:00</span></div>
+ <div class="nv-game-layout">
+  <aside class="nv-side nv-side-left" aria-label="Керування хікі">
+   <h3>Керування</h3>
+   <div class="nv-toolbar"><label for="nvBoss">Ваш хікі</label><select id="nvBoss"><option value="hiki">Гікі</option><option value="akira">Акіра</option><option value="jinni">Джинні</option></select><button id="nvHit" class="primary">🏃 Бігти й трощити</button></div>
+   <h3>Здібності</h3>
+   <div class="nv-toolbar"><button id="nvTeleport">✦ Телепортація · 25 енергії</button><button id="nvKittens"><img class="nv-ui-sprite" src="../Assets/cat1.png" onerror="this.onerror=null;this.src='../assets/cat1.png'" alt=""/> Кошенята · 20</button><button id="nvMinions"><img class="nv-ui-sprite" src="../Assets/kolposy.gif" onerror="this.onerror=null;this.src='../assets/kolposy.gif'" alt=""/> Посіпаки · 30</button><button id="nvAdepts">Адепти · 35</button></div>
+  </aside>
+  <div class="nv-map-area">
  <div class="nv-map-shell" id="nvMapShell" tabindex="0" aria-label="Мапа Hikka House з шістьма кімнатами"><canvas id="nvMapCanvas" class="nv-map-canvas"></canvas><div id="nvBossSprites" class="nv-boss-sprites" aria-hidden="true"></div><span class="nv-map-tip">Клік по дверях: обрати ціль · затисніть ЛКМ і тягніть: перемістити мапу</span><div id="nvMatch" class="nv-match" hidden><strong>ПІДБІР ШЕСТИ БОСІВ</strong><div id="nvMatchCount" class="nv-match-number">5</div><div id="nvMatchSlots" class="nv-match-slots"></div></div></div>
- <div class="nv-hud"><span class="chip" id="nvRoomResult">Оберіть кімнату</span><button id="nvMarkWin" type="button">✓ Перемога в кімнаті</button><button id="nvMarkLoss" type="button">✕ Поразка в кімнаті</button></div>
- <div class="nv-toolbar"><label for="nvBoss">Ваш хікі</label><select id="nvBoss"><option value="hiki">Гікі</option><option value="akira">Акіра</option><option value="jinni">Джинні</option></select><button id="nvHit" class="primary">🏃 Бігти й трощити</button><button id="nvZoomOut">−</button><button id="nvZoomIn">+</button><button id="nvTeleport">✦ Телепортація · 25 енергії</button><button id="nvKittens"><img class="nv-ui-sprite" src="../Assets/cat1.png" onerror="this.onerror=null;this.src='../assets/cat1.png'" alt=""/> Кошенята · 20</button><button id="nvMinions"><img class="nv-ui-sprite" src="../Assets/kolposy.gif" onerror="this.onerror=null;this.src='../assets/kolposy.gif'" alt=""/> Посіпаки · 30</button><button id="nvAdepts">Адепти · 35</button></div>
+   <div class="nv-map-controls"><span>Мапа · тягніть ЛКМ</span><div><button id="nvZoomOut" aria-label="Віддалити мапу">−</button><button id="nvZoomIn" aria-label="Наблизити мапу">+</button></div></div>
+  </div>
+  <aside class="nv-side nv-side-right" aria-label="Стан кімнати">
+   <h3>Кімната</h3>
+   <div class="nv-room-state"><span class="chip" id="nvRoomResult">Оберіть кімнату</span></div>
+   <h3>Результат</h3>
+   <div class="nv-result-controls"><button id="nvMarkWin" type="button">✓ Перемога в кімнаті</button><button id="nvMarkLoss" type="button">✕ Поразка в кімнаті</button></div>
+  </aside>
+ </div>
  <p class="small">Вибір кімнати: натисніть на двері на мапі. Колишні боси іноді виходять з-за ПК, рухаються в межах кімнат і невміло будують укріплення. Для персонажів використовуються лише idle/walk, а для гостей — PNG.</p>
  <p class="notification" id="nvMessage" aria-live="polite">Оберіть кімнату та починайте напад.</p><div class="line" id="nvNextWrap" hidden><button class="primary" id="nvNext">Наступний рівень →</button></div>
 </section>
