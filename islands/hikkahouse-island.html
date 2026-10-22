@@ -287,7 +287,21 @@ function doorBurstWarning(){
  }catch(e){}
 }
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2300)}
-const KYIV=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Kyiv',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());const STORE_KEY='hikka-house-save-v1';let save={date:KYIV(),tokens:0,wins:0,level:0,magic:3,skins:[0],skin:0,boosts:[],dailyBoostClaims:0,runFinishedDay:null};try{save={...save,...JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}}catch{}function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify(save))}catch{}}function daySync(){const day=KYIV();if(save.date!==day){save.date=day;save.level=0;save.boosts=[];save.dailyBoostClaims=0;save.runFinishedDay=null;save.dailyLeaderboard=null;persist();toast('Новий день! Складність і бусти скинуто.')} }daySync();
+const KYIV=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Kyiv',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());const STORE_KEY='hikka-house-save-v1';let save={date:KYIV(),tokens:0,wins:0,level:0,magic:3,skins:[0],skin:0,boosts:[],dailyBoostClaims:0,dailyAwardedLevels:[],runFinishedDay:null};try{save={...save,...JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}}catch{}
+// Локальне збереження не вважаємо довіреним джерелом даних.
+if(!Array.isArray(save.skins))save.skins=[0];
+save.skins=save.skins.filter(n=>Number.isInteger(n)&&n>=0&&n<10).slice(0,10);
+if(!save.skins.length)save.skins=[0];
+if(!Number.isInteger(save.skin)||save.skin<0||save.skin>=10)save.skin=0;
+if(!Array.isArray(save.boosts))save.boosts=[];
+save.boosts=save.boosts.filter(v=>typeof v==='string'&&/^[a-z]+(?::[0-9]+)?$/.test(v)).slice(0,40);
+if(!Array.isArray(save.dailyAwardedLevels))save.dailyAwardedLevels=[];
+save.dailyAwardedLevels=save.dailyAwardedLevels.filter(v=>Number.isInteger(v)&&v>=0&&v<17).slice(0,17);
+for(const key of ['tokens','wins','level','dailyBoostClaims']){
+ if(!Number.isFinite(save[key]))save[key]=0;
+ save[key]=Math.max(0,Math.min(100000000,Math.floor(save[key])));
+}
+function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify(save))}catch{}}function daySync(){const day=KYIV();if(save.date!==day){save.date=day;save.level=0;save.boosts=[];save.dailyBoostClaims=0;save.dailyAwardedLevels=[];save.runFinishedDay=null;save.dailyLeaderboard=null;persist();toast('Новий день! Складність і бусти скинуто.')} }daySync();
 let C=19,R=25;
 let currentMap='classic';
 const MAPS={
@@ -562,7 +576,10 @@ let matchRosterPlan=null,matchTimer=null,matchTicket=0;
 // Місцевий рейтинг за київську добу. Версія 2: час, перемога, ПК7, вцілілі двері.
 function ensureDailyLeaderboard(){
  const day=KYIV();
- if(save.dailyLeaderboard?.date===day&&save.dailyLeaderboard.version===2&&Array.isArray(save.dailyLeaderboard.entries))return save.dailyLeaderboard;
+ if(save.dailyLeaderboard?.date===day&&save.dailyLeaderboard.version===2&&Array.isArray(save.dailyLeaderboard.entries)){
+  save.dailyLeaderboard.entries=save.dailyLeaderboard.entries.filter(e=>e&&typeof e.name==='string'&&e.name.length<=80&&Number.isFinite(e.score)).slice(0,100);
+  return save.dailyLeaderboard;
+ }
  const names=[...MATCH_NICKS].sort(()=>Math.random()-.5).slice(0,5);
  save.dailyLeaderboard={date:day,version:2,entries:[{name:'copy_pasta',score:0},...names.map(name=>({name,score:0}))]};
  persist();return save.dailyLeaderboard;
@@ -738,7 +755,29 @@ function openBuildMenu(r,x,y){const opts=catalog.filter(c=>c.tab===selectedTab&&
 function modal(title,content,buttons=[],force=false){$('modalRoot').hidden=false;$('modalTitle').textContent=title;$('modalContent').innerHTML=content;$('modalClose').hidden=force;$('modalActions').innerHTML='';$('modalClose').onclick=closeModal;for(const b of buttons){const el=document.createElement('button');el.textContent=b.name;el.className=b.primary?'primary':'';el.disabled=!!b.disabled;el.onclick=b.fn;$('modalActions').append(el)}}function closeModal(){$('modalRoot').hidden=true}
 function renderTabs(){$('tabs').innerHTML=['База','Монетки','Тримачі','Інше'].map(t=>`<button class="${selectedTab===t?'active':''}" data-tab="${t}">${t}</button>`).join('');$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{selectedTab=b.dataset.tab;renderTabs();renderPalette()})}
 function renderPalette(){if(!game)return;$('palette').innerHTML='';for(const def of catalog.filter(c=>c.tab===selectedTab)){const b=document.createElement('button');b.className='item';b.innerHTML=`${def.img?`<img src="${assetURL(def.img)}" draggable="false">`:`<span class="emoji">${def.emoji}</span>`}<b>${def.name}</b><small>${costLabel(costs[def.type])}${def.type==='magic'?' • '+(3-game.magicUsed)+'/3 доступно':''}</small>`;b.title='Перетягніть предмет або клацніть для вибору';b.addEventListener('pointerdown',e=>{if(e.button!==0)return;drag={type:def.type,startX:e.clientX,startY:e.clientY,active:false};try{b.setPointerCapture(e.pointerId)}catch{}});b.addEventListener('pointermove',e=>{if(drag&&Math.hypot(e.clientX-drag.startX,e.clientY-drag.startY)>8)drag.active=true});b.addEventListener('pointerup',e=>{if(!drag)return;const d=drag;drag=null;if(d.active){const bounds=canvas.getBoundingClientRect();if(e.clientX>=bounds.left&&e.clientX<=bounds.right&&e.clientY>=bounds.top&&e.clientY<=bounds.bottom){const pos=screenToWorld(e.clientX-bounds.left,e.clientY-bounds.top),r=roomAt(Math.floor(pos.x),Math.floor(pos.y));if(r){if(build(r,Math.floor(pos.x),Math.floor(pos.y),d.type))toast('Предмет встановлено')}else toast('Перетягніть предмет у свою кімнату')}else toast('Перетягніть на клітинку карти')}else{const r=playerRoom();if(!r)return toast('Спочатку сядьте за ПК');if(def.door){build(r,r.doorX,r.doorY,def.type);return}const free=buildTiles(r).find(([x,y])=>!r.items.has(`${x},${y}`));if(free){game.selected={r,x:free[0],y:free[1]};toast('Виберіть або перетягніть на потрібну клітинку');}else toast('Немає вільних клітинок')}});$('palette').append(b)}}
-function renderPlayers(){if(!game)return;$('players').innerHTML=game.players.map(p=>`<button class="player-icon ${p.alive?'':'dead'} ${p.alive&&p.room!==null&&game.rooms[p.room]?.alive&&!game.rooms[p.room]?.breached&&game.rooms[p.room]?.door/game.rooms[p.room]?.maxDoor<.28?'danger':''}" data-player="${p.id}" title="${p.name}"><img data-mini="${p.skin}" alt="${p.name}"></button>`).join('');$('players').querySelectorAll('img[data-mini]').forEach(im=>setMiniPortrait(im,Number(im.dataset.mini)));$('players').querySelectorAll('button').forEach(b=>b.onclick=()=>{const p=game.players[+b.dataset.player];focus(p.x,p.y)})}
+function renderPlayers(){
+ if(!game)return;
+ const host=$('players');
+ // Keep the six existing portrait nodes; update only states and room information.
+ if(host.children.length!==game.players.length || [...host.children].some((b,i)=>Number(b.dataset.player)!==i))host.replaceChildren();
+ for(const p of game.players){
+  const r=p.room===null?null:game.rooms[p.room];
+  let b=host.children[p.id];
+  if(!b){
+   b=document.createElement('button');b.dataset.player=p.id;
+   const img=document.createElement('img');img.dataset.mini=p.skin;img.alt=p.name;
+   b.append(img);b.onclick=()=>{const current=game?.players[Number(b.dataset.player)];if(current)focus(current.x,current.y)};
+   host.append(b);setMiniPortrait(img,p.skin);
+  }
+  const danger=p.alive&&r?.alive&&!r.breached&&r.door/r.maxDoor<.28;
+  b.className='player-icon'+(!p.alive?' dead':'')+(danger?' danger':'');
+  const roomLabel=r?`Кімната ${r.id+1}`:'Ще не зайняв кімнату';
+  const state=!p.alive?'вибув':r?.breached?'двері зруйновані':p.seated?'зайнята':r?'на шляху':'вільна';
+  b.title=`${p.name} · ${roomLabel} · ${state}`;
+  const im=b.firstElementChild;
+  if(Number(im.dataset.mini)!==p.skin){im.dataset.mini=p.skin;setMiniPortrait(im,p.skin)}
+ }
+}
 function update(dt){if(!game)return;daySync();let g=game;g.time+=dt;for(const r of g.rooms)r.defenseJammed=Math.max(0,(r.defenseJammed||0)-dt);for(const r of g.rooms)for(const it of r.items.values())if(it.type==='trap')it.cool=Math.max(0,(it.cool||0)-dt);// Двері самі повільно відновлюються після короткого перепочинку.
  // Відлік ведеться від останнього влучання, а не від зміни цілі боса.
  for(const room of g.rooms){
@@ -1747,7 +1786,7 @@ function projectiles(dt){
  for(const m of killed)effect(m.x,m.y,'✨');
  game.servants=game.servants.filter(m=>m.hp>0);
 }
-function finish(win,msg){if(!game||game.phase==='ended')return;game.phase='ended';game.lastResult=win;daySync();if(game.devTest){sound(win?'win':'lose');modal(win?'🧪 Тест завершено':'🧪 Тест завершено',`<p>${msg}</p><p>Тестовий матч: рейтинг, токени й прогрес не змінені.</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>openHome()}],true);return}recordMatchScores();if(win){save.wins++;save.tokens+=20+game.level*8;save.level=Math.max(save.level,Math.min(difficulty.length-1,game.level+1));save.runFinishedDay=KYIV()}else{save.level=Math.max(0,Math.min(save.level,game.level-1));}persist();sound(win?'win':'lose');renderHome();modal(win?'🏆 Перемога!':'💀 Поразка',`<p>${msg}</p><p>${win?`Отримано <b>${20+game.level*8}</b> токенів.`:'Ви повертаєтеся на попередню доступну складність. Спробуйте ще раз!'}</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>{openHome();if(win)offerBoost()}}],true)}
+function finish(win,msg){if(!game||game.phase==='ended')return;game.phase='ended';game.lastResult=win;daySync();if(game.devTest){sound(win?'win':'lose');modal(win?'🧪 Тест завершено':'🧪 Тест завершено',`<p>${msg}</p><p>Тестовий матч: рейтинг, токени й прогрес не змінені.</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>openHome()}],true);return}recordMatchScores();if(win){save.wins++;save.tokens+=20+game.level*8;save.level=Math.max(save.level,Math.min(difficulty.length-1,game.level+1));save.runFinishedDay=KYIV()}else{save.level=Math.max(0,Math.min(save.level,game.level-1));}persist();sound(win?'win':'lose');renderHome();modal(win?'🏆 Перемога!':'💀 Поразка',`<p>${msg}</p><p>${win?`Отримано <b>${20+game.level*8}</b> токенів.`:'Ви повертаєтеся на попередню доступну складність. Спробуйте ще раз!'}</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>{const wonLevel=game.level;openHome();if(win)offerBoost(wonLevel)}}],true)}
 const BOOST_STEPS=[1,2,3,5,10,15,25,30];
 const boosts=[
  {id:'door',name:'🚪 Сила дверей',hint:'Зменшує шкоду дверям: +1, +2, +3, +5, +10, +15, +25, +30'},
@@ -1793,7 +1832,11 @@ function boostChoiceIcon(b){
  return icon?`<img src="${assetURL(icon)}" alt="" class="boost-choice-icon" loading="eager">`:'';
 }
 function boostTier(id){return Math.min(BOOST_STEPS.length,save.boosts.filter(v=>v.split(':')[0]===id).length)}
-function offerBoost(){
+function offerBoost(wonLevel){
+ daySync();
+ if(!Number.isInteger(wonLevel)||wonLevel<0||wonLevel>=difficulty.length)return;
+ if(!Array.isArray(save.dailyAwardedLevels))save.dailyAwardedLevels=[];
+ if(save.dailyAwardedLevels.includes(wonLevel))return;
  if((save.dailyBoostClaims||0)>=difficulty.length){toast('Добовий ліміт бонусів вичерпано.');return;}
  const remaining=boosts.filter(b=>['door','weapon'].includes(b.id)?boostTier(b.id)<BOOST_STEPS.length:!save.boosts.some(v=>v.split(':')[0]===b.id));
  const chosen=remaining.sort(()=>Math.random()-.5).slice(0,3);
@@ -1805,11 +1848,20 @@ function offerBoost(){
      const tier=boostTier(b.id);if(tier>=BOOST_STEPS.length)return;
      save.boosts.push(`${b.id}:${BOOST_STEPS[tier]}`);
    }else if(!save.boosts.includes(b.id))save.boosts.push(b.id);
+   if(save.dailyAwardedLevels.includes(wonLevel))return;
+   save.dailyAwardedLevels.push(wonLevel);
    save.dailyBoostClaims=(save.dailyBoostClaims||0)+1;persist();closeModal();toast(`Буст активний! Добові нагороди: ${save.dailyBoostClaims}/${difficulty.length}`);
  });
 }
 function renderHome(){daySync();$('tokens').textContent=save.tokens;$('wins').textContent=save.wins;$('magicCount').textContent=3;
-const leaderboard=ensureDailyLeaderboard().entries.slice().sort((a,b)=>b.score-a.score);$('leaders').innerHTML=leaderboard.map((entry,i)=>`<div class="leader"><span>${i+1}. ${entry.name}</span><b>${Math.floor(entry.score)} 🏆</b></div>`).join('');
+const leaderboard=ensureDailyLeaderboard().entries.slice().filter(e=>e&&typeof e==='object').sort((a,b)=>(Number(b.score)||0)-(Number(a.score)||0));
+const leaderHost=$('leaders');leaderHost.replaceChildren();
+leaderboard.slice(0,40).forEach((entry,i)=>{
+ const row=document.createElement('div');row.className='leader';
+ const name=document.createElement('span');name.textContent=`${i+1}. ${String(entry.name||'Невідомий').slice(0,60)}`;
+ const points=document.createElement('b');const score=Number(entry.score);points.textContent=`${Number.isFinite(score)?Math.max(0,Math.floor(score)):0} 🏆`;
+ row.append(name,points);leaderHost.append(row);
+});
 const selected=CHARACTERS[save.skin]||CHARACTERS[0];
 const portrait=document.querySelector('.hero-art img');portrait.src=characterURL(save.skin,'portrait');portrait.alt=selected.name;$('heroName').textContent=selected.name;
 $('skins').innerHTML=CHARACTERS.map((character,i)=>`<div class="skin-wrap"><button class="skin ${save.skin===i?'selected':''}" data-skin="${i}"><img src="${characterURL(i,'portrait')}" loading="lazy" decoding="async" alt="${character.name}"><b>${character.name}</b><span>${save.skins.includes(i)?save.skin===i?'Обрано':'Обрати':`<span class="skin-price"><img src="${assetURL('tokens.png')}" class="skin-token-icon" alt="Токени"> ${character.price}</span>`}</span></button></div>`).join('');
@@ -1823,7 +1875,7 @@ function chooseMapModal(lv){
  $('modalContent').querySelectorAll('[data-map]').forEach(b=>b.onclick=()=>{chooseMap(b.dataset.map);start(lv)});
 }
 function difficultyModal(){daySync();modal('Оберіть складність',`<p>Новий день: рівень прогресу скидається. Поточна доступна складність: <b>${difficulty[save.level]}</b>.</p><div class="difficulty-list">${difficulty.map((d,i)=>`<button data-lv="${i}" ${i>save.level?'disabled':''} class="${i<=save.level?'unlocked':''}">${d}<span>${i>save.level?'🔒':'▶'}</span></button>`).join('')}</div>`,[{name:'Закрити',fn:closeModal}]);$('modalContent').querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>chooseMapModal(+b.dataset.lv))}
-$('enterBtn').onclick=difficultyModal;$('quitBtn').onclick=()=>{if(!game)return openHome();modal('Покинути матч?',`<p>Прогрес поточного матчу не збережеться.</p>`,[{name:'Залишитися',fn:closeModal},{name:'Вийти',primary:true,fn:openHome}])};$('boostBtn').onclick=()=>modal('✨ Добові бусти',`<p>${save.boosts.length?save.boosts.map(value=>{const [id,num]=value.split(':');const b=boosts.find(b=>b.id===id);return `${b?boostDisplayName(b):id}${num?' +'+num:''}`}).join(' • '):'Поки немає. Бонуси випадають після перемоги.'}</p>`,[{name:'Закрити',fn:closeModal}]);$('soundBtn').onclick=()=>{soundOn=!soundOn;$('soundBtn').textContent=soundOn?'🔊':'🔇';if(soundOn)sound('tap')};$('focusMe').onclick=()=>{if(game){const p=game.players[0];focus(p.x,p.y)}};$('repairBtn').onclick=()=>{const r=playerRoom();if(!r||!game.players[0].seated)return toast('Спочатку займіть кімнату');const price={gold:16+Math.floor(r.doorLv*7)};if(r.door>=r.maxDoor)return toast('Двері повністю відремонтовані');if(spend(price)){r.door=Math.min(r.maxDoor,r.door+55);sound('repair');effect(r.doorX+.5,r.doorY+.5,'🔧')}};const MIN_ZOOM=.5, MAX_ZOOM=7.5;
+$('enterBtn').onclick=difficultyModal;$('quitBtn').onclick=()=>{if(!game)return openHome();modal('Покинути матч?',`<p>Прогрес поточного матчу не збережеться.</p>`,[{name:'Залишитися',fn:closeModal},{name:'Вийти',primary:true,fn:openHome}])};$('boostBtn').onclick=()=>modal('✨ Добові бусти',`<p>Отримано сьогодні: ${save.dailyBoostClaims||0}/${difficulty.length}. Кожна складність дає нагороду лише один раз за день.</p><p>${save.boosts.length?save.boosts.map(value=>{const [id,num]=value.split(':');const b=boosts.find(b=>b.id===id);return `${b?boostDisplayName(b):id}${num?' +'+num:''}`}).join(' • '):'Поки немає. Бонуси випадають після перемоги.'}</p>`,[{name:'Закрити',fn:closeModal}]);$('soundBtn').onclick=()=>{soundOn=!soundOn;$('soundBtn').textContent=soundOn?'🔊':'🔇';if(soundOn)sound('tap')};$('focusMe').onclick=()=>{if(game){const p=game.players[0];focus(p.x,p.y)}};$('repairBtn').onclick=()=>{const r=playerRoom();if(!r||!game.players[0].seated)return toast('Спочатку займіть кімнату');const price={gold:16+Math.floor(r.doorLv*7)};if(r.door>=r.maxDoor)return toast('Двері повністю відремонтовані');if(spend(price)){r.door=Math.min(r.maxDoor,r.door+55);sound('repair');effect(r.doorX+.5,r.doorY+.5,'🔧')}};const MIN_ZOOM=.5, MAX_ZOOM=7.5;
 function zoomAt(nextZoom, screenX=W/2, screenY=H/2){
  if(!W||!H)return;
  const anchor=screenToWorld(screenX,screenY);
