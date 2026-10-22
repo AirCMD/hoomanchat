@@ -875,10 +875,27 @@ function npcEconomy(){
    lastUtilityTime:-100,
    utilityStyle:Math.random(),
    treeTarget:Math.random()<.7?1:2,
+   // Сталий характер NPC: економіка, обережність, оборона або предмети.
+   style:['economist','cautious','defender','experimenter'][Math.floor(Math.random()*4)],
+   emergencyRepairAt:0,
    nextDecisionAt:0
   };
   const plan=p.npcPlan,h=game.hunter;
-  // Економіка накопичує ресурси кожні 3 с, але важливі покупки мають паузи.
+  // Аварійний ремонт не повинен чекати звичайного плану покупок.
+  // Його окрема пауза не дозволяє нескінченно лікувати двері кожен такт.
+  const urgentHit=h.active&&h.target===r.id&&h.state==='attack'&&r.door>0;
+  if(urgentHit&&r.door/r.maxDoor<.23&&game.time>=(plan.emergencyRepairAt||0)&&
+     game.time>=(r.repairBlockedUntil||0)){
+   const repairCost=16+Math.floor(r.doorLv*7);
+   if(p.gold>=repairCost){
+    p.gold-=repairCost;
+    r.door=Math.min(r.maxDoor,r.door+Math.max(25,Math.round(r.maxDoor*.085)));
+    plan.emergencyRepairAt=game.time+12;
+    plan.nextDecisionAt=Math.max(plan.nextDecisionAt||0,game.time+4);
+    continue;
+   }
+  }
+  // Регулярні покупки все ще рознесені у часі.
   if(game.time<(plan.nextDecisionAt||0))continue;
   const danger=h.active&&h.target===r.id&&['hunt','attack','transform'].includes(h.state);
   if(danger&&plan.firstAttackAt===null)plan.firstAttackAt=game.time;
@@ -906,20 +923,20 @@ function npcEconomy(){
     (r.pcLv>=4&&nextEnergy)||(doorNeedsEnergy||pcNeedsEnergy));
   // Деякі NPC ставлять стартові турелі, інші чекають, доки побачать боса.
   // У кожного кількість ранніх турелей своя, 0..3, проте покупка розтягнута в часі.
-  const initialArms=!plan.cautious&&game.time<115&&r.pcLv>=2&&r.doorLv>=1&&
+  const initialArms=(plan.style==='defender'||(!plan.cautious&&plan.style!=='economist'))&&game.time<115&&r.pcLv>=2&&r.doorLv>=1&&
     weapons.length<plan.earlyGuns&&game.time-plan.lastGunTime>=19;
-  const reactArms=attacked&&danger&&weapons.length<Math.min(3,plan.earlyGuns+2)&&
+  const reactArms=attacked&&danger&&weapons.length<Math.min(3,plan.earlyGuns+(plan.style==='defender'?3:2))&&
     (weapons.length===0||attackedFor>=12)&&game.time-plan.lastGunTime>=16;
   if((initialArms||reactArms)&&p.gold>=costs.weapon.gold+12){
    if(addItem('weapon',costs.weapon.gold)){plan.lastGunTime=game.time;plan.nextDecisionAt=game.time+rand(9,14);continue;}
   }
   // Якщо NPC атакують, він ремонтує критичні двері, але не витрачає всі заощадження.
-  if(danger&&r.door<r.maxDoor*.42){
+  if(danger&&r.door<r.maxDoor*(plan.style==='cautious'?.6:.42)&&game.time>=(r.repairBlockedUntil||0)&&game.time>=(plan.emergencyRepairAt||0)){
     const npcRepairCost=16+Math.floor(r.doorLv*7);
     if(p.gold>=npcRepairCost){
      p.gold-=npcRepairCost;
      r.door=Math.min(r.maxDoor,r.door+Math.max(25,Math.round(r.maxDoor*.085)));
-     plan.nextDecisionAt=game.time+rand(9,14);continue;
+     plan.emergencyRepairAt=game.time+12;plan.nextDecisionAt=game.time+rand(9,14);continue;
     }
   }
   // Перед енергозалежними покращеннями NPC купує генератор за зібрані монети.
@@ -935,13 +952,14 @@ function npcEconomy(){
   }
   // Базове виживання: спочатку двері для доступу до наступного ПК.
   const needDoor=r.doorLv<9&&(r.doorLv<requiredDoor||
+    (plan.style==='cautious'&&r.doorLv<Math.min(9,Math.max(2,r.pcLv)))||
     (danger&&r.door/r.maxDoor<.72)||r.doorLv<2);
   if(needDoor&&affordable(doorPrice)){
    p.gold-=doorPrice.gold;p.energy-=doorPrice.energy||0;
    r.doorLv++;r.maxDoor=hhDoorHp(r.doorLv);r.door=r.maxDoor;
    effect(r.doorX+.5,r.doorY+.5,'⬆🚪');plan.nextDecisionAt=game.time+rand(9,14);continue;
   }
-  if(pcUnlocked&&affordable(pcPrice)){
+  if(pcUnlocked&&affordable(pcPrice)&&!(danger&&r.door/r.maxDoor<.5)){
    p.gold-=pcPrice.gold;p.energy-=pcPrice.energy||0;r.pcLv++;plan.nextDecisionAt=game.time+rand(9,14);continue;
   }
   // NPC самостійно користуються доступними предметами магазину.
@@ -962,8 +980,8 @@ function npcEconomy(){
    r[type]=true;plan.lastUtilityTime=game.time;
    return true;
   };
-  const utilitiesReady=game.time>=52&&game.time-plan.lastUtilityTime>=rand(15,23);
-  const economyStable=r.pcLv>=3&&r.doorLv>=2;
+  const utilitiesReady=game.time>=(plan.style==='experimenter'?42:52)&&game.time-plan.lastUtilityTime>=(plan.style==='experimenter'?15:21);
+  const economyStable=r.pcLv>=(plan.style==='experimenter'?2:3)&&r.doorLv>=2;
   const wantsDefense=attacked||danger;
   // Монетне дерево купуємо за енергію тільки після першого генератора.
   const tree=[...r.items.values()].find(it=>it.type==='money'&&it.lv<4);
@@ -1005,7 +1023,7 @@ function npcEconomy(){
   const nextGoal=generators.length===0&&wantsEnergy?costs.energy.gold:
     needDoor?doorPrice?.gold:pcUnlocked?pcPrice?.gold:
     wantsEnergy&&energyPrice?energyPrice.gold:0;
-  const reserve=Math.min(nextGoal||0,p.gold*.95);
+  const reserve=danger?0:Math.min(nextGoal||0,p.gold*(plan.style==='economist'?.95:.75));
   const gunLimit=attacked?3:Math.max(1,plan.earlyGuns);
   if(game.time>125&&r.pcLv>=4&&weapons.length<gunLimit&&
     p.gold-reserve>=costs.weapon.gold&&game.time-plan.lastGunTime>=22){
@@ -1277,7 +1295,10 @@ function sellerTeleport(h,force=false,helperEscape=false){
 function sellerEvadeHelper(kind){
  const g=game,h=g?.hunter;
  if(!g||g.boss.id!=='seller'||!h.active||h.hp<=0||h.stun>0||h.sellerArrival>0||
-    g.time<(h.sellerHelperTeleportReadyAt||0)||Math.random()>=.65)return false;
+    g.time<(h.sellerHelperTeleportReadyAt||0))return false;
+ // Одна спроба на контакт, а не нескінченні кидки 65% щокадру.
+ h.sellerHelperTeleportReadyAt=g.time+18;
+ if(Math.random()>=.65)return false;
  // Телепортація дозволена лише до іншої доступної кімнати.
  if(!sellerTeleport(h,true,true))return false;
  h.teleportCd=Math.max(h.teleportCd,18);
@@ -1630,7 +1651,7 @@ if(h.state==='attack'){
   }
  }
  const r=g.rooms[h.target];if(!r||!r.alive){h.state='hunt';h.target=null;return}
- if(g.boss.id==='osbb'){
+ if(g.boss.id==='osbb'&&Math.hypot(h.x-nearestHunterDoor(r).x,h.y-nearestHunterDoor(r).y)<.65){
   if(!h.osbbNextInspectionAt)h.osbbNextInspectionAt=g.time+rand(9,15);
   if(g.time>=h.osbbNextInspectionAt){
    r.repairBlockedUntil=Math.max(r.repairBlockedUntil||0,g.time+4);
