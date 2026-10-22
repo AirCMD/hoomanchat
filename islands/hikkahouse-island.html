@@ -550,7 +550,7 @@ if(!Array.isArray(save.boosts))save.boosts=[];
 if(!Number.isInteger(Number(save.skin))||Number(save.skin)<0||Number(save.skin)>=CHARACTERS.length)save.skin=0;
 else save.skin=Number(save.skin);
 const doors=roomDefs.map(r=>({x:r.doorX,y:r.doorY}));function avoidCoinNumbers(value){const amount=Math.max(0,Math.floor(Number(value)||0));return amount===63||amount===68?amount+1:amount}
-function newGame(lv){const rooms=roomDefs.map(d=>({...d,items:new Map(),occupant:null,door:75,maxDoor:75,doorLv:1,pcLv:1,alive:true,chain:false,puddle:false,poop:false,access:0,defenseJammed:0}));const players=Array.from({length:6},(_,i)=>makePlayer(i,i!==0));if(matchRosterPlan)players.forEach((p,i)=>{p.name=matchRosterPlan[i].name;p.skin=matchRosterPlan[i].skin});const boss=bossForDifficulty(lv);const calendarWave=(Math.floor(Date.parse(KYIV()+'T12:00:00')/86400000)%7);const growthInterval=Math.max(16,30-calendarWave*2-lv*.65);const g={level:lv,startedDay:KYIV(),boss,hunterGrowthInterval:growthInterval,nextHunterGrowth:growthInterval,hunterAttackProgress:0,servants:[],phase:'claim',time:0,countdown:25,gold:16,energy:0,rooms,players,hunter:{x:restPoints()[0].x,y:restPoints()[0].y,hp:180+lv*32,maxHp:180+lv*32,level:1,state:'rest',target:null,path:[],attack:0,rest:5,active:false,stun:0,shotCd:0,anim:0,retreats:0,abilityCd:14,servantCd:18,teleportCd:999,sellerDodgeCd:0,sellerArrival:0,sellerVisual:null,sellerVisualUntil:0,transform:0},effects:[],projectiles:[],pets:[],selected:null,magicUsed:0,magicRolls:{},petStrike:0,boxClaims:new Set(),tick:0,npcTick:0,elapsed:0,lastResult:null,boosts:save.boosts.slice(),targetCam:null,mikola:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:55,cooldown:0},olexiy:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:70},six:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:85,hit:false}};// Кожен новий матч має інше розташування та набір початкових предметів.
+function newGame(lv){const rooms=roomDefs.map(d=>({...d,items:new Map(),occupant:null,door:75,maxDoor:75,doorLv:1,pcLv:1,alive:true,chain:false,puddle:false,poop:false,access:0,defenseJammed:0}));const players=Array.from({length:6},(_,i)=>makePlayer(i,i!==0));if(matchRosterPlan)players.forEach((p,i)=>{p.name=matchRosterPlan[i].name;p.skin=matchRosterPlan[i].skin});const boss=bossForDifficulty(lv);const calendarWave=(Math.floor(Date.parse(KYIV()+'T12:00:00')/86400000)%7);const growthInterval=Math.max(16,30-calendarWave*2-lv*.65);const g={level:lv,startedDay:KYIV(),boss,hunterGrowthInterval:growthInterval,nextHunterGrowth:growthInterval,hunterAttackProgress:0,servants:[],phase:'claim',time:0,countdown:25,gold:16,energy:0,rooms,players,hunter:{x:restPoints()[0].x,y:restPoints()[0].y,hp:180+lv*32,maxHp:180+lv*32,level:1,state:'rest',target:null,path:[],attack:0,rest:5,active:false,stun:0,shotCd:0,anim:0,retreats:0,abilityCd:14,servantCd:18,teleportCd:999,sellerDodgeCd:0,sellerArrival:0,sellerVisual:null,sellerVisualUntil:0,sellerHelperTeleportReadyAt:0,sellerTrapDodgeReadyAt:0,transform:0},effects:[],projectiles:[],pets:[],selected:null,magicUsed:0,magicRolls:{},petStrike:0,boxClaims:new Set(),tick:0,npcTick:0,elapsed:0,lastResult:null,boosts:save.boosts.slice(),targetCam:null,mikola:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:55,cooldown:0},olexiy:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:70},six:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:85,hit:false}};// Кожен новий матч має інше розташування та набір початкових предметів.
  // Не переносимо вже побудовані речі під час вибору кімнати у поточному матчі.
  const starterTypes=['trap','energy','money','distance','clock','box'];
  for(let i=starterTypes.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[starterTypes[i],starterTypes[j]]=[starterTypes[j],starterTypes[i]]}
@@ -1095,8 +1095,33 @@ function panicRoute(h){
  else return bfs(startX,startY,Math.floor(rest.x),Math.floor(rest.y),null);
  return route;
 }
+function attachTrapOnLeavingDoor(roomId){
+ const g=game,h=g?.hunter;
+ if(!h||roomId==null||g.boss.id==='marichka'||h.trapAttachedUntil>g.time)return false;
+ const r=g.rooms[roomId];if(!r||!r.alive)return false;
+ // Капкан належить саме кімнаті, яку гість щойно атакував.
+ if(Math.hypot(h.x-r.doorX-.5,h.y-r.doorY-.5)>2.4)return false;
+ const trap=[...r.items.values()].find(it=>it.type==='trap'&&(it.cool||0)<=0);
+ if(!trap)return false;
+ trap.cool=24;
+ // Продавець іноді вислизає з капкана. Невдача залишає повний ефект пастки.
+ if(g.boss.id==='seller'&&g.time>=(h.sellerTrapDodgeReadyAt||0)&&Math.random()<.45){
+  h.sellerTrapDodgeReadyAt=g.time+12;
+  h.sellerVisual='dodge';h.sellerVisualUntil=g.time+.4;
+  h.sellerArrival=Math.max(h.sellerArrival||0,.4);
+  effect(h.x,h.y,'Ухилився!');
+  return false;
+ }
+ h.trapAttachedUntil=g.time+(g.boosts.includes('trap')?5:3);
+ effect(h.x,h.y,'🪤');
+ if(r.occupant===0)toast('Капкан зачепив гостя, який відходить від дверей!');
+ return true;
+}
 function fleeHunter(reason){
- const h=game.hunter;h.path=panicRoute(h);h.fleeReason=reason;
+ const h=game.hunter;
+ // Спрацьовує тільки при відході ВІД дверей, які гість уже атакував.
+ if(h.state==='attack')attachTrapOnLeavingDoor(h.target);
+ h.path=panicRoute(h);h.fleeReason=reason;
  if(['mikola','olexiy','six'].includes(reason))game.helperFleeLockUntil=game.time+32;
  h.state=reason==='mikola'?'mikola_flee':reason==='olexiy'?'olexiy_flee':reason==='six'?'six_flee':'retreat';
  h.target=null;h.speed=2.65;h.attack=0;
@@ -1123,6 +1148,7 @@ function updateMikola(dt){
   return;
  }
  if(g.time<n.nextAt||(g.helperFleeLockUntil||0)>g.time||!h.active||h.state==='rest'||h.state==='retreat'||h.state==='mikola_flee'||h.state==='olexiy_flee'||h.state==='six_flee'||h.stun>0)return;
+ if(sellerEvadeHelper('Миколи')){ n.nextAt=g.time+rand(48,72);return;}
  n.active=true;n.until=g.time+6;n.x=h.x+(h.x<mapCfg().centerX?-1:1);n.y=h.y;
  fleeHunter('mikola');
  effect(n.x,n.y,'🍺 Микола!');toast('Микола вибіг! Гість утікає від нього!');
@@ -1143,6 +1169,7 @@ function updateOlexiy(dt){
   return;
  }
  if(g.time<a.nextAt||(g.helperFleeLockUntil||0)>g.time||!h.active||['rest','retreat','mikola_flee','olexiy_flee','six_flee'].includes(h.state)||g.mikola?.active||g.six?.active||h.stun>0)return;
+ if(sellerEvadeHelper('Олексія')){ a.nextAt=g.time+rand(55,85);return;}
  a.active=true;a.until=g.time+5.5;a.x=h.x+(h.x<mapCfg().centerX?-1:1);a.y=h.y;
  fleeHunter('olexiy');
  effect(a.x,a.y,'📦 Олексій!');toast('Олексій нав’язує гостю барахло! Гість тікає!');
@@ -1169,6 +1196,7 @@ function updateSix(dt){
   return;
  }
  if(g.time<n.nextAt||(g.helperFleeLockUntil||0)>g.time||!h.active||['rest','retreat','mikola_flee','olexiy_flee','six_flee'].includes(h.state)||g.mikola?.active||g.olexiy?.active||h.stun>0)return;
+ if(sellerEvadeHelper('Шістки')){ n.nextAt=g.time+rand(65,95);return;}
  n.active=true;n.hit=false;n.until=g.time+6;
  n.x=h.x+(h.x<mapCfg().centerX?-1:1);n.y=h.y;
  fleeHunter('six');
@@ -1188,6 +1216,7 @@ function chooseMarichkaRoom(previous=null){
 }
 function marichkaChangeRoom(h){
  const old=h.target;
+ if(h.state==='attack')attachTrapOnLeavingDoor(old);
  const next=chooseMarichkaRoom(old);
  if(!next||next.id===old)return false;
  h.target=next.id;
@@ -1199,7 +1228,8 @@ function marichkaChangeRoom(h){
  return true;
 }
 function sellerRooms(){return game.rooms.filter(r=>r.alive&&r.occupant!==null&&game.players[r.occupant]?.seated)}
-function sellerTeleport(h,force=false){
+function sellerTeleport(h,force=false,helperEscape=false){
+ if(!helperEscape&&h.state==='attack')attachTrapOnLeavingDoor(h.target);
  const available=sellerRooms();
  const other=available.filter(r=>r.id!==h.target);
  const room=pick(other.length?other:available);
@@ -1222,6 +1252,19 @@ function sellerTeleport(h,force=false){
  h.x=pos.x;h.y=pos.y;h.path=[];h.target=room.id;h.state='hunt';h.attack=0;h.stun=0;
  h.sellerArrival=.7;h.sellerVisual='teleport';h.sellerVisualUntil=game.time+.7;h.teleportCd=Math.max(9,15-game.level*.2);
  effect(h.x,h.y,'🌀');
+ return true;
+}
+// Спроба втечі Продавця від помічника: один шанс на появу, не на кожен кадр.
+function sellerEvadeHelper(kind){
+ const g=game,h=g?.hunter;
+ if(!g||g.boss.id!=='seller'||!h.active||h.hp<=0||h.stun>0||h.sellerArrival>0||
+    g.time<(h.sellerHelperTeleportReadyAt||0)||Math.random()>=.65)return false;
+ // Телепортація дозволена лише до іншої доступної кімнати.
+ if(!sellerTeleport(h,true,true))return false;
+ h.teleportCd=Math.max(h.teleportCd,18);
+ h.sellerHelperTeleportReadyAt=g.time+18;
+ g.helperFleeLockUntil=Math.max(g.helperFleeLockUntil||0,g.time+12);
+ effect(h.x,h.y,'🌀 Втік від '+kind+'!');
  return true;
 }
 function sellerDodge(h){
@@ -1290,24 +1333,10 @@ function updateHunter(dt){
   h.roachPreviousState=null;
   if(h.state==='hunt'&&h.target!==null){const rr=g.rooms[h.target];if(rr?.alive){const pt=nearestHunterDoor(rr);hunterPath(Math.floor(pt.x),Math.floor(pt.y));}else h.target=null;}
  }
-// Капкан спрацьовує, коли гість підходить до входу, навіть перед першою атакою.
-if(h.target!==null&&['hunt','transform','attack'].includes(h.state)&&h.stun<=0){
- const rr=g.rooms[h.target];
- if(rr?.alive&&rr.occupant!==null){
-  const dp=nearestHunterDoor(rr);
-  if(Math.hypot(h.x-dp.x,h.y-dp.y)<1.35){
-   const trap=[...rr.items.values()].find(it=>it.type==='trap'&&(it.cool||0)<=0);
-   if(trap&&g.boss.id!=='marichka'){
-    h.stun=g.boosts.includes('trap')?3.2:1.5;
-    trap.cool=24;
-    effect(h.x,h.y,'🪤 СТОП!');
-    if(rr.occupant===0)toast('Капкан спрацював: гість оглушений!');
-   }
-  }
- }
-}
-if(h.state==='mikola_flee'||h.state==='olexiy_flee'||h.state==='six_flee'){if(h.path.length)travel(h,dt);if(!h.path.length){h.state='retreat';settleHunterAtRest(h)}return}
-if(h.state==='rest'){h.rest-=dt;h.hp=Math.min(h.maxHp,h.hp+h.maxHp*.19*dt);if(h.rest<=0){h.state='hunt';h.target=null}return}if(h.stun>0){h.stun-=dt;return}if(h.state==='retreat'){if(h.path.length)travel(h,dt);if(!h.path.length){if(!settleHunterAtRest(h)){const rest=nearestRest(h);h.path=bfs(h.x,h.y,Math.floor(rest.x),Math.floor(rest.y),null)}}return}
+// Капкан спрацьовує під час втечі, а не при підході до дверей.
+if(h.state==='mikola_flee'||h.state==='olexiy_flee'||h.state==='six_flee'){
+ if(h.path.length){const sp=h.speed; if(h.trapAttachedUntil>g.time)h.speed*=.42;travel(h,dt);h.speed=sp;}if(!h.path.length){h.state='retreat';settleHunterAtRest(h)}return}
+if(h.state==='rest'){h.rest-=dt;h.hp=Math.min(h.maxHp,h.hp+h.maxHp*.19*dt);if(h.rest<=0){h.state='hunt';h.target=null}return}if(h.stun>0){h.stun-=dt;return}if(h.state==='retreat'){if(h.path.length){const sp=h.speed;if(h.trapAttachedUntil>g.time)h.speed*=.42;travel(h,dt);h.speed=sp;}if(!h.path.length){if(!settleHunterAtRest(h)){const rest=nearestRest(h);h.path=bfs(h.x,h.y,Math.floor(rest.x),Math.floor(rest.y),null)}}return}
 // Трансформація є окремим станом, не вкладеним у hunt.
 if(h.state==='transform'){
  const r=g.rooms[h.target];
@@ -1337,7 +1366,7 @@ if(h.state==='hunt'){if(h.target===null||!g.rooms[h.target]?.alive||!g.rooms[h.t
  if(g.boss.id==='marichka'&&g.time>=(h.marichkaSwitchAt||Infinity)&&!(h.lureUntil>g.time)){
   marichkaChangeRoom(h);
  }const targetRoom=g.rooms[h.target];const slow=targetRoom?.items&&[...targetRoom.items.values()].some(i=>i.type==='clock')?0.76:1;
- const oldSpeed=h.speed;h.speed*=slow;travel(h,dt);h.speed=oldSpeed;
+ const oldSpeed=h.speed;h.speed*=slow*(h.trapAttachedUntil>g.time?.42:1);travel(h,dt);h.speed=oldSpeed;
  const r=g.rooms[h.target],pt=nearestHunterDoor(r);
  if(!h.path.length&&Math.hypot(h.x-pt.x,h.y-pt.y)>.34){
    if(pt.x>=0)hunterPath(Math.floor(pt.x),Math.floor(pt.y));
@@ -1363,6 +1392,7 @@ if(h.state==='attack'){
     const least=Math.min(...candidates.map(room=>h.visitedRooms?.[room.id]||0));
     const fresh=candidates.filter(room=>(h.visitedRooms?.[room.id]||0)===least);
     const next=pick(fresh);
+    attachTrapOnLeavingDoor(h.target);
     h.target=next.id;h.state='hunt';h.attack=0;h.path=[];h.doorBurstUntil=0;h.doorBurstPending=false;
     const pt=nearestHunterDoor(next);hunterPath(Math.floor(pt.x),Math.floor(pt.y));
     h.lastAttackRoom=null;
@@ -2225,7 +2255,24 @@ function drawRoomOwnerLabel(r,tile){
  ctx.fillText(label,x+w/2,y+tile*.5,Math.max(8,w-12));
  ctx.restore();
 }
-function draw(){if(!game||!W){if(bossAnimated){bossAnimated.hidden=true}syncServantVisuals();return;}transform();updateBossAnimation();syncPsychiatristVisual();syncMykolaVisual();syncOlexiyVisual();syncSixVisual();syncServantVisuals();syncPlayerVisuals();syncForegroundPcVisuals();ctx.clearRect(0,0,W,H);ctx.fillStyle='#0b1020';ctx.fillRect(0,0,W,H);ctx.save();ctx.translate(ox,oy);ctx.lineWidth=1;const tile=cell;for(let y=0;y<R;y++)for(let x=0;x<C;x++){const t=tileType(x,y),px=x*tile,py=y*tile;ctx.fillStyle=t==='void'?'#080b15':t==='wall'?'#292f49':t==='rest'?'#34324d':t==='corridor'?'#222c3e':t==='room'?'#2f3c50':'#36445a';ctx.fillRect(px,py,tile,tile);if(t==='corridor'||t==='room'||t==='door'){ctx.globalAlpha=t==='corridor'?.65:1;drawImg(t==='room'||t==='door'?mapCfg().roomFloor:mapCfg().floor,px,py,tile,tile);ctx.globalAlpha=1}if(t==='wall')drawImg(mapCfg().wall,px,py,tile,tile);ctx.strokeStyle='#74829b25';ctx.strokeRect(px+.5,py+.5,tile,tile)}
+const hunterTrapVisual=document.createElement('img');
+hunterTrapVisual.alt='Капкан на гості';
+hunterTrapVisual.draggable=false;
+Object.assign(hunterTrapVisual.style,{position:'absolute',pointerEvents:'none',zIndex:'6',imageRendering:'pixelated',objectFit:'contain'});
+hunterTrapVisual.src=assetURL('trap.png');
+$('arenaShell').appendChild(hunterTrapVisual);
+function syncHunterTrapVisual(){
+ const h=game?.hunter;
+ if(!h||!(h.trapAttachedUntil>game.time)||!['retreat','hunt','mikola_flee','olexiy_flee','six_flee'].includes(h.state)||$('game').hidden){
+  hunterTrapVisual.hidden=true;return;
+ }
+ const size=cell*.68;
+ hunterTrapVisual.style.width=size+'px';hunterTrapVisual.style.height=size+'px';
+ hunterTrapVisual.style.left=(ox+h.x*cell-size/2)+'px';
+ hunterTrapVisual.style.top=(oy+h.y*cell-size*.02)+'px';
+ hunterTrapVisual.hidden=false;
+}
+function draw(){if(!game||!W){if(bossAnimated){bossAnimated.hidden=true}syncServantVisuals();return;}transform();updateBossAnimation();syncHunterTrapVisual();syncPsychiatristVisual();syncMykolaVisual();syncOlexiyVisual();syncSixVisual();syncServantVisuals();syncPlayerVisuals();syncForegroundPcVisuals();ctx.clearRect(0,0,W,H);ctx.fillStyle='#0b1020';ctx.fillRect(0,0,W,H);ctx.save();ctx.translate(ox,oy);ctx.lineWidth=1;const tile=cell;for(let y=0;y<R;y++)for(let x=0;x<C;x++){const t=tileType(x,y),px=x*tile,py=y*tile;ctx.fillStyle=t==='void'?'#080b15':t==='wall'?'#292f49':t==='rest'?'#34324d':t==='corridor'?'#222c3e':t==='room'?'#2f3c50':'#36445a';ctx.fillRect(px,py,tile,tile);if(t==='corridor'||t==='room'||t==='door'){ctx.globalAlpha=t==='corridor'?.65:1;drawImg(t==='room'||t==='door'?mapCfg().roomFloor:mapCfg().floor,px,py,tile,tile);ctx.globalAlpha=1}if(t==='wall')drawImg(mapCfg().wall,px,py,tile,tile);ctx.strokeStyle='#74829b25';ctx.strokeRect(px+.5,py+.5,tile,tile)}
 // Rest zones at both ends of the corridor.
 for(const rest of restPoints()){const rx=Math.floor(rest.x),ry=Math.floor(rest.y);drawImg('hunter resting.png',rx*tile,ry*tile,tile,tile);ctx.strokeStyle='#bda2ff';ctx.lineWidth=2;ctx.strokeRect(rx*tile+1,ry*tile+1,tile-2,tile-2)}
 for(const r of game.rooms){const dx=r.doorX*tile,dy=r.doorY*tile;if(!r.alive){ctx.fillStyle='#ff454744';(r.cells?r.cells.forEach(([cx,cy])=>ctx.fillRect(cx*tile,cy*tile,tile,tile)):ctx.fillRect((r.x+1)*tile,(r.y+1)*tile,5*tile,5*tile))}for(const [x,y] of buildTiles(r)){const px=x*tile,py=y*tile;if(!r.items.has(`${x},${y}`)){ctx.fillStyle=r.occupant===0?'#6ae4c322':'#aeb6cb13';ctx.fillRect(px+4,py+4,tile-8,tile-8);ctx.fillStyle=r.occupant===0?'#7be5c8a5':'#b9c2db50';ctx.font=`${tile*.31}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('+',px+tile/2,py+tile/2)}else {const placed=r.items.get(`${x},${y}`);if(!(['cat','dog'].includes(placed.type)&&placed.pet)&&!(placed.type==='cockroach'&&placed.bug?.active))iconImage(placed,px+2,py+2,tile-4,r)}}const pcname=pcSpriteName(r.pcLv);drawImg(pcname,r.pcX*tile,r.pcY*tile,tile,tile);drawRoomOwnerLabel(r,tile);
@@ -2556,7 +2603,7 @@ if(!save.tutorial)infoModal();
   },
   immortal(){if(!testStart())return;game.devImmortal=!game.devImmortal;if(game.devImmortal)game.hunter.hp=Math.max(1,game.hunter.hp);syncPanel();status(game.devImmortal?'Бос невразливий: HP не падає нижче 1. Атаки та здібності працюють.':'Невразливість вимкнена: бос знову може загинути.');},
   magicReset(){if(!testStart())return;let removed=0;for(const r of game.rooms){for(const [key,item] of r.items){if(item.source==='magic'){r.items.delete(key);removed++;}}}game.magicUsed=0;game.magicRolls={};renderPalette();status(`Маджику скинуто: 0/3. Прибрано ${removed} випадкових предметів. Куплені в магазині збережено.`);},
-  switchBoss(){if(!testStart())return;const value=document.getElementById('hikkaDevBossSelect').value;const boss=BOSS_ROSTER.find(b=>b.id===value);if(!boss)return status('Боса не знайдено.');const h=game.hunter;game.boss=boss;game.servants=[];game.projectiles=[];for(const im of servantVisuals.values())im.remove();servantVisuals.clear();h.hp=h.maxHp;h.state='hunt';h.active=true;h.stun=0;h.transform=0;h.roachFightTime=0;h.roachPreviousState=null;h.healShown=0;h.healFxCd=0;h.target=null;h.path=[];h.attack=0;h.abilityCd=14;h.servantCd=boss.id==='moriy'?2:18;h.teleportCd=boss.id==='seller'?4:999;h.sellerDodgeCd=0;h.sellerArrival=0;h.sellerVisual=null;h.sellerVisualUntil=0;h.doorBurstUntil=0;h.doorBurstPending=false;h.nextDoorBurstAt=game.time+rand(18,28);h.retreats=0;h.rest=0;h.marichkaSwitchAt=0;h.marichkaLastTarget=null;h.lastAttackRoom=null;h.attackRoomUntil=0;h.visitedRooms={};if(game.time<25)game.time=25;if(!game.players[0].seated)occupy();bossDisplayedState='';if(bossAnimated){bossAnimated.hidden=true;bossAnimated.removeAttribute('src');}syncPanel();status(`Активний бос: ${boss.name}. HP відновлено, стара атака й колпоси скинуті. Невразливість: ${game.devImmortal?'увімкнена':'вимкнена'}.`);},
+  switchBoss(){if(!testStart())return;const value=document.getElementById('hikkaDevBossSelect').value;const boss=BOSS_ROSTER.find(b=>b.id===value);if(!boss)return status('Боса не знайдено.');const h=game.hunter;game.boss=boss;game.servants=[];game.projectiles=[];for(const im of servantVisuals.values())im.remove();servantVisuals.clear();h.hp=h.maxHp;h.state='hunt';h.active=true;h.stun=0;h.transform=0;h.roachFightTime=0;h.roachPreviousState=null;h.healShown=0;h.healFxCd=0;h.target=null;h.path=[];h.attack=0;h.abilityCd=14;h.servantCd=boss.id==='moriy'?2:18;h.teleportCd=boss.id==='seller'?4:999;h.sellerDodgeCd=0;h.sellerArrival=0;h.trapAttachedUntil=0;h.sellerVisual=null;h.sellerVisualUntil=0;h.sellerHelperTeleportReadyAt=0;h.sellerTrapDodgeReadyAt=0;h.doorBurstUntil=0;h.doorBurstPending=false;h.nextDoorBurstAt=game.time+rand(18,28);h.retreats=0;h.rest=0;h.marichkaSwitchAt=0;h.marichkaLastTarget=null;h.lastAttackRoom=null;h.attackRoomUntil=0;h.visitedRooms={};if(game.time<25)game.time=25;if(!game.players[0].seated)occupy();bossDisplayedState='';if(bossAnimated){bossAnimated.hidden=true;bossAnimated.removeAttribute('src');}syncPanel();status(`Активний бос: ${boss.name}. HP відновлено, стара атака й колпоси скинуті. Невразливість: ${game.devImmortal?'увімкнена':'вимкнена'}.`);},
   magic(){if(!testStart())return;if(!game.players[0].seated)occupy();const r=playerRoom();if(!r)return;if(game.magicUsed>=3)return status('Маджика: усі 3 використання вже витрачено.');const free=buildTiles(r).find(([x,y])=>!r.items.has(`${x},${y}`));if(!free)return status('Немає вільної клітинки в кімнаті.');const before=game.magicUsed;const result=build(r,free[0],free[1],'magic');status(result&&game.magicUsed>before?`Маджика використана: ${game.magicUsed}/3. Перевірте новий предмет у кімнаті.`:'Не вдалося використати Маджику.');}
  };
  panel.addEventListener('click',e=>{const btn=e.target.closest('button[data-dev]');if(btn&&actions[btn.dataset.dev])actions[btn.dataset.dev]();});
