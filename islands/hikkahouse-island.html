@@ -287,7 +287,12 @@ function doorBurstWarning(){
  }catch(e){}
 }
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2300)}
-const KYIV=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Kyiv',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());const STORE_KEY='hikka-house-save-v1';let save={date:KYIV(),tokens:0,wins:0,level:0,magic:3,skins:[0],skin:0,boosts:[],dailyBoostClaims:0,dailyAwardedLevels:[],runFinishedDay:null};try{save={...save,...JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}}catch{}
+// Стабільний ключ календарного дня Києва без залежності від порядку дати в браузері.
+const KYIV=()=>{
+ const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Kyiv',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+ const part=type=>parts.find(x=>x.type===type)?.value||'';
+ return `${part('year')}-${part('month')}-${part('day')}`;
+};const STORE_KEY='hikka-house-save-v1';let save={date:KYIV(),tokens:0,wins:0,level:0,magic:3,skins:[0],skin:0,boosts:[],dailyBoostClaims:0,dailyAwardedLevels:[],runFinishedDay:null};try{save={...save,...JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}}catch{}
 // Локальне збереження не вважаємо довіреним джерелом даних.
 if(!Array.isArray(save.skins))save.skins=[0];
 save.skins=save.skins.filter(n=>Number.isInteger(n)&&n>=0&&n<10).slice(0,10);
@@ -301,7 +306,23 @@ for(const key of ['tokens','wins','level','dailyBoostClaims']){
  if(!Number.isFinite(save[key]))save[key]=0;
  save[key]=Math.max(0,Math.min(100000000,Math.floor(save[key])));
 }
-function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify(save))}catch{}}function daySync(){const day=KYIV();if(save.date!==day){save.date=day;save.level=0;save.boosts=[];save.dailyBoostClaims=0;save.dailyAwardedLevels=[];save.runFinishedDay=null;save.dailyLeaderboard=null;persist();toast('Новий день! Складність і бусти скинуто.')} }daySync();
+function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify(save))}catch{}}
+function daySync(){
+ const day=KYIV();
+ // Неправильний/старий формат теж вважаємо минулим днем.
+ if(save.date===day)return false;
+ save.date=day;
+ save.level=0;
+ save.boosts=[];
+ save.dailyBoostClaims=0;
+ save.dailyAwardedLevels=[];
+ save.runFinishedDay=null;
+ save.dailyLeaderboard=null;
+ persist();
+ toast('Новий день у Києві: складність, рейтинг і добові бонуси оновлено.');
+ return true;
+}
+daySync();
 let C=19,R=25;
 let currentMap='classic';
 const MAPS={
@@ -508,7 +529,7 @@ if(!Array.isArray(save.boosts))save.boosts=[];
 if(!Number.isInteger(Number(save.skin))||Number(save.skin)<0||Number(save.skin)>=CHARACTERS.length)save.skin=0;
 else save.skin=Number(save.skin);
 const doors=roomDefs.map(r=>({x:r.doorX,y:r.doorY}));function avoidCoinNumbers(value){const amount=Math.max(0,Math.floor(Number(value)||0));return amount===63||amount===68?amount+1:amount}
-function newGame(lv){const rooms=roomDefs.map(d=>({...d,items:new Map(),occupant:null,door:75,maxDoor:75,doorLv:1,pcLv:1,alive:true,chain:false,puddle:false,poop:false,access:0,defenseJammed:0}));const players=Array.from({length:6},(_,i)=>makePlayer(i,i!==0));if(matchRosterPlan)players.forEach((p,i)=>{p.name=matchRosterPlan[i].name;p.skin=matchRosterPlan[i].skin});const boss=bossForDifficulty(lv);const calendarWave=(Math.floor(Date.parse(KYIV()+'T12:00:00')/86400000)%7);const growthInterval=Math.max(17,34-calendarWave*2-lv*.65);const g={level:lv,boss,hunterGrowthInterval:growthInterval,nextHunterGrowth:growthInterval,hunterAttackProgress:0,servants:[],phase:'claim',time:0,countdown:25,gold:16,energy:0,rooms,players,hunter:{x:restPoints()[0].x,y:restPoints()[0].y,hp:180+lv*32,maxHp:180+lv*32,level:1,state:'rest',target:null,path:[],attack:0,rest:5,active:false,stun:0,shotCd:0,anim:0,retreats:0,abilityCd:14,servantCd:18,teleportCd:999,sellerDodgeCd:0,sellerArrival:0,sellerVisual:null,sellerVisualUntil:0,transform:0},effects:[],projectiles:[],pets:[],selected:null,magicUsed:0,magicRolls:{},petStrike:0,boxClaims:new Set(),tick:0,npcTick:0,elapsed:0,lastResult:null,boosts:save.boosts.slice(),targetCam:null,mikola:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:55,cooldown:0},olexiy:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:70},six:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:85,hit:false}};// Кожен новий матч має інше розташування та набір початкових предметів.
+function newGame(lv){const rooms=roomDefs.map(d=>({...d,items:new Map(),occupant:null,door:75,maxDoor:75,doorLv:1,pcLv:1,alive:true,chain:false,puddle:false,poop:false,access:0,defenseJammed:0}));const players=Array.from({length:6},(_,i)=>makePlayer(i,i!==0));if(matchRosterPlan)players.forEach((p,i)=>{p.name=matchRosterPlan[i].name;p.skin=matchRosterPlan[i].skin});const boss=bossForDifficulty(lv);const calendarWave=(Math.floor(Date.parse(KYIV()+'T12:00:00')/86400000)%7);const growthInterval=Math.max(17,34-calendarWave*2-lv*.65);const g={level:lv,startedDay:KYIV(),boss,hunterGrowthInterval:growthInterval,nextHunterGrowth:growthInterval,hunterAttackProgress:0,servants:[],phase:'claim',time:0,countdown:25,gold:16,energy:0,rooms,players,hunter:{x:restPoints()[0].x,y:restPoints()[0].y,hp:180+lv*32,maxHp:180+lv*32,level:1,state:'rest',target:null,path:[],attack:0,rest:5,active:false,stun:0,shotCd:0,anim:0,retreats:0,abilityCd:14,servantCd:18,teleportCd:999,sellerDodgeCd:0,sellerArrival:0,sellerVisual:null,sellerVisualUntil:0,transform:0},effects:[],projectiles:[],pets:[],selected:null,magicUsed:0,magicRolls:{},petStrike:0,boxClaims:new Set(),tick:0,npcTick:0,elapsed:0,lastResult:null,boosts:save.boosts.slice(),targetCam:null,mikola:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:55,cooldown:0},olexiy:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:70},six:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:85,hit:false}};// Кожен новий матч має інше розташування та набір початкових предметів.
  // Не переносимо вже побудовані речі під час вибору кімнати у поточному матчі.
  const starterTypes=['trap','energy','money','distance','clock','box'];
  for(let i=starterTypes.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[starterTypes[i],starterTypes[j]]=[starterTypes[j],starterTypes[i]]}
@@ -1786,7 +1807,17 @@ function projectiles(dt){
  for(const m of killed)effect(m.x,m.y,'✨');
  game.servants=game.servants.filter(m=>m.hp>0);
 }
-function finish(win,msg){if(!game||game.phase==='ended')return;game.phase='ended';game.lastResult=win;daySync();if(game.devTest){sound(win?'win':'lose');modal(win?'🧪 Тест завершено':'🧪 Тест завершено',`<p>${msg}</p><p>Тестовий матч: рейтинг, токени й прогрес не змінені.</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>openHome()}],true);return}recordMatchScores();if(win){save.wins++;save.tokens+=20+game.level*8;save.level=Math.max(save.level,Math.min(difficulty.length-1,game.level+1));save.runFinishedDay=KYIV()}else{save.level=Math.max(0,Math.min(save.level,game.level-1));}persist();sound(win?'win':'lose');renderHome();modal(win?'🏆 Перемога!':'💀 Поразка',`<p>${msg}</p><p>${win?`Отримано <b>${20+game.level*8}</b> токенів.`:'Ви повертаєтеся на попередню доступну складність. Спробуйте ще раз!'}</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>{const wonLevel=game.level;openHome();if(win)offerBoost(wonLevel)}}],true)}
+function finish(win,msg){
+ if(!game||game.phase==='ended')return;
+ game.phase='ended';game.lastResult=win;
+ daySync();
+ const sameDay=game.startedDay===KYIV();
+ if(!sameDay&&!game.devTest){
+  sound(win?'win':'lose');
+  modal('🌅 Новий день',`<p>${msg}</p><p>Матч розпочався попередньої доби. Його результат не змінює сьогоднішню складність, рейтинг чи добові бонуси. Почніть новий матч.</p>`,[{name:'Повернутися в меню',primary:true,fn:openHome}],true);
+  return;
+ }
+if(game.devTest){sound(win?'win':'lose');modal(win?'🧪 Тест завершено':'🧪 Тест завершено',`<p>${msg}</p><p>Тестовий матч: рейтинг, токени й прогрес не змінені.</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>openHome()}],true);return}recordMatchScores();if(win){save.wins++;save.tokens+=20+game.level*8;save.level=Math.max(save.level,Math.min(difficulty.length-1,game.level+1));save.runFinishedDay=KYIV()}else{save.level=Math.max(0,Math.min(save.level,game.level-1));}persist();sound(win?'win':'lose');renderHome();modal(win?'🏆 Перемога!':'💀 Поразка',`<p>${msg}</p><p>${win?`Отримано <b>${20+game.level*8}</b> токенів.`:'Ви повертаєтеся на попередню доступну складність. Спробуйте ще раз!'}</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>{const wonLevel=game.level;openHome();if(win)offerBoost(wonLevel)}}],true)}
 const BOOST_STEPS=[1,2,3,5,10,15,25,30];
 const boosts=[
  {id:'door',name:'🚪 Сила дверей',hint:'Зменшує шкоду дверям: +1, +2, +3, +5, +10, +15, +25, +30'},
@@ -1833,7 +1864,9 @@ function boostChoiceIcon(b){
 }
 function boostTier(id){return Math.min(BOOST_STEPS.length,save.boosts.filter(v=>v.split(':')[0]===id).length)}
 function offerBoost(wonLevel){
+ const oldDay=save.date;
  daySync();
+ if(oldDay!==KYIV())return;
  if(!Number.isInteger(wonLevel)||wonLevel<0||wonLevel>=difficulty.length)return;
  if(!Array.isArray(save.dailyAwardedLevels))save.dailyAwardedLevels=[];
  if(save.dailyAwardedLevels.includes(wonLevel))return;
@@ -1874,6 +1907,15 @@ function chooseMapModal(lv){
  modal('🗺️ Оберіть мапу',`<p>Складність: <b>${difficulty[lv]}</b>. П'ять мап, по шість кімнат на кожній.</p><div class="buy-options">${buttons}</div>`,[{name:'Назад',fn:difficultyModal}]);
  $('modalContent').querySelectorAll('[data-map]').forEach(b=>b.onclick=()=>{chooseMap(b.dataset.map);start(lv)});
 }
+
+// Зміна календарного дня без перезавантаження вкладки.
+document.addEventListener('visibilitychange',()=>{
+ if(document.visibilityState!=='visible')return;
+ if(daySync()&&document.getElementById('home')&&!document.getElementById('home').hidden)renderHome();
+});
+setInterval(()=>{
+ if(daySync()&&document.getElementById('home')&&!document.getElementById('home').hidden)renderHome();
+},15000);
 function difficultyModal(){daySync();modal('Оберіть складність',`<p>Новий день: рівень прогресу скидається. Поточна доступна складність: <b>${difficulty[save.level]}</b>.</p><div class="difficulty-list">${difficulty.map((d,i)=>`<button data-lv="${i}" ${i>save.level?'disabled':''} class="${i<=save.level?'unlocked':''}">${d}<span>${i>save.level?'🔒':'▶'}</span></button>`).join('')}</div>`,[{name:'Закрити',fn:closeModal}]);$('modalContent').querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>chooseMapModal(+b.dataset.lv))}
 $('enterBtn').onclick=difficultyModal;$('quitBtn').onclick=()=>{if(!game)return openHome();modal('Покинути матч?',`<p>Прогрес поточного матчу не збережеться.</p>`,[{name:'Залишитися',fn:closeModal},{name:'Вийти',primary:true,fn:openHome}])};$('boostBtn').onclick=()=>modal('✨ Добові бусти',`<p>Отримано сьогодні: ${save.dailyBoostClaims||0}/${difficulty.length}. Кожна складність дає нагороду лише один раз за день.</p><p>${save.boosts.length?save.boosts.map(value=>{const [id,num]=value.split(':');const b=boosts.find(b=>b.id===id);return `${b?boostDisplayName(b):id}${num?' +'+num:''}`}).join(' • '):'Поки немає. Бонуси випадають після перемоги.'}</p>`,[{name:'Закрити',fn:closeModal}]);$('soundBtn').onclick=()=>{soundOn=!soundOn;$('soundBtn').textContent=soundOn?'🔊':'🔇';if(soundOn)sound('tap')};$('focusMe').onclick=()=>{if(game){const p=game.players[0];focus(p.x,p.y)}};$('repairBtn').onclick=()=>{const r=playerRoom();if(!r||!game.players[0].seated)return toast('Спочатку займіть кімнату');const price={gold:16+Math.floor(r.doorLv*7)};if(r.door>=r.maxDoor)return toast('Двері повністю відремонтовані');if(spend(price)){r.door=Math.min(r.maxDoor,r.door+55);sound('repair');effect(r.doorX+.5,r.doorY+.5,'🔧')}};const MIN_ZOOM=.5, MAX_ZOOM=7.5;
 function zoomAt(nextZoom, screenX=W/2, screenY=H/2){
