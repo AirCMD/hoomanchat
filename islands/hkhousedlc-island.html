@@ -453,8 +453,16 @@ render();
  function draw(){if(!rooms.length)return;const {m,tile,ox,oy,w,h}=dimensions();ctx.clearRect(0,0,w,h);ctx.fillStyle='#0d1326';ctx.fillRect(0,0,w,h);ctx.imageSmoothingEnabled=false;
   for(let y=0;y<m.h;y++)for(let x=0;x<m.w;x++){const t=grid[y][x],px=ox+x*tile,py=oy+y*tile;
    const openedDoor=t==='door'&&rooms.some(r=>r.broken&&r.doorX===x&&r.doorY===y);
-   const file=openedDoor?m.floor:t==='wall'?m.wall:t==='room'?m.roomFloor:m.floor;
-   if(!img(file,px,py,tile+.3,tile+.3)){ctx.fillStyle=t==='wall'?'#40465e':t==='room'?'#7a6483':'#323950';ctx.fillRect(px,py,tile+.3,tile+.3)}
+   // Малюємо основу кожної клітинки до текстури, як в оригінальній Hikka House.
+   const ground=t==='wall'?'#40465e':t==='room'?'#7a6483':'#323950';
+   ctx.fillStyle=ground;ctx.fillRect(px,py,tile+.3,tile+.3);
+   const file=t==='wall'?m.wall:(t==='room'||openedDoor)?m.roomFloor:m.floor;
+   // На зимовій карті крига коридору напівпрозора: без бази вона виглядала порожньою.
+   ctx.save();
+   if(m.key==='winter'&&t==='corridor')ctx.globalAlpha=.65;
+   const painted=img(file,px,py,tile+.3,tile+.3);
+   ctx.restore();
+   if(!painted&&m.key==='winter'&&t!=='wall')img('snowfloor.png',px,py,tile+.3,tile+.3);
   }
   for(const r of rooms){const dx=ox+r.doorX*tile,dy=oy+r.doorY*tile;
    if(!r.broken){
