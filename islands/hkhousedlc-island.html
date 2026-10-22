@@ -295,31 +295,63 @@ render();
 
  }
  function approach(r){const candidates=[[r.doorX+1,r.doorY],[r.doorX-1,r.doorY],[r.doorX,r.doorY+1],[r.doorX,r.doorY-1]];const c=candidates.find(([x,y])=>grid[y]?.[x]==='corridor');return c?{x:c[0]+.5,y:c[1]+.5}:{x:r.doorX+.5,y:r.doorY+.5}}
- function pathTo(start,goal){
+ // Спільна навігація: коридори, відкриті двері й кімнати з уже зламаними дверима.
+ // Інакше після першого рейду персонаж опиняється в ізольованій зоні.
+ function walkableForRaid(x,y,targetRoom=null){
+  const t=grid[y]?.[x];
+  if(t==='corridor')return true;
+  if(t==='door')return rooms.some(r=>r.broken&&r.doorX===x&&r.doorY===y);
+  if(t!=='room')return false;
+  return rooms.some(r=>(r.broken||r.i===targetRoom)&&r.cells.some(([cx,cy])=>cx===x&&cy===y)&&
+   !r.structures.some(it=>it.x===x&&it.y===y));
+ }
+ function pathTo(start,goal,targetRoom=null){
   const sx=Math.floor(start.x),sy=Math.floor(start.y),tx=Math.floor(goal.x),ty=Math.floor(goal.y);
   const key=(x,y)=>x+','+y,seen=new Set([key(sx,sy)]),queue=[[sx,sy]],parent=new Map();
-  for(let k=0;k<queue.length;k++){const [x,y]=queue[k];if(x===tx&&y===ty){let result=[[tx+.5,ty+.5]],cur=key(tx,ty);while(parent.has(cur)){const prev=parent.get(cur);result.unshift([prev[0]+.5,prev[1]+.5]);cur=key(...prev)}return result.slice(1)}
-   for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy,nk=key(nx,ny);if(grid[ny]?.[nx]!=='corridor'||seen.has(nk))continue;seen.add(nk);parent.set(nk,[x,y]);queue.push([nx,ny])}}
+  if(!walkableForRaid(tx,ty,targetRoom))return [];
+  for(let k=0;k<queue.length;k++){
+   const [x,y]=queue[k];
+   if(x===tx&&y===ty){let result=[[tx+.5,ty+.5]],cur=key(tx,ty);
+    while(parent.has(cur)){const prev=parent.get(cur);result.unshift([prev[0]+.5,prev[1]+.5]);cur=key(...prev)}
+    return result.slice(1);
+   }
+   for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){
+    const nx=x+dx,ny=y+dy,nk=key(nx,ny);
+    if(!walkableForRaid(nx,ny,targetRoom)||seen.has(nk))continue;
+    seen.add(nk);parent.set(nk,[x,y]);queue.push([nx,ny]);
+   }
+  }
   return [];
  }
- function sendTeamTo(room){if(!room)return false;const me=bossUnits[0];const ok=me&&!me.out&&goTo(me,room);if(ok){bossUnits.slice(1).forEach((u,i)=>{if(!u.out&&u.hp>0&&!u.raidRoom){goTo(u,room);u.flankSide=i===0?-1:1;u.flankChangeAt=seconds+1.5+Math.random()*2.5;}})}return !!ok}
- function goTo(unit,room){unit.raidRoom=undefined;const target=approach(room);unit.target=room.i;unit.path=pathTo(unit,target);unit.moving=unit.path.length>0;unit.swing=0;return unit.path.length>0||Math.hypot(unit.x-target.x,unit.y-target.y)<.4}
+ // Вихід із пройденої кімнати до зовнішнього коридору.
+ function exitFromRoom(unit,room){
+  const pos=approach(room);
+  const path=pathTo(unit,pos);
+  unit.path=path;unit.moving=path.length>0;
+  unit.raidRoom=undefined;
+  unit.exitingRoom=path.length>0?room.i:undefined;
+  return path.length>0||Math.hypot(unit.x-pos.x,unit.y-pos.y)<.6;
+ }
+ function sendTeamTo(room){if(!room)return false;const me=bossUnits[0];const ok=me&&!me.out&&goTo(me,room);if(ok){bossUnits.slice(1).forEach((u,i)=>{if(!u.out&&u.hp>0&&u.raidRoom===undefined){goTo(u,room);u.flankSide=i===0?-1:1;u.flankChangeAt=seconds+1.5+Math.random()*2.5;}})}return !!ok}
+ function goTo(unit,room){unit.raidRoom=undefined;unit.exitingRoom=undefined;const target=approach(room);unit.target=room.i;unit.path=pathTo(unit,target);unit.moving=unit.path.length>0;unit.swing=0;return unit.path.length>0||Math.hypot(unit.x-target.x,unit.y-target.y)<.4}
  function routeInside(unit,r){
-  const occupied=new Set(r.structures.map(it=>it.x+','+it.y));
-  const allowed=new Set(r.cells.filter(([x,y])=>!occupied.has(x+','+y)).map(([x,y])=>x+','+y));allowed.add(r.doorX+','+r.doorY);
-  for(let y=0;y<grid.length;y++)for(let x=0;x<grid[y].length;x++)if(grid[y][x]==='corridor')allowed.add(x+','+y);
-  const start=[Math.floor(unit.x),Math.floor(unit.y)];
-  const spots=r.cells.filter(([x,y])=>allowed.has(x+','+y));
-  spots.sort((a,b)=>Math.hypot(a[0]-r.pcX,a[1]-r.pcY)-Math.hypot(b[0]-r.pcX,b[1]-r.pcY));
-  const dest=spots.find(([x,y])=>Math.abs(x-r.doorX)+Math.abs(y-r.doorY)>1)||[r.pcX,r.pcY];
-  const key=(x,y)=>x+','+y;
-  const queue=[start],seen=new Set([key(...start)]),parent=new Map();
-  for(let i=0;i<queue.length;i++){const [x,y]=queue[i],k=key(x,y);if(x===dest[0]&&y===dest[1]){let path=[];let cur=k;while(parent.has(cur)){const [a,b]=cur.split(',').map(Number);path.unshift([a+.5,b+.5]);cur=parent.get(cur)}return path}
-   for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const a=x+dx,b=y+dy,t=key(a,b);if(allowed.has(t)&&!seen.has(t)){seen.add(t);parent.set(t,[x,y]);queue.push([a,b])}}}
+  // Зламані двері тепер повноцінний прохід. Дозволяємо вийти зі старої
+  // кімнати і пройти до нової, навіть якщо гравець не повернувся в коридор.
+  const spots=r.cells.filter(([x,y])=>!r.structures.some(it=>it.x===x&&it.y===y))
+   .sort((a,b)=>Math.hypot(a[0]-r.pcX,a[1]-r.pcY)-Math.hypot(b[0]-r.pcX,b[1]-r.pcY));
+  for(const [x,y] of spots){
+   if(Math.abs(x-r.doorX)+Math.abs(y-r.doorY)<=1)continue;
+   const route=pathTo(unit,{x:x+.5,y:y+.5},r.i);
+   if(route.length||Math.floor(unit.x)===x&&Math.floor(unit.y)===y)return route;
+  }
+  for(const [x,y] of spots){
+   const route=pathTo(unit,{x:x+.5,y:y+.5},r.i);
+   if(route.length||Math.floor(unit.x)===x&&Math.floor(unit.y)===y)return route;
+  }
   return [];
  }
  function startSockRaid(roomId=selected){if(!playing||done)return;const r=rooms[roomId],u=bossUnits[0];if(!r?.broken||r.result){message('Спочатку зламайте двері обраної кімнати.');return}if(u.out){message('Ваш хікі вибув.');return}const path=routeInside(u,r);if(!path.length&&!r.cells.some(([x,y])=>Math.floor(u.x)===x&&Math.floor(u.y)===y)){message('Не вдалося знайти прохід до кімнати.');return}u.target=r.i;u.path=path;u.moving=path.length>0;u.raidRoom=r.i;selected=r.i;message('Хікі заходить до кімнати '+(r.i+1)+' зі шкарпетками!');render()}
- function scatterSocks(r){if(r.result)return;const available=r.cells.filter(([x,y])=>!(x===r.pcX&&y===r.pcY)&&!r.structures.some(it=>it.x===x&&it.y===y));const clothes=['weapon1.png','weapon2.png','weapon3.png','weapon5.png','weapon6.png'];r.socks=available.map(([x,y])=>({x,y,file:clothes[Math.floor(Math.random()*clothes.length)],rot:(Math.random()-.5)*.38}));r.result='win';r.broken=true;r.hp=0;showVictory('ПЕРЕМОГА В КІМНАТІ',`${r.guestName} · речі розкидані`);message(`Кімната ${r.i+1} пройдена. Речі по всій кімнаті!`);finishIfResolved()}
+ function scatterSocks(r){if(r.result)return;const available=r.cells.filter(([x,y])=>!(x===r.pcX&&y===r.pcY)&&!r.structures.some(it=>it.x===x&&it.y===y));const clothes=['weapon1.png','weapon2.png','weapon3.png','weapon5.png','weapon6.png'];r.socks=available.map(([x,y])=>({x,y,file:clothes[Math.floor(Math.random()*clothes.length)],rot:(Math.random()-.5)*.38}));r.result='win';r.broken=true;r.hp=0;showVictory('ПЕРЕМОГА В КІМНАТІ',`${r.guestName} · речі розкидані`);message(`Кімната ${r.i+1} пройдена. Хікі виходить у коридор.`);const me=bossUnits[0];if(me&&!me.out)exitFromRoom(me,r);finishIfResolved()}
  function startMatch(){clearInterval(matchTimer);playing=false;matchRemaining=5;const overlay=$n('nvMatch'),slots=$n('nvMatchSlots');overlay.hidden=false;slots.replaceChildren();defenders().forEach((def,i)=>{const f=def.file;const span=document.createElement('span'),im=document.createElement('img'),small=document.createElement('small');im.src='../Assets/'+f;im.onerror=()=>{im.onerror=null;im.src='../assets/'+f};small.textContent=def.name;span.append(im,small);span.style.opacity='.35';slots.append(span)});
   const advance=()=>{const joined=6-matchRemaining;for(let i=0;i<joined;i++)if(slots.children[i])slots.children[i].style.opacity='1';$n('nvMatchCount').textContent=matchRemaining;if(matchRemaining--<=0){clearInterval(matchTimer);overlay.hidden=true;playing=true;message('Шестеро резидентів у кімнатах. Ваші хікі атакують двері!')}};
   advance();matchTimer=setInterval(advance,1000);
@@ -479,7 +511,8 @@ render();
    r.coins+=dt*(.8+r.pcLevel*.75+r.structures.filter(it=>it.type==='money').length*1.6);
    r.power+=dt*r.structures.filter(it=>it.type==='energy').length*.8;
    r.buildTicks-=dt;
-   if(r.buildTicks<=0){
+   if(!r.broken&&r.buildTicks<=0){
+    // Після злому дверей резидент не може будувати або покращувати споруди.
     // Як NPC оригінальної Hikka House: витрачаємо накопичені монети,
     // а не створюємо укріплення кожні кілька секунд із повітря.
     const occupied=new Set(r.structures.map(it=>it.x+','+it.y));
@@ -517,10 +550,14 @@ render();
   }
   for(const [i,u] of bossUnits.entries())if(i>0&&u.moving&&seconds>=(u.flankChangeAt||0)){u.flankSide=Math.random()<.28?-1*(u.flankSide||(i===1?-1:1)):(u.flankSide||(i===1?-1:1));u.flankChangeAt=seconds+2+Math.random()*3.5;}
   for(const unit of bossUnits){if(unit.out||unit.hp<=0)continue;
+   if(unit.exitingRoom!==undefined){
+    if(unit.path.length){const [tx,ty]=unit.path[0],dx=tx-unit.x,dy=ty-unit.y,dist=Math.hypot(dx,dy),step=dt*unit.speed;if(dist<=step){unit.x=tx;unit.y=ty;unit.path.shift()}else{unit.x+=dx/dist*step;unit.y+=dy/dist*step}unit.moving=true;continue}
+    unit.exitingRoom=undefined;unit.moving=false;const next=rooms.find(r=>!r.result&&!r.broken);if(next)goTo(unit,next);continue;
+   }
    if(unit.raidRoom!==undefined){const raid=rooms[unit.raidRoom];if(unit.path.length){const [tx,ty]=unit.path[0],dx=tx-unit.x,dy=ty-unit.y,dist=Math.hypot(dx,dy),step=dt*unit.speed;if(dist<=step){unit.x=tx;unit.y=ty;unit.path.shift()}else{unit.x+=dx/dist*step;unit.y+=dy/dist*step}unit.moving=true;continue}unit.moving=false;unit.raidRoom=undefined;if(raid&&!raid.result)scatterSocks(raid);continue}
    let r=rooms[unit.target];if(!r||r.result||r.broken){
     if(r?.broken&&!r.result){
-     if(unit===bossUnits[0]&&!unit.raidRoom){startSockRaid(r.i)}
+     if(unit===bossUnits[0]&&unit.raidRoom===undefined){startSockRaid(r.i)}
      unit.path=[];unit.moving=false;continue;
     }
     r=rooms.find(a=>!a.result&&!a.broken);if(r)goTo(unit,r);else continue
@@ -574,7 +611,7 @@ render();
  const markSelected=result=>{activate();if(!playing||done)return;const r=rooms[selected];if(!r||r.result)return;if(result==='win'){r.broken=true;r.hp=0;if(!r.socks.length)scatterSocks(r);else{r.result='win';showVictory('ПЕРЕМОГА В КІМНАТІ',r.guestName)}}else{r.result='lose';r.broken=false;showVictory('ПОРАЗКА В КІМНАТІ',r.guestName,false,true)}message(`${result==='win'?'Перемога':'Поразка'} в кімнаті ${r.i+1}: ${r.guestName}`);finishIfResolved();render()};
  $n('nvMarkWin').onclick=()=>markSelected('win');$n('nvMarkLoss').onclick=()=>markSelected('lose');
  $n('nvSocks').onclick=()=>startSockRaid();$n('nvVictoryNext').onclick=()=>{$n('nvNext').click()};$n('nvVictoryRestart').onclick=()=>{$n('nvRestart').click()};$n('nvHit').onclick=()=>{activate();if(!playing)return;const r=rooms[selected];if(!r||r.result)return;if(r.broken){startSockRaid();return}message(sendTeamTo(r)?'Хікі вирушає до дверей '+(selected+1):'Шлях до дверей заблоковано');render()};
- $n('nvTeleport').onclick=()=>{activate();if(!spend(25))return;const unit=bossUnits[0];if(unit){unit.raidRoom=undefined;unit.target=selected;const pos=approach(rooms[selected]);unit.x=pos.x;unit.y=pos.y;unit.path=[];unit.moving=false;unit.swing=0}message('Хікі-бос телепортувався до дверей кімнати '+(selected+1));render()};
+ $n('nvTeleport').onclick=()=>{activate();if(!spend(25))return;const unit=bossUnits[0];if(unit){unit.raidRoom=undefined;unit.exitingRoom=undefined;unit.target=selected;const pos=approach(rooms[selected]);unit.x=pos.x;unit.y=pos.y;unit.path=[];unit.moving=false;unit.swing=0}message('Хікі-бос телепортувався до дверей кімнати '+(selected+1));render()};
  let nextHelperId=1;
  const summon=(cost,kind,power,label)=>{activate();if(!spend(cost))return;helpers.push({id:nextHelperId++,target:selected,power:power+level,kind,label,ttl:5,cooldown:1});message(label+' атакують двері '+(selected+1));render()};
  const summonTrio=(cost,kind,power,label)=>{activate();if(!spend(cost))return;const files=[...HELPER_ASSETS[kind]];for(let j=files.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[files[j],files[k]]=[files[k],files[j]];}files.forEach((file,i)=>helpers.push({id:nextHelperId++,target:selected,power:power+level,kind,label:label+' '+(i+1),asset:file,ttl:5,cooldown:1+i*.12}));message(label+' (3) атакують двері '+(selected+1));render()};
