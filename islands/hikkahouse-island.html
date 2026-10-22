@@ -495,11 +495,11 @@ function bossForDifficulty(level){
 let game=null,modalAction=null,modalCloseFn=null,selectedTab='База',drag=null,pressed=null;
 // Hikka House: окрема, авторська економіка (не копія Haunted Dorm).
 const HH_PC_INCOME=[1,2,4,8,16,32,64,128,256,512];
-const HH_PC_COST=[0,25,52,105,210,420,840,1700,3380,6760];
+const HH_PC_COST=[0,30,72,155,330,700,1460,3050,6400,13400];
 const HH_DOOR_HP=[0,75,145,215,285,355,710,1420,2840,5700];
-const HH_DOOR_COST=[null,{gold:16},{gold:34},{gold:70},{gold:145},{gold:290},{gold:580,energy:16},{gold:1160,energy:32},{gold:2320,energy:64},{gold:4640,energy:128}];
+const HH_DOOR_COST=[null,{gold:20},{gold:45},{gold:94},{gold:190},{gold:390},{gold:790,energy:16},{gold:1590,energy:32},{gold:3180,energy:64},{gold:6450,energy:128}];
 const HH_WEAPON_DAMAGE=[6,9,17,34,70,140,280,560];
-const HH_WEAPON_COST=[8,18,42,90,185,370,740,1480];
+const HH_WEAPON_COST=[8,24,58,124,260,530,1080,2200];
 const HH_ENERGY_COST=[128,960,1980,4080,8160];
 // Монетне дерево використовує енергію, генератор використовує монети.
 const HH_MONEY_TREE_ENERGY_COST=[16,48,112];
@@ -550,7 +550,7 @@ if(!Array.isArray(save.boosts))save.boosts=[];
 if(!Number.isInteger(Number(save.skin))||Number(save.skin)<0||Number(save.skin)>=CHARACTERS.length)save.skin=0;
 else save.skin=Number(save.skin);
 const doors=roomDefs.map(r=>({x:r.doorX,y:r.doorY}));function avoidCoinNumbers(value){const amount=Math.max(0,Math.floor(Number(value)||0));return amount===63||amount===68?amount+1:amount}
-function newGame(lv){const rooms=roomDefs.map(d=>({...d,items:new Map(),occupant:null,door:75,maxDoor:75,doorLv:1,pcLv:1,alive:true,chain:false,puddle:false,poop:false,access:0,defenseJammed:0}));const players=Array.from({length:6},(_,i)=>makePlayer(i,i!==0));if(matchRosterPlan)players.forEach((p,i)=>{p.name=matchRosterPlan[i].name;p.skin=matchRosterPlan[i].skin});const boss=bossForDifficulty(lv);const calendarWave=(Math.floor(Date.parse(KYIV()+'T12:00:00')/86400000)%7);const growthInterval=Math.max(17,34-calendarWave*2-lv*.65);const g={level:lv,startedDay:KYIV(),boss,hunterGrowthInterval:growthInterval,nextHunterGrowth:growthInterval,hunterAttackProgress:0,servants:[],phase:'claim',time:0,countdown:25,gold:16,energy:0,rooms,players,hunter:{x:restPoints()[0].x,y:restPoints()[0].y,hp:180+lv*32,maxHp:180+lv*32,level:1,state:'rest',target:null,path:[],attack:0,rest:5,active:false,stun:0,shotCd:0,anim:0,retreats:0,abilityCd:14,servantCd:18,teleportCd:999,sellerDodgeCd:0,sellerArrival:0,sellerVisual:null,sellerVisualUntil:0,transform:0},effects:[],projectiles:[],pets:[],selected:null,magicUsed:0,magicRolls:{},petStrike:0,boxClaims:new Set(),tick:0,npcTick:0,elapsed:0,lastResult:null,boosts:save.boosts.slice(),targetCam:null,mikola:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:55,cooldown:0},olexiy:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:70},six:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:85,hit:false}};// Кожен новий матч має інше розташування та набір початкових предметів.
+function newGame(lv){const rooms=roomDefs.map(d=>({...d,items:new Map(),occupant:null,door:75,maxDoor:75,doorLv:1,pcLv:1,alive:true,chain:false,puddle:false,poop:false,access:0,defenseJammed:0}));const players=Array.from({length:6},(_,i)=>makePlayer(i,i!==0));if(matchRosterPlan)players.forEach((p,i)=>{p.name=matchRosterPlan[i].name;p.skin=matchRosterPlan[i].skin});const boss=bossForDifficulty(lv);const calendarWave=(Math.floor(Date.parse(KYIV()+'T12:00:00')/86400000)%7);const growthInterval=Math.max(16,30-calendarWave*2-lv*.65);const g={level:lv,startedDay:KYIV(),boss,hunterGrowthInterval:growthInterval,nextHunterGrowth:growthInterval,hunterAttackProgress:0,servants:[],phase:'claim',time:0,countdown:25,gold:16,energy:0,rooms,players,hunter:{x:restPoints()[0].x,y:restPoints()[0].y,hp:180+lv*32,maxHp:180+lv*32,level:1,state:'rest',target:null,path:[],attack:0,rest:5,active:false,stun:0,shotCd:0,anim:0,retreats:0,abilityCd:14,servantCd:18,teleportCd:999,sellerDodgeCd:0,sellerArrival:0,sellerVisual:null,sellerVisualUntil:0,transform:0},effects:[],projectiles:[],pets:[],selected:null,magicUsed:0,magicRolls:{},petStrike:0,boxClaims:new Set(),tick:0,npcTick:0,elapsed:0,lastResult:null,boosts:save.boosts.slice(),targetCam:null,mikola:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:55,cooldown:0},olexiy:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:70},six:{active:false,x:mapCfg().centerX,y:mapCfg().centerY,until:0,nextAt:85,hit:false}};// Кожен новий матч має інше розташування та набір початкових предметів.
  // Не переносимо вже побудовані речі під час вибору кімнати у поточному матчі.
  const starterTypes=['trap','energy','money','distance','clock','box'];
  for(let i=starterTypes.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[starterTypes[i],starterTypes[j]]=[starterTypes[j],starterTypes[i]]}
@@ -613,7 +613,7 @@ function sit(p,r){
  r.access=0;p.action='sit';sound('door');
  if(!p.npc){game.phase='defend';$('tip').textContent='Покращуйте ПК, двері та захист!';toast('Ви за ПК! Двері зачинено. Будуйте оборону.')}
 }
-const MATCH_NICKS=['dreaming_romance','void_kitten','404_sleep','no_signal','nebula_202','silent_fox','lurker_net','ai_ta','alter_core','blue_comet','den_chik','fedir_tkch','inna_king','ira_lynx','jane_dust','la_cyber','lexy_lel','nazar_dai','sakurai_agatsuma','soft_static','sara_rosemay','water_blue','yoyo_tchi'];
+const MATCH_NICKS=['dreaming_romance','void_kitten','404_sleep','no_signal','nebula_202','silent_fox','lurker_net','ai_ta','alter_core','blue_comet','den_chik','fedir_tkch','inna_king','ira_lynx','jane_dust','la_cyber','lexy_lel','nazar_dai','sakurai_agatsuma','soft_static','sara_rosemay','water_blue','yoyo_tchi','alina_li','nastya_hey','alex_chimp','ivan_kokok','dima_lis','danulo_yo','kostya_jey','bondar_m','sasha_gray','vasya_goy','tanya_chik','julia_black','diana_shay','valera_joker'];
 let matchRosterPlan=null,matchTimer=null,matchTicket=0;
 // Місцевий рейтинг за київську добу. Версія 2: час, перемога, ПК7, вцілілі двері.
 function ensureDailyLeaderboard(){
@@ -866,9 +866,12 @@ function npcEconomy(){
    lastEnergyTime:-100,
    lastUtilityTime:-100,
    utilityStyle:Math.random(),
-   treeTarget:Math.random()<.7?1:2
+   treeTarget:Math.random()<.7?1:2,
+   nextDecisionAt:0
   };
   const plan=p.npcPlan,h=game.hunter;
+  // Економіка накопичує ресурси кожні 3 с, але важливі покупки мають паузи.
+  if(game.time<(plan.nextDecisionAt||0))continue;
   const danger=h.active&&h.target===r.id&&['hunt','attack','transform'].includes(h.state);
   if(danger&&plan.firstAttackAt===null)plan.firstAttackAt=game.time;
   const attacked=plan.firstAttackAt!==null;
@@ -900,22 +903,22 @@ function npcEconomy(){
   const reactArms=attacked&&danger&&weapons.length<Math.min(3,plan.earlyGuns+2)&&
     (weapons.length===0||attackedFor>=12)&&game.time-plan.lastGunTime>=16;
   if((initialArms||reactArms)&&p.gold>=costs.weapon.gold+12){
-   if(addItem('weapon',costs.weapon.gold)){plan.lastGunTime=game.time;continue;}
+   if(addItem('weapon',costs.weapon.gold)){plan.lastGunTime=game.time;plan.nextDecisionAt=game.time+rand(9,14);continue;}
   }
   // Якщо NPC атакують, він ремонтує критичні двері, але не витрачає всі заощадження.
   if(danger&&r.door<r.maxDoor*.42&&p.gold>=30){
-   p.gold-=12;r.door=Math.min(r.maxDoor,r.door+25);continue;
+   p.gold-=12;r.door=Math.min(r.maxDoor,r.door+25);plan.nextDecisionAt=game.time+rand(9,14);continue;
   }
   // Перед енергозалежними покращеннями NPC купує генератор за зібрані монети.
   if(wantsEnergy&&generators.length===0){
-   if(addItem('energy',costs.energy.gold)){plan.lastEnergyTime=game.time;continue;}
+   if(addItem('energy',costs.energy.gold)){plan.lastEnergyTime=game.time;plan.nextDecisionAt=game.time+rand(9,14);continue;}
    // Не зливаємо накопичення на додаткові гармати.
   }
   // Коли генератор є, покращує його, а не заставляє кімнату зброєю.
   if(nextEnergy&&wantsEnergy&&affordable(energyPrice)&&
     (nextEnergy.lv<3||r.pcLv>=5||doorNeedsEnergy||pcNeedsEnergy)){
    p.gold-=energyPrice.gold;p.energy-=energyPrice.energy||0;
-   nextEnergy.lv++;plan.lastEnergyTime=game.time;continue;
+   nextEnergy.lv++;plan.lastEnergyTime=game.time;plan.nextDecisionAt=game.time+rand(9,14);continue;
   }
   // Базове виживання: спочатку двері для доступу до наступного ПК.
   const needDoor=r.doorLv<9&&(r.doorLv<requiredDoor||
@@ -923,10 +926,10 @@ function npcEconomy(){
   if(needDoor&&affordable(doorPrice)){
    p.gold-=doorPrice.gold;p.energy-=doorPrice.energy||0;
    r.doorLv++;r.maxDoor=hhDoorHp(r.doorLv);r.door=r.maxDoor;
-   effect(r.doorX+.5,r.doorY+.5,'⬆🚪');continue;
+   effect(r.doorX+.5,r.doorY+.5,'⬆🚪');plan.nextDecisionAt=game.time+rand(9,14);continue;
   }
   if(pcUnlocked&&affordable(pcPrice)){
-   p.gold-=pcPrice.gold;p.energy-=pcPrice.energy||0;r.pcLv++;continue;
+   p.gold-=pcPrice.gold;p.energy-=pcPrice.energy||0;r.pcLv++;plan.nextDecisionAt=game.time+rand(9,14);continue;
   }
   // NPC самостійно користуються доступними предметами магазину.
   // Здібності зі щасливих випадінь Маджики не створюємо з повітря.
@@ -954,36 +957,36 @@ function npcEconomy(){
   const treeCost=tree?hhPrice(HH_MONEY_TREE_ENERGY_COST,tree.lv-1):0;
   if(utilitiesReady&&generators.length>0&&economyStable){
    if(tree&&p.energy>=treeCost&&r.pcLv>=4&&game.time>=75){
-    p.energy-=treeCost;tree.lv++;plan.lastUtilityTime=game.time;continue;
+    p.energy-=treeCost;tree.lv++;plan.lastUtilityTime=game.time;plan.nextDecisionAt=game.time+rand(9,14);continue;
    }
    if(itemCount('money')<plan.treeTarget&&p.energy>=costs.money.energy&&
       (p.gold>=costs.energy.gold*.45||generators.some(it=>it.lv>=2))){
-    if(buyUtility('money'))continue;
+    if(buyUtility('money'))plan.nextDecisionAt=game.time+rand(9,14);continue;
    }
   }
   // Засоби захисту від ударів по дверях: не раніше появи загрози
   // або коли кімната вже має базову економіку.
   if(utilitiesReady&&economyStable){
    if(wantsDefense&&danger&&r.door/r.maxDoor<.8&&!r.chain&&
-     r.doorLv>=3&&buyDoorUtility('chain'))continue;
+     r.doorLv>=3&&buyDoorUtility('chain'))plan.nextDecisionAt=game.time+rand(9,14);continue;
    if(wantsDefense&&itemCount('clock')===0&&p.energy>=costs.clock.energy&&
-      r.doorLv>=3&&buyUtility('clock'))continue;
+      r.doorLv>=3&&buyUtility('clock'))plan.nextDecisionAt=game.time+rand(9,14);continue;
    if(wantsDefense&&itemCount('trap')===0&&p.energy>=costs.trap.energy&&
-      game.time>=85&&buyUtility('trap'))continue;
+      game.time>=85&&buyUtility('trap'))plan.nextDecisionAt=game.time+rand(9,14);continue;
    if(attacked&&itemCount('safe')===0&&p.gold>=costs.safe.gold+Math.min(72,doorPrice?.gold||0)&&
-      game.time>=95&&buyUtility('safe'))continue;
+      game.time>=95&&buyUtility('safe'))plan.nextDecisionAt=game.time+rand(9,14);continue;
    if(attacked&&itemCount('cache')===0&&p.gold>=costs.cache.gold+45&&
-      !danger&&plan.utilityStyle>.45&&buyUtility('cache'))continue;
+      !danger&&plan.utilityStyle>.45&&buyUtility('cache'))plan.nextDecisionAt=game.time+rand(9,14);continue;
    if(attacked&&r.doorLv>=4&&!r.puddle&&p.energy>=costs.puddle.energy+8&&
-      plan.utilityStyle>.55&&buyDoorUtility('puddle'))continue;
+      plan.utilityStyle>.55&&buyDoorUtility('puddle'))plan.nextDecisionAt=game.time+rand(9,14);continue;
    if(attacked&&r.doorLv>=4&&!r.poop&&p.gold>=costs.poop.gold+60&&
-      plan.utilityStyle<.35&&buyDoorUtility('poop'))continue;
+      plan.utilityStyle<.35&&buyDoorUtility('poop'))plan.nextDecisionAt=game.time+rand(9,14);continue;
    // Дистанція має сенс лише там, де є турель.
    if(weapons.length&&itemCount('distance')===0&&game.time>=130&&
-      p.gold>=costs.distance.gold+70&&buyUtility('distance'))continue;
+      p.gold>=costs.distance.gold+70&&buyUtility('distance'))plan.nextDecisionAt=game.time+rand(9,14);continue;
    // Сейф корисний також до першої атаки, але не ціною економіки.
    if(!attacked&&game.time>=155&&r.pcLv>=6&&itemCount('safe')===0&&
-      p.gold>=costs.safe.gold+140&&plan.utilityStyle>.65&&buyUtility('safe'))continue;
+      p.gold>=costs.safe.gold+140&&plan.utilityStyle>.65&&buyUtility('safe'))plan.nextDecisionAt=game.time+rand(9,14);continue;
   }
   // Не купуємо зброю за рахунок грошей, потрібних на близьке покращення.
   const nextGoal=generators.length===0&&wantsEnergy?costs.energy.gold:
@@ -993,12 +996,12 @@ function npcEconomy(){
   const gunLimit=attacked?3:Math.max(1,plan.earlyGuns);
   if(game.time>125&&r.pcLv>=4&&weapons.length<gunLimit&&
     p.gold-reserve>=costs.weapon.gold&&game.time-plan.lastGunTime>=22){
-   if(addItem('weapon',costs.weapon.gold)){plan.lastGunTime=game.time;continue;}
+   if(addItem('weapon',costs.weapon.gold)){plan.lastGunTime=game.time;plan.nextDecisionAt=game.time+rand(9,14);continue;}
   }
   if(weapons.length&&game.time>145){
    const gun=weapons.find(it=>it.lv<8);
    if(gun){const price=hhPrice(HH_WEAPON_COST,gun.lv);
-    if(p.gold-reserve>=price){p.gold-=price;gun.lv++;continue;}
+    if(p.gold-reserve>=price){p.gold-=price;gun.lv++;plan.nextDecisionAt=game.time+rand(9,14);continue;}
    }
   }
  }
