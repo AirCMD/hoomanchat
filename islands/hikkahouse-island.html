@@ -1328,15 +1328,26 @@ function sellerDodge(h){
 }
 // Кошенята атакують незалежно від бабки: вона ніколи не завдає шкоди особисто.
 function releaseGrannyHelperKittens(kind,helper){
- if(!game||game.boss.id!=='catgranny'||!helper)return;
+ if(!game||game.boss.id!=='catgranny'||!helper?.active)return;
+ if(game.hunter.state==='retreat'||game.hunter.state==='rest')return;
  // Помічники змушують бабку випустити охорону, а не тікати.
- if(game.kittens.some(k=>k.helperKind===kind))return;
+ if(game.kittens.some(k=>k.helperKind===kind&&!k.leaving))return;
+ // Єдина група переслідує одного помічника; повторний виклик не створює натовп.
+ if(game.time<(game.grannyHelperKittenCooldownUntil||0))return;
+ game.grannyHelperKittenCooldownUntil=game.time+9;
  const h=game.hunter;
  h.grannyHelperReleaseUntil=game.time+.89;
  for(let i=0;i<2;i++)game.kittens.push({id:++game.kittenSerial,roomId:null,
   helperKind:kind,x:h.x+(i?0.22:-.22),y:h.y,inside:false,attackClock:0,expiresAt:Infinity,
   chaseUntil:Infinity,leaving:false,poopCount:0});
  effect(h.x,h.y,'🐈🐈');
+}
+function kittenStartLeaving(k,reason){
+ if(k.inside||k.leaving)return false;
+ k.leaving=true;k.leaveDeadline=game.time+12;
+ k.helperKind=null;k.attackClock=0;k.expiresAt=game.time;
+ k.exitReason=reason;
+ return true;
 }
 function kittenExitStep(k,dt){
  const dest=nearestRest(k);const path=bfs(k.x,k.y,Math.floor(dest.x),Math.floor(dest.y),null);
@@ -1349,7 +1360,9 @@ function kittenExitStep(k,dt){
 }
 function activeDoorKittens(roomId){return game.kittens.some(k=>k.roomId===roomId&&!k.inside&&!k.leaving&&!k.helperKind)}
 function releaseGrannyKittens(r){
- if(!game||!r?.alive||activeDoorKittens(r.id))return;
+ if(!game||!r?.alive||activeDoorKittens(r.id)||game.hunter.state==='retreat')return;
+ // Не випускаємо нову групу просто в лапи тварини з Маджики.
+ if(magicPetThreats().some(p=>Math.hypot(p.x-game.hunter.x,p.y-game.hunter.y)<3.3))return;
  const amount=Math.min(3,1+Math.floor(game.hunter.level/3));
  for(let i=0;i<amount;i++){
   const k={id:++game.kittenSerial,roomId:r.id,x:game.hunter.x+(i-amount/2)*.17,y:game.hunter.y,inside:false,attackClock:0,expiresAt:game.time+rand(5,15),insideUntil:0,roamUntil:0,poopAt:0,poopCount:0};
@@ -1419,11 +1432,11 @@ function updateGrannyKittens(dt){
  if(!game.kittens?.length)return;
  for(const k of [...game.kittens]){
   if(!k.inside&&kittenThreatNearby(k,threats)){
-   k.leaving=true;k.leaveDeadline??=game.time+12;
+   if(kittenStartLeaving(k,'magic_pet'))effect(k.x,k.y,'🐾💨');
   }
   if(k.helperKind){
    const helper=game[k.helperKind];
-   if(!helper?.active){k.leaving=true;k.leaveDeadline??=game.time+12;}
+   if(!helper?.active)kittenStartLeaving(k,'helper_gone');
    if(k.leaving){kittenExitStep(k,dt);continue;}
    if(game.time<(game.hunter.grannyHelperReleaseUntil||0))continue;
    const d=Math.hypot(helper.x-k.x,helper.y-k.y);
@@ -1432,13 +1445,14 @@ function updateGrannyKittens(dt){
     if(dd>0){const step=Math.min(dd,3.8*dt);k.x+=(goal.x-k.x)/dd*step;k.y+=(goal.y-k.y)/dd*step;}}
    k.attackClock+=dt;continue;
   }
-  if(!k.inside&&game.time>=k.expiresAt){k.leaving=true;k.leaveDeadline??=game.time+12;}
+  if(!k.inside&&game.time>=k.expiresAt)kittenStartLeaving(k,'attack_timeout');
   if(k.leaving){kittenExitStep(k,dt);continue;}
   const r=game.rooms[k.roomId];
   if(!r||!r.alive||r.occupant===null||!game.players[r.occupant]?.alive){
    game.kittens=game.kittens.filter(q=>q!==k);game.kittenPoops=game.kittenPoops.filter(p=>p.kittenId!==k.id);continue;
   }
   if(!k.inside){
+   if(r.door<=0){kittenStartLeaving(k,'door_destroyed');kittenExitStep(k,dt);continue;}
    // Кошенята біля дверей переслідують таргана, який намагається дістатися бабки.
    // Кошенята не втрачають обмеження 5–15 секунд на перебування зовні.
    const roaches=[...r.items.values()].filter(it=>it.type==='cockroach'&&it.bug?.active);
@@ -2057,9 +2071,7 @@ function updatePets(dt){
   if(item.source==='magic'&&game.boss.id==='catgranny'){
    for(const k of game.kittens){
     if(k.inside||k.leaving||Math.hypot(p.x-k.x,p.y-k.y)>2.2)continue;
-    k.leaving=true;k.leaveDeadline=game.time+12;
-    k.helperKind=null;k.expiresAt=game.time;
-    effect(k.x,k.y,'🐾💨');
+    if(kittenStartLeaving(k,'magic_pet'))effect(k.x,k.y,'🐾💨');
    }
   }
   if(chasing&&Math.hypot(p.x-h.x,p.y-h.y)<1.25&&p.cd<=0){
@@ -2357,7 +2369,7 @@ function updateBossAnimation(){
  // Тимчасові стани мають пріоритет над ходьбою та атакою і самі завершуються.
  const sellerFx=game.boss.id==='seller'&&h.sellerVisualUntil>game.time
   &&(h.sellerVisual==='teleport'||h.sellerVisual==='dodge')?h.sellerVisual:null;
- const mode=sellerFx||(game.boss.id==='catgranny'&&h.state==='granny_release'?'attack':(h.state==='transform'&&game.boss.transform?'transform':(['attack','roachfight'].includes(h.state)?'attack':(h.state==='hunt'||h.state==='retreat'||h.state==='breach'||h.state==='granny_wander')?'walk':'idle')));
+ const mode=sellerFx||(game.boss.id==='catgranny'&&(h.state==='granny_release'||h.grannyHelperReleaseUntil>game.time)?'attack':(h.state==='transform'&&game.boss.transform?'transform':(['attack','roachfight'].includes(h.state)?'attack':(h.state==='hunt'||h.state==='retreat'||h.state==='breach'||h.state==='granny_wander')?'walk':'idle')));
  const filename=game.boss[mode]||game.boss.attack||game.boss.walk||game.boss.idle;
  if(bossDisplayedState!==mode){
    bossDisplayedState=mode;
