@@ -1124,6 +1124,12 @@ function attachTrapOnLeavingDoor(roomId){
 function fleeHunter(reason){
  const h=game.hunter;
  // Спрацьовує тільки при відході ВІД дверей, які гість уже атакував.
+ if(game.boss.id==='catgranny'&&['mikola','olexiy','six'].includes(reason)){
+  const helper=game[reason];
+  releaseGrannyHelperKittens(reason,helper);
+  game.helperFleeLockUntil=game.time+32;
+  return;
+ }
  if(h.state==='attack')attachTrapOnLeavingDoor(h.target);
  h.path=panicRoute(h);h.fleeReason=reason;
  if(['mikola','olexiy','six'].includes(reason))game.helperFleeLockUntil=game.time+32;
@@ -1291,11 +1297,32 @@ function sellerDodge(h){
  return true;
 }
 // Кошенята атакують незалежно від бабки: вона ніколи не завдає шкоди особисто.
+function releaseGrannyHelperKittens(kind,helper){
+ if(!game||game.boss.id!=='catgranny'||!helper)return;
+ // Помічники змушують бабку випустити охорону, а не тікати.
+ if(game.kittens.some(k=>k.helperKind===kind))return;
+ const h=game.hunter;
+ h.grannyHelperReleaseUntil=game.time+.89;
+ for(let i=0;i<2;i++)game.kittens.push({id:++game.kittenSerial,roomId:null,
+  helperKind:kind,x:h.x+(i?0.22:-.22),y:h.y,inside:false,attackClock:0,expiresAt:Infinity,
+  chaseUntil:Infinity,leaving:false,poopCount:0});
+ effect(h.x,h.y,'🐈🐈');
+}
+function kittenExitStep(k,dt){
+ const dest=nearestRest(k);const path=bfs(k.x,k.y,Math.floor(dest.x),Math.floor(dest.y),null);
+ const target=path[0]||dest;
+ const dx=target.x-k.x,dy=target.y-k.y,dist=Math.hypot(dx,dy);
+ if(dist>0){const step=Math.min(dist,3*dt);k.x+=dx/dist*step;k.y+=dy/dist*step;}
+ if(Math.hypot(k.x-dest.x,k.y-dest.y)<.8||game.time>(k.leaveDeadline||Infinity)){
+  game.kittens=game.kittens.filter(x=>x!==k);
+ }
+}
+function activeDoorKittens(roomId){return game.kittens.some(k=>k.roomId===roomId&&!k.inside&&!k.leaving&&!k.helperKind)}
 function releaseGrannyKittens(r){
- if(!game||!r?.alive)return;
+ if(!game||!r?.alive||activeDoorKittens(r.id))return;
  const amount=Math.min(3,1+Math.floor(game.hunter.level/3));
  for(let i=0;i<amount;i++){
-  const k={id:++game.kittenSerial,roomId:r.id,x:game.hunter.x+(i-amount/2)*.17,y:game.hunter.y,inside:false,attackClock:0,insideUntil:0,roamUntil:0,poopAt:0,poopCount:0};
+  const k={id:++game.kittenSerial,roomId:r.id,x:game.hunter.x+(i-amount/2)*.17,y:game.hunter.y,inside:false,attackClock:0,expiresAt:game.time+rand(5,15),insideUntil:0,roamUntil:0,poopAt:0,poopCount:0};
   game.kittens.push(k);
  }
  effect(r.doorX+.5,r.doorY+.5,'🐈');
@@ -1332,14 +1359,65 @@ function handleKittenClick(room,x,y){
  ]);
  return true;
 }
+// Тільки тварини, отримані через Маджику, проганяють бабку та кошенят.
+function magicPetThreats(){
+ if(!game)return [];
+ const out=[];
+ for(const r of game.rooms)for(const it of r.items.values()){
+  if((it.type==='cat'||it.type==='dog')&&it.source==='magic'&&it.pet&&r.alive)
+   out.push({x:it.pet.x,y:it.pet.y,room:r});
+ }
+ return out;
+}
+function kittenThreatNearby(k,threats,range=3.3){
+ return threats.some(t=>Math.hypot(t.x-k.x,t.y-k.y)<range);
+}
+function grannyRetreatFromMagicPets(threats){
+ const h=game.hunter;
+ if(game.boss.id!=='catgranny'||!h.active||h.hp<=0)return;
+ if(!threats.some(p=>Math.hypot(p.x-h.x,p.y-h.y)<2.8))return;
+ if(h.state==='retreat'||h.state==='rest')return;
+ // Замість нападати на домашню тварину бабка відступає до виходу.
+ h.state='retreat';h.path=panicRoute(h);h.target=null;h.attack=0;
+ h.speed=2.9;h.grannyReleaseUntil=0;h.grannyWanderUntil=0;
+ effect(h.x,h.y,'🐾💨');
+}
 function updateGrannyKittens(dt){
- if(!game?.kittens?.length)return;
+ if(!game||game.boss.id!=='catgranny')return;
+ const threats=magicPetThreats();
+ grannyRetreatFromMagicPets(threats);
+ if(!game.kittens?.length)return;
  for(const k of [...game.kittens]){
+  if(!k.inside&&kittenThreatNearby(k,threats)){
+   k.leaving=true;k.leaveDeadline??=game.time+12;
+  }
+  if(k.helperKind){
+   const helper=game[k.helperKind];
+   if(!helper?.active){k.leaving=true;k.leaveDeadline??=game.time+12;}
+   if(k.leaving){kittenExitStep(k,dt);continue;}
+   if(game.time<(game.hunter.grannyHelperReleaseUntil||0))continue;
+   const d=Math.hypot(helper.x-k.x,helper.y-k.y);
+   if(d>.45){const path=bfs(k.x,k.y,Math.floor(helper.x),Math.floor(helper.y),null);
+    const goal=path[0]||helper;const dd=Math.hypot(goal.x-k.x,goal.y-k.y);
+    if(dd>0){const step=Math.min(dd,3.8*dt);k.x+=(goal.x-k.x)/dd*step;k.y+=(goal.y-k.y)/dd*step;}}
+   k.attackClock+=dt;continue;
+  }
+  if(!k.inside&&game.time>=k.expiresAt){k.leaving=true;k.leaveDeadline??=game.time+12;}
+  if(k.leaving){kittenExitStep(k,dt);continue;}
   const r=game.rooms[k.roomId];
   if(!r||!r.alive||r.occupant===null||!game.players[r.occupant]?.alive){
    game.kittens=game.kittens.filter(q=>q!==k);game.kittenPoops=game.kittenPoops.filter(p=>p.kittenId!==k.id);continue;
   }
   if(!k.inside){
+   // Кошенята біля дверей переслідують таргана, який намагається дістатися бабки.
+   // Кошенята не втрачають обмеження 5–15 секунд на перебування зовні.
+   const roaches=[...r.items.values()].filter(it=>it.type==='cockroach'&&it.bug?.active);
+   const roach=roaches.find(it=>Math.hypot(it.bug.x-k.x,it.bug.y-k.y)<3.2);
+   if(roach){
+    const b=roach.bug,d=Math.hypot(b.x-k.x,b.y-k.y);
+    if(d>.48){const step=Math.min(d,2.7*dt);k.x+=(b.x-k.x)/d*step;k.y+=(b.y-k.y)/d*step;}
+    k.attackClock+=dt;continue;
+   }
    const door=nearestHunterDoor(r);const d=Math.hypot(k.x-door.x,k.y-door.y);
    if(d>.18){const step=Math.min(d,1.65*dt);k.x+=(door.x-k.x)/d*step;k.y+=(door.y-k.y)/d*step;continue;}
    k.attackClock+=dt;
@@ -1353,12 +1431,24 @@ function updateGrannyKittens(dt){
     // Кошеня телепортується незалежно від дверей, тільки якщо кімната не заповнена.
     if(Math.random()<.23){
      const slots=kittenFreeTiles(r,k);
-     if(slots.length){const [x,y]=pick(slots);k.x=x+.5;k.y=y+.5;k.inside=true;k.roamUntil=game.time+rand(13,21);k.poopAt=game.time+rand(2.2,4.5);}
+     if(slots.length){const [x,y]=pick(slots);k.x=x+.5;k.y=y+.5;k.inside=true;k.roamUntil=game.time+rand(13,21);k.poopAt=game.time+rand(2.2,4.5);k.insideAnimation='walk';k.insideAnimationUntil=game.time+rand(1.3,2.4);}
     }
    }
   }else{
-   k.attackClock+=dt;
-   if(k.attackClock>.9){k.attackClock=0;const slots=kittenFreeTiles(r,k);if(slots.length){const [x,y]=pick(slots);k.x=x+.5;k.y=y+.5;}}
+   // Усередині кімнати кошеня чергує ходіння й коротку анімацію дряпання.
+   // У режимі fight воно стоїть, не завдаючи шкоди мешканцям чи предметам.
+   if(!k.insideAnimation){k.insideAnimation='walk';k.insideAnimationUntil=game.time+rand(1.3,2.4);}
+   if(game.time>=k.insideAnimationUntil){
+    if(k.insideAnimation==='walk'){
+     k.insideAnimation='fight';k.insideAnimationUntil=game.time+rand(.75,1.25);
+    }else{
+     k.insideAnimation='walk';k.insideAnimationUntil=game.time+rand(1.3,2.4);
+    }
+   }
+   if(k.insideAnimation==='walk'){
+    k.attackClock+=dt;
+    if(k.attackClock>.9){k.attackClock=0;const slots=kittenFreeTiles(r,k);if(slots.length){const [x,y]=pick(slots);k.x=x+.5;k.y=y+.5;}}
+   }
    if(game.time>=k.poopAt&&k.poopCount<3){
     const x=Math.floor(k.x),y=Math.floor(k.y);
     if(!game.kittenPoops.some(p=>p.roomId===r.id&&p.x===x&&p.y===y)){
@@ -1494,9 +1584,9 @@ if(h.state==='transform'){
      return;
    }
  }
-if(Math.hypot(h.x-pt.x,h.y-pt.y)<.34){h.attack=0;h.path=[];if(g.boss.id==='kolyadun'&&Math.random()<.65){h.state='attack';const carols=['Колядун: коляд, коляд, колядниця!','Колядун: файна з медом паляниця.','Колядун: відчиніть, дитина колядує!'];toast(pick(carols));}else if(g.boss.id==='hella'){if(g.boss.transform){h.state='transform';h.transform=2.5;}else h.state='attack';if(Math.random()<.65){const hellaLines=['Гелла: мені потрібен столик! Відчиняй!','Гелла: я знаю що ти вдома!','Гелла: мені треба залишити з тобою дитину!'];toast(pick(hellaLines));}}else if(g.boss.id==='evgen'){h.state='attack';}else if(g.boss.id==='hector'){h.state='attack';if(Math.random()<.72){const hectorLines=['Гектор: Привіт, моє хороше. Дідо прийшов.','Гектор: Відчиняй двері, гімно мале!','Гектор: Ти пропонуєш пиріжок, а воно ще й огризається'];toast(pick(hectorLines));}}else if(g.boss.id==='seller'){h.state='attack';if(Math.random()<.7){const sellerLines=['Продавець: Доброго дня! У вас старі вікна.','Продавець: Лише 5 хвилин про вигідну пропозицію!','Продавець: У нас акція саме для вашої квартири!'];toast(pick(sellerLines));}}else if(g.boss.id==='catgranny'){h.state='granny_release';h.grannyReleaseUntil=g.time+.89;h.grannyWanderAnchor={x:h.x,y:h.y};toast('Бабка випускає кошенят із клітки!');} else if(g.boss.id==='courier'){h.state='attack';h.courierDoorId=h.target;h.courierSwitchAt=g.time+rand(10,16);toast(pick(['Кур’єр: Ваше замовлення, відчиніть, будь ласка, двері.','Кур’єр: Заберіть ваше замовлення.','Кур’єр: Я й досі чекаю на чайові.']));}else{h.state='attack';}} }
+if(Math.hypot(h.x-pt.x,h.y-pt.y)<.34){h.attack=0;h.path=[];if(g.boss.id==='kolyadun'&&Math.random()<.65){h.state='attack';const carols=['Колядун: коляд, коляд, колядниця!','Колядун: файна з медом паляниця.','Колядун: відчиніть, дитина колядує!'];toast(pick(carols));}else if(g.boss.id==='hella'){if(g.boss.transform){h.state='transform';h.transform=2.5;}else h.state='attack';if(Math.random()<.65){const hellaLines=['Гелла: мені потрібен столик! Відчиняй!','Гелла: я знаю що ти вдома!','Гелла: мені треба залишити з тобою дитину!'];toast(pick(hellaLines));}}else if(g.boss.id==='evgen'){h.state='attack';}else if(g.boss.id==='hector'){h.state='attack';if(Math.random()<.72){const hectorLines=['Гектор: Привіт, моє хороше. Дідо прийшов.','Гектор: Відчиняй двері, гімно мале!','Гектор: Ти пропонуєш пиріжок, а воно ще й огризається'];toast(pick(hectorLines));}}else if(g.boss.id==='seller'){h.state='attack';if(Math.random()<.7){const sellerLines=['Продавець: Доброго дня! У вас старі вікна.','Продавець: Лише 5 хвилин про вигідну пропозицію!','Продавець: У нас акція саме для вашої квартири!'];toast(pick(sellerLines));}}else if(g.boss.id==='catgranny'){h.state=activeDoorKittens(h.target)?'granny_wander':'granny_release';h.grannyReleaseUntil=g.time+.89;h.grannyWanderUntil=g.time+3;h.grannyWanderAnchor={x:h.x,y:h.y};if(h.state==='granny_release')toast('Бабка випускає кошенят із клітки!');} else if(g.boss.id==='courier'){h.state='attack';h.courierDoorId=h.target;h.courierSwitchAt=g.time+rand(10,16);toast(pick(['Кур’єр: Ваше замовлення, відчиніть, будь ласка, двері.','Кур’єр: Заберіть ваше замовлення.','Кур’єр: Я й досі чекаю на чайові.']));}else{h.state='attack';}} }
 if(h.state==='attack'){
- if(g.boss.id==='catgranny'){h.state='granny_release';h.grannyReleaseUntil=g.time+.89;return;}
+ if(g.boss.id==='catgranny'){h.state=activeDoorKittens(h.target)?'granny_wander':'granny_release';h.grannyReleaseUntil=g.time+.89;h.grannyWanderUntil=g.time+3;return;}
  // Не даємо босові всю ніч бити тільки одні двері, ігноруючи решту будинку.
  // Марічка і Продавець мають власну механіку зміни кімнат.
  if(g.boss.id!=='marichka'&&g.boss.id!=='seller'&&g.boss.id!=='courier'){
@@ -1936,7 +2026,15 @@ function updateCockroaches(dt){
   const [sx,sy]=key.split(',').map(Number),home={x:sx+.5,y:sy+.5};
   if(!it.bug)it.bug={x:home.x,y:home.y,path:[],routeKey:'',active:false,returning:false,chaseUntil:0};
   const b=it.bug,limit=game.boosts.includes('cockroach')?2:1;
-  const frightened=game.boss.id==='marichka'&&(b.scaredUntil||0)>game.time;
+  const nearbyKittens=game.boss.id==='catgranny'&&game.kittens.some(k=>
+   k.roomId===r.id&&!k.inside&&!k.leaving&&!k.helperKind&&
+   Math.hypot(k.x-(r.doorX+.5),k.y-(r.doorY+.5))<3.5);
+  if(nearbyKittens){
+   b.scaredUntil=Math.max(b.scaredUntil||0,game.time+1.4);
+   b.chaseUntil=0;b.returning=true;b.path=[];b.routeKey='';
+   if(!b.lastKittenScareAt||game.time-b.lastKittenScareAt>3){effect(b.x,b.y,'🪳💨');b.lastKittenScareAt=game.time;}
+  }
+  const frightened=(game.boss.id==='marichka'||game.boss.id==='catgranny')&&(b.scaredUntil||0)>game.time;
   const canChase=h.active&&h.hp>0&&r.alive&&h.state!=='rest'&&!frightened&&(it.strikes||0)<limit;
   const nearDoor=Math.hypot(h.x-(r.doorX+.5),h.y-(r.doorY+.5))<8;
   if(canChase&&nearDoor){
@@ -2413,7 +2511,7 @@ function syncKittenVisuals(){
   if(!img){img=document.createElement('img');img.alt='Кошеня';img.draggable=false;
    Object.assign(img.style,{position:'absolute',zIndex:'8',pointerEvents:'none',imageRendering:'pixelated',objectFit:'contain'});
    $('arenaShell').appendChild(img);kittenVisuals.set(k.id,img);}
-  const sprite=k.inside?'kittenwalk.gif':k.attackClock<.65?'kittenfight.gif':'kittenwalk.gif';
+  const sprite=k.helperKind||k.leaving?'kittenwalk.gif':k.inside?(k.insideAnimation==='fight'?'kittenfight.gif':'kittenwalk.gif'):(k.attackClock<.65?'kittenfight.gif':'kittenwalk.gif');
   if(img.dataset.sprite!==sprite){img.src=assetURL(sprite);img.dataset.sprite=sprite;}
   // Не зменшувати кошенят: натуральні розміри спрайтів у CSS-пікселях.
   // Масштабування гри впливає на координати, але не на розмір кошенят.
@@ -2813,4 +2911,4 @@ if(!save.tutorial)infoModal();
  }
 })();
 </script>
-</body></html> 
+</body></html>
