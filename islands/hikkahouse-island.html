@@ -295,6 +295,56 @@ function doorBurstWarning(){
   }
  }catch(e){}
 }
+// Етап 5: єдиний журнал ігрових подій; не впливає на економіку й збереження.
+const hikkaEvents=[];
+const hikkaEventCooldown=new Map();
+let hikkaDebugVisible=false;
+const hikkaEventPanel=document.createElement('aside');
+hikkaEventPanel.id='hikkaEventPanel';hikkaEventPanel.setAttribute('aria-label','Діагностика гри');
+Object.assign(hikkaEventPanel.style,{position:'fixed',top:'85px',left:'12px',zIndex:'1000',maxWidth:'min(400px,90vw)',maxHeight:'55vh',overflow:'auto',padding:'10px',background:'#141c33f2',color:'#e7f4ff',border:'1px solid #86a6c5',borderRadius:'10px',font:'12px/1.5 monospace',whiteSpace:'pre-wrap',pointerEvents:'none'});
+hikkaEventPanel.hidden=true;document.body.appendChild(hikkaEventPanel);
+function hikkaEvent(code,message,{visible=false,cooldown=6}={}){
+ if(!game)return;
+ const t=game.time||0,k=String(code),prior=hikkaEventCooldown.get(k);
+ if(prior!==undefined&&t-prior<cooldown)return;
+ hikkaEventCooldown.set(k,t);
+ hikkaEvents.push({time:t,code:k,message:String(message)});
+ if(hikkaEvents.length>80)hikkaEvents.shift();
+ if(visible)toast(message);
+}
+function hikkaValidateState(){
+ if(!game)return [];
+ const errors=[];
+ const all=game.kittens||[];
+ const ids=new Set();
+ for(const k of all){
+  if(ids.has(k.id))errors.push('Повторний ID кошеняти: '+k.id);
+  ids.add(k.id);
+  if(k.leaving&&k.helperKind)errors.push('Кошеня одночасно тікає та переслідує помічника');
+  if(!Number.isFinite(k.x)||!Number.isFinite(k.y))errors.push('Некоректна позиція кошеняти');
+  if(k.inside&&k.leaving)errors.push('Кімнатне кошеня одночасно тікає');
+ }
+ for(const r of game.rooms||[]){
+  if(!Number.isFinite(r.door)||r.door<0)errors.push('Некоректне HP дверей кімнати '+r.id);
+  if(r.maxDoor<r.door)errors.push('HP дверей перевищує максимум у кімнаті '+r.id);
+ }
+ return errors;
+}
+function hikkaRefreshDebug(){
+ if(game&&game.time<1&&hikkaEvents.length){hikkaEvents.length=0;hikkaEventCooldown.clear();}
+ if(!hikkaDebugVisible||!game){hikkaEventPanel.hidden=true;return;}
+ hikkaEventPanel.hidden=false;
+ const h=game.hunter,room=game.rooms[h?.target];
+ const checks=hikkaValidateState();
+ const lines=[`F9 · ДІАГНОСТИКА | ${game.boss?.name||'?'} | ${game.time.toFixed(1)} c`,
+ `Бос: ${h?.state||'?'} · HP ${Math.round(h?.hp||0)}/${Math.round(h?.maxHp||0)} · рівень ${h?.level||0}`,
+ `Двері цілі: ${room?Math.round(room.door)+'/'+room.maxDoor:'немає'}`,
+ `Кошенята: ${(game.kittens||[]).length}, назовні: ${(game.kittens||[]).filter(k=>!k.inside&&!k.leaving).length}, тікають: ${(game.kittens||[]).filter(k=>k.leaving).length}`,
+ `Помилки станів: ${checks.length}`,...checks.slice(0,4), 'ОСТАННІ ПОДІЇ:',
+ ...hikkaEvents.slice(-9).map(e=>`${e.time.toFixed(1)} [${e.code}] ${e.message}`)];
+ hikkaEventPanel.textContent=lines.join('\n');
+}
+window.addEventListener('keydown',e=>{if(e.key==='F9'){e.preventDefault();hikkaDebugVisible=!hikkaDebugVisible;hikkaRefreshDebug();}});
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),2300)}
 // Стабільний ключ календарного дня Києва без залежності від порядку дати в браузері.
 const KYIV=()=>{
@@ -1287,7 +1337,7 @@ function sellerTeleport(h,force=false,helperEscape=false){
  if(!pos)return false;
  effect(h.x,h.y,'🌀');
  h.x=pos.x;h.y=pos.y;h.path=[];h.target=room.id;h.state='hunt';h.attack=0;h.stun=0;
- h.sellerArrival=.7;h.sellerVisual='teleport';h.sellerVisualUntil=game.time+.7;h.teleportCd=Math.max(9,15-game.level*.2);
+ h.sellerArrival=.7;h.sellerVisual='teleport';h.sellerVisualUntil=game.time+.7;hikkaEvent('seller-teleport','🌀 Продавець змінив кімнату!',{visible:true,cooldown:10});h.teleportCd=Math.max(9,15-game.level*.2);
  effect(h.x,h.y,'🌀');
  return true;
 }
@@ -1346,7 +1396,7 @@ function kittenStartLeaving(k,reason){
  if(k.inside||k.leaving)return false;
  k.leaving=true;k.leaveDeadline=game.time+12;
  k.helperKind=null;k.attackClock=0;k.expiresAt=game.time;
- k.exitReason=reason;
+ k.exitReason=reason;hikkaEvent('kitten-'+reason,reason==='magic_pet'?'🐾 Кошенята тікають від кота або собаки!':reason==='helper_gone'?'🐈 Помічник зник, кошенята тікають.':reason==='attack_timeout'?'🐈 Кошенята завершили атаку й тікають.':'Кошеня залишає кімнату: '+reason,{visible:reason==='magic_pet',cooldown:8});
  return true;
 }
 function kittenExitStep(k,dt){
@@ -1668,7 +1718,7 @@ if(h.state==='attack'){
  if(g.boss.id==='osbb'&&Math.hypot(h.x-nearestHunterDoor(r).x,h.y-nearestHunterDoor(r).y)<.65){
   if(!h.osbbNextInspectionAt)h.osbbNextInspectionAt=g.time+rand(9,15);
   if(g.time>=h.osbbNextInspectionAt){
-   r.repairBlockedUntil=Math.max(r.repairBlockedUntil||0,g.time+4);
+   r.repairBlockedUntil=Math.max(r.repairBlockedUntil||0,g.time+4);hikkaEvent('osbb-inspection','📋 Перевірка ОСББ: ремонт заблоковано на 4 с.',{visible:true,cooldown:15});
    h.osbbNextInspectionAt=g.time+rand(22,32);
    effect(r.doorX+.5,r.doorY+.5,'📋');
    toast('Голова ОСББ: '+pick(['На вас сусіди скаржаться!','Замініть труби в квартирі, вони у вас старі.','Потрібен ваш підпис на покращення будинку.']));
@@ -2660,6 +2710,7 @@ function logicTick(){
   const note=$('tip');if(note)note.textContent='Помилка симуляції: '+(err?.message||err);
  }
  updateDiagnostic();
+ if(game&&Math.floor(game.time*4)!==window.__hhLastDiagQuarter){window.__hhLastDiagQuarter=Math.floor(game.time*4);hikkaRefreshDebug();}
 }
 function drawFrame(now){
  raf=requestAnimationFrame(drawFrame);
@@ -2865,7 +2916,7 @@ locateAssets().then(folder=>{
 if(!save.tutorial)infoModal();
 
 
-// === Локальний тестовий режим: F8. Не впливає на збережений прогрес. ===
+// === Локальний тестовий режим: F8. Не впливає на збережений прогрес. F9 показує журнал станів.  ===
 (function initHikkaDevMode(){
  const style=document.createElement('style');
  style.textContent=`#hikkaDevPanel[hidden]{display:none!important}#hikkaDevPanel{position:fixed;right:12px;top:65px;z-index:9999;width:min(320px,calc(100vw - 24px));max-height:calc(100vh - 90px);overflow:auto;padding:12px;background:#151b30f5;border:1px solid #9baaff;border-radius:13px;color:#fff;box-shadow:0 12px 40px #0009;font:13px system-ui,sans-serif}#hikkaDevPanel h3{margin:0 0 7px;font-size:15px}#hikkaDevPanel p{margin:0 0 9px;color:#c2c9e5;font-size:12px}#hikkaDevPanel .dev-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}#hikkaDevPanel button{padding:8px 5px;border:1px solid #626f99;border-radius:7px;background:#303c5e;color:white;cursor:pointer;font-size:12px}#hikkaDevPanel button:hover{background:#435583}#hikkaDevPanel select{width:100%;background:#222b48;color:white;border:1px solid #6a7ea9;border-radius:6px;padding:6px;margin:5px 0 9px}#hikkaDevPanel .dev-close{float:right;width:30px;padding:3px}#hikkaDevPanel .dev-alert{color:#ffcb94}`;
