@@ -2599,13 +2599,25 @@ function drawRoomOwnerLabel(r,tile){
 const hunterTrapVisual=document.createElement('img');
 hunterTrapVisual.alt='Капкан на гості';
 hunterTrapVisual.draggable=false;
-Object.assign(hunterTrapVisual.style,{position:'absolute',pointerEvents:'none',zIndex:'6',imageRendering:'pixelated',objectFit:'contain'});
-hunterTrapVisual.src=assetURL('trap.png');
+Object.assign(hunterTrapVisual.style,{position:'absolute',pointerEvents:'none',zIndex:'12',imageRendering:'pixelated',objectFit:'contain'});
+// Не визначаємо адресу до locateAssets(): ASSET_DIR ще порожня.
+hunterTrapVisual.alt='';
+hunterTrapVisual.onerror=()=>{hunterTrapVisual.style.display='none';hunterTrapVisual.style.background='none';};
+hunterTrapVisual.onload=()=>{hunterTrapVisual.style.display='block';};
 $('arenaShell').appendChild(hunterTrapVisual);
 function syncHunterTrapVisual(){
  const h=game?.hunter;
  if(!h||!(h.trapAttachedUntil>game.time)||!['retreat','hunt','mikola_flee','olexiy_flee','six_flee'].includes(h.state)||$('game').hidden){
   hunterTrapVisual.hidden=true;return;
+ }
+ // Використовуємо ТОЙ САМИЙ ресурс, що й предмет капкана всередині кімнати.
+ // Раніше src призначався до визначення папки assets, через що з'являвся alt-текст.
+ const trapImage=images['trap.png'];
+ if(trapImage?.complete&&trapImage.naturalWidth>0){
+  if(hunterTrapVisual.src!==trapImage.src)hunterTrapVisual.src=trapImage.src;
+ }else{
+  const correctURL=assetURL('trap.png');
+  if(hunterTrapVisual.src!==new URL(correctURL,document.baseURI).href)hunterTrapVisual.src=correctURL;
  }
  const size=cell*.68;
  hunterTrapVisual.style.width=size+'px';hunterTrapVisual.style.height=size+'px';
