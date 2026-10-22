@@ -34,6 +34,11 @@
 @media(max-width:900px){#intruder.nv-fullscreen .nv-game-layout{grid-template-columns:160px minmax(0,1fr) 155px;gap:6px}#intruder.nv-fullscreen .nv-side{padding:8px}#intruder.nv-fullscreen .nv-side .nv-toolbar button{font-size:12px;padding:8px 5px}}
 @media(max-width:650px){#intruder.nv-fullscreen .nv-game-layout{display:flex;flex-direction:column;overflow:auto;flex:1;min-height:0}#intruder.nv-fullscreen .nv-map-area{order:0;flex:none;height:52vh;min-height:260px}#intruder.nv-fullscreen .nv-side-left{order:1}#intruder.nv-fullscreen .nv-side-right{order:2}#intruder.nv-fullscreen .nv-side{flex:none;overflow:visible}#intruder.nv-fullscreen .nv-side .nv-toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center}#intruder.nv-fullscreen .nv-side .nv-toolbar label{grid-column:1/-1}#intruder.nv-fullscreen .nv-map-area .nv-map-shell{min-height:220px}}
 
+/* Перемога/поразка над центром мапи, а не збоку чи внизу екрана. */
+.nv-victory-popup{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:15;min-width:min(320px,86%);max-width:92%;padding:23px 20px;background:#171c35f2;border:2px solid #72e8c7;border-radius:16px;box-shadow:0 12px 50px #000b;text-align:center;display:grid;gap:10px;justify-items:center;pointer-events:none}
+.nv-victory-popup[hidden]{display:none!important}.nv-victory-popup strong{font-size:clamp(23px,3vw,38px);line-height:1.15;color:#80f5cf}.nv-victory-popup span{font-size:14px;color:#f2e9fc}
+.nv-victory-popup.lost{border-color:#ff8899}.nv-victory-popup.lost strong{color:#ff9bab}
+#nvVictoryActions:not([hidden]){display:flex;flex-wrap:wrap;justify-content:center;gap:8px;pointer-events:auto}
 /* v0.2.9: responsive full-game viewport with stable middle arena. */
 #intruder.nv-fullscreen{height:100dvh;max-height:100dvh;min-width:0;overflow:hidden;padding:clamp(5px,1vw,12px);gap:clamp(3px,.65vh,9px)}
 #intruder.nv-fullscreen>.line,#intruder.nv-fullscreen>.nv-hud{flex:0 0 auto;margin:0}
@@ -56,7 +61,7 @@
 }
 @media(max-height:650px) and (min-width:741px){#intruder.nv-fullscreen .sub{display:none}#intruder.nv-fullscreen .nv-side{gap:4px}#intruder.nv-fullscreen .nv-hud{font-size:12px}}
 </style></head><body>
-<header><div><div class="brand">HIKKA <b>HOUSE</b> · DLC</div><div class="small">Інший бік будинку · прототип 0.2.9</div></div><div class="stats"><span class="chip">🎟️ <span id="tokens">0</span> токенів</span><button id="importButton">Імпорт із класичної гри</button><a href="hikkahouse-island.html" style="color:#f4c8de">← Класична гра</a></div></header>
+<header><div><div class="brand">HIKKA <b>HOUSE</b> · DLC</div><div class="small">Інший бік будинку · прототип 0.3.4</div></div><div class="stats"><span class="chip">🎟️ <span id="tokens">0</span> токенів</span><button id="importButton">Імпорт із класичної гри</button><a href="hikkahouse-island.html" style="color:#f4c8de">← Класична гра</a></div></header>
 <main><div class="intro"><h1>Три історії. Один будинок.</h1><p>Тут формується окрема частина Hikka House. Токени можна перенести персональним кодом із класичної гри. DLC зберігає прогрес незалежно від неї.</p></div>
 <div class="modes"><button class="mode active" data-mode="apartment"><span class="emoji">🏠</span><strong>Квартира Яні та Акіри</strong><span>Перший робочий режим: взаємодій із персонажами, затишок і розвиток квартири.</span><em>▶ Грати в прототип</em></button><button class="mode" data-mode="boss"><span class="emoji">⚔️</span><strong>Кооперативна кімната боса</strong><span>Спільна оборона від сильного непроханого гостя.</span><em>Підготовка режиму</em></button><button class="mode" data-mode="intruder"><span class="emoji">🚪</span><strong>Напросилися!</strong><span>Хікі тепер нападники. Проривайся до кімнат гостей, телепортуйся та викликай помічників.</span><em>▶ Грати у прототип</em></button></div>
 <section id="apartment" class="surface"><div class="line space"><div><h2>Квартира Яні та Акіри</h2><p class="sub">Натискай на Яні чи Акіру, щоб отримувати очки затишку. Поліпшуй квартиру та заробляй невелику кількість DLC-токенів за досягнення.</p></div><button id="resetApartment">Скинути лише квартиру</button></div>
@@ -69,12 +74,12 @@
  <div class="nv-game-layout">
   <aside class="nv-side nv-side-left" aria-label="Керування хікі">
    <h3>Керування</h3>
-   <div class="nv-toolbar"><label for="nvBoss">Ваш хікі</label><select id="nvBoss"><option value="hiki">Гікі</option><option value="akira">Акіра</option><option value="jinni">Джинні</option></select><button id="nvHit" class="primary">🏃 Бігти й трощити</button></div>
+   <div class="nv-toolbar"><label for="nvBoss">Ваш хікі</label><select id="nvBoss"><option value="hiki">Гікі</option><option value="akira">Акіра</option><option value="jinni">Джинні</option></select><button id="nvHit" class="primary">🏃 Бігти й трощити</button><button id="nvSocks" type="button" disabled>🧦 Увійти й розкидати шкарпетки</button></div>
    <h3>Здібності</h3>
-   <div class="nv-toolbar"><button id="nvTeleport">✦ Телепортація · 25 енергії</button><button id="nvKittens"><img class="nv-ui-sprite" src="../Assets/cat1.png" onerror="this.onerror=null;this.src='../assets/cat1.png'" alt=""/> Три коти · 20</button><button id="nvDogs"><img class="nv-ui-sprite" src="../Assets/dog1.png" onerror="this.onerror=null;this.src='../assets/dog1.png'" alt=""/> Три собаки · 25</button><button id="nvMinions"><img class="nv-ui-sprite" src="../Assets/kolposy.gif" onerror="this.onerror=null;this.src='../assets/kolposy.gif'" alt=""/> Посіпаки · 30</button><button id="nvAdepts">Адепти · 35</button></div>
+   <div class="nv-toolbar"><button id="nvTeleport">✦ Телепортація · 25 енергії</button><button id="nvKittens"><img class="nv-ui-sprite" src="../Assets/cat1.png" onerror="this.onerror=null;this.src='../assets/cat1.png'" alt=""/> Три коти · 20</button><button id="nvDogs"><img class="nv-ui-sprite" src="../Assets/dog1.png" onerror="this.onerror=null;this.src='../assets/dog1.png'" alt=""/> Три собаки · 25</button><button id="nvMinions"><img class="nv-ui-sprite" src="../Assets/oleksiywalk.gif" onerror="this.onerror=null;this.src='../assets/oleksiywalk.gif'" alt=""/> Олексій · 30</button><button id="nvAdepts"><img class="nv-ui-sprite" src="../Assets/mykolawalk.gif" onerror="this.onerror=null;this.src='../assets/mykolawalk.gif'" alt=""/> Микола · 35</button></div>
   </aside>
   <div class="nv-map-area">
- <div class="nv-map-shell" id="nvMapShell" tabindex="0" aria-label="Мапа Hikka House з шістьма кімнатами"><canvas id="nvMapCanvas" class="nv-map-canvas"></canvas><div id="nvBossSprites" class="nv-boss-sprites" aria-hidden="true"></div><span class="nv-map-tip">Клік: обрати двері · ЛКМ/палець: переміщення · колесо/два пальці: зум</span><div id="nvMatch" class="nv-match" hidden><strong>ПІДБІР 6 РЕЗИДЕНТІВ</strong><div id="nvMatchCount" class="nv-match-number">5</div><div id="nvMatchSlots" class="nv-match-slots"></div></div></div>
+ <div class="nv-map-shell" id="nvMapShell" tabindex="0" aria-label="Мапа Hikka House з шістьма кімнатами"><canvas id="nvMapCanvas" class="nv-map-canvas"></canvas><div id="nvBossSprites" class="nv-boss-sprites" aria-hidden="true"></div><span class="nv-map-tip">Клік: обрати двері · ЛКМ/палець: переміщення · колесо/два пальці: зум</span><div id="nvVictoryPopup" class="nv-victory-popup" hidden role="status" aria-live="polite"><strong id="nvVictoryTitle"></strong><span id="nvVictoryDetail"></span><div id="nvVictoryActions" hidden><button type="button" id="nvVictoryNext">Наступна мапа →</button><button type="button" id="nvVictoryRestart">Заново</button></div></div><div id="nvMatch" class="nv-match" hidden><strong>ПІДБІР 6 РЕЗИДЕНТІВ</strong><div id="nvMatchCount" class="nv-match-number">5</div><div id="nvMatchSlots" class="nv-match-slots"></div></div></div>
    <div class="nv-map-controls"><span>ЛКМ: рух карти · колесо/два пальці: зум</span><div><button id="nvZoomOut" aria-label="Віддалити мапу">−</button><button id="nvZoomIn" aria-label="Наблизити мапу">+</button></div></div>
   </div>
   <aside class="nv-side nv-side-right" aria-label="Стан кімнати">
@@ -84,7 +89,7 @@
    <div class="nv-result-controls"><button id="nvMarkWin" type="button">✓ Перемога в кімнаті</button><button id="nvMarkLoss" type="button">✕ Поразка в кімнаті</button></div>
   </aside>
  </div>
- <p class="small">Вибір кімнати: натисніть на двері на мапі. Колишні боси іноді виходять з-за ПК, рухаються в межах кімнат і невміло будують укріплення. Для персонажів використовуються лише idle/walk, а для гостей — PNG.</p>
+ <p class="small">Вибір кімнати: натисніть на двері на мапі. Колишні боси іноді виходять з-за ПК, рухаються в межах кімнат і невміло будують укріплення. Резиденти використовують PNG за ПК, walk.gif для бігу й fight.gif під час переляку.</p>
  <p class="notification" id="nvMessage" aria-live="polite">Оберіть кімнату та починайте напад.</p><div class="line" id="nvNextWrap" hidden><button class="primary" id="nvNext">Наступний рівень →</button></div>
 </section>
 </main><footer>Hikka House DLC · локальне збереження · у разі очищення даних сайту прогрес може зникнути</footer>
@@ -208,12 +213,12 @@ render();
  const GUESTS=DEFENDER_ROSTER.flatMap(d=>[d.file,d.walk,d.fight]);
  const PCS=['pc2.png','pc3.png','pc4.png','pc5.png','pc6.png','pc8.png'];
  // Віряни Морія з оригінального Hikka House: Антон і Деара.
- const HELPER_ASSETS={kitten:['cat1.png','cat2.png','cat3.png'],dog:['dog1.png','dog2.png','dog3.png'],minion:['kolposy.gif'],adept:[['antonwalk.gif','anton.png'],['dearawalk.gif','deara.png']]};
+ const HELPER_ASSETS={kitten:['cat1.png','cat2.png','cat3.png'],dog:['dog1.png','dog2.png','dog3.png'],oleksiy:['oleksiywalk.gif','oleksiy.png'],mykola:['mykolawalk.gif','mykola.png']};
  const canvas=$n('nvMapCanvas'),shell=$n('nvMapShell'),ctx=canvas.getContext('2d'),sprites=$n('nvBossSprites');
- let level=1,rooms=[],grid=[],assets=new Map(),helperVisuals=new Map(),guestVisuals=new Map(),boss='hiki',energy=100,seconds=0,done=false,active=false,selected=0,timer=null,helpers=[],attacks=0,bossUnits=[],bossImages=[],zoom=1,matchTimer=null,matchRemaining=5,playing=false,lastMove=0,cameraX=0,cameraY=0,activePointers=new Map(),panGesture=null,pinchGesture=null,suppressMapClick=false;
+ let level=1,rooms=[],grid=[],assets=new Map(),helperVisuals=new Map(),guestVisuals=new Map(),boss='hiki',energy=100,seconds=0,done=false,active=false,selected=0,timer=null,helpers=[],attacks=0,bossUnits=[],bossImages=[],zoom=1,matchTimer=null,matchRemaining=5,playing=false,lastMove=0,cameraX=0,cameraY=0,activePointers=new Map(),panGesture=null,pinchGesture=null,suppressMapClick=false,victoryTimeout=null;
  try{level=Math.max(1,Math.min(MAX,+localStorage.getItem(SAVE)||1))}catch{}
  function loadImage(name){if(assets.has(name))return;const im=new Image();let i=0;const paths=['../Assets/','../assets/'];im.onload=()=>draw();im.onerror=()=>{if(++i<paths.length)im.src=paths[i]+name};im.src=paths[0]+name;assets.set(name,im)}
- [...new Set([...MAPS.flatMap(m=>[m.floor,m.roomFloor,m.wall]),...GUESTS,...PCS,...Object.values(CHAR).flat(),'cat1.png','cat2.png','cat3.png','dog1.png','dog2.png','dog3.png','kolposy.gif',...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),'energy1.png','moneytree1.png','trap.png','time.png','antonwalk.gif','anton.png','dearawalk.gif','deara.png','door1.png','door2.png','door3.png','door4.png','door5.png','door6.png'])].forEach(loadImage);
+ [...new Set([...MAPS.flatMap(m=>[m.floor,m.roomFloor,m.wall]),...GUESTS,...PCS,...Object.values(CHAR).flat(),'cat1.png','cat2.png','cat3.png','dog1.png','dog2.png','dog3.png','oleksiywalk.gif','oleksiy.png','mykolawalk.gif','mykola.png',...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),'energy1.png','moneytree1.png','trap.png','time.png','door1.png','door2.png','door3.png','door4.png','door5.png','door6.png'])].forEach(loadImage);
  function makeRoom(i,map){
   let cells=[],side,x,y,doorX,doorY,pcX,pcY;
   if(LAYOUTS[map.key]){
@@ -233,7 +238,7 @@ render();
    for(let dy=0;dy<6;dy++)for(let dx=0;dx<6;dx++)cells.push([x+dx,y+dy]);
   }
   const maxHp=95+(level-1)*42;
-  return {i,side,x,y,cells,doorX,doorY,pcX,pcY,hp:maxHp,maxHp,broken:false,running:false,angle:i,guestTicks:5+i,guestFile:defenders()[i].file,guestWalk:defenders()[i].walk,guestFight:defenders()[i].fight,guestName:defenders()[i].name,guestFightUntil:0,guestFightCooldown:2+Math.random()*5,result:null,guestX:pcX,guestY:pcY,fort:0,weapon:0,buildTicks:4+i,pcLevel:1,doorLevel:1,coins:18+Math.round(Math.random()*12),power:0,structures:[],buildPlan:['cautious','economist','defender','chaotic'][i%4],weaponCooldown:0};
+  return {i,side,x,y,cells,doorX,doorY,pcX,pcY,hp:maxHp,maxHp,broken:false,running:false,angle:i,guestTicks:5+i,guestFile:defenders()[i].file,guestWalk:defenders()[i].walk,guestFight:defenders()[i].fight,guestName:defenders()[i].name,guestFightUntil:0,guestFightCooldown:2+Math.random()*5,result:null,guestX:pcX,guestY:pcY,fort:0,weapon:0,buildTicks:4+i,pcLevel:1,doorLevel:1,coins:18+Math.round(Math.random()*12),power:0,structures:[],buildPlan:['cautious','economist','defender','chaotic'][i%4],weaponCooldown:0,socks:[],socksPending:false};
  }
  function createGrid(map){
   grid=Array.from({length:map.h},(_,y)=>Array.from({length:map.w},(_,x)=>x===0||y===0||x===map.w-1||y===map.h-1?'wall':'corridor'));
@@ -297,18 +302,40 @@ render();
    for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy,nk=key(nx,ny);if(grid[ny]?.[nx]!=='corridor'||seen.has(nk))continue;seen.add(nk);parent.set(nk,[x,y]);queue.push([nx,ny])}}
   return [];
  }
- function goTo(unit,room){const target=approach(room);unit.target=room.i;unit.path=pathTo(unit,target);unit.moving=unit.path.length>0;unit.swing=0;return unit.path.length>0||Math.hypot(unit.x-target.x,unit.y-target.y)<.4}
+ function sendTeamTo(room){if(!room)return false;const me=bossUnits[0];const ok=me&&!me.out&&goTo(me,room);if(ok){bossUnits.slice(1).forEach((u,i)=>{if(!u.out&&u.hp>0&&!u.raidRoom){goTo(u,room);u.flankSide=i===0?-1:1;u.flankChangeAt=seconds+1.5+Math.random()*2.5;}})}return !!ok}
+ function goTo(unit,room){unit.raidRoom=undefined;const target=approach(room);unit.target=room.i;unit.path=pathTo(unit,target);unit.moving=unit.path.length>0;unit.swing=0;return unit.path.length>0||Math.hypot(unit.x-target.x,unit.y-target.y)<.4}
+ function routeInside(unit,r){
+  const allowed=new Set(r.cells.map(([x,y])=>x+','+y));allowed.add(r.doorX+','+r.doorY);
+  for(let y=0;y<grid.length;y++)for(let x=0;x<grid[y].length;x++)if(grid[y][x]==='corridor')allowed.add(x+','+y);
+  const start=[Math.floor(unit.x),Math.floor(unit.y)],dest=[r.pcX,r.pcY];const key=(x,y)=>x+','+y;
+  const queue=[start],seen=new Set([key(...start)]),parent=new Map();
+  for(let i=0;i<queue.length;i++){const [x,y]=queue[i],k=key(x,y);if(x===dest[0]&&y===dest[1]){let path=[];let cur=k;while(parent.has(cur)){const [a,b]=cur.split(',').map(Number);path.unshift([a+.5,b+.5]);cur=parent.get(cur)}return path}
+   for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const a=x+dx,b=y+dy,t=key(a,b);if(allowed.has(t)&&!seen.has(t)){seen.add(t);parent.set(t,[x,y]);queue.push([a,b])}}}
+  return [];
+ }
+ function startSockRaid(){if(!playing||done)return;const r=rooms[selected],u=bossUnits[0];if(!r?.broken||r.result){message('Спочатку зламайте двері обраної кімнати.');return}if(u.out){message('Ваш хікі вибув.');return}const path=routeInside(u,r);if(!path.length&&Math.hypot(u.x-r.pcX-.5,u.y-r.pcY-.5)>.7){message('Не вдалося знайти прохід до кімнати.');return}u.target=r.i;u.path=path;u.moving=path.length>0;u.raidRoom=r.i;message('Хікі заходить до кімнати '+(r.i+1)+' зі шкарпетками!');render()}
+ function scatterSocks(r){if(r.result)return;const available=r.cells.filter(([x,y])=>!(x===r.pcX&&y===r.pcY)&&!r.structures.some(it=>it.x===x&&it.y===y));const clothes=['weapon1.png','weapon2.png','weapon3.png','weapon5.png','weapon6.png'];r.socks=available.map(([x,y])=>({x,y,file:clothes[Math.floor(Math.random()*clothes.length)],rot:(Math.random()-.5)*.38}));r.result='win';r.broken=true;r.hp=0;showVictory('ПЕРЕМОГА В КІМНАТІ',`${r.guestName} · речі розкидані`);message(`Кімната ${r.i+1} пройдена. Речі по всій кімнаті!`);finishIfResolved()}
  function startMatch(){clearInterval(matchTimer);playing=false;matchRemaining=5;const overlay=$n('nvMatch'),slots=$n('nvMatchSlots');overlay.hidden=false;slots.replaceChildren();defenders().forEach((def,i)=>{const f=def.file;const span=document.createElement('span'),im=document.createElement('img'),small=document.createElement('small');im.src='../Assets/'+f;im.onerror=()=>{im.onerror=null;im.src='../assets/'+f};small.textContent=def.name;span.append(im,small);span.style.opacity='.35';slots.append(span)});
   const advance=()=>{const joined=6-matchRemaining;for(let i=0;i<joined;i++)if(slots.children[i])slots.children[i].style.opacity='1';$n('nvMatchCount').textContent=matchRemaining;if(matchRemaining--<=0){clearInterval(matchTimer);overlay.hidden=true;playing=true;message('Шестеро резидентів у кімнатах. Ваші хікі атакують двері!')}};
   advance();matchTimer=setInterval(advance,1000);
  }
- function init(){clearInterval(timer);clearInterval(matchTimer);residentSelection=[...DEFENDER_ROSTER].sort(()=>Math.random()-.5).slice(0,6);const m=MAPS[level-1];rooms=Array.from({length:6},(_,i)=>makeRoom(i,m));createGrid(m);selected=0;energy=100;seconds=0;done=false;helpers=[];attacks=0;zoom=1;cameraX=m.w/2;cameraY=m.h/2;activePointers.clear();panGesture=null;pinchGesture=null;
+ function init(){clearInterval(timer);clearInterval(matchTimer);clearTimeout(victoryTimeout);$n('nvVictoryPopup').hidden=true;residentSelection=[...DEFENDER_ROSTER].sort(()=>Math.random()-.5).slice(0,6);const m=MAPS[level-1];rooms=Array.from({length:6},(_,i)=>makeRoom(i,m));createGrid(m);selected=0;energy=100;seconds=0;done=false;helpers=[];attacks=0;zoom=1;cameraX=m.w/2;cameraY=m.h/2;activePointers.clear();panGesture=null;pinchGesture=null;
   const starts=[[m.w/2,m.h/2],[m.w/2+1,m.h/2],[m.w/2-1,m.h/2]].map(([x,y])=>{let best=null,dist=Infinity;grid.forEach((line,j)=>line.forEach((v,i)=>{const d=Math.hypot(x-i,y-j);if(v==='corridor'&&d<dist){best=[i+.5,j+.5];dist=d}}));return best||[m.w/2,m.h/2]});
   bossUnits=[boss,...HIKI_BOSSES.filter(id=>id!==boss).slice(0,2)].map((id,i)=>({id,target:i,x:starts[i][0],y:starts[i][1],path:[],moving:false,swing:0,attackDelay:0,speed:i===0?2.8:2.25,hp:i===0?140:110,out:false}));
   bossUnits.forEach((u,i)=>goTo(u,rooms[i]));setupBossSprites();$n('nvNextWrap').hidden=true;$n('nvNext').textContent=level===MAX?'Знову з першої мапи':'Наступна мапа →';message(m.name+'. За 5 секунд підберуться 6 резидентів.');render();if(active){startMatch();timer=setInterval(tick,100)}}
  function message(s){$n('nvMessage').textContent=s}
  function setupBossSprites(){sprites.replaceChildren();helperVisuals.clear();guestVisuals.clear();bossImages=bossUnits.map((u,i)=>{const el=document.createElement('img');el.alt='';el.dataset.file='';el.style.zIndex=i===0?'3':'2';sprites.append(el);return el})}
- function syncBossSprites(q){bossUnits.forEach((unit,i)=>{const el=bossImages[i];if(!el)return;const file=CHAR[unit.id]?.[unit.moving?1:0];if(!file)return;if(el.dataset.file!==file){el.dataset.file=file;let n=0;const roots=['../Assets/','../assets/'];el.onerror=()=>{if(++n<roots.length)el.src=roots[n]+file;else el.hidden=true};el.hidden=false;el.src=roots[0]+file}const wid=q.tile*1.2,hei=q.tile*1.65;el.style.left=(q.ox+unit.x*q.tile-wid*.5)+'px';el.style.top=(q.oy+unit.y*q.tile-hei*.68)+'px';el.style.width=wid+'px';el.style.height=hei+'px'})}
+ function syncBossSprites(q){bossUnits.forEach((unit,i)=>{const el=bossImages[i];if(!el)return;const file=CHAR[unit.id]?.[unit.moving?1:0];if(!file)return;if(el.dataset.file!==file){el.dataset.file=file;let n=0;const roots=['../Assets/','../assets/'];el.onerror=()=>{if(++n<roots.length)el.src=roots[n]+file;else el.hidden=true};el.hidden=false;el.src=roots[0]+file}const wid=q.tile*1.2,hei=q.tile*1.65;
+    // Формування колони: NPC інколи біжать збоку, але тільки якщо поруч справді коридор.
+    let fx=0,fy=0;
+    if(i>0&&unit.moving&&unit.path.length){
+      const [tx,ty]=unit.path[0],dx=tx-unit.x,dy=ty-unit.y,len=Math.hypot(dx,dy);
+      if(len>.02){const sign=unit.flankSide||(i===1?-1:1),sideX=-dy/len*sign,sideY=dx/len*sign;
+        const x=unit.x+sideX*.34,y=unit.y+sideY*.34;
+        if(grid[Math.floor(y)]?.[Math.floor(x)]==='corridor'){fx=sideX*.34;fy=sideY*.34;}
+      }
+    }
+    el.style.left=(q.ox+(unit.x+fx)*q.tile-wid*.5)+'px';el.style.top=(q.oy+(unit.y+fy)*q.tile-hei*.68)+'px';el.style.width=wid+'px';el.style.height=hei+'px'})}
  // GIF через справжній <img>: Canvas малює тільки перший кадр анімованого GIF.
  function syncGuestWalkSprites(q){
   for(const r of rooms){
@@ -344,7 +371,7 @@ render();
    let el=helperVisuals.get(h.id);
    if(!el){
     el=document.createElement('img');el.alt=h.label;el.draggable=false;
-    let index=0;const names=h.asset?[h.asset]:h.kind==='adept'?HELPER_ASSETS.adept[h.variant||0]:(HELPER_ASSETS[h.kind]||[]);const roots=['../Assets/','../assets/'];
+    let index=0;const names=h.asset?[h.asset]:(HELPER_ASSETS[h.kind]||[]);const roots=['../Assets/','../assets/'];
     const tryAsset=()=>{if(index>=names.length){el.hidden=true;return}let root=0;const name=names[index];el.onerror=()=>{if(++root<roots.length)el.src=roots[root]+name;else{index++;tryAsset()}};el.onload=()=>{el.hidden=false};el.src=roots[root]+name};
     tryAsset();sprites.append(el);helperVisuals.set(h.id,el);
    }
@@ -403,6 +430,8 @@ render();
    img(PCS[Math.min(PCS.length-1,Math.max(0,r.pcLevel-1))],px-tile*.22,py-tile*.07,tile*1.5,tile*1.1);
    for(const thing of r.structures){const x=ox+thing.x*tile,y=oy+thing.y*tile;const file=thing.type==='weapon'?'weapon'+Math.min(8,thing.lv)+'.png':thing.type==='energy'?'energy1.png':thing.type==='money'?'moneytree1.png':'trap.png';img(file,x,y,tile,tile);}
    if(r.fort){ctx.fillStyle='#b78f5999';ctx.fillRect(dx,dy+tile*.75,tile*(.2+r.fort*.14),tile*.20)}if(r.weapon)img('weapon1.png',px+tile*.17,py+tile*.08,tile*.80,tile*.80)
+   // Речі після проникнення: по одному оригінальному спрайту на кожній вільній клітинці.
+   for(const sock of r.socks){const sx=ox+sock.x*tile,sy=oy+sock.y*tile;ctx.save();ctx.translate(sx+tile*.5,sy+tile*.5);ctx.rotate(sock.rot);img(sock.file,-tile*.43,-tile*.43,tile*.86,tile*.86);ctx.restore();}
    const hpw=tile*2.4,hpx=dx+tile/2-hpw/2,hpy=dy-tile*.30;ctx.fillStyle='#281628';ctx.fillRect(hpx,hpy,hpw,Math.max(3,tile*.2));ctx.fillStyle=r.result==='lose'?'#bd718b':r.broken?'#72e8c7':'#ff7b9e';ctx.fillRect(hpx,hpy,hpw*(1-r.hp/r.maxHp),Math.max(3,tile*.2));
    ctx.textAlign='center';ctx.font=`${Math.max(9,Math.round(tile*.45))}px system-ui`;ctx.fillStyle='#f7f2ff';ctx.fillText(String(r.i+1),dx+tile/2,dy-tile*.38);
   }
@@ -410,9 +439,10 @@ render();
   syncGuestWalkSprites({tile,ox,oy});
   syncHelperSprites({tile,ox,oy});
  }
- function render(){const count=rooms.filter(r=>r.result==='win').length;const rr=rooms[selected];$n('nvRoomResult').textContent=rr?`Кімната ${selected+1} · ${rr.guestName} · ${rr.result==='win'?'ПЕРЕМОГА':rr.result==='lose'?'ПОРАЗКА':'триває'}`:'Оберіть кімнату';$n('nvMarkWin').disabled=!rr||rr.result==='win'||!playing||done;$n('nvMarkLoss').disabled=!rr||rr.result==='lose'||!playing||done;$n('nvLevel').textContent=`Рівень ${level} / ${MAX} · ${MAPS[level-1].name}`;$n('nvDoors').textContent=`Двері: ${count} / 6`;$n('nvEnergy').textContent=`Енергія: ${Math.floor(energy)}`;$n('nvTimer').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(Math.floor(seconds%60)).padStart(2,'0');for(const id of ['nvHit','nvTeleport','nvKittens','nvDogs','nvMinions','nvAdepts'])$n(id).disabled=done;draw()}
- function finishIfResolved(){if(!rooms.every(r=>r.result))return;done=true;playing=false;clearInterval(timer);const won=rooms.every(r=>r.result==='win');$n('nvNextWrap').hidden=!won;message(won?(level===MAX?'Перемога! Усі п’ять мап пройдені!':'Перемога! Усі шість кімнат пройдено. Наступний рівень відкрито.'): 'Матч завершено з поразкою в одній або більше кімнатах. Спробуйте ще раз.')}
- function damage(r,n){if(done||!playing||!r||r.broken||r.result)return;r.hp=Math.max(0,r.hp-n);if(!r.hp){r.broken=true;r.result='win';message(`Перемога в кімнаті ${r.i+1} (${r.guestName}): двері вибито!`)}finishIfResolved();render()}
+ function render(){const count=rooms.filter(r=>r.result==='win').length;const rr=rooms[selected];$n('nvRoomResult').textContent=rr?`Кімната ${selected+1} · ${rr.guestName} · ${rr.result==='win'?'ПЕРЕМОГА':rr.result==='lose'?'ПОРАЗКА':rr.broken?'ДВЕРІ ЗЛАМАНО · увійдіть!':'триває'}`:'Оберіть кімнату';$n('nvSocks').disabled=!rr||!rr.broken||!!rr.result||!playing||done||!!bossUnits[0]?.out;$n('nvMarkWin').disabled=!rr||rr.result==='win'||!playing||done;$n('nvMarkLoss').disabled=!rr||rr.result==='lose'||!playing||done;$n('nvLevel').textContent=`Рівень ${level} / ${MAX} · ${MAPS[level-1].name}`;$n('nvDoors').textContent=`Двері: ${count} / 6`;$n('nvEnergy').textContent=`Енергія: ${Math.floor(energy)}`;$n('nvTimer').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(Math.floor(seconds%60)).padStart(2,'0');for(const id of ['nvHit','nvTeleport','nvKittens','nvDogs','nvMinions','nvAdepts'])$n(id).disabled=done;draw()}
+ function showVictory(title,detail,final=false,loss=false){clearTimeout(victoryTimeout);const pop=$n('nvVictoryPopup');pop.hidden=false;pop.classList.toggle('lost',loss);$n('nvVictoryTitle').textContent=title;$n('nvVictoryDetail').textContent=detail;$n('nvVictoryActions').hidden=!final;if(!final)victoryTimeout=setTimeout(()=>{if(!$n('nvVictoryActions').hidden)return;pop.hidden=true},2300)}
+ function finishIfResolved(){if(!rooms.every(r=>r.result))return;done=true;playing=false;clearInterval(timer);const won=rooms.every(r=>r.result==='win');$n('nvNextWrap').hidden=!won;const msg=won?(level===MAX?'Усі п’ять мап пройдені!':'Усі шість кімнат пройдено. Наступну мапу відкрито.'):'Одна чи більше кімнат залишилися непрохідними.';message(msg);showVictory(won?'ПЕРЕМОГА!':'ПОРАЗКА',msg,true,!won)}
+ function damage(r,n){if(done||!playing||!r||r.broken||r.result)return;r.hp=Math.max(0,r.hp-n);if(!r.hp){r.broken=true;r.hp=0;message(`Двері кімнати ${r.i+1} вибито! Тепер увійдіть і розкидайте шкарпетки.`);if(bossUnits[0].target===r.i)bossUnits[0].path=[]}render()}
  function spend(n){if(done||!playing)return false;if(energy<n){message(`Потрібно ${n} енергії`);return false}energy-=n;return true}
  function tick(){if(document.hidden||done||!playing||$n('intruder').hidden)return;
   const dt=.1;seconds+=dt;energy=Math.min(100,energy+dt*(3+level*.4));
@@ -474,7 +504,10 @@ render();
     }
    }
   }
-  for(const unit of bossUnits){if(unit.out||unit.hp<=0)continue;let r=rooms[unit.target];if(!r||r.result){r=rooms.find(a=>!a.result);if(r)goTo(unit,r);else continue}
+  for(const [i,u] of bossUnits.entries())if(i>0&&u.moving&&seconds>=(u.flankChangeAt||0)){u.flankSide=Math.random()<.28?-1*(u.flankSide||(i===1?-1:1)):(u.flankSide||(i===1?-1:1));u.flankChangeAt=seconds+2+Math.random()*3.5;}
+  for(const unit of bossUnits){if(unit.out||unit.hp<=0)continue;
+   if(unit.raidRoom!==undefined){const raid=rooms[unit.raidRoom];if(unit.path.length){const [tx,ty]=unit.path[0],dx=tx-unit.x,dy=ty-unit.y,dist=Math.hypot(dx,dy),step=dt*unit.speed;if(dist<=step){unit.x=tx;unit.y=ty;unit.path.shift()}else{unit.x+=dx/dist*step;unit.y+=dy/dist*step}unit.moving=true;continue}unit.moving=false;unit.raidRoom=undefined;if(raid&&!raid.result)scatterSocks(raid);continue}
+   let r=rooms[unit.target];if(!r||r.result||r.broken){r=rooms.find(a=>!a.result&&!a.broken);if(r)goTo(unit,r);else continue}
    if(unit.path.length){const [tx,ty]=unit.path[0],dx=tx-unit.x,dy=ty-unit.y,dist=Math.hypot(dx,dy),step=dt*unit.speed;if(dist<=step){unit.x=tx;unit.y=ty;unit.path.shift()}else{unit.x+=dx/dist*step;unit.y+=dy/dist*step}unit.moving=true;unit.swing=0;continue}
    unit.moving=false;const pos=approach(r);if(Math.hypot(unit.x-pos.x,unit.y-pos.y)>.65){goTo(unit,r);continue}
    unit.swing+=dt;if(unit.swing>=1.15+(unit===bossUnits[0]?0:.35)){unit.swing=0;damage(r,(unit===bossUnits[0]?11:6)+level);if(r.weapon&&Math.random()<.18)unit.swing=-.5}
@@ -482,7 +515,7 @@ render();
   for(const h of helpers){h.ttl-=dt;if(h.ttl>0)h.cooldown-=dt;if(h.cooldown<=0&&h.ttl>0){h.cooldown=1;damage(rooms[h.target],h.power)}}helpers=helpers.filter(h=>h.ttl>0);
   render();}
  function activate(){if(active)return;active=true;init()}
- function choose(x,y){const q=dimensions();const gx=(x-q.ox)/q.tile,gy=(y-q.oy)/q.tile;const closest=[...rooms].sort((a,b)=>Math.hypot(a.doorX+.5-gx,a.doorY+.5-gy)-Math.hypot(b.doorX+.5-gx,b.doorY+.5-gy))[0];if(closest){selected=closest.i;if(playing&&bossUnits[0]){if(goTo(bossUnits[0],closest))message('Хікі біжить до дверей кімнати '+(selected+1));else message('Немає доступного шляху до дверей')}render()}}
+ function choose(x,y){const q=dimensions();const gx=(x-q.ox)/q.tile,gy=(y-q.oy)/q.tile;const closest=[...rooms].sort((a,b)=>Math.hypot(a.doorX+.5-gx,a.doorY+.5-gy)-Math.hypot(b.doorX+.5-gx,b.doorY+.5-gy))[0];if(closest){selected=closest.i;if(playing&&bossUnits[0]&&!closest.broken){if(sendTeamTo(closest))message('Хікі біжить до дверей кімнати '+(selected+1));else message('Немає доступного шляху до дверей')}render()}}
  // Один палець/ЛКМ рухає карту, два пальці наближають відносно середини жесту.
  function pointerMiddle(){const p=[...activePointers.values()];return {x:(p[0].x+p[1].x)/2,y:(p[0].y+p[1].y)/2,distance:Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y)}}
  canvas.addEventListener('pointerdown',e=>{
@@ -521,15 +554,15 @@ render();
  canvas.addEventListener('wheel',e=>{e.preventDefault();const r=canvas.getBoundingClientRect();zoomAt(zoom*(e.deltaY<0?1.12:1/1.12),e.clientX-r.left,e.clientY-r.top)},{passive:false});
  canvas.addEventListener('dragstart',e=>e.preventDefault());
  shell.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown'){selected=(selected+1)%6;render();e.preventDefault()}if(e.key==='ArrowLeft'||e.key==='ArrowUp'){selected=(selected+5)%6;render();e.preventDefault()}});
- const markSelected=result=>{activate();if(!playing||done)return;const r=rooms[selected];if(!r||r.result)return;r.result=result;if(result==='win'){r.broken=true;r.hp=0}else{r.broken=false}message(`${result==='win'?'Перемога':'Поразка'} в кімнаті ${r.i+1}: ${r.guestName}`);finishIfResolved();render()};
+ const markSelected=result=>{activate();if(!playing||done)return;const r=rooms[selected];if(!r||r.result)return;if(result==='win'){r.broken=true;r.hp=0;if(!r.socks.length)scatterSocks(r);else{r.result='win';showVictory('ПЕРЕМОГА В КІМНАТІ',r.guestName)}}else{r.result='lose';r.broken=false;showVictory('ПОРАЗКА В КІМНАТІ',r.guestName,false,true)}message(`${result==='win'?'Перемога':'Поразка'} в кімнаті ${r.i+1}: ${r.guestName}`);finishIfResolved();render()};
  $n('nvMarkWin').onclick=()=>markSelected('win');$n('nvMarkLoss').onclick=()=>markSelected('lose');
- $n('nvHit').onclick=()=>{activate();if(!playing)return;const r=rooms[selected];if(!r||r.result)return;message(goTo(bossUnits[0],r)?'Хікі вирушає до дверей '+(selected+1):'Шлях до дверей заблоковано');render()};
- $n('nvTeleport').onclick=()=>{activate();if(!spend(25))return;const unit=bossUnits[0];if(unit){unit.target=selected;const pos=approach(rooms[selected]);unit.x=pos.x;unit.y=pos.y;unit.path=[];unit.moving=false;unit.swing=0}message('Хікі-бос телепортувався до дверей кімнати '+(selected+1));render()};
+ $n('nvSocks').onclick=()=>startSockRaid();$n('nvVictoryNext').onclick=()=>{$n('nvNext').click()};$n('nvVictoryRestart').onclick=()=>{$n('nvRestart').click()};$n('nvHit').onclick=()=>{activate();if(!playing)return;const r=rooms[selected];if(!r||r.result)return;if(r.broken){startSockRaid();return}message(sendTeamTo(r)?'Хікі вирушає до дверей '+(selected+1):'Шлях до дверей заблоковано');render()};
+ $n('nvTeleport').onclick=()=>{activate();if(!spend(25))return;const unit=bossUnits[0];if(unit){unit.raidRoom=undefined;unit.target=selected;const pos=approach(rooms[selected]);unit.x=pos.x;unit.y=pos.y;unit.path=[];unit.moving=false;unit.swing=0}message('Хікі-бос телепортувався до дверей кімнати '+(selected+1));render()};
  let nextHelperId=1;
  const summon=(cost,kind,power,label)=>{activate();if(!spend(cost))return;helpers.push({id:nextHelperId++,target:selected,power:power+level,kind,label,ttl:5,cooldown:1});message(label+' атакують двері '+(selected+1));render()};
  const summonTrio=(cost,kind,power,label)=>{activate();if(!spend(cost))return;const files=[...HELPER_ASSETS[kind]];for(let j=files.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[files[j],files[k]]=[files[k],files[j]];}files.forEach((file,i)=>helpers.push({id:nextHelperId++,target:selected,power:power+level,kind,label:label+' '+(i+1),asset:file,ttl:5,cooldown:1+i*.12}));message(label+' (3) атакують двері '+(selected+1));render()};
  $n('nvKittens').onclick=()=>summonTrio(20,'kitten',3,'Коти');
- $n('nvDogs').onclick=()=>summonTrio(25,'dog',4,'Собаки');$n('nvMinions').onclick=()=>summon(30,'minion',6,'Посіпаки');$n('nvAdepts').onclick=()=>{activate();if(!spend(35))return;for(let i=0;i<2;i++)helpers.push({id:nextHelperId++,target:selected,power:4+level,kind:'adept',variant:i,label:i===0?'Антон':'Деара',ttl:5,cooldown:1});message('Антон і Деара атакують двері '+(selected+1));render()};
+ $n('nvDogs').onclick=()=>summonTrio(25,'dog',4,'Собаки');$n('nvMinions').onclick=()=>summon(30,'oleksiy',6,'Олексій');$n('nvAdepts').onclick=()=>summon(35,'mykola',5,'Микола');
  $n('nvBoss').onchange=e=>{boss=e.target.value;if(bossUnits.length){bossUnits[0].id=CHAR[boss]?boss:'hiki';const others=HIKI_BOSSES.filter(id=>id!==boss);bossUnits.slice(1).forEach((u,i)=>u.id=others[i%others.length])}render()};$n('nvRestart').onclick=()=>{active=true;init()};$n('nvExit').onclick=()=>leaveGame();
  $n('nvNext').onclick=()=>{if(!done)return;level=level<MAX?level+1:1;try{localStorage.setItem(SAVE,String(level))}catch{}active=true;init()};
  // Пряме відкриття ігрового режиму, незалежне від глобальних обробників меню.
@@ -542,7 +575,7 @@ render();
     requestAnimationFrame(()=>{if(active){render();shell.focus({preventScroll:true})}});
   }
   function leaveGame(){
-    clearInterval(timer);clearInterval(matchTimer);timer=null;matchTimer=null;
+    clearTimeout(victoryTimeout);$n('nvVictoryPopup').hidden=true;clearInterval(timer);clearInterval(matchTimer);timer=null;matchTimer=null;
     active=false;playing=false;
     $n('intruder').classList.remove('nv-fullscreen');
     switchMode('apartment');
