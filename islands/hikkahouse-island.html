@@ -306,6 +306,17 @@ for(const key of ['tokens','wins','level','dailyBoostClaims']){
  if(!Number.isFinite(save[key]))save[key]=0;
  save[key]=Math.max(0,Math.min(100000000,Math.floor(save[key])));
 }
+// Добові нагороди визначають найвищу доступну складність.
+// При трьох нагородах доступні рівні 1–4, а не всі 17.
+function dailyUnlockedLevel(){
+ const claims=Number.isFinite(save.dailyBoostClaims)?Math.floor(save.dailyBoostClaims):0;
+ return Math.max(0,Math.min(16,claims));
+}
+function synchronizeDailyLevels(){
+ const allowed=dailyUnlockedLevel();
+ if(save.level>allowed){save.level=allowed;return true}
+ return false;
+}
 function persist(){try{localStorage.setItem(STORE_KEY,JSON.stringify(save))}catch{}}
 function daySync(){
  const day=KYIV();
@@ -323,6 +334,7 @@ function daySync(){
  return true;
 }
 daySync();
+if(synchronizeDailyLevels())persist();
 let C=19,R=25;
 let currentMap='classic';
 const MAPS={
@@ -631,6 +643,10 @@ function cancelMatchmaking(){
  $('matchOverlay').hidden=true;
 }
 function start(lv){
+  daySync();
+  if(!Number.isInteger(lv)||lv<0||lv>dailyUnlockedLevel()){
+   toast('Ця складність ще не відкрита сьогодні.');difficultyModal();return;
+  }
   loadGameAssets(); // Підбір триває 15 секунд: завантажуємо ресурси матчу в цей час.
   cancelMatchmaking();
  const ticket=matchTicket;
@@ -1817,7 +1833,7 @@ function finish(win,msg){
   modal('🌅 Новий день',`<p>${msg}</p><p>Матч розпочався попередньої доби. Його результат не змінює сьогоднішню складність, рейтинг чи добові бонуси. Почніть новий матч.</p>`,[{name:'Повернутися в меню',primary:true,fn:openHome}],true);
   return;
  }
-if(game.devTest){sound(win?'win':'lose');modal(win?'🧪 Тест завершено':'🧪 Тест завершено',`<p>${msg}</p><p>Тестовий матч: рейтинг, токени й прогрес не змінені.</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>openHome()}],true);return}recordMatchScores();if(win){save.wins++;save.tokens+=20+game.level*8;save.level=Math.max(save.level,Math.min(difficulty.length-1,game.level+1));save.runFinishedDay=KYIV()}else{save.level=Math.max(0,Math.min(save.level,game.level-1));}persist();sound(win?'win':'lose');renderHome();modal(win?'🏆 Перемога!':'💀 Поразка',`<p>${msg}</p><p>${win?`Отримано <b>${20+game.level*8}</b> токенів.`:'Ви повертаєтеся на попередню доступну складність. Спробуйте ще раз!'}</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>{const wonLevel=game.level;openHome();if(win)offerBoost(wonLevel)}}],true)}
+if(game.devTest){sound(win?'win':'lose');modal(win?'🧪 Тест завершено':'🧪 Тест завершено',`<p>${msg}</p><p>Тестовий матч: рейтинг, токени й прогрес не змінені.</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>openHome()}],true);return}recordMatchScores();if(win){save.wins++;save.tokens+=20+game.level*8;save.level=dailyUnlockedLevel();save.runFinishedDay=KYIV()}else{save.level=dailyUnlockedLevel();}persist();sound(win?'win':'lose');renderHome();modal(win?'🏆 Перемога!':'💀 Поразка',`<p>${msg}</p><p>${win?`Отримано <b>${20+game.level*8}</b> токенів.`:'Ви повертаєтеся на попередню доступну складність. Спробуйте ще раз!'}</p>`,[{name:'Повернутися в меню',primary:true,fn:()=>{const wonLevel=game.level;openHome();if(win)offerBoost(wonLevel)}}],true)}
 const BOOST_STEPS=[1,2,3,5,10,15,25,30];
 const boosts=[
  {id:'door',name:'🚪 Сила дверей',hint:'Зменшує шкоду дверям: +1, +2, +3, +5, +10, +15, +25, +30'},
@@ -1883,7 +1899,7 @@ function offerBoost(wonLevel){
    }else if(!save.boosts.includes(b.id))save.boosts.push(b.id);
    if(save.dailyAwardedLevels.includes(wonLevel))return;
    save.dailyAwardedLevels.push(wonLevel);
-   save.dailyBoostClaims=(save.dailyBoostClaims||0)+1;persist();closeModal();toast(`Буст активний! Добові нагороди: ${save.dailyBoostClaims}/${difficulty.length}`);
+   save.dailyBoostClaims=(save.dailyBoostClaims||0)+1;save.level=dailyUnlockedLevel();persist();closeModal();toast(`Буст активний! Добові нагороди: ${save.dailyBoostClaims}/${difficulty.length}`);
  });
 }
 function renderHome(){daySync();$('tokens').textContent=save.tokens;$('wins').textContent=save.wins;$('magicCount').textContent=3;
@@ -1903,6 +1919,10 @@ $('skins').querySelectorAll('[data-skin]').forEach(button=>button.onclick=()=>{c
 
 function infoModal(){modal('Вітання',`<p>Вітаю, дорогі гравці! Ця гра присвячена персонажам, які полюбляють усамітнення, і може містити елементи жахів для інтровертів. Підліткам варто запитати дозволу перед грою.</p>`,[{name:'Підтвердити',primary:true,fn:rulesModal}],true)}function rulesModal(){modal('ЯК ГРАТИ',`<ul><li>У Вас 25 секунд, щоб зайняти кімнату, підійти до ПК і сісти.</li><li>NPC займають інші кімнати, а двері автоматично зачиняються.</li><li>Підвищуйте рівень ПК, дверей, зброї та генераторів.</li><li>Перетягніть предмет із панелі на клітинку або натисніть на порожнє місце.</li><li>Лагодьте двері 🔧, поки мисливець атакує.</li><li>Після перемоги Ви отримуєте токени для магазину персонажів.</li><li>Керування: WASD, стрілки, тап по карті або джойстик.</li></ul>`,[{name:'Прийняти',primary:true,fn:()=>{closeModal();if(!save.tutorial){save.tokens+=10;toast('За навчання отримано 10 токенів!')}save.tutorial=true;persist();renderHome()}}],true)}
 function chooseMapModal(lv){
+ daySync();
+ if(!Number.isInteger(lv)||lv<0||lv>dailyUnlockedLevel()){
+  toast('Цю складність ще не відкрито.');difficultyModal();return;
+ }
  const buttons=Object.entries(MAPS).map(([id,m])=>`<button data-map="${id}">${m.title}</button>`).join('');
  modal('🗺️ Оберіть мапу',`<p>Складність: <b>${difficulty[lv]}</b>. П'ять мап, по шість кімнат на кожній.</p><div class="buy-options">${buttons}</div>`,[{name:'Назад',fn:difficultyModal}]);
  $('modalContent').querySelectorAll('[data-map]').forEach(b=>b.onclick=()=>{chooseMap(b.dataset.map);start(lv)});
@@ -1916,7 +1936,7 @@ document.addEventListener('visibilitychange',()=>{
 setInterval(()=>{
  if(daySync()&&document.getElementById('home')&&!document.getElementById('home').hidden)renderHome();
 },15000);
-function difficultyModal(){daySync();modal('Оберіть складність',`<p>Новий день: рівень прогресу скидається. Поточна доступна складність: <b>${difficulty[save.level]}</b>.</p><div class="difficulty-list">${difficulty.map((d,i)=>`<button data-lv="${i}" ${i>save.level?'disabled':''} class="${i<=save.level?'unlocked':''}">${d}<span>${i>save.level?'🔒':'▶'}</span></button>`).join('')}</div>`,[{name:'Закрити',fn:closeModal}]);$('modalContent').querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>chooseMapModal(+b.dataset.lv))}
+function difficultyModal(){daySync();if(synchronizeDailyLevels())persist();modal('Оберіть складність',`<p>Новий день: рівень прогресу скидається. Поточна доступна складність: <b>${difficulty[save.level]}</b>.</p><div class="difficulty-list">${difficulty.map((d,i)=>`<button data-lv="${i}" ${i>save.level?'disabled':''} class="${i<=save.level?'unlocked':''}">${d}<span>${i>save.level?'🔒':'▶'}</span></button>`).join('')}</div>`,[{name:'Закрити',fn:closeModal}]);$('modalContent').querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>chooseMapModal(+b.dataset.lv))}
 $('enterBtn').onclick=difficultyModal;$('quitBtn').onclick=()=>{if(!game)return openHome();modal('Покинути матч?',`<p>Прогрес поточного матчу не збережеться.</p>`,[{name:'Залишитися',fn:closeModal},{name:'Вийти',primary:true,fn:openHome}])};$('boostBtn').onclick=()=>modal('✨ Добові бусти',`<p>Отримано сьогодні: ${save.dailyBoostClaims||0}/${difficulty.length}. Кожна складність дає нагороду лише один раз за день.</p><p>${save.boosts.length?save.boosts.map(value=>{const [id,num]=value.split(':');const b=boosts.find(b=>b.id===id);return `${b?boostDisplayName(b):id}${num?' +'+num:''}`}).join(' • '):'Поки немає. Бонуси випадають після перемоги.'}</p>`,[{name:'Закрити',fn:closeModal}]);$('soundBtn').onclick=()=>{soundOn=!soundOn;$('soundBtn').textContent=soundOn?'🔊':'🔇';if(soundOn)sound('tap')};$('focusMe').onclick=()=>{if(game){const p=game.players[0];focus(p.x,p.y)}};$('repairBtn').onclick=()=>{const r=playerRoom();if(!r||!game.players[0].seated)return toast('Спочатку займіть кімнату');const price={gold:16+Math.floor(r.doorLv*7)};if(r.door>=r.maxDoor)return toast('Двері повністю відремонтовані');if(spend(price)){r.door=Math.min(r.maxDoor,r.door+55);sound('repair');effect(r.doorX+.5,r.doorY+.5,'🔧')}};const MIN_ZOOM=.5, MAX_ZOOM=7.5;
 function zoomAt(nextZoom, screenX=W/2, screenY=H/2){
  if(!W||!H)return;
