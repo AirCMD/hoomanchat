@@ -89,7 +89,7 @@
 /* Статичний інтер’єр кімнати перед паралаксом, позаду персонажів і ПК. */
 .apartment > .room-interior-overlay{position:absolute!important;inset:0;width:100%;height:100%;z-index:1!important;object-fit:cover;image-rendering:pixelated;pointer-events:none}
 /* Освітлення квартири: декор над інтер'єром, поза рухомими шарами фону. */
-.room-lamp{position:absolute;z-index:2;left:50%;top:calc(3% - 15px);transform:translateX(-50%);width:22%;height:30%;pointer-events:none;display:flex;align-items:flex-start;justify-content:center}
+.room-lamp{position:absolute;z-index:2;left:50%;top:calc(3% - 13px);transform:translateX(-50%);width:22%;height:30%;pointer-events:none;display:flex;align-items:flex-start;justify-content:center}
 .room-lamp[hidden]{display:none}.room-lamp img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 8px 7px #0008)}
 .lamp-collection{margin-top:8px;padding:12px;border:1px solid #67708e;border-radius:12px;background:#252c49}
 .lamp-collection[hidden]{display:none}.lamp-collection h4{margin:0 0 8px;font-size:14px}.lamp-collection p{margin:0 0 10px;color:var(--muted);font-size:12px}.collection-pager{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.collection-pager button{padding:10px 6px;display:grid;gap:4px;justify-items:center;text-align:center;line-height:1.15}.collection-pager button span:first-child{font-size:18px}.collection-pager button.is-active{border-color:var(--pink);background:#4d4166}.collection-panel[hidden]{display:none!important}.collection-empty{padding:10px;border-radius:10px;border:1px dashed #67708e;background:#212845;color:var(--muted);font-size:12px}
