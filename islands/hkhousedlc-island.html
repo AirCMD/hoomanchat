@@ -145,6 +145,9 @@ const DESK_PC_ASSETS=['pc2.png','pc3.png','pc4.png','pc5.png','pc6.png','pc8.png
 const defaults=()=>({version:1,tokens:0,imports:{},comfort:0,totalComfort:0,levels:{desk:0,lamp:0,plants:0,cat:0},achievements:[],deskPcChoice:null});
 let state=defaults();try{const raw=JSON.parse(localStorage.getItem(KEY)||'null');if(raw&&typeof raw==='object'&&!Array.isArray(raw))state={...state,...raw,levels:{...state.levels,...raw.levels}}}catch{}
 state.tokens=Number.isSafeInteger(state.tokens)?Math.max(0,state.tokens):0;
+// Постійні розблокування режимів зберігаються у локальному прогресі DLC.
+const savedUnlocks=state.modeUnlocks;
+state.modeUnlocks={boss:savedUnlocks?.boss===true,intruder:savedUnlocks?.intruder===true};
 state.comfort=Number.isFinite(state.comfort)?Math.max(0,state.comfort):0;
 state.totalComfort=Number.isFinite(state.totalComfort)?Math.max(0,state.totalComfort):0;
 if(!state.imports||typeof state.imports!=='object'||Array.isArray(state.imports))state.imports={};
@@ -164,6 +167,40 @@ function importTokens(code){const data=decodeTransferCode(code);const previous=N
 $('importButton').onclick=()=>{$('importCode').value='';$('importStatus').textContent='';$('importDialog').showModal()};$('closeImport').onclick=()=>$('importDialog').close();$('confirmImport').onclick=()=>{try{$('importStatus').textContent=importTokens($('importCode').value)}catch(e){$('importStatus').textContent=e.message}};
 $('importDialog').addEventListener('click',e=>{if(e.target===$('importDialog'))$('importDialog').close()});
 function toast(msg){$('flash').textContent=msg;$('flash').hidden=false;clearTimeout(toast.timeout);toast.timeout=setTimeout(()=>$('flash').hidden=true,2600)}
+// Вартість двох режимів DLC. Не впливає на бойові механіки або інші покупки.
+const MODE_COST={boss:6000,intruder:15000};
+const MODE_TITLE={boss:'Кооператив',intruder:'Напросилися!'};
+function refreshModeButtons(){
+ for(const mode of Object.keys(MODE_COST)){
+  const label=document.querySelector(`[data-mode="${mode}"] em`);
+  if(label)label.textContent=state.modeUnlocks[mode]
+   ?'▶ Грати · відкрито'
+   :`🔒 Відкрити за ${MODE_COST[mode].toLocaleString('uk-UA')} токенів`;
+ }
+}
+// Єдина перевірка в самому меню. Забороняє перехід у режим до придбання.
+document.querySelector('.modes').addEventListener('click',event=>{
+ const button=event.target.closest('button[data-mode]');
+ if(!button)return;
+ const mode=button.dataset.mode;
+ const price=MODE_COST[mode];
+ if(price===undefined||state.modeUnlocks[mode])return;
+ // Зупинити штатні обробники гри, якщо покупка не відбулася.
+ event.preventDefault();
+ event.stopPropagation();
+ if(state.tokens<price){
+  toast(`Для «${MODE_TITLE[mode]}» потрібно ${price.toLocaleString('uk-UA')} токенів. Бракує ${(price-state.tokens).toLocaleString('uk-UA')}.`);
+  return;
+ }
+ if(!confirm(`Відкрити «${MODE_TITLE[mode]}» назавжди за ${price.toLocaleString('uk-UA')} токенів?`))return;
+ state.tokens-=price;
+ state.modeUnlocks[mode]=true;
+ persist();
+ render();
+ toast(`«${MODE_TITLE[mode]}» відкрито назавжди.`);
+ // Перший клік купує режим; наступний запускає його звичайним способом.
+},true);
+
 function applyAssetWithFallback(img,file,onFail){const tries=['../assets/'+file,'../Assets/'+file];let pos=0;img.onerror=()=>{pos++;if(pos<tries.length)img.src=tries[pos];else{img.onerror=null;onFail&&onFail();}};img.src=tries[pos]}
 function getUnlockedDeskPcCount(){return Math.min(state.levels.desk,DESK_PC_ASSETS.length)}
 function getActiveDeskPcIndex(){const unlocked=getUnlockedDeskPcCount();if(!unlocked)return-1;if(unlocked>=DESK_PC_ASSETS.length&&state.deskPcChoice!==null)return Math.min(state.deskPcChoice,DESK_PC_ASSETS.length-1);return unlocked-1}
@@ -215,7 +252,7 @@ function awardComfort(amount){state.comfort+=amount;state.totalComfort+=amount;f
 document.querySelectorAll('[data-char]').forEach(el=>el.onclick=()=>{awardComfort(clickYield());$('apartmentMessage').textContent=el.dataset.char==='akira'?'Акіра радий трохи відпочити вдома.':'Яні рада трохи відпочити вдома.';persist();render()});
 document.querySelectorAll('[data-buy]').forEach(el=>el.onclick=()=>{const id=el.dataset.buy,lv=state.levels[id],price=prices[id](lv);if(lv>=100)return toast('Максимальний рівень');if(state.comfort<price)return toast('Бракує затишку');state.comfort-=price;state.levels[id]++;if(id==='desk'){const unlocked=getUnlockedDeskPcCount();if(unlocked===DESK_PC_ASSETS.length&&state.deskPcChoice===null)state.deskPcChoice=DESK_PC_ASSETS.length-1;}persist();render();if(id==='desk'){if(state.levels.desk<=DESK_PC_ASSETS.length){const unlockedFile=DESK_PC_ASSETS[state.levels.desk-1];toast(state.levels.desk===DESK_PC_ASSETS.length?`Відкрито ${unlockedFile} і всю колекцію ПК!`:`Відкрито ${unlockedFile}.`);}else toast('Рівень робочого куточка підвищено. Бонус за взаємодію зріс.')}else toast('Покращення придбано!')});
 $('resetApartment').onclick=()=>{if(!confirm('Скинути затишок і всі покращення квартири? Токени та імпортовані коди залишаться.'))return;state.comfort=0;state.totalComfort=0;state.levels={desk:0,lamp:0,plants:0,cat:0};state.deskPcChoice=null;/* Нагороди не скидаємо: повторний скиданням квартири не можна набивати токени. */persist();render()};
-function render(){$('tokens').textContent=state.tokens.toLocaleString('uk-UA');$('comfort').textContent=Math.floor(state.comfort).toLocaleString('uk-UA');$('perClick').textContent=clickYield();$('perSecond').textContent=idleYield();for(const id of Object.keys(prices)){const lv=state.levels[id];$(id+'Price').textContent=lv>=100?'MAX':`${prices[id](lv)} · рівень ${lv}`;document.querySelector(`[data-buy="${id}"]`).disabled=lv>=100}setDeskPcSprite(getActiveDeskPcIndex());renderPcCollection();const next=milestones.find(a=>!state.achievements.includes(a.at));$('achievements').textContent=next?`Наступна винагорода: ${next.at.toLocaleString('uk-UA')} затишку → +${next.reward} токенів`:'Усі досягнення отримані.'}
+function render(){refreshModeButtons();$('tokens').textContent=state.tokens.toLocaleString('uk-UA');$('comfort').textContent=Math.floor(state.comfort).toLocaleString('uk-UA');$('perClick').textContent=clickYield();$('perSecond').textContent=idleYield();for(const id of Object.keys(prices)){const lv=state.levels[id];$(id+'Price').textContent=lv>=100?'MAX':`${prices[id](lv)} · рівень ${lv}`;document.querySelector(`[data-buy="${id}"]`).disabled=lv>=100}setDeskPcSprite(getActiveDeskPcIndex());renderPcCollection();const next=milestones.find(a=>!state.achievements.includes(a.at));$('achievements').textContent=next?`Наступна винагорода: ${next.at.toLocaleString('uk-UA')} затишку → +${next.reward} токенів`:'Усі досягнення отримані.'}
 // Реальний часовий інтервал: прихована вкладка не генерує нескінченний офлайн-прибуток.
 let lastTick=performance.now();setInterval(()=>{const now=performance.now();const elapsed=Math.min(5,(now-lastTick)/1000);lastTick=now;if(document.hidden)return;const amount=idleYield()*elapsed;if(amount){awardComfort(amount);persist();render()}},1000);
 // Asset prefix matches classic Hikka House layout: islands/ and ../Assets.
