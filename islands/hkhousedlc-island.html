@@ -752,8 +752,10 @@ render();
  let active=false,running=false,level=1,room=null,boss=null,team=[],objects=[],money=130,energy=40,door={hp:500,max:500,level:1,chain:false,puddle:false,poop:false},seconds=0,selected='weapon',tab='base',loop=null,zoom=1,panX=0,panY=0,last=0,bossFlash=0,shotFlash=0,selectedCell=null,noticeTime=0,projectiles=[],shotTimer=0,lastPower=0,lastDrain=0;
  const imgCache=new Map(),rc=()=>Math.random(),shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(rc()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
  function loadImg(filename){if(!filename)return; if(imgCache.has(filename))return;const im=new Image();let attempt=0;im.onload=()=>{if(active)draw()};im.onerror=()=>{if(++attempt<2)im.src='../Assets/'+filename};im.src='../assets/'+filename;imgCache.set(filename,im)}
- for(const f of new Set([...MAPS.flatMap(m=>[m.out,m.floor,m.wall]),...CHARS.map(c=>c[1]),...BOSSES.flatMap(b=>[b[1],b[2]]),'coin.png','notebook.png','cocroach.png','box.png','tamagotchi.png','door1.png','door2.png','door3.png','door4.png','door5.png','door6.png',...ITEMS.map(i=>i.img),...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),...Array.from({length:5},(_,i)=>`energy${i+1}.png`),...Array.from({length:4},(_,i)=>`moneytree${i+1}.${i===3?'gif':'png'}`),'pc2.png','pc3.png','pc4.png','pc5.png','pc6.png','pc8.png']))loadImg(f);
+ for(const f of new Set([...MAPS.flatMap(m=>[m.out,m.floor,m.wall]),...CHARS.map(c=>c[1]),...BOSSES.flatMap(b=>[b[1],b[2]]),'coin.png','notebook.png','cocroach.png','box.png','tamagotchi.png','door1.png','door2.png','door3.png','door4.png','door5.png','door6.png',...ITEMS.map(i=>i.img),...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),...Array.from({length:5},(_,i)=>`energy${i+1}.png`),...Array.from({length:4},(_,i)=>`moneytree${i+1}.${i===3?'gif':'png'}`),'pc2.png','pc3.png','pc4.png','pc5.png','pc6.png','pc8.png','pc9.png','pc10.png']))loadImg(f);
  function image(file,x,y,w,h){const im=imgCache.get(file);if(im?.complete&&im.naturalWidth){ctx.drawImage(im,x,y,w,h);return true}return false}
+ const COOP_PC_SPRITES=['pc2.png','pc3.png','pc4.png','pc5.png','pc6.png','pc8.png','pc9.png','pc10.png'];
+ const pcSpriteForLevel=lv=>COOP_PC_SPRITES[Math.min(COOP_PC_SPRITES.length-1,Math.max(0,lv-1))];
  const HH_PC_INCOME=[1,2,4,7,12,20,34,56,90,145],HH_PC_COST=[0,30,85,220,520,1150,2400,4900,9800,19600],HH_WEAPON_DAMAGE=[6,10,17,29,47,76,120,190],HH_WEAPON_COST=[8,26,69,160,370,840,1870,4100],HH_ENERGY_COST=[128,960,1980,4080,8160],HH_MONEY_TREE_ENERGY_COST=[16,48,112];
  const validMoney=n=>{while(String(n).includes('63')||String(n).includes('68'))n++;return n};
  function priceOf(item,lv=0){
@@ -769,7 +771,7 @@ render();
  const roomBounds=m=>{const width=Math.min(17,m.w-6),height=Math.min(13,m.h-7),x=Math.floor((m.w-width)/2),y=Math.floor((m.h-height)/2)+1;return {x,y,w:width,h:height,doorX:x+Math.floor(width/2),doorY:y}};
  function setup(mapIndex){
  if(matchInterval!==null){clearInterval(matchInterval);matchInterval=null;}level=Math.max(1,Math.min(5,mapIndex));const m=MAPS[level-1];room=roomBounds(m);const bb=shuffle([...BOSSES])[0];boss={name:bb[0],walk:bb[1],fight:bb[2],level:1,hp:12000,max:12000,x:room.doorX,y:room.doorY-3,attacking:false};
- team=shuffle([...CHARS]).slice(0,6).map((p,i)=>({name:p[0],sprite:p[1],x:room.x+2+(i%3)*Math.floor((room.w-4)/2),y:room.y+2+Math.floor(i/3)*(room.h-5),pc:'pc1.png',income:1,level:1,buildCooldown:5+rc()*8}));
+ team=shuffle([...CHARS]).slice(0,6).map((p,i)=>({name:p[0],sprite:p[1],x:room.x+2+(i%3)*Math.floor((room.w-4)/2),y:room.y+2+Math.floor(i/3)*(room.h-5),pc:pcSpriteForLevel(1),income:1,level:1,buildCooldown:5+rc()*8}));
  objects=[];money=160;energy=60;door={hp:600,max:600,level:1,chain:false,puddle:false,poop:false};magicUsed=0;magicRolls={};seconds=0;zoom=1;panX=panY=0;selected='weapon';tab='base';selectedCell=null;running=false;matchTime=15;claimTime=0;claiming=true;seatPhase=false;npcEntryClock=0;seatIndex=-1;revealed=0;coopRoster=team.map(({name,sprite})=>({name,sprite}));occupiedSeats=new Set();npcClaims=0;npcWalkers=[];reservedSeats=new Set();lobbyOrder=shuffle([1,2,3,4,5]);npcArrivalTimes=[2,4,6,9,12];last=performance.now();bossFlash=0;shotFlash=0;bossSpriteFile='';projectiles=[];shotTimer=0;lastPower=0;lastDrain=0;
  $('cpResult').hidden=true;$('cpMatch').classList.remove('cp-claim-mode');$('cpMatch').querySelector('strong').textContent='ПІДБІР 6 ХІКІ';$('cpMatchHint').textContent='Зараз підбираються шестеро хікі. Після відліку Ви особисто оберете вільний ПК, а NPC займуть інші.';$('cpMatch').hidden=false;renderMatch();matchInterval=setInterval(tickMatchLobby,1000);renderTabs();renderCatalog();renderTeam();ui();draw();}
  function start(){if(active)return;document.body.appendChild($('cpMatch'));active=true;root.classList.add('cp-active');try{level=Math.max(1,Math.min(5,+localStorage.getItem(SAVE)||1))}catch{level=1}setup(level);loop=requestAnimationFrame(frame)}
@@ -915,7 +917,7 @@ render();
   const price={gold:validMoney(HH_PC_COST[pc.level]),energy:pc.level>=7?16*Math.pow(2,pc.level-7):0};
   if(!canAfford(price))return notify(`ПК №${i+1}: потрібно ${priceText(price)}.`);
   pay(price);pc.level++;pc.income=HH_PC_INCOME[pc.level-1];
-  pc.pc='pc'+Math.min(pc.level,10)+'.png';loadImg(pc.pc);
+  pc.pc=pcSpriteForLevel(pc.level);loadImg(pc.pc);
   notify(`ПК №${i+1}: рівень ${pc.level}, +${pc.income} монет/с.`);renderTeam();ui();
  }
  function chosenObject(){return selectedCell?objects.find(o=>o.x===selectedCell.x&&o.y===selectedCell.y):null}
@@ -981,7 +983,7 @@ render();
   if(t.level<10){
    const price={gold:validMoney(HH_PC_COST[t.level]),energy:t.level>=7?16*Math.pow(2,t.level-7):0};
    if(money>=price.gold+econGoldReserve&&energy>=price.energy&&rc()<.6){
-    pay(price);t.level++;t.income=HH_PC_INCOME[t.level-1];t.pc='pc'+Math.min(t.level+1,10)+'.png';loadImg(t.pc);continue;
+    pay(price);t.level++;t.income=HH_PC_INCOME[t.level-1];t.pc=pcSpriteForLevel(t.level);loadImg(t.pc);continue;
    }
   }
   // На дорогі поліпшення турелей витрачаємо лише надлишкові монети.
@@ -1024,7 +1026,7 @@ render();
    ctx.font=`bold ${Math.max(11,c*.5)}px sans-serif`;
    ctx.fillText('?',px+c*.5,py+c*.52);
   }
-  image(p.pc,px,py,c,c);
+  image(pcSpriteForLevel(p.level),px,py,c,c);
   if(idx===seatIndex){ctx.strokeStyle='#68eab6';ctx.lineWidth=Math.max(2,c*.08);ctx.strokeRect(px,py,c,c)}
  }
  for(const walker of npcWalkers){if(claiming||walker.done)continue;const player=coopRoster[walker.rosterIndex];if(player)image(player.sprite,X+(walker.x-.15)*c,Y+(walker.y-.85)*c,c*.68,c*.82)}
