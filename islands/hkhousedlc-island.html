@@ -736,6 +736,7 @@ render();
  {id:'distance',name:'Дистанція',tab:'other',img:'distance.png',cost:65,max:4}];
  const SAVE='hikka-dlc-coop-map-v1';
  let matchTime=15,claimTime=0,claiming=false,seatIndex=-1,revealed=0,occupiedSeats=new Set(),npcArrivalTimes=[],npcClaims=0,npcWalkers=[],reservedSeats=new Set(),lobbyOrder=[],coopRoster=[],bossSpriteFile='',lastSpritePosition='',matchInterval=null;
+ let seatPhase=false, npcEntryClock=0;
  let magicUsed=0,magicRolls={};
  let active=false,running=false,level=1,room=null,boss=null,team=[],objects=[],money=130,energy=40,door={hp:500,max:500,level:1,chain:false,puddle:false,poop:false},seconds=0,selected='weapon',tab='base',loop=null,zoom=1,panX=0,panY=0,last=0,bossFlash=0,shotFlash=0,selectedCell=null,noticeTime=0,projectiles=[],shotTimer=0,lastPower=0,lastDrain=0;
  const imgCache=new Map(),rc=()=>Math.random(),shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(rc()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -758,8 +759,8 @@ render();
  function setup(mapIndex){
  if(matchInterval!==null){clearInterval(matchInterval);matchInterval=null;}level=Math.max(1,Math.min(5,mapIndex));const m=MAPS[level-1];room=roomBounds(m);const bb=shuffle([...BOSSES])[0];boss={name:bb[0],walk:bb[1],fight:bb[2],level:1,hp:12000,max:12000,x:room.doorX,y:room.doorY-3,attacking:false};
  team=shuffle([...CHARS]).slice(0,6).map((p,i)=>({name:p[0],sprite:p[1],x:room.x+2+(i%3)*Math.floor((room.w-4)/2),y:room.y+2+Math.floor(i/3)*(room.h-5),pc:'pc2.png',income:1,level:1,buildCooldown:5+rc()*8}));
- objects=[];money=160;energy=60;door={hp:600,max:600,level:1,chain:false,puddle:false,poop:false};magicUsed=0;magicRolls={};seconds=0;zoom=1;panX=panY=0;selected='weapon';tab='base';selectedCell=null;running=false;matchTime=15;claimTime=0;claiming=true;seatIndex=-1;revealed=0;coopRoster=team.map(({name,sprite})=>({name,sprite}));occupiedSeats=new Set();npcClaims=0;npcWalkers=[];reservedSeats=new Set();lobbyOrder=shuffle([1,2,3,4,5]);npcArrivalTimes=[2,4,6,9,12];last=performance.now();bossFlash=0;shotFlash=0;bossSpriteFile='';projectiles=[];shotTimer=0;lastPower=0;lastDrain=0;
- $('cpResult').hidden=true;$('cpMatch').classList.remove('cp-claim-mode');$('cpMatch').querySelector('strong').textContent='ПІДБІР 6 ХІКІ';$('cpMatchHint').textContent='Оберіть будь-який ПК. Якщо місце вже зайняте NPC, він поступиться ним. До кінця відліку можна змінювати вибір.';$('cpMatch').hidden=false;renderMatch();matchInterval=setInterval(tickMatchLobby,1000);renderTabs();renderCatalog();renderTeam();ui();draw();}
+ objects=[];money=160;energy=60;door={hp:600,max:600,level:1,chain:false,puddle:false,poop:false};magicUsed=0;magicRolls={};seconds=0;zoom=1;panX=panY=0;selected='weapon';tab='base';selectedCell=null;running=false;matchTime=15;claimTime=0;claiming=true;seatPhase=false;npcEntryClock=0;seatIndex=-1;revealed=0;coopRoster=team.map(({name,sprite})=>({name,sprite}));occupiedSeats=new Set();npcClaims=0;npcWalkers=[];reservedSeats=new Set();lobbyOrder=shuffle([1,2,3,4,5]);npcArrivalTimes=[2,4,6,9,12];last=performance.now();bossFlash=0;shotFlash=0;bossSpriteFile='';projectiles=[];shotTimer=0;lastPower=0;lastDrain=0;
+ $('cpResult').hidden=true;$('cpMatch').classList.remove('cp-claim-mode');$('cpMatch').querySelector('strong').textContent='ПІДБІР 6 ХІКІ';$('cpMatchHint').textContent='Зараз підбираються шестеро хікі. Після відліку Ви особисто оберете вільний ПК, а NPC займуть інші.';$('cpMatch').hidden=false;renderMatch();matchInterval=setInterval(tickMatchLobby,1000);renderTabs();renderCatalog();renderTeam();ui();draw();}
  function start(){if(active)return;document.body.appendChild($('cpMatch'));active=true;root.classList.add('cp-active');try{level=Math.max(1,Math.min(5,+localStorage.getItem(SAVE)||1))}catch{level=1}setup(level);loop=requestAnimationFrame(frame)}
  function stop(){if(matchInterval!==null){clearInterval(matchInterval);matchInterval=null;}active=false;running=false;$('cpMatch').hidden=true;$('cpBossSprite').style.display='none';root.classList.remove('cp-active');if(loop)cancelAnimationFrame(loop);loop=null}
  // Єдиний повноекранний підбір: 15 секунд, 6 інтерактивних ПК і 5 NPC.
@@ -787,76 +788,81 @@ render();
   ensureMatchDom();
   const slots=$('cpMatchSlots');
   for(let i=0;i<6;i++){
-   const button=slots.children[i],you=i===seatIndex,bot=occupiedSeats.has(i);
-   const identity=you?coopRoster[0]:bot?coopRoster[npcWalkers.find(w=>w.i===i)?.rosterIndex]:null;
-   const token=you?'you':bot?'npc':'free',name=identity?.name||'',sprite=identity?.sprite||'';
-   button.className='cp-seat '+(you?'cp-seat-you':bot?'cp-seat-npc':'cp-seat-free');
-   button.disabled=false;
-   button.setAttribute('aria-label',`ПК ${i+1}: ${you?'Ваше місце':bot?`NPC ${name}; можна обрати`:'вільно, зайняти'}`);
-   // Нічого не пересоздаємо, якщо стан слота незмінний.
-   const key=token+'|'+name+'|'+sprite;
+   const button=slots.children[i];
+   // Лобі показує склад команди, але НЕ прив'язує жодного персонажа до ПК.
+   const identity=i===0?coopRoster[0]:i<=revealed?coopRoster[i]:null;
+   const you=seatPhase&&i===seatIndex;
+   button.className='cp-seat '+(you?'cp-seat-you':'cp-seat-free');
+   button.disabled=!seatPhase;
+   button.style.cursor=seatPhase?'pointer':'default';
+   button.setAttribute('aria-label',seatPhase?`Вільний ПК №${i+1}, обрати`:`Учасник №${i+1}`);
+   const key=(seatPhase?'seat':'lobby')+'|'+i+'|'+(identity?.sprite||'unknown')+'|'+(you?'you':'');
    if(button.dataset.view===key)continue;
    button.dataset.view=key;button.replaceChildren();
-   if(identity){
-    const image=document.createElement('img');image.src='../assets/'+sprite;image.alt='';
-    image.onerror=()=>{if(!image.src.includes('/Assets/'))image.src='../Assets/'+sprite};
+   if(!seatPhase&&identity){
+    const image=document.createElement('img');image.src='../assets/'+identity.sprite;image.alt='';
+    image.onerror=()=>{if(!image.src.includes('/Assets/'))image.src='../Assets/'+identity.sprite};
     button.append(image);
-    const label=document.createElement('span');label.textContent=(you?'ВИ · ':'')+name;button.append(label);
+    const label=document.createElement('span');label.textContent=(i===0?'ВИ · ':'')+identity.name;button.append(label);
    }else{
-    const mark=document.createElement('b');mark.textContent='?';button.append(mark);
-    const label=document.createElement('span');label.textContent=`ПК ${i+1} · Вільно`;button.append(label);
+    const mark=document.createElement('b');mark.textContent=seatPhase?String(i+1):'?';button.append(mark);
+    const label=document.createElement('span');label.textContent=seatPhase?`ПК №${i+1} · Вільно`:'Очікуємо хікі';button.append(label);
    }
   }
-  $('cpMatchCount').textContent=`Початок за ${matchTime} с`;
-  $('cpMatchSeat').textContent=`Учасників ${occupiedSeats.size+(seatIndex>=0?1:0)} / 6 · ${seatIndex<0?'Оберіть будь-який ПК':`Ваш ПК №${seatIndex+1} (можна змінити)`}`;
+  $('cpMatchCount').textContent=seatPhase?'ОБЕРІТЬ СВІЙ ПК':`Підбір: ${matchTime} с`;
+  $('cpMatchSeat').textContent=seatPhase?'Натисніть на будь-який із шести ПК. До вибору гра не почнеться.':`Учасників: ${1+revealed} / 6`;
  }
  function occupySeat(i){
-  if(!active||!claiming||running||matchTime<=0||i<0||i>=6)return;
-  if(i===seatIndex)return;
-  const prior=seatIndex;
-  // Якщо тут NPC, переводимо його на звільнений гравцем або інший вільний ПК.
-  const npc=npcWalkers.find(w=>w.i===i);
-  if(npc){
-   const vacancies=[0,1,2,3,4,5].filter(j=>j!==i&&!occupiedSeats.has(j));
-   const destination=prior>=0?prior:vacancies[0];
-   if(destination===undefined)return;
-   occupiedSeats.delete(i);occupiedSeats.add(destination);
-   npc.i=destination;npc.x=team[destination].x+.5;npc.y=team[destination].y+.5;
-  }
+  if(!active||!claiming||running||!seatPhase||i<0||i>=6)return;
+  // Жоден NPC не займає ПК раніше за гравця.
   seatIndex=i;
-  renderMatch();renderTeam();
+  finishMatch();
  }
  function tickMatchLobby(){
-  if(!active||!claiming||running)return;
+  if(!active||!claiming||running||seatPhase)return;
   matchTime=Math.max(0,matchTime-1);
-  while(npcClaims<5&&matchTime<=15-npcArrivalTimes[npcClaims]){
-   const vacant=shuffle([0,1,2,3,4,5].filter(i=>i!==seatIndex&&!occupiedSeats.has(i)));
-   // Один ПК залишається доступним, доки гравець не обере свій.
-   if(!vacant.length||(seatIndex<0&&vacant.length===1))break;
-   const i=vacant[0];npcClaims++;occupiedSeats.add(i);
-   npcWalkers.push({i,rosterIndex:npcClaims,done:true,x:team[i].x+.5,y:team[i].y+.5});
+  // Портрети відкриваються поступово, а ПК залишаються вільними.
+  revealed=Math.min(5,Math.floor((15-matchTime)/2.4));
+  if(matchTime===0){
+   revealed=5;seatPhase=true;
+   $('cpMatch').querySelector('strong').textContent='ОБЕРІТЬ СВІЙ ПК';
+   $('cpMatchHint').textContent='Усі шість ПК першого рівня й поки вільні. Натисніть на будь-який ПК, щоб зайняти його. Лише після цього інші хікі підуть до решти.';
+   if(matchInterval!==null){clearInterval(matchInterval);matchInterval=null;}
   }
   renderMatch();renderTeam();
-  if(matchTime===0)finishMatch();
  }
  function finishMatch(){
-  if(running)return;
-  if(seatIndex<0){const available=[0,1,2,3,4,5].filter(i=>!occupiedSeats.has(i));seatIndex=available[0]??0;}
-  for(let i=0;i<6;i++){
-   if(i===seatIndex||occupiedSeats.has(i))continue;
-   const index=npcClaims+1;npcClaims++;occupiedSeats.add(i);
-   npcWalkers.push({i,rosterIndex:index,done:true,x:team[i].x+.5,y:team[i].y+.5});
+  if(running||seatIndex<0||!seatPhase)return;
+  // Спочатку гравець обирає ПК. Тільки тепер роздаємо п'ять інших ПК NPC.
+  occupiedSeats.clear();npcWalkers=[];
+  const remaining=shuffle([0,1,2,3,4,5].filter(i=>i!==seatIndex));
+  for(let n=0;n<5;n++){
+   const i=remaining[n],identity=coopRoster[n+1];
+   team[i].name=identity.name;team[i].sprite=identity.sprite;
+   // NPC стартує біля входу, а не сидить за комп'ютером від початку.
+   npcWalkers.push({i,rosterIndex:n+1,done:false,x:room.doorX+.5+(n-2)*.14,y:room.doorY+1.1,delay:n*.45});
   }
-  for(let i=0;i<6;i++){
-   const rosterIndex=i===seatIndex?0:npcWalkers.find(w=>w.i===i)?.rosterIndex;
-   const identity=coopRoster[rosterIndex];
-   if(identity){team[i].name=identity.name;team[i].sprite=identity.sprite;}
-  }
-  claiming=false;running=true;matchTime=0;
+  team[seatIndex].name=coopRoster[0].name;team[seatIndex].sprite=coopRoster[0].sprite;
+  claiming=false;running=false;seatPhase=false;npcEntryClock=0;
   if(matchInterval!==null){clearInterval(matchInterval);matchInterval=null;}
   $('cpMatch').hidden=true;
-  npcWalkers=[];reservedSeats.clear();renderTeam();ui();
-  notify(`Ваш ПК №${seatIndex+1}. Усі шість ПК першого рівня. Оборона почалася.`);
+  $('cpMatch').querySelectorAll('button').forEach(b=>b.dataset.view='');
+  renderTeam();ui();
+  notify(`Ви зайняли ПК №${seatIndex+1}. Інші хікі заходять до кімнати.`);
+ }
+ function updateNpcEntry(dt){
+  if(!active||claiming||running||!npcWalkers.length)return;
+  npcEntryClock+=dt;
+  for(const w of npcWalkers){
+   if(w.done||npcEntryClock<w.delay)continue;
+   const target=team[w.i],tx=target.x+.5,ty=target.y+.15;
+   const dx=tx-w.x,dy=ty-w.y,dist=Math.hypot(dx,dy),step=dt*3;
+   if(dist<=step){w.x=tx;w.y=ty;w.done=true;occupiedSeats.add(w.i)}
+   else {w.x+=dx/dist*step;w.y+=dy/dist*step}
+  }
+  if(npcWalkers.every(w=>w.done)){
+   npcWalkers=[];running=true;renderTeam();ui();notify('Усі хікі зайняли ПК. Оборона почалася.');
+  }
  }
  function notify(msg){$('cpNotice').textContent=msg;noticeTime=seconds}
  function magicPrize(){
@@ -906,7 +912,7 @@ render();
  function updateObjectActions(){const obj=chosenObject(),type=obj&&ITEMS.find(i=>i.id===obj.type),up=$('cpObjectUpgrade'),del=$('cpObjectRemove');up.disabled=!running||!obj||!type||obj.lv>=type.max;del.disabled=!running||!obj;up.textContent=obj&&type?(obj.lv>=type.max?'⬆ Максимальний рівень':`⬆ Рівень ${obj.lv+1} · ${priceText(priceOf(type,obj.lv))}`):'⬆ Покращити предмет'}
  function renderTabs(){document.querySelectorAll('[data-cptab]').forEach(b=>b.classList.toggle('active',b.dataset.cptab===tab))}
  function renderCatalog(){const c=$('cpCatalog');c.textContent='';for(const item of ITEMS.filter(i=>i.tab===tab)){const b=document.createElement('button');b.classList.toggle('active',selected===item.id);const pic=document.createElement('img');pic.alt='';pic.src='../assets/'+item.img;pic.onerror=()=>{if(!pic.src.includes('/Assets/'))pic.src='../Assets/'+item.img};const name=document.createElement('span');name.textContent=item.name;const price=document.createElement('small');price.innerHTML=`<img class="cp-coin" src="../assets/coin.png" onerror="this.onerror=null;this.src='../Assets/coin.png'" alt="монети">${priceText(priceOf(item))}${item.id==='magic'?' · '+(3-magicUsed)+'/3':item.door&&door[item.id]?' · встановлено':''}`;b.append(pic,name,price);b.onclick=()=>{selected=item.id;renderCatalog();if(item.door)buyDoorAttachment(item.id);else notify(`Обрано: ${item.name}. Натисніть на вільну клітинку.`)};c.append(b)}}
- function renderTeam(){const target=$('cpTeam');target.textContent='';for(const [i,p] of team.entries()){const d=document.createElement('div');if(running){const im=document.createElement('img');im.src='../assets/'+p.sprite;im.onerror=()=>{if(!im.src.includes('/Assets/'))im.src='../Assets/'+p.sprite};d.append(im,document.createTextNode(`${p.name} · ПК ${p.level} (+${p.income}/с)`+(i===seatIndex?' · ВИ':'')))}else{const mark=document.createElement('b');mark.textContent='?';d.append(mark,document.createTextNode(` ПК ${i+1} · ${occupiedSeats.has(i)?'зайнято':reservedSeats.has(i)?'підходить NPC':'вільно'}`))}d.classList.toggle('cp-seat-you',i===seatIndex);d.onclick=()=>{if(claiming)occupySeat(i);else if(running)upgradePc(i)};target.append(d)}}
+ function renderTeam(){const target=$('cpTeam');target.textContent='';for(const [i,p] of team.entries()){const d=document.createElement('div');if(running){const im=document.createElement('img');im.src='../assets/'+p.sprite;im.onerror=()=>{if(!im.src.includes('/Assets/'))im.src='../Assets/'+p.sprite};d.append(im,document.createTextNode(`${p.name} · ПК ${p.level} (+${p.income}/с)`+(i===seatIndex?' · ВИ':'')))}else{const mark=document.createElement('b');mark.textContent=seatPhase?String(i+1):'?';d.append(mark,document.createTextNode(` ПК ${i+1} · ${occupiedSeats.has(i)?'зайнято':seatPhase?'вільно':'очікування'}`))}d.classList.toggle('cp-seat-you',i===seatIndex);d.onclick=()=>{if(claiming&&seatPhase)occupySeat(i);else if(running)upgradePc(i)};target.append(d)}}
  function imgFor(o){const n=o.lv;if(o.type==='weapon')return `weapon${Math.min(n,8)}.png`;if(o.type==='energy')return `energy${Math.min(n,5)}.png`;if(o.type==='money')return `moneytree${Math.min(n,4)}.${n>=4?'gif':'png'}`;return ({notebook:'notebook.png',cockroach:'cocroach.png',box:'box.png',tamagotchi:'tamagotchi.png',partner:'pc2.png'})[o.type]||ITEMS.find(i=>i.id===o.type)?.img}
  function doorUpgrade(){if(!running)return;const price=validMoney(Math.round(75*Math.pow(1.85,door.level-1)));if(door.level>=8)return notify('Двері вже максимального рівня.');if(money<price)return notify(`Потрібно ${price} монет.`);money-=price;door.level++;door.max+=280+door.level*120;door.hp=Math.min(door.max,door.hp+550);notify(`Двері покращено до рівня ${door.level}.`)}
  function doorRepair(){if(!running)return;const price=validMoney(35+door.level*15);if(money<price)return notify('Бракує монет на ремонт.');if(door.hp===door.max)return notify('Двері цілі.');money-=price;door.hp=Math.min(door.max,door.hp+180+door.level*70);notify('Двері полагоджено.')}
@@ -944,10 +950,10 @@ render();
  const dx=X+room.doorX*c,dy=Y+room.doorY*c;if(!image(`door${Math.min(door.level,6)}.png`,dx,dy,c,c)){ctx.fillStyle='#af7b42';ctx.fillRect(dx,dy,c,c)}
  for(const [idx,p] of team.entries()){const px=X+p.x*c,py=Y+p.y*c;
  // Персонаж сидить за ПК праворуч, як у класичній грі; ПК попереду ліворуч.
- if(running)image(p.sprite,px+c*.40,py+c*.03,c*.67,c*.82);else{ctx.fillStyle='#f9e3a7';ctx.font=`bold ${Math.max(11,c*.5)}px sans-serif`;ctx.fillText('?',px+c*.52,py+c*.6)}
+ if(running||(!claiming&&idx===seatIndex)||occupiedSeats.has(idx))image(p.sprite,px+c*.40,py+c*.03,c*.67,c*.82);else{ctx.fillStyle='#f9e3a7';ctx.font=`bold ${Math.max(11,c*.5)}px sans-serif`;ctx.fillText('?',px+c*.52,py+c*.6)}
  image(p.pc,px-c*.06,py+c*.34,c*.78,c*.72);
  if(idx===seatIndex){ctx.strokeStyle='#68eab6';ctx.lineWidth=Math.max(2,c*.08);ctx.strokeRect(px,py,c,c)}}
- for(const walker of npcWalkers){if(!claiming||walker.done)continue;const player=coopRoster[walker.rosterIndex];if(player)image(player.sprite,X+(walker.x-.15)*c,Y+(walker.y-.85)*c,c*.68,c*.82)}
+ for(const walker of npcWalkers){if(claiming||walker.done)continue;const player=coopRoster[walker.rosterIndex];if(player)image(player.sprite,X+(walker.x-.15)*c,Y+(walker.y-.85)*c,c*.68,c*.82)}
  for(const o of objects){const ox=X+o.x*c,oy=Y+o.y*c;const file=imgFor(o);if(!image(file,ox+c*.06,oy+c*.06,c*.88,c*.88)){ctx.fillStyle='#e9aa74';ctx.fillRect(ox+c*.15,oy+c*.15,c*.7,c*.7)}if(o.lv>1){ctx.fillStyle='#111a2ddd';ctx.fillRect(ox+c*.52,oy+c*.65,c*.42,c*.3);ctx.fillStyle='#fff';ctx.font=`bold ${Math.max(8,c*.22)}px sans-serif`;ctx.fillText(o.lv,ox+c*.64,oy+c*.88)}}
  const bx=X+boss.x*c,by=Y+boss.y*c;const spr=bossFlash>0?boss.fight:boss.walk;const bEl=$('cpBossSprite');if(spr!==bossSpriteFile){bossSpriteFile=spr;bEl.src='../assets/'+spr;bEl.onerror=()=>{if(!bEl.src.includes('/Assets/'))bEl.src='../Assets/'+spr}}bEl.style.display='block';bEl.style.left=(bx-c*.15)+'px';bEl.style.top=(by-c*.45)+'px';bEl.style.width=(c*1.3)+'px';bEl.style.height=(c*1.5)+'px';
  // Летючі кульки замість миттєвих променів від турелей.
@@ -958,7 +964,7 @@ render();
  if(door.chain)image('chain.png',dx,dy,c,c);if(door.puddle)image('wdrop.png',dx+c*.25,dy+c*.45,c*.5,c*.48);if(door.poop)image('poop.png',dx,dy,c,c);
  if(selectedCell){ctx.strokeStyle='#ffde79';ctx.lineWidth=2;ctx.strokeRect(X+selectedCell.x*c,Y+selectedCell.y*c,c,c)}ctx.restore()}
  function frame(t){if(!active)return;const dt=Math.min(.08,(t-last)/1000||0);last=t;
- if(running)tick(dt);draw();loop=requestAnimationFrame(frame)}
+ if(!running&&!claiming)updateNpcEntry(dt);if(running)tick(dt);draw();loop=requestAnimationFrame(frame)}
  function mouseToCell(e){const g=geom(),r=canvas.getBoundingClientRect();if(!g)return null;return {x:Math.floor((e.clientX-r.left-g.x)/g.cell),y:Math.floor((e.clientY-r.top-g.y)/g.cell)}}
  let pointer=null,moved=false;canvas.addEventListener('pointerdown',e=>{if(!active||!$('cpMatch').hidden)return;canvas.setPointerCapture(e.pointerId);pointer={id:e.pointerId,x:e.clientX,y:e.clientY,px:panX,py:panY};moved=false});canvas.addEventListener('pointermove',e=>{if(!pointer||pointer.id!==e.pointerId)return;const dx=e.clientX-pointer.x,dy=e.clientY-pointer.y;if(Math.abs(dx)+Math.abs(dy)>7)moved=true;if(moved){panX=pointer.px+dx;panY=pointer.py+dy}});canvas.addEventListener('pointerup',e=>{if(!pointer||e.pointerId!==pointer.id)return;pointer=null;if(moved)return;const p=mouseToCell(e);if(!p)return;if(claiming||!running)return;const pcIndex=team.findIndex(t=>t.x===p.x&&t.y===p.y);if(pcIndex>=0){upgradePc(pcIndex);return}if(p.x===room.doorX&&p.y===room.doorY){if(ITEMS.find(i=>i.id===selected)?.door)buyDoorAttachment(selected);else notify('Двері: оберіть ланцюг, калюжу або відлякувач у вкладці «Захист».');return}const prev=selectedCell,existing=objects.find(o=>o.x===p.x&&o.y===p.y);selectedCell=p;if(existing){if(prev?.x===p.x&&prev?.y===p.y)upgrade(existing);else notify(`${(ITEMS.find(i=>i.id===existing.type)?.name||'Бонус Маджики')}: оберіть «Покращити» чи «Видалити» праворуч.`)}else{selectedCell=null;place(p.x,p.y)}ui()});
  canvas.addEventListener('contextmenu',e=>{if(!active||!running)return;e.preventDefault();const p=mouseToCell(e);if(!p)return;const obj=objects.find(o=>o.x===p.x&&o.y===p.y);if(obj)removeObject(obj)});
