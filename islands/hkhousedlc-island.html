@@ -108,7 +108,7 @@
    <h3>Керування</h3>
    <div class="nv-toolbar"><label for="nvBoss">Ваш хікі</label><select id="nvBoss"><option value="hiki">Гікі Коморі</option><option value="akira">Акіра Бакенеко</option><option value="jinni">Джинні Мацумацу</option><option value="yani">Яні Куронеко</option><option value="kate">Кейт Чан</option><option value="kent">Кент Вайт</option><option value="jura">Джура Кун</option><option value="sayuri">Саюрі Кіт</option><option value="derek">Дерек К’ю</option><option value="kornel">Корнел Вус</option></select><button id="nvHit" class="primary">🏃 Бігти й трощити</button><button id="nvSocks" type="button" disabled>🧦 Увійти й розкидати шкарпетки</button></div>
    <h3>Здібності</h3>
-   <div class="nv-toolbar"><button id="nvTeleport">✦ Телепортація · 25 енергії</button><button id="nvKittens"><img class="nv-ui-sprite" src="../Assets/cat1.png" onerror="this.onerror=null;this.src='../assets/cat1.png'" alt=""/> Три коти · 20</button><button id="nvDogs"><img class="nv-ui-sprite" src="../Assets/dog1.png" onerror="this.onerror=null;this.src='../assets/dog1.png'" alt=""/> Три собаки · 25</button><button id="nvMinions"><img class="nv-ui-sprite" src="../Assets/oleksiywalk.gif" onerror="this.onerror=null;this.src='../assets/oleksiywalk.gif'" alt=""/> Олексій · 30</button><button id="nvAdepts"><img class="nv-ui-sprite" src="../Assets/mykolawalk.gif" onerror="this.onerror=null;this.src='../assets/mykolawalk.gif'" alt=""/> Микола · 35</button></div>
+   <div class="nv-toolbar"><button id="nvTeleport">✦ Телепортація · 25 енергії</button><button id="nvKittens"><img class="nv-ui-sprite" src="../assets/cat1.png" onerror="this.onerror=null;this.src='../Assets/cat1.png'" alt=""/> Три коти · 20</button><button id="nvDogs"><img class="nv-ui-sprite" src="../assets/dog1.png" onerror="this.onerror=null;this.src='../Assets/dog1.png'" alt=""/> Три собаки · 25</button><button id="nvMinions"><img class="nv-ui-sprite" src="../assets/oleksiywalk.gif" onerror="this.onerror=null;this.src='../Assets/oleksiywalk.gif'" alt=""/> Олексій · 30</button><button id="nvAdepts"><img class="nv-ui-sprite" src="../assets/mykolawalk.gif" onerror="this.onerror=null;this.src='../Assets/mykolawalk.gif'" alt=""/> Микола · 35</button></div>
   </aside>
   <div class="nv-map-area">
  <div class="nv-map-shell" id="nvMapShell" tabindex="0" aria-label="Мапа Hikka House з шістьма кімнатами"><canvas id="nvMapCanvas" class="nv-map-canvas"></canvas><div id="nvBossSprites" class="nv-boss-sprites" aria-hidden="true"></div><span class="nv-map-tip">Клік: обрати двері · ЛКМ/палець: переміщення · колесо/два пальці: зум</span><div id="nvVictoryPopup" class="nv-victory-popup" hidden role="status" aria-live="polite"><strong id="nvVictoryTitle"></strong><span id="nvVictoryDetail"></span><div id="nvVictoryActions" hidden><button type="button" id="nvVictoryNext">Наступна мапа →</button><button type="button" id="nvVictoryRestart">Заново</button></div></div><div id="nvMatch" class="nv-match" hidden><strong>ПІДБІР 6 РЕЗИДЕНТІВ</strong><div id="nvMatchCount" class="nv-match-number">5</div><div id="nvMatchSlots" class="nv-match-slots"></div></div></div>
@@ -147,7 +147,7 @@ function importTokens(code){const data=decodeTransferCode(code);const previous=N
 $('importButton').onclick=()=>{$('importCode').value='';$('importStatus').textContent='';$('importDialog').showModal()};$('closeImport').onclick=()=>$('importDialog').close();$('confirmImport').onclick=()=>{try{$('importStatus').textContent=importTokens($('importCode').value)}catch(e){$('importStatus').textContent=e.message}};
 $('importDialog').addEventListener('click',e=>{if(e.target===$('importDialog'))$('importDialog').close()});
 function toast(msg){$('flash').textContent=msg;$('flash').hidden=false;clearTimeout(toast.timeout);toast.timeout=setTimeout(()=>$('flash').hidden=true,2600)}
-function applyAssetWithFallback(img,file,onFail){const tries=['../Assets/'+file,'../assets/'+file];let pos=0;img.onerror=()=>{pos++;if(pos<tries.length)img.src=tries[pos];else{img.onerror=null;onFail&&onFail();}};img.src=tries[pos]}
+function applyAssetWithFallback(img,file,onFail){const tries=['../assets/'+file,'../Assets/'+file];let pos=0;img.onerror=()=>{pos++;if(pos<tries.length)img.src=tries[pos];else{img.onerror=null;onFail&&onFail();}};img.src=tries[pos]}
 function getUnlockedDeskPcCount(){return Math.min(state.levels.desk,DESK_PC_ASSETS.length)}
 function getActiveDeskPcIndex(){const unlocked=getUnlockedDeskPcCount();if(!unlocked)return-1;if(unlocked>=DESK_PC_ASSETS.length&&state.deskPcChoice!==null)return Math.min(state.deskPcChoice,DESK_PC_ASSETS.length-1);return unlocked-1}
 function setDeskPcSprite(index){
@@ -175,7 +175,7 @@ const HIKKA_FADE_MS=4000;
 function initApartmentParallax(){
  const scene=$('apartmentScene');if(!scene)return;
  const bg=[$('hhBgA'),$('hhBgB')],win=[$('hhWinA'),$('hhWinB')];
- const paths=['../Assets/','../assets/'];
+ const paths=['../assets/','../Assets/'];
  const cache=new Map();
  const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
  let availableScenes=[],shown=0,hasScene=false,currentScene=0,sceneTimer=0,raf=0,transitionLock=false;
@@ -203,7 +203,7 @@ function render(){$('tokens').textContent=state.tokens.toLocaleString('uk-UA');$
 let lastTick=performance.now();setInterval(()=>{const now=performance.now();const elapsed=Math.min(5,(now-lastTick)/1000);lastTick=now;if(document.hidden)return;const amount=idleYield()*elapsed;if(amount){awardComfort(amount);persist();render()}},1000);
 // Asset prefix matches classic Hikka House layout: islands/ and ../Assets.
 function sprite(id,files){const target=$(id);let pos=0;function tryNext(){if(pos>=files.length){target.hidden=true;const span=document.createElement('span');span.className='fallback';span.textContent=id==='yani'?'🐈':'👨';target.after(span);return}target.src=files[pos++]}target.onerror=tryNext;tryNext()}
-sprite('yani',['../Assets/yaniidle.gif','../assets/yaniidle.gif','../Assets/yani.png','../assets/yani.png']);sprite('akira',['../Assets/akiraidle.gif','../assets/akiraidle.gif','../Assets/akira.png','../assets/akira.png']);
+sprite('yani',['../assets/yaniidle.gif','../Assets/yaniidle.gif','../assets/yani.png','../Assets/yani.png']);sprite('akira',['../assets/akiraidle.gif','../Assets/akiraidle.gif','../assets/akira.png','../Assets/akira.png']);
 initApartmentParallax();
 render();
 
@@ -250,7 +250,7 @@ render();
  const canvas=$n('nvMapCanvas'),shell=$n('nvMapShell'),ctx=canvas.getContext('2d'),sprites=$n('nvBossSprites');
  let level=1,rooms=[],grid=[],assets=new Map(),helperVisuals=new Map(),guestVisuals=new Map(),boss='hiki',energy=100,seconds=0,done=false,active=false,selected=0,timer=null,helpers=[],attacks=0,bossUnits=[],bossImages=[],zoom=1,matchTimer=null,matchRemaining=5,playing=false,lastMove=0,cameraX=0,cameraY=0,activePointers=new Map(),panGesture=null,pinchGesture=null,suppressMapClick=false,victoryTimeout=null;
  try{level=Math.max(1,Math.min(MAX,+localStorage.getItem(SAVE)||1))}catch{}
- function loadImage(name){if(assets.has(name))return;const im=new Image();let i=0;const paths=['../Assets/','../assets/'];im.onload=()=>draw();im.onerror=()=>{if(++i<paths.length)im.src=paths[i]+name};im.src=paths[0]+name;assets.set(name,im)}
+ function loadImage(name){if(assets.has(name))return;const im=new Image();let i=0;const paths=['../assets/','../Assets/'];im.onload=()=>draw();im.onerror=()=>{if(++i<paths.length)im.src=paths[i]+name};im.src=paths[0]+name;assets.set(name,im)}
  [...new Set([...MAPS.flatMap(m=>[m.floor,m.roomFloor,m.wall]),...GUESTS,...PCS,...Object.values(CHAR).flat(),'cat1.png','cat2.png','cat3.png','dog1.png','dog2.png','dog3.png','oleksiywalk.gif','oleksiy.png','mykolawalk.gif','mykola.png',...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),'energy1.png','moneytree1.png','trap.png','time.png','coin.png','notebook.png','cocroach.png','box.png','tamagotchi.png','door1.png','door2.png','door3.png','door4.png','door5.png','door6.png'])].forEach(loadImage);
  function makeRoom(i,map){
   let cells=[],side,x,y,doorX,doorY,pcX,pcY;
@@ -401,8 +401,8 @@ render();
    const slot=slots.children[index];if(!slot)return;
    const im=slot.querySelector('img'),small=slot.querySelector('small'),def=defenders()[index];
    if(!def||!im.hidden)return;
-   im.onerror=()=>{if(im.dataset.fallback)return;im.dataset.fallback='1';im.src='../assets/'+def.file};
-   im.src='../Assets/'+def.file;im.hidden=false;small.textContent=def.name;
+   im.onerror=()=>{if(im.dataset.fallback)return;im.dataset.fallback='1';im.src='../Assets/'+def.file};
+   im.src='../assets/'+def.file;im.hidden=false;small.textContent=def.name;
   };
   matchTimer=setInterval(()=>{
    halfSeconds++;
@@ -425,7 +425,7 @@ render();
   bossUnits.forEach((u,i)=>goTo(u,rooms[i]));setupBossSprites();$n('nvNextWrap').hidden=true;$n('nvNext').textContent=level===MAX?'Знову з першої мапи':'Наступна мапа →';message(m.name+'. За 5 секунд підберуться 6 резидентів.');render();if(active){startMatch();timer=setInterval(tick,100)}}
  function message(s){$n('nvMessage').textContent=s}
  function setupBossSprites(){sprites.replaceChildren();helperVisuals.clear();guestVisuals.clear();bossImages=bossUnits.map((u,i)=>{const el=document.createElement('img');el.alt='';el.dataset.file='';el.style.zIndex=i===0?'3':'2';sprites.append(el);return el})}
- function syncBossSprites(q){bossUnits.forEach((unit,i)=>{const el=bossImages[i];if(!el)return;const file=CHAR[unit.id]?.[unit.moving?1:0];if(!file)return;if(el.dataset.file!==file){el.dataset.file=file;let n=0;const roots=['../Assets/','../assets/'];el.onerror=()=>{if(++n<roots.length)el.src=roots[n]+file;else el.hidden=true};el.hidden=false;el.src=roots[0]+file}const wid=q.tile*1.2,hei=q.tile*1.65;
+ function syncBossSprites(q){bossUnits.forEach((unit,i)=>{const el=bossImages[i];if(!el)return;const file=CHAR[unit.id]?.[unit.moving?1:0];if(!file)return;if(el.dataset.file!==file){el.dataset.file=file;let n=0;const roots=['../assets/','../Assets/'];el.onerror=()=>{if(++n<roots.length)el.src=roots[n]+file;else el.hidden=true};el.hidden=false;el.src=roots[0]+file}const wid=q.tile*1.2,hei=q.tile*1.65;
     // Формування колони: NPC інколи біжать збоку, але тільки якщо поруч справді коридор.
     let fx=0,fy=0;
     if(i>0&&unit.moving&&unit.path.length){
@@ -450,7 +450,7 @@ render();
    const wanted=r.guestFightUntil>seconds?r.guestFight:r.guestWalk;
    if(el.dataset.file!==wanted){
     el.dataset.file=wanted;
-    let idx=0;const roots=['../Assets/','../assets/'];
+    let idx=0;const roots=['../assets/','../Assets/'];
     const names=[wanted,r.guestWalk,r.guestFile];
     const tryLoad=()=>{if(idx>=names.length){el.hidden=true;return}
      let root=0;el.onerror=()=>{if(++root<roots.length)el.src=roots[root]+names[idx];else{idx++;tryLoad()}};
@@ -472,7 +472,7 @@ render();
    let el=helperVisuals.get(h.id);
    if(!el){
     el=document.createElement('img');el.alt=h.label;el.draggable=false;
-    let index=0;const names=h.asset?[h.asset]:(HELPER_ASSETS[h.kind]||[]);const roots=['../Assets/','../assets/'];
+    let index=0;const names=h.asset?[h.asset]:(HELPER_ASSETS[h.kind]||[]);const roots=['../assets/','../Assets/'];
     const tryAsset=()=>{if(index>=names.length){el.hidden=true;return}let root=0;const name=names[index];el.onerror=()=>{if(++root<roots.length)el.src=roots[root]+name;else{index++;tryAsset()}};el.onload=()=>{el.hidden=false};el.src=roots[root]+name};
     tryAsset();sprites.append(el);helperVisuals.set(h.id,el);
    }
@@ -739,7 +739,7 @@ render();
  let magicUsed=0,magicRolls={};
  let active=false,running=false,level=1,room=null,boss=null,team=[],objects=[],money=130,energy=40,door={hp:500,max:500,level:1,chain:false,puddle:false,poop:false},seconds=0,selected='weapon',tab='base',loop=null,zoom=1,panX=0,panY=0,last=0,bossFlash=0,shotFlash=0,selectedCell=null,noticeTime=0,projectiles=[],shotTimer=0,lastPower=0,lastDrain=0;
  const imgCache=new Map(),rc=()=>Math.random(),shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(rc()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
- function loadImg(filename){if(!filename)return; if(imgCache.has(filename))return;const im=new Image();let attempt=0;im.onload=()=>{if(active)draw()};im.onerror=()=>{if(++attempt<2)im.src='../assets/'+filename};im.src='../Assets/'+filename;imgCache.set(filename,im)}
+ function loadImg(filename){if(!filename)return; if(imgCache.has(filename))return;const im=new Image();let attempt=0;im.onload=()=>{if(active)draw()};im.onerror=()=>{if(++attempt<2)im.src='../Assets/'+filename};im.src='../assets/'+filename;imgCache.set(filename,im)}
  for(const f of new Set([...MAPS.flatMap(m=>[m.out,m.floor,m.wall]),...CHARS.map(c=>c[1]),...BOSSES.flatMap(b=>[b[1],b[2]]),'coin.png','notebook.png','cocroach.png','box.png','tamagotchi.png','door1.png','door2.png','door3.png','door4.png','door5.png','door6.png',...ITEMS.map(i=>i.img),...Array.from({length:8},(_,i)=>`weapon${i+1}.png`),...Array.from({length:5},(_,i)=>`energy${i+1}.png`),...Array.from({length:4},(_,i)=>`moneytree${i+1}.${i===3?'gif':'png'}`),'pc2.png','pc3.png','pc4.png','pc5.png','pc6.png','pc8.png']))loadImg(f);
  function image(file,x,y,w,h){const im=imgCache.get(file);if(im?.complete&&im.naturalWidth){ctx.drawImage(im,x,y,w,h);return true}return false}
  const HH_PC_INCOME=[1,2,4,7,12,20,34,56,90,145],HH_PC_COST=[0,30,85,220,520,1150,2400,4900,9800,19600],HH_WEAPON_DAMAGE=[6,10,17,29,47,76,120,190],HH_WEAPON_COST=[8,26,69,160,370,840,1870,4100],HH_ENERGY_COST=[128,960,1980,4080,8160],HH_MONEY_TREE_ENERGY_COST=[16,48,112];
@@ -778,8 +778,8 @@ render();
   const bossBox=$('cpMatchBoss');
   if(bossBox.dataset.boss!==boss.name){
    bossBox.dataset.boss=boss.name;bossBox.replaceChildren();
-   const portrait=document.createElement('img');portrait.alt='';portrait.src='../Assets/'+boss.walk;
-   portrait.onerror=()=>{if(!portrait.src.includes('/assets/'))portrait.src='../assets/'+boss.walk};
+   const portrait=document.createElement('img');portrait.alt='';portrait.src='../assets/'+boss.walk;
+   portrait.onerror=()=>{if(!portrait.src.includes('/Assets/'))portrait.src='../Assets/'+boss.walk};
    bossBox.append(portrait,document.createTextNode(boss.name));
   }
  }
@@ -798,8 +798,8 @@ render();
    if(button.dataset.view===key)continue;
    button.dataset.view=key;button.replaceChildren();
    if(identity){
-    const image=document.createElement('img');image.src='../Assets/'+sprite;image.alt='';
-    image.onerror=()=>{if(!image.src.includes('/assets/'))image.src='../assets/'+sprite};
+    const image=document.createElement('img');image.src='../assets/'+sprite;image.alt='';
+    image.onerror=()=>{if(!image.src.includes('/Assets/'))image.src='../Assets/'+sprite};
     button.append(image);
     const label=document.createElement('span');label.textContent=(you?'ВИ · ':'')+name;button.append(label);
    }else{
@@ -905,8 +905,8 @@ render();
  function removeObject(obj){if(!running||!obj)return;const index=objects.indexOf(obj);if(index<0)return;objects.splice(index,1);selectedCell=null;notify('Предмет прибрано. Клітинка знову вільна.');ui()}
  function updateObjectActions(){const obj=chosenObject(),type=obj&&ITEMS.find(i=>i.id===obj.type),up=$('cpObjectUpgrade'),del=$('cpObjectRemove');up.disabled=!running||!obj||!type||obj.lv>=type.max;del.disabled=!running||!obj;up.textContent=obj&&type?(obj.lv>=type.max?'⬆ Максимальний рівень':`⬆ Рівень ${obj.lv+1} · ${priceText(priceOf(type,obj.lv))}`):'⬆ Покращити предмет'}
  function renderTabs(){document.querySelectorAll('[data-cptab]').forEach(b=>b.classList.toggle('active',b.dataset.cptab===tab))}
- function renderCatalog(){const c=$('cpCatalog');c.textContent='';for(const item of ITEMS.filter(i=>i.tab===tab)){const b=document.createElement('button');b.classList.toggle('active',selected===item.id);const pic=document.createElement('img');pic.alt='';pic.src='../Assets/'+item.img;pic.onerror=()=>{if(!pic.src.includes('/assets/'))pic.src='../assets/'+item.img};const name=document.createElement('span');name.textContent=item.name;const price=document.createElement('small');price.innerHTML=`<img class="cp-coin" src="../Assets/coin.png" onerror="this.onerror=null;this.src='../assets/coin.png'" alt="монети">${priceText(priceOf(item))}${item.id==='magic'?' · '+(3-magicUsed)+'/3':item.door&&door[item.id]?' · встановлено':''}`;b.append(pic,name,price);b.onclick=()=>{selected=item.id;renderCatalog();if(item.door)buyDoorAttachment(item.id);else notify(`Обрано: ${item.name}. Натисніть на вільну клітинку.`)};c.append(b)}}
- function renderTeam(){const target=$('cpTeam');target.textContent='';for(const [i,p] of team.entries()){const d=document.createElement('div');if(running){const im=document.createElement('img');im.src='../Assets/'+p.sprite;im.onerror=()=>{if(!im.src.includes('/assets/'))im.src='../assets/'+p.sprite};d.append(im,document.createTextNode(`${p.name} · ПК ${p.level} (+${p.income}/с)`+(i===seatIndex?' · ВИ':'')))}else{const mark=document.createElement('b');mark.textContent='?';d.append(mark,document.createTextNode(` ПК ${i+1} · ${occupiedSeats.has(i)?'зайнято':reservedSeats.has(i)?'підходить NPC':'вільно'}`))}d.classList.toggle('cp-seat-you',i===seatIndex);d.onclick=()=>{if(claiming)occupySeat(i);else if(running)upgradePc(i)};target.append(d)}}
+ function renderCatalog(){const c=$('cpCatalog');c.textContent='';for(const item of ITEMS.filter(i=>i.tab===tab)){const b=document.createElement('button');b.classList.toggle('active',selected===item.id);const pic=document.createElement('img');pic.alt='';pic.src='../assets/'+item.img;pic.onerror=()=>{if(!pic.src.includes('/Assets/'))pic.src='../Assets/'+item.img};const name=document.createElement('span');name.textContent=item.name;const price=document.createElement('small');price.innerHTML=`<img class="cp-coin" src="../assets/coin.png" onerror="this.onerror=null;this.src='../Assets/coin.png'" alt="монети">${priceText(priceOf(item))}${item.id==='magic'?' · '+(3-magicUsed)+'/3':item.door&&door[item.id]?' · встановлено':''}`;b.append(pic,name,price);b.onclick=()=>{selected=item.id;renderCatalog();if(item.door)buyDoorAttachment(item.id);else notify(`Обрано: ${item.name}. Натисніть на вільну клітинку.`)};c.append(b)}}
+ function renderTeam(){const target=$('cpTeam');target.textContent='';for(const [i,p] of team.entries()){const d=document.createElement('div');if(running){const im=document.createElement('img');im.src='../assets/'+p.sprite;im.onerror=()=>{if(!im.src.includes('/Assets/'))im.src='../Assets/'+p.sprite};d.append(im,document.createTextNode(`${p.name} · ПК ${p.level} (+${p.income}/с)`+(i===seatIndex?' · ВИ':'')))}else{const mark=document.createElement('b');mark.textContent='?';d.append(mark,document.createTextNode(` ПК ${i+1} · ${occupiedSeats.has(i)?'зайнято':reservedSeats.has(i)?'підходить NPC':'вільно'}`))}d.classList.toggle('cp-seat-you',i===seatIndex);d.onclick=()=>{if(claiming)occupySeat(i);else if(running)upgradePc(i)};target.append(d)}}
  function imgFor(o){const n=o.lv;if(o.type==='weapon')return `weapon${Math.min(n,8)}.png`;if(o.type==='energy')return `energy${Math.min(n,5)}.png`;if(o.type==='money')return `moneytree${Math.min(n,4)}.${n>=4?'gif':'png'}`;return ({notebook:'notebook.png',cockroach:'cocroach.png',box:'box.png',tamagotchi:'tamagotchi.png',partner:'pc2.png'})[o.type]||ITEMS.find(i=>i.id===o.type)?.img}
  function doorUpgrade(){if(!running)return;const price=validMoney(Math.round(75*Math.pow(1.85,door.level-1)));if(door.level>=8)return notify('Двері вже максимального рівня.');if(money<price)return notify(`Потрібно ${price} монет.`);money-=price;door.level++;door.max+=280+door.level*120;door.hp=Math.min(door.max,door.hp+550);notify(`Двері покращено до рівня ${door.level}.`)}
  function doorRepair(){if(!running)return;const price=validMoney(35+door.level*15);if(money<price)return notify('Бракує монет на ремонт.');if(door.hp===door.max)return notify('Двері цілі.');money-=price;door.hp=Math.min(door.max,door.hp+180+door.level*70);notify('Двері полагоджено.')}
@@ -934,7 +934,7 @@ render();
  const spots=[];for(let y=room.y+1;y<room.y+room.h-1;y++)for(let x=room.x+1;x<room.x+room.w-1;x++)if(!team.some(q=>q.x===x&&q.y===y)&&!objects.some(o=>o.x===x&&o.y===y))spots.push([x,y]);if(spots.length){const p=spots[Math.floor(rc()*spots.length)];place(p[0],p[1],buildType)}
  }
  if(bossFlash>0)bossFlash-=dt;if(shotFlash>0)shotFlash-=dt;ui();}
- function ui(){if(!room)return;const fmt=n=>Math.floor(n).toLocaleString('uk-UA');$('cpLevel').textContent=`Мапа ${level} / 5 · ${MAPS[level-1].name}`;$('cpBoss').textContent=`${boss.name} · рівень ${boss.level}`;$('cpHp').textContent=`Бос: ${fmt(boss.hp)} / ${fmt(boss.max)} HP`;$('cpDoor').textContent=`Двері ${door.level}: ${fmt(door.hp)} / ${fmt(door.max)}`;$('cpMoney').innerHTML=`<img class="cp-coin" src="../Assets/coin.png" onerror="this.onerror=null;this.src='../assets/coin.png'" alt="Монети"> ${fmt(money)}`;$('cpEnergy').textContent=`⚡ ${fmt(energy)} (+${lastPower.toFixed(1)}/с, −${lastDrain.toFixed(1)}/с)`;$('cpTime').textContent=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(Math.floor(seconds%60)).padStart(2,'0')}`;$('cpDoorUpgrade').textContent=door.level>=8?'⬆ Двері MAX':`⬆ Двері · ${validMoney(Math.round(75*Math.pow(1.85,door.level-1)))} монет`;$('cpDoorRepair').textContent=`🔧 Ремонт · ${validMoney(35+door.level*15)} монет`;
+ function ui(){if(!room)return;const fmt=n=>Math.floor(n).toLocaleString('uk-UA');$('cpLevel').textContent=`Мапа ${level} / 5 · ${MAPS[level-1].name}`;$('cpBoss').textContent=`${boss.name} · рівень ${boss.level}`;$('cpHp').textContent=`Бос: ${fmt(boss.hp)} / ${fmt(boss.max)} HP`;$('cpDoor').textContent=`Двері ${door.level}: ${fmt(door.hp)} / ${fmt(door.max)}`;$('cpMoney').innerHTML=`<img class="cp-coin" src="../assets/coin.png" onerror="this.onerror=null;this.src='../Assets/coin.png'" alt="Монети"> ${fmt(money)}`;$('cpEnergy').textContent=`⚡ ${fmt(energy)} (+${lastPower.toFixed(1)}/с, −${lastDrain.toFixed(1)}/с)`;$('cpTime').textContent=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(Math.floor(seconds%60)).padStart(2,'0')}`;$('cpDoorUpgrade').textContent=door.level>=8?'⬆ Двері MAX':`⬆ Двері · ${validMoney(Math.round(75*Math.pow(1.85,door.level-1)))} монет`;$('cpDoorRepair').textContent=`🔧 Ремонт · ${validMoney(35+door.level*15)} монет`;
  if(selectedCell){const o=chosenObject();$('cpSelected').textContent=o?`${(ITEMS.find(i=>i.id===o.type)?.name||'Бонус Маджики')} · рівень ${o.lv}. Використайте кнопки нижче або натисніть вдруге для покращення.`:'Оберіть вільну клітинку для предмета.'}else $('cpSelected').textContent='Натисніть на ПК для покращення, на предмет для покращення або видалення.';updateObjectActions()}
  function geom(){const W=stage.clientWidth,H=stage.clientHeight;if(!W||!H)return null;const m=MAPS[level-1],cell=Math.max(5,Math.min(100,Math.min(W/(m.w+2),H/(m.h+1))*zoom));const x=W/2-m.w*cell/2+panX,y=H/2-m.h*cell/2+panY;return {W,H,m,cell,x,y}}
  function draw(){if(!active||!room)return;const dpr=Math.min(window.devicePixelRatio||1,2),W=stage.clientWidth,H=stage.clientHeight;if(!W||!H)return;canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#0b1120';ctx.fillRect(0,0,W,H);const g=geom(),{m,cell:c,x:X,y:Y}=g;
@@ -949,7 +949,7 @@ render();
  if(idx===seatIndex){ctx.strokeStyle='#68eab6';ctx.lineWidth=Math.max(2,c*.08);ctx.strokeRect(px,py,c,c)}}
  for(const walker of npcWalkers){if(!claiming||walker.done)continue;const player=coopRoster[walker.rosterIndex];if(player)image(player.sprite,X+(walker.x-.15)*c,Y+(walker.y-.85)*c,c*.68,c*.82)}
  for(const o of objects){const ox=X+o.x*c,oy=Y+o.y*c;const file=imgFor(o);if(!image(file,ox+c*.06,oy+c*.06,c*.88,c*.88)){ctx.fillStyle='#e9aa74';ctx.fillRect(ox+c*.15,oy+c*.15,c*.7,c*.7)}if(o.lv>1){ctx.fillStyle='#111a2ddd';ctx.fillRect(ox+c*.52,oy+c*.65,c*.42,c*.3);ctx.fillStyle='#fff';ctx.font=`bold ${Math.max(8,c*.22)}px sans-serif`;ctx.fillText(o.lv,ox+c*.64,oy+c*.88)}}
- const bx=X+boss.x*c,by=Y+boss.y*c;const spr=bossFlash>0?boss.fight:boss.walk;const bEl=$('cpBossSprite');if(spr!==bossSpriteFile){bossSpriteFile=spr;bEl.src='../Assets/'+spr;bEl.onerror=()=>{if(!bEl.src.includes('/assets/'))bEl.src='../assets/'+spr}}bEl.style.display='block';bEl.style.left=(bx-c*.15)+'px';bEl.style.top=(by-c*.45)+'px';bEl.style.width=(c*1.3)+'px';bEl.style.height=(c*1.5)+'px';
+ const bx=X+boss.x*c,by=Y+boss.y*c;const spr=bossFlash>0?boss.fight:boss.walk;const bEl=$('cpBossSprite');if(spr!==bossSpriteFile){bossSpriteFile=spr;bEl.src='../assets/'+spr;bEl.onerror=()=>{if(!bEl.src.includes('/Assets/'))bEl.src='../Assets/'+spr}}bEl.style.display='block';bEl.style.left=(bx-c*.15)+'px';bEl.style.top=(by-c*.45)+'px';bEl.style.width=(c*1.3)+'px';bEl.style.height=(c*1.5)+'px';
  // Летючі кульки замість миттєвих променів від турелей.
  for(const p of projectiles){if(p.progress<0)continue;const x=X+(p.x+(p.tx-p.x)*p.progress)*c,y=Y+(p.y+(p.ty-p.y)*p.progress)*c;ctx.beginPath();ctx.arc(x,y,Math.max(2,c*.075),0,Math.PI*2);ctx.fillStyle='#ffe883';ctx.fill();ctx.lineWidth=Math.max(1,c*.025);ctx.strokeStyle='#fff8d6';ctx.stroke()}
  // HP над босом і дверима.
