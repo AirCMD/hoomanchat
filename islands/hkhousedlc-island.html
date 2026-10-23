@@ -930,14 +930,65 @@ render();
  for(const p of projectiles)p.progress+=dt*p.speed/Math.max(.6,Math.hypot(p.tx-p.x,p.ty-p.y));projectiles=projectiles.filter(p=>p.progress<1);
  if(hit>0)shotFlash=.15;if(boss.hp===0){win(true);return}
  if(boss.attacking){const dps=(5+level*.9)*(1-Math.min(.42,slow));door.hp=Math.max(0,door.hp-dps*dt);bossFlash=.28;if(door.hp===0){win(false);return}}
- // Союзники будують предмети в тій самій кімнаті та витрачають спільні монети.
- for(const [ti,t] of team.entries()){if(ti===seatIndex)continue;t.buildCooldown-=dt;if(t.buildCooldown>0)continue;t.buildCooldown=7+rc()*9;
- if(rc()<.25&&t.level<10){const price={gold:validMoney(HH_PC_COST[t.level]),energy:t.level>=7?16*Math.pow(2,t.level-7):0};if(canAfford(price)){pay(price);t.level++;t.income=HH_PC_INCOME[t.level-1];t.pc='pc'+Math.min(t.level+1,10)+'.png';loadImg(t.pc);continue}}
- const options=objects.filter(o=>['weapon','energy','money'].includes(o.type)&&o.lv<(ITEMS.find(i=>i.id===o.type)?.max||1));
- if(options.length&&rc()<.55){const o=options[Math.floor(rc()*options.length)];const ty=ITEMS.find(i=>i.id===o.type);const price=priceOf(ty,o.lv);if(canAfford(price)){pay(price);o.lv++;continue}}
- const buildType=(objects.every(o=>o.type!=='energy')&&money>=128?'energy':money<80?'weapon':['weapon','weapon','energy','money','trap','chain','puddle','poop','magic'][Math.floor(rc()*9)]);
- if(ITEMS.find(i=>i.id===buildType)?.door){buyDoorAttachment(buildType,true);continue}
- const spots=[];for(let y=room.y+1;y<room.y+room.h-1;y++)for(let x=room.x+1;x<room.x+room.w-1;x++)if(!team.some(q=>q.x===x&&q.y===y)&&!objects.some(o=>o.x===x&&o.y===y))spots.push([x,y]);if(spots.length){const p=spots[Math.floor(rc()*spots.length)];place(p[0],p[1],buildType)}
+ // Кооперативні NPC: спочатку дохід та енергопостачання, потім оборона.
+ // Будівництво не має спустошувати спільну казну випадковими покупками.
+ function npcPlace(kind){
+  const spots=[];
+  for(let y=room.y+1;y<room.y+room.h-1;y++)for(let x=room.x+1;x<room.x+room.w-1;x++){
+   if(!team.some(q=>q.x===x&&q.y===y)&&!objects.some(o=>o.x===x&&o.y===y))spots.push([x,y]);
+  }
+  if(!spots.length)return false;
+  const [x,y]=spots[Math.floor(rc()*spots.length)];return place(x,y,kind);
+ }
+ const generators=objects.filter(o=>o.type==='energy'),trees=objects.filter(o=>o.type==='money');
+ const turrets=objects.filter(o=>o.type==='weapon');
+ const genOutput=generators.reduce((s,o)=>s+Math.pow(2,Math.min(o.lv,5)-1),0);
+ const consumption=turrets.length*.35;
+ const pcOutput=team.reduce((s,t)=>s+t.income,0);
+ const treeOutput=trees.reduce((s,o)=>s+2*Math.pow(3,Math.min(o.lv,4)-1),0);
+ const econGoldReserve=generators.length===0?128:Math.max(40,Math.min(256,pcOutput*12));
+ for(const [ti,t] of team.entries()){
+  if(ti===seatIndex)continue;
+  t.buildCooldown-=dt;if(t.buildCooldown>0)continue;
+  t.buildCooldown=9+rc()*7;
+  // Перший генератор купується за першої можливості. Не витрачаємо його бюджет на турелі.
+  if(!generators.length){if(money>=128&&npcPlace('energy'))continue;else continue}
+  // Монетні дерева оплачуються енергією. Не витрачаємо монети, призначені для генераторів.
+  if(!trees.length&&energy>=16&&npcPlace('money'))continue;
+  // Якщо мережа слабка, спершу розширюємо виробництво, а не купуємо чергову гармату.
+  if(genOutput+.8<consumption+1.4){
+   const upgradeGen=generators.find(g=>g.lv<5&&canAfford(priceOf(ITEMS.find(i=>i.id==='energy'),g.lv)));
+   if(upgradeGen){pay(priceOf(ITEMS.find(i=>i.id==='energy'),upgradeGen.lv));upgradeGen.lv++;continue}
+   if(money>=128&&npcPlace('energy'))continue;
+   continue;
+  }
+  // Підтримуємо пасивний прибуток із дерев та ПК.
+  const growTree=trees.find(o=>o.lv<4&&canAfford(priceOf(ITEMS.find(i=>i.id==='money'),o.lv)));
+  if(treeOutput<Math.max(5,pcOutput*.4)&&growTree){pay(priceOf(ITEMS.find(i=>i.id==='money'),growTree.lv));growTree.lv++;continue}
+  if(trees.length<Math.min(4,2+Math.floor(seconds/120))&&energy>=Math.max(32,consumption*14)&&npcPlace('money'))continue;
+  // Поліпшення власного ПК окупається і не руйнує економіку.
+  if(t.level<10){
+   const price={gold:validMoney(HH_PC_COST[t.level]),energy:t.level>=7?16*Math.pow(2,t.level-7):0};
+   if(money>=price.gold+econGoldReserve&&energy>=price.energy&&rc()<.6){
+    pay(price);t.level++;t.income=HH_PC_INCOME[t.level-1];t.pc='pc'+Math.min(t.level+1,10)+'.png';loadImg(t.pc);continue;
+   }
+  }
+  // На дорогі поліпшення турелей витрачаємо лише надлишкові монети.
+  if(money>econGoldReserve+60){
+   const affordable=turrets.filter(o=>o.lv<8&&money>=priceOf(ITEMS[0],o.lv).gold+econGoldReserve);
+   if(affordable.length&&rc()<.5){
+    const o=affordable[Math.floor(rc()*affordable.length)];pay(priceOf(ITEMS[0],o.lv));o.lv++;continue;
+   }
+  }
+  if(money>=priceOf(ITEMS[0]).gold+econGoldReserve&&turrets.length<Math.max(2,Math.floor((genOutput+.8)/.5))){
+   npcPlace('weapon');continue;
+  }
+  // Допоміжні предмети тільки після появи сталої економіки.
+  if(seconds>45&&money>econGoldReserve+120&&rc()<.22){
+   const type=['trap','chain','puddle','poop'][Math.floor(rc()*4)];
+   const item=ITEMS.find(i=>i.id===type);
+   if(item?.door)buyDoorAttachment(type,true);else npcPlace(type);
+  }
  }
  if(bossFlash>0)bossFlash-=dt;if(shotFlash>0)shotFlash-=dt;ui();}
  function ui(){if(!room)return;const fmt=n=>Math.floor(n).toLocaleString('uk-UA');$('cpLevel').textContent=`Мапа ${level} / 5 · ${MAPS[level-1].name}`;$('cpBoss').textContent=`${boss.name} · рівень ${boss.level}`;$('cpHp').textContent=`Бос: ${fmt(boss.hp)} / ${fmt(boss.max)} HP`;$('cpDoor').textContent=`Двері ${door.level}: ${fmt(door.hp)} / ${fmt(door.max)}`;$('cpMoney').innerHTML=`<img class="cp-coin" src="../assets/coin.png" onerror="this.onerror=null;this.src='../Assets/coin.png'" alt="Монети"> ${fmt(money)}`;$('cpEnergy').textContent=`⚡ ${fmt(energy)} (+${lastPower.toFixed(1)}/с, −${lastDrain.toFixed(1)}/с)`;$('cpTime').textContent=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(Math.floor(seconds%60)).padStart(2,'0')}`;$('cpDoorUpgrade').textContent=door.level>=8?'⬆ Двері MAX':`⬆ Двері · ${validMoney(Math.round(75*Math.pow(1.85,door.level-1)))} монет`;$('cpDoorRepair').textContent=`🔧 Ремонт · ${validMoney(35+door.level*15)} монет`;
