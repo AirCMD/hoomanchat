@@ -141,7 +141,7 @@ document.addEventListener('error',event=>{
 
 const $=id=>document.getElementById(id);
 const KEY='hikka-house-dlc-save-v1';
-const DESK_PC_ASSETS=[...Array.from({length:10},(_,i)=>`pc${i+1}.png`),'pc9.png','pc10.png'];
+const DESK_PC_ASSETS=['pc2.png','pc3.png','pc4.png','pc5.png','pc6.png','pc8.png','pc9.png','pc10.png'];
 const defaults=()=>({version:1,tokens:0,imports:{},comfort:0,totalComfort:0,levels:{desk:0,lamp:0,plants:0,cat:0},achievements:[],deskPcChoice:null});
 let state=defaults();try{const raw=JSON.parse(localStorage.getItem(KEY)||'null');if(raw&&typeof raw==='object'&&!Array.isArray(raw))state={...state,...raw,levels:{...state.levels,...raw.levels}}}catch{}
 state.tokens=Number.isSafeInteger(state.tokens)?Math.max(0,state.tokens):0;
@@ -150,6 +150,12 @@ state.totalComfort=Number.isFinite(state.totalComfort)?Math.max(0,state.totalCom
 if(!state.imports||typeof state.imports!=='object'||Array.isArray(state.imports))state.imports={};
 if(!Array.isArray(state.achievements))state.achievements=[];
 for(const id of ['desk','lamp','plants','cat'])state.levels[id]=Number.isInteger(state.levels[id])?Math.max(0,Math.min(100,state.levels[id])):0;
+// Перенесення вибору з попередньої колекції, де були неіснуючі pc1/pc7 та дублікати pc9/pc10.
+if(state.pcCollectionVersion!==2){
+ const oldToNew=[0,0,1,2,3,4,4,5,6,7,6,7];
+ state.deskPcChoice=Number.isInteger(state.deskPcChoice)?(oldToNew[state.deskPcChoice]??null):null;
+ state.pcCollectionVersion=2;
+}
 state.deskPcChoice=Number.isInteger(state.deskPcChoice)?Math.max(0,Math.min(DESK_PC_ASSETS.length-1,state.deskPcChoice)):null;
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch{alert('Не вдалося зберегти прогрес: можливо, сховище браузера недоступне.')}}
 function checksum(s){let h=2166136261;for(let i=0;i<s.length;i++)h=Math.imul(h^s.charCodeAt(i),16777619)>>>0;return h.toString(16).toUpperCase().padStart(8,'0')}
