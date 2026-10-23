@@ -96,7 +96,7 @@
  <div class="line space cp-heading"><div><h2>⚔️ Кооператив: оборона кімнати</h2><p class="sub">Шестеро хікі, шість ПК і один дуже витривалий бос. Будуйте оборону разом. Наразі п’ятеро союзників керуються NPC.</p></div><div class="line"><button id="cpRestart">↻ Почати знову</button><button id="cpExit">✕ До меню DLC</button></div></div>
  <div class="cp-hud"><span id="cpLevel">Мапа 1 / 5</span><span id="cpBoss">Бос</span><span id="cpHp">HP</span><span id="cpDoor">Двері</span><span id="cpMoney">Монети</span><span id="cpEnergy">Енергія</span><span id="cpTime">00:00</span></div>
  <div class="cp-layout">
-  <div class="cp-stage"><canvas id="cpCanvas" aria-label="Мапа кооперативної оборони"></canvas><img id="cpBossSprite" class="cp-boss-sprite" alt="" aria-hidden="true"/><div id="cpMatch" class="cp-match" hidden><strong>ПІДБІР 6 ХІКІ</strong><div id="cpMatchBoss" class="cp-match-boss"></div><strong class="cp-versus">ПРОТИ</strong><div id="cpMatchSlots" class="cp-match-slots"></div><div id="cpMatchCount">Початок за 15 с</div><p id="cpMatchHint">Оберіть вільний ПК. Інші місця поступово займають випадкові хікі.</p><span id="cpMatchSeat">Учасників: 1 / 6</span></div><div class="cp-zoom"><button id="cpZoomOut">−</button><button id="cpZoomIn">+</button></div><div class="cp-result" id="cpResult" hidden><h2 id="cpResultTitle"></h2><p id="cpResultText"></p><button id="cpNext" class="primary">Наступна мапа</button></div></div>
+  <div class="cp-stage"><canvas id="cpCanvas" aria-label="Мапа кооперативної оборони"></canvas><img id="cpBossSprite" class="cp-boss-sprite" alt="" aria-hidden="true"/><div id="cpMatch" class="cp-match" hidden><strong>ПІДБІР 6 ХІКІ</strong><div id="cpMatchBoss" class="cp-match-boss"></div><strong class="cp-versus">ПРОТИ</strong><div id="cpMatchSlots" class="cp-match-slots"></div><div id="cpMatchCount">Початок за 15 с</div><p id="cpMatchHint">Оберіть будь-який ПК. Якщо місце зайняте NPC, він поступиться ним.</p><span id="cpMatchSeat">Учасників: 1 / 6</span></div><div class="cp-zoom"><button id="cpZoomOut">−</button><button id="cpZoomIn">+</button></div><div class="cp-result" id="cpResult" hidden><h2 id="cpResultTitle"></h2><p id="cpResultText"></p><button id="cpNext" class="primary">Наступна мапа</button></div></div>
   <aside class="cp-sidebar"><h3>Будівництво</h3><p class="cp-note">Обирайте предмет і натискайте на вільну клітинку кімнати. На встановлений предмет натисніть для покращення.</p><div id="cpTabs" class="cp-tabs"><button data-cptab="base" class="active">База</button><button data-cptab="money">Монети</button><button data-cptab="defense">Захист</button><button data-cptab="other">Інше</button></div><div id="cpCatalog" class="cp-catalog"></div><div class="cp-door-actions"><h3>Двері</h3><button id="cpDoorUpgrade">⬆ Покращити двері</button><button id="cpDoorRepair">🔧 Ремонтувати двері</button><p id="cpSelected" class="cp-note">Натисніть на побудований предмет, щоб керувати ним.</p><div class="cp-object-actions"><button id="cpObjectUpgrade" type="button" disabled>⬆ Покращити предмет</button><button id="cpObjectRemove" type="button" disabled>🗑 Видалити предмет</button></div></div><h3>Команда</h3><div id="cpTeam" class="cp-team"></div><p id="cpNotice" class="cp-note" aria-live="polite"></p></aside>
  </div>
 </section>
@@ -758,56 +758,91 @@ render();
  function setup(mapIndex){
  if(matchInterval!==null){clearInterval(matchInterval);matchInterval=null;}level=Math.max(1,Math.min(5,mapIndex));const m=MAPS[level-1];room=roomBounds(m);const bb=shuffle([...BOSSES])[0];boss={name:bb[0],walk:bb[1],fight:bb[2],level:1,hp:12000,max:12000,x:room.doorX,y:room.doorY-3,attacking:false};
  team=shuffle([...CHARS]).slice(0,6).map((p,i)=>({name:p[0],sprite:p[1],x:room.x+2+(i%3)*Math.floor((room.w-4)/2),y:room.y+2+Math.floor(i/3)*(room.h-5),pc:'pc2.png',income:1,level:1,buildCooldown:5+rc()*8}));
- objects=[];money=160;energy=60;door={hp:600,max:600,level:1,chain:false,puddle:false,poop:false};magicUsed=0;magicRolls={};seconds=0;zoom=1;panX=panY=0;selected='weapon';tab='base';selectedCell=null;running=false;matchTime=15;claimTime=0;claiming=true;seatIndex=-1;revealed=0;coopRoster=team.map(({name,sprite})=>({name,sprite}));occupiedSeats=new Set();npcClaims=0;npcWalkers=[];reservedSeats=new Set();lobbyOrder=shuffle([1,2,3,4,5]);npcArrivalTimes=shuffle([2,4,6,9,12]);last=performance.now();bossFlash=0;shotFlash=0;bossSpriteFile='';projectiles=[];shotTimer=0;lastPower=0;lastDrain=0;
- $('cpResult').hidden=true;$('cpMatch').classList.remove('cp-claim-mode');$('cpMatch').querySelector('strong').textContent='ПІДБІР 6 ХІКІ';$('cpMatchHint').textContent='Оберіть вільний ПК. Інші місця поступово займають випадкові хікі.';$('cpMatch').hidden=false;renderMatch();matchInterval=setInterval(tickMatchLobby,1000);renderTabs();renderCatalog();renderTeam();ui();draw();}
+ objects=[];money=160;energy=60;door={hp:600,max:600,level:1,chain:false,puddle:false,poop:false};magicUsed=0;magicRolls={};seconds=0;zoom=1;panX=panY=0;selected='weapon';tab='base';selectedCell=null;running=false;matchTime=15;claimTime=0;claiming=true;seatIndex=-1;revealed=0;coopRoster=team.map(({name,sprite})=>({name,sprite}));occupiedSeats=new Set();npcClaims=0;npcWalkers=[];reservedSeats=new Set();lobbyOrder=shuffle([1,2,3,4,5]);npcArrivalTimes=[2,4,6,9,12];last=performance.now();bossFlash=0;shotFlash=0;bossSpriteFile='';projectiles=[];shotTimer=0;lastPower=0;lastDrain=0;
+ $('cpResult').hidden=true;$('cpMatch').classList.remove('cp-claim-mode');$('cpMatch').querySelector('strong').textContent='ПІДБІР 6 ХІКІ';$('cpMatchHint').textContent='Оберіть будь-який ПК. Якщо місце вже зайняте NPC, він поступиться ним. До кінця відліку можна змінювати вибір.';$('cpMatch').hidden=false;renderMatch();matchInterval=setInterval(tickMatchLobby,1000);renderTabs();renderCatalog();renderTeam();ui();draw();}
  function start(){if(active)return;document.body.appendChild($('cpMatch'));active=true;root.classList.add('cp-active');try{level=Math.max(1,Math.min(5,+localStorage.getItem(SAVE)||1))}catch{level=1}setup(level);loop=requestAnimationFrame(frame)}
  function stop(){if(matchInterval!==null){clearInterval(matchInterval);matchInterval=null;}active=false;running=false;$('cpMatch').hidden=true;$('cpBossSprite').style.display='none';root.classList.remove('cp-active');if(loop)cancelAnimationFrame(loop);loop=null}
  // Єдиний повноекранний підбір: 15 секунд, 6 інтерактивних ПК і 5 NPC.
  // Весь ввід під час відліку приймає тільки #cpMatch.
- function isSeatUnavailable(i){return occupiedSeats.has(i)}
+ // Підбір: NPC не можуть забрати право гравця обрати будь-який з шести ПК.
+ // Кнопки та портрети зберігаються між тиками: заміна DOM щосекунди спричиняла миготіння GIF.
+ function ensureMatchDom(){
+  const slots=$('cpMatchSlots');
+  if(slots.children.length!==6){
+   slots.replaceChildren();
+   for(let i=0;i<6;i++){
+    const btn=document.createElement('button');btn.type='button';btn.className='cp-seat';btn.dataset.index=String(i);
+    btn.onclick=()=>occupySeat(i);slots.append(btn);
+   }
+  }
+  const bossBox=$('cpMatchBoss');
+  if(bossBox.dataset.boss!==boss.name){
+   bossBox.dataset.boss=boss.name;bossBox.replaceChildren();
+   const portrait=document.createElement('img');portrait.alt='';portrait.src='../Assets/'+boss.walk;
+   portrait.onerror=()=>{if(!portrait.src.includes('/assets/'))portrait.src='../assets/'+boss.walk};
+   bossBox.append(portrait,document.createTextNode(boss.name));
+  }
+ }
  function renderMatch(){
-  const slots=$('cpMatchSlots');slots.replaceChildren();
-  const b=$('cpMatchBoss');b.replaceChildren();
-  const portrait=document.createElement('img');portrait.alt='';portrait.src='../Assets/'+boss.walk;
-  portrait.onerror=()=>{if(!portrait.src.includes('/assets/'))portrait.src='../assets/'+boss.walk};
-  b.append(portrait,document.createTextNode(boss.name));
+  ensureMatchDom();
+  const slots=$('cpMatchSlots');
   for(let i=0;i<6;i++){
-   const button=document.createElement('button');button.type='button';
-   const you=i===seatIndex,bot=occupiedSeats.has(i);
+   const button=slots.children[i],you=i===seatIndex,bot=occupiedSeats.has(i);
+   const identity=you?coopRoster[0]:bot?coopRoster[npcWalkers.find(w=>w.i===i)?.rosterIndex]:null;
+   const token=you?'you':bot?'npc':'free',name=identity?.name||'',sprite=identity?.sprite||'';
    button.className='cp-seat '+(you?'cp-seat-you':bot?'cp-seat-npc':'cp-seat-free');
-   button.disabled=false;button.setAttribute('aria-label',`ПК ${i+1}: ${you?'Ваше місце':bot?'Зайнято NPC':'вільно, зайняти'}`);
-   if(you||bot){const identity=you?coopRoster[0]:coopRoster[npcWalkers.find(w=>w.i===i)?.rosterIndex];
-    if(identity){const image=document.createElement('img');image.src='../Assets/'+identity.sprite;image.alt='';image.onerror=()=>{if(!image.src.includes('/assets/'))image.src='../assets/'+identity.sprite};button.append(image)}
-    const label=document.createElement('span');label.textContent=(you?'ВИ · ':'')+(identity?.name||'Хікі');button.append(label);
-   }else{const mark=document.createElement('b');mark.textContent='?';button.append(mark);const label=document.createElement('span');label.textContent=`ПК ${i+1} · Вільно`;button.append(label)}
-   button.onclick=()=>occupySeat(i);slots.append(button);
+   button.disabled=false;
+   button.setAttribute('aria-label',`ПК ${i+1}: ${you?'Ваше місце':bot?`NPC ${name}; можна обрати`:'вільно, зайняти'}`);
+   // Нічого не пересоздаємо, якщо стан слота незмінний.
+   const key=token+'|'+name+'|'+sprite;
+   if(button.dataset.view===key)continue;
+   button.dataset.view=key;button.replaceChildren();
+   if(identity){
+    const image=document.createElement('img');image.src='../Assets/'+sprite;image.alt='';
+    image.onerror=()=>{if(!image.src.includes('/assets/'))image.src='../assets/'+sprite};
+    button.append(image);
+    const label=document.createElement('span');label.textContent=(you?'ВИ · ':'')+name;button.append(label);
+   }else{
+    const mark=document.createElement('b');mark.textContent='?';button.append(mark);
+    const label=document.createElement('span');label.textContent=`ПК ${i+1} · Вільно`;button.append(label);
+   }
   }
   $('cpMatchCount').textContent=`Початок за ${matchTime} с`;
-  $('cpMatchSeat').textContent=`Зайнято ${occupiedSeats.size+(seatIndex>=0?1:0)} / 6 · ${seatIndex<0?'Оберіть свій ПК':`Ваш ПК №${seatIndex+1}`}`;
+  $('cpMatchSeat').textContent=`Учасників ${occupiedSeats.size+(seatIndex>=0?1:0)} / 6 · ${seatIndex<0?'Оберіть будь-який ПК':`Ваш ПК №${seatIndex+1} (можна змінити)`}`;
  }
  function occupySeat(i){
-  if(!active||!claiming||running||matchTime<=0||i<0||i>=6||isSeatUnavailable(i))return;
-  seatIndex=i;renderMatch();renderTeam();
-  if(occupiedSeats.size===5)finishMatch();
+  if(!active||!claiming||running||matchTime<=0||i<0||i>=6)return;
+  if(i===seatIndex)return;
+  const prior=seatIndex;
+  // Якщо тут NPC, переводимо його на звільнений гравцем або інший вільний ПК.
+  const npc=npcWalkers.find(w=>w.i===i);
+  if(npc){
+   const vacancies=[0,1,2,3,4,5].filter(j=>j!==i&&!occupiedSeats.has(j));
+   const destination=prior>=0?prior:vacancies[0];
+   if(destination===undefined)return;
+   occupiedSeats.delete(i);occupiedSeats.add(destination);
+   npc.i=destination;npc.x=team[destination].x+.5;npc.y=team[destination].y+.5;
+  }
+  seatIndex=i;
+  renderMatch();renderTeam();
  }
  function tickMatchLobby(){
   if(!active||!claiming||running)return;
   matchTime=Math.max(0,matchTime-1);
-  // NPC займають випадкові незайняті місця; одне місце завжди резервується гравцю.
   while(npcClaims<5&&matchTime<=15-npcArrivalTimes[npcClaims]){
    const vacant=shuffle([0,1,2,3,4,5].filter(i=>i!==seatIndex&&!occupiedSeats.has(i)));
-   if(vacant.length<=1&&seatIndex<0)break;
-   if(!vacant.length)break;
+   // Один ПК залишається доступним, доки гравець не обере свій.
+   if(!vacant.length||(seatIndex<0&&vacant.length===1))break;
    const i=vacant[0];npcClaims++;occupiedSeats.add(i);
    npcWalkers.push({i,rosterIndex:npcClaims,done:true,x:team[i].x+.5,y:team[i].y+.5});
   }
   renderMatch();renderTeam();
-  if(matchTime===0||(occupiedSeats.size===5&&seatIndex>=0))finishMatch();
+  if(matchTime===0)finishMatch();
  }
  function finishMatch(){
   if(running)return;
   if(seatIndex<0){const available=[0,1,2,3,4,5].filter(i=>!occupiedSeats.has(i));seatIndex=available[0]??0;}
-  for(const i of [0,1,2,3,4,5]){
+  for(let i=0;i<6;i++){
    if(i===seatIndex||occupiedSeats.has(i))continue;
    const index=npcClaims+1;npcClaims++;occupiedSeats.add(i);
    npcWalkers.push({i,rosterIndex:index,done:true,x:team[i].x+.5,y:team[i].y+.5});
@@ -819,7 +854,7 @@ render();
   }
   claiming=false;running=true;matchTime=0;
   if(matchInterval!==null){clearInterval(matchInterval);matchInterval=null;}
-  $('cpMatch').hidden=true; // Прибрати увесь шар і повернути керування мапою.
+  $('cpMatch').hidden=true;
   npcWalkers=[];reservedSeats.clear();renderTeam();ui();
   notify(`Ваш ПК №${seatIndex+1}. Усі шість ПК першого рівня. Оборона почалася.`);
  }
