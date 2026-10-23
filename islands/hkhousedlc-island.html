@@ -86,7 +86,7 @@
 .cp-result{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10;background:#191e36f5;border:2px solid #72e8c7;padding:24px;min-width:min(340px,86%);text-align:center;border-radius:15px;box-shadow:0 8px 40px #000a}.cp-result[hidden]{display:none}.cp-result h2{font-size:24px}
 @media(max-width:720px){#boss.cp-active{overflow:auto;padding:6px;max-height:100dvh}.cp-layout{display:flex;flex-direction:column;overflow:auto;min-height:0}.cp-stage{flex-shrink:0;height:54dvh;min-height:280px}.cp-sidebar{flex:none;overflow:visible}.cp-heading .sub{display:none}}
 </style></head><body>
-<header><div><div class="brand">HIKKA <b>HOUSE</b> · DLC</div><div class="small">Інший бік будинку · прототип 0.6.2</div></div><div class="stats"><span class="chip">🎟️ <span id="tokens">0</span> токенів</span><button id="importButton">Імпорт із класичної гри</button><a href="hikkahouse-island.html" style="color:#f4c8de">← Класична гра</a></div></header>
+<header><div><div class="brand">HIKKA <b>HOUSE</b> · DLC</div><div class="small">Інший бік будинку · прототип 0.6.3</div></div><div class="stats"><span class="chip">🎟️ <span id="tokens">0</span> токенів</span><button id="importButton">Імпорт із класичної гри</button><a href="hikkahouse-island.html" style="color:#f4c8de">← Класична гра</a></div></header>
 <main><div class="intro"><h1>Три історії. Один будинок.</h1><p>Тут формується окрема частина Hikka House. Токени можна перенести персональним кодом із класичної гри. DLC зберігає прогрес незалежно від неї.</p></div>
 <div class="modes"><button class="mode active" data-mode="apartment"><span class="emoji">🏠</span><strong>Квартира Яні та Акіри</strong><span>Перший робочий режим: взаємодій із персонажами, затишок і розвиток квартири.</span><em>▶ Грати в прототип</em></button><button class="mode" data-mode="boss"><span class="emoji">⚔️</span><strong>Кооперативна кімната боса</strong><span>Спільна оборона від сильного непроханого гостя.</span><em>▶ Грати в кооператив</em></button><button class="mode" data-mode="intruder"><span class="emoji">🚪</span><strong>Напросилися!</strong><span>Хікі тепер нападники. Проривайся до кімнат гостей, телепортуйся та викликай помічників.</span><em>▶ Грати у прототип</em></button></div>
 <section id="apartment" class="surface"><div class="line space"><div><h2>Квартира Яні та Акіри</h2><p class="sub">Натискай на Яні чи Акіру, щоб отримувати очки затишку. Поліпшуй квартиру та заробляй невелику кількість DLC-токенів за досягнення.</p></div><button id="resetApartment">Скинути лише квартиру</button></div>
@@ -736,6 +736,7 @@ render();
  {id:'distance',name:'Дистанція',tab:'other',img:'distance.png',cost:65,max:4}];
  const SAVE='hikka-dlc-coop-map-v1';
  let matchTime=15,claimTime=0,claiming=false,seatIndex=-1,revealed=0,occupiedSeats=new Set(),npcArrivalTimes=[],npcClaims=0,npcWalkers=[],reservedSeats=new Set(),lobbyOrder=[],coopRoster=[],bossSpriteFile='',lastSpritePosition='',matchInterval=null;
+ let magicUsed=0,magicRolls={};
  let active=false,running=false,level=1,room=null,boss=null,team=[],objects=[],money=130,energy=40,door={hp:500,max:500,level:1,chain:false,puddle:false,poop:false},seconds=0,selected='weapon',tab='base',loop=null,zoom=1,panX=0,panY=0,last=0,bossFlash=0,shotFlash=0,selectedCell=null,noticeTime=0,projectiles=[],shotTimer=0,lastPower=0,lastDrain=0;
  const imgCache=new Map(),rc=()=>Math.random(),shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(rc()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
  function loadImg(filename){if(!filename)return; if(imgCache.has(filename))return;const im=new Image();let attempt=0;im.onload=()=>{if(active)draw()};im.onerror=()=>{if(++attempt<2)im.src='../assets/'+filename};im.src='../Assets/'+filename;imgCache.set(filename,im)}
@@ -759,8 +760,8 @@ render();
  team=shuffle([...CHARS]).slice(0,6).map((p,i)=>({name:p[0],sprite:p[1],x:room.x+2+(i%3)*Math.floor((room.w-4)/2),y:room.y+2+Math.floor(i/3)*(room.h-5),pc:'pc2.png',income:1,level:1,buildCooldown:5+rc()*8}));
  objects=[];money=160;energy=60;door={hp:600,max:600,level:1,chain:false,puddle:false,poop:false};magicUsed=0;magicRolls={};seconds=0;zoom=1;panX=panY=0;selected='weapon';tab='base';selectedCell=null;running=false;matchTime=15;claimTime=0;claiming=true;seatIndex=-1;revealed=0;coopRoster=team.map(({name,sprite})=>({name,sprite}));occupiedSeats=new Set();npcClaims=0;npcWalkers=[];reservedSeats=new Set();lobbyOrder=shuffle([1,2,3,4,5]);npcArrivalTimes=shuffle([2,4,6,9,12]);last=performance.now();bossFlash=0;shotFlash=0;bossSpriteFile='';projectiles=[];shotTimer=0;lastPower=0;lastDrain=0;
  $('cpResult').hidden=true;$('cpMatch').classList.remove('cp-claim-mode');$('cpMatch').querySelector('strong').textContent='ПІДБІР 6 ХІКІ';$('cpMatchHint').textContent='Оберіть вільний ПК. Інші місця поступово займають випадкові хікі.';$('cpMatch').hidden=false;renderMatch();matchInterval=setInterval(tickMatchLobby,1000);renderTabs();renderCatalog();renderTeam();ui();draw();}
- function start(){if(active)return;active=true;root.classList.add('cp-active');try{level=Math.max(1,Math.min(5,+localStorage.getItem(SAVE)||1))}catch{level=1}setup(level);loop=requestAnimationFrame(frame)}
- function stop(){if(matchInterval!==null){clearInterval(matchInterval);matchInterval=null;}active=false;running=false;$('cpBossSprite').style.display='none';root.classList.remove('cp-active');if(loop)cancelAnimationFrame(loop);loop=null}
+ function start(){if(active)return;document.body.appendChild($('cpMatch'));active=true;root.classList.add('cp-active');try{level=Math.max(1,Math.min(5,+localStorage.getItem(SAVE)||1))}catch{level=1}setup(level);loop=requestAnimationFrame(frame)}
+ function stop(){if(matchInterval!==null){clearInterval(matchInterval);matchInterval=null;}active=false;running=false;$('cpMatch').hidden=true;$('cpBossSprite').style.display='none';root.classList.remove('cp-active');if(loop)cancelAnimationFrame(loop);loop=null}
  // Єдиний повноекранний підбір: 15 секунд, 6 інтерактивних ПК і 5 NPC.
  // Весь ввід під час відліку приймає тільки #cpMatch.
  function isSeatUnavailable(i){return occupiedSeats.has(i)}
@@ -774,7 +775,7 @@ render();
    const button=document.createElement('button');button.type='button';
    const you=i===seatIndex,bot=occupiedSeats.has(i);
    button.className='cp-seat '+(you?'cp-seat-you':bot?'cp-seat-npc':'cp-seat-free');
-   button.disabled=bot;button.setAttribute('aria-label',`ПК ${i+1}: ${you?'Ваше місце':bot?'Зайнято NPC':'вільно, зайняти'}`);
+   button.disabled=false;button.setAttribute('aria-label',`ПК ${i+1}: ${you?'Ваше місце':bot?'Зайнято NPC':'вільно, зайняти'}`);
    if(you||bot){const identity=you?coopRoster[0]:coopRoster[npcWalkers.find(w=>w.i===i)?.rosterIndex];
     if(identity){const image=document.createElement('img');image.src='../Assets/'+identity.sprite;image.alt='';image.onerror=()=>{if(!image.src.includes('/assets/'))image.src='../assets/'+identity.sprite};button.append(image)}
     const label=document.createElement('span');label.textContent=(you?'ВИ · ':'')+(identity?.name||'Хікі');button.append(label);
@@ -785,7 +786,7 @@ render();
   $('cpMatchSeat').textContent=`Зайнято ${occupiedSeats.size+(seatIndex>=0?1:0)} / 6 · ${seatIndex<0?'Оберіть свій ПК':`Ваш ПК №${seatIndex+1}`}`;
  }
  function occupySeat(i){
-  if(!claiming||running||matchTime<=0||i<0||i>=6||isSeatUnavailable(i))return;
+  if(!active||!claiming||running||matchTime<=0||i<0||i>=6||isSeatUnavailable(i))return;
   seatIndex=i;renderMatch();renderTeam();
   if(occupiedSeats.size===5)finishMatch();
  }
