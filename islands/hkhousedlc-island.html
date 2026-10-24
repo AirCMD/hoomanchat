@@ -1333,7 +1333,7 @@ render();
 (function initLifeApartment(){
 'use strict';
 const $l=id=>document.getElementById(id),root=$l('lifeGame'),canvas=$l('lifeCanvas'),ctx=canvas.getContext('2d'),shell=$l('lifeMap'),overlay=$l('lifeSprites');
-const LSAVE='hikka-dlc-life-apartment-v1';const W=21,H=22,LEFT_EDGE=6,START={x:W-1,y:18},ENTRY={x:16,y:10};
+const LSAVE='hikka-dlc-life-apartment-v1';const W=21,H=22,LEFT_EDGE=6,START={x:18,y:H-1},ENTRY={x:16,y:10};
 const BOSSES=[
  ['kolyadun','Колядун','kolyadun.png','kolyadunwalk.gif','kolyadunfight.gif'],
  ['hella','Гелла','hella.png','hellawalk.gif','hellafight.gif','hellatransform.gif'],
@@ -1360,7 +1360,7 @@ const ITEMS={
  chair:{name:'Стілець',file:'stool.png',where:'kitchen',gold:90,energy:30,max:2},
  sink:{name:'Умивальник',file:'sink.png',where:'bath',gold:140,energy:60,need:'hygiene'},
  bathCabinet:{name:'Шафа ванної',file:null,where:'bath',gold:190,energy:85},
- kitchenCabinet:{name:'Кухонна шафа',file:null,where:'kitchen',gold:220,energy:95}
+ kitchenCabinet:{name:'Кухонна шафа',file:'shelf.png',where:'kitchen',gold:220,energy:95}
 };
 const icons={pc:'💻',toilet:'🚽',phone:'☎️',shower:'🚿',fridge:'🧊',bed:'🛏️',stove:'🍳',wardrobe:'🚪',plant:'🪴',kitchenTable:'🪑',chair:'🪑',sink:'🚰',bathCabinet:'🗄️',kitchenCabinet:'🗄️'};
 const needNames={hygiene:'Гігієна',hunger:'Голод',rest:'Відпочинок',boredom:'Нудьга'};
@@ -1399,7 +1399,9 @@ function buildMap(){map=Array.from({length:H},()=>Array(W).fill('wall'));
  // Bedroom, bathroom and kitchen touch no other rooms. Every internal door opens only to apartment hall.
  [[12,4],[12,10],[12,17]].forEach(([x,y])=>map[y][x]='insideDoor');map[ENTRY.y][ENTRY.x]='entryDoor';
  // Window cells replace outer wall but are not walkable.
- [[8,1],[10,1],[9,20]].forEach(([x,y])=>map[y][x]='window');map[START.y][START.x]='spawn';}
+ [[8,1],[10,1],[9,20]].forEach(([x,y])=>map[y][x]='window');
+ // Прохід гостей позначений у НИЖНІЙ стіні спільного коридору.
+ map[START.y][START.x]='spawn';}
 const openTile=(x,y,guest=false)=>{const t=map[y]?.[x];return guest?t==='shared'||t==='spawn':!!t&&['bed','bath','kitchen','hall','insideDoor','entryDoor'].includes(t)};
 function path(from,target,guest=false){let a=[Math.floor(from.x),Math.floor(from.y)],b=[Math.floor(target.x),Math.floor(target.y)];if(a[0]===b[0]&&a[1]===b[1])return[];if(!openTile(b[0],b[1],guest))return[];let q=[a], seen=new Set([a.join(',')]),prev=new Map();for(let n=0;n<q.length;n++){const [x,y]=q[n];if(x===b[0]&&y===b[1]){let cur=b.join(','),out=[];while(prev.has(cur)){let [tx,ty]=cur.split(',').map(Number);out.unshift({x:tx+.5,y:ty+.5});cur=prev.get(cur)}return out;}for(const [dx,dy] of [[0,1],[0,-1],[1,0],[-1,0]]){let nx=x+dx,ny=y+dy,k=nx+','+ny;if(!seen.has(k)&&openTile(nx,ny,guest)){seen.add(k);prev.set(k,x+','+y);q.push([nx,ny]);}}}return[]}
 // Зберегти придбані меблі з попередньої (більшої) мапи: переносимо
