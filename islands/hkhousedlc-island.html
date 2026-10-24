@@ -1253,7 +1253,7 @@ render();
 (function initLifeApartment(){
 'use strict';
 const $l=id=>document.getElementById(id),root=$l('lifeGame'),canvas=$l('lifeCanvas'),ctx=canvas.getContext('2d'),shell=$l('lifeMap'),overlay=$l('lifeSprites');
-const LSAVE='hikka-dlc-life-apartment-v1';const W=23,H=22,START={x:19,y:18},ENTRY={x:16,y:10};
+const LSAVE='hikka-dlc-life-apartment-v1';const W=23,H=22,START={x:W-1,y:18},ENTRY={x:16,y:10};
 const BOSSES=[
  ['kolyadun','Колядун','kolyadun.png','kolyadunwalk.gif','kolyadunfight.gif'],
  ['hella','Гелла','hella.png','hellawalk.gif','hellafight.gif','hellatransform.gif'],
@@ -1297,7 +1297,18 @@ const save=()=>{try{localStorage.setItem(LSAVE,JSON.stringify(saved))}catch{}};
 const requiredFurniture=()=>Object.entries(ITEMS).every(([id,def])=>G.items.filter(o=>o.id===id).length>=(def.max||1));
 function saveFurniture(){saved.items=G.items.map(o=>({...o}));save()}
 function refreshLayoutControls(){const done=!!G&&requiredFurniture(),panel=$l('lifeFinalize');panel.hidden=!done;$l('lifeConfirmLayout').disabled=!done||!!saved.layoutConfirmed;$l('lifeConfirmLayout').textContent=saved.layoutConfirmed?'✓ Розташування підтверджено':'✓ Підтвердити розташування меблів';$l('lifeFinalizeHint').textContent=saved.layoutConfirmed?'Меблі розташовані та збережені. Їх можна знову редагувати кнопкою ✏️.':'Усі меблі придбані. Перевірте розташування і підтвердіть його.';$l('lifeEditFurniture').classList.toggle('is-active',interaction==='edit');}
-function load(name){if(!name||assets.has(name))return;const im=new Image();assets.set(name,im);let i=0;const paths=['../assets/','../Assets/'];im.onload=()=>{if(active)draw()};im.onerror=()=>{if(++i<paths.length)im.src=paths[i]+name};im.src=paths[0]+name;}
+// Текстури квартири завантажуються тільки при вході в третій режим.
+// Кожен файл запитується один раз і повторно використовується для всіх клітинок.
+const ROOM_TEXTURES=['floor.png','woodfloor.png','fltile.png','fltilel.png','fltilebath.png','walle.png','doorw.png','doors.png','hunter resting.png','windowsa.png','windows.png','windowsb.png'];
+function load(name){
+ if(!name||assets.has(name))return;
+ const im=new Image();assets.set(name,im);
+ let i=0;const paths=['../assets/','../Assets/'];
+ im.onload=()=>{if(active)draw()};
+ im.onerror=()=>{if(++i<paths.length)im.src=paths[i]+name;else console.warn('Немає текстури квартири:',name)};
+ im.src=paths[0]+name;
+}
+function loadRoomTextures(){ROOM_TEXTURES.forEach(load)}
 function image(name,x,y,w,h){let im=assets.get(name);if(!im){load(name);return false}if(im.complete&&im.naturalWidth){ctx.drawImage(im,x,y,w,h);return true}return false}
 function buildMap(){map=Array.from({length:H},()=>Array(W).fill('wall'));
  for(let y=1;y<H-1;y++)for(let x=17;x<W-1;x++)map[y][x]='shared';
@@ -1380,15 +1391,40 @@ const windows=['windowsa.png','windows.png','windowsa.png','windowsb.png','windo
 function geom(){const w=shell.clientWidth,h=shell.clientHeight,r=Math.min(window.devicePixelRatio||1,2);if(canvas.width!==Math.round(w*r)||canvas.height!==Math.round(h*r)){canvas.width=Math.round(w*r);canvas.height=Math.round(h*r)}ctx.setTransform(r,0,0,r,0,0);const tile=Math.min(w/(W+1),h/(H+1))*zoom;return{w,h,tile,ox:w/2-camX*tile,oy:h/2-camY*tile}}
 function renderSprite(key,file,p,geo,mult=1.25){let el=sprites.get(key);if(!el){el=document.createElement('img');el.alt='';el.draggable=false;overlay.append(el);sprites.set(key,el)}if(el.dataset.file!==file){el.dataset.file=file;let i=0;const paths=['../assets/','../Assets/'];el.onerror=()=>{if(++i<paths.length)el.src=paths[i]+file;else el.hidden=true};el.src=paths[0]+file;}el.hidden=false;const size=geo.tile*mult;el.style.left=(geo.ox+p.x*geo.tile-size*.5)+'px';el.style.top=(geo.oy+p.y*geo.tile-size*.78)+'px';el.style.width=size+'px';el.style.height=size+'px';}
 function syncSprites(geo){const visible=new Set();for(const id of ['yani','akira']){const p=G.players[id],file=id+(p.walk?'walk.gif':'idle.gif'),key='person-'+id;visible.add(key);renderSprite(key,file,p,geo,1.48)}if(G.guest){const g=G.guest;let file=g.mode==='dodge'?(g.fx2||g.walk):g.mode==='fx'?(g.id==='hella'?g.fx:g.id==='seller'?g.fx:g.fight):g.mode==='fight'?g.fight:g.mode==='walk'?g.walk:g.idle;if(g.id==='seller'&&G.time<g.fxUntil)file=g.mode==='dodge'?(g.fx2||g.fx):g.fx;else if(g.id==='seller'&&g.mode==='dodge')g.mode='fight';if(!file)file=g.walk;visible.add('guest');renderSprite('guest',file,g,geo,1.6)}for(const a of G.servants){const key='servant-'+a.id;let file;if(a.kind==='kitten')file=a.mode==='fight'?'kittenfight.gif':'kittenwalk.gif';else if(a.kind==='anton')file=a.mode==='fight'?'antonfight.gif':'antonwalk.gif';else if(a.kind==='deara')file=a.mode==='fight'?'dearafight.gif':'dearawalk.gif';else if(a.kind==='kolpos')file='kolposy.gif';else if(a.kind==='mykola')file='mykolawalk.gif';else if(a.kind==='oleksiy')file='oleksiywalk.gif';else file='psywalk.gif';visible.add(key);renderSprite(key,file,a,geo,a.kind==='kitten'?1.03:1.3)}for(const [key,el] of sprites)if(!visible.has(key)){el.remove();sprites.delete(key)}}
-function draw(){if(!active||!G)return;const q=geom();ctx.imageSmoothingEnabled=false;ctx.fillStyle='#0c1221';ctx.fillRect(0,0,q.w,q.h);const c=q.tile;for(let y=0;y<H;y++)for(let x=0;x<W;x++){const px=q.ox+x*c,py=q.oy+y*c;if(px+c<0||py+c<0||px>q.w||py>q.h)continue;const t=map[y][x];const r=rooms.find(z=>z.id===t);const file=t==='wall'?'walle.png':t==='window'?windows[winIndex]:t==='shared'||t==='spawn'?'woodfloor.png':r?r.floor:t==='insideDoor'?'doorw.png':t==='entryDoor'?'doors.png':null;ctx.fillStyle=t==='wall'?'#545d76':t==='bed'?'#67566e':t==='bath'?'#66818a':t==='kitchen'?'#81715a':t==='hall'?'#6b726e':'#665a50';ctx.fillRect(px,py,c+.4,c+.4);if(file)image(file,px,py,c+.5,c+.5);if(t==='spawn')image('hunter resting.png',px,py,c+.5,c+.5);if(t==='window'){image('walle.png',px,py,c+.5,c+.5);image(windows[winIndex],px,py,c+.5,c+.5);}ctx.strokeStyle='#141d263b';ctx.strokeRect(px+.5,py+.5,c,c);if(plusAllowed(x,y)&&interaction==='build'){ctx.fillStyle='#b5eedaa8';ctx.font=`bold ${Math.max(10,c*.65)}px system-ui`;ctx.textAlign='center';ctx.fillText('+',px+c*.5,py+c*.72)}}
+// Проста прив'язка типу клітинки до одного файлу текстури.
+const ROOM_FLOORS={bed:'floor.png',bath:'fltilebath.png',kitchen:'fltile.png',hall:'fltilel.png',shared:'woodfloor.png',insideDoor:'doorw.png',entryDoor:'doors.png'};
+function draw(){
+ if(!active||!G)return;
+ const q=geom();ctx.imageSmoothingEnabled=false;ctx.fillStyle='#0c1221';ctx.fillRect(0,0,q.w,q.h);
+ const c=q.tile;
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+  const px=q.ox+x*c,py=q.oy+y*c;
+  if(px+c<0||py+c<0||px>q.w||py>q.h)continue;
+  const t=map[y][x];
+  // Спавн є ПРОХОДОМ У СТІНІ: не малюємо під ним підлогу коридору.
+  const base=t==='spawn'||t==='wall'||t==='window'?'walle.png':ROOM_FLOORS[t];
+  ctx.fillStyle=t==='wall'||t==='spawn'||t==='window'?'#545d76':t==='bed'?'#67566e':t==='bath'?'#66818a':t==='kitchen'?'#81715a':t==='hall'?'#6b726e':'#665a50';
+  ctx.fillRect(px,py,c+.4,c+.4);
+  if(base)image(base,px,py,c+.5,c+.5);
+  if(t==='spawn')image('hunter resting.png',px,py,c+.5,c+.5);
+  if(t==='window')image(windows[winIndex],px,py,c+.5,c+.5);
+  ctx.strokeStyle='#141d263b';ctx.strokeRect(px+.5,py+.5,c,c);
+  if(plusAllowed(x,y)&&interaction==='build'){
+   ctx.fillStyle='#b5eedaa8';ctx.font=`bold ${Math.max(10,c*.65)}px system-ui`;ctx.textAlign='center';ctx.fillText('+',px+c*.5,py+c*.72);
+  }
+ }
  for(const it of G.items){const x=q.ox+it.x*c,y=q.oy+it.y*c,def=ITEMS[it.id];if(!def.file||!image(def.file,x,y,c,c)){ctx.fillStyle='#f1e3c9';ctx.textAlign='center';ctx.font=`${Math.max(13,c*.69)}px system-ui`;ctx.fillText(icons[it.id],x+c*.5,y+c*.78)}}
- if(interaction==='edit'&&editingItem){ctx.strokeStyle='#ffe58a';ctx.lineWidth=Math.max(2,c*.1);ctx.strokeRect(q.ox+editingItem.x*c+2,q.oy+editingItem.y*c+2,c-4,c-4)}if(shopCell){ctx.strokeStyle='#7ef2cc';ctx.lineWidth=2;ctx.strokeRect(q.ox+shopCell.x*c,q.oy+shopCell.y*c,c,c)}if(G.guest){const g=G.guest,ratio=Math.max(0,g.hp/g.maxHp);ctx.fillStyle='#141221';ctx.fillRect(q.ox+(g.x-1.15)*c,q.oy+(g.y-1.4)*c,c*2.3,Math.max(5,c*.16));ctx.fillStyle='#e376ab';ctx.fillRect(q.ox+(g.x-1.15)*c,q.oy+(g.y-1.4)*c,c*2.3*ratio,Math.max(5,c*.16));}syncSprites(q)}
+ if(interaction==='edit'&&editingItem){ctx.strokeStyle='#ffe58a';ctx.lineWidth=Math.max(2,c*.1);ctx.strokeRect(q.ox+editingItem.x*c+2,q.oy+editingItem.y*c+2,c-4,c-4)}
+ if(shopCell){ctx.strokeStyle='#7ef2cc';ctx.lineWidth=2;ctx.strokeRect(q.ox+shopCell.x*c,q.oy+shopCell.y*c,c,c)}
+ if(G.guest){const g=G.guest,ratio=Math.max(0,g.hp/g.maxHp);ctx.fillStyle='#141221';ctx.fillRect(q.ox+(g.x-1.15)*c,q.oy+(g.y-1.4)*c,c*2.3,Math.max(5,c*.16));ctx.fillStyle='#e376ab';ctx.fillRect(q.ox+(g.x-1.15)*c,q.oy+(g.y-1.4)*c,c*2.3*ratio,Math.max(5,c*.16));}
+ syncSprites(q);
+}
 function syncUI(){if(!G)return;$l('lifeLevel').textContent=`Рівень ${G.level}/5`;$l('lifeCoin').textContent='🪙 '+Math.floor(G.coins);$l('lifeEnergy').textContent='⚡ '+Math.floor(G.energy);$l('lifeWave').textContent='Гості: '+G.waves+'/10';$l('lifeBoss').textContent=G.guest?.name||'Тихо';const g=G.guest;$l('lifeBossInfo').textContent=g?`${g.name} · ${Math.ceil(g.hp)} / ${Math.ceil(g.maxHp)} нав'язливості`:'Гість ще не прийшов';$l('lifeBossBar').style.width=(g?Math.max(0,g.hp/g.maxHp)*100:0)+'%';const p=selectedPerson();$l('lifeSelectedName').textContent=p.id==='yani'?'Яні':'Акіра';$l('lifeYani').classList.toggle('selected',G.selected==='yani');$l('lifeAkira').classList.toggle('selected',G.selected==='akira');const host=$l('lifeNeeds');host.replaceChildren();for(const [k,v] of Object.entries(p.needs)){const d=document.createElement('div'),label=document.createElement('label'),track=document.createElement('div'),fill=document.createElement('span');label.textContent=needNames[k]+' · '+Math.ceil(v)+'%';track.className='life-track';fill.style.width=v+'%';fill.style.background=v<20?'#da6e79':v<40?'#e2bc62':'#72d4ad';track.append(fill);d.append(label,track);host.append(d)}}
 function showDialog(title,message,action){const wrap=$l('lifeDialog');wrap.hidden=false;$l('lifeDialogTitle').textContent=title;$l('lifeDialogText').textContent=message;$l('lifeDialogAction').onclick=()=>{wrap.hidden=true;action()}}
 function tick(dt){if(!G)return;G.time+=dt;winTime+=dt;if(winTime>=60){winTime-=60;winIndex=(winIndex+1)%windows.length}for(const p of Object.values(G.players)){move(p,dt);tickNeeds(p,dt);if(p.using&&p.path.length===0&&p.useUntil===0){const it=G.items.find(o=>o.id===p.using);if(it)useItem(p,it)}}if(G.arriving&&Object.values(G.players).every(p=>!p.path.length)){G.arriving=false;G.nextGuestAt=G.time+8;}tickEconomy(dt);updateGuest(dt);G.acc+=dt;if(G.acc>=.25){G.acc=0;syncUI()}}
 function frame(t){if(!active)return;const dt=Math.min(.075,(t-last)/1000||0);last=t;if(!document.hidden&&$l('lifeDialog').hidden)tick(dt);draw();loop=requestAnimationFrame(frame)}
 function stop(){active=false;if(loop)cancelAnimationFrame(loop);loop=0;root.hidden=true;root.classList.remove('life-active');overlay.replaceChildren();sprites.clear();}
-function start(){if(active)return;active=true;root.hidden=false;root.classList.add('life-active');buildMap();startLevel(saved.level);zoom=1;camX=11.5;camY=11;last=performance.now();renderShop();refreshLayoutControls();loop=requestAnimationFrame(frame)}
+function start(){if(active)return;active=true;root.hidden=false;root.classList.add('life-active');loadRoomTextures();buildMap();startLevel(saved.level);zoom=1;camX=11.5;camY=11;last=performance.now();renderShop();refreshLayoutControls();loop=requestAnimationFrame(frame)}
 function launch(){if(!saved.unlocked){if(state.tokens<3500)return toast('Для квартирної історії потрібно 3 500 токенів DLC.');if(!confirm('Назавжди відкрити квартирну історію за 3 500 токенів?'))return;state.tokens-=3500;state.modeUnlocks=state.modeUnlocks||{};saved.unlocked=true;save();persist();render();$l('launchLifeGame').textContent='🏡 Квартира Яні та Акіри: грати';}start()}
 if(saved.unlocked)$l('launchLifeGame').textContent='🏡 Квартира Яні та Акіри: грати';$l('launchLifeGame').onclick=launch;$l('lifeExit').onclick=stop;$l('lifeRestart').onclick=()=>{if(confirm('Перезапустити рівень? Монети та енергію буде скинуто, меблі залишаться.')){startLevel(G.level);renderShop();}};
 for(const [id,key] of [['lifeYani','yani'],['lifeAkira','akira']])$l(id).onclick=()=>{if(!G)return;G.selected=key;syncUI()};
@@ -1403,7 +1439,7 @@ canvas.addEventListener('pointerdown',e=>{if(!active||e.pointerType==='mouse'&&e
 canvas.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId))return;let b=canvas.getBoundingClientRect();ptrs.set(e.pointerId,{x:e.clientX-b.left,y:e.clientY-b.top});if(gesture?.pinch&&ptrs.size>=2){let p=mid();zoom=clamp(gesture.baseZoom*p.d/Math.max(1,gesture.dist),.55,6);let q=geom();camX=gesture.ax-(p.x-q.w/2)/q.tile;camY=gesture.ay-(p.y-q.h/2)/q.tile;return}if(!gesture||gesture.id!==e.pointerId)return;const dx=e.clientX-gesture.screenX,dy=e.clientY-gesture.screenY;if(Math.hypot(dx,dy)>8)gesture.moved=true;if(gesture.moved){let q=geom();camX=gesture.cx-dx/q.tile;camY=gesture.cy-dy/q.tile}});
 function pointerEnd(e){if(!ptrs.has(e.pointerId))return;const tap=ptrs.size===1&&gesture&&!gesture.pinch&&!gesture.moved&&gesture.id===e.pointerId;ptrs.delete(e.pointerId);gesture=null;if(tap){let b=canvas.getBoundingClientRect(),q=geom();clickTile(Math.floor((e.clientX-b.left-q.ox)/q.tile),Math.floor((e.clientY-b.top-q.oy)/q.tile))}try{canvas.releasePointerCapture(e.pointerId)}catch{}}
 canvas.addEventListener('pointerup',pointerEnd);canvas.addEventListener('pointercancel',e=>{ptrs.delete(e.pointerId);gesture=null});window.addEventListener('resize',()=>{if(active)draw()});
-for(const b of BOSSES)for(const f of [b.idle,b.walk,b.fight,b.fx,b.fx2])load(f);for(const f of ['floor.png','woodfloor.png','fltile.png','fltilel.png','fltilebath.png','walle.png','doorw.png','doors.png','hunter resting.png','windowsa.png','windows.png','windowsb.png','yaniidle.gif','yaniwalk.gif','akiraidle.gif','akirawalk.gif','yaniport.png','akiraport.png','coin.png','pc5.png','plant8.png','kolposy.gif','kittenwalk.gif','kittenfight.gif','antonwalk.gif','antonfight.gif','dearawalk.gif','dearafight.gif','mykolawalk.gif','oleksiywalk.gif','psywalk.gif'])load(f);
+// GIF гостей і посіпак підвантажуються через відповідні <img> тільки за появи персонажа; меблі — за потреби.
 })();
 
 </script></body></html> 
