@@ -1326,6 +1326,9 @@ function path(from,target,guest=false){let a=[Math.floor(from.x),Math.floor(from
 // предмети на доступні клітинки відповідних кімнат, якщо старі координати зникли.
 function migrateFurniture(items){
  const result=[],occupied=new Set();
+ // Сумісність зі збереженнями v0.8.3: старі кухонні столики не мали file.
+ // Перший куплений столик — Яні, другий — Акіри, навіть після перестановки.
+ let kitchenTableIndex=0;
  for(const old of items){
   const def=ITEMS[old.id],room=rooms.find(r=>r.id===def?.where);if(!room)continue;
   const valid=(x,y)=>x>room.x1&&x<room.x2&&y>room.y1&&y<room.y2&&Math.abs(x-room.door.x)+Math.abs(y-room.door.y)>1&&!occupied.has(x+','+y);
@@ -1335,7 +1338,14 @@ function migrateFurniture(items){
    options.sort((a,b)=>a.d-b.d);if(!options.length)continue;
    x=options[0].x;y=options[0].y;
   }
-  result.push({...old,x,y,room:room.id});occupied.add(x+','+y);
+  const migrated={...old,x,y,room:room.id};
+  if(old.id==='kitchenTable'){
+   const assigned=KITCHEN_TABLE_FILES[Math.min(kitchenTableIndex,KITCHEN_TABLE_FILES.length-1)];
+   migrated.file=assigned;
+   migrated.variant=kitchenTableIndex;
+   kitchenTableIndex++;
+  }
+  result.push(migrated);occupied.add(x+','+y);
  }
  return result;
 }
