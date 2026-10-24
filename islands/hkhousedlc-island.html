@@ -1402,7 +1402,34 @@ function openPhone(){if(!G.guest)return setMessage('Зараз у коридор
 function openBoost(){shopCell=null;const host=$l('lifeShop');host.replaceChildren();$l('lifeShopTitle').textContent='⚔️ Покращення атаки';const costs=[[100,50],[250,100],[500,200],[900,400],[1500,650]],n=G.attackUp;if(n>=5)return setMessage('Максимальне посилення атаки.');const [coins,energy]=costs[n];const b=document.createElement('button');b.textContent=`+1 атака · ${coins} 🪙 + ${energy} ⚡`;b.onclick=()=>{if(G.coins<coins||G.energy<energy)return setMessage('Бракує ресурсів.');G.coins-=coins;G.energy-=energy;G.attackUp++;setMessage('Атака підвищена.');openBoost()};host.append(b)}
 const windows=['windowsa.png','windows.png','windowsa.png','windowsb.png','windowsa.png'];
 function geom(){const w=shell.clientWidth,h=shell.clientHeight,r=Math.min(window.devicePixelRatio||1,2);if(canvas.width!==Math.round(w*r)||canvas.height!==Math.round(h*r)){canvas.width=Math.round(w*r);canvas.height=Math.round(h*r)}ctx.setTransform(r,0,0,r,0,0);const tile=Math.min(w/(W+1),h/(H+1))*zoom;return{w,h,tile,ox:w/2-camX*tile,oy:h/2-camY*tile}}
-function renderSprite(key,file,p,geo,mult=1.25){let el=sprites.get(key);if(!el){el=document.createElement('img');el.alt='';el.draggable=false;overlay.append(el);sprites.set(key,el)}if(el.dataset.file!==file){el.dataset.file=file;let i=0;const paths=['../assets/','../Assets/'];el.onerror=()=>{if(++i<paths.length)el.src=paths[i]+file;else el.hidden=true};el.src=paths[0]+file;}el.hidden=false;const size=geo.tile*mult;el.style.left=(geo.ox+p.x*geo.tile-size*.5)+'px';el.style.top=(geo.oy+p.y*geo.tile-size*.78)+'px';el.style.width=size+'px';el.style.height=size+'px';}
+// Missing sprite assets must stay hidden. The previous draw loop forcibly
+// unhid broken <img> elements every frame, creating a flashing unknown icon.
+const failedLifeSprites=new Set();
+function renderSprite(key,file,p,geo,mult=1.25){
+ let el=sprites.get(key);
+ if(!el){el=document.createElement('img');el.alt='';el.draggable=false;el.hidden=true;overlay.append(el);sprites.set(key,el)}
+ if(el.dataset.file!==file){
+  el.dataset.file=file;el.hidden=true;
+  // Never retry a filename known to be missing every animation frame.
+  if(failedLifeSprites.has(file)){el.removeAttribute('src');}
+  else{
+   let attempt=0;const paths=['../assets/','../Assets/'];
+   el.onload=()=>{if(el.dataset.file===file)el.hidden=false};
+   el.onerror=()=>{
+    if(el.dataset.file!==file)return;
+    if(++attempt<paths.length){el.src=paths[attempt]+file;return}
+    failedLifeSprites.add(file);el.hidden=true;el.removeAttribute('src');
+    console.warn('Не знайдено спрайт квартирного режиму:',file);
+   };
+   el.src=paths[0]+file;
+  }
+ }
+ // Do not change hidden=false here: onload exclusively reveals a valid image.
+ const size=geo.tile*mult;
+ el.style.left=(geo.ox+p.x*geo.tile-size*.5)+'px';
+ el.style.top=(geo.oy+p.y*geo.tile-size*.78)+'px';
+ el.style.width=size+'px';el.style.height=size+'px';
+}
 function syncSprites(geo){const visible=new Set();for(const id of ['yani','akira']){const p=G.players[id],file=id+(p.walk?'walk.gif':'idle.gif'),key='person-'+id;visible.add(key);renderSprite(key,file,p,geo,1.48)}if(G.guest){const g=G.guest;let file=g.mode==='dodge'?(g.fx2||g.walk):g.mode==='fx'?(g.id==='hella'?g.fx:g.id==='seller'?g.fx:g.fight):g.mode==='fight'?g.fight:g.mode==='walk'?g.walk:g.idle;if(g.id==='seller'&&G.time<g.fxUntil)file=g.mode==='dodge'?(g.fx2||g.fx):g.fx;else if(g.id==='seller'&&g.mode==='dodge')g.mode='fight';if(!file)file=g.walk;visible.add('guest');renderSprite('guest',file,g,geo,1.6)}for(const a of G.servants){const key='servant-'+a.id;let file;if(a.kind==='kitten')file=a.mode==='fight'?'kittenfight.gif':'kittenwalk.gif';else if(a.kind==='anton')file=a.mode==='fight'?'antonfight.gif':'antonwalk.gif';else if(a.kind==='deara')file=a.mode==='fight'?'dearafight.gif':'dearawalk.gif';else if(a.kind==='kolpos')file='kolposy.gif';else if(a.kind==='mykola')file='mykolawalk.gif';else if(a.kind==='oleksiy')file='oleksiywalk.gif';else file='psywalk.gif';visible.add(key);renderSprite(key,file,a,geo,a.kind==='kitten'?1.03:1.3)}for(const [key,el] of sprites)if(!visible.has(key)){el.remove();sprites.delete(key)}}
 // Проста прив'язка типу клітинки до одного файлу текстури.
 const ROOM_FLOORS={bed:'floor.png',bath:'fltilebath.png',kitchen:'fltile.png',hall:'fltilel.png',shared:'woodfloor.png',insideDoor:'doorw.png',entryDoor:'doors.png'};
