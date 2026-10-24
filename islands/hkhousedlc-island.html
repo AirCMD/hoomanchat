@@ -1277,7 +1277,7 @@ const ITEMS={
  wardrobe:{name:'Шафа',file:null,where:'bed',gold:180,energy:90},
  plant:{name:'Столик з рослиною',file:'plant8.png',where:'bed',gold:240,energy:110,max:2},
  kitchenTable:{name:'Столик',file:null,where:'kitchen',gold:160,energy:65,max:2},
- chair:{name:'Стілець',file:null,where:'kitchen',gold:90,energy:30,max:2},
+ chair:{name:'Стілець',file:'stool.png',where:'kitchen',gold:90,energy:30,max:2},
  sink:{name:'Умивальник',file:null,where:'bath',gold:140,energy:60,need:'hygiene'},
  bathCabinet:{name:'Шафа ванної',file:null,where:'bath',gold:190,energy:85},
  kitchenCabinet:{name:'Кухонна шафа',file:null,where:'kitchen',gold:220,energy:95}
@@ -1289,7 +1289,7 @@ const KITCHEN_TABLE_LABELS=['Столик Яні','Столик Акіри'];
 
 const rooms=[{id:'bed',x1:2,x2:11,y1:2,y2:6,door:{x:12,y:4},floor:'floor.png'},
 {id:'bath',x1:2,x2:11,y1:8,y2:12,door:{x:12,y:10},floor:'fltilebath.png'},
-{id:'kitchen',x1:2,x2:11,y1:14,y2:19,door:{x:12,y:17},floor:'fltile.png'},
+{id:'kitchen',x1:7,x2:11,y1:14,y2:19,door:{x:12,y:17},floor:'fltile.png'},
 {id:'hall',x1:13,x2:15,y1:2,y2:19,door:ENTRY,floor:'fltilel.png'}];
 let map=[],active=false,loop=0,last=0,zoom=1,camX=11.5,camY=11,ptrs=new Map(),gesture=null,shopCell=null,winTime=0,winIndex=0,assets=new Map(),sprites=new Map();
 let saved={unlocked:false,level:0,items:[],finished:false};try{const a=JSON.parse(localStorage.getItem(LSAVE)||'null');if(a&&typeof a==='object'&&!Array.isArray(a))saved={...saved,...a};}catch{}
@@ -1319,7 +1319,7 @@ function buildMap(){map=Array.from({length:H},()=>Array(W).fill('wall'));
  // Bedroom, bathroom and kitchen touch no other rooms. Every internal door opens only to apartment hall.
  [[12,4],[12,10],[12,17]].forEach(([x,y])=>map[y][x]='insideDoor');map[ENTRY.y][ENTRY.x]='entryDoor';
  // Window cells replace outer wall but are not walkable.
- [[4,1],[9,1],[6,20]].forEach(([x,y])=>map[y][x]='window');map[START.y][START.x]='spawn';}
+ [[4,1],[9,1],[9,20]].forEach(([x,y])=>map[y][x]='window');map[START.y][START.x]='spawn';}
 const openTile=(x,y,guest=false)=>{const t=map[y]?.[x];return guest?t==='shared'||t==='spawn':!!t&&['bed','bath','kitchen','hall','insideDoor','entryDoor'].includes(t)};
 function path(from,target,guest=false){let a=[Math.floor(from.x),Math.floor(from.y)],b=[Math.floor(target.x),Math.floor(target.y)];if(a[0]===b[0]&&a[1]===b[1])return[];if(!openTile(b[0],b[1],guest))return[];let q=[a], seen=new Set([a.join(',')]),prev=new Map();for(let n=0;n<q.length;n++){const [x,y]=q[n];if(x===b[0]&&y===b[1]){let cur=b.join(','),out=[];while(prev.has(cur)){let [tx,ty]=cur.split(',').map(Number);out.unshift({x:tx+.5,y:ty+.5});cur=prev.get(cur)}return out;}for(const [dx,dy] of [[0,1],[0,-1],[1,0],[-1,0]]){let nx=x+dx,ny=y+dy,k=nx+','+ny;if(!seen.has(k)&&openTile(nx,ny,guest)){seen.add(k);prev.set(k,x+','+y);q.push([nx,ny]);}}}return[]}
 // Зберегти придбані меблі з попередньої (більшої) мапи: переносимо
@@ -1331,10 +1331,10 @@ function migrateFurniture(items){
  let kitchenTableIndex=0;
  for(const old of items){
   const def=ITEMS[old.id],room=rooms.find(r=>r.id===def?.where);if(!room)continue;
-  const valid=(x,y)=>x>room.x1&&x<room.x2&&y>room.y1&&y<room.y2&&Math.abs(x-room.door.x)+Math.abs(y-room.door.y)>1&&!occupied.has(x+','+y);
+  const valid=(x,y)=>x>=room.x1&&x<=room.x2&&y>=room.y1&&y<=room.y2&&!occupied.has(x+','+y);
   let x=old.x,y=old.y;
   if(!valid(x,y)){
-   const options=[];for(let yy=room.y1+1;yy<room.y2;yy++)for(let xx=room.x1+1;xx<room.x2;xx++)if(valid(xx,yy))options.push({x:xx,y:yy,d:Math.hypot(xx-old.x,yy-old.y)});
+   const options=[];for(let yy=room.y1;yy<=room.y2;yy++)for(let xx=room.x1;xx<=room.x2;xx++)if(valid(xx,yy))options.push({x:xx,y:yy,d:Math.hypot(xx-old.x,yy-old.y)});
    options.sort((a,b)=>a.d-b.d);if(!options.length)continue;
    x=options[0].x;y=options[0].y;
   }
@@ -1392,7 +1392,7 @@ function updateGuest(dt){if(!G||G.waves>=10)return;const g=G.guest;if(!g){if(G.t
 }
 function attack(){if(!G.guest||G.guest.phase!=='knock'&&G.guest.phase!=='release')return setMessage('Наразі біля дверей немає гостя.');if(!G.items.some(o=>o.id==='fridge'))return setMessage('Поки не придбано холодильник, персонажі ще не можуть завдавати шкоди.');const p=selectedPerson(),e=incomeEfficiency(p);const permanent=Math.floor(G.items.filter(o=>!['pc','toilet','shower','fridge','bed','stove','phone'].includes(o.id)).length/2);const hit=e<=0?0:Math.max(1,Math.floor((1+permanent+G.attackUp)*e));if(hit===0)return setMessage('Персонаж виснажений. Відновіть його потреби.');if(G.guest.id==='seller'&&Math.random()<.12&&G.time>=G.guest.fxUntil){G.guest.mode='dodge';G.guest.fxUntil=G.time+.55;setMessage('Продавець ухилився від атаки!');return;}G.guest.hp=Math.max(0,G.guest.hp-hit);setMessage((p.id==='yani'?'Яні':'Акіра')+' відповідає гостю: −'+hit+' нав’язливості.');}
 function summon(kind){if(!G.items.some(o=>o.id==='phone'))return;const g=G.guest;if(!g||g.phase!=='knock')return setMessage('Зараз немає гостя, якого можна відлякати.');if(G.summoned)return setMessage('Помічника вже викликано для цього гостя.');G.summoned=true;const dmg=kind==='psy'?35:kind==='oleksiy'?23:20;g.hp=Math.max(0,g.hp-dmg);G.servants.push({id:'helper-'+kind,kind,x:ENTRY.x-.5,y:ENTRY.y+.5,ttl:5,mode:'walk',phase:'hero',cd:0});setMessage((kind==='psy'?'Психіатр':kind==='oleksiy'?'Олексій':'Микола')+' з’явився. −'+dmg+' нав’язливості.');}
-function plusAllowed(x,y){const r=roomAt(x,y);if(!r||r.id==='hall')return false;if(itemAt(x,y))return false;if(x===r.x2||x===r.x1||y===r.y1||y===r.y2)return false;if(Math.abs(x-r.door.x)+Math.abs(y-r.door.y)<=1)return false;return true}
+function plusAllowed(x,y){const r=roomAt(x,y);return !!r&&r.id!=='hall'&&!itemAt(x,y)&&map[y]?.[x]===r.id;}
 function clickTile(x,y){if(!G)return;if(interaction==='edit'){const current=itemAt(x,y);if(!editingItem){if(!current)return setMessage('Оберіть меблі, які потрібно пересунути.');editingItem=current;setMessage('Обрано «'+ITEMS[current.id].name+'». Натисніть вільну клітинку тієї самої кімнати.');return;}if(current===editingItem){editingItem=null;setMessage('Вибір меблів скасовано.');return;}const room=roomAt(x,y);if(!room||room.id!==editingItem.room||!plusAllowed(x,y))return setMessage('Меблі можна переносити лише на вільну клітинку своєї кімнати, не блокуючи двері.');editingItem.x=x;editingItem.y=y;editingItem=null;saveFurniture();saved.layoutConfirmed=false;save();refreshLayoutControls();setMessage('Меблі пересунуто. Нове розташування збережене.');return;}if(x===ENTRY.x&&y===ENTRY.y){attack();return}const it=itemAt(x,y);if(it){if(it.id==='phone'){openPhone();return}if(it.id==='plant'){openBoost();return}if(it.id==='pc'){G.coins+=1;G.energy+=1;setMessage('ПК: +1 монета та +1 енергія за клік.');}useItem(selectedPerson(),it);return;}if(plusAllowed(x,y)&&interaction==='build'){shopCell={x,y,room:roomAt(x,y).id};renderShop();return;}if(openTile(x,y)){goto(selectedPerson(),x,y);shopCell=null;renderShop();}}
 function buy(id){const def=ITEMS[id],pos=shopCell;if(!G||!pos||!def||pos.room!==def.where)return;const count=G.items.filter(o=>o.id===id).length;if(count>=(def.max||1))return setMessage('Для цього предмета досягнуто ліміту.');if(G.coins<def.gold||G.energy<def.energy)return setMessage('Бракує монет або енергії.');G.coins-=def.gold;G.energy-=def.energy;const placed={id,x:pos.x,y:pos.y,room:pos.room};let boughtName=def.name;if(id==='kitchenTable'){placed.file=KITCHEN_TABLE_FILES[Math.min(count,KITCHEN_TABLE_FILES.length-1)];placed.variant=count;boughtName=KITCHEN_TABLE_LABELS[Math.min(count,KITCHEN_TABLE_LABELS.length-1)]||def.name;}G.items.push(placed);saveFurniture();saved.layoutConfirmed=false;save();setMessage(boughtName+' придбано.');shopCell=null;renderShop();refreshLayoutControls();}
 function renderShop(){const host=$l('lifeShop');host.replaceChildren();$l('lifeShopTitle').textContent=shopCell?'Магазин: '+({bed:'Спальня',bath:'Ванна й туалет',kitchen:'Кухня'}[shopCell.room]):'Будівництво';$l('lifeShopHelp').textContent=shopCell?`Клітинка ${shopCell.x}:${shopCell.y}. Виберіть предмет для встановлення.`:'Натисніть на «+» у потрібній кімнаті для магазину. Доступна перестановка вже куплених меблів.';
