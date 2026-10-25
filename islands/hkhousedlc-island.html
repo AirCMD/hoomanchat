@@ -1434,10 +1434,10 @@ function migrateFurniture(items){
  }
  return result;
 }
-function person(id,x,y){return{id,x:x+.5,y:y+.5,path:[],speed:2.3,needs:{hygiene:100,hunger:100,rest:100,boredom:100},using:null,useUntil:0,autonomy:0,walk:false,earning:true}};
+function person(id,x,y){return{id,x:x+.5,y:y+.5,path:[],speed:2.3,needs:{hygiene:100,hunger:100,rest:100,boredom:100},using:null,useUntil:0,autonomy:2+Math.random()*2,walk:false,earning:true,doorCooldown:8+Math.random()*7,doorReady:0,doorFired:false}};
 function startLevel(lv,resetFurniture=false){
  if(saved.layoutConfirmed&&!saved.items.some(o=>o.id==='washingMachine')){saved.layoutConfirmed=false;save();}
-saved.level=clamp(lv,0,6);if(resetFurniture)saved.items=[];save();G={level:saved.level,time:0,coins:15,energy:15,selected:'yani',players:{yani:person('yani',16,10),akira:person('akira',15,10)},arriving:true,arrivalDone:false,items:migrateFurniture(saved.items),waves:0,guest:null,servants:[],summoned:false,attackUp:0,shopOpen:false,forced:false,notice:'Акіра та Яні заходять у свою нову квартиру.',acc:0};saved.items=G.items.map(o=>({...o}));save();G.players.yani.path=path(G.players.yani,{x:14,y:9});G.players.akira.path=path(G.players.akira,{x:14,y:11});shopCell=null;editingItem=null;layoutSnapshot=null;interaction='build';$l('lifeInteraction').textContent='🏗️ Будівництво';winTime=0;winIndex=0;setMessage(G.notice);syncUI();refreshLayoutControls();}
+saved.level=clamp(lv,0,6);if(resetFurniture)saved.items=[];save();G={level:saved.level,time:0,coins:15,energy:15,selected:'yani',players:{yani:person('yani',16,10),akira:person('akira',15,10)},arriving:true,arrivalDone:false,items:migrateFurniture(saved.items),waves:0,guest:null,servants:[],summoned:false,attackUp:0,shopOpen:false,forced:false,notice:'Акіра та Яні заходять у свою нову квартиру.',doorPulse:0,doorShot:null,acc:0};saved.items=G.items.map(o=>({...o}));save();G.players.yani.path=path(G.players.yani,{x:14,y:9});G.players.akira.path=path(G.players.akira,{x:14,y:11});shopCell=null;editingItem=null;layoutSnapshot=null;interaction='build';$l('lifeInteraction').textContent='🏗️ Будівництво';winTime=0;winIndex=0;setMessage(G.notice);syncUI();refreshLayoutControls();}
 function setMessage(msg){$l('lifeMessage').textContent=msg}
 function roomAt(x,y){return rooms.find(r=>x>=r.x1&&x<=r.x2&&y>=r.y1&&y<=r.y2)}
 function itemAt(x,y){return G?.items.find(o=>o.x===x&&o.y===y)}
@@ -1447,15 +1447,29 @@ function move(p,dt){if(!p.path.length){p.walk=false;return}const next=p.path[0],
 function incomeEfficiency(p){let penalty=0;Object.values(p.needs).forEach(v=>penalty+=v===0?25:v<20?20:v<40?10:0);return Math.max(0,1-penalty/100)}
 function tickNeeds(p,dt){p.needs.hygiene=clamp(p.needs.hygiene-dt*.095,0,100);p.needs.hunger=clamp(p.needs.hunger-dt*(G.items.some(o=>o.id==='stove')?.045:.11),0,100);p.needs.rest=clamp(p.needs.rest-dt*.075,0,100);if(G.items.some(o=>o.id==='stove'))p.needs.boredom=clamp(p.needs.boredom-dt*.07,0,100);else if(G.items.some(o=>o.id==='fridge'))p.needs.boredom=clamp(p.needs.boredom-dt*.13,0,100);
  if(p.useUntil>0){p.useUntil-=dt;if(p.useUntil<=0&&p.using){const it=ITEMS[p.using];if(it?.need)p.needs[it.need]=100;if(p.using==='pc')p.needs.boredom=100;if(p.using==='bed')p.needs.rest=100;if(p.using==='fridge')p.needs.hunger=100;p.using=null;}}
- if(p.path.length||p.useUntil>0)return;
- p.autonomy-=dt;if(p.autonomy>0)return;p.autonomy=2.5;
- const lowest=Object.entries(p.needs).sort((a,b)=>a[1]-b[1])[0];if(lowest[1]>=40)return;
- const targets=G.items.filter(o=>ITEMS[o.id].need===lowest[0]||lowest[0]==='boredom'&&o.id==='pc');if(!targets.length)return;
- const target=targets[0];goto(p,target.x,target.y,target.id);}
+ if(G.arriving||p.path.length||p.useUntil>0||p.doorReady>0)return;
+ // Обраним персонажем керує гравець. Інший сам ходить по квартирі.
+ if(p.id===G.selected)return;
+ p.autonomy-=dt;if(p.autonomy>0)return;
+ p.autonomy=3.5+random(0,4.5);
+ const lowest=Object.entries(p.needs).sort((a,b)=>a[1]-b[1])[0];
+ if(lowest[1]<65){
+  const targets=G.items.filter(o=>ITEMS[o.id].need===lowest[0]||lowest[0]==='boredom'&&['pc','cat'].includes(o.id));
+  if(targets.length){const target=targets[Math.floor(random(0,targets.length))];if(goto(p,target.x,target.y,target.id))return;}
+ }
+ // Прогулянка до меблів або у випадкову прохідну клітинку, включно з коридором.
+ if(G.items.length&&Math.random()<.68){
+  const target=G.items[Math.floor(random(0,G.items.length))];
+  if(goto(p,target.x,target.y,target.id))return;
+ }
+ const options=[];
+ for(let y=2;y<20;y++)for(let x=7;x<=15;x++)if(openTile(x,y)&&!itemAt(x,y))options.push({x,y});
+ if(options.length){const dest=options[Math.floor(random(0,options.length))];goto(p,dest.x,dest.y)}
+}
 function useItem(p,it){if(!it)return;if(p.using!==it.id){if(!goto(p,it.x,it.y,it.id))return}if(Math.floor(p.x)===it.x&&Math.floor(p.y)===it.y&&!p.path.length){if(p.useUntil>0)return;const def=ITEMS[it.id];if(def?.need)p.needs[def.need]=100;if(it.id==='pc')p.needs.boredom=100;if(it.id==='bed')p.needs.rest=100;if(it.id==='fridge')p.needs.hunger=100;p.useUntil=it.id==='pc'?1.5:3;p.using=it.id;syncUI();}}
 function goods(){const useful=G.items.filter(o=>ITEMS[o.id].coins);let gold=0,energy=0;for(const o of useful){const d=ITEMS[o.id];gold+=d.coins/d.period;energy+=d.energies/d.period}return{gold,energy}}
 function tickEconomy(dt){const eff=(incomeEfficiency(G.players.yani)+incomeEfficiency(G.players.akira))/2;const critical=eff<=0;if(!G.items.length)return;const {gold,energy}=goods();G.coins+=gold*eff*dt+(critical?dt*.1:0);G.energy+=energy*eff*dt+(critical?dt*.1:0)}
-function spawnGuest(){if(!G||G.guest||G.waves>=10)return;const b=BOSSES[G.waves];const hp=(G.level===0?80:300*Math.pow(1.7,G.level))*(1+[1,1.12,1.2,1.09,1.18,1.35,1.15,1.27,1.22,1.43][G.waves]);G.guest={...b,x:START.x+.5,y:START.y+.5,path:[],hp,maxHp:hp,mode:'walk',phase:'enter',age:0,phaseAge:0,fxUntil:0,wait:0,spawned:false,nextSummon:5,regenClock:0,escapeAt:0};G.servants=[];G.summoned=false;G.guest.path=path(G.guest,{x:17,y:10},true);setMessage(b.name+' прямує до квартири.');}
+function spawnGuest(){if(!G||G.guest||G.waves>=10)return;const b=BOSSES[G.waves];const hp=(G.level===0?80:300*Math.pow(1.7,G.level))*(1+[1,1.12,1.2,1.09,1.18,1.35,1.15,1.27,1.22,1.43][G.waves]);G.guest={...b,x:START.x+.5,y:START.y+.5,path:[],hp,maxHp:hp,mode:'walk',phase:'enter',age:0,phaseAge:0,fxUntil:0,wait:0,spawned:false,nextSummon:5,regenClock:0,escapeAt:0};G.servants=[];G.summoned=false;for(const p of Object.values(G.players)){p.doorFired=false;p.doorReady=0;}G.guest.path=path(G.guest,{x:17,y:10},true);setMessage(b.name+' прямує до квартири.');}
 function newServant(kind,x,y){const id=kind+'-'+Math.random().toString(36).slice(2);return{id,kind,x,y,path:[],ttl:kind==='kitten'?random(5,15):24,mode:'walk',phase:'approach',cd:1.3,sprite:kind==='kitten'?'kittenwalk.gif':kind==='kolpos'?'kolposy.gif':kind==='anton'?'antonwalk.gif':'dearawalk.gif'};}
 function guestFinish(){G.waves++;G.guest=null;G.servants=G.servants.filter(m=>m.phase==='flee');setMessage('Гість утік! Переможено '+G.waves+' із 10.');if(G.waves>=10){const next=G.level<6;showDialog(next?'Рівень пройдено!':'Усі рівні пройдено!',next?'Усі десять гостей втекли. Меблі залишаються. Монети, енергія та покращення атаки скидаються.':'Яні та Акіра відстояли свою квартиру від усіх гостей!',()=>{if(next)startLevel(G.level+1);else{saved.finished=true;save();stop()}})}else G.nextGuestAt=G.time+4}
 function updateGuest(dt){if(!G||G.waves>=10)return;const g=G.guest;if(!g){if(G.time>=(G.nextGuestAt||12))spawnGuest();return}g.age+=dt;g.phaseAge+=dt;
@@ -1478,6 +1492,44 @@ function updateGuest(dt){if(!G||G.waves>=10)return;const g=G.guest;if(!g){if(G.t
  for(const m of [...G.servants]){if(g.phase==='flee'&&m.phase!=='flee'&&m.phase!=='hero'){m.phase='flee';m.mode='walk';m.path=path(m,START,true);m.ttl=Infinity;}m.ttl-=dt;m.cd-=dt;if(m.phase==='approach'){m.path=path(m,{x:17,y:10},true);m.phase='moving';}if(m.phase==='moving'){move(m,dt);if(!m.path.length){m.phase='knock';m.mode='fight';}}else if(m.phase==='knock'){m.mode='fight';if(m.cd<=0)m.cd=1.1;}if(m.ttl<=0&&m.phase!=='flee'){m.phase='flee';m.mode='walk';m.path=path(m,START,true);m.ttl=Infinity}if(m.phase==='flee'){move(m,dt);if(!m.path.length)G.servants.splice(G.servants.indexOf(m),1)}}
 }
 function attack(){if(!G.guest||G.guest.phase!=='knock'&&G.guest.phase!=='release')return setMessage('Наразі біля дверей немає гостя.');if(!G.items.some(o=>o.id==='fridge'))return setMessage('Поки не придбано холодильник, персонажі ще не можуть завдавати шкоди.');const p=selectedPerson(),e=incomeEfficiency(p);const permanent=Math.floor(G.items.filter(o=>!['pc','toilet','shower','fridge','bed','stove','phone'].includes(o.id)).length/2);const hit=e<=0?0:Math.max(1,Math.floor((1+permanent+G.attackUp)*e));if(hit===0)return setMessage('Персонаж виснажений. Відновіть його потреби.');if(G.guest.id==='seller'&&Math.random()<.12&&G.time>=G.guest.fxUntil){G.guest.mode='dodge';G.guest.fxUntil=G.time+.55;setMessage('Продавець ухилився від атаки!');return;}G.guest.hp=Math.max(0,G.guest.hp-hit);setMessage((p.id==='yani'?'Яні':'Акіра')+' відповідає гостю: −'+hit+' нав’язливості.');}
+// Пасивний персонаж самостійно відвідує двері й може зняти нав'язливість гостя.
+// Вхідні двері не отримують шкоди: це візуальна взаємодія, не ламання дверей.
+function npcDoorAction(dt){
+ const npc=G.players[G.selected==='yani'?'akira':'yani'];
+ const guest=G.guest;
+ if(npc.doorCooldown>0)npc.doorCooldown-=dt;
+ if(G.doorPulse>0)G.doorPulse=Math.max(0,G.doorPulse-dt);
+ if(G.doorShot){G.doorShot.ttl-=dt;if(G.doorShot.ttl<=0)G.doorShot=null;}
+ if(G.arriving||!guest||guest.phase!=='knock'||!G.items.some(o=>o.id==='fridge')){
+  if(npc.doorReady>0)npc.doorReady=0;
+  npc.doorFired=false;return;
+ }
+ // Персонаж не кидає поточну дію миттєво, а оцінює гостя з інтервалом.
+ if(!npc.doorFired&&npc.doorCooldown<=0&&!npc.path.length&&npc.useUntil<=0){
+  if(Math.random()<.72&&goto(npc,15,10)){
+   npc.doorReady=1;
+   npc.autonomy=3;
+  }
+  npc.doorCooldown=7+random(0,6);
+ }
+ if(npc.doorReady>0&&!npc.path.length&&Math.floor(npc.x)===15&&Math.floor(npc.y)===10){
+  npc.doorReady-=dt;
+  if(npc.doorReady<=0){
+   const efficiency=incomeEfficiency(npc);
+   const permanent=Math.floor(G.items.filter(o=>!['pc','toilet','shower','fridge','bed','stove','phone'].includes(o.id)).length/2);
+   const damage=efficiency<=0?0:Math.max(1,Math.floor((1+permanent+G.attackUp)*efficiency));
+   // Ухилення Продавця діє також на автоматичні атаки.
+   const dodged=guest.id==='seller'&&Math.random()<.12;
+   if(dodged){guest.mode='dodge';guest.fxUntil=G.time+.55;}
+   else guest.hp=Math.max(0,guest.hp-damage);
+   G.doorPulse=.75;
+   G.doorShot={ttl:.6,actor:npc.id,damage:dodged?0:damage};
+   npc.doorFired=true;
+   npc.autonomy=1.5;
+   setMessage((npc.id==='yani'?'Яні':'Акіра')+(dodged?' натискає на двері, але гість ухилився.':' самостійно натискає на двері: −'+damage+' нав’язливості гостя.'));
+  }
+ }
+}
 function summon(kind){if(!G.items.some(o=>o.id==='phone'))return;const g=G.guest;if(!g||g.phase!=='knock')return setMessage('Зараз немає гостя, якого можна відлякати.');if(G.summoned)return setMessage('Помічника вже викликано для цього гостя.');G.summoned=true;const dmg=kind==='psy'?35:kind==='oleksiy'?23:20;g.hp=Math.max(0,g.hp-dmg);G.servants.push({id:'helper-'+kind,kind,x:ENTRY.x-.5,y:ENTRY.y+.5,ttl:5,mode:'walk',phase:'hero',cd:0});setMessage((kind==='psy'?'Психіатр':kind==='oleksiy'?'Олексій':'Микола')+' з’явився. −'+dmg+' нав’язливості.');}
 function plusAllowed(x,y){const r=roomAt(x,y);return !!r&&r.id!=='hall'&&!itemAt(x,y)&&map[y]?.[x]===r.id;}
 function clickTile(x,y){if(!G)return;if(interaction==='edit'){const current=itemAt(x,y);if(!editingItem){if(!current)return setMessage('Оберіть меблі, які потрібно пересунути.');editingItem=current;setMessage('Обрано «'+ITEMS[current.id].name+'». Натисніть вільну клітинку тієї самої кімнати.');return;}if(current===editingItem){editingItem=null;setMessage('Вибір меблів скасовано.');return;}const room=roomAt(x,y);if(!room||room.id!==editingItem.room||!plusAllowed(x,y))return setMessage('Меблі можна переносити лише на вільну клітинку своєї кімнати, не блокуючи двері.');editingItem.x=x;editingItem.y=y;editingItem=null;saveFurniture();saved.layoutConfirmed=false;save();refreshLayoutControls();setMessage('Меблі пересунуто. Нове розташування збережене.');return;}if(x===ENTRY.x&&y===ENTRY.y){attack();return}const it=itemAt(x,y);if(it){if(it.id==='phone'){openPhone();return}if(it.id==='plant'){openBoost();return}if(it.id==='pc'){G.coins+=1;G.energy+=1;setMessage('ПК: +1 монета та +1 енергія за клік.');}useItem(selectedPerson(),it);return;}if(plusAllowed(x,y)&&interaction==='build'){shopCell={x,y,room:roomAt(x,y).id};renderShop();return;}if(openTile(x,y)){goto(selectedPerson(),x,y);shopCell=null;renderShop();}}
@@ -1544,6 +1596,12 @@ function draw(){
  if(interaction==='edit'&&editingItem){ctx.strokeStyle='#ffe58a';ctx.lineWidth=Math.max(2,c*.1);ctx.strokeRect(q.ox+editingItem.x*c+2,q.oy+editingItem.y*c+2,c-4,c-4)}
  if(shopCell){ctx.strokeStyle='#7ef2cc';ctx.lineWidth=2;ctx.strokeRect(q.ox+shopCell.x*c,q.oy+shopCell.y*c,c,c)}
  if(G.guest){const g=G.guest,ratio=Math.max(0,g.hp/g.maxHp);ctx.fillStyle='#141221';ctx.fillRect(q.ox+(g.x-1.15)*c,q.oy+(g.y-1.4)*c,c*2.3,Math.max(5,c*.16));ctx.fillStyle='#e376ab';ctx.fillRect(q.ox+(g.x-1.15)*c,q.oy+(g.y-1.4)*c,c*2.3*ratio,Math.max(5,c*.16));}
+ if(G.doorPulse>0){
+  const alpha=G.doorPulse/.75,centerX=q.ox+(ENTRY.x+.5)*c,centerY=q.oy+(ENTRY.y+.5)*c;
+  ctx.save();ctx.strokeStyle=`rgba(125,244,202,${alpha*.9})`;ctx.lineWidth=Math.max(2,c*.11);ctx.beginPath();ctx.arc(centerX,centerY,c*(.4+(1-alpha)*.65),0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle=`rgba(255,238,166,${alpha*.85})`;ctx.font=`bold ${Math.max(10,c*.48)}px system-ui`;ctx.textAlign='center';ctx.fillText('✦',centerX,centerY-c*(.3+(1-alpha)*.5));ctx.restore();
+ }
+ if(G.doorShot){const a=G.doorShot.ttl/.6;ctx.save();ctx.font=`bold ${Math.max(11,c*.46)}px system-ui`;ctx.textAlign='center';ctx.fillStyle=`rgba(255,222,143,${a})`;ctx.fillText(G.doorShot.damage?'−'+G.doorShot.damage:'✦',q.ox+(ENTRY.x+1.8)*c,q.oy+(ENTRY.y+.3-a*.7)*c);ctx.restore();}
  syncSprites(q);
 }
 function syncUI(){if(!G)return;$l('lifeLevel').textContent=`Рівень ${G.level}/6`;$l('lifeCoin').textContent='🪙 '+Math.floor(G.coins);$l('lifeEnergy').textContent='⚡ '+Math.floor(G.energy);$l('lifeWave').textContent='Гості: '+G.waves+'/10';$l('lifeBoss').textContent=G.guest?.name||'Тихо';const g=G.guest;$l('lifeBossInfo').textContent=g?`${g.name} · ${Math.ceil(g.hp)} / ${Math.ceil(g.maxHp)} нав'язливості`:'Гість ще не прийшов';$l('lifeBossBar').style.width=(g?Math.max(0,g.hp/g.maxHp)*100:0)+'%';const p=selectedPerson();$l('lifeSelectedName').textContent=p.id==='yani'?'Яні':'Акіра';$l('lifeYani').classList.toggle('selected',G.selected==='yani');$l('lifeAkira').classList.toggle('selected',G.selected==='akira');const host=$l('lifeNeeds');
@@ -1574,7 +1632,7 @@ for(const [k,v] of Object.entries(p.needs)){
  fill.style.backgroundColor=v<20?'#da6e79':v<40?'#e2bc62':'#72d4ad';
 }}
 function showDialog(title,message,action){const wrap=$l('lifeDialog');wrap.hidden=false;$l('lifeDialogTitle').textContent=title;$l('lifeDialogText').textContent=message;$l('lifeDialogAction').onclick=()=>{wrap.hidden=true;action()}}
-function tick(dt){if(!G)return;G.time+=dt;winTime+=dt;if(winTime>=60){winTime-=60;winIndex=(winIndex+1)%windows.length}for(const p of Object.values(G.players)){move(p,dt);tickNeeds(p,dt);if(p.using&&p.path.length===0&&p.useUntil===0){const it=G.items.find(o=>o.id===p.using);if(it)useItem(p,it)}}if(G.arriving&&Object.values(G.players).every(p=>!p.path.length)){G.arriving=false;G.nextGuestAt=G.time+8;}tickEconomy(dt);updateGuest(dt);G.acc+=dt;if(G.acc>=.25){G.acc=0;syncUI()}}
+function tick(dt){if(!G)return;G.time+=dt;winTime+=dt;if(winTime>=60){winTime-=60;winIndex=(winIndex+1)%windows.length}for(const p of Object.values(G.players)){move(p,dt);tickNeeds(p,dt);if(p.using&&p.path.length===0&&p.useUntil===0){const it=G.items.find(o=>o.id===p.using);if(it)useItem(p,it)}}if(G.arriving&&Object.values(G.players).every(p=>!p.path.length)){G.arriving=false;G.nextGuestAt=G.time+8;}tickEconomy(dt);updateGuest(dt);npcDoorAction(dt);G.acc+=dt;if(G.acc>=.25){G.acc=0;syncUI()}}
 function frame(t){if(!active)return;const dt=Math.min(.075,(t-last)/1000||0);last=t;if(!document.hidden&&$l('lifeDialog').hidden)tick(dt);draw();loop=requestAnimationFrame(frame)}
 function stop(){active=false;if(loop)cancelAnimationFrame(loop);loop=0;root.hidden=true;root.classList.remove('life-active');overlay.replaceChildren();sprites.clear();}
 function start(){if(active)return;active=true;root.hidden=false;root.classList.add('life-active');loadRoomTextures();buildMap();startLevel(saved.level);zoom=1;camX=(LEFT_EDGE+W)/2;camY=11;last=performance.now();renderShop();refreshLayoutControls();loop=requestAnimationFrame(frame)}
@@ -1604,7 +1662,7 @@ topLifeButton.onclick=launch;
 $l('launchLifeGame').onclick=launch;
 // Клікер лишається доступним самостійно, без купівлі гри.
 $l('openApartmentClicker').onclick=()=>{switchMode('apartment');document.getElementById('apartment').scrollIntoView({behavior:'smooth',block:'start'})};$l('lifeExit').onclick=stop;$l('lifeRestart').onclick=()=>{if(confirm('Перезапустити рівень? Монети та енергію буде скинуто, меблі залишаться.')){startLevel(G.level);renderShop();}};
-for(const [id,key] of [['lifeYani','yani'],['lifeAkira','akira']])$l(id).onclick=()=>{if(!G)return;G.selected=key;syncUI()};
+for(const [id,key] of [['lifeYani','yani'],['lifeAkira','akira']])$l(id).onclick=()=>{if(!G)return;G.selected=key;const other=G.players[key==='yani'?'akira':'yani'];other.autonomy=Math.min(other.autonomy,1.5);other.doorReady=0;G.players[key].doorReady=0;syncUI()};
 function zoomTo(next,x,y){const a=geom(),sx=x??a.w/2,sy=y??a.h/2,wx=(sx-a.ox)/a.tile,wy=(sy-a.oy)/a.tile;zoom=clamp(next,.55,6);const b=geom();camX=wx-(sx-b.w/2)/b.tile;camY=wy-(sy-b.h/2)/b.tile;}
 const modeButton=$l('lifeInteraction');modeButton.onclick=()=>{interaction=interaction==='build'?'move':'build';editingItem=null;shopCell=null;modeButton.textContent=interaction==='build'?'🏗️ Будівництво':'🚶 Переміщення';renderShop();refreshLayoutControls();setMessage(interaction==='move'?'Натисніть на підлогу, щоб персонаж туди пішов.':'Натисніть на плюсик, щоб вибрати меблі.');};
 $l('lifeEditFurniture').onclick=()=>{if(!G)return;if(interaction==='edit'){interaction='build';editingItem=null;setMessage('Режим редагування завершено.');}else{interaction='edit';editingItem=null;shopCell=null;renderShop();setMessage('Натисніть на куплені меблі, потім на вільну клітинку цієї ж кімнати. Положення зберігається автоматично.');}refreshLayoutControls();};
