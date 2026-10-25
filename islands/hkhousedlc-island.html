@@ -1352,6 +1352,7 @@ const ITEMS={
  toilet:{name:'Унітаз',file:'toilet.png',where:'bath',gold:50,energy:25,coins:2,energies:2,period:2,need:'hygiene'},
  phone:{name:'Телефон',file:null,where:'bed',gold:70,energy:35},
  shower:{name:'Душ / ванна',file:'bath.png',where:'bath',gold:270,energy:120,coins:2,energies:2,period:2,need:'hygiene'},
+ washingMachine:{name:'Пральна машина',file:null,where:'bath',gold:350,energy:160,need:'hygiene'},
  fridge:{name:'Холодильник',file:'fridge.png',where:'kitchen',gold:300,energy:150,coins:3,energies:3,period:1,need:'hunger'},
  bed:{name:'Ліжко',file:'bed.png',where:'bed',gold:520,energy:200,coins:3,energies:3,period:3,need:'rest'},
  stove:{name:'Плита',file:null,where:'kitchen',gold:780,energy:300,need:'boredom'},
@@ -1364,7 +1365,7 @@ const ITEMS={
  bathCabinet:{name:'Кухонна шафа',file:null,where:'kitchen',gold:190,energy:85},
  kitchenCabinet:{name:'Шафа у ванній',file:'shelf.png',where:'bath',gold:220,energy:95}
 };
-const icons={pc:'💻',toilet:'🚽',phone:'☎️',shower:'🚿',fridge:'🧊',bed:'🛏️',stove:'🍳',wardrobe:'🚪',plant:'🪴',cat:'🐈',kitchenTable:'🪑',chair:'🪑',sink:'🚰',bathCabinet:'🗄️',kitchenCabinet:'🗄️'};
+const icons={pc:'💻',toilet:'🚽',phone:'☎️',shower:'🚿',washingMachine:'🧺',fridge:'🧊',bed:'🛏️',stove:'🍳',wardrobe:'🚪',plant:'🪴',cat:'🐈',kitchenTable:'🪑',chair:'🪑',sink:'🚰',bathCabinet:'🗄️',kitchenCabinet:'🗄️'};
 const needNames={hygiene:'Гігієна',hunger:'Голод',rest:'Відпочинок',boredom:'Нудьга'};
 const KITCHEN_TABLE_FILES=['yanitable.png','akiratable.png'];
 const KITCHEN_TABLE_LABELS=['Столик Яні','Столик Акіри'];
@@ -1434,7 +1435,9 @@ function migrateFurniture(items){
  return result;
 }
 function person(id,x,y){return{id,x:x+.5,y:y+.5,path:[],speed:2.3,needs:{hygiene:100,hunger:100,rest:100,boredom:100},using:null,useUntil:0,autonomy:0,walk:false,earning:true}};
-function startLevel(lv,resetFurniture=false){saved.level=clamp(lv,0,6);if(resetFurniture)saved.items=[];save();G={level:saved.level,time:0,coins:15,energy:15,selected:'yani',players:{yani:person('yani',16,10),akira:person('akira',15,10)},arriving:true,arrivalDone:false,items:migrateFurniture(saved.items),waves:0,guest:null,servants:[],summoned:false,attackUp:0,shopOpen:false,forced:false,notice:'Акіра та Яні заходять у свою нову квартиру.',acc:0};saved.items=G.items.map(o=>({...o}));save();G.players.yani.path=path(G.players.yani,{x:14,y:9});G.players.akira.path=path(G.players.akira,{x:14,y:11});shopCell=null;editingItem=null;layoutSnapshot=null;interaction='build';$l('lifeInteraction').textContent='🏗️ Будівництво';winTime=0;winIndex=0;setMessage(G.notice);syncUI();refreshLayoutControls();}
+function startLevel(lv,resetFurniture=false){
+ if(saved.layoutConfirmed&&!saved.items.some(o=>o.id==='washingMachine')){saved.layoutConfirmed=false;save();}
+saved.level=clamp(lv,0,6);if(resetFurniture)saved.items=[];save();G={level:saved.level,time:0,coins:15,energy:15,selected:'yani',players:{yani:person('yani',16,10),akira:person('akira',15,10)},arriving:true,arrivalDone:false,items:migrateFurniture(saved.items),waves:0,guest:null,servants:[],summoned:false,attackUp:0,shopOpen:false,forced:false,notice:'Акіра та Яні заходять у свою нову квартиру.',acc:0};saved.items=G.items.map(o=>({...o}));save();G.players.yani.path=path(G.players.yani,{x:14,y:9});G.players.akira.path=path(G.players.akira,{x:14,y:11});shopCell=null;editingItem=null;layoutSnapshot=null;interaction='build';$l('lifeInteraction').textContent='🏗️ Будівництво';winTime=0;winIndex=0;setMessage(G.notice);syncUI();refreshLayoutControls();}
 function setMessage(msg){$l('lifeMessage').textContent=msg}
 function roomAt(x,y){return rooms.find(r=>x>=r.x1&&x<=r.x2&&y>=r.y1&&y<=r.y2)}
 function itemAt(x,y){return G?.items.find(o=>o.x===x&&o.y===y)}
