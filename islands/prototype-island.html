@@ -1265,10 +1265,14 @@ function shopPaintNow(dt,drawCharacters=true){
  try{
   const scale=Math.max(.72,Math.min(1.06,m.height/540));const floorY=m.height*.89;
   // Both puppets share the exact same height and sprite rendering.
-  const sellerX=175-shopCamera;
-  if(sellerX>-180&&sellerX<m.width+180){g.save();g.translate(0,Math.sin(clock*1.9)*1.9);puppet(g,sellerX,floorY,scale,false,shopSeller);g.restore()}
-  // Стійка перекриває лише нижню частину продавця; гравець малюється попереду.
+  // Продавець стоїть за прилавком на задній площині кімнати.
+  // Його зріст і масштаб ТІ САМІ, що у гравця, але лінія ніг
+  // розташована вище через перспективу. Голова та руки не ховаються за стійкою.
   const counterX=75-shopCamera,counterY=m.height*.745,counterH=m.height*.17;
+  const sellerX=175-shopCamera;
+  const sellerFloorY=counterY+35*scale;
+  if(sellerX>-180&&sellerX<m.width+180){g.save();g.translate(0,Math.sin(clock*1.9)*1.9);puppet(g,sellerX,sellerFloorY,scale,false,shopSeller);g.restore()}
+  // Прилавок малюємо ПІСЛЯ продавця, але ПЕРЕД його нижньою частиною.
   if(counterX+220>0&&counterX<m.width){
    g.fillStyle='#805e77';g.beginPath();g.roundRect(counterX-5,counterY-6,230,counterH+12,12);g.fill();
    const gradient=g.createLinearGradient(counterX,0,counterX+220,0);gradient.addColorStop(0,'#a57691');gradient.addColorStop(.5,'#ddb7a5');gradient.addColorStop(1,'#ae7890');
