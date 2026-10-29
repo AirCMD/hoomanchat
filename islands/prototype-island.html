@@ -400,17 +400,30 @@ let npcRoom=0;
 const ASSET_BASE_KEY='proto_typ_asset_base_url';
 function configuredAssetBase(){try{return localStorage.getItem(ASSET_BASE_KEY)||''}catch{return ''}}
 function assetCandidates(path){
- const relative=String(path).replace(/^\.?\/?assets\//i,'');
- const list=[];const base=configuredAssetBase();
+ const relative=String(path).replace(/^\.?\/?assets\//,'');
+ const list=[];
+ const base=configuredAssetBase();
  if(base)try{list.push(new URL(relative,base.endsWith('/')?base:base+'/').href)}catch{}
- for(const prefix of ['assets/','../assets/','../../assets/']){
-  try{list.push(new URL(prefix+relative,document.baseURI).href)}catch{}
- }
+ // Prefer the same GitHub Pages directory where index.html is actually served.
+ const bases=[new URL('./assets/',document.location.href),
+              new URL('assets/',document.baseURI),
+              new URL('/assets/',document.location.href),
+              new URL('../assets/',document.location.href)];
+ for(const b of bases){try{list.push(new URL(relative,b).href)}catch{}}
  return [...new Set(list)];
 }
 function loadAssetWithFallback(img,path,onFinalFailure){
  const candidates=assetCandidates(path);let index=0;
- function next(){if(index>=candidates.length){img.onerror=null;if(onFinalFailure)onFinalFailure();return}img.src=candidates[index++]}
+ let last='';
+ function next(){
+  if(index>=candidates.length){
+   img.onerror=null;
+   console.warn('Прото-Тип: не знайдено '+path+' за адресами:',candidates);
+   if(onFinalFailure)onFinalFailure(candidates);
+   return;
+  }
+  last=candidates[index++];img.src=last;
+ }
  img.onerror=next;next();
 }
 function shopAssetError(img,path){
@@ -422,27 +435,34 @@ function shopAssetError(img,path){
  img.onerror=null;img.style.display='none';img.parentElement.dataset.missing='Зображення недоступне: '+path;
 }
 const dustImg=new Image();let dustImgReady=false,dustCrop=null;
+let dustLoadFailed=false,dustRetryAfter=0;
 dustImg.onload=()=>{
+ dustLoadFailed=false;dustRetryAfter=0;
  dustImgReady=dustImg.naturalWidth>0;dustCrop=null;
+ const previousWarning=document.getElementById('dustAssetWarning');
+ if(previousWarning)previousWarning.remove();
  if(!dustImgReady)return;
- try{const cv=document.createElement('canvas');cv.width=dustImg.naturalWidth;cv.height=dustImg.naturalHeight;const c=cv.getContext('2d',{willReadFrequently:true});c.drawImage(dustImg,0,0);const data=c.getImageData(0,0,cv.width,cv.height).data;let x0=cv.width,y0=cv.height,x1=-1,y1=-1;
- for(let y=0;y<cv.height;y+=1)for(let x=0;x<cv.width;x+=1){if(data[(y*cv.width+x)*4+3]>32){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)}}
- if(x1>=x0)dustCrop={x:x0,y:y0,w:x1-x0+1,h:y1-y0+1};
- }catch(e){console.warn('Прото-Тип: не вдалося обрізати прозорі поля dust.png',e)}
+ try{
+  const cv=document.createElement('canvas');cv.width=dustImg.naturalWidth;cv.height=dustImg.naturalHeight;
+  const c=cv.getContext('2d',{willReadFrequently:true});c.drawImage(dustImg,0,0);
+  const data=c.getImageData(0,0,cv.width,cv.height).data;
+  let x0=cv.width,y0=cv.height,x1=-1,y1=-1;
+  for(let y=0;y<cv.height;y++)for(let x=0;x<cv.width;x++){
+   if(data[(y*cv.width+x)*4+3]>32){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)}
+  }
+  if(x1>=x0)dustCrop={x:x0,y:y0,w:x1-x0+1,h:y1-y0+1};
+ }catch(e){console.info('Прото-Тип: обрізання полів dust.png недоступне, малюємо оригінальне PNG.',e)}
 };
-const dustFailure=()=>{
- dustImgReady=false;
- console.error('Прото-Тип: браузер не завантажив assets/dust.png. Перевір регістр шляху та статус 404 у Network.');
- // Видиме повідомлення, щоб відсутність PNG не сприймали як поломку механіки пилу.
- const warn=()=>{if(document.getElementById('dustAssetWarning'))return;
-  const el=document.createElement('div');el.id='dustAssetWarning';
-  el.textContent='Не вдалося завантажити assets/dust.png. Пил прихований, доки зображення недоступне.';
-  el.style.cssText='position:fixed;bottom:103px;left:50%;transform:translateX(-50%);z-index:7;background:#422032;color:#fff3dc;border:1px solid #f6b1a3;border-radius:10px;padding:9px 14px;font:600 12px system-ui;text-align:center;max-width:90vw;pointer-events:none';
-  document.body.appendChild(el);
- };
- if(document.body)warn();else document.addEventListener('DOMContentLoaded',warn,{once:true});
-};
-loadAssetWithFallback(dustImg,'assets/dust.png',dustFailure);
+function tryLoadDust(force=false){
+ if(dustImgReady)return;
+ if(!force && Date.now()<dustRetryAfter)return;
+ dustLoadFailed=false;
+ dustRetryAfter=Date.now()+15000;
+ loadAssetWithFallback(dustImg,'assets/dust.png',()=>{
+  dustImgReady=false;dustLoadFailed=true;dustRetryAfter=Date.now()+15000;
+ });
+}
+tryLoadDust(true);
 function dustStore(){
  if(!state.dustDaily||typeof state.dustDaily!=='object')state.dustDaily={day:'',home:[],npcs:{}};
  const d=state.dustDaily;
@@ -480,7 +500,7 @@ function visibleDust(){
  return [];
 }
 function drawDust(){
- if(!dustImgReady)return;
+ if(!dustImgReady){if(dustLoadFailed)tryLoadDust();return;}
  for(const p of visibleDust()){
   const x=p.x*W,y=p.y*H,scale=1.45+seededDust(p.id,29)*.65;
   ctx.save();ctx.translate(x,y);ctx.rotate((seededDust(p.id,8)-.5)*.35);ctx.globalAlpha=.96;
