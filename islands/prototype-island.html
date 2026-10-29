@@ -178,6 +178,10 @@
 .shop-product .product-emoji{font-size:39px}.shop-product strong{font-size:13px;line-height:1.35}.shop-product small{color:#b5d9e6}
 .shop-product button{margin-top:auto;width:100%;background:#28b6b2;border:1px solid #90f0e6;border-radius:9px;color:#062634;font-weight:850;padding:9px;cursor:pointer}.shop-product button:disabled{background:#476579;color:#a9c6d5;border-color:#426478;cursor:not-allowed}
 .shop-empty{text-align:center;color:#bcd9e6;grid-column:1/-1;padding:24px}
+.shop-other-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;max-width:1100px;margin:0 auto 16px}
+.shop-other-tab{padding:13px 8px;border:1px solid #528ca6;background:#173950;color:#d9faff;border-radius:12px;cursor:pointer;font-weight:800}
+.shop-other-tab:hover,.shop-other-tab:focus-visible,.shop-other-tab.selected{background:#286278;border-color:#9dfff1;color:white}
+@media(max-width:600px){.shop-other-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){#overlay.shop-full .panel{padding:9px 10px max(12px,env(safe-area-inset-bottom))}.shop-choices{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.shop-choice{min-height:122px;padding:13px 10px}.shop-choice strong{font-size:14px}.shop-scene{min-height:245px}.shop-chat{left:auto;right:8px;bottom:175px;max-width:128px;font-size:10px}.shop-catalog{grid-template-columns:repeat(2,minmax(0,1fr))}.shop-counter{font-size:11px}}
 </style>
 </head>
@@ -255,7 +259,7 @@ const npcRoomCount=n=>npcLevel(n)>=25?3:npcLevel(n)>=8?2:1;
 let npcRoom=0;
 const dustImg=new Image();let dustImgReady=false;
 dustImg.onload=()=>dustImgReady=true;
-dustImg.onerror=()=>dustImgReady=false;
+dustImg.onerror=()=>{dustImgReady=false;console.warn('Прото-Тип: файл assets/dust.png не знайдено; замінник не малюється.');};
 dustImg.src='assets/dust.png';
 function dustStore(){
  if(!state.dustDaily||typeof state.dustDaily!=='object')state.dustDaily={day:'',home:[],npcs:{}};
@@ -292,11 +296,14 @@ function visibleDust(){
  return [];
 }
 function drawDust(){
+ if(!dustImgReady)return;
  for(const p of visibleDust()){
   const x=p.x*W,y=p.y*H,scale=1.18+seededDust(p.id,29)*.72;
   ctx.save();ctx.translate(x,y);ctx.rotate((seededDust(p.id,8)-.5)*.35);ctx.globalAlpha=.78;
-  if(dustImgReady){ctx.filter=['sepia(.16)','hue-rotate(12deg)','brightness(.92)','none'][p.id%4];ctx.drawImage(dustImg,-30*scale,-22*scale,60*scale,44*scale);ctx.filter='none';}
-  else{ctx.fillStyle=['#d7dce4','#b6b4c9','#9ab7cc'][p.id%3];for(let j=0;j<5;j++){ctx.beginPath();ctx.ellipse((j-2)*8*scale,Math.sin(j*2+p.id)*6*scale,(6+j%2)*scale,4.5*scale,.2*j,0,Math.PI*2);ctx.fill()}}
+  // Only the player's original assets/dust.png is rendered. Never substitute procedural artwork.
+  ctx.filter=['sepia(.16)','hue-rotate(12deg)','brightness(.92)','none'][p.id%4];
+  ctx.drawImage(dustImg,-30*scale,-22*scale,60*scale,44*scale);
+  ctx.filter='none';
   ctx.restore();
  }
 }
@@ -317,7 +324,7 @@ function cleanDustRoom(owner,room,robot=false){
  if(count)toast((robot?'🤖':'🧹')+' Прибрано '+count+' пилинок · +'+count*(owner==='home'?15:5)+' 🪙 · +'+count*5+' XP');
  return count;
 }
-function dustHit(x,y){return visibleDust().find(p=>Math.hypot(x-p.x*W,y-p.y*H)<Math.max(38,Math.min(W*.07,58)));}
+function dustHit(x,y){return (dustImgReady?visibleDust():[]).find(p=>Math.hypot(x-p.x*W,y-p.y*H)<Math.max(38,Math.min(W*.07,58)));}
 // Robot earns rewards only once per dust particle; no infinite repeat.
 let lastRobotDustCheck=0;
 function robotDustTick(){
@@ -751,23 +758,33 @@ const SHOP_ROOMS=[
  {id:'bathroom',name:'Ванна',symbol:'🛁',desc:'Ванни, душові та прибирання',accent:'#76d5ed'},
  {id:'clothes',name:'Одяг',symbol:'👗',desc:'Одяг та перуки',accent:'#f5a2cc'},
  {id:'accessories',name:'Аксесуари',symbol:'🎀',desc:'Хвости, бантики та інші прикраси',accent:'#e6bd71'},
- {id:'makeup',name:'Макіяж',symbol:'💄',desc:'Очі, роти, носи, брови, вуха й косметика',accent:'#e6a0f7'}
+ {id:'makeup',name:'Макіяж',symbol:'💄',desc:'Очі, роти, носи, брови, вуха й косметика',accent:'#e6a0f7'},
+ {id:'other',name:'Інше',symbol:'🪟',desc:'Вікна, двері, світло та астра',accent:'#8ebef6'}
 ];
 const SHOP_STOCK={
  food:['apple','cake','tea','medicine'],
- bedroom:['bed','chair','lamp','plant','tv','toy'],
+ bedroom:['bed','chair','plant','tv','toy'],
  kitchen:['fridge','auto_fridge'],
  bathroom:['bath','shower','vacuum','robot_vacuum'],
  clothes:['dress','shirt','wig_pink','wig_blue'],
  accessories:['tail_fox','tail_cat','bow'],
- makeup:['eyes_star','eyes_sleepy','nose_heart','mouth_cat','brows_bold','ears_bunny','blush','freckles','stars','shadow']
+ makeup:['eyes_star','eyes_sleepy','nose_heart','mouth_cat','brows_bold','ears_bunny','blush','freckles','stars','shadow'],
+ other:[]
 };
+const OTHER_SHOP_TABS=[
+ {id:'windows',name:'Вікна',symbol:'🪟',stock:[]},
+ {id:'doors',name:'Двері',symbol:'🚪',stock:[]},
+ {id:'lights',name:'Світло',symbol:'💡',stock:['lamp']},
+ {id:'astra',name:'Астра',symbol:'✨',stock:[]}
+];
+let otherShopTab='windows';
 function shopHTML(){
  if(!shopRoom){return `<div class="shop-landing-head"><h2>🏙️ Торговельний квартал</h2><p>Вибери магазин. У кожному на тебе чекає той самий продавець та окремий каталог.</p></div><div class="shop-choices">${SHOP_ROOMS.map(r=>`<button class="shop-choice" data-act="enterShop" data-val="${r.id}"><span class="symbol">${r.symbol}</span><strong>${r.name}</strong><small>${r.desc}</small></button>`).join('')}</div><p class="note" style="text-align:center;color:#a5cfde">Оплата лише ігровими монетами. Без донату.</p>`}
  const r=SHOP_ROOMS.find(r=>r.id===shopRoom)||SHOP_ROOMS[0];
- const stock=(SHOP_STOCK[r.id]||[]).filter(id=>ITEMS[id]);
+ const otherTab=OTHER_SHOP_TABS.find(tab=>tab.id===otherShopTab)||OTHER_SHOP_TABS[0];
+ const stock=(r.id==='other'?otherTab.stock:(SHOP_STOCK[r.id]||[])).filter(id=>ITEMS[id]);
  const products=stock.map(id=>{const it=ITEMS[id],n=state.owned[id]||0;return `<div class="shop-product"><span class="product-emoji">${it.emoji}</span><strong>${esc(it.name)}</strong><small>У тебе: ${n}</small><button data-act="buy" data-id="${id}" ${state.coins<it.price?'disabled':''}>🪙 ${it.price} · Купити</button></div>`}).join('');
- return `<div class="shop-tools"><button class="shop-return" data-act="shopBack">❮ Усі магазини</button><div class="wallet">🪙 Баланс: ${state.coins}</div></div><section class="shop-scene" style="--shop-accent:${r.accent}" aria-label="Магазин ${r.name}"><div class="shop-sign">${r.symbol} ${r.name.toUpperCase()}</div><div class="shop-chat">Вітаю! Обирай, що подобається ✨</div><div class="shop-keeper" role="img" aria-label="Продавець за стійкою"><div class="hair"></div><div class="body"></div><div class="arm left"></div><div class="arm right"></div><div class="apron"></div><div class="face"></div><div class="eye left"></div><div class="eye right"></div><div class="smile"></div></div><div class="shop-counter"><span>PROTO · MARKET</span><span>◈ КАСА ◈</span></div></section><div class="shop-tools"><strong>Каталог: ${r.name}</strong><small>Підкатегорії додамо пізніше</small></div><div class="shop-catalog">${products||'<p class="shop-empty">Товари незабаром з’являться</p>'}</div>`;
+ return `<div class="shop-tools"><button class="shop-return" data-act="shopBack">❮ Усі магазини</button><div class="wallet">🪙 Баланс: ${state.coins}</div></div><section class="shop-scene" style="--shop-accent:${r.accent}" aria-label="Магазин ${r.name}"><div class="shop-sign">${r.symbol} ${r.name.toUpperCase()}</div><div class="shop-chat">Вітаю! Обирай, що подобається ✨</div><div class="shop-keeper" role="img" aria-label="Продавець за стійкою"><div class="hair"></div><div class="body"></div><div class="arm left"></div><div class="arm right"></div><div class="apron"></div><div class="face"></div><div class="eye left"></div><div class="eye right"></div><div class="smile"></div></div><div class="shop-counter"><span>PROTO · MARKET</span><span>◈ КАСА ◈</span></div></section>${r.id==='other'?`<div class="shop-other-tabs">${OTHER_SHOP_TABS.map(tab=>`<button class="shop-other-tab ${otherShopTab===tab.id?'selected':''}" data-act="otherShopTab" data-val="${tab.id}">${tab.symbol} ${tab.name}</button>`).join('')}</div>`:''}<div class="shop-tools"><strong>Каталог: ${r.id==='other'?otherTab.name:r.name}</strong>${r.id==='other'?'':`<small>Підкатегорії додамо пізніше</small>`}</div><div class="shop-catalog">${products||'<p class="shop-empty">Товари цієї категорії з’являться пізніше</p>'}</div>`;
 }
 function showPanel(){let labels={editor:'🎨 Редактор персонажа',shop:'🏪 Магазин',inventory:'🎒 Інвентар предметів',wardrobe:'👗 Гардероб',post:'💌 Пошта острова',friends:'👥 Друзі',friendAdd:'＋ Друзі',npcGift:'🎁 Подарунок NPC',settings:'⚙️ Меню гри',needs:'💗 Потреби пета',yard:'🪐 Ферма комах',profile:'👤 Мій профіль',interaction:'💬 Взаємодія з другом',roomClean:'🧹 Прибирання кімнати'};title.textContent=labels[activePanel]||'Меню';let html='';
  if(activePanel==='profile'){html=profileHTML()}
@@ -841,7 +858,7 @@ body.addEventListener('click',async e=>{let b=e.target.closest('[data-act]');if(
  if(act==='copyFriendCode'){try{await navigator.clipboard.writeText(state.friendId);toast('Код друга скопійовано')}catch{toast('Скопіюй код вручну')}return}
  if(act==='addFriend'){let name=safeStr(document.getElementById('friendName')?.value.trim(),32),code=safeStr(document.getElementById('friendCode')?.value.trim().toUpperCase(),48);if(!name||!/^PROTO-[A-Z0-9]{8}$/.test(code)){toast('Вкажи ім’я та правильний код PROTO-XXXXXXXX');return}if(code===state.friendId||state.friends.some(f=>f.code===code)){toast('Такий контакт уже є або це твій код');return}if(state.friends.length>=80){toast('Список друзів заповнений');return}state.friends.push({name,code});save();showPanel();toast('Друга додано до книги!');return}
  if(act==='removeFriend'){let i=Number(b.dataset.index);if(Number.isInteger(i)&&i>=0&&i<state.friends.length){state.friends.splice(i,1);save();showPanel()}return}
- if(act==='enterShop'){if(!SHOP_ROOMS.some(r=>r.id===v))return;shopRoom=v;showPanel();return}if(act==='shopBack'){shopRoom=null;showPanel();return}if(act==='shopTab'){shopCategory=v;showPanel();return}if(act==='invTab'){invCategory=v;showPanel();return}if(act==='wardTab'){wardrobeCategory=v;showPanel();return}if(act==='faceWardrobe'){openPanel('editor');return}
+ if(act==='enterShop'){if(!SHOP_ROOMS.some(r=>r.id===v))return;shopRoom=v;if(v==='other')otherShopTab='windows';showPanel();return}if(act==='otherShopTab'){if(!OTHER_SHOP_TABS.some(t=>t.id===v))return;otherShopTab=v;showPanel();return}if(act==='shopBack'){shopRoom=null;showPanel();return}if(act==='shopTab'){shopCategory=v;showPanel();return}if(act==='invTab'){invCategory=v;showPanel();return}if(act==='wardTab'){wardrobeCategory=v;showPanel();return}if(act==='faceWardrobe'){openPanel('editor');return}
  if(act==='buy'){let it=ITEMS[id];if(!it||state.coins<it.price)return;state.coins-=it.price;state.owned[id]=(state.owned[id]||0)+1;save();toast(`Придбано: ${it.name}`);showPanel();return}
  if(act==='eat'){if(!state.owned[id])return;state.owned[id]--;if(id==='medicine'){state.needs.health=Math.min(100,state.needs.health+45);toast('Пет почувається краще 💊')}else{state.needs.hunger=Math.min(100,state.needs.hunger+(id==='cake'?45:30));state.needs.boredom=Math.min(100,state.needs.boredom+4);toast('Пет поїв! 🍎')}save();showPanel();return}
  if(act==='sell'){const it=ITEMS[id];if(!it||!state.owned[id]||Object.values(state.equipped).includes(id))return;state.owned[id]--;state.coins+=Math.floor(it.price*.5);save();toast('Продано: '+it.name);showPanel();return}
