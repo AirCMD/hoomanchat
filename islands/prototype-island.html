@@ -24,11 +24,22 @@
 /* Взаємозамінна нижня панель друзів */
 #friendDock{position:fixed;bottom:0;left:0;right:0;z-index:6;display:none;background:linear-gradient(0deg,#08101cf7,#16213bea);border-top:2px solid #38e2e9;box-shadow:0 -7px 26px #36c9e34a;padding:8px 10px calc(10px + env(safe-area-inset-bottom));color:#e5ffff;min-height:91px;gap:8px;align-items:center}
 #friendDock.show{display:flex}#toolbar.hidden{display:none}#friendDock button{background:#10263c;color:#b9fbff;border:1px solid #38d4e0;clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px));border-radius:0;padding:9px;cursor:pointer;font-weight:700}#friendDock button:hover{background:#225475}#friendScroller{display:flex;gap:9px;overflow-x:auto;flex:1;scrollbar-width:thin;align-items:center;min-width:0}#friendScroller .npc-button{flex:0 0 84px;display:grid;place-items:center;gap:3px;font-size:10px;padding:5px;min-height:78px}#friendScroller img{height:42px;width:42px;object-fit:cover;border-radius:50%;border:1px solid #79e9f1}#friendScroller .npc-button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:79px}#friendDock .dock-side{display:flex;flex-direction:column;gap:5px;flex:0 0 auto}#friendDock .dock-side button{font-size:11px}#friendDock .npc-detail{display:flex;align-items:center;gap:12px;flex:1;min-width:0}#friendDock .npc-detail img{width:58px;height:58px;border-radius:12px;object-fit:cover}#friendDock .npc-detail strong{display:block;overflow-wrap:anywhere}#friendDock .npc-detail small{font-size:11px;color:#acd5de}#friendDock .npc-actions{display:flex;gap:4px;flex-wrap:wrap}#friendDock .npc-actions button{font-size:11px}#friendDock .dock-add{white-space:nowrap} @media(max-width:550px){#friendDock .dock-side button{padding:7px 5px}#friendScroller .npc-button{flex-basis:72px}#friendDock .npc-detail img{width:43px;height:43px}#friendDock .npc-actions button{font-size:10px;padding:7px 6px}}
+
+/* Постійна верхня стрічка NPC прямо під логотипом */
+#npcTopBar{position:fixed;top:calc(max(10px,env(safe-area-inset-top)) + 47px);left:12px;right:12px;z-index:4;pointer-events:none;display:flex;justify-content:flex-start}
+#npcTopList{display:flex;gap:5px;align-items:center;overflow-x:auto;max-width:min(100%,1040px);padding:5px 7px;background:#09172be8;border:1px solid #32d4dfaa;box-shadow:0 4px 18px #07192973;border-radius:13px;scrollbar-width:thin;pointer-events:auto}
+.npc-top-card{border:1px solid #416a84;background:#132840;color:#dbfaff;border-radius:9px;flex:0 0 88px;min-width:0;display:flex;align-items:center;flex-direction:column;padding:5px 3px 4px;gap:3px;cursor:pointer}
+.npc-top-card:hover,.npc-top-card.active{border-color:#62f6ef;background:#244462;box-shadow:inset 0 0 10px #43e9ec30}
+.npc-top-card img{width:34px;height:34px;border:1px solid #78e7f2;border-radius:50%;object-fit:cover;background:#45617b}
+.npc-top-card span{display:block;width:100%;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;text-align:center;font-size:10px;font-weight:700}
+.hint{top:calc(max(10px,env(safe-area-inset-top)) + 139px)}
+@media(max-width:600px){#npcTopBar{top:calc(max(10px,env(safe-area-inset-top)) + 40px);left:6px;right:6px}#npcTopList{width:100%}.npc-top-card{flex-basis:74px}.npc-top-card span{font-size:9px}.hint{top:151px;max-width:90%;white-space:normal;text-align:center}}
 </style>
 </head>
 <body>
 <canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 0.3</small></div><div class="pill money">🪙 <span id="coins">0</span></div></header>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 0.4</small></div><div class="pill money">🪙 <span id="coins">0</span></div></header>
+<div id="npcTopBar" aria-label="Друзі Прото-Тип"><div id="npcTopList"></div></div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
 <nav id="toolbar" aria-label="Головне меню">
 <button data-open="editor"><span class="ico">🎨</span>Обличчя</button><button data-open="shop"><span class="ico">🏪</span>Магазин</button><button data-open="inventory"><span class="ico">🎒</span>Інвентар</button><button data-open="wardrobe"><span class="ico">👗</span>Гардероб</button><button data-open="post"><span class="ico">💌</span>Пошта</button><button data-open="friends"><span class="ico">👥</span>Друзі</button><button data-open="home"><span class="ico">🏠</span><span id="homeButtonLabel">Дім</span></button><button data-open="settings"><span class="ico">⚙️</span>Меню</button>
@@ -60,6 +71,10 @@ const NPCS=[
  {id:'yoyo_tchi',name:'yoyo_tchi',desc:'ласка із зеленим кепі та йо-йо',avatar:'https://blogger.googleusercontent.com/img/a/AVvXsEiOrt7hxE1vYcsgK7N39-dAjYVppoQve2fe3zdO_6--lrWl61iwkkSdTJO0STkh4pwffyVKRtSbOu9OZDxVGfA0jCheCJV6qj5i041tH5I-9j-pMBz8z692-m1SAE5kRwiV2UD4UN79MFrt1BgLOKJdvN4EmpTo4HQUkzNq7R7XpNl7YRXK0JFh51SOALM'}
 ];
 const NPC_IMAGES={};for(const n of NPCS){const im=new Image();im.referrerPolicy='no-referrer';im.src=n.avatar;NPC_IMAGES[n.id]=im}
+// Стрічка друзів залишається під логотипом незалежно від нижньої панелі.
+function renderNPCTop(){const root=document.getElementById('npcTopList');root.innerHTML=NPCS.map(n=>`<button class="npc-top-card" data-top-npc="${n.id}" title="${n.name}: відкрити друга"><img src="${n.avatar}" alt="Аватар ${n.name}" loading="lazy"><span>${n.name}</span></button>`).join('');}
+document.getElementById('npcTopList').addEventListener('click',e=>{const btn=e.target.closest('[data-top-npc]');if(!btn)return;selectedNPC=NPCS.find(n=>n.id===btn.dataset.topNpc)||null;if(!selectedNPC)return;friendDockMode='detail';closePanel();toggleFriends(true);document.querySelectorAll('.npc-top-card').forEach(el=>el.classList.toggle('active',el.dataset.topNpc===selectedNPC.id));});
+
 let selectedNPC=null,friendDock=false,friendDockMode='list',visitor=null,nextVisitorAt=performance.now()/1000+25;
 const faceSlots=['eyes','nose','mouth','brows','ears','cosmetic1','cosmetic2'];
 const faceNames={eyes:'Очі',nose:'Ніс',mouth:'Рот',brows:'Брови',ears:'Вуха',cosmetic1:'Косметика 1',cosmetic2:'Косметика 2'};
@@ -113,8 +128,34 @@ function drawHome(){let bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'
   for(let i=0;i<state.homePlaced.length;i++){let p=state.homePlaced[i];drawFurniture(p.id,p.x*W,p.y*H,Math.max(.65,Math.min(1.25,W/700)))}
   ctx.fillStyle='#fff6';ctx.font='12px system-ui';ctx.textAlign='left';ctx.fillText('Мій простір',20,H*.19)
 }
-function drawNPCFigure(n,x,y,r=55){const img=NPC_IMAGES[n.id];ctx.save();ctx.translate(x,y+Math.sin(clock*2)*3);ellipse(0,r*.97,r*.72,r*.18,'#1b234a66');if(img&&img.complete&&img.naturalWidth){ctx.beginPath();ctx.arc(0,-r*.12,r,0,Math.PI*2);ctx.clip();ctx.drawImage(img,-r,-r*1.12,r*2,r*2)}else{ellipse(0,-r*.1,r,r,'#6679a0');ctx.font='bold 30px system-ui';ctx.fillStyle='white';ctx.textAlign='center';ctx.fillText(n.name.slice(0,2).toUpperCase(),0,0)}ctx.restore();ctx.fillStyle='#fff';ctx.font='bold 13px system-ui';ctx.textAlign='center';ctx.fillText(n.name,x,y+r+16)}
-function drawNPCVisit(){if(state.location==='npc'&&selectedNPC){drawNPCFigure(selectedNPC,W*.72,H*.69,Math.max(35,Math.min(57,W*.11)));return}if(state.location==='home'&&visitor){drawNPCFigure(visitor,W*.72,H*.69,Math.max(30,Math.min(48,W*.10)))}}
+/* Повнофігурний NPC: аватар = портрет/голова, тіло та анімація = програмна 2D-маріонетка.
+   Пізніше ці фігури можна замінити окремими авторськими PNG-частинами. */
+const NPC_COSTUMES={alter_core:['#252636','#ae4e8d','human'],dreaming_romance:['#252535','#a49ada','cat'],la_cyber:['#193547','#16d8d4','human'],night_fox:['#b66c3d','#f3b169','fox'],akira_bakeneko:['#212b38','#808b9a','human'],soft_static:['#d6cbd8','#b7a8d5','rabbit'],water_blue:['#397c9d','#70d6f2','shark'],wolf_fang:['#252b39','#e8c04d','wolf'],yuki_foxy:['#dce8f2','#79c9ee','fox'],yoyo_tchi:['#ca403d','#62a878','weasel']};
+function drawNPCFigure(n,x,y,size=1){
+ const [coat,accent,species]=NPC_COSTUMES[n.id]||['#44536a','#a3d7f5','human'];
+ const img=NPC_IMAGES[n.id],bounce=Math.sin(clock*2.4+n.name.length)*2,walk=Math.sin(clock*3+n.name.length)*.23;
+ const z=Math.max(.72,Math.min(1.24,size));
+ ctx.save();ctx.translate(x,y+bounce);ctx.scale(z,z);
+ ellipse(0,0,36,9,'#12203977');
+ // Хвіст та вуха є частинами однієї 2D-фігури, не просто аватаркою у кімнаті.
+ if(['cat','fox','wolf','weasel'].includes(species)){ctx.beginPath();ctx.moveTo(23,-45);ctx.bezierCurveTo(69,-61,71,-14,49,-20);ctx.strokeStyle=species==='fox'?'#d99d70':coat;ctx.lineWidth=13;ctx.lineCap='round';ctx.stroke()}
+ if(species==='shark'){ctx.beginPath();ctx.moveTo(0,-96);ctx.lineTo(13,-116);ctx.lineTo(24,-91);ctx.closePath();ctx.fillStyle='#6cb7d9';ctx.fill()}
+ // ноги, тулуб і руки анімуються незалежно
+ for(const side of [-1,1]){ctx.save();ctx.translate(side*15,-22);ctx.rotate(side*walk);line(0,0,side*2,23,'#b5b2b9',12);ellipse(side*2,23,10,5,coat);ctx.restore()}
+ drawRounded(-27,-75,54,55,20,coat);drawRounded(-15,-65,30,34,11,accent);
+ for(const side of [-1,1]){ctx.save();ctx.translate(side*25,-68);ctx.rotate(side*(.12+walk));line(0,0,side*12,32,coat,13);ellipse(side*12,32,7,7,'#c9bfc5');ctx.restore()}
+ // рамка голови з реальною картинкою від автора
+ ctx.save();ctx.beginPath();ctx.arc(0,-96,39,0,Math.PI*2);ctx.clip();
+ if(img&&img.complete&&img.naturalWidth){ctx.drawImage(img,-39,-135,78,78)}else{ellipse(0,-96,39,39,'#6b8097');ctx.font='bold 21px sans-serif';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText(n.name.slice(0,2).toUpperCase(),0,-91)}
+ ctx.restore();ctx.beginPath();ctx.arc(0,-96,39,0,Math.PI*2);ctx.strokeStyle=accent;ctx.lineWidth=3;ctx.stroke();
+ // персонаж повинен бути добре помітним у кімнаті
+ drawRounded(-54,9,108,21,7,'#0e203bdc');ctx.fillStyle='#e8ffff';ctx.font='bold 12px system-ui';ctx.textAlign='center';ctx.fillText(n.name,0,24,103);
+ ctx.restore();
+}
+function drawNPCVisit(){
+ if(state.location==='npc'&&selectedNPC){drawNPCFigure(selectedNPC,W*.72,H*.81,Math.max(.85,Math.min(1.25,W/570)));return}
+ if(state.location==='home'&&visitor){drawNPCFigure(visitor,W*.76,H*.82,Math.max(.72,Math.min(1,W/620)))}
+}
 function updateVisitor(){if(state.location!=='home'||selectedNPC)return;if(visitor&&clock>visitor.until){toast(visitor.name+' пішов/пішла додому');visitor=null;nextVisitorAt=clock+35+Math.random()*45}if(!visitor&&clock>nextVisitorAt){const n=NPCS[Math.floor(Math.random()*NPCS.length)];visitor={...n,until:clock+18};toast('До тебе завітав '+n.name+'! 👋')}}
 function drawFurniture(id,x,y,s=1){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ellipse(0,12,26,7,'#567c6970');if(id==='chair'){drawRounded(-24,-36,48,34,10,'#f4bba7');drawRounded(-29,-10,58,21,6,'#d39495');line(-18,8,-18,19,'#856f72',5);line(18,8,18,19,'#856f72',5)}else if(id==='plant'){drawRounded(-13,-7,26,27,5,'#c4887b');ellipse(0,-23,17,26,'#5aa675');ellipse(-13,-31,13,17,'#77c780');ellipse(14,-33,12,17,'#82c887')}else if(id==='lamp'){line(0,-50,0,10,'#938c9b',5);ctx.beginPath();ctx.moveTo(-21,-51);ctx.lineTo(21,-51);ctx.lineTo(12,-20);ctx.lineTo(-12,-20);ctx.fillStyle='#ffefb4';ctx.fill();ellipse(0,12,19,5,'#938c9b')}else if(id==='bed'){drawRounded(-39,-11,78,28,10,'#d5b6dc');drawRounded(-39,-28,78,23,12,'#f5d4e2');drawRounded(-32,-23,28,16,6,'#fff9f1')}ctx.restore()}
 function shadeColor(hex,mul){let z=hex.replace('#','');if(!/^[0-9a-f]{6}$/i.test(z))return '#ddd';let v=[0,2,4].map(i=>Math.max(0,Math.min(255,Math.round(parseInt(z.slice(i,i+2),16)*mul))));return `rgb(${v.join(',')})`}
@@ -170,7 +211,7 @@ function showPanel(){let labels={editor:'🎨 Редактор персонаж�
  else if(activePanel==='friendAdd'){if(!state.friendId){state.friendId='PROTO-'+Math.random().toString(36).slice(2,10).toUpperCase();save()}
   html=`<p><b>Книга друзів</b> зберігається тільки на твоєму пристрої. Додайте коди одне одного, щоб не загубити контакти.</p><div class="section-title">Мій код друга</div><div class="codebox" id="myFriendCode">${esc(state.friendId)}</div><div class="footer-actions" style="margin:10px 0"><button class="primary" data-act="copyFriendCode">Скопіювати код</button></div><div class="control"><label>Ім’я друга</label><input class="field" id="friendName" maxlength="32" placeholder="Як звати друга?"></div><div class="control"><label>Код друга</label><input class="field" id="friendCode" maxlength="48" placeholder="PROTO-XXXXXXXX"></div><button class="primary" data-act="addFriend">Додати до друзів</button><p class="section-title">Мої друзі (${state.friends.length})</p>${state.friends.length?state.friends.map((f,i)=>`<div class="friend-line"><span><b>${esc(f.name)}</b><br><small>${esc(f.code)}</small></span><button class="secondary" data-act="removeFriend" data-index="${i}">Видалити</button></div>`).join(''):'<p class="note">Поки тут нікого немає.</p>'}<p class="note">Це локальна адресна книга. Онлайн-статус, автоматичні запрошення та відвідування чужих островів без спільного сервісу недоступні. Подарунки надсилаються кодами через вкладку «Пошта».</p>`}
  else if(activePanel==='npcGift'){const n=selectedNPC;html=n?`<div class="friend-line"><img style="height:65px;width:65px;object-fit:cover;border-radius:12px" src="${n.avatar}" alt=""><span><b>${esc(n.name)}</b><br><small>${esc(n.desc)}</small></span></div><p>Вибери подарунок для NPC. Він потрапить до історії дружби, а предмет зникне з твого інвентарю.</p><select id="npcGiftSelect" class="field">${Object.keys(ITEMS).filter(id=>(state.owned[id]||0)>0&&!Object.values(state.equipped).includes(id)).map(id=>`<option value="${id}">${esc(ITEMS[id].name)} ×${state.owned[id]}</option>`).join('')}</select><div class="footer-actions" style="margin-top:12px"><button class="primary" data-act="giveNPC">🎁 Подарувати</button></div><p class="note">Подарунки NPC обробляються локально, без сервера.</p><p class="note">Вже подаровано: ${(state.npcGifts[n.id]||[]).length}</p>`:'<p>Спочатку вибери друга.</p>'}
- else if(activePanel==='settings'){html=`<p><b>Прото-Тип α 0.3</b> — локальний браузерний прототип.</p><div class="control"><label>Ім’я острова</label><input class="field" id="islandLabel" value="Мій маленький острів" disabled></div><div class="footer-actions"><button class="secondary" data-act="collectFurniture">Прибрати всі меблі в інвентар (${state.placed.length+state.homePlaced.length})</button><button class="secondary" data-act="exportSave">Експорт збереження</button><button class="secondary" data-act="importSave">Імпорт збереження</button><button class="secondary" data-act="earnCoins">Міні-завдання: +30 🪙</button><button class="secondary" data-act="reset">Нова гра</button></div><p class="note">Прогрес автоматично зберігається в цьому браузері (localStorage). Між браузерами та пристроями синхронізації немає. Для резервної копії використовуй експорт. Міні-завдання призначене для тестування економіки, без лімітів.</p><textarea id="saveText" class="field" placeholder="Тут з’явиться резервна копія, або встав її для імпорту" rows="4"></textarea>`}
+ else if(activePanel==='settings'){html=`<p><b>Прото-Тип α 0.4</b> — локальний браузерний прототип.</p><div class="control"><label>Ім’я острова</label><input class="field" id="islandLabel" value="Мій маленький острів" disabled></div><div class="footer-actions"><button class="secondary" data-act="collectFurniture">Прибрати всі меблі в інвентар (${state.placed.length+state.homePlaced.length})</button><button class="secondary" data-act="exportSave">Експорт збереження</button><button class="secondary" data-act="importSave">Імпорт збереження</button><button class="secondary" data-act="earnCoins">Міні-завдання: +30 🪙</button><button class="secondary" data-act="reset">Нова гра</button></div><p class="note">Прогрес автоматично зберігається в цьому браузері (localStorage). Між браузерами та пристроями синхронізації немає. Для резервної копії використовуй експорт. Міні-завдання призначене для тестування економіки, без лімітів.</p><textarea id="saveText" class="field" placeholder="Тут з’явиться резервна копія, або встав її для імпорту" rows="4"></textarea>`}
  body.innerHTML=html;if(activePanel==='editor')drawPreview()}
 function drawPreview(){let c=document.getElementById('preview');if(!c)return;let g=c.getContext('2d');g.clearRect(0,0,200,230);pen=g;g.save();g.translate(100,210);g.scale(1.1,1.1);puppet(g,0,0,1,false);g.restore();pen=ctx}
 body.addEventListener('input',e=>{let a=state.appearance;if(e.target.id==='furColor')a.fur=e.target.value;if(e.target.id==='bodyColor')a.body=e.target.value;if(e.target.id==='eyeColor')a.eyeColor=e.target.value;if(e.target.id==='petName')a.name=safeStr(e.target.value,24);if(e.target.id==='headShape')a.head=e.target.value;debounceSave();drawPreview()});
@@ -197,7 +238,7 @@ body.addEventListener('click',async e=>{let b=e.target.closest('[data-act]');if(
  if(act==='copyGift'){let el=document.getElementById('generatedCode');if(!el)return;try{await navigator.clipboard.writeText(el.value);toast('Код скопійовано')}catch{el.select();toast('Скопіюй виділений код вручну')}return}
  if(act==='receiveGift'){try{let code=document.getElementById('giftInput').value.trim();if(!code.startsWith('PT1-')||code.length>2500)throw Error();let gift=JSON.parse(b64decode(code.slice(4)));if(gift.v!==1||!ITEMS[gift.id]||typeof gift.nonce!=='string'||gift.nonce.length>80||!gift.nonce)throw Error();if(state.giftHistory.includes(gift.nonce)){toast('Цей код уже використано в цьому браузері');return}state.giftHistory.push(gift.nonce);state.giftHistory=state.giftHistory.slice(-200);state.owned[gift.id]=(state.owned[gift.id]||0)+1;save();toast(`Подарунок від ${safeStr(gift.from,24)||'друга'}: ${ITEMS[gift.id].name}!`);showPanel()}catch{toast('Невірний код подарунка')}return}
 });
-load();resize();updateHUD();updateLocationUI();requestAnimationFrame(render);
+load();resize();updateHUD();updateLocationUI();renderNPCTop();requestAnimationFrame(render);
 window.addEventListener('pagehide',save);
 </script>
 </body>
