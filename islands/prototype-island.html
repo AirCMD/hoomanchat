@@ -393,17 +393,54 @@ const NPC_LEVELS={alter_core:7,dreaming_romance:14,la_cyber:28,night_fox:10,akir
 const npcLevel=n=>NPC_LEVELS[n?.id]||1;
 const npcRoomCount=n=>npcLevel(n)>=25?3:npcLevel(n)>=8?2:1;
 let npcRoom=0;
+// Resolve assets in the same directory as this HTML, in a parent assets directory,
+// or from an explicitly configured GitHub Pages assets URL (needed for standalone HTML).
+const ASSET_BASE_KEY='proto_typ_asset_base_url';
+function configuredAssetBase(){try{return localStorage.getItem(ASSET_BASE_KEY)||''}catch{return ''}}
+function assetCandidates(path){
+ const relative=String(path).replace(/^\.?\/?assets\//i,'');
+ const list=[];const base=configuredAssetBase();
+ if(base)try{list.push(new URL(relative,base.endsWith('/')?base:base+'/').href)}catch{}
+ for(const prefix of ['assets/','../assets/','../../assets/']){
+  try{list.push(new URL(prefix+relative,document.baseURI).href)}catch{}
+ }
+ return [...new Set(list)];
+}
+function loadAssetWithFallback(img,path,onFinalFailure){
+ const candidates=assetCandidates(path);let index=0;
+ function next(){if(index>=candidates.length){img.onerror=null;if(onFinalFailure)onFinalFailure();return}img.src=candidates[index++]}
+ img.onerror=next;next();
+}
+function shopAssetError(img,path){
+ if(!img.dataset.assetAttempts){img.dataset.assetAttempts='1';img.dataset.assetIndex='0'}
+ const urls=assetCandidates(path);let i=Number(img.dataset.assetIndex)||0;
+ // img initially received the relative URL; skip candidates already tested.
+ while(i<urls.length && urls[i]===new URL(path,document.baseURI).href)i++;
+ if(i<urls.length){img.dataset.assetIndex=String(i+1);img.src=urls[i];return}
+ img.onerror=null;img.style.display='none';img.parentElement.dataset.missing='Зображення недоступне: '+path;
+}
 const dustImg=new Image();let dustImgReady=false,dustCrop=null;
 dustImg.onload=()=>{
  dustImgReady=dustImg.naturalWidth>0;dustCrop=null;
  if(!dustImgReady)return;
  try{const cv=document.createElement('canvas');cv.width=dustImg.naturalWidth;cv.height=dustImg.naturalHeight;const c=cv.getContext('2d',{willReadFrequently:true});c.drawImage(dustImg,0,0);const data=c.getImageData(0,0,cv.width,cv.height).data;let x0=cv.width,y0=cv.height,x1=-1,y1=-1;
- for(let y=0;y<cv.height;y+=1)for(let x=0;x<cv.width;x+=1){if(data[(y*cv.width+x)*4+3]>14){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)}}
+ for(let y=0;y<cv.height;y+=1)for(let x=0;x<cv.width;x+=1){if(data[(y*cv.width+x)*4+3]>32){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y)}}
  if(x1>=x0)dustCrop={x:x0,y:y0,w:x1-x0+1,h:y1-y0+1};
  }catch(e){console.warn('Прото-Тип: не вдалося обрізати прозорі поля dust.png',e)}
 };
-dustImg.onerror=()=>{dustImgReady=false;console.warn('Прото-Тип: assets/dust.png не завантажено. Без авторського PNG пил не малюється.');};
-dustImg.src='assets/dust.png';
+const dustFailure=()=>{
+ dustImgReady=false;
+ console.error('Прото-Тип: браузер не завантажив assets/dust.png. Перевір регістр шляху та статус 404 у Network.');
+ // Видиме повідомлення, щоб відсутність PNG не сприймали як поломку механіки пилу.
+ const warn=()=>{if(document.getElementById('dustAssetWarning'))return;
+  const el=document.createElement('div');el.id='dustAssetWarning';
+  el.textContent='Не вдалося завантажити assets/dust.png. Пил прихований, доки зображення недоступне.';
+  el.style.cssText='position:fixed;bottom:103px;left:50%;transform:translateX(-50%);z-index:7;background:#422032;color:#fff3dc;border:1px solid #f6b1a3;border-radius:10px;padding:9px 14px;font:600 12px system-ui;text-align:center;max-width:90vw;pointer-events:none';
+  document.body.appendChild(el);
+ };
+ if(document.body)warn();else document.addEventListener('DOMContentLoaded',warn,{once:true});
+};
+loadAssetWithFallback(dustImg,'assets/dust.png',dustFailure);
 function dustStore(){
  if(!state.dustDaily||typeof state.dustDaily!=='object')state.dustDaily={day:'',home:[],npcs:{}};
  const d=state.dustDaily;
@@ -434,7 +471,9 @@ function ensureNpcDust(n){
  return d.npcs[n.id];
 }
 function visibleDust(){
- if(state.location==='home'&&state.room<3){const list=ensureHomeDust().filter(p=>p.room===state.room&&!p.done);return (state.roomDirt[state.room]??100)>=99.99?[]:list;}
+ // Денні пилинки не зникають через відсоток чистоти чи зміну кімнати.
+ // Прибираються вони лише після кліку або роботи пилососа.
+ if(state.location==='home'&&state.room<3)return ensureHomeDust().filter(p=>p.room===state.room&&!p.done);
  if(state.location==='npc'&&visitingNPC)return ensureNpcDust(visitingNPC).filter(p=>p.room===npcRoom&&!p.done);
  return [];
 }
@@ -1197,7 +1236,7 @@ function shopHTML(){
  if(!shopRoom){return `<div class="shop-landing-head"><h2>✦ Торговельна вуличка ✦</h2><p>Обери магазин, щоб зайти всередину</p></div><div class="shop-choices">${SHOP_ROOMS.map(r=>`<button class="shop-choice" style="--shop-accent:${r.accent}" data-act="enterShop" data-val="${r.id}"><span class="symbol">${r.symbol}</span><strong>${r.name}</strong><small>${r.desc}</small></button>`).join('')}</div>`}
  const r=SHOP_ROOMS.find(r=>r.id===shopRoom)||SHOP_ROOMS[0],otherTab=OTHER_SHOP_TABS.find(t=>t.id===otherShopTab)||OTHER_SHOP_TABS[0];
  const items=shopStock(),m=shopMetrics();
- const displays=items.map((id,i)=>{const it=ITEMS[id],n=state.owned[id]||0,x=340+i*m.spacing;return `<article class="shop-wall-product" style="left:${x}px;width:${m.spacing-22}px"><span class="shop-product-pic">${it.image?`<img src="${it.image}" alt="${esc(it.name)}" loading="lazy" onerror="this.style.display='none';this.parentElement.dataset.missing='PNG не завантажено: ${it.image}'" style="max-width:100%;height:clamp(45px,10vh,92px);object-fit:contain">`:it.emoji}</span><strong>${esc(it.name)}</strong><small>У тебе: ${n}</small><button data-act="buy" data-id="${id}" ${state.coins<it.price?'disabled':''}>🪙 ${it.price} · Купити</button></article>`}).join('');
+ const displays=items.map((id,i)=>{const it=ITEMS[id],n=state.owned[id]||0,x=340+i*m.spacing;return `<article class="shop-wall-product" style="left:${x}px;width:${m.spacing-22}px"><span class="shop-product-pic">${it.image?`<img src="${it.image}" alt="${esc(it.name)}" loading="lazy" onerror="shopAssetError(this,'${it.image}')" style="max-width:100%;height:clamp(45px,10vh,92px);object-fit:contain">`:it.emoji}</span><strong>${esc(it.name)}</strong><small>У тебе: ${n}</small><button data-act="buy" data-id="${id}" ${state.coins<it.price?'disabled':''}>🪙 ${it.price} · Купити</button></article>`}).join('');
  const top=`<header class="shop-topbar"><button class="shop-all" data-act="shopBack">☷ Магазини</button><nav class="shop-switcher" aria-label="Перемкнути магазин">${SHOP_ROOMS.map(t=>`<button data-act="enterShop" data-val="${t.id}" class="${r.id===t.id?'selected':''}">${t.symbol} ${t.name}</button>`).join('')}</nav><span class="wallet">🪙 ${state.coins}</span></header>`;
  const sub=r.id==='other'?`<nav class="shop-subbar">${OTHER_SHOP_TABS.map(t=>`<button class="${t.id===otherShopTab?'selected':''}" data-act="otherShopTab" data-val="${t.id}">${t.symbol} ${t.name}</button>`).join('')}</nav>`:'';
  return `<div class="shop-screen">${top}${sub}<section id="shopStage" class="shop-room-stage" style="--shop-accent:${r.accent}" aria-label="Крамниця ${r.name}. Стрілки зсувають камеру, натисни на підлогу, щоб ходити."><div id="shopWorld" class="shop-room-world" style="width:${m.total}px"><div class="shop-room-wall"></div><div class="shop-room-floor"></div><div class="shop-shop-window" style="left:38px"></div><div class="shop-room-heading">${r.symbol} ${r.id==='other'?otherTab.name:r.name}</div><div class="shop-wall-items">${displays||'<div class="shop-wall-empty">Нові товари з’являться тут ✨</div>'}</div></div><canvas id="shopCast" aria-label="Пет і продавець"></canvas><button class="shop-nav shop-nav-left" data-shop-arrow="-1" type="button" aria-label="Рух камери ліворуч">❮</button><button class="shop-nav shop-nav-right" data-shop-arrow="1" type="button" aria-label="Рух камери праворуч">❯</button><div class="shop-room-hint">Торкнися підлоги, щоб пройти · <span id="shopPosition">0% кімнати</span></div><button class="shop-home-btn" type="button" data-act="shopHome">🏠 Додому</button></section></div>`;
@@ -1230,7 +1269,7 @@ function showPanel(){let labels={editor:'🎨 Редактор персонаж�
  else if(activePanel==='needs'){html=needsPanelHTML()}
  else if(activePanel==='roomClean'){html=roomCleanHTML()}
  else if(activePanel==='yard'){html=yardPanelHTML()}
- else if(activePanel==='settings'){html=`<p><b>Прото-Тип α 0.8.0</b> — локальний браузерний прототип.</p><div class="control"><label>Ім’я острова</label><input class="field" id="islandLabel" value="Мій маленький острів" disabled></div><div class="control"><label>🏠 Основна кімната (відкривається під час запуску гри)</label><select class="field" id="startRoom">${[['Кімната пета',0],['Спальня',1],['Вітальня',2]].map(([name,n])=>`<option value="${n}" ${state.startRoom===n?'selected':''} ${state.level<ROOM_LEVELS[n]?'disabled':''}>${name}${state.level<ROOM_LEVELS[n]?' (закрито)':''}</option>`).join('')}</select></div><div class="control"><label>🎨 Оформлення поточної кімнати</label><p class="note">Перейди в потрібну кімнату, щоб змінити її шпалери й підлогу.</p><label>Шпалери</label><select class="field" id="wallChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Неонові','Лавандові','Космічні','Графітові'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].wall===i?'selected':''}>${n}</option>`).join('')}</select><label>Підлога</label><select class="field" id="floorChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Класична','Паркет','Плитка','Темна'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].floor===i?'selected':''}>${n}</option>`).join('')}</select></div><div class="footer-actions"><button class="secondary" data-act="collectFurniture">Прибрати всі меблі в інвентар (${state.placed.length+state.homePlaced.length})</button><button class="secondary" data-act="exportSave">Експорт збереження</button><button class="secondary" data-act="importSave">Імпорт збереження</button><button class="secondary" data-act="reset">Нова гра</button></div><p class="note">Прогрес автоматично зберігається в цьому браузері (localStorage). Між браузерами та пристроями синхронізації немає. Для резервної копії використовуй експорт. Заробляй монети в розділі «Ігри».</p><textarea id="saveText" class="field" placeholder="Тут з’явиться резервна копія, або встав її для імпорту" rows="4"></textarea>`}
+ else if(activePanel==='settings'){html=`<div class="control"><label>Папка assets на GitHub Pages (для окремо відкритого HTML)</label><input class="field" id="assetBaseInput" placeholder="https://example.github.io/game/assets/" value="${esc(configuredAssetBase())}"><button class="primary" data-act="saveAssetBase">Зберегти адресу зображень</button><p class="note">Не потрібно, якщо HTML і assets/ лежать поруч. Якщо запускаєш index.html окремо, встав повну HTTPS-адресу саме до assets/ у своєму GitHub Pages.</p></div><p><b>Прото-Тип α 0.8.0</b> — локальний браузерний прототип.</p><div class="control"><label>Ім’я острова</label><input class="field" id="islandLabel" value="Мій маленький острів" disabled></div><div class="control"><label>🏠 Основна кімната (відкривається під час запуску гри)</label><select class="field" id="startRoom">${[['Кімната пета',0],['Спальня',1],['Вітальня',2]].map(([name,n])=>`<option value="${n}" ${state.startRoom===n?'selected':''} ${state.level<ROOM_LEVELS[n]?'disabled':''}>${name}${state.level<ROOM_LEVELS[n]?' (закрито)':''}</option>`).join('')}</select></div><div class="control"><label>🎨 Оформлення поточної кімнати</label><p class="note">Перейди в потрібну кімнату, щоб змінити її шпалери й підлогу.</p><label>Шпалери</label><select class="field" id="wallChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Неонові','Лавандові','Космічні','Графітові'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].wall===i?'selected':''}>${n}</option>`).join('')}</select><label>Підлога</label><select class="field" id="floorChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Класична','Паркет','Плитка','Темна'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].floor===i?'selected':''}>${n}</option>`).join('')}</select></div><div class="footer-actions"><button class="secondary" data-act="collectFurniture">Прибрати всі меблі в інвентар (${state.placed.length+state.homePlaced.length})</button><button class="secondary" data-act="exportSave">Експорт збереження</button><button class="secondary" data-act="importSave">Імпорт збереження</button><button class="secondary" data-act="reset">Нова гра</button></div><p class="note">Прогрес автоматично зберігається в цьому браузері (localStorage). Між браузерами та пристроями синхронізації немає. Для резервної копії використовуй експорт. Заробляй монети в розділі «Ігри».</p><textarea id="saveText" class="field" placeholder="Тут з’явиться резервна копія, або встав її для імпорту" rows="4"></textarea>`}
  body.innerHTML=html;if(activePanel==='editor'){drawPreview();drawFaceChoices()}}
 function drawPreview(){let c=document.getElementById('preview');if(!c)return;let g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);pen=g;g.save();g.translate(c.width/2,c.height*.91);g.scale(2.0,2.0);puppet(g,0,0,1,false);g.restore();pen=ctx}
 function drawFaceChoices(){
@@ -1267,6 +1306,7 @@ body.addEventListener('click',async e=>{let b=e.target.closest('[data-act]');if(
  if(act==='editorConfirm'){if(activePanel!=='editor')return;state.appearance.body=state.appearance.fur;save();editorOriginal={...state.appearance};toast('Колір і зовнішність підтверджено');return}
  if(act==='editorCancel'){if(activePanel!=='editor')return;discardEditorChanges();editorOriginal={...state.appearance};showPanel();toast('Попередній колір відновлено');return}
  if(act==='faceShop'){if(activePanel==='editor')discardEditorChanges();shopRoom='makeup';openPanel('shop');return}
+ if(act==='saveAssetBase'){const u=document.getElementById('assetBaseInput')?.value.trim()||'';if(u&&!/^https:\/\/[^\s<>"']+\/$/.test(u)){toast('Вкажи повний HTTPS-шлях до assets/ із / наприкінці');return}try{if(u)localStorage.setItem(ASSET_BASE_KEY,u);else localStorage.removeItem(ASSET_BASE_KEY)}catch{}toast('Шлях до assets збережено. Перезавантаж сторінку, щоб оновити зображення.');return}
  if(act==='saveAvatar'){let url=document.getElementById('avatarInput')?.value.trim()||'';if(url&&!/^https:\/\/[^\s<>"']{1,1790}$/.test(url)){toast('Потрібне коректне HTTPS-посилання');return}state.avatar=url;save();showPanel();toast('Аватарку збережено');return}
  if(act==='clearAvatar'){state.avatar='';save();showPanel();return}
  if(act==='npcInteract'){doInteraction(v);return}
