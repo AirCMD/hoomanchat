@@ -256,7 +256,7 @@ function drawNPCFigure(n,x,y,size=1){
  if(['cat','fox','wolf','weasel'].includes(species)){ctx.beginPath();ctx.moveTo(23,-45);ctx.bezierCurveTo(69,-61,71,-14,49,-20);ctx.strokeStyle=species==='fox'?'#d99d70':coat;ctx.lineWidth=13;ctx.lineCap='round';ctx.stroke()}
  if(species==='shark'){ctx.beginPath();ctx.moveTo(0,-96);ctx.lineTo(13,-116);ctx.lineTo(24,-91);ctx.closePath();ctx.fillStyle='#6cb7d9';ctx.fill()}
  // Ноги, тулуб і авторські PNG-руки анімуються незалежно для всіх NPC.
- for(const side of [-1,1]){ctx.save();ctx.translate(side*15,-22);ctx.rotate(side*walk);renderLeg(ctx,side===-1?'left':'right',coat);ctx.restore()}
+ for(const side of [-1,1]){ctx.save();ctx.translate(side*12,-25);ctx.rotate(side*walk);renderLeg(ctx,side===-1?'right':'left',coat);ctx.restore()}
  drawRounded(-27,-75,54,55,20,coat);drawRounded(-15,-65,30,34,11,accent);
  for(const side of [-1,1]){ctx.save();ctx.translate(side*25,-68);ctx.rotate(side*(.12+walk));renderHand(ctx,side===1?'left':'right',coat);ctx.restore()}
  // Голова NPC намальована окремо. Аватар НЕ використовується як текстура голови.
@@ -410,9 +410,9 @@ function puppet(g,x,y,scale=1,animated=true){
  // legs
  for(let side of [-1,1]){
   g.save();
-  g.translate(side*15,-22);
+  g.translate(side*12,-25);
   g.rotate(side*(moving?Math.sin(phase+(side===-1?0:Math.PI))*.23:0));
-  renderLeg(g,side===-1?'left':'right',fur);
+  renderLeg(g,side===-1?'right':'left',fur);
   g.restore();
  }
 
