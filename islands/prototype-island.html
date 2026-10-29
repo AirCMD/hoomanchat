@@ -662,7 +662,7 @@ function tintHead(kind,color){
 function renderHeadBase(g,kind,color){
  const tinted=tintHead(kind,color);
  if(!tinted)return false;
- const size=kind==='wide'?80:kind==='pointy'?80:80;
+ const size=kind==='wide'?100:kind==='pointy'?102:98;
  g.drawImage(tinted,-size/2,-size/2,size,size);
  return true;
 }
