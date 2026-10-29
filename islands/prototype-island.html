@@ -817,9 +817,9 @@ function tintEarPair(kind,color){
 function renderCustomEarPair(g,kind,color){
  const tinted=tintEarPair(kind,color);
  if(!tinted)return false;
- const width=kind==='ears_tall'?116:kind==='ears_sharp'?112:104;
- const height=kind==='ears_tall'?116:106;
- g.drawImage(tinted,-width/2,-height/2-7,width,height);
+ const size=kind==='ears_tall'?100:kind==='ears_sharp'?98:96;
+ const lift=kind==='ears_tall'?4:2;
+ g.drawImage(tinted,-size/2,-size/2-lift,size,size);
  return true;
 }
 function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
