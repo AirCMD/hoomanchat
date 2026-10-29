@@ -258,10 +258,10 @@ function visibleDust(){
 }
 function drawDust(){
  for(const p of visibleDust()){
-  const x=p.x*W,y=p.y*H,scale=.8+seededDust(p.id,29)*.55;
+  const x=p.x*W,y=p.y*H,scale=1.18+seededDust(p.id,29)*.72;
   ctx.save();ctx.translate(x,y);ctx.rotate((seededDust(p.id,8)-.5)*.35);ctx.globalAlpha=.78;
-  if(dustImgReady){ctx.filter=['sepia(.2)','hue-rotate(18deg)','brightness(.85)','none'][p.id%4];ctx.drawImage(dustImg,-17*scale,-13*scale,34*scale,26*scale);ctx.filter='none';}
-  else{ctx.fillStyle=['#d7dce4','#b6b4c9','#9ab7cc'][p.id%3];for(let j=0;j<5;j++){ctx.beginPath();ctx.ellipse((j-2)*5*scale,Math.sin(j*2+p.id)*4*scale,(4+j%2)*scale,3*scale,.2*j,0,Math.PI*2);ctx.fill()}}
+  if(dustImgReady){ctx.filter=['sepia(.16)','hue-rotate(12deg)','brightness(.92)','none'][p.id%4];ctx.drawImage(dustImg,-30*scale,-22*scale,60*scale,44*scale);ctx.filter='none';}
+  else{ctx.fillStyle=['#d7dce4','#b6b4c9','#9ab7cc'][p.id%3];for(let j=0;j<5;j++){ctx.beginPath();ctx.ellipse((j-2)*8*scale,Math.sin(j*2+p.id)*6*scale,(6+j%2)*scale,4.5*scale,.2*j,0,Math.PI*2);ctx.fill()}}
   ctx.restore();
  }
 }
@@ -282,7 +282,7 @@ function cleanDustRoom(owner,room,robot=false){
  if(count)toast((robot?'🤖':'🧹')+' Прибрано '+count+' пилинок · +'+count*(owner==='home'?15:5)+' 🪙 · +'+count*5+' XP');
  return count;
 }
-function dustHit(x,y){return visibleDust().find(p=>Math.hypot(x-p.x*W,y-p.y*H)<Math.max(23,Math.min(W*.045,35)));}
+function dustHit(x,y){return visibleDust().find(p=>Math.hypot(x-p.x*W,y-p.y*H)<Math.max(38,Math.min(W*.07,58)));}
 // Robot earns rewards only once per dust particle; no infinite repeat.
 let lastRobotDustCheck=0;
 function robotDustTick(){
