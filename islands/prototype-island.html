@@ -275,18 +275,53 @@ const handReady={left:false,right:false};
 function loadCustomHand(side,path){
  const img=customHands[side];
  let fallback=false;
- img.onload=()=>{handReady[side]=img.naturalWidth>0;drawPreviewIfOpen()};
+ img.onload=()=>{handReady[side]=img.naturalWidth>0;handTintCache[side].clear();drawPreviewIfOpen()};
  img.onerror=()=>{if(!fallback){fallback=true;img.src=handEmbedded[side]}else handReady[side]=false};
  img.src=path;
 }
 function drawPreviewIfOpen(){if(document.getElementById('preview'))drawPreview()}
 loadCustomHand('left','assets/handl.png');
 loadCustomHand('right','assets/handr.png');
-function renderHand(g,side,color){
+// Cache tinted hands. Preserve the source PNG alpha, its shadows and highlights.
+// Each NPC passes its own coat shade; the player passes the torso color.
+const handTintCache={left:new Map(),right:new Map()};
+function tintHand(side,color){
  const img=customHands[side];
- if(handReady[side]){
+ if(!handReady[side])return null;
+ const cache=handTintCache[side];
+ const key=String(color).trim().toLowerCase();
+ if(cache.has(key))return cache.get(key);
+ const canvas=document.createElement('canvas');
+ canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
+ const c=canvas.getContext('2d',{willReadFrequently:true});
+ c.drawImage(img,0,0);
+ const pixels=c.getImageData(0,0,canvas.width,canvas.height);
+ const match=key.match(/^#([0-9a-f]{6})$/i)||key.match(/^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
+ let rgb;
+ if(match&&match[1].length===6){rgb=[0,2,4].map(i=>parseInt(match[1].slice(i,i+2),16));}
+ else if(match){rgb=[+match[1],+match[2],+match[3]];}
+ else{rgb=[240,239,241];}
+ const d=pixels.data;
+ for(let i=0;i<d.length;i+=4){
+  if(d[i+3]===0)continue;
+  // Original grayscale value is the light/shadow multiplier.
+  // White becomes chosen color; dark contours retain their depth.
+  const intensity=(d[i]*.2126+d[i+1]*.7152+d[i+2]*.0722)/255;
+  d[i]=Math.round(rgb[0]*intensity);
+  d[i+1]=Math.round(rgb[1]*intensity);
+  d[i+2]=Math.round(rgb[2]*intensity);
+ }
+ c.putImageData(pixels,0,0);
+ // Keep a bounded cache even if the color picker produces hundreds of colors.
+ if(cache.size>=48)cache.delete(cache.keys().next().value);
+ cache.set(key,canvas);
+ return canvas;
+}
+function renderHand(g,side,color){
+ const tinted=tintHand(side,color);
+ if(tinted){
   const height=59,width=height*210/466;
-  g.drawImage(img,-width/2,-3,width,height);
+  g.drawImage(tinted,-width/2,-3,width,height);
  }else{
   ellipse(0,23,12,29,color);
  }
