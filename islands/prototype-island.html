@@ -125,9 +125,42 @@ function drawHome(){let bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'
   for(let i=0;i<state.homePlaced.length;i++){let p=state.homePlaced[i];drawFurniture(p.id,p.x*W,p.y*H,Math.max(.65,Math.min(1.25,W/700)))}
   ctx.fillStyle='#fff6';ctx.font='12px system-ui';ctx.textAlign='left';ctx.fillText('Мій простір',20,H*.19)
 }
-/* Повнофігурний NPC: аватар = портрет/голова, тіло та анімація = програмна 2D-маріонетка.
-   Пізніше ці фігури можна замінити окремими авторськими PNG-частинами. */
+/* NPC мають власні стилізовані голови; аватари використовуються виключно в UI друзів. */
 const NPC_COSTUMES={alter_core:['#252636','#ae4e8d','human'],dreaming_romance:['#252535','#a49ada','cat'],la_cyber:['#193547','#16d8d4','human'],night_fox:['#b66c3d','#f3b169','fox'],akira_bakeneko:['#212b38','#808b9a','human'],soft_static:['#d6cbd8','#b7a8d5','rabbit'],water_blue:['#397c9d','#70d6f2','shark'],wolf_fang:['#252b39','#e8c04d','wolf'],yuki_foxy:['#dce8f2','#79c9ee','fox'],yoyo_tchi:['#ca403d','#62a878','weasel']};
+function drawNPCHead(n,species,coat,accent){
+ ctx.save();ctx.translate(0,-96);
+ const dark=['dreaming_romance','wolf_fang'].includes(n.id);
+ const face=n.id==='akira_bakeneko'?'#efc5a7':n.id==='la_cyber'?'#785447':n.id==='yuki_foxy'?'#f1f3f7':n.id==='soft_static'?'#e4dce9':dark?'#252735':n.id==='night_fox'?'#d78b51':n.id==='water_blue'?'#579bbd':n.id==='yoyo_tchi'?'#e3c6a0':'#d5c4ce';
+ const ears=['cat','fox','wolf','rabbit','weasel'].includes(species);
+ if(ears){
+  for(const side of [-1,1]){ctx.save();ctx.scale(side,1);ctx.beginPath();
+   if(species==='rabbit'){ctx.ellipse(23,-54,11,35,-.18,0,Math.PI*2)}
+   else {ctx.moveTo(13,-22);ctx.lineTo(22,species==='fox'?-65:-51);ctx.lineTo(39,-23);ctx.closePath()}
+   ctx.fillStyle=face;ctx.fill();ctx.strokeStyle='#414459';ctx.lineWidth=2;ctx.stroke();
+   ctx.beginPath();ctx.moveTo(20,-27);ctx.lineTo(24,species==='rabbit'?-75:-44);ctx.lineTo(32,-26);ctx.fillStyle=dark?'#555369':'#b993a8';ctx.fill();ctx.restore()}
+ }
+ if(species==='shark'){ctx.beginPath();ctx.moveTo(-12,-33);ctx.lineTo(0,-66);ctx.lineTo(18,-33);ctx.fillStyle=face;ctx.fill()}
+ ellipse(0,0,species==='fox'?41:39,species==='human'?40:36,face);
+ if(n.id==='alter_core'||n.id==='akira_bakeneko'||n.id==='la_cyber'){
+  ctx.fillStyle=n.id==='akira_bakeneko'?'#6c493a':n.id==='la_cyber'?'#172832':'#171a28';
+  ctx.beginPath();ctx.moveTo(-37,-7);ctx.quadraticCurveTo(-35,-47,1,-38);ctx.quadraticCurveTo(34,-40,38,-11);ctx.lineTo(22,-22);ctx.lineTo(7,-27);ctx.lineTo(-6,-12);ctx.lineTo(-19,-24);ctx.lineTo(-35,2);ctx.closePath();ctx.fill();
+ }
+ if(n.id==='yoyo_tchi'){
+  drawRounded(-38,-39,76,12,5,'#40935c');drawRounded(-20,-53,49,17,8,'#40935c');
+ }
+ if(n.id==='dreaming_romance'){ctx.strokeStyle='#d9d5ac';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,-23,8,.65,Math.PI*1.5);ctx.stroke()}
+ const eye=n.id==='wolf_fang'?'#f4d84f':n.id==='yuki_foxy'?'#64cafa':n.id==='akira_bakeneko'?'#6bbcee':n.id==='la_cyber'?'#39e7e7':n.id==='water_blue'?'#102d48':'#27293a';
+ for(const side of [-1,1]){ellipse(side*15,-2,5.4,7.4,eye);ellipse(side*14,-5,1.8,2.6,'#ffffff')}
+ if(species==='fox'||species==='wolf'||species==='cat'||species==='weasel'){
+  ellipse(0,15,23,12,dark?'#454450':'#f4e8e2');ctx.beginPath();ctx.moveTo(-5,10);ctx.lineTo(5,10);ctx.lineTo(0,15);ctx.closePath();ctx.fillStyle=n.id==='yuki_foxy'?'#57b7e3':'#554859';ctx.fill();
+ }else if(species==='shark'){
+  ellipse(0,15,23,10,'#dceaf0');ctx.beginPath();ctx.moveTo(-14,12);ctx.lineTo(14,12);ctx.strokeStyle='#315369';ctx.lineWidth=2;ctx.stroke();
+ }else{ellipse(0,11,3,2,'#684c55')}
+ ctx.beginPath();ctx.arc(0,16,5,0,Math.PI);ctx.strokeStyle=dark?'#d8d5e0':'#66505d';ctx.lineWidth=2;ctx.stroke();
+ if(n.id==='la_cyber'){ctx.strokeStyle='#27eee8';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-37,-3);ctx.lineTo(-25,13);ctx.moveTo(37,-3);ctx.lineTo(25,13);ctx.stroke()}
+ if(n.id==='water_blue'){for(const side of [-1,1]){ctx.beginPath();ctx.moveTo(side*33,4);ctx.lineTo(side*48,-6);ctx.lineTo(side*35,20);ctx.fillStyle=face;ctx.fill()}}
+ ctx.restore();
+}
 function drawNPCFigure(n,x,y,size=1){
  const [coat,accent,species]=NPC_COSTUMES[n.id]||['#44536a','#a3d7f5','human'];
  const img=NPC_IMAGES[n.id],bounce=Math.sin(clock*2.4+n.name.length)*2,walk=Math.sin(clock*3+n.name.length)*.23;
@@ -141,10 +174,8 @@ function drawNPCFigure(n,x,y,size=1){
  for(const side of [-1,1]){ctx.save();ctx.translate(side*15,-22);ctx.rotate(side*walk);line(0,0,side*2,23,'#b5b2b9',12);ellipse(side*2,23,10,5,coat);ctx.restore()}
  drawRounded(-27,-75,54,55,20,coat);drawRounded(-15,-65,30,34,11,accent);
  for(const side of [-1,1]){ctx.save();ctx.translate(side*25,-68);ctx.rotate(side*(.12+walk));line(0,0,side*12,32,coat,13);ellipse(side*12,32,7,7,'#c9bfc5');ctx.restore()}
- // рамка голови з реальною картинкою від автора
- ctx.save();ctx.beginPath();ctx.arc(0,-96,39,0,Math.PI*2);ctx.clip();
- if(img&&img.complete&&img.naturalWidth){ctx.drawImage(img,-39,-135,78,78)}else{ellipse(0,-96,39,39,'#6b8097');ctx.font='bold 21px sans-serif';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText(n.name.slice(0,2).toUpperCase(),0,-91)}
- ctx.restore();ctx.beginPath();ctx.arc(0,-96,39,0,Math.PI*2);ctx.strokeStyle=accent;ctx.lineWidth=3;ctx.stroke();
+ // Голова NPC намальована окремо. Аватар НЕ використовується як текстура голови.
+ drawNPCHead(n,species,coat,accent);
  // персонаж повинен бути добре помітним у кімнаті
  drawRounded(-54,9,108,21,7,'#0e203bdc');ctx.fillStyle='#e8ffff';ctx.font='bold 12px system-ui';ctx.textAlign='center';ctx.fillText(n.name,0,24,103);
  ctx.restore();
