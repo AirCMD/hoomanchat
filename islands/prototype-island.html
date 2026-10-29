@@ -925,7 +925,7 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
 let pendingFurniture=null;
 function useFurniture(id){const n=state.needs;let msg='';if(id==='bed'){n.sleep=Math.min(100,n.sleep+45);action='sleep';msg='Пет відпочиває у ліжку 💤'}else if(id==='bath'||id==='shower'){n.dirt=Math.min(100,n.dirt+48);action='jump';msg='Пет купається 🫧'}else if(id==='tv'||id==='toy'){n.boredom=Math.min(100,n.boredom+42);action='dance';msg='Пет розважається 🎲'}else if(id==='auto_fridge'){n.hunger=Math.min(100,n.hunger+50);action='wave';msg='Пет перекусив 🥗'}else if(id==='vacuum'){cleanRoom();action='wave';return}else if(id==='chair'){action='idle';msg='Пет відпочиває у кріслі'}else{action='wave';msg='Пет розглядає предмет'}actionUntil=clock+3.5;nextAction=actionUntil+4;save();if(msg)toast(msg);earnXP(3)}
 function maybeAction(){if(walkTarget||clock<nextAction||clock<actionUntil)return;const choices=['wave','jump','dance','spin'];action=choices[Math.floor(Math.random()*choices.length)];actionUntil=clock+(action==='dance'?2.3:action==='spin'?1.5:1.7);nextAction=actionUntil+5+Math.random()*9}
-function render(t){clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.05);lastTime=t;clock+=dt;tickNeeds(dt);npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}const scale=Math.max(.69,Math.min(1.1,W/650));puppet(ctx,p.x,p.y,scale);if(placing){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}requestAnimationFrame(render)}
+function render(t){clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.05);lastTime=t;clock+=dt;if(activePanel==='shop'){paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}requestAnimationFrame(render);return}tickNeeds(dt);npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}const scale=Math.max(.69,Math.min(1.1,W/650));puppet(ctx,p.x,p.y,scale);if(placing){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}requestAnimationFrame(render)}
 function placedHit(x,y){if(state.location!=='home'||state.room>2)return -1;for(let i=state.homePlaced.length-1;i>=0;i--){const p=state.homePlaced[i];if((p.room??0)!==state.room)continue;if(ITEMS[p.id]?.ceiling){if(Math.abs(p.x*W-x)<55&&y>=H*.035&&y<=H*.37)return i}else if(Math.abs(p.x*W-x)<46&&Math.abs(p.y*H-y+22)<52)return i}return -1}
 // Меблі можна вільно перетягувати одразу в кімнаті. Короткий клік продовжує взаємодію з предметом.
 function dragFurniturePosition(e){
@@ -1066,8 +1066,11 @@ const OTHER_SHOP_TABS=[
 ];
 let otherShopTab='windows';let shopPage=0;let shopHoldDir=0;let shopNextTurn=0;const SHOP_PAGE_SIZE=3;
 let shopCamera=0,shopCameraTarget=0,shopWalkerX=310,shopWalkTarget=null,shopWalkPhase=0,shopWalkDir=1,shopWorldWidth=2200;
+let shopRenderLast=0,shopRenderAccum=0,shopSceneCache=null;
+function shopCacheFor(stage,world,c){const width=stage.clientWidth,height=stage.clientHeight;if(!shopSceneCache||shopSceneCache.stage!==stage||shopSceneCache.width!==width||shopSceneCache.height!==height){const count=shopStock().length,spacing=Math.max(190,Math.min(300,width*.25)),total=Math.max(width*2.15,430+count*spacing+540);shopSceneCache={stage,world,c,width,height,metrics:{width,height,spacing,total,maxCamera:Math.max(0,total-width)},ctx:c.getContext('2d',{alpha:true})};world.style.width=total+'px'}return shopSceneCache}
+
 const shopSeller={head:'round',fur:'#c7a3bc',body:'#ad8eae',eyeColor:'#53416b',name:'Продавець'};
-function resetShopWalker(){shopCamera=0;shopCameraTarget=0;shopWalkerX=330;shopWalkTarget=null;shopWalkPhase=0;shopWalkDir=1;shopHoldDir=0}
+function resetShopWalker(){shopCamera=0;shopCameraTarget=0;shopWalkerX=330;shopWalkTarget=null;shopWalkPhase=0;shopWalkDir=1;shopHoldDir=0;shopRenderLast=0;shopRenderAccum=0;shopSceneCache=null}
 function shopStock(){const r=SHOP_ROOMS.find(r=>r.id===shopRoom);if(!r)return [];const tab=OTHER_SHOP_TABS.find(t=>t.id===otherShopTab);return (r.id==='other'?(tab?.stock||[]):(SHOP_STOCK[r.id]||[])).filter(id=>ITEMS[id])}
 function shopMetrics(){const stage=document.getElementById('shopStage');const width=stage?.clientWidth||window.innerWidth;const height=stage?.clientHeight||window.innerHeight;
  const count=shopStock().length;const spacing=Math.max(190,Math.min(300,width*.25));const total=Math.max(width*2.15,430+count*spacing+540);
@@ -1075,11 +1078,11 @@ function shopMetrics(){const stage=document.getElementById('shopStage');const wi
 function shopPaintNow(dt){
  if(activePanel!=='shop'||!shopRoom)return;
  const stage=document.getElementById('shopStage'),world=document.getElementById('shopWorld'),c=document.getElementById('shopCast');if(!stage||!world||!c)return;
- const m=shopMetrics();shopWorldWidth=m.total;world.style.width=m.total+'px';
+ const cached=shopCacheFor(stage,world,c),m=cached.metrics;shopWorldWidth=m.total;
  shopCameraTarget=Math.max(0,Math.min(m.maxCamera,shopCameraTarget));
  shopCamera+=(shopCameraTarget-shopCamera)*Math.min(1,dt*7);
  if(Math.abs(shopCamera-shopCameraTarget)<.4)shopCamera=shopCameraTarget;
- world.style.transform=`translate3d(${-shopCamera}px,0,0)`;
+ if(shopSceneCache.lastCamera!==shopCamera){world.style.transform=`translate3d(${-shopCamera}px,0,0)`;shopSceneCache.lastCamera=shopCamera;}
  // When the camera leaves the player behind, pet runs up and follows the frame.
  const edgeLeft=shopCamera+Math.min(125,m.width*.22),edgeRight=shopCamera+m.width-Math.min(160,m.width*.26);
  if(shopWalkerX<edgeLeft)shopWalkTarget=shopCamera+m.width*.36;
@@ -1090,9 +1093,9 @@ function shopPaintNow(dt){
   const speed=cameraRun?420:205;const dx=Math.sign(diff)*Math.min(Math.abs(diff),speed*dt);
   shopWalkerX+=dx;shopWalkDir=dx<0?-1:1;shopWalkPhase+=dt*(cameraRun?17:10);walking=true;
  }}
- const rect=stage.getBoundingClientRect();const pw=Math.max(1,Math.round(rect.width*devicePixelRatio)),ph=Math.max(1,Math.round(rect.height*devicePixelRatio));
+ const pixelRatio=Math.min(window.devicePixelRatio||1,1.5);const pw=Math.max(1,Math.round(m.width*pixelRatio)),ph=Math.max(1,Math.round(m.height*pixelRatio));
  if(c.width!==pw||c.height!==ph){c.width=pw;c.height=ph}
- const g=c.getContext('2d');if(!g)return;g.setTransform(pw/m.width,0,0,ph/m.height,0,0);g.clearRect(0,0,m.width,m.height);
+ const g=cached.ctx;if(!g)return;g.setTransform(pw/m.width,0,0,ph/m.height,0,0);g.clearRect(0,0,m.width,m.height);
  const oldPen=pen,oldStep=pet.step,oldDir=pet.dir,oldTarget=walkTarget;
  pen=g;
  try{
@@ -1117,7 +1120,7 @@ function shopPaintNow(dt){
  const back=stage.querySelector('[data-shop-arrow="-1"]'),next=stage.querySelector('[data-shop-arrow="1"]');
  if(back)back.disabled=shopCameraTarget<=1;if(next)next.disabled=shopCameraTarget>=m.maxCamera-1;
 }
-function paintShopCharacters(){shopPaintNow(Math.min(.05,Math.max(0,(performance.now()-(paintShopCharacters._prev||performance.now()))/1000)));paintShopCharacters._prev=performance.now()}
+function paintShopCharacters(){const now=performance.now();if(!shopRenderLast)shopRenderLast=now;const elapsed=Math.min(.1,Math.max(0,(now-shopRenderLast)/1000));shopRenderLast=now;shopRenderAccum+=elapsed;if(shopRenderAccum<1/30)return;const dt=Math.min(.065,shopRenderAccum);shopRenderAccum=0;shopPaintNow(dt)}
 function stepShopPage(dir){if(activePanel!=='shop'||!shopRoom)return false;const m=shopMetrics();const next=Math.max(0,Math.min(m.maxCamera,shopCameraTarget+dir*m.width*.63));if(Math.abs(next-shopCameraTarget)<1)return false;shopCameraTarget=next;return true}
 function shopHTML(){
  if(!shopRoom){return `<div class="shop-landing-head"><h2>✦ Торговельна вуличка ✦</h2><p>Обери магазин, щоб зайти всередину</p></div><div class="shop-choices">${SHOP_ROOMS.map(r=>`<button class="shop-choice" style="--shop-accent:${r.accent}" data-act="enterShop" data-val="${r.id}"><span class="symbol">${r.symbol}</span><strong>${r.name}</strong><small>${r.desc}</small></button>`).join('')}</div>`}
