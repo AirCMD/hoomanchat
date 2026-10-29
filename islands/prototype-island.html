@@ -406,7 +406,7 @@ function drawWalkingLegs(g,color,phase,moving){
   const lift=moving?Math.max(0,stride)*6:0;
   g.save();
   // Верх PNG приховується тулубом, а стопа залишається на рівні підлоги.
-  g.translate(side*12+stride*4,-57-lift);
+  g.translate(side*12+stride*4,-48-lift);
   g.rotate(stride*.23);
   renderLeg(g,side===-1?'right':'left',color);
   g.restore();
