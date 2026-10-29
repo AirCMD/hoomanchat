@@ -200,6 +200,28 @@
 .shop-empty{text-align:center;color:#856c78;grid-column:1/-1;padding:40px;background:#fffaf2;border:2px dashed #dec2bd;border-radius:18px}
 @media(max-width:900px){.shop-choices{grid-template-columns:repeat(3,minmax(0,1fr))}.shop-chat{left:calc(50% + 70px);font-size:11px}.shop-seller{width:155px}}
 @media(max-width:600px){#overlay.shop-full .panel{padding:8px 10px 15px}.shop-choices{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.shop-choice{min-height:146px;padding:14px 10px}.shop-choice .symbol{width:59px;height:59px;font-size:33px}.shop-choice strong{font-size:15px}.shop-choice small{font-size:11px}.shop-scene{height:280px;border-width:3px}.shop-sign{top:31px;font-size:17px;padding:8px 13px}.shop-awning{height:33px}.shop-seller{width:129px;height:160px;bottom:23%}.shop-counter{left:13%;right:12%;height:30%;font-size:13px;letter-spacing:1px}.shop-chat{top:31%;left:auto;right:7px;max-width:99px;font-size:10px;padding:7px}.shop-register{right:12%;width:46px;height:38px;bottom:27%}.shop-register:before{font-size:16px;left:9px;top:3px}.shop-window{left:4%;width:25%;height:35%}.shop-shelf{right:3%;width:24%;height:30%;top:40%}.shop-shelf span{font-size:21px}.shop-shelf span:nth-child(2){margin-bottom:12px}.shop-catalog{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.shop-product{padding:10px 6px;min-height:215px}.shop-product .product-emoji{height:82px;font-size:43px}}
+
+/* α1.0.4: магазини як справжні ігрові кімнати, настінні вітрини */
+.shop-room-stage{position:relative;isolation:isolate;overflow:hidden;width:min(1180px,100%);height:min(70dvh,620px);min-height:410px;margin:10px auto 14px;border:5px solid #fff9ef;border-radius:24px;box-shadow:0 0 0 2px #bb9ba9,0 12px 25px #65496055;background:#746585}
+.shop-room-wall{position:absolute;inset:0 0 39%;background:repeating-linear-gradient(90deg,#ffffff0a 0 60px,#00000008 61px 64px),linear-gradient(150deg,color-mix(in srgb,var(--shop-accent) 30%,#483d6c),#3b456c);border-bottom:13px solid #ceb1c4}
+.shop-room-floor{position:absolute;inset:61% 0 0;background:repeating-linear-gradient(98deg,transparent 0 82px,#ffffff28 84px 87px),linear-gradient(#ae899a,#886e85)}
+.shop-room-floor:after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 53px,#fbdbe039 55px 57px)}
+.shop-room-heading{position:absolute;top:2%;left:50%;transform:translateX(-50%);padding:7px 19px;background:#fff9f4;box-shadow:0 4px #85627b;border-radius:12px;border:3px solid #a58da9;z-index:3;color:#584765;font-size:clamp(14px,2vw,23px);font-weight:900;white-space:nowrap}
+.shop-wall-items{position:absolute;top:15%;left:4%;width:70%;height:43%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;z-index:4;align-items:stretch}
+.shop-wall-product{position:relative;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:space-between;gap:3px;padding:7px;background:#fff8ec;border:5px solid #bb8d82;box-shadow:0 7px 0 #614a5a, inset 0 0 0 2px #fce3d3;border-radius:11px;color:#62465a;overflow:hidden}
+.shop-product-pic{font-size:clamp(24px,4vw,52px);line-height:1.05}
+.shop-wall-product strong{font-size:clamp(10px,1.3vw,15px);line-height:1.12}
+.shop-wall-product small{font-size:clamp(9px,1vw,12px);color:#847182}
+.shop-wall-product button{font-size:clamp(10px,1.1vw,14px);font-weight:850;background:#f2bf87;border:2px solid #aa7d58;color:#463a4b;border-radius:8px;padding:6px 4px;min-height:32px;width:100%;cursor:pointer}
+.shop-wall-product button:disabled{opacity:.45;cursor:default}
+.shop-wall-empty{grid-column:1/-1;padding:25px;border:4px dashed #f7e2d8;border-radius:14px;color:white;font-weight:800;background:#55466290;text-align:center}
+#shopCast{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
+.shop-merchant-counter{position:absolute;left:72%;right:3%;bottom:7%;height:19%;background:linear-gradient(90deg,#aa7891,#ddb7a5,#ad7890);border:6px solid #805e77;border-top:13px solid #fbe2cc;border-radius:14px 14px 6px 6px;box-shadow:inset 0 0 0 5px #c7979a,0 8px 12px #493b5044;display:grid;place-items:center;z-index:6;color:#ffefed;font-weight:900;font-size:clamp(10px,1.6vw,19px);text-shadow:0 2px #855c76}
+.shop-nav{position:absolute;top:42%;z-index:8;width:51px;height:73px;border:3px solid #fff5d8;background:#533f6cd9;color:white;font-size:31px;border-radius:11px;cursor:pointer;touch-action:none;user-select:none;box-shadow:0 3px 12px #30263d88}
+.shop-nav-left{left:4px}.shop-nav-right{right:4px}.shop-nav:disabled{opacity:.3;cursor:default}.shop-nav:not(:disabled):active{background:#a77c9d}
+.shop-page-count{position:absolute;bottom:2%;left:17%;right:17%;z-index:7;text-align:center;background:#fdf7e8e6;color:#6c5368;padding:5px;border-radius:9px;font-size:clamp(10px,1vw,13px);font-weight:800}
+.shop-room-caption{text-align:center;font-size:13px;color:#7f6075;margin-bottom:18px}
+@media(max-width:600px){.shop-room-stage{min-height:380px;height:61dvh}.shop-wall-items{left:5%;width:70%;top:17%;height:40%;gap:4px}.shop-wall-product{padding:4px;border-width:3px}.shop-product-pic{font-size:30px}.shop-nav{width:34px;height:57px;font-size:23px}.shop-merchant-counter{left:73%;right:2%;bottom:9%}.shop-page-count{left:10%;right:10%;bottom:1%;font-size:9px}}
 </style>
 </head>
 <body>
@@ -434,7 +456,8 @@ function drawNPCHead(n,species,coat,accent){
    ctx.beginPath();ctx.moveTo(20,-27);ctx.lineTo(24,species==='rabbit'?-75:-44);ctx.lineTo(32,-26);ctx.fillStyle=dark?'#555369':'#b993a8';ctx.fill();ctx.restore()}
  }
  if(species==='shark'){ctx.beginPath();ctx.moveTo(-12,-33);ctx.lineTo(0,-66);ctx.lineTo(18,-33);ctx.fillStyle=face;ctx.fill()}
- ellipse(0,0,species==='fox'?41:39,species==='human'?40:36,face);
+ const npcHeadKind=n.id==='alter_core'?'pointy':(['la_cyber','akira_bakeneko'].includes(n.id)?'round':null);
+ if(!npcHeadKind||!renderHeadBase(ctx,npcHeadKind,face))ellipse(0,0,species==='fox'?41:39,species==='human'?40:36,face);
  if(n.id==='alter_core'||n.id==='akira_bakeneko'||n.id==='la_cyber'){
   ctx.fillStyle=n.id==='akira_bakeneko'?'#6c493a':n.id==='la_cyber'?'#172832':'#171a28';
   ctx.beginPath();ctx.moveTo(-37,-7);ctx.quadraticCurveTo(-35,-47,1,-38);ctx.quadraticCurveTo(34,-40,38,-11);ctx.lineTo(22,-22);ctx.lineTo(7,-27);ctx.lineTo(-6,-12);ctx.lineTo(-19,-24);ctx.lineTo(-35,2);ctx.closePath();ctx.fill();
@@ -660,15 +683,16 @@ function tintHead(kind,color){
  return canvas;
 }
 function renderHeadBase(g,kind,color){
+ if(!Object.prototype.hasOwnProperty.call(customHeads,kind))return false;
  const tinted=tintHead(kind,color);
  if(!tinted)return false;
  const size=kind==='wide'?100:kind==='pointy'?102:98;
  g.drawImage(tinted,-size/2,-size/2,size,size);
  return true;
 }
-function puppet(g,x,y,scale=1,animated=true){
- let a=state.appearance,fur=a.fur||'#f0eff1',body=a.body||fur;let eq=state.equipped||{};
- let moving=animated&&!!walkTarget;let phase=pet.step;let pulse=animated?(moving?-Math.abs(Math.sin(phase))*1.5:Math.sin(clock*2)*1.2):0;
+function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
+ let a=appearanceOverride||state.appearance,fur=a.fur||'#f0eff1',body=a.body||fur;let eq=appearanceOverride?{}:state.equipped||{};
+ let moving=animated&&!appearanceOverride&&!!walkTarget;let phase=pet.step;let pulse=animated?(moving?-Math.abs(Math.sin(phase))*1.5:Math.sin(clock*2)*1.2):0;
  let performing=animated&&action!=='idle'&&clock<actionUntil;
  const walk=moving?Math.sin(phase)*.23:Math.sin(clock*1.1)*.03;
  g.save();
@@ -716,9 +740,9 @@ function puppet(g,x,y,scale=1,animated=true){
  g.save();
  g.translate(0,-96);
  g.rotate(Math.sin(clock*1.3)*.02);
- const headKind=(a.head==='wide'||a.head==='pointy'||a.head==='round')?a.head:'round';
- let hx=headKind==='wide'?42:headKind==='pointy'?36:39;
- let hy=headKind==='pointy'?40:36;
+ const headKind=['round','wide','pointy','geo_round','geo_wide','geo_pointy'].includes(a.head)?a.head:'round';
+ let hx=['wide','geo_wide'].includes(headKind)?42:['pointy','geo_pointy'].includes(headKind)?36:39;
+ let hy=['pointy','geo_pointy'].includes(headKind)?40:36;
 
  // ears behind head
  if(eq.ears==='ears_bunny'){
@@ -731,7 +755,7 @@ function puppet(g,x,y,scale=1,animated=true){
  if(!renderHeadBase(g,headKind,fur)){
   ellipse(0,0,hx,hy,shadeColor(fur,.89));
   ellipse(0,-3,hx-2,hy-2,fur);
-  if(headKind==='pointy'){g.beginPath();g.moveTo(-24,18);g.lineTo(0,38);g.lineTo(24,18);g.closePath();g.fillStyle=fur;g.fill()}
+  if(['pointy','geo_pointy'].includes(headKind)){g.beginPath();g.moveTo(-24,18);g.lineTo(0,38);g.lineTo(24,18);g.closePath();g.fillStyle=fur;g.fill()}
  }
 
  if(eq.wig){
@@ -767,7 +791,7 @@ function puppet(g,x,y,scale=1,animated=true){
 let pendingFurniture=null;
 function useFurniture(id){const n=state.needs;let msg='';if(id==='bed'){n.sleep=Math.min(100,n.sleep+45);action='sleep';msg='Пет відпочиває у ліжку 💤'}else if(id==='bath'||id==='shower'){n.dirt=Math.min(100,n.dirt+48);action='jump';msg='Пет купається 🫧'}else if(id==='tv'||id==='toy'){n.boredom=Math.min(100,n.boredom+42);action='dance';msg='Пет розважається 🎲'}else if(id==='auto_fridge'){n.hunger=Math.min(100,n.hunger+50);action='wave';msg='Пет перекусив 🥗'}else if(id==='vacuum'){cleanRoom();action='wave';return}else if(id==='chair'){action='idle';msg='Пет відпочиває у кріслі'}else{action='wave';msg='Пет розглядає предмет'}actionUntil=clock+3.5;nextAction=actionUntil+4;save();if(msg)toast(msg);earnXP(3)}
 function maybeAction(){if(walkTarget||clock<nextAction||clock<actionUntil)return;const choices=['wave','jump','dance','spin'];action=choices[Math.floor(Math.random()*choices.length)];actionUntil=clock+(action==='dance'?2.3:action==='spin'?1.5:1.7);nextAction=actionUntil+5+Math.random()*9}
-function render(t){clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.05);lastTime=t;clock+=dt;tickNeeds(dt);npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}const scale=Math.max(.69,Math.min(1.1,W/650));puppet(ctx,p.x,p.y,scale);if(placing){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}requestAnimationFrame(render)}
+function render(t){clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.05);lastTime=t;clock+=dt;tickNeeds(dt);npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}const scale=Math.max(.69,Math.min(1.1,W/650));puppet(ctx,p.x,p.y,scale);if(placing){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.36}requestAnimationFrame(render)}
 function placedHit(x,y){if(state.location!=='home'||state.room>2)return -1;for(let i=state.homePlaced.length-1;i>=0;i--){const p=state.homePlaced[i];if((p.room??0)!==state.room)continue;if(Math.abs(p.x*W-x)<46&&Math.abs(p.y*H-y+22)<52)return i}return -1}
 canvas.addEventListener('pointermove',e=>{if(!dragPlaced)return;const p=state.homePlaced[dragPlaced.index];if(!p)return;let x=e.clientX,y=e.clientY;if(onHomeFloor(x,y)){p.x=Math.max(.08,Math.min(.92,x/W));p.y=clampHomePoint(x,y).y/H}});
 function finishFurnitureDrag(){if(!dragPlaced)return;dragPlaced=null;save();if(itemDockType==='inventory')renderItemDock()}
@@ -827,6 +851,9 @@ document.querySelectorAll('#toolbar button').forEach(b=>b.addEventListener('clic
 const esc=s=>safeStr(s,150).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 function tabs(options,selected,action){return `<div class="tabs">${options.map(o=>`<button class="tab ${selected===o[0]?'active':''}" data-act="${action}" data-val="${o[0]}">${o[1]}</button>`).join('')}</div>`}
 function itemCard(id,mode){const it=ITEMS[id],n=state.owned[id]||0,isOn=Object.values(state.equipped).includes(id);let action='',label='';if(mode==='shop'){action='buy';label=`🪙 ${it.price}`}else if(it.category==='food'){action='eat';label='З’їсти'}else if(it.category==='furniture'){action='place';label='Розмістити'}else{action='equip';label=isOn?'Зняти':'Одягнути'}const sale=mode==='shop'?'':`<button class="secondary" data-act="sell" data-id="${id}" ${n<1||isOn?'disabled':''}>Продати +${Math.floor(it.price*.5)} 🪙</button>`;return `<div class="item"><span class="emoji">${it.emoji}</span><b>${esc(it.name)}</b><small>${mode==='shop'?`В наявності: ${n}`:`Кількість: ${n}`}</small><button data-act="${action}" data-id="${id}" ${mode==='shop'?(state.coins<it.price?'disabled':''):(n<1?'disabled':'')}>${label}</button>${sale}</div>`}
+// Стрілки перегортання підтримують тривале затискання мишею і пальцем.
+body.addEventListener('pointerdown',e=>{const arrow=e.target.closest('[data-shop-arrow]');if(!arrow||arrow.disabled)return;e.preventDefault();shopHoldDir=Number(arrow.dataset.shopArrow)||0;stepShopPage(shopHoldDir);shopNextTurn=clock+.45;try{arrow.setPointerCapture(e.pointerId)}catch{}});
+for(const type of ['pointerup','pointercancel','lostpointercapture'])body.addEventListener(type,()=>{shopHoldDir=0});
 const SHOP_ROOMS=[
  {id:'food',name:'Їжа',symbol:'🍎',desc:'Страви, напої та турбота про пета',accent:'#7cdbac'},
  {id:'bedroom',name:'Спальня',symbol:'🛏️',desc:'Ліжка, затишні меблі та декор',accent:'#c2a1fa'},
@@ -853,15 +880,42 @@ const OTHER_SHOP_TABS=[
  {id:'lights',name:'Світло',symbol:'💡',stock:['lamp']},
  {id:'astra',name:'Астра',symbol:'✨',stock:[]}
 ];
-let otherShopTab='windows';
+let otherShopTab='windows';let shopPage=0;let shopHoldDir=0;let shopNextTurn=0;const SHOP_PAGE_SIZE=3;
+function paintShopCharacters(){
+ if(activePanel!=='shop'||!shopRoom)return;
+ const c=document.getElementById('shopCast');if(!c)return;
+ const g=c.getContext('2d');if(!g)return;
+ g.clearRect(0,0,c.width,c.height);
+ const seller={head:'round',fur:'#c7a3bc',body:'#ad8eae',eyeColor:'#53416b',name:'Продавець'};
+ const oldPen=pen;pen=g;
+ try{
+  // Продавець і наш пет намальовані ОДНІЄЮ puppet-системою та в однаковому масштабі.
+  // Продавець за стійкою; пет ззовні перед стійкою.
+  const pulse=Math.sin(clock*2.1)*2;
+  puppet(g,832,475+pulse,1,false,seller);
+  puppet(g,555,482+Math.sin(clock*1.6)*1.5,1,false);
+ }finally{pen=oldPen}
+}
+function stepShopPage(dir){
+ if(activePanel!=='shop'||!shopRoom)return false;
+ const r=SHOP_ROOMS.find(r=>r.id===shopRoom);if(!r)return false;
+ const tab=OTHER_SHOP_TABS.find(t=>t.id===otherShopTab);
+ const stock=(r.id==='other'?(tab?.stock||[]):(SHOP_STOCK[r.id]||[])).filter(id=>ITEMS[id]);
+ const pages=Math.max(1,Math.ceil(stock.length/SHOP_PAGE_SIZE));
+ const next=Math.max(0,Math.min(pages-1,shopPage+dir));
+ if(next===shopPage)return false;
+ shopPage=next;showPanel();return true;
+}
 function shopHTML(){
  if(!shopRoom){return `<div class="shop-landing-head"><h2>✦ Торговельна вуличка ✦</h2><p>Заходь у крамничку, вибирай речі для свого пета й облаштовуй дім ♡</p></div><div class="shop-choices">${SHOP_ROOMS.map(r=>`<button class="shop-choice" style="--shop-accent:${r.accent}" data-act="enterShop" data-val="${r.id}"><span class="symbol">${r.symbol}</span><strong>${r.name}</strong><small>${r.desc}</small></button>`).join('')}</div><p class="note" style="text-align:center;color:#94717f;margin-top:28px">Усі покупки лише за ігрові монети ♡</p>`}
  const r=SHOP_ROOMS.find(r=>r.id===shopRoom)||SHOP_ROOMS[0];
  const otherTab=OTHER_SHOP_TABS.find(tab=>tab.id===otherShopTab)||OTHER_SHOP_TABS[0];
  const stock=(r.id==='other'?otherTab.stock:(SHOP_STOCK[r.id]||[])).filter(id=>ITEMS[id]);
- const products=stock.map(id=>{const it=ITEMS[id],n=state.owned[id]||0;return `<article class="shop-product"><span class="product-emoji">${it.emoji}</span><strong>${esc(it.name)}</strong><small>У тебе: ${n}</small><button data-act="buy" data-id="${id}" ${state.coins<it.price?'disabled':''}>🪙 ${it.price} · Купити</button></article>`}).join('');
- const seller=`<div class="shop-seller" role="img" aria-label="Продавець-пет за стійкою"><svg viewBox="0 0 180 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M128 125 Q183 118 160 163 Q145 186 131 165" fill="none" stroke="#9d657b" stroke-width="19" stroke-linecap="round"/><path d="M47 118 Q24 130 35 174 L145 174 Q158 135 133 118" fill="#a96785" stroke="#77475f" stroke-width="5"/><path d="M61 131 L117 131 L129 187 L51 187 Z" fill="#fff0df" stroke="#d9a6a0" stroke-width="4"/><path d="M44 32 L22 5 L16 73 Z" fill="#9e789e" stroke="#754f78" stroke-width="5"/><path d="M136 32 L158 5 L165 73 Z" fill="#9e789e" stroke="#754f78" stroke-width="5"/><path d="M43 44 L29 23 L28 65 Z" fill="#e8a9b8"/><path d="M138 44 L152 24 L152 65 Z" fill="#e8a9b8"/><ellipse cx="90" cy="77" rx="67" ry="66" fill="#ac83aa" stroke="#76567c" stroke-width="5"/><ellipse cx="67" cy="94" rx="29" ry="26" fill="#f4d8de"/><ellipse cx="112" cy="94" rx="29" ry="26" fill="#f4d8de"/><path d="M49 72 Q65 61 78 74 M103 74 Q116 62 130 72" fill="none" stroke="#704d68" stroke-width="5" stroke-linecap="round"/><ellipse cx="67" cy="83" rx="5" ry="8" fill="#45334e"/><ellipse cx="113" cy="83" rx="5" ry="8" fill="#45334e"/><circle cx="65" cy="80" r="2" fill="white"/><circle cx="111" cy="80" r="2" fill="white"/><path d="M82 101 Q90 108 98 101 Q91 115 82 101" fill="#8d556c"/><path d="M90 107 Q84 119 77 113 M90 107 Q97 119 104 113" stroke="#764b66" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="44" cy="101" rx="11" ry="5" fill="#f6aeb8" opacity=".6"/><ellipse cx="136" cy="101" rx="11" ry="5" fill="#f6aeb8" opacity=".6"/><path d="M38 139 Q19 133 17 156 Q17 165 31 168" fill="none" stroke="#ac83aa" stroke-width="17" stroke-linecap="round"/><path d="M143 139 Q161 131 165 148" fill="none" stroke="#ac83aa" stroke-width="17" stroke-linecap="round"/><circle cx="90" cy="149" r="12" fill="#e5aeb7"/><path d="M84 147 L90 154 L97 145" fill="none" stroke="#fff8f4" stroke-width="3" stroke-linecap="round"/></svg></div>`;
- return `<div class="shop-tools"><button class="shop-return" data-act="shopBack">❮ Назад до магазинів</button><div class="wallet">🪙 ${state.coins} монет</div></div><section class="shop-scene" style="--shop-accent:${r.accent}" aria-label="Крамниця ${r.name}"><div class="shop-wallpaper"></div><div class="shop-floor"></div><div class="shop-window"></div><div class="shop-window-stars">✦ ✧</div><div class="shop-shelf"><span>${r.symbol}</span><span>🎁</span><span>🪴</span></div><div class="shop-awning"></div><div class="shop-sign">${r.symbol} ${r.name}</div><div class="shop-chat">Вітаю в моїй крамничці! ♡</div>${seller}<div class="shop-register"></div><div class="shop-counter">✦ PROTO BOUTIQUE ✦</div></section>${r.id==='other'?`<div class="shop-other-tabs">${OTHER_SHOP_TABS.map(tab=>`<button class="shop-other-tab ${otherShopTab===tab.id?'selected':''}" data-act="otherShopTab" data-val="${tab.id}">${tab.symbol} ${tab.name}</button>`).join('')}</div>`:''}<div class="shop-catalog-head"><h3>✿ ${r.id==='other'?otherTab.name:r.name} · Каталог</h3><small>${r.id==='other'?'Обери підкатегорію':'Підкатегорії з’являться згодом'}</small></div><div class="shop-catalog">${products||'<p class="shop-empty">Тут незабаром з’являться нові речі ✨</p>'}</div>`;
+ const pageCount=Math.max(1,Math.ceil(stock.length/SHOP_PAGE_SIZE));
+ shopPage=Math.max(0,Math.min(shopPage,pageCount-1));
+ const pageStock=stock.slice(shopPage*SHOP_PAGE_SIZE,(shopPage+1)*SHOP_PAGE_SIZE);
+ const products=pageStock.map(id=>{const it=ITEMS[id],n=state.owned[id]||0;return `<article class="shop-wall-product"><span class="shop-product-pic">${it.emoji}</span><strong>${esc(it.name)}</strong><small>Є у тебе: ${n}</small><button data-act="buy" data-id="${id}" ${state.coins<it.price?'disabled':''}>🪙 ${it.price} · Купити</button></article>`}).join('');
+ return `<div class="shop-tools"><button class="shop-return" data-act="shopBack">❮ Усі магазини</button><div class="wallet">🪙 ${state.coins} монет</div></div>${r.id==='other'?`<div class="shop-other-tabs">${OTHER_SHOP_TABS.map(tab=>`<button class="shop-other-tab ${otherShopTab===tab.id?'selected':''}" data-act="otherShopTab" data-val="${tab.id}">${tab.symbol} ${tab.name}</button>`).join('')}</div>`:''}<section class="shop-room-stage" style="--shop-accent:${r.accent}" aria-label="Кімната магазину ${r.name}"><div class="shop-room-wall"></div><div class="shop-room-floor"></div><div class="shop-room-heading">${r.symbol} ${r.id==='other'?otherTab.name:r.name}</div><div class="shop-wall-items">${products||'<div class="shop-wall-empty">Нові товари з’являться тут ✨</div>'}</div><canvas id="shopCast" width="1000" height="520" aria-label="Гравець і продавець у крамниці"></canvas><div class="shop-merchant-counter"><span>✦ PROTO SHOP ✦</span></div><button class="shop-nav shop-nav-left" type="button" data-shop-arrow="-1" ${shopPage<=0?'disabled':''} aria-label="Попередні товари">❮</button><button class="shop-nav shop-nav-right" type="button" data-shop-arrow="1" ${shopPage>=pageCount-1?'disabled':''} aria-label="Наступні товари">❯</button><div class="shop-page-count">Вітрина ${shopPage+1} / ${pageCount} · Затисни стрілку для перегортання</div></section><div class="shop-room-caption">Товари з цінами на стіні. Натисни «Купити», щоб придбати. Один продавець у всіх крамницях.</div>`;
 }
 function showPanel(){let labels={editor:'🎨 Редактор персонажа',shop:'🏪 Магазин',inventory:'🎒 Інвентар предметів',wardrobe:'👗 Гардероб',post:'💌 Пошта острова',friends:'👥 Друзі',friendAdd:'＋ Друзі',npcGift:'🎁 Подарунок NPC',settings:'⚙️ Меню гри',needs:'💗 Потреби пета',yard:'🪐 Ферма комах',profile:'👤 Мій профіль',interaction:'💬 Взаємодія з другом',roomClean:'🧹 Прибирання кімнати'};title.textContent=labels[activePanel]||'Меню';let html='';
  if(activePanel==='profile'){html=profileHTML()}
@@ -872,7 +926,7 @@ function showPanel(){let labels={editor:'🎨 Редактор персонаж�
   const nav=`<div class="editor-tabs" role="tablist" aria-label="Редагування персонажа">${tabButtons.map(([key,label])=>`<button type="button" role="tab" aria-selected="${editorTab===key}" class="${editorTab===key?'active':''}" data-act="editorTab" data-val="${key}">${esc(label)}</button>`).join('')}</div>`;
   let content='';
   if(editorTab==='appearance'){
-   content=`<section class="editor-section editor-options"><h3>✦ Зовнішність пета</h3><div class="editor-option-card"><label for="petName">Ім’я персонажа</label><input class="field" id="petName" maxlength="24" value="${esc(a.name)}"></div><div class="editor-option-card"><label for="headShape">Форма голови</label><select id="headShape"><option value="round" ${a.head==='round'?'selected':''}>Голова 1</option><option value="wide" ${a.head==='wide'?'selected':''}>Голова 2</option><option value="pointy" ${a.head==='pointy'?'selected':''}>Голова 3</option></select></div><div class="editor-option-card"><label for="furColor">Колір голови та обличчя</label><div class="editor-color"><input type="color" id="furColor" value="${esc(a.fur)}"><p>Перефарбовує голову й основу обличчя.</p></div><div class="editor-commit"><button class="primary" data-act="editorConfirm">✓ Підтвердити</button><button class="secondary" data-act="editorCancel">✕ Скасувати</button></div></div><div class="editor-option-card"><label for="bodyColor">Колір тулуба, рук, ніг і вух</label><div class="editor-color"><input type="color" id="bodyColor" value="${esc(a.body||a.fur)}"><p>Усі кінцівки перефарбовуються разом зі збереженням тіней.</p></div></div><div class="editor-option-card"><label for="eyeColor">Колір очей</label><div class="editor-color"><input type="color" id="eyeColor" value="${esc(a.eyeColor)}"><p>Колір зіниць / райдужки.</p></div></div></section>`;
+   content=`<section class="editor-section editor-options"><h3>✦ Зовнішність пета</h3><div class="editor-option-card"><label for="petName">Ім’я персонажа</label><input class="field" id="petName" maxlength="24" value="${esc(a.name)}"></div><div class="editor-option-card"><label for="headShape">Форма голови</label><select id="headShape"><option value="round" ${a.head==='round'?'selected':''}>PNG · Базова</option><option value="wide" ${a.head==='wide'?'selected':''}>PNG · Пухка</option><option value="pointy" ${a.head==='pointy'?'selected':''}>PNG · Витягнута</option><option value="geo_round" ${a.head==='geo_round'?'selected':''}>Геометрична · Кругла</option><option value="geo_wide" ${a.head==='geo_wide'?'selected':''}>Геометрична · Широка</option><option value="geo_pointy" ${a.head==='geo_pointy'?'selected':''}>Геометрична · Загострена</option></select></div><div class="editor-option-card"><label for="furColor">Колір голови та обличчя</label><div class="editor-color"><input type="color" id="furColor" value="${esc(a.fur)}"><p>Перефарбовує голову й основу обличчя.</p></div><div class="editor-commit"><button class="primary" data-act="editorConfirm">✓ Підтвердити</button><button class="secondary" data-act="editorCancel">✕ Скасувати</button></div></div><div class="editor-option-card"><label for="bodyColor">Колір тулуба, рук, ніг і вух</label><div class="editor-color"><input type="color" id="bodyColor" value="${esc(a.body||a.fur)}"><p>Усі кінцівки перефарбовуються разом зі збереженням тіней.</p></div></div><div class="editor-option-card"><label for="eyeColor">Колір очей</label><div class="editor-color"><input type="color" id="eyeColor" value="${esc(a.eyeColor)}"><p>Колір зіниць / райдужки.</p></div></div></section>`;
   }else{
    const slot=editorTab, selected=state.equipped[slot]||'';
    const available=Object.keys(ITEMS).filter(id=>ITEMS[id].category==='face'&&slotFor(id)===slot&&(state.owned[id]||0)>0);
@@ -935,7 +989,7 @@ body.addEventListener('click',async e=>{let b=e.target.closest('[data-act]');if(
  if(act==='copyFriendCode'){try{await navigator.clipboard.writeText(state.friendId);toast('Код друга скопійовано')}catch{toast('Скопіюй код вручну')}return}
  if(act==='addFriend'){let name=safeStr(document.getElementById('friendName')?.value.trim(),32),code=safeStr(document.getElementById('friendCode')?.value.trim().toUpperCase(),48);if(!name||!/^PROTO-[A-Z0-9]{8}$/.test(code)){toast('Вкажи ім’я та правильний код PROTO-XXXXXXXX');return}if(code===state.friendId||state.friends.some(f=>f.code===code)){toast('Такий контакт уже є або це твій код');return}if(state.friends.length>=80){toast('Список друзів заповнений');return}state.friends.push({name,code});save();showPanel();toast('Друга додано до книги!');return}
  if(act==='removeFriend'){let i=Number(b.dataset.index);if(Number.isInteger(i)&&i>=0&&i<state.friends.length){state.friends.splice(i,1);save();showPanel()}return}
- if(act==='enterShop'){if(!SHOP_ROOMS.some(r=>r.id===v))return;shopRoom=v;if(v==='other')otherShopTab='windows';showPanel();return}if(act==='otherShopTab'){if(!OTHER_SHOP_TABS.some(t=>t.id===v))return;otherShopTab=v;showPanel();return}if(act==='shopBack'){shopRoom=null;showPanel();return}if(act==='shopTab'){shopCategory=v;showPanel();return}if(act==='invTab'){invCategory=v;showPanel();return}if(act==='wardTab'){wardrobeCategory=v;showPanel();return}if(act==='faceWardrobe'){openPanel('editor');return}
+ if(act==='enterShop'){if(!SHOP_ROOMS.some(r=>r.id===v))return;shopRoom=v;shopPage=0;if(v==='other')otherShopTab='windows';showPanel();return}if(act==='otherShopTab'){if(!OTHER_SHOP_TABS.some(t=>t.id===v))return;otherShopTab=v;shopPage=0;showPanel();return}if(act==='shopBack'){shopRoom=null;shopHoldDir=0;shopPage=0;showPanel();return}if(act==='shopTab'){shopCategory=v;showPanel();return}if(act==='invTab'){invCategory=v;showPanel();return}if(act==='wardTab'){wardrobeCategory=v;showPanel();return}if(act==='faceWardrobe'){openPanel('editor');return}
  if(act==='buy'){let it=ITEMS[id];if(!it||state.coins<it.price)return;state.coins-=it.price;state.owned[id]=(state.owned[id]||0)+1;save();toast(`Придбано: ${it.name}`);showPanel();return}
  if(act==='eat'){if(!state.owned[id])return;state.owned[id]--;if(id==='medicine'){state.needs.health=Math.min(100,state.needs.health+45);toast('Пет почувається краще 💊')}else{state.needs.hunger=Math.min(100,state.needs.hunger+(id==='cake'?45:30));state.needs.boredom=Math.min(100,state.needs.boredom+4);toast('Пет поїв! 🍎')}save();showPanel();return}
  if(act==='sell'){const it=ITEMS[id];if(!it||!state.owned[id]||Object.values(state.equipped).includes(id))return;state.owned[id]--;state.coins+=Math.floor(it.price*.5);save();toast('Продано: '+it.name);showPanel();return}
