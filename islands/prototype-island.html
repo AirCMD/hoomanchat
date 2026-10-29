@@ -259,6 +259,44 @@
 .shop-home-btn{position:absolute;right:17px;bottom:19px;z-index:11;border:3px solid #fff8e9;border-bottom:6px solid #c69ca2;border-radius:17px;background:#f8d7cc;color:#5f415b;font-size:17px;font-weight:900;padding:13px 18px;box-shadow:0 5px 16px #3d2b3a55}
 @media(max-width:650px){.shop-topbar{padding:5px;gap:5px;min-height:53px}.shop-topbar .shop-all{padding:8px;font-size:11px}.shop-switcher button{padding:7px;font-size:11px}.shop-topbar .wallet{padding:7px;font-size:12px}.shop-home-btn{bottom:11px;right:9px;padding:11px;font-size:14px}.shop-nav{height:64px;width:38px;font-size:23px}.shop-room-hint{bottom:7px;left:43%;max-width:48%;font-size:9px}.shop-room-world .shop-wall-product{border-width:3px}.shop-room-world .shop-wall-product small{display:none}}
 
+/* v1.1.4: єдина сітка вирівнювання верхніх кнопок магазину.
+   Такий самий базовий зовнішній відступ 9px, як у панелі кімнат. */
+.shop-topbar{
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  min-height:60px;
+  height:60px;
+  padding:9px;
+  gap:7px;
+  flex-shrink:0;
+}
+.shop-topbar .shop-all,
+.shop-topbar .shop-switcher button,
+.shop-topbar .wallet{
+  box-sizing:border-box;
+  height:39px;
+  min-height:39px;
+  max-height:39px;
+  padding:0 11px;
+  margin:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1.2;
+  vertical-align:middle;
+  white-space:nowrap;
+}
+.shop-switcher{height:42px;min-height:42px;align-items:center;gap:7px;overflow-y:hidden;}
+.shop-subbar{align-items:center;min-height:49px;padding:5px 9px;gap:7px;}
+.shop-subbar button{box-sizing:border-box;height:36px;min-height:36px;display:inline-flex;align-items:center;justify-content:center;margin:0;padding:0 11px;}
+@media(max-width:650px){
+  .shop-topbar{min-height:54px;height:54px;padding:7px 9px;gap:5px;}
+  .shop-topbar .shop-all,.shop-topbar .shop-switcher button,.shop-topbar .wallet{height:36px;min-height:36px;max-height:36px;padding:0 7px;}
+  .shop-switcher{height:39px;min-height:39px;gap:5px;}
+  .shop-subbar{padding:5px 9px;}
+}
+
 /* Один вибір кольору пета з кнопками прямо під ним. */
 .editor-coat-card{grid-column:1/-1}
 .editor-coat-card .editor-commit{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
