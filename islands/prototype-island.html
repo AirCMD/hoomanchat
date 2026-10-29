@@ -343,8 +343,8 @@ const npcLevel=n=>NPC_LEVELS[n?.id]||1;
 const npcRoomCount=n=>npcLevel(n)>=25?3:npcLevel(n)>=8?2:1;
 let npcRoom=0;
 const dustImg=new Image();let dustImgReady=false;
-dustImg.onload=()=>dustImgReady=true;
-dustImg.onerror=()=>{dustImgReady=false;console.warn('Прото-Тип: файл assets/dust.png не знайдено; замінник не малюється.');};
+dustImg.onload=()=>{dustImgReady=dustImg.naturalWidth>0;};
+dustImg.onerror=()=>{dustImgReady=false;console.warn('Прото-Тип: не вдалося завантажити assets/dust.png. Перевір шлях і регістр імені файлу в GitHub Pages.');};
 dustImg.src='assets/dust.png';
 function dustStore(){
  if(!state.dustDaily||typeof state.dustDaily!=='object')state.dustDaily={day:'',home:[],npcs:{}};
@@ -376,15 +376,15 @@ function ensureNpcDust(n){
  return d.npcs[n.id];
 }
 function visibleDust(){
- if(state.location==='home'&&state.room<3)return ensureHomeDust().filter(p=>p.room===state.room&&!p.done);
+ if(state.location==='home'&&state.room<3){const cleanliness=state.roomDirt[state.room]??100;if(cleanliness>=99.9)return [];return ensureHomeDust().filter(p=>p.room===state.room&&!p.done);}
  if(state.location==='npc'&&visitingNPC)return ensureNpcDust(visitingNPC).filter(p=>p.room===npcRoom&&!p.done);
  return [];
 }
 function drawDust(){
  if(!dustImgReady)return;
  for(const p of visibleDust()){
-  const x=p.x*W,y=p.y*H,scale=1.18+seededDust(p.id,29)*.72;
-  ctx.save();ctx.translate(x,y);ctx.rotate((seededDust(p.id,8)-.5)*.35);ctx.globalAlpha=.78;
+  const x=p.x*W,y=p.y*H,scale=1.45+seededDust(p.id,29)*.65;
+  ctx.save();ctx.translate(x,y);ctx.rotate((seededDust(p.id,8)-.5)*.35);ctx.globalAlpha=.96;
   // Only the player's original assets/dust.png is rendered. Never substitute procedural artwork.
   ctx.filter=['sepia(.16)','hue-rotate(12deg)','brightness(.92)','none'][p.id%4];
   ctx.drawImage(dustImg,-30*scale,-22*scale,60*scale,44*scale);
@@ -870,10 +870,58 @@ function useFurniture(id){const n=state.needs;let msg='';if(id==='bed'){n.sleep=
 function maybeAction(){if(walkTarget||clock<nextAction||clock<actionUntil)return;const choices=['wave','jump','dance','spin'];action=choices[Math.floor(Math.random()*choices.length)];actionUntil=clock+(action==='dance'?2.3:action==='spin'?1.5:1.7);nextAction=actionUntil+5+Math.random()*9}
 function render(t){clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.05);lastTime=t;clock+=dt;tickNeeds(dt);npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}const scale=Math.max(.69,Math.min(1.1,W/650));puppet(ctx,p.x,p.y,scale);if(placing){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}requestAnimationFrame(render)}
 function placedHit(x,y){if(state.location!=='home'||state.room>2)return -1;for(let i=state.homePlaced.length-1;i>=0;i--){const p=state.homePlaced[i];if((p.room??0)!==state.room)continue;if(ITEMS[p.id]?.ceiling){if(Math.abs(p.x*W-x)<55&&y>=H*.035&&y<=H*.37)return i}else if(Math.abs(p.x*W-x)<46&&Math.abs(p.y*H-y+22)<52)return i}return -1}
-canvas.addEventListener('pointermove',e=>{if(!dragPlaced)return;const p=state.homePlaced[dragPlaced.index];if(!p)return;let x=e.clientX,y=e.clientY;if(onHomeFloor(x,y)){p.x=Math.max(.08,Math.min(.92,x/W));p.y=clampHomePoint(x,y).y/H}});
-function finishFurnitureDrag(){if(!dragPlaced)return;dragPlaced=null;save();if(itemDockType==='inventory')renderItemDock()}
-canvas.addEventListener('pointerup',finishFurnitureDrag);canvas.addEventListener('pointercancel',finishFurnitureDrag);
-canvas.addEventListener('pointerdown',e=>{if(document.getElementById('overlay').classList.contains('open'))return;let q=world(),x=e.clientX,y=e.clientY;const hitDust=dustHit(x,y);if(hitDust){const home=state.location==='home';if(cleanDust(hitDust,home?'home':'npc'))toast('✨ Пил прибрано · +'+(home?15:5)+' 🪙 · +5 XP');return;}if(itemDockType==='inventory'&&state.location==='home'&&state.room<3&&!placing){const found=placedHit(x,y);if(found>=0){selectedPlaced={index:found,room:state.room};itemDockSelection=null;dragPlaced={index:found};walkTarget=null;try{canvas.setPointerCapture(e.pointerId)}catch{}renderItemDock();return}}if(state.location==='home'&&state.room===3){let index=yardPlotAt(x,y);if(index>=0){selectedPlot=index;openPanel('yard');return}}if((state.location==='home'||state.location==='npc')&&state.room!==3&&isDoor(x,y)){setLocation('island');return}if(state.location==='island'&&isHouse(x,y)&&!placing){setLocation('home');return}if((state.location==='home'||state.location==='npc')?!onHomeFloor(x,y):!onIsland(x,y)){toast(state.location==='home'?'Обери місце на підлозі 🏠':'Обери місце на острові 🌿');return}if(placing&&ITEMS[placing]?.ceiling&&state.location==='home'&&state.room<3){state.homePlaced.push({id:placing,x:Math.max(.08,Math.min(.92,x/W)),y:.20,room:state.room});state.owned[placing]=Math.max(0,(state.owned[placing]||0)-1);placing=null;save();toast('Лампу підвішено до стелі!');return}if(placing&&state.location==='npc'){toast('Не можна переставляти меблі в чужому домі');return}if(!placing&&state.location==='home'&&state.room<3&&!itemDockType){const found=placedHit(x,y);if(found>=0){const p=state.homePlaced[found];if(['bed','bath','shower','tv','toy','auto_fridge','vacuum','chair'].includes(p.id)){pendingFurniture=p.id;walkTarget=clampHomePoint(p.x*W,p.y*H);toast('Пет прямує до '+ITEMS[p.id].name.toLowerCase());return}}}if(placing){let pt=(state.location==='home'||state.location==='npc')?{id:placing,x:x/W,y:y/H}:{id:placing,x:(x-q.cx)/q.rx,y:(y-q.cy)/q.ry};pt.room=state.location==='home'?state.room:0;(state.location==='home'?state.homePlaced:state.placed).push(pt);state.owned[placing]=Math.max(0,(state.owned[placing]||0)-1);placing=null;save();toast('Меблі розміщено!');return}walkTarget=(state.location==='home'||state.location==='npc')?clampHomePoint(x,y):{x,y}});
+// Меблі можна вільно перетягувати одразу в кімнаті. Короткий клік продовжує взаємодію з предметом.
+function dragFurniturePosition(e){
+ if(!dragPlaced)return;
+ const p=state.homePlaced[dragPlaced.index];if(!p)return;
+ const dx=e.clientX-dragPlaced.startX,dy=e.clientY-dragPlaced.startY;
+ if(!dragPlaced.moved&&Math.hypot(dx,dy)<7)return;
+ dragPlaced.moved=true;
+ if(ITEMS[p.id]?.ceiling){p.x=Math.max(.08,Math.min(.92,(e.clientX-dragPlaced.offsetX)/W));return;}
+ const point=clampHomePoint(e.clientX-dragPlaced.offsetX,e.clientY-dragPlaced.offsetY);
+ p.x=point.x/W;p.y=point.y/H;
+}
+canvas.addEventListener('pointermove',e=>{if(dragPlaced&&e.pointerId===dragPlaced.pointerId)dragFurniturePosition(e)});
+function finishFurnitureDrag(e){
+ if(!dragPlaced||e.pointerId!==dragPlaced.pointerId)return;
+ const drag=dragPlaced;dragFurniturePosition(e);dragPlaced=null;
+ try{if(canvas.hasPointerCapture(e.pointerId))canvas.releasePointerCapture(e.pointerId)}catch{}
+ if(drag.moved){save();if(itemDockType==='inventory')renderItemDock();return;}
+ const placed=state.homePlaced[drag.index];
+ if(placed&&!ITEMS[placed.id]?.ceiling&&!itemDockType&&['bed','bath','shower','tv','toy','auto_fridge','vacuum','chair'].includes(placed.id)){
+  pendingFurniture=placed.id;walkTarget=clampHomePoint(placed.x*W,placed.y*H);
+  toast('Пет прямує до '+ITEMS[placed.id].name.toLowerCase());
+ }
+ if(itemDockType==='inventory')renderItemDock();
+}
+canvas.addEventListener('pointerup',finishFurnitureDrag);
+canvas.addEventListener('pointercancel',e=>{if(dragPlaced&&e.pointerId===dragPlaced.pointerId){dragPlaced=null;save()}});
+canvas.addEventListener('pointerdown',e=>{
+ if(document.getElementById('overlay').classList.contains('open'))return;
+ const q=world(),x=e.clientX,y=e.clientY;
+ const hitDust=dustHit(x,y);
+ if(hitDust){const home=state.location==='home';if(cleanDust(hitDust,home?'home':'npc'))toast('✨ Пил прибрано · +'+(home?15:5)+' 🪙 · +5 XP');return;}
+ // Переміщення не вимагає відкритого інвентарю.
+ if(state.location==='home'&&state.room<3&&!placing){
+  const found=placedHit(x,y);
+  if(found>=0){
+   const p=state.homePlaced[found];
+   dragPlaced={index:found,pointerId:e.pointerId,startX:x,startY:y,offsetX:x-p.x*W,offsetY:y-p.y*H,moved:false};
+   walkTarget=null;
+   if(itemDockType==='inventory'){selectedPlaced={index:found,room:state.room};itemDockSelection=null;renderItemDock()}
+   try{canvas.setPointerCapture(e.pointerId)}catch{}
+   return;
+  }
+ }
+ if(state.location==='home'&&state.room===3){const index=yardPlotAt(x,y);if(index>=0){selectedPlot=index;openPanel('yard');return}}
+ if((state.location==='home'||state.location==='npc')&&state.room!==3&&isDoor(x,y)){setLocation('island');return}
+ if(state.location==='island'&&isHouse(x,y)&&!placing){setLocation('home');return}
+ if(placing&&ITEMS[placing]?.ceiling&&state.location==='home'&&state.room<3){state.homePlaced.push({id:placing,x:Math.max(.08,Math.min(.92,x/W)),y:.20,room:state.room});state.owned[placing]=Math.max(0,(state.owned[placing]||0)-1);placing=null;save();toast('Лампу підвішено до стелі!');return}
+ if(placing&&state.location==='npc'){toast('Не можна переставляти меблі в чужому домі');return}
+ if((state.location==='home'||state.location==='npc')?!onHomeFloor(x,y):!onIsland(x,y)){toast(state.location==='home'?'Обери місце на підлозі 🏠':'Обери місце на острові 🌿');return}
+ if(placing){const pt=(state.location==='home'||state.location==='npc')?{id:placing,x:x/W,y:y/H}:{id:placing,x:(x-q.cx)/q.rx,y:(y-q.cy)/q.ry};pt.room=state.location==='home'?state.room:0;(state.location==='home'?state.homePlaced:state.placed).push(pt);state.owned[placing]=Math.max(0,(state.owned[placing]||0)-1);placing=null;save();toast('Меблі розміщено!');return}
+ walkTarget=(state.location==='home'||state.location==='npc')?clampHomePoint(x,y):{x,y};
+});
 const overlay=document.getElementById('overlay'),body=document.getElementById('panelBody'),title=document.getElementById('panelTitle');let editorOriginal=null;let editorTab='appearance';let activePanel='',shopCategory='all',shopRoom=null,invCategory='all',wardrobeCategory='all';
 const toolbar=document.getElementById('toolbar'),friendDockEl=document.getElementById('friendDock');
 const itemDockEl=document.getElementById('itemDock');
