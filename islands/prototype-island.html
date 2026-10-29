@@ -248,10 +248,10 @@ function drawNPCFigure(n,x,y,size=1){
  // Хвіст та вуха є частинами однієї 2D-фігури, не просто аватаркою у кімнаті.
  if(['cat','fox','wolf','weasel'].includes(species)){ctx.beginPath();ctx.moveTo(23,-45);ctx.bezierCurveTo(69,-61,71,-14,49,-20);ctx.strokeStyle=species==='fox'?'#d99d70':coat;ctx.lineWidth=13;ctx.lineCap='round';ctx.stroke()}
  if(species==='shark'){ctx.beginPath();ctx.moveTo(0,-96);ctx.lineTo(13,-116);ctx.lineTo(24,-91);ctx.closePath();ctx.fillStyle='#6cb7d9';ctx.fill()}
- // ноги, тулуб і руки анімуються незалежно
+ // Ноги, тулуб і авторські PNG-руки анімуються незалежно для всіх NPC.
  for(const side of [-1,1]){ctx.save();ctx.translate(side*15,-22);ctx.rotate(side*walk);line(0,0,side*2,23,'#b5b2b9',12);ellipse(side*2,23,10,5,coat);ctx.restore()}
  drawRounded(-27,-75,54,55,20,coat);drawRounded(-15,-65,30,34,11,accent);
- for(const side of [-1,1]){ctx.save();ctx.translate(side*25,-68);ctx.rotate(side*(.12+walk));line(0,0,side*12,32,coat,13);ellipse(side*12,32,7,7,'#c9bfc5');ctx.restore()}
+ for(const side of [-1,1]){ctx.save();ctx.translate(side*25,-68);ctx.rotate(side*(.12+walk));renderHand(ctx,side===1?'left':'right',coat);ctx.restore()}
  // Голова NPC намальована окремо. Аватар НЕ використовується як текстура голови.
  drawNPCHead(n,species,coat,accent);
  // персонаж повинен бути добре помітним у кімнаті
@@ -290,34 +290,108 @@ function renderHand(g,side,color){
    ellipse(0,19,12,25,color);
  }
 }
-function puppet(g,x,y,scale=1,animated=true){let a=state.appearance,fur=a.fur||'#f0eff1',body=a.body||fur;let eq=state.equipped||{};let pulse=animated?Math.sin(clock*2)*1.2:0;let moving=animated&&!!walkTarget;let phase=pet.step;let performing=animated&&action!=='idle'&&clock<actionUntil;let at=performing?Math.max(0,actionUntil-clock):0;
- g.save();g.translate(x,y+pulse+(performing&&action==='jump'?-Math.abs(Math.sin(clock*12))*27:performing&&action==='dance'?Math.sin(clock*10)*8:0));if(performing&&action==='spin')g.scale(Math.cos(clock*9)*scale,scale);else g.scale(scale*(animated?pet.dir:1),scale);if(performing&&action==='dance')g.rotate(Math.sin(clock*8)*.11);ellipse(0,3,30,8,'#40665f40');
- // tail behind body. Separately purchasable, never part of base puppet.
- if(eq.tail){g.save();g.translate(24,-66);g.rotate(Math.sin(clock*2)*.18);g.strokeStyle=shadeColor(fur,.78);g.lineWidth=eq.tail==='tail_fox'?18:10;g.lineCap='round';g.beginPath();g.moveTo(0,0);g.bezierCurveTo(44,-3,45,-55,32,-57);g.stroke();if(eq.tail==='tail_fox')ellipse(32,-57,12,15,'#fff7ec');g.restore()}
- // legs behind torso
- for(let side of [-1,1]){g.save();g.translate(side*13,-29);g.rotate(moving?Math.sin(phase+ (side===-1?0:Math.PI))*.48:0);drawRounded(-10,-2,20,32,9,shadeColor(fur,.86));ellipse(0,27,13,9,fur);g.restore()}
+function puppet(g,x,y,scale=1,animated=true){
+ let a=state.appearance,fur=a.fur||'#f0eff1',body=a.body||fur;let eq=state.equipped||{};
+ let pulse=animated?Math.sin(clock*2)*1.2:0;let moving=animated&&!!walkTarget;let phase=pet.step;
+ let performing=animated&&action!=='idle'&&clock<actionUntil;
+ const walk=moving?Math.sin(phase)*.23:Math.sin(clock*1.1)*.03;
+ g.save();
+ g.translate(x,y+pulse+(performing&&action==='jump'?-Math.abs(Math.sin(clock*12))*27:performing&&action==='dance'?Math.sin(clock*10)*8:0));
+ if(performing&&action==='spin')g.scale(Math.cos(clock*9)*scale,scale);else g.scale(scale*(animated?pet.dir:1),scale);
+ if(performing&&action==='dance')g.rotate(Math.sin(clock*8)*.11);
+ ellipse(0,0,36,9,'#40665f40');
+
+ // tail behind body
+ if(eq.tail){
+  g.save();g.translate(23,-46);g.rotate(Math.sin(clock*2)*.18);
+  g.strokeStyle=shadeColor(fur,.78);g.lineWidth=eq.tail==='tail_fox'?18:10;g.lineCap='round';
+  g.beginPath();g.moveTo(0,0);g.bezierCurveTo(46,-15,49,-62,28,-58);g.stroke();
+  if(eq.tail==='tail_fox')ellipse(28,-58,12,15,'#fff7ec');
+  g.restore();
+ }
+
+ // legs
+ for(let side of [-1,1]){
+  g.save();
+  g.translate(side*15,-22);
+  g.rotate(side*(moving?Math.sin(phase+(side===-1?0:Math.PI))*.23:0));
+  line(0,0,side*2,23,shadeColor(fur,.84),12);
+  ellipse(side*2,23,10,5,fur);
+  g.restore();
+ }
+
+ // rear arm
+ g.save();
+ g.translate(25,-68);
+ g.rotate(performing?(action==='wave'?-0.48:Math.sin(clock*12)*.55):(moving?-Math.sin(phase)*.22:Math.sin(clock*1.1)*.04));
+ renderHand(g,'left',shadeColor(body,.86));
+ g.restore();
+
+ // torso
+ drawRounded(-27,-75,54,55,20,shadeColor(body,.94));
+ drawRounded(-15,-65,30,34,11,shadeColor(body,1.04));
+ if(eq.outfit==='dress'){
+  g.beginPath();g.moveTo(-21,-78);g.lineTo(21,-78);g.lineTo(36,-31);g.lineTo(-36,-31);g.closePath();
+  g.fillStyle='#b890cc';g.fill();
+ }
+ if(eq.outfit==='shirt')drawRounded(-27,-80,54,37,13,'#8dbdd1');
+
+ // front arm
+ g.save();
+ g.translate(-25,-68);
+ g.rotate(performing?(action==='wave'?Math.sin(clock*16)*.55-2.1:Math.sin(clock*12)*.65):(moving?Math.sin(phase)*.22:Math.sin(clock*.9)*.05));
+ renderHand(g,'right',body);
+ g.restore();
+
+ // head and face, aligned like NPC
+ g.save();
+ g.translate(0,-96);
+ g.rotate(Math.sin(clock*1.3)*.02);
+ let hx=a.head==='wide'?42:a.head==='pointy'?36:39;
+ let hy=a.head==='pointy'?40:36;
+
  // ears behind head
- if(eq.ears==='ears_bunny'){for(let side of [-1,1]){g.save();g.translate(side*27,-122);g.rotate(side*.13+Math.sin(clock*1.3+side)*.035);ellipse(0,-29,13,42,shadeColor(fur,.88));ellipse(0,-30,6,30,'#eebdcf');g.restore()}}
- else{for(let side of [-1,1]){g.save();g.translate(side*29,-114);g.rotate(side*.06+Math.sin(clock*1.3+side)*.045);g.beginPath();g.moveTo(-18,10);g.lineTo(side*3,-32);g.lineTo(18,10);g.closePath();g.fillStyle=shadeColor(fur,.91);g.fill();g.beginPath();g.moveTo(-9,6);g.lineTo(side*2,-19);g.lineTo(10,6);g.closePath();g.fillStyle='#dfb5bb';g.fill();g.restore()}}
- // rear arm, torso, front arm
- g.save();g.translate(25,-68);g.rotate(performing?(action==='wave'?-.5:Math.sin(clock*12)*.7):(moving?-Math.sin(phase)*.35:Math.sin(clock*1.1)*.04));renderHand(g,'right',shadeColor(body,.86));g.restore();
- ellipse(0,-57,33,45,shadeColor(body,.91));ellipse(0,-66,26,36,body);ellipse(0,-54,19,24,shadeColor(body,1.04));
- if(eq.outfit==='dress'){g.beginPath();g.moveTo(-21,-78);g.lineTo(21,-78);g.lineTo(37,-28);g.lineTo(-37,-28);g.closePath();g.fillStyle='#b890cc';g.fill();}if(eq.outfit==='shirt')drawRounded(-27,-83,54,39,13,'#8dbdd1');
- g.save();g.translate(-27,-68);g.rotate(performing?(action==='wave'?Math.sin(clock*16)*.55-2.1:Math.sin(clock*12)*.8):(moving?Math.sin(phase)*.35:Math.sin(clock*.9)*.05));renderHand(g,'left',body);g.restore();
- // neck masked by head
- g.save();g.translate(0,-116);g.rotate(Math.sin(clock*1.3)*.028);let hx=a.head==='wide'?55:a.head==='pointy'?42:47,hy=a.head==='pointy'?47:43;
- ellipse(0,0,hx,hy,shadeColor(fur,.89));ellipse(0,-4,hx-3,hy-3,fur);if(a.head==='pointy'){g.beginPath();g.moveTo(-29,23);g.lineTo(0,46);g.lineTo(29,23);g.closePath();g.fillStyle=fur;g.fill()}
- if(eq.wig){g.fillStyle=eq.wig==='wig_blue'?'#9bd0e9':'#e8a9c7';g.beginPath();g.ellipse(0,-25,hx+3,hy*.54,0,Math.PI,Math.PI*2);g.fill();g.fillRect(-hx,-23,12,26);g.fillRect(hx-12,-23,12,26)}
- let eye=a.eyeColor||'#4b406c';if(eq.cosmetic2==='shadow'){ellipse(-19,-12,14,10,'#bd9dd9');ellipse(19,-12,14,10,'#bd9dd9')}
- if(eq.brows==='brows_bold'){line(-29,-19,-11,-22,'#695969',3.4);line(11,-22,29,-19,'#695969',3.4)}
- if(eq.cosmetic1==='blush'){ellipse(-31,11,13,7,'#e8a0b0a9');ellipse(31,11,13,7,'#e8a0b0a9')}
- if(eq.cosmetic1==='freckles'){for(let side of [-1,1])for(let j=0;j<3;j++)ellipse(side*(26+j*3),8+j%2*4,1.5,1.5,'#aa817c')}
- if(eq.cosmetic2==='stars'){g.fillStyle='#ebbc48';for(let side of [-1,1]){g.fillText('✦',side*35-4,1);g.fillText('✦',side*29-2,23)}}
- const blink=animated&&Math.sin(clock*.68)>0.996;if(eq.eyes==='eyes_sleepy'||blink){line(-28,-4,-11,-4,eye,3.4);line(11,-4,28,-4,eye,3.4)}else{ellipse(-19,-4,eq.eyes==='eyes_star'?10:7,eq.eyes==='eyes_star'?12:10,eye);ellipse(19,-4,eq.eyes==='eyes_star'?10:7,eq.eyes==='eyes_star'?12:10,eye);ellipse(-17,-8,2.6,3,'white');ellipse(21,-8,2.6,3,'white');if(eq.eyes==='eyes_star'){g.fillStyle='#fff';g.font='10px sans-serif';g.fillText('✦',-23,2);g.fillText('✦',15,2)}}
- if(eq.nose==='nose_heart'){g.fillStyle='#ca809a';g.font='14px system-ui';g.textAlign='center';g.fillText('♥',0,15)}else{g.beginPath();g.moveTo(-5,10);g.lineTo(5,10);g.lineTo(0,15);g.closePath();g.fillStyle='#a7838d';g.fill()}
- g.strokeStyle='#73616d';g.lineWidth=2.2;g.lineCap='round';g.beginPath();if(eq.mouth==='mouth_cat'){g.moveTo(0,16);g.lineTo(0,23);g.moveTo(-14,21);g.quadraticCurveTo(-7,32,0,23);g.quadraticCurveTo(7,32,14,21)}else{g.moveTo(-12,22);g.quadraticCurveTo(0,34,12,22)}g.stroke();
- if(eq.bow){g.fillStyle='#e58eb5';ellipse(-35,-25,12,8,'#e58eb5');ellipse(-19,-25,12,8,'#e58eb5');ellipse(-27,-25,5,5,'#a96f9c')}
- g.restore();g.restore();}
+ if(eq.ears==='ears_bunny'){
+  for(let side of [-1,1]){g.save();g.translate(side*20,-20);g.rotate(side*.12+Math.sin(clock*1.3+side)*.03);ellipse(0,-30,11,34,shadeColor(fur,.88));ellipse(0,-31,5,24,'#eebdcf');g.restore()}
+ }else{
+  for(let side of [-1,1]){g.save();g.translate(side*23,-10);g.rotate(side*.07+Math.sin(clock*1.3+side)*.04);g.beginPath();g.moveTo(-11,7);g.lineTo(side*2,-27);g.lineTo(12,7);g.closePath();g.fillStyle=shadeColor(fur,.91);g.fill();g.beginPath();g.moveTo(-6,4);g.lineTo(side*1,-15);g.lineTo(7,4);g.closePath();g.fillStyle='#dfb5bb';g.fill();g.restore()}
+ }
+
+ // head base
+ ellipse(0,0,hx,hy,shadeColor(fur,.89));
+ ellipse(0,-3,hx-2,hy-2,fur);
+ if(a.head==='pointy'){g.beginPath();g.moveTo(-24,18);g.lineTo(0,38);g.lineTo(24,18);g.closePath();g.fillStyle=fur;g.fill()}
+
+ if(eq.wig){
+  g.fillStyle=eq.wig==='wig_blue'?'#9bd0e9':'#e8a9c7';
+  g.beginPath();g.ellipse(0,-21,hx+2,hy*.5,0,Math.PI,Math.PI*2);g.fill();
+  g.fillRect(-hx+1,-18,10,23);g.fillRect(hx-11,-18,10,23);
+ }
+
+ let eye=a.eyeColor||'#4b406c';
+ if(eq.cosmetic2==='shadow'){ellipse(-16,-11,12,9,'#bd9dd9');ellipse(16,-11,12,9,'#bd9dd9')}
+ if(eq.brows==='brows_bold'){line(-24,-17,-10,-19,'#695969',3.2);line(10,-19,24,-17,'#695969',3.2)}
+ if(eq.cosmetic1==='blush'){ellipse(-25,10,11,6,'#e8a0b0a9');ellipse(25,10,11,6,'#e8a0b0a9')}
+ if(eq.cosmetic1==='freckles'){for(let side of [-1,1])for(let j=0;j<3;j++)ellipse(side*(20+j*2.8),7+j%2*3.5,1.4,1.4,'#aa817c')}
+ if(eq.cosmetic2==='stars'){g.fillStyle='#ebbc48';g.font='12px sans-serif';g.fillText('✦',-32,0);g.fillText('✦',25,0)}
+ const blink=animated&&Math.sin(clock*.68)>0.996;
+ if(eq.eyes==='eyes_sleepy'||blink){line(-22,-3,-8,-3,eye,3.2);line(8,-3,22,-3,eye,3.2)}
+ else{
+  ellipse(-15,-3,eq.eyes==='eyes_star'?8.5:6.2,eq.eyes==='eyes_star'?10:8.8,eye);
+  ellipse(15,-3,eq.eyes==='eyes_star'?8.5:6.2,eq.eyes==='eyes_star'?10:8.8,eye);
+  ellipse(-13,-7,2.2,2.6,'white');ellipse(17,-7,2.2,2.6,'white');
+  if(eq.eyes==='eyes_star'){g.fillStyle='#fff';g.font='9px sans-serif';g.fillText('✦',-18,2);g.fillText('✦',12,2)}
+ }
+ if(eq.nose==='nose_heart'){g.fillStyle='#ca809a';g.font='12px system-ui';g.textAlign='center';g.fillText('♥',0,12)}
+ else{g.beginPath();g.moveTo(-4,8);g.lineTo(4,8);g.lineTo(0,12);g.closePath();g.fillStyle='#a7838d';g.fill()}
+ g.strokeStyle='#73616d';g.lineWidth=2.1;g.lineCap='round';g.beginPath();
+ if(eq.mouth==='mouth_cat'){g.moveTo(0,12);g.lineTo(0,18);g.moveTo(-10,17);g.quadraticCurveTo(-5,26,0,18);g.quadraticCurveTo(5,26,10,17)}
+ else{g.moveTo(-10,18);g.quadraticCurveTo(0,28,10,18)}
+ g.stroke();
+ if(eq.bow){ellipse(-28,-19,10,7,'#e58eb5');ellipse(-15,-19,10,7,'#e58eb5');ellipse(-21.5,-19,4,4,'#a96f9c')}
+ g.restore();
+ g.restore();
+}
 let pendingFurniture=null;
 function useFurniture(id){const n=state.needs;let msg='';if(id==='bed'){n.sleep=Math.max(0,n.sleep-45);action='sleep';msg='Пет відпочиває у ліжку 💤'}else if(id==='bath'||id==='shower'){n.dirt=Math.max(0,n.dirt-48);action='jump';msg='Пет купається 🫧'}else if(id==='tv'||id==='toy'){n.boredom=Math.max(0,n.boredom-42);action='dance';msg='Пет розважається 🎲'}else if(id==='auto_fridge'){n.hunger=Math.max(0,n.hunger-42);action='wave';msg='Пет перекусив 🥗'}else if(id==='vacuum'){cleanRoom();action='wave';return}else if(id==='chair'){action='idle';msg='Пет відпочиває у кріслі'}else{action='wave';msg='Пет розглядає предмет'}actionUntil=clock+3.5;nextAction=actionUntil+4;save();if(msg)toast(msg);earnXP(3)}
 function maybeAction(){if(walkTarget||clock<nextAction||clock<actionUntil)return;const choices=['wave','jump','dance','spin'];action=choices[Math.floor(Math.random()*choices.length)];actionUntil=clock+(action==='dance'?2.3:action==='spin'?1.5:1.7);nextAction=actionUntil+5+Math.random()*9}
