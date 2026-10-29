@@ -309,6 +309,14 @@
 .shop-wall-product{content-visibility:auto;contain-intrinsic-size:240px 220px;}
 #shopCast{pointer-events:none;}
 .shop-product-pic[data-missing]::after{content:attr(data-missing);font-size:11px;word-break:break-all;color:#aa4252;display:block;padding:7px}
+
+/* α1.1.9: viewport-sized shop rendering: no giant composited world */
+.shop-room-world{width:100%;will-change:auto;transform:none!important;contain:layout style paint;}
+.shop-room-world .shop-room-wall{background-position-x:calc(-1 * var(--shop-camera,0px));}
+.shop-room-world .shop-room-floor,.shop-room-world .shop-room-floor::after{background-position-x:calc(-1 * var(--shop-camera,0px));}
+.shop-room-world .shop-wall-product{will-change:auto;content-visibility:visible;contain:layout style paint;}
+.shop-room-world .shop-room-heading{transform:none;}
+#shopCast{will-change:contents;}
 </style>
 </head>
 <body>
@@ -1200,7 +1208,7 @@ let shopCamera=0,shopCameraTarget=0,shopWalkerX=310,shopWalkTarget=null,shopWalk
 let shopRenderLast=0,shopRenderAccum=0,shopSceneCache=null,shopLastProgress=-1,shopLastNav=-1;
 // Перерахунок геометрії тільки при реальному зміненні розміру вікна.
 window.addEventListener('resize',()=>{shopSceneCache=null;shopRenderAccum=1;});
-function shopCacheFor(stage,world,c){if(shopSceneCache&&shopSceneCache.stage===stage)return shopSceneCache;const width=stage.clientWidth,height=stage.clientHeight;if(!shopSceneCache||shopSceneCache.stage!==stage||shopSceneCache.width!==width||shopSceneCache.height!==height){const count=shopStock().length,spacing=Math.max(190,Math.min(300,width*.25)),total=Math.max(width*2.15,430+count*spacing+540);shopSceneCache={stage,world,c,width,height,metrics:{width,height,spacing,total,maxCamera:Math.max(0,total-width)},ctx:c.getContext('2d',{alpha:true})};world.style.width=total+'px'}return shopSceneCache}
+function shopCacheFor(stage,world,c){if(shopSceneCache&&shopSceneCache.stage===stage)return shopSceneCache;const width=stage.clientWidth,height=stage.clientHeight;if(!shopSceneCache||shopSceneCache.stage!==stage||shopSceneCache.width!==width||shopSceneCache.height!==height){const count=shopStock().length,spacing=Math.max(190,Math.min(300,width*.25)),total=Math.max(width*2.15,430+count*spacing+540);shopSceneCache={stage,world,c,width,height,metrics:{width,height,spacing,total,maxCamera:Math.max(0,total-width)},ctx:c.getContext('2d',{alpha:true})};world.style.width=width+'px'}return shopSceneCache}
 
 const shopSeller={head:'round',fur:'#c7a3bc',body:'#ad8eae',eyeColor:'#53416b',name:'Продавець'};
 function resetShopWalker(){shopCamera=0;shopCameraTarget=0;shopWalkerX=330;shopWalkTarget=null;shopWalkPhase=0;shopWalkDir=1;shopHoldDir=0;shopRenderLast=0;shopRenderAccum=0;shopSceneCache=null;shopLastProgress=-1;shopLastNav=-1}
@@ -1215,7 +1223,24 @@ function shopPaintNow(dt,drawCharacters=true){
  shopCameraTarget=Math.max(0,Math.min(m.maxCamera,shopCameraTarget));
  shopCamera+=(shopCameraTarget-shopCamera)*Math.min(1,dt*7);
  if(Math.abs(shopCamera-shopCameraTarget)<.4)shopCamera=shopCameraTarget;
- if(shopSceneCache.lastCamera!==shopCamera){world.style.transform=`translate3d(${-shopCamera}px,0,0)`;shopSceneCache.lastCamera=shopCamera;}
+ // Камера більше НЕ пересуває величезний DOM-шар: світ має розмір viewport.
+ // Рухаємо лише візерунок і кілька видимих вітрин.
+ if(cached.lastCamera!==shopCamera){
+  const cam=Math.round(shopCamera*10)/10;
+  world.style.setProperty('--shop-camera',cam+'px');
+  if(!cached.products)cached.products=[...world.querySelectorAll('.shop-wall-product')];
+  for(const card of cached.products){
+   const x=Number(card.dataset.worldX)||0;
+   const visible=x+(m.spacing-22)>=cam-35&&x<=cam+m.width+35;
+   if(card.style.visibility!==(visible?'visible':'hidden'))card.style.visibility=visible?'visible':'hidden';
+   if(visible)card.style.transform=`translate3d(${-cam}px,0,0)`;
+  }
+  const windowEl=world.querySelector('.shop-shop-window');
+  if(windowEl)windowEl.style.transform=`translate3d(${-cam}px,0,0)`;
+  const heading=world.querySelector('.shop-room-heading');
+  if(heading)heading.style.transform=`translate3d(${-cam}px,0,0)`;
+  cached.lastCamera=shopCamera;
+ }
  // When the camera leaves the player behind, pet runs up and follows the frame.
  const edgeLeft=shopCamera+Math.min(125,m.width*.22),edgeRight=shopCamera+m.width-Math.min(160,m.width*.26);
  if(shopWalkerX<edgeLeft)shopWalkTarget=shopCamera+m.width*.36;
@@ -1275,10 +1300,10 @@ function shopHTML(){
  if(!shopRoom){return `<div class="shop-landing-head"><h2>✦ Торговельна вуличка ✦</h2><p>Обери магазин, щоб зайти всередину</p></div><div class="shop-choices">${SHOP_ROOMS.map(r=>`<button class="shop-choice" style="--shop-accent:${r.accent}" data-act="enterShop" data-val="${r.id}"><span class="symbol">${r.symbol}</span><strong>${r.name}</strong><small>${r.desc}</small></button>`).join('')}</div>`}
  const r=SHOP_ROOMS.find(r=>r.id===shopRoom)||SHOP_ROOMS[0],otherTab=OTHER_SHOP_TABS.find(t=>t.id===otherShopTab)||OTHER_SHOP_TABS[0];
  const items=shopStock(),m=shopMetrics();
- const displays=items.map((id,i)=>{const it=ITEMS[id],n=state.owned[id]||0,x=340+i*m.spacing;return `<article class="shop-wall-product" style="left:${x}px;width:${m.spacing-22}px"><span class="shop-product-pic">${it.image?`<img src="${it.image}" alt="${esc(it.name)}" loading="lazy" onerror="shopAssetError(this,'${it.image}')" style="max-width:100%;height:clamp(45px,10vh,92px);object-fit:contain">`:it.emoji}</span><strong>${esc(it.name)}</strong><small>У тебе: ${n}</small><button data-act="buy" data-id="${id}" ${state.coins<it.price?'disabled':''}>🪙 ${it.price} · Купити</button></article>`}).join('');
+ const displays=items.map((id,i)=>{const it=ITEMS[id],n=state.owned[id]||0,x=340+i*m.spacing;return `<article class="shop-wall-product" data-world-x="${x}" style="left:${x}px;width:${m.spacing-22}px"><span class="shop-product-pic">${it.image?`<img src="${it.image}" alt="${esc(it.name)}" loading="lazy" onerror="shopAssetError(this,'${it.image}')" style="max-width:100%;height:clamp(45px,10vh,92px);object-fit:contain">`:it.emoji}</span><strong>${esc(it.name)}</strong><small>У тебе: ${n}</small><button data-act="buy" data-id="${id}" ${state.coins<it.price?'disabled':''}>🪙 ${it.price} · Купити</button></article>`}).join('');
  const top=`<header class="shop-topbar"><button class="shop-all" data-act="shopBack">☷ Магазини</button><nav class="shop-switcher" aria-label="Перемкнути магазин">${SHOP_ROOMS.map(t=>`<button data-act="enterShop" data-val="${t.id}" class="${r.id===t.id?'selected':''}">${t.symbol} ${t.name}</button>`).join('')}</nav><span class="wallet">🪙 ${state.coins}</span></header>`;
  const sub=r.id==='other'?`<nav class="shop-subbar">${OTHER_SHOP_TABS.map(t=>`<button class="${t.id===otherShopTab?'selected':''}" data-act="otherShopTab" data-val="${t.id}">${t.symbol} ${t.name}</button>`).join('')}</nav>`:'';
- return `<div class="shop-screen">${top}${sub}<section id="shopStage" class="shop-room-stage" style="--shop-accent:${r.accent}" aria-label="Крамниця ${r.name}. Стрілки зсувають камеру, натисни на підлогу, щоб ходити."><div id="shopWorld" class="shop-room-world" style="width:${m.total}px"><div class="shop-room-wall"></div><div class="shop-room-floor"></div><div class="shop-shop-window" style="left:38px"></div><div class="shop-room-heading">${r.symbol} ${r.id==='other'?otherTab.name:r.name}</div><div class="shop-wall-items">${displays||'<div class="shop-wall-empty">Нові товари з’являться тут ✨</div>'}</div></div><canvas id="shopCast" aria-label="Пет і продавець"></canvas><button class="shop-nav shop-nav-left" data-shop-arrow="-1" type="button" aria-label="Рух камери ліворуч">❮</button><button class="shop-nav shop-nav-right" data-shop-arrow="1" type="button" aria-label="Рух камери праворуч">❯</button><div class="shop-room-hint">Торкнися підлоги, щоб пройти · <span id="shopPosition">0% кімнати</span></div><button class="shop-home-btn" type="button" data-act="shopHome">🏠 Додому</button></section></div>`;
+ return `<div class="shop-screen">${top}${sub}<section id="shopStage" class="shop-room-stage" style="--shop-accent:${r.accent}" aria-label="Крамниця ${r.name}. Стрілки зсувають камеру, натисни на підлогу, щоб ходити."><div id="shopWorld" class="shop-room-world" style="width:${m.width}px"><div class="shop-room-wall"></div><div class="shop-room-floor"></div><div class="shop-shop-window" style="left:38px"></div><div class="shop-room-heading">${r.symbol} ${r.id==='other'?otherTab.name:r.name}</div><div class="shop-wall-items">${displays||'<div class="shop-wall-empty">Нові товари з’являться тут ✨</div>'}</div></div><canvas id="shopCast" aria-label="Пет і продавець"></canvas><button class="shop-nav shop-nav-left" data-shop-arrow="-1" type="button" aria-label="Рух камери ліворуч">❮</button><button class="shop-nav shop-nav-right" data-shop-arrow="1" type="button" aria-label="Рух камери праворуч">❯</button><div class="shop-room-hint">Торкнися підлоги, щоб пройти · <span id="shopPosition">0% кімнати</span></div><button class="shop-home-btn" type="button" data-act="shopHome">🏠 Додому</button></section></div>`;
 }
 function showPanel(){let labels={editor:'🎨 Редактор персонажа',shop:'🏪 Магазин',inventory:'🎒 Інвентар предметів',wardrobe:'👗 Гардероб',post:'💌 Пошта острова',friends:'👥 Друзі',friendAdd:'＋ Друзі',npcGift:'🎁 Подарунок NPC',settings:'⚙️ Меню гри',needs:'💗 Потреби пета',yard:'🪐 Ферма комах',profile:'👤 Мій профіль',interaction:'💬 Взаємодія з другом',roomClean:'🧹 Прибирання кімнати'};title.textContent=labels[activePanel]||'Меню';let html='';
  if(activePanel==='profile'){html=profileHTML()}
