@@ -611,6 +611,25 @@ function updateVisitDailyNotice(){const el=document.getElementById('visitDailyNo
 function interactionHTML(){const n=visitingNPC;if(!n)return '<p>Вибери друга.</p>';const used=interactionUsedToday(n);return `<div class="friend-line"><img style="width:65px;height:65px;object-fit:cover;border-radius:10px" src="${n.avatar}" alt=""><div><b>${esc(n.name)}</b><small style="display:block">${used?'Сьогодні вже поспілкувалися':'Можна обрати одну дію сьогодні'}</small></div></div><p>Вибери одну взаємодію. Персонажі виконають анімацію, а ти отримаєш досвід. Одна винагорода на день <b>для кожного NPC</b>.</p><div class="interaction-tiles">${Object.entries(INTERACTIONS).map(([id,a])=>`<button data-act="npcInteract" data-val="${id}" ${used?'disabled':''}><span>${a.emoji}</span><strong>${a.label}</strong><small>+${a.xp} XP</small></button>`).join('')}</div>${used?'<p class="note">Повернись завтра за новою взаємодією.</p>':''}`}
 let interactionFX=null;
 function doInteraction(id){if(state.location!=='npc'||!visitingNPC||!INTERACTIONS[id])return;const key=visitingNPC.id;if(interactionUsedToday(visitingNPC)){closePanel();updateVisitDailyNotice();return}state.dailyInteractions[key]=localDay();updateVisitDailyNotice();interactionFX={type:id,until:performance.now()/1000+3,npc:visitingNPC.id};action=INTERACTIONS[id].action;actionUntil=clock+3;earnXP(INTERACTIONS[id].xp);closePanel();toast(INTERACTIONS[id].emoji+' '+visitingNPC.name+' · +'+INTERACTIONS[id].xp+' XP');}
+const PERF_STORAGE='proto_typ_resource_mode_v1';
+let resourceSaver=false;
+try{resourceSaver=localStorage.getItem(PERF_STORAGE)==='1'}catch{}
+const perfStats={frames:0,lastSample:0,fps:0,renderMs:0,draws:0};
+let mainFrameId=0,renderLastPaint=0;
+function resourceDiagnostics(){
+ const caches=[...Object.values(handTintCache),...Object.values(legTintCache),...Object.values(headTintCache),...Object.values(earPairTintCache)];
+ let copies=0,bytes=0;
+ for(const cache of caches){for(const c of cache.values()){if(c&&c.width&&c.height){copies++;bytes+=c.width*c.height*4}}}
+ let shopBytes=0;
+ if(shopSceneCache)for(const key of ['sellerLayer','counterLayer']){const c=shopSceneCache[key];if(c)shopBytes+=c.width*c.height*4}
+ const mainBytes=canvas.width*canvas.height*4;
+ return {copies,mb:(bytes+shopBytes+mainBytes)/1048576,mainMb:mainBytes/1048576, fps:perfStats.fps};
+}
+function refreshPerfStatus(){
+ const el=document.getElementById('resourceDiagnostics');if(!el)return;
+ const a=resourceDiagnostics();
+ el.textContent=`FPS промальовування: ${a.fps.toFixed(1)} · Canvas-копій: ${a.copies} · Буфери Canvas: ≈${a.mb.toFixed(1)} МБ (основний ≈${a.mainMb.toFixed(1)} МБ). Це оцінка буферів, не повна RAM браузера.`;
+}
 let persistTimer=0;function save(){try{localStorage.setItem(STORAGE,JSON.stringify(state))}catch(e){toast('Не вдалося зберегти. Перевір сховище браузера.')}updateHUD()}
 function debounceSave(){clearTimeout(persistTimer);persistTimer=setTimeout(save,250)}function updateHUD(){updateRoomCleanUI();document.getElementById('coins').textContent=Math.floor(state.coins);document.getElementById('tokens').textContent=Math.floor(state.tokens||0);const lev=document.getElementById('profileLevel'),bar=document.getElementById('profileProgress');if(lev)lev.textContent='Рівень '+state.level;if(bar)bar.style.width=(state.level>=MAX_LEVEL?100:Math.min(100,100*state.xp/xpForLevel(state.level)))+'%';updateNeedsUI()}
 function toast(message){let el=document.createElement('div');el.className='toast';const parts=String(message).split(/(<img class="currency-icon" src="\/hoomanchat\/assets\/(?:coin|token)\.png" alt="(?:монети|токени)">)/g);for(const part of parts){if(part===COIN_HTML||part===TOKEN_HTML){const icon=document.createElement('img');icon.className='currency-icon';icon.src=part===COIN_HTML?'/hoomanchat/assets/coin.png':'/hoomanchat/assets/token.png';icon.alt=part===COIN_HTML?'монети':'токени';el.append(icon)}else el.append(document.createTextNode(part))}document.getElementById('toastContainer').replaceChildren(el);setTimeout(()=>el.remove(),2800)}
@@ -620,7 +639,7 @@ function rand(seed){let n=Math.sin(seed*12.9898+78.233)*43758.5453123;return n-M
 function resize(){
  W=innerWidth;H=innerHeight;
  // Менше RAM/GPU на HiDPI та 4K, координати гри залишаються CSS-пікселями.
- dpr=Math.min(devicePixelRatio||1,1.5,1920/Math.max(1,W),1080/Math.max(1,H));
+ dpr=Math.min(devicePixelRatio||1,resourceSaver?1:1.5,1920/Math.max(1,W),1080/Math.max(1,H));
  const pw=Math.max(1,Math.round(W*dpr)),ph=Math.max(1,Math.round(H*dpr));
  if(canvas.width!==pw)canvas.width=pw;
  if(canvas.height!==ph)canvas.height=ph;
@@ -1343,7 +1362,20 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
 let pendingFurniture=null;
 function useFurniture(id){const n=state.needs;let msg='';if(id==='bed'){n.sleep=Math.min(100,n.sleep+45);action='sleep';msg='Пет відпочиває у ліжку 💤'}else if(id==='bath'||id==='shower'){n.dirt=Math.min(100,n.dirt+48);action='jump';msg='Пет купається 🫧'}else if(id==='tv'||id==='toy'){n.boredom=Math.min(100,n.boredom+42);action='dance';msg='Пет розважається 🎲'}else if(id==='auto_fridge'){n.hunger=Math.min(100,n.hunger+50);action='wave';msg='Пет перекусив 🥗'}else if(id==='vacuum'){cleanRoom();action='wave';return}else if(id==='chair'){action='idle';msg='Пет відпочиває у кріслі'}else{action='wave';msg='Пет розглядає предмет'}actionUntil=clock+3.5;nextAction=actionUntil+4;save();if(msg)toast(msg);earnXP(3)}
 function maybeAction(){if(walkTarget||clock<nextAction||clock<actionUntil)return;const choices=['wave','jump','dance','spin'];action=choices[Math.floor(Math.random()*choices.length)];actionUntil=clock+(action==='dance'?2.3:action==='spin'?1.5:1.7);nextAction=actionUntil+5+Math.random()*9}
-function render(t){if(document.hidden){lastTime=t;requestAnimationFrame(render);return}clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.05);lastTime=t;clock+=dt;if(activePanel==='shop'){updateDustLayer();paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}requestAnimationFrame(render);return}tickNeeds(dt);npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}const scale=Math.max(.69,Math.min(1.1,W/650));puppet(ctx,p.x,p.y,scale);if(placing){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}requestAnimationFrame(render)}
+function scheduleRender(){if(!document.hidden&&!mainFrameId)mainFrameId=requestAnimationFrame(render)}
+function render(t){
+ mainFrameId=0;
+ if(document.hidden)return;
+ // Модальна аркада малює свою сцену. Не витрачаємо CPU на гру позаду.
+ if(mgOverlay.classList.contains('visible')){lastTime=t;renderLastPaint=t;scheduleRender();return}
+ const movingNow=!!(walkTarget||shopHoldDir||action!=='idle');
+ const targetFPS=resourceSaver?(movingNow?30:12):(movingNow?45:(activePanel?15:24));
+ if(renderLastPaint&&t-renderLastPaint<1000/targetFPS){scheduleRender();return}
+ const started=performance.now();renderLastPaint=t;
+ perfStats.frames++;
+ if(!perfStats.lastSample)perfStats.lastSample=t;
+ if(t-perfStats.lastSample>=1000){perfStats.fps=perfStats.frames*1000/(t-perfStats.lastSample);perfStats.frames=0;perfStats.lastSample=t;refreshPerfStatus()}
+ clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.15);lastTime=t;clock+=dt;if(activePanel==='shop'){updateDustLayer();paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender();return}tickNeeds(dt);npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}const scale=Math.max(.69,Math.min(1.1,W/650));puppet(ctx,p.x,p.y,scale);if(placing){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender()}
 function placedHit(x,y){if(state.location!=='home'||state.room>2)return -1;for(let i=state.homePlaced.length-1;i>=0;i--){const p=state.homePlaced[i];if((p.room??0)!==state.room)continue;if(ITEMS[p.id]?.ceiling){if(Math.abs(p.x*W-x)<55&&y>=H*.035&&y<=H*.37)return i}else if(Math.abs(p.x*W-x)<46&&Math.abs(p.y*H-y+22)<52)return i}return -1}
 // Перетягування меблів дозволене лише у відкритому інвентарі меблів.
 function dragFurniturePosition(e){
@@ -1479,6 +1511,7 @@ function clearRedundantGraphicsCache(){
 }
 function closePanel(){
  if(activePanel==='editor')discardEditorChanges();
+ if(facePreviewObserver){facePreviewObserver.disconnect();facePreviewObserver=null}
  if(activePanel==='shop'){
   // Відпускаємо шар продавця / прилавка та посилання на DOM-магазину.
   if(shopSceneCache){
@@ -1487,7 +1520,9 @@ function closePanel(){
   }
   shopRenderLast=0;shopRenderAccum=0;shopHoldDir=0;
  }
- overlay.classList.remove('open');overlay.classList.remove('editor-full');overlay.classList.remove('shop-full');shopRoom=null;document.querySelectorAll('#toolbar button').forEach(b=>b.classList.remove('active'));activePanel=''
+ overlay.classList.remove('open');overlay.classList.remove('editor-full');overlay.classList.remove('shop-full');shopRoom=null;document.querySelectorAll('#toolbar button').forEach(b=>b.classList.remove('active'));activePanel='';
+ // Скидаємо приховані картки та canvas-прев'ю, залишаючи делеговані події на body.
+ body.replaceChildren();
 }
 document.querySelectorAll('#toolbar button').forEach(b=>b.addEventListener('click',()=>openPanel(b.dataset.open)));document.getElementById('closePanel').onclick=closePanel;overlay.addEventListener('pointerdown',e=>{if(e.target===overlay)closePanel()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
 const esc=s=>safeStr(s,150).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -1694,26 +1729,39 @@ function showPanel(){let labels={editor:'🎨 Редактор персонаж�
  else if(activePanel==='needs'){html=needsPanelHTML()}
  else if(activePanel==='roomClean'){html=roomCleanHTML()}
  else if(activePanel==='yard'){html=yardPanelHTML()}
- else if(activePanel==='settings'){html=`<p><b>Прото-Тип α 1.4.5</b> — налаштування гри.
-</p><div class="control"><label>🧹 Графічна пам'ять</label><p class="note">Видаляє лише тимчасові Canvas-копії кольорів персонажів і шари магазинів. Оригінальні PNG, монети, токени й прогрес залишаються.</p><button class="secondary" type="button" data-act="clearGraphicsCache">Очистити зайві графічні копії</button><small id="graphicsCacheStatus" class="note"></small></div><div class="control"><label>Ім’я острова</label><input class="field" id="islandLabel" value="Мій маленький острів" disabled></div><div class="control"><label>🏠 Основна кімната (відкривається під час запуску гри)</label><select class="field" id="startRoom">${[['Кімната пета',0],['Спальня',1],['Вітальня',2]].map(([name,n])=>`<option value="${n}" ${state.startRoom===n?'selected':''} ${state.level<ROOM_LEVELS[n]?'disabled':''}>${name}${state.level<ROOM_LEVELS[n]?' (закрито)':''}</option>`).join('')}</select></div><div class="control"><label>🎨 Оформлення поточної кімнати</label><p class="note">Перейди в потрібну кімнату, щоб змінити її шпалери й підлогу.</p><label>Шпалери</label><select class="field" id="wallChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Неонові','Лавандові','Космічні','Графітові'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].wall===i?'selected':''}>${n}</option>`).join('')}</select><label>Підлога</label><select class="field" id="floorChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Класична','Паркет','Плитка','Темна'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].floor===i?'selected':''}>${n}</option>`).join('')}</select></div><div class="footer-actions"><button class="secondary" data-act="collectFurniture">Прибрати всі меблі в інвентар (${state.placed.length+state.homePlaced.length})</button><button class="secondary" data-act="exportSave">Експорт збереження</button><button class="secondary" data-act="importSave">Імпорт збереження</button><button class="secondary" data-act="reset">Нова гра</button></div><p class="note">Прогрес автоматично зберігається в цьому браузері (localStorage). Між браузерами та пристроями синхронізації немає. Для резервної копії використовуй експорт. Заробляй монети в розділі «Ігри».</p><textarea id="saveText" class="field" placeholder="Тут з’явиться резервна копія, або встав її для імпорту" rows="4"></textarea>`}
+ else if(activePanel==='settings'){html=`<p><b>Прото-Тип α 1.4.8</b> — налаштування гри.
+</p><div class="control"><label>⚡ Оптимізація</label><label style="display:flex;gap:9px;align-items:center"><input type="checkbox" id="resourceSaver" ${resourceSaver?'checked':''}> Економія ресурсів (DPR 1 та адаптивні кадри)</label><button class="secondary" type="button" data-act="refreshResourceDiagnostics">Оновити діагностику</button><p class="note" id="resourceDiagnostics"></p></div><div class="control"><label>🧹 Графічна пам'ять</label><p class="note">Видаляє лише тимчасові Canvas-копії кольорів персонажів і шари магазинів. Оригінальні PNG, монети, токени й прогрес залишаються.</p><button class="secondary" type="button" data-act="clearGraphicsCache">Очистити зайві графічні копії</button><small id="graphicsCacheStatus" class="note"></small></div><div class="control"><label>Ім’я острова</label><input class="field" id="islandLabel" value="Мій маленький острів" disabled></div><div class="control"><label>🏠 Основна кімната (відкривається під час запуску гри)</label><select class="field" id="startRoom">${[['Кімната пета',0],['Спальня',1],['Вітальня',2]].map(([name,n])=>`<option value="${n}" ${state.startRoom===n?'selected':''} ${state.level<ROOM_LEVELS[n]?'disabled':''}>${name}${state.level<ROOM_LEVELS[n]?' (закрито)':''}</option>`).join('')}</select></div><div class="control"><label>🎨 Оформлення поточної кімнати</label><p class="note">Перейди в потрібну кімнату, щоб змінити її шпалери й підлогу.</p><label>Шпалери</label><select class="field" id="wallChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Неонові','Лавандові','Космічні','Графітові'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].wall===i?'selected':''}>${n}</option>`).join('')}</select><label>Підлога</label><select class="field" id="floorChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Класична','Паркет','Плитка','Темна'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].floor===i?'selected':''}>${n}</option>`).join('')}</select></div><div class="footer-actions"><button class="secondary" data-act="collectFurniture">Прибрати всі меблі в інвентар (${state.placed.length+state.homePlaced.length})</button><button class="secondary" data-act="exportSave">Експорт збереження</button><button class="secondary" data-act="importSave">Імпорт збереження</button><button class="secondary" data-act="reset">Нова гра</button></div><p class="note">Прогрес автоматично зберігається в цьому браузері (localStorage). Між браузерами та пристроями синхронізації немає. Для резервної копії використовуй експорт. Заробляй монети в розділі «Ігри».</p><textarea id="saveText" class="field" placeholder="Тут з’явиться резервна копія, або встав її для імпорту" rows="4"></textarea>`}
  body.innerHTML=html;if(activePanel==='editor'){drawPreview();drawFaceChoices()}}
 function drawPreview(){let c=document.getElementById('preview');if(!c)return;let g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);pen=g;g.save();g.translate(c.width/2,c.height*.91);g.scale(2.0,2.0);puppet(g,0,0,1,false);g.restore();pen=ctx}
-function drawFaceChoices(){
- if(activePanel!=='editor')return;
+let facePreviewObserver=null;
+function paintOneFacePreview(c){
+ if(activePanel!=='editor'||!c.isConnected)return;
  const original=state.equipped;
  try{
-  document.querySelectorAll('[data-face-preview]').forEach(c=>{
-   const slot=c.dataset.facePreview,id=c.dataset.item,g=c.getContext('2d');
-   if(!g)return;
-   g.clearRect(0,0,c.width,c.height);
-   state.equipped={...original};
-   if(id)state.equipped[slot]=id;else delete state.equipped[slot];
-   pen=g;g.save();g.beginPath();g.rect(0,0,c.width,c.height);g.clip();g.translate(c.width/2,153);g.scale(1.05,1.05);puppet(g,0,0,1,false);g.restore();
-  });
+  const slot=c.dataset.facePreview,id=c.dataset.item,g=c.getContext('2d');if(!g)return;
+  g.clearRect(0,0,c.width,c.height);
+  state.equipped={...original};
+  if(id)state.equipped[slot]=id;else delete state.equipped[slot];
+  pen=g;g.save();g.beginPath();g.rect(0,0,c.width,c.height);g.clip();g.translate(c.width/2,153);g.scale(1.05,1.05);puppet(g,0,0,1,false);g.restore();
  }finally{state.equipped=original;pen=ctx}
 }
+function drawFaceChoices(){
+ if(facePreviewObserver){facePreviewObserver.disconnect();facePreviewObserver=null}
+ if(activePanel!=='editor')return;
+ const canvases=[...body.querySelectorAll('[data-face-preview]')];
+ if(!canvases.length)return;
+ if(!('IntersectionObserver' in window)){canvases.forEach(paintOneFacePreview);return}
+ facePreviewObserver=new IntersectionObserver(entries=>{
+  for(const entry of entries)if(entry.isIntersecting){paintOneFacePreview(entry.target);facePreviewObserver?.unobserve(entry.target)}
+ },{root:null,rootMargin:'150px 0px'});
+ canvases.forEach(c=>facePreviewObserver.observe(c));
+}
 body.addEventListener('input',e=>{let a=state.appearance;if(e.target.id==='furColor'){a.fur=e.target.value;a.body=e.target.value;}if(e.target.id==='eyeColor')a.eyeColor=e.target.value;if(e.target.id==='petName')a.name=safeStr(e.target.value,24);if(e.target.id==='headShape')a.head=e.target.value;if(activePanel==='editor')drawPreview();else debounceSave()});
-body.addEventListener('change',e=>{if(e.target.matches('[data-face-slot]')){const slot=e.target.dataset.faceSlot,id=e.target.value;if(!faceSlots.includes(slot))return;if(id&&(!(state.owned[id]>0)||ITEMS[id]?.category!=='face'||slotFor(id)!==slot))return;if(id)state.equipped[slot]=id;else delete state.equipped[slot];if(editorOriginal){const draft=state.appearance;state.appearance={...editorOriginal};save();state.appearance=draft}else save();drawPreview();return}if(e.target.id==='startRoom'){const r=Number(e.target.value);if(r>=0&&r<3&&state.level>=ROOM_LEVELS[r]){state.startRoom=r;save();toast('Основну кімнату збережено')}}if(['wallChoice','floorChoice'].includes(e.target.id)&&state.location==='home'&&state.room<3){state.roomDecor[state.room][e.target.id==='wallChoice'?'wall':'floor']=Number(e.target.value);save();toast('Оформлення кімнати змінено')}if(e.target.id==='headShape'){state.appearance.head=e.target.value;drawPreview()}});
+body.addEventListener('change',e=>{if(e.target.id==='resourceSaver'){
+ resourceSaver=!!e.target.checked;
+ try{localStorage.setItem(PERF_STORAGE,resourceSaver?'1':'0')}catch{}
+ resize();refreshPerfStatus();toast(resourceSaver?'Економію ресурсів увімкнено':'Стандартну якість відновлено');return;
+ }if(e.target.matches('[data-face-slot]')){const slot=e.target.dataset.faceSlot,id=e.target.value;if(!faceSlots.includes(slot))return;if(id&&(!(state.owned[id]>0)||ITEMS[id]?.category!=='face'||slotFor(id)!==slot))return;if(id)state.equipped[slot]=id;else delete state.equipped[slot];if(editorOriginal){const draft=state.appearance;state.appearance={...editorOriginal};save();state.appearance=draft}else save();drawPreview();return}if(e.target.id==='startRoom'){const r=Number(e.target.value);if(r>=0&&r<3&&state.level>=ROOM_LEVELS[r]){state.startRoom=r;save();toast('Основну кімнату збережено')}}if(['wallChoice','floorChoice'].includes(e.target.id)&&state.location==='home'&&state.room<3){state.roomDecor[state.room][e.target.id==='wallChoice'?'wall':'floor']=Number(e.target.value);save();toast('Оформлення кімнати змінено')}if(e.target.id==='headShape'){state.appearance.head=e.target.value;drawPreview()}});
 const slotFor=id=>ITEMS[id]?.slot||({wig_pink:'wig',wig_blue:'wig',dress:'outfit',shirt:'outfit'}[id]);
 function b64encode(s){const bytes=new TextEncoder().encode(s);let result='';for(let i=0;i<bytes.length;i++)result+=String.fromCharCode(bytes[i]);return btoa(result).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function b64decode(s){let raw=atob(s.replace(/-/g,'+').replace(/_/g,'/'));return new TextDecoder().decode(Uint8Array.from(raw,c=>c.charCodeAt(0)))}
@@ -1732,6 +1780,7 @@ body.addEventListener('click',async e=>{let b=e.target.closest('[data-act]');if(
  if(act==='editorConfirm'){if(activePanel!=='editor')return;state.appearance.body=state.appearance.fur;save();editorOriginal={...state.appearance};toast('Колір і зовнішність підтверджено');return}
  if(act==='editorCancel'){if(activePanel!=='editor')return;discardEditorChanges();editorOriginal={...state.appearance};showPanel();toast('Попередній колір відновлено');return}
  if(act==='faceShop'){if(activePanel==='editor')discardEditorChanges();shopRoom='makeup';openPanel('shop');return}
+ if(act==='refreshResourceDiagnostics'){refreshPerfStatus();return}
  if(act==='clearGraphicsCache'){
   const {count,megabytes}=clearRedundantGraphicsCache();
   const message=count?`Очищено ${count} тимчасових копій (орієнтовно ${megabytes.toFixed(1)} МБ буферів).`:'Зайвих графічних копій зараз немає.';
@@ -1775,7 +1824,7 @@ const mgTitle=document.getElementById('mgTitle');
 let mini=null,miniFrame=0,miniLast=0;
 const MG_W=520, MG_H=345;
 function stopMini(){if(miniFrame)cancelAnimationFrame(miniFrame);miniFrame=0;mini=null}
-function closeMini(){stopMini();mgOverlay.classList.remove('visible');mgOverlay.setAttribute('aria-hidden','true')}
+function closeMini(){stopMini();mgOverlay.classList.remove('visible');mgOverlay.setAttribute('aria-hidden','true');mgContent.replaceChildren();lastTime=performance.now();renderLastPaint=0;scheduleRender()}
 function revealMini(title){mgTitle.textContent=title;mgOverlay.classList.add('visible');mgOverlay.setAttribute('aria-hidden','false')}
 function showGamesMenu(){stopMini();revealMini('🎮 АРКАДА / Прото-Тип');mgContent.innerHTML=`<p class="mgHelp">Заробляй монетки в трьох іграх. Нагороди автоматично потрапляють у загальний гаманець.</p><div class="mgTiles"><button class="mgTile" data-mini="flies"><span class="symbol">🪰</span><strong>Лови комах</strong><small>Мухи, мошки, комарі · 30 с</small></button><button class="mgTile" data-mini="heart"><span class="symbol">💗</span><strong>Сердечний клікер</strong><small>Натискай, збирай сердечка · 20 с</small></button><button class="mgTile" data-mini="dream"><span class="symbol">🌙</span><strong>Лови сни</strong><small>Лови добрі сни, оминай кошмари · 30 с</small></button></div>`}
 function miniStats(){return `<div class="mgStats"><span id="mgScore">Бали: 0</span><span id="mgTimer">Час: 30</span><span id="mgPotential">Нагорода: 0 <img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="монети"></span></div>`}
@@ -1789,7 +1838,7 @@ function miniFinish(){if(!mini||mini.ended)return;let g=mini;g.ended=true;const 
 function addMiniObject(g){if(g.type==='flies'){const roll=Math.random();const kind=roll<.25?0:roll<.65?1:2;g.objects.push({x:30+Math.random()*460,y:36+Math.random()*250,vx:(Math.random()-.5)*90,vy:(Math.random()-.5)*70,life:2+Math.random()*1.4,kind,r:kind===0?18:kind===1?21:13,phase:Math.random()*6.28})}
 else{const kind=Math.random()<.18?3:Math.floor(Math.random()*3);g.objects.push({x:22+Math.random()*476,y:-25,vy:75+Math.random()*80,kind,r:kind===3?21:17})}}
 function miniTick(now){if(!mini||mini.ended)return;let g=mini;let dt=Math.max(0,Math.min(.05,(now-miniLast)/1000));miniLast=now;g.remaining=Math.max(0,g.remaining-dt);g.spawn+=dt;
-if(g.type!=='heart'){const every=g.type==='flies'?.47:.42;while(g.spawn>every){g.spawn-=every;addMiniObject(g)}for(let i=g.objects.length-1;i>=0;i--){let o=g.objects[i];if(g.type==='flies'){o.x+=o.vx*dt+Math.sin(now*.006+o.phase)*.35;o.y+=o.vy*dt+Math.cos(now*.005+o.phase)*.27;o.life-=dt;if(o.x<o.r||o.x>MG_W-o.r)o.vx*=-1;if(o.y<o.r+10||o.y>MG_H-o.r-10)o.vy*=-1;if(o.life<=0)g.objects.splice(i,1)}else{o.y+=o.vy*dt;if(o.y>=MG_H-46&&Math.abs(o.x-g.basket)<43){g.score=Math.max(0,g.score+(o.kind===3?-10:o.kind===0?10:o.kind===1?15:5));g.objects.splice(i,1)}else if(o.y>MG_H+28)g.objects.splice(i,1)}}miniDraw(g,now)}mgUpdateHud();if(g.remaining<=0){miniFinish();return}miniFrame=requestAnimationFrame(miniTick)}
+if(g.type!=='heart'){const every=g.type==='flies'?.47:.42;while(g.spawn>every){g.spawn-=every;addMiniObject(g)}for(let i=g.objects.length-1;i>=0;i--){let o=g.objects[i];if(g.type==='flies'){o.x+=o.vx*dt+Math.sin(now*.006+o.phase)*.35;o.y+=o.vy*dt+Math.cos(now*.005+o.phase)*.27;o.life-=dt;if(o.x<o.r||o.x>MG_W-o.r)o.vx*=-1;if(o.y<o.r+10||o.y>MG_H-o.r-10)o.vy*=-1;if(o.life<=0)g.objects.splice(i,1)}else{o.y+=o.vy*dt;if(o.y>=MG_H-46&&Math.abs(o.x-g.basket)<43){g.score=Math.max(0,g.score+(o.kind===3?-10:o.kind===0?10:o.kind===1?15:5));g.objects.splice(i,1)}else if(o.y>MG_H+28)g.objects.splice(i,1)}}miniDraw(g,now)}mgUpdateHud();if(g.remaining<=0){miniFinish();return}miniFrame=document.hidden?0:requestAnimationFrame(miniTick)}
 function miniDraw(g,now){const canvas=document.getElementById('mgCanvas');if(!canvas)return;const c=canvas.getContext('2d');if(!c)return;let bg=c.createLinearGradient(0,0,0,345);bg.addColorStop(0,g.type==='flies'?'#0e3851':'#171240');bg.addColorStop(1,g.type==='flies'?'#164c49':'#321c63');c.fillStyle=bg;c.fillRect(0,0,520,345);
 for(let i=0;i<35;i++){let x=(i*107)%520,y=(i*73)%345;c.fillStyle=g.type==='flies'?'#8af9cb45':'#d8b5ff65';c.beginPath();c.arc(x,y,1.2+(i%3),0,Math.PI*2);c.fill()}
 c.textAlign='center';c.textBaseline='middle';for(let o of g.objects){c.font=(o.kind===2&&g.type==='flies'?'25':'32')+'px system-ui';c.shadowColor=g.type==='flies'?'#b5ffee':'#b89bff';c.shadowBlur=12;c.fillText(g.type==='flies'?['🦟','🪰','•'][o.kind]:['⭐','🌙','✨','👾'][o.kind],o.x,o.y);if(g.type==='flies'&&o.kind===2){c.fillStyle='#a6fcff';c.beginPath();c.arc(o.x,o.y,5,0,7);c.fill()}c.shadowBlur=0}
@@ -1841,8 +1890,12 @@ function sellBug(type){const bug=BUGS[type];if(!bug||!state.bugs[type])return;st
 function yardPanelHTML(){const plot=state.bugPlots[selectedPlot],ready=plotReady(plot);return `<p class="note">Космічний двір: вирощуй комах у шести капсулах. Час росту йде за годинником пристрою, навіть коли гру закрито.</p><div class="yardGrid">${state.bugPlots.map((p,i)=>`<button class="yardPlot ${selectedPlot===i?'active':''}" data-act="plotSelect" data-val="${i}">Капсула ${i+1}<br>${p?(BUGS[p.type]?.emoji||'🐛')+' '+(plotReady(p)?'Готово':Math.max(1,Math.ceil((p.readyAt-Date.now())/1000))+' с'):'✦ Порожня'}</button>`).join('')}</div><h3>Капсула ${selectedPlot+1}</h3>${plot?`<p>${BUGS[plot.type]?.name||'Комаха'} · ${ready?'Можна забирати':'Ще росте'}</p><button class="primary" data-act="harvestBug" ${ready?'':'disabled'}>📦 Зібрати комаху</button>`:`<div class="grid">${Object.entries(BUGS).map(([id,b])=>`<div class="item"><span class="emoji">${b.emoji}</span><b>${b.name}</b><small>Ріст: ${b.grow} с</small><button data-act="plantBug" data-val="${id}" ${state.coins<b.seed?'disabled':''}>Виростити · ${b.seed} <img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="монети"></button></div>`).join('')}</div>`}<h3>Зібрані комахи · продаж</h3><div class="grid">${Object.entries(BUGS).map(([id,b])=>`<div class="item"><span class="emoji">${b.emoji}</span><b>${b.name}</b><small>×${state.bugs[id]||0}</small><button data-act="sellBug" data-val="${id}" ${(state.bugs[id]||0)<1?'disabled':''}>Продати +${b.price} <img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="монети"></button></div>`).join('')}</div>`}
 body.addEventListener('click',e=>{const b=e.target.closest('[data-act="plotSelect"]');if(!b)return;selectedPlot=Number(b.dataset.val);showPanel()});
 
-load();dustStore();ensureHomeDust();syncHomeCleanliness();save();state.location='home';state.room=state.level>=ROOM_LEVELS[state.startRoom]?state.startRoom:0;document.getElementById('profileButton').onclick=()=>openPanel('profile');resize();updateHUD();updateLocationUI();requestAnimationFrame(render);
-window.addEventListener('pagehide',save);
+load();dustStore();ensureHomeDust();syncHomeCleanliness();save();state.location='home';state.room=state.level>=ROOM_LEVELS[state.startRoom]?state.startRoom:0;document.getElementById('profileButton').onclick=()=>openPanel('profile');resize();updateHUD();updateLocationUI();scheduleRender();
+document.addEventListener('visibilitychange',()=>{
+ if(document.hidden){if(mainFrameId)cancelAnimationFrame(mainFrameId);mainFrameId=0;if(miniFrame)cancelAnimationFrame(miniFrame);miniFrame=0}
+ else{lastTime=performance.now();renderLastPaint=0;miniLast=performance.now();if(mini&&!mini.ended&&!miniFrame)miniFrame=requestAnimationFrame(miniTick);scheduleRender();updateDustLayer()}
+});
+window.addEventListener('pagehide',()=>{if(mainFrameId)cancelAnimationFrame(mainFrameId);mainFrameId=0;save()});
 </script>
 </body>
 </html>
