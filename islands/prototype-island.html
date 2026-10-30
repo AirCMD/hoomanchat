@@ -342,7 +342,7 @@ const ITEMS={
  chair:{name:'Крісло',emoji:'🪑',category:'furniture',price:170},lamp:{name:'Лампа',emoji:'💡',category:'furniture',price:130},plant:{name:'Квітка',emoji:'🪴',category:'furniture',price:95},bed:{name:'Ліжко',emoji:'🛏️',category:'furniture',price:340},bath:{name:'Ванна',emoji:'🛁',category:'furniture',price:290},shower:{name:'Душ',emoji:'🚿',category:'furniture',price:260},tv:{name:'Телевізор',emoji:'📺',category:'furniture',price:380},fridge:{name:'Звичайний холодильник',emoji:'🧊',category:'furniture',price:330},auto_fridge:{name:'Розумний холодильник',emoji:'🥗',category:'furniture',price:1100},toy:{name:'Іграшка пета',emoji:'🧸',category:'furniture',price:130},vacuum:{name:'Звичайний пилосос',emoji:'🧹',category:'furniture',price:290},robot_vacuum:{name:'Робот-пилосос',emoji:'🤖',category:'furniture',price:940},medicine:{name:'Ліки для пета',emoji:'💊',category:'food',price:155},
  wig_pink:{name:'Рожева перука',emoji:'👩‍🎤',category:'wig',price:280},wig_blue:{name:'Синя перука',emoji:'🩵',category:'wig',price:300},dress:{name:'Сукня',emoji:'👗',category:'clothes',price:280},shirt:{name:'Світшот',emoji:'👕',category:'clothes',price:220},
  tail_fox:{name:'Лисячий хвіст',emoji:'🦊',category:'accessory',slot:'tail',price:240},tail_cat:{name:'Котячий хвіст',emoji:'🐈',category:'accessory',slot:'tail',price:180},bow:{name:'Бантик',emoji:'🎀',category:'accessory',slot:'bow',price:115},
- eyes_star:{name:'Зоряні очі',emoji:'✨',category:'face',slot:'eyes',price:185},eyes_sleepy:{name:'Мрійливі очі',emoji:'😌',category:'face',slot:'eyes',price:135},nose_heart:{name:'Носик-серце',emoji:'💗',category:'face',slot:'nose',price:110},mouth_cat:{name:'Котяча усмішка',emoji:'😺',category:'face',slot:'mouth',price:125},brows_bold:{name:'Виразні брови',emoji:'〰️',category:'face',slot:'brows',price:90},ears_bunny:{name:'Кролячі вуха',emoji:'🐰',category:'face',slot:'ears',price:240},ears_soft:{name:'М’які вушка',emoji:'👂',category:'face',slot:'ears',price:0,image:'assets/ears_soft.png'},ears_tall:{name:'Високі вушка',emoji:'👂',category:'face',slot:'ears',price:0,image:'assets/ears_tall.png'},ears_sharp:{name:'Гострі вушка',emoji:'👂',category:'face',slot:'ears',price:0,image:'assets/ears_sharp.png'},blush:{name:'Рум’янець',emoji:'🌸',category:'face',slot:'cosmetic1',price:85},freckles:{name:'Веснянки',emoji:'🟤',category:'face',slot:'cosmetic1',price:85},stars:{name:'Зірочки на щоках',emoji:'🌟',category:'face',slot:'cosmetic2',price:125},shadow:{name:'Тіні для очей',emoji:'💜',category:'face',slot:'cosmetic2',price:140}
+ eyes_star:{name:'Зоряні очі',emoji:'✨',category:'face',slot:'eyes',price:185},eyes_sleepy:{name:'Мрійливі очі',emoji:'😌',category:'face',slot:'eyes',price:135},eyes_tired:{name:'Втомлені очі',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'assets/tiredeyes.png'},nose_heart:{name:'Носик-серце',emoji:'💗',category:'face',slot:'nose',price:110},mouth_cat:{name:'Котяча усмішка',emoji:'😺',category:'face',slot:'mouth',price:125},brows_bold:{name:'Виразні брови',emoji:'〰️',category:'face',slot:'brows',price:90},ears_bunny:{name:'Кролячі вуха',emoji:'🐰',category:'face',slot:'ears',price:240},ears_soft:{name:'М’які вушка',emoji:'👂',category:'face',slot:'ears',price:0,image:'assets/ears_soft.png'},ears_tall:{name:'Високі вушка',emoji:'👂',category:'face',slot:'ears',price:0,image:'assets/ears_tall.png'},ears_sharp:{name:'Гострі вушка',emoji:'👂',category:'face',slot:'ears',price:0,image:'assets/ears_sharp.png'},blush:{name:'Рум’янець',emoji:'🌸',category:'face',slot:'cosmetic1',price:85},freckles:{name:'Веснянки',emoji:'🟤',category:'face',slot:'cosmetic1',price:85},stars:{name:'Зірочки на щоках',emoji:'🌟',category:'face',slot:'cosmetic2',price:125},shadow:{name:'Тіні для очей',emoji:'💜',category:'face',slot:'cosmetic2',price:140}
 };
 // Підвісні авторські лампи; ціни і назви задав автор гри.
 Object.assign(ITEMS,{
@@ -373,7 +373,7 @@ const faceSlots=['eyes','nose','mouth','brows','ears','cosmetic1','cosmetic2'];
 const faceNames={eyes:'Очі',nose:'Ніс',mouth:'Рот',brows:'Брови',ears:'Вуха',cosmetic1:'Косметика 1',cosmetic2:'Косметика 2'};
 const NEED_DEFAULT={dirt:88,hunger:82,sleep:90,boredom:85,health:100};
 const BUGS={fly:{name:'Муха',emoji:'🪰',price:35,grow:75,seed:15},gnat:{name:'Мошка',emoji:'🦟',price:55,grow:115,seed:24},mosquito:{name:'Комар',emoji:'🦟',price:85,grow:170,seed:38},starlight:{name:'Зоряний жук',emoji:'✨',price:155,grow:260,seed:66}};
-const defaults=()=>({needs:{...NEED_DEFAULT},needsAt:Date.now(),room:0,startRoom:0,roomDecor:[{wall:0,floor:0},{wall:1,floor:1},{wall:2,floor:2}],roomDirt:[88,91,93],roomLights:[true,true,true],needsScale:2,roomDirtAt:Date.now(),dustDaily:{day:"",home:[],npcs:{}},bugs:{},bugPlots:[null,null,null,null,null,null],coins:1000,appearance:{head:'round',fur:'#f0eff1',body:'#f0eff1',eyeColor:'#4b406c',name:'Прото'},owned:{apple:3,cake:1,chair:1,plant:1,ears_soft:1,ears_tall:1,ears_sharp:1},equipped:{},placed:[],giftHistory:[],giftSent:[],happiness:80,location:'island',homePlaced:[],friends:[],friendId:null,npcGifts:{},npcVisits:{},xp:0,level:1,levelRewards:[],dailyInteractions:{},avatar:""});
+const defaults=()=>({needs:{...NEED_DEFAULT},needsAt:Date.now(),room:0,startRoom:0,roomDecor:[{wall:0,floor:0},{wall:1,floor:1},{wall:2,floor:2}],roomDirt:[88,91,93],roomLights:[true,true,true],needsScale:2,roomDirtAt:Date.now(),dustDaily:{day:"",home:[],npcs:{}},bugs:{},bugPlots:[null,null,null,null,null,null],coins:1000,appearance:{head:'round',fur:'#f0eff1',body:'#f0eff1',eyeColor:'#4b406c',name:'Прото'},owned:{apple:3,cake:1,chair:1,plant:1,ears_soft:1,ears_tall:1,ears_sharp:1,eyes_tired:1},equipped:{},placed:[],giftHistory:[],giftSent:[],happiness:80,location:'island',homePlaced:[],friends:[],friendId:null,npcGifts:{},npcVisits:{},xp:0,level:1,levelRewards:[],dailyInteractions:{},avatar:""});
 let state=defaults();
 const safeStr=(v,n=80)=>String(v??'').replace(/[<>]/g,'').slice(0,n);
 function load(){try{let s=JSON.parse(localStorage.getItem(STORAGE)||'null');if(!s||typeof s!=='object')return;state={...defaults(),...s,needs:{...NEED_DEFAULT,...s.needs},bugs:s.bugs&&typeof s.bugs==='object'?s.bugs:{},bugPlots:Array.isArray(s.bugPlots)?s.bugPlots.slice(0,6):[null,null,null,null,null,null],room:Number.isInteger(s.room)&&s.room>=0&&s.room<=3?s.room:0,startRoom:Number.isInteger(s.startRoom)&&s.startRoom>=0&&s.startRoom<=2?s.startRoom:0,roomDecor:Array.from({length:3},(_,i)=>({wall:Math.max(0,Math.min(3,Number(s.roomDecor?.[i]?.wall) || 0)),floor:Math.max(0,Math.min(3,Number(s.roomDecor?.[i]?.floor) || 0))})),roomDirt:Array.from({length:3},(_,i)=>Math.max(0,Math.min(100,Number(s.roomDirt?.[i] ?? [12,9,7][i])||0))),roomDirtAt:Number.isFinite(s.roomDirtAt)?s.roomDirtAt:Date.now(),roomLights:Array.from({length:3},(_,i)=>s.roomLights?.[i]!==false),dustDaily:s.dustDaily&&typeof s.dustDaily==="object"?s.dustDaily:{day:"",home:[],npcs:{}},appearance:{...defaults().appearance,...s.appearance},owned:{...defaults().owned,...s.owned},equipped:s.equipped||{},placed:Array.isArray(s.placed)?s.placed.slice(0,150):[],giftHistory:Array.isArray(s.giftHistory)?s.giftHistory.slice(-200):[],giftSent:Array.isArray(s.giftSent)?s.giftSent.slice(-200):[],location:s.location==='home'?'home':'island',homePlaced:Array.isArray(s.homePlaced)?s.homePlaced.slice(0,100):[],friends:Array.isArray(s.friends)?s.friends.slice(0,80):[],friendId:typeof s.friendId==='string'?s.friendId:null,npcGifts:s.npcGifts&&typeof s.npcGifts==='object'?s.npcGifts:{},npcVisits:s.npcVisits&&typeof s.npcVisits==='object'?s.npcVisits:{},xp:Number.isFinite(s.xp)?Math.max(0,Math.floor(s.xp)):0,level:Number.isInteger(s.level)?Math.max(1,Math.min(300,s.level)):1,levelRewards:Array.isArray(s.levelRewards)?s.levelRewards:[],dailyInteractions:s.dailyInteractions&&typeof s.dailyInteractions==='object'?s.dailyInteractions:{},avatar:typeof s.avatar==='string'?s.avatar.slice(0,1800):""};
@@ -951,8 +951,25 @@ function renderCustomEarPair(g,kind,color){
  g.drawImage(tinted,-size/2,-size/2-lift,size,size);
  return true;
 }
+
+// Готове PNG з втомленими очима. Якщо файл є у assets/, він з'являється як безкоштовний варіант очей.
+const tiredEyesImg=new Image();
+let tiredEyesReady=false;
+let tiredEyesFailed=false;
+function loadTiredEyes(){
+ tiredEyesImg.onload=()=>{tiredEyesReady=tiredEyesImg.naturalWidth>0;tiredEyesFailed=!tiredEyesReady;drawPreviewIfOpen()};
+ tiredEyesImg.onerror=()=>{tiredEyesReady=false;tiredEyesFailed=true};
+ tiredEyesImg.src='assets/tiredeyes.png';
+}
+loadTiredEyes();
+function renderTiredEyes(g){
+ if(!tiredEyesReady)return false;
+ const size=78;
+ g.drawImage(tiredEyesImg,-size/2,-size/2-4,size,size);
+ return true;
+}
 function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
- let a=appearanceOverride||state.appearance,fur=a.fur||'#f0eff1',body=appearanceOverride?(a.body||fur):fur;let eq=appearanceOverride?{}:state.equipped||{};
+ let a=appearanceOverride||state.appearance,fur=a.fur||'#f0eff1',body=appearanceOverride?(a.body||fur):fur;let eq=appearanceOverride?{...(a.equipped||{})}:(state.equipped||{});
  let moving=animated&&!appearanceOverride&&!!walkTarget;let phase=pet.step;let pulse=animated?(moving?-Math.abs(Math.sin(phase))*1.5:Math.sin(clock*2)*1.2):0;
  let performing=animated&&action!=='idle'&&clock<actionUntil;
  const walk=moving?Math.sin(phase)*.23:Math.sin(clock*1.1)*.03;
@@ -1034,7 +1051,9 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  if(eq.cosmetic1==='freckles'){for(let side of [-1,1])for(let j=0;j<3;j++)ellipse(side*(20+j*2.8),7+j%2*3.5,1.4,1.4,'#aa817c')}
  if(eq.cosmetic2==='stars'){g.fillStyle='#ebbc48';g.font='12px sans-serif';g.fillText('✦',-32,0);g.fillText('✦',25,0)}
  const blink=animated&&Math.sin(clock*.68)>0.996;
- if(eq.eyes==='eyes_sleepy'||blink){line(-22,-3,-8,-3,eye,3.2);line(8,-3,22,-3,eye,3.2)}
+ if(eq.eyes==='eyes_tired' && !blink){
+  renderTiredEyes(g);
+ }else if(eq.eyes==='eyes_sleepy'||blink){line(-22,-3,-8,-3,eye,3.2);line(8,-3,22,-3,eye,3.2)}
  else{
   ellipse(-15,-3,eq.eyes==='eyes_star'?8.5:6.2,eq.eyes==='eyes_star'?10:8.8,eye);
   ellipse(15,-3,eq.eyes==='eyes_star'?8.5:6.2,eq.eyes==='eyes_star'?10:8.8,eye);
@@ -1194,7 +1213,7 @@ const SHOP_STOCK={
  bathroom:['bath','shower','vacuum','robot_vacuum'],
  clothes:['dress','shirt','wig_pink','wig_blue'],
  accessories:['tail_fox','tail_cat','bow'],
- makeup:['eyes_star','eyes_sleepy','nose_heart','mouth_cat','brows_bold','ears_bunny','blush','freckles','stars','shadow'],
+ makeup:['eyes_star','eyes_sleepy','eyes_tired','nose_heart','mouth_cat','brows_bold','ears_bunny','blush','freckles','stars','shadow'],
  other:[]
 };
 const OTHER_SHOP_TABS=[
@@ -1210,7 +1229,7 @@ let shopRenderLast=0,shopRenderAccum=0,shopSceneCache=null,shopLastProgress=-1,s
 window.addEventListener('resize',()=>{shopSceneCache=null;shopRenderAccum=1;});
 function shopCacheFor(stage,world,c){if(shopSceneCache&&shopSceneCache.stage===stage)return shopSceneCache;const width=stage.clientWidth,height=stage.clientHeight;if(!shopSceneCache||shopSceneCache.stage!==stage||shopSceneCache.width!==width||shopSceneCache.height!==height){const count=shopStock().length,spacing=Math.max(190,Math.min(300,width*.25)),total=Math.max(width*2.15,430+count*spacing+540);shopSceneCache={stage,world,c,width,height,metrics:{width,height,spacing,total,maxCamera:Math.max(0,total-width)},ctx:c.getContext('2d',{alpha:true})};world.style.width=width+'px'}return shopSceneCache}
 
-const shopSeller={head:'round',fur:'#c7a3bc',body:'#ad8eae',eyeColor:'#53416b',name:'Продавець'};
+const shopSeller={head:'round',fur:'#c7a3bc',body:'#ad8eae',eyeColor:'#53416b',name:'Продавець',equipped:{eyes:'eyes_tired',ears:'ears_soft'}};
 function resetShopWalker(){shopCamera=0;shopCameraTarget=0;shopWalkerX=330;shopWalkTarget=null;shopWalkPhase=0;shopWalkDir=1;shopHoldDir=0;shopRenderLast=0;shopRenderAccum=0;shopSceneCache=null;shopLastProgress=-1;shopLastNav=-1}
 function shopStock(){const r=SHOP_ROOMS.find(r=>r.id===shopRoom);if(!r)return [];const tab=OTHER_SHOP_TABS.find(t=>t.id===otherShopTab);return (r.id==='other'?(tab?.stock||[]):(SHOP_STOCK[r.id]||[])).filter(id=>ITEMS[id])}
 function shopMetrics(){const stage=document.getElementById('shopStage');const width=stage?.clientWidth||window.innerWidth;const height=stage?.clientHeight||window.innerHeight;
