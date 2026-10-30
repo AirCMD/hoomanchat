@@ -378,7 +378,7 @@ const ASSETS_ROOT='/hoomanchat/assets/';
 const ITEMS={
  apple:{name:'Яблуко',emoji:'🍎',category:'food',price:20},cake:{name:'Тістечко',emoji:'🧁',category:'food',price:45},tea:{name:'Чай',emoji:'🧋',category:'food',price:25},
  chair:{name:'Крісло',emoji:'🪑',category:'furniture',price:170},lamp:{name:'Лампа',emoji:'💡',category:'furniture',price:130},plant:{name:'Квітка',emoji:'🪴',category:'furniture',price:95},bed:{name:'Ліжко',emoji:'🛏️',category:'furniture',price:340},bath:{name:'Ванна',emoji:'🛁',category:'furniture',price:290},shower:{name:'Душ',emoji:'🚿',category:'furniture',price:260},tv:{name:'Телевізор',emoji:'📺',category:'furniture',price:380},fridge:{name:'Звичайний холодильник',emoji:'🧊',category:'furniture',price:330},auto_fridge:{name:'Розумний холодильник',emoji:'🥗',category:'furniture',price:1100},toy:{name:'Іграшка пета',emoji:'🧸',category:'furniture',price:130},vacuum:{name:'Звичайний пилосос',emoji:'🧹',category:'furniture',price:290},robot_vacuum:{name:'Робот-пилосос',emoji:'🤖',category:'furniture',price:940},medicine:{name:'Ліки для пета',emoji:'💊',category:'food',price:155},
- wig_pink:{name:'Рожева перука',emoji:'👩‍🎤',category:'wig',price:280},wig_blue:{name:'Синя перука',emoji:'🩵',category:'wig',price:300},hair_brown:{name:'Каштанове волосся',emoji:'💇',category:'wig',slot:'wig',price:150,image:'/hoomanchat/assets/brownhair.png'},hair_shkrek1:{name:'Волосся 1',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:2,image:'/hoomanchat/assets/shkrekhair1.png'},hair_shkeksp2:{name:'Волосся SP 2',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:7,premium:true,image:'/hoomanchat/assets/shkekhairsp2.png'},hair_shkeksp1:{name:'Волосся SP 1',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:7,premium:true,image:'/hoomanchat/assets/shkekhairsp1.png'},hair_shkrek3:{name:'Волосся 3',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:2,image:'/hoomanchat/assets/shkrekhair3.png'},hair_shkrek2:{name:'Волосся 2',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:2,image:'/hoomanchat/assets/shkrekhair2.png'},dress:{name:'Сукня',emoji:'👗',category:'clothes',price:280},shirt:{name:'Світшот',emoji:'👕',category:'clothes',price:220},
+ wig_pink:{name:'Рожева перука',emoji:'👩‍🎤',category:'wig',price:280},wig_blue:{name:'Синя перука',emoji:'🩵',category:'wig',price:300},hair_brown:{name:'Каштанове волосся',emoji:'💇',category:'wig',slot:'wig',price:150,image:'/hoomanchat/assets/brownhair.png'},hair_blonde:{name:'Світле волосся',emoji:'💇',category:'wig',slot:'wig',price:150,image:'/hoomanchat/assets/blondehair.png'},hair_ginger:{name:'Руде волосся',emoji:'💇',category:'wig',slot:'wig',price:150,image:'/hoomanchat/assets/gingerhair.png'},hair_shkrek1:{name:'Волосся 1',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:2,image:'/hoomanchat/assets/shkrekhair1.png'},hair_shkeksp2:{name:'Волосся SP 2',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:7,premium:true,image:'/hoomanchat/assets/shkekhairsp2.png'},hair_shkeksp1:{name:'Волосся SP 1',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:7,premium:true,image:'/hoomanchat/assets/shkekhairsp1.png'},hair_shkrek3:{name:'Волосся 3',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:2,image:'/hoomanchat/assets/shkrekhair3.png'},hair_shkrek2:{name:'Волосся 2',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:2,image:'/hoomanchat/assets/shkrekhair2.png'},dress:{name:'Сукня',emoji:'👗',category:'clothes',price:280},shirt:{name:'Світшот',emoji:'👕',category:'clothes',price:220},
  tail_fox:{name:'Лисячий хвіст',emoji:'🦊',category:'accessory',slot:'tail',price:240},tail_cat:{name:'Котячий хвіст',emoji:'🐈',category:'accessory',slot:'tail',price:180},bow:{name:'Бантик',emoji:'🎀',category:'accessory',slot:'bow',price:115},
  eyes_star:{name:'Зоряні очі',emoji:'✨',category:'face',slot:'eyes',price:185},eyes_sleepy:{name:'Мрійливі очі',emoji:'😌',category:'face',slot:'eyes',price:135},eyes_tired:{name:'Втомлені очі',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/tiredeyes.png'},nose_heart:{name:'Носик-серце',emoji:'💗',category:'face',slot:'nose',price:110},nose_shark:{name:'Акулячий ніс',emoji:'👃',category:'face',slot:'nose',price:150,image:'/hoomanchat/assets/sharknostril.png'},nose_nostril:{name:'Ніс',emoji:'👃',category:'face',slot:'nose',price:0,image:'/hoomanchat/assets/nostril.png'},
  sharkmouth:{name:'Акулячий рот',emoji:'👄',category:'face',slot:'mouth',price:0,image:MOUTH_PNG.sharkmouth},
@@ -1207,7 +1207,9 @@ const wigPngFiles={
  hair_shkeksp1:'shkekhairsp1.png',
  hair_shkrek3:'shkrekhair3.png',
  hair_shkrek2:'shkrekhair2.png',
- hair_brown:'brownhair.png'
+ hair_brown:'brownhair.png',
+ hair_blonde:'blondehair.png',
+ hair_ginger:'gingerhair.png'
 };
 const wigSprites={};
 for(const [id,filename] of Object.entries(wigPngFiles)){
@@ -1240,12 +1242,13 @@ function renderAuthoredWig(g,id,hx,hy){
  const img=sprite.img,w=img.naturalWidth,h=img.naturalHeight;
  if(!w||!h)return false;
  const crop=sprite.crop||{x:0,y:0,w,h};
- const targetW=(hx*2.28);
+ // Трішки збільшуємо авторські PNG-перуки, без агресивного розтягування.
+ const targetW=(hx*2.42);
  const scale=targetW/crop.w;
  const targetH=crop.h*scale;
  const dx=-targetW/2;
- // Піднімаємо всі авторські PNG-перуки ще на 8 px.
- const dy=-hy-20;
+ // І трохи піднімаємо, щоб більший розмір не сідав нижче на очі.
+ const dy=-hy-23;
  g.drawImage(img,crop.x,crop.y,crop.w,crop.h,dx,dy,targetW,targetH);
  return true;
 }
@@ -1280,10 +1283,14 @@ function renderAuthoredNose(g,id){
  const crop=sprite.crop||{x:0,y:0,w,h};
  const ratio=crop.w/crop.h;
  const baseWidth=Math.min(21,Math.max(9,ratio*16));
- // Shark nostrils only: reduce to a small nose detail, leaving nostril.png unchanged.
- const width=id==='nose_shark'?baseWidth*.45:baseWidth;
+ let width=baseWidth,centerY=10;
+ if(id==='nose_shark'){
+  // Акулячі ніздрі: менші і трохи вище, щоб не виглядали як чорні плями біля рота.
+  width=Math.max(7.5,baseWidth*.36);
+  centerY=4.5;
+ }
  const height=width/Math.max(ratio,.001);
- g.drawImage(img,crop.x,crop.y,crop.w,crop.h,-width/2,10-height/2,width,height);
+ g.drawImage(img,crop.x,crop.y,crop.w,crop.h,-width/2,centerY-height/2,width,height);
  return true;
 }
 function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
@@ -1603,7 +1610,7 @@ const CLOTHES_SHOP_TABS=[
 const WIG_SHOP_TABS=[
  {id:'dark',name:'Даркі',stock:['hair_shkrek1','hair_shkeksp2','hair_shkeksp1','hair_shkrek3','hair_shkrek2']},
  {id:'pastel',name:'Пастель',stock:[]},
- {id:'classic',name:'Класичні',stock:['wig_pink','wig_blue','hair_brown']},
+ {id:'classic',name:'Класичні',stock:['wig_pink','wig_blue','hair_brown','hair_blonde','hair_ginger']},
  {id:'ufo',name:'НЛО',stock:[]},
  {id:'anime',name:'Аніме',stock:[]}
 ];
