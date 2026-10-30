@@ -376,7 +376,7 @@ const ITEMS={
  chair:{name:'Крісло',emoji:'🪑',category:'furniture',price:170},lamp:{name:'Лампа',emoji:'💡',category:'furniture',price:130},plant:{name:'Квітка',emoji:'🪴',category:'furniture',price:95},bed:{name:'Ліжко',emoji:'🛏️',category:'furniture',price:340},bath:{name:'Ванна',emoji:'🛁',category:'furniture',price:290},shower:{name:'Душ',emoji:'🚿',category:'furniture',price:260},tv:{name:'Телевізор',emoji:'📺',category:'furniture',price:380},fridge:{name:'Звичайний холодильник',emoji:'🧊',category:'furniture',price:330},auto_fridge:{name:'Розумний холодильник',emoji:'🥗',category:'furniture',price:1100},toy:{name:'Іграшка пета',emoji:'🧸',category:'furniture',price:130},vacuum:{name:'Звичайний пилосос',emoji:'🧹',category:'furniture',price:290},robot_vacuum:{name:'Робот-пилосос',emoji:'🤖',category:'furniture',price:940},medicine:{name:'Ліки для пета',emoji:'💊',category:'food',price:155},
  wig_pink:{name:'Рожева перука',emoji:'👩‍🎤',category:'wig',price:280},wig_blue:{name:'Синя перука',emoji:'🩵',category:'wig',price:300},dress:{name:'Сукня',emoji:'👗',category:'clothes',price:280},shirt:{name:'Світшот',emoji:'👕',category:'clothes',price:220},
  tail_fox:{name:'Лисячий хвіст',emoji:'🦊',category:'accessory',slot:'tail',price:240},tail_cat:{name:'Котячий хвіст',emoji:'🐈',category:'accessory',slot:'tail',price:180},bow:{name:'Бантик',emoji:'🎀',category:'accessory',slot:'bow',price:115},
- eyes_star:{name:'Зоряні очі',emoji:'✨',category:'face',slot:'eyes',price:185},eyes_sleepy:{name:'Мрійливі очі',emoji:'😌',category:'face',slot:'eyes',price:135},eyes_tired:{name:'Втомлені очі',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/tiredeyes.png'},nose_heart:{name:'Носик-серце',emoji:'💗',category:'face',slot:'nose',price:110},
+ eyes_star:{name:'Зоряні очі',emoji:'✨',category:'face',slot:'eyes',price:185},eyes_sleepy:{name:'Мрійливі очі',emoji:'😌',category:'face',slot:'eyes',price:135},eyes_tired:{name:'Втомлені очі',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/tiredeyes.png'},nose_heart:{name:'Носик-серце',emoji:'💗',category:'face',slot:'nose',price:110},nose_shark:{name:'Акулячий ніс',emoji:'👃',category:'face',slot:'nose',price:150,image:'/hoomanchat/assets/sharknostril.png'},nose_nostril:{name:'Ніс',emoji:'👃',category:'face',slot:'nose',price:0,image:'/hoomanchat/assets/nostril.png'},
  sharkmouth:{name:'Акулячий рот',emoji:'👄',category:'face',slot:'mouth',price:0,image:MOUTH_PNG.sharkmouth},
  animalmouth:{name:'Звіриний рот',emoji:'👄',category:'face',slot:'mouth',price:0,image:MOUTH_PNG.animalmouth},
  catmouth:{name:'Котячий рот',emoji:'👄',category:'face',slot:'mouth',price:0,image:MOUTH_PNG.catmouth},
@@ -417,7 +417,7 @@ const faceSlots=['eyes','nose','mouth','brows','ears','cosmetic1','cosmetic2'];
 const faceNames={eyes:'Очі',nose:'Ніс',mouth:'Рот',brows:'Брови',ears:'Вуха',cosmetic1:'Косметика 1',cosmetic2:'Косметика 2'};
 const NEED_DEFAULT={dirt:88,hunger:82,sleep:90,boredom:85,health:100};
 const BUGS={fly:{name:'Муха',emoji:'🪰',price:35,grow:75,seed:15},gnat:{name:'Мошка',emoji:'🦟',price:55,grow:115,seed:24},mosquito:{name:'Комар',emoji:'🦟',price:85,grow:170,seed:38},starlight:{name:'Зоряний жук',emoji:'✨',price:155,grow:260,seed:66}};
-const defaults=()=>({needs:{...NEED_DEFAULT},needsAt:Date.now(),room:0,startRoom:0,roomDecor:[{wall:0,floor:0},{wall:1,floor:1},{wall:2,floor:2}],roomCleanliness:88,roomLights:[true,true,true],needsScale:2,roomDirtAt:Date.now(),dustDaily:{day:"",home:[],npcs:{}},bugs:{},bugPlots:[null,null,null,null,null,null],coins:1000,tokens:0,appearance:{head:'round',fur:'#f0eff1',body:'#f0eff1',eyeColor:'#4b406c',name:'Прото'},owned:{apple:3,cake:1,chair:1,plant:1,ears_soft:1,ears_tall:1,ears_sharp:1,eyes_tired:1,sharkmouth:1,animalmouth:1,catmouth:1,smilemouth:1,funmouth:1,apathymouth:1,smouth:1,mou3:1},equipped:{},placed:[],giftHistory:[],giftSent:[],happiness:80,location:'island',homePlaced:[],friends:[],friendId:null,npcGifts:{},npcVisits:{},xp:0,level:1,levelRewards:[],dailyInteractions:{},avatar:""});
+const defaults=()=>({needs:{...NEED_DEFAULT},needsAt:Date.now(),room:0,startRoom:0,roomDecor:[{wall:0,floor:0},{wall:1,floor:1},{wall:2,floor:2}],roomCleanliness:88,roomLights:[true,true,true],needsScale:2,roomDirtAt:Date.now(),dustDaily:{day:"",home:[],npcs:{}},bugs:{},bugPlots:[null,null,null,null,null,null],coins:1000,tokens:0,appearance:{head:'round',fur:'#f0eff1',body:'#f0eff1',eyeColor:'#4b406c',name:'Прото'},owned:{apple:3,cake:1,chair:1,plant:1,ears_soft:1,ears_tall:1,ears_sharp:1,eyes_tired:1,nose_nostril:1,sharkmouth:1,animalmouth:1,catmouth:1,smilemouth:1,funmouth:1,apathymouth:1,smouth:1,mou3:1},equipped:{},placed:[],giftHistory:[],giftSent:[],happiness:80,location:'island',homePlaced:[],friends:[],friendId:null,npcGifts:{},npcVisits:{},xp:0,level:1,levelRewards:[],dailyInteractions:{},avatar:""});
 let state=defaults();
 const safeStr=(v,n=80)=>String(v??'').replace(/[<>]/g,'').slice(0,n);
 function load(){try{let s=JSON.parse(localStorage.getItem(STORAGE)||'null');if(!s||typeof s!=='object')return;state={...defaults(),...s,tokens:Number.isFinite(Number(s.tokens))?Math.max(0,Math.floor(Number(s.tokens))):0,needs:{...NEED_DEFAULT,...s.needs},bugs:s.bugs&&typeof s.bugs==='object'?s.bugs:{},bugPlots:Array.isArray(s.bugPlots)?s.bugPlots.slice(0,6):[null,null,null,null,null,null],room:Number.isInteger(s.room)&&s.room>=0&&s.room<=3?s.room:0,startRoom:Number.isInteger(s.startRoom)&&s.startRoom>=0&&s.startRoom<=2?s.startRoom:0,roomDecor:Array.from({length:3},(_,i)=>({wall:Math.max(0,Math.min(3,Number(s.roomDecor?.[i]?.wall) || 0)),floor:Math.max(0,Math.min(3,Number(s.roomDecor?.[i]?.floor) || 0))})),roomCleanliness:(Number.isFinite(Number(s.roomCleanliness))&&s.roomCleanliness!==undefined&&s.roomCleanliness!==null)?Math.max(0,Math.min(100,Number(s.roomCleanliness))):(()=>{const legacy=Array.isArray(s.roomDirt)?s.roomDirt:[88,91,93];const values=legacy.slice(0,3).map(v=>Math.max(0,Math.min(100,Number(v)||0)));const average=values.length?values.reduce((a,b)=>a+b,0)/values.length:88;return s.needsScale===2?average:100-average})(),roomDirtAt:Number.isFinite(s.roomDirtAt)?s.roomDirtAt:Date.now(),roomLights:Array.from({length:3},(_,i)=>s.roomLights?.[i]!==false),dustDaily:s.dustDaily&&typeof s.dustDaily==="object"?s.dustDaily:{day:"",home:[],npcs:{}},appearance:{...defaults().appearance,...s.appearance},owned:{...defaults().owned,...s.owned},equipped:s.equipped||{},placed:Array.isArray(s.placed)?s.placed.slice(0,150):[],giftHistory:Array.isArray(s.giftHistory)?s.giftHistory.slice(-200):[],giftSent:Array.isArray(s.giftSent)?s.giftSent.slice(-200):[],location:s.location==='home'?'home':'island',homePlaced:Array.isArray(s.homePlaced)?s.homePlaced.slice(0,100):[],friends:Array.isArray(s.friends)?s.friends.slice(0,80):[],friendId:typeof s.friendId==='string'?s.friendId:null,npcGifts:s.npcGifts&&typeof s.npcGifts==='object'?s.npcGifts:{},npcVisits:s.npcVisits&&typeof s.npcVisits==='object'?s.npcVisits:{},xp:Number.isFinite(s.xp)?Math.max(0,Math.floor(s.xp)):0,level:Number.isInteger(s.level)?Math.max(1,Math.min(300,s.level)):1,levelRewards:Array.isArray(s.levelRewards)?s.levelRewards:[],dailyInteractions:s.dailyInteractions&&typeof s.dailyInteractions==='object'?s.dailyInteractions:{},avatar:typeof s.avatar==='string'?s.avatar.slice(0,1800):""};
@@ -694,7 +694,7 @@ function drawNPCHead(n,species,coat,accent){
  }else if(species==='shark'){
   ellipse(0,15,23,10,'#dceaf0');if(n.id!=='water_blue'){ctx.beginPath();ctx.moveTo(-14,12);ctx.lineTo(14,12);ctx.strokeStyle='#315369';ctx.lineWidth=2;ctx.stroke()}
  }else{ellipse(0,11,3,2,'#684c55')}
- if(n.id==='water_blue')renderAuthoredMouth(ctx,'sharkgrip');else{ctx.beginPath();ctx.arc(0,16,5,0,Math.PI);ctx.strokeStyle=dark?'#d8d5e0':'#66505d';ctx.lineWidth=2;ctx.stroke()}
+ if(n.id==='water_blue'){renderAuthoredNose(ctx,'nose_shark');renderAuthoredMouth(ctx,'sharkgrip')}else{ctx.beginPath();ctx.arc(0,16,5,0,Math.PI);ctx.strokeStyle=dark?'#d8d5e0':'#66505d';ctx.lineWidth=2;ctx.stroke()}
  if(n.id==='la_cyber'){ctx.strokeStyle='#27eee8';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-37,-3);ctx.lineTo(-25,13);ctx.moveTo(37,-3);ctx.lineTo(25,13);ctx.stroke()}
  if(n.id==='water_blue'){for(const side of [-1,1]){ctx.beginPath();ctx.moveTo(side*33,4);ctx.lineTo(side*48,-6);ctx.lineTo(side*35,20);ctx.fillStyle=face;ctx.fill()}}
  ctx.restore();
@@ -1105,6 +1105,39 @@ function renderAuthoredMouth(g,name){
  }
  return true;
 }
+// Два авторські PNG-носи: чіткий абсолютний шлях до assets у корені репозиторію.
+const noseSprites={};
+for(const [id,filename] of [['nose_shark','sharknostril.png'],['nose_nostril','nostril.png']]){
+ const img=new Image();const item={img,ready:false,crop:null};noseSprites[id]=item;
+ img.onload=()=>{
+  item.ready=img.naturalWidth>0;
+  if(item.ready){
+   try{
+    const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;
+    const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(img,0,0);
+    const pixels=g.getImageData(0,0,c.width,c.height).data;
+    let l=c.width,t=c.height,r=-1,b=-1;
+    for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++)if(pixels[(y*c.width+x)*4+3]>12){l=Math.min(l,x);t=Math.min(t,y);r=Math.max(r,x);b=Math.max(b,y)}
+    if(r>=l)item.crop={x:l,y:t,w:r-l+1,h:b-t+1};
+   }catch(err){console.warn('Ніс PNG: неможливо визначити прозорі поля',filename,err)}
+  }
+  if(typeof drawPreviewIfOpen==='function')drawPreviewIfOpen();
+  if(typeof activePanel!=='undefined'&&activePanel==='editor'&&typeof drawFaceChoices==='function')drawFaceChoices();
+ };
+ img.onerror=()=>{item.ready=false;console.error('Не завантажено ніс:',img.src)};
+ img.src='/hoomanchat/assets/'+filename;
+}
+function renderAuthoredNose(g,id){
+ const sprite=noseSprites[id];if(!sprite||!sprite.ready)return false;
+ const img=sprite.img,w=img.naturalWidth,h=img.naturalHeight;
+ if(!w||!h)return false;
+ // Усі вихідні PNG мають свою композицію на полотні; обрізаємо лише прозорість.
+ const crop=sprite.crop||{x:0,y:0,w,h};
+ const ratio=crop.w/crop.h;
+ const width= Math.min(21,Math.max(9,ratio*16)),height=width/Math.max(ratio,.001);
+ g.drawImage(img,crop.x,crop.y,crop.w,crop.h,-width/2,10-height/2,width,height);
+ return true;
+}
 function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  let a=appearanceOverride||state.appearance,fur=a.fur||'#f0eff1',body=appearanceOverride?(a.body||fur):fur;let eq=appearanceOverride?{...(a.equipped||{})}:(state.equipped||{});
  let moving=animated&&!appearanceOverride&&!!walkTarget;let phase=pet.step;let pulse=animated?(moving?-Math.abs(Math.sin(phase))*1.5:Math.sin(clock*2)*1.2):0;
@@ -1200,7 +1233,8 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
   ellipse(-13,-7,2.2,2.6,'white');ellipse(17,-7,2.2,2.6,'white');
   if(eq.eyes==='eyes_star'){g.fillStyle='#fff';g.font='9px sans-serif';g.fillText('✦',-18,2);g.fillText('✦',12,2)}
  }
- if(eq.nose==='nose_heart'){g.fillStyle='#ca809a';g.font='12px system-ui';g.textAlign='center';g.fillText('♥',0,12)}
+ if(Object.prototype.hasOwnProperty.call(noseSprites,eq.nose)){renderAuthoredNose(g,eq.nose)}
+ else if(eq.nose==='nose_heart'){g.fillStyle='#ca809a';g.font='12px system-ui';g.textAlign='center';g.fillText('♥',0,12)}
  else{g.beginPath();g.moveTo(-4,8);g.lineTo(4,8);g.lineTo(0,12);g.closePath();g.fillStyle='#a7838d';g.fill()}
  if(Object.prototype.hasOwnProperty.call(mouthSprites,eq.mouth)){
   renderAuthoredMouth(g,eq.mouth);
@@ -1357,7 +1391,7 @@ const SHOP_STOCK={
  bathroom:['bath','shower','vacuum','robot_vacuum'],
  clothes:['dress','shirt','wig_pink','wig_blue'],
  accessories:['tail_fox','tail_cat','bow'],
- makeup:['eyes_star','eyes_sleepy','eyes_tired','nose_heart','mouth_cat','sharkmouth','animalmouth','catmouth','smilemouth','funmouth','apathymouth','smouth','mou3','sharkgrip','brows_bold','ears_bunny','blush','freckles','stars','shadow'],
+ makeup:['eyes_star','eyes_sleepy','eyes_tired','nose_heart','nose_shark','nose_nostril','mouth_cat','sharkmouth','animalmouth','catmouth','smilemouth','funmouth','apathymouth','smouth','mou3','sharkgrip','brows_bold','ears_bunny','blush','freckles','stars','shadow'],
  other:[]
 };
 const OTHER_SHOP_TABS=[
