@@ -780,9 +780,9 @@ function drawNPCHead(n,species,coat,accent){
  const dark=['dreaming_romance','wolf_fang'].includes(n.id);
  const face=n.id==='akira_bakeneko'?'#efc5a7':n.id==='la_cyber'?'#785447':n.id==='yuki_foxy'?'#f1f3f7':n.id==='soft_static'?'#e4dce9':dark?'#252735':n.id==='night_fox'?'#d78b51':n.id==='water_blue'?'#579bbd':n.id==='yoyo_tchi'?'#e3c6a0':'#d5c4ce';
  // Авторські вуха цих NPC, за головою та під зачіскою.
- const npcEarKind=({la_cyber:akira_bakeneko:alter_core:soft_static:'ears_rabbit_big'})[n.id];
+ const npcEarKind=({la_cyber:'ears_soft',akira_bakeneko:'ears_soft',alter_core:'ears_tall',soft_static:'ears_rabbit_big'})[n.id];
  if(npcEarKind)renderCustomEarPair(ctx,npcEarKind,face);
- const ears=['cat','fox','wolf','rabbit','weasel'].includes(species);
+ const ears=['cat','fox','wolf','rabbit','weasel'].includes(species)&&!(n.id==='soft_static'&&npcEarKind==='ears_rabbit_big');
  if(ears){
   for(const side of [-1,1]){ctx.save();ctx.scale(side,1);ctx.beginPath();
    if(species==='rabbit'){ctx.ellipse(23,-54,11,35,-.18,0,Math.PI*2)}
@@ -1130,14 +1130,18 @@ function tintEarPair(kind,color){
  return canvas;
 }
 function renderCustomEarPair(g,kind,color){
+ if(kind==='ears_rabbit_big'){
+  // PNG містить обидва вуха на одному 512x512 полотні.
+  // Зближуємо вуха й піднімаємо їх; основи закриє голова.
+  // Не змінюємо авторські кольори та не створюємо tint-Canvas.
+  if(!earPairReady[kind])return false;
+  const img=customEarPairs[kind];
+  g.drawImage(img,-46,-124,92,132);
+  return true;
+ }
  const tinted=tintEarPair(kind,color);
  if(!tinted)return false;
- const cfg={
-  ears_soft:{size:96,lift:2},
-  ears_tall:{size:100,lift:4},
-  ears_sharp:{size:98,lift:2},
-  ears_rabbit_big:{size:122,lift:28}
- }[kind]||{size:96,lift:2};
+ const cfg={ears_soft:{size:96,lift:2},ears_tall:{size:100,lift:4},ears_sharp:{size:98,lift:2}}[kind]||{size:96,lift:2};
  g.drawImage(tinted,-cfg.size/2,-cfg.size/2-cfg.lift,cfg.size,cfg.size);
  return true;
 }
@@ -1708,7 +1712,7 @@ let shopRenderLast=0,shopRenderAccum=0,shopSceneCache=null,shopLastProgress=-1,s
 window.addEventListener('resize',()=>{if(shopSceneCache){for(const k of ['sellerLayer','counterLayer']){const c=shopSceneCache[k];if(c){c.width=0;c.height=0}}}shopSceneCache=null;shopRenderAccum=1;});
 function shopCacheFor(stage,world,c){const width=stage.clientWidth,height=stage.clientHeight;if(shopSceneCache&&shopSceneCache.stage===stage&&shopSceneCache.width===width&&shopSceneCache.height===height)return shopSceneCache;if(!shopSceneCache||shopSceneCache.stage!==stage||shopSceneCache.width!==width||shopSceneCache.height!==height){const count=shopStock().length,spacing=Math.max(190,Math.min(300,width*.25)),total=Math.max(width*2.15,430+count*spacing+540);shopSceneCache={stage,world,c,width,height,metrics:{width,height,spacing,total,maxCamera:Math.max(0,total-width)},ctx:c.getContext('2d',{alpha:true})};world.style.width=width+'px'}return shopSceneCache}
 
-const shopSeller={head:'round',fur:'#c7a3bc',body:'#ad8eae',eyeColor:'#53416b',name:'Продавець',equipped:{eyes:'eyes_tired',ears:wig:'hair_brown'}};
+const shopSeller={head:'round',fur:'#c7a3bc',body:'#ad8eae',eyeColor:'#53416b',name:'Продавець',equipped:{eyes:'eyes_tired',ears:'ears_soft',wig:'hair_brown'}};
 function resetShopWalker(){shopCamera=0;shopCameraTarget=0;shopWalkerX=330;shopWalkTarget=null;shopWalkPhase=0;shopWalkDir=1;shopHoldDir=0;shopRenderLast=0;shopRenderAccum=0;shopSceneCache=null;shopLastProgress=-1;shopLastNav=-1;if(tiredEyesFailed)loadTiredEyes(true)}
 function shopStock(){const r=SHOP_ROOMS.find(r=>r.id===shopRoom);if(!r)return [];const tab=OTHER_SHOP_TABS.find(t=>t.id===otherShopTab);let stock=r.id==='other'?(tab?.stock||[]):(SHOP_STOCK[r.id]||[]);if(r.id==='clothes'){const category=CLOTHES_SHOP_TABS.find(t=>t.id===clothesShopTab)||CLOTHES_SHOP_TABS[0];stock=category.id==='wigs'?(WIG_SHOP_TABS.find(t=>t.id===wigShopTab)||WIG_SHOP_TABS[0]).stock:category.stock}return stock.filter(id=>ITEMS[id])}
 function shopMetrics(){const stage=document.getElementById('shopStage');const width=stage?.clientWidth||window.innerWidth;const height=stage?.clientHeight||window.innerHeight;
