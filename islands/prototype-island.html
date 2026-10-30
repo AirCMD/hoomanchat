@@ -317,6 +317,19 @@
 .shop-room-world .shop-wall-product{will-change:auto;content-visibility:visible;contain:layout style paint;backface-visibility:hidden;}
 .shop-room-world .shop-room-heading{transform:none;}
 #shopCast{will-change:contents;}
+
+/* α1.2.5: performance mode for SHOP ROOMS ONLY. Camera motion moves small
+   compositor textures, not a full-screen rasterized gradient per frame. */
+#overlay.shop-full{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;}
+.shop-room-world .shop-room-wall{overflow:hidden;background:linear-gradient(155deg,color-mix(in srgb,var(--shop-accent) 24%,#716384),#575075)!important;background-position:0 0!important;}
+.shop-room-world .shop-room-floor{overflow:hidden;background:linear-gradient(#bb92a1,#876d85)!important;background-position:0 0!important;}
+.shop-room-world .shop-room-wall::before{content:"";position:absolute;inset:0 -110px;background:repeating-linear-gradient(90deg,#ffffff13 0 78px,#00000015 80px 84px);transform:translate3d(var(--shop-wall-shift,0px),0,0);will-change:transform;pointer-events:none;}
+.shop-room-world .shop-room-floor::before{content:"";position:absolute;inset:0 -120px;background:repeating-linear-gradient(90deg,transparent 0 100px,#fff4e333 102px 105px);transform:translate3d(var(--shop-floor-shift,0px),0,0);will-change:transform;pointer-events:none;}
+.shop-room-world .shop-room-floor::after{background-position:0 0!important;}
+.shop-room-world .shop-wall-product{box-shadow:0 3px 0 #584456!important;will-change:transform;contain:layout style paint;}
+.shop-room-world .shop-wall-product[data-offscreen="1"]{visibility:hidden!important;pointer-events:none!important;}
+.shop-room-stage .shop-nav,.shop-room-stage .shop-home-btn{box-shadow:none!important;}
+#shopCast{will-change:auto!important;}
 </style>
 </head>
 <body>
@@ -1040,8 +1053,10 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  if(eq.cosmetic1==='freckles'){for(let side of [-1,1])for(let j=0;j<3;j++)ellipse(side*(20+j*2.8),7+j%2*3.5,1.4,1.4,'#aa817c')}
  if(eq.cosmetic2==='stars'){g.fillStyle='#ebbc48';g.font='12px sans-serif';g.fillText('✦',-32,0);g.fillText('✦',25,0)}
  const blink=animated&&Math.sin(clock*.68)>0.996;
- if(eq.eyes==='eyes_tired'){
-  renderTiredEyes(g);
+ // PNG eyes replace the default eyes only after the actual file has loaded.
+ // Until then, keep the face visible instead of drawing an eyeless character.
+ if(eq.eyes==='eyes_tired' && renderTiredEyes(g)){
+  // Original PNG position and scale are kept unchanged.
  }else if(eq.eyes==='eyes_sleepy'||blink){line(-22,-3,-8,-3,eye,3.2);line(8,-3,22,-3,eye,3.2)}
  else{
   ellipse(-15,-3,eq.eyes==='eyes_star'?8.5:6.2,eq.eyes==='eyes_star'?10:8.8,eye);
@@ -1216,10 +1231,10 @@ let shopCamera=0,shopCameraTarget=0,shopWalkerX=310,shopWalkTarget=null,shopWalk
 let shopRenderLast=0,shopRenderAccum=0,shopSceneCache=null,shopLastProgress=-1,shopLastNav=-1;
 // Перерахунок геометрії тільки при реальному зміненні розміру вікна.
 window.addEventListener('resize',()=>{shopSceneCache=null;shopRenderAccum=1;});
-function shopCacheFor(stage,world,c){if(shopSceneCache&&shopSceneCache.stage===stage)return shopSceneCache;const width=stage.clientWidth,height=stage.clientHeight;if(!shopSceneCache||shopSceneCache.stage!==stage||shopSceneCache.width!==width||shopSceneCache.height!==height){const count=shopStock().length,spacing=Math.max(190,Math.min(300,width*.25)),total=Math.max(width*2.15,430+count*spacing+540);shopSceneCache={stage,world,c,width,height,metrics:{width,height,spacing,total,maxCamera:Math.max(0,total-width)},ctx:c.getContext('2d',{alpha:true})};world.style.width=width+'px'}return shopSceneCache}
+function shopCacheFor(stage,world,c){const width=stage.clientWidth,height=stage.clientHeight;if(shopSceneCache&&shopSceneCache.stage===stage&&shopSceneCache.width===width&&shopSceneCache.height===height)return shopSceneCache;if(!shopSceneCache||shopSceneCache.stage!==stage||shopSceneCache.width!==width||shopSceneCache.height!==height){const count=shopStock().length,spacing=Math.max(190,Math.min(300,width*.25)),total=Math.max(width*2.15,430+count*spacing+540);shopSceneCache={stage,world,c,width,height,metrics:{width,height,spacing,total,maxCamera:Math.max(0,total-width)},ctx:c.getContext('2d',{alpha:true})};world.style.width=width+'px'}return shopSceneCache}
 
 const shopSeller={head:'round',fur:'#c7a3bc',body:'#ad8eae',eyeColor:'#53416b',name:'Продавець',equipped:{eyes:'eyes_tired',ears:'ears_soft'}};
-function resetShopWalker(){shopCamera=0;shopCameraTarget=0;shopWalkerX=330;shopWalkTarget=null;shopWalkPhase=0;shopWalkDir=1;shopHoldDir=0;shopRenderLast=0;shopRenderAccum=0;shopSceneCache=null;shopLastProgress=-1;shopLastNav=-1}
+function resetShopWalker(){shopCamera=0;shopCameraTarget=0;shopWalkerX=330;shopWalkTarget=null;shopWalkPhase=0;shopWalkDir=1;shopHoldDir=0;shopRenderLast=0;shopRenderAccum=0;shopSceneCache=null;shopLastProgress=-1;shopLastNav=-1;if(tiredEyesFailed)loadTiredEyes()}
 function shopStock(){const r=SHOP_ROOMS.find(r=>r.id===shopRoom);if(!r)return [];const tab=OTHER_SHOP_TABS.find(t=>t.id===otherShopTab);return (r.id==='other'?(tab?.stock||[]):(SHOP_STOCK[r.id]||[])).filter(id=>ITEMS[id])}
 function shopMetrics(){const stage=document.getElementById('shopStage');const width=stage?.clientWidth||window.innerWidth;const height=stage?.clientHeight||window.innerHeight;
  const count=shopStock().length;const spacing=Math.max(190,Math.min(300,width*.25));const total=Math.max(width*2.15,430+count*spacing+540);
@@ -1256,18 +1271,24 @@ function shopPaintNow(dt,drawCharacters=true){
  // Рухаємо лише візерунок і кілька видимих вітрин.
  if(cached.lastCamera!==shopCamera){
   const cam=Math.round(shopCamera*10)/10;
-  world.style.setProperty('--shop-camera',cam+'px');
-  if(!cached.products)cached.products=[...world.querySelectorAll('.shop-wall-product')];
-  for(const card of cached.products){
-   const x=Number(card.dataset.worldX)||0;
-   const visible=x+(m.spacing-22)>=cam-35&&x<=cam+m.width+35;
-   if(card.style.visibility!==(visible?'visible':'hidden'))card.style.visibility=visible?'visible':'hidden';
-   if(visible)card.style.transform=`translate3d(${-cam}px,0,0)`;
+  // Moving small repeating tiles is cheaper than repainting full viewport gradients.
+  const wallShift=-(Math.round(cam)%84);
+  const floorShift=-(Math.round(cam)%105);
+  if(cached.wallShift!==wallShift){world.style.setProperty('--shop-wall-shift',wallShift+'px');cached.wallShift=wallShift}
+  if(cached.floorShift!==floorShift){world.style.setProperty('--shop-floor-shift',floorShift+'px');cached.floorShift=floorShift}
+  if(!cached.products){
+   cached.products=[...world.querySelectorAll('.shop-wall-product')].map(card=>({card,x:Number(card.dataset.worldX)||0,visible:null}));
+   cached.windowEl=world.querySelector('.shop-shop-window');
+   cached.heading=world.querySelector('.shop-room-heading');
   }
-  const windowEl=world.querySelector('.shop-shop-window');
-  if(windowEl)windowEl.style.transform=`translate3d(${-cam}px,0,0)`;
-  const heading=world.querySelector('.shop-room-heading');
-  if(heading)heading.style.transform=`translate3d(${-cam}px,0,0)`;
+  const move=`translate3d(${-Math.round(cam)}px,0,0)`;
+  for(const item of cached.products){
+   const visible=item.x+(m.spacing-22)>=cam-40&&item.x<=cam+m.width+40;
+   if(item.visible!==visible){item.card.dataset.offscreen=visible?'0':'1';item.visible=visible}
+   if(visible)item.card.style.transform=move;
+  }
+  if(cached.windowEl)cached.windowEl.style.transform=move;
+  if(cached.heading)cached.heading.style.transform=move;
   cached.lastCamera=shopCamera;
  }
  // When the camera leaves the player behind, pet runs up and follows the frame.
@@ -1286,7 +1307,9 @@ function shopPaintNow(dt,drawCharacters=true){
  const navStatus=(shopCameraTarget<=1?1:0)+(shopCameraTarget>=m.maxCamera-1?2:0);
  if(navStatus!==shopLastNav){shopLastNav=navStatus;const back=stage.querySelector('[data-shop-arrow="-1"]'),next=stage.querySelector('[data-shop-arrow="1"]');if(back)back.disabled=!!(navStatus&1);if(next)next.disabled=!!(navStatus&2)}
  if(!drawCharacters)return;
- const pixelRatio=Math.min(window.devicePixelRatio||1,.9);const pw=Math.max(1,Math.round(m.width*pixelRatio)),ph=Math.max(1,Math.round(m.height*pixelRatio));
+ // Bound the game-character overlay to ~900x560 pixels even on HiDPI / 4K screens.
+ const pixelRatio=Math.min(window.devicePixelRatio||1,1,960/m.width,600/m.height);
+ const pw=Math.max(1,Math.round(m.width*pixelRatio)),ph=Math.max(1,Math.round(m.height*pixelRatio));
  if(c.width!==pw||c.height!==ph){c.width=pw;c.height=ph}
  const g=cached.ctx;if(!g)return;g.setTransform(pw/m.width,0,0,ph/m.height,0,0);g.clearRect(0,0,m.width,m.height);
  const oldPen=pen,oldStep=pet.step,oldDir=pet.dir,oldTarget=walkTarget;
@@ -1314,7 +1337,7 @@ function paintShopCharacters(){
  shopRenderAccum+=elapsed;
  // Огляд і ходьба: частота дисплея (типово 60 FPS). Промальовування: до 30 FPS.
  const moving=Math.abs(shopCameraTarget-shopCamera)>.4||shopWalkTarget!==null;
- const interval=moving?1/24:1/10;
+ const interval=moving?1/25:1/6;
  const shouldDraw=shopRenderAccum>=interval;
  if(shouldDraw)shopRenderAccum=0;
  shopPaintNow(elapsed,shouldDraw);
