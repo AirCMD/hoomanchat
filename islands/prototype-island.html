@@ -1445,6 +1445,27 @@ function renderFriendDock(){if(!friendDock)return;const safe=esc;if(friendDockMo
 friendDockEl.addEventListener('click',async e=>{const b=e.target.closest('[data-dock]');if(!b)return;const a=b.dataset.dock;if(a==='close'){toggleFriends(false);selectedNPC=null;friendDockMode='list'}else if(a==='back'){friendDockMode='list';renderFriendDock()}else if(a==='npc'){selectedNPC=NPCS.find(n=>n.id===b.dataset.npc)||null;friendDockMode='detail';renderFriendDock()}else if(a==='visit'&&selectedNPC){visitingNPC=selectedNPC;npcRoom=0;ensureNpcDust(visitingNPC);state.location='npc';state.npcVisits[visitingNPC.id]=(state.npcVisits[selectedNPC.id]||0)+1;pet.x=pet.y=0;walkTarget=null;placing=null;save();updateLocationUI();toggleFriends(false);if(!interactionUsedToday(visitingNPC)){toast('Ти в гостях у '+visitingNPC.name+' · обери дію для XP');openPanel('interaction')}}else if(a==='gift'&&selectedNPC){toggleFriends(false);openPanel('npcGift')}else if(a==='interact'&&selectedNPC){const target=selectedNPC;toggleFriends(false);if(state.location!=='npc'||visitingNPC?.id!==target.id){toast('Спочатку натисни «Відвідати», щоб взаємодіяти з цим другом')}else if(interactionUsedToday(visitingNPC)){updateVisitDailyNotice();toast('Ви вже привіталися сьогодні')}else openPanel('interaction')}else if(a==='add'){toggleFriends(false);openPanel('friendAdd')}else if(a==='real'){let f=state.friends[+b.dataset.index];if(f){toggleFriends(false);openPanel('post');toast('Подарунковий код для '+f.name+' можна передати вручну')}}else if(a==='copy'){if(!state.friendId){state.friendId='PROTO-'+Math.random().toString(36).slice(2,10).toUpperCase();save()}try{await navigator.clipboard.writeText(state.friendId);toast('Код скопійовано')}catch{toast(state.friendId)}}});
 function openPanel(id){if(activePanel==='editor'&&id!=='editor')discardEditorChanges();if(id==='editor'&&activePanel!=='editor'){editorOriginal={...state.appearance};editorTab='appearance';if(tiredEyesFailed)loadTiredEyes(true)}if(id==='interaction'&&(state.location!=='npc'||!visitingNPC||interactionUsedToday(visitingNPC))){updateVisitDailyNotice();if(state.location!=='npc'||!visitingNPC)toast('Спочатку відвідай друга');return}if(id==='inventory'||id==='wardrobe'){openItemDock(id);return}if(id==='friends'){closeItemDock();closePanel();friendDockMode='list';toggleFriends(true);return}if(id==='games'){closePanel();showGamesMenu();return}if(id==='shop'&&activePanel!=='shop'&&shopRoom!=='makeup'){shopRoom=null;resetShopWalker()}if(id==='home'){if(state.location==='npc'){setLocation('home')}else setLocation(state.location==='home'?'island':'home');return}activePanel=id;overlay.classList.add('open');overlay.classList.toggle('editor-full',id==='editor');overlay.classList.toggle('shop-full',id==='shop');document.querySelectorAll('#toolbar button').forEach(b=>b.classList.toggle('active',b.dataset.open===id));showPanel()}
 function discardEditorChanges(){if(editorOriginal){state.appearance={...editorOriginal};editorOriginal=null}}
+
+// Очищення лише похідних графічних копій. Джерельні PNG та збереження не зачіпаємо.
+function clearRedundantGraphicsCache(){
+ const groups=[...Object.values(handTintCache),...Object.values(legTintCache),...Object.values(headTintCache),...Object.values(earPairTintCache)];
+ let count=0,bytes=0;
+ for(const cache of groups){
+  for(const canvas of cache.values()){
+   if(canvas&&canvas.width&&canvas.height){count++;bytes+=canvas.width*canvas.height*4}
+  }
+  clearTintCache(cache);
+ }
+ if(shopSceneCache){
+  for(const key of ['sellerLayer','counterLayer']){
+   const canvas=shopSceneCache[key];
+   if(canvas){count++;bytes+=canvas.width*canvas.height*4;canvas.width=0;canvas.height=0}
+  }
+  shopSceneCache=null;
+  shopRenderAccum=1;
+ }
+ return {count,megabytes:bytes/1048576};
+}
 function closePanel(){
  if(activePanel==='editor')discardEditorChanges();
  if(activePanel==='shop'){
@@ -1662,7 +1683,8 @@ function showPanel(){let labels={editor:'🎨 Редактор персонаж�
  else if(activePanel==='needs'){html=needsPanelHTML()}
  else if(activePanel==='roomClean'){html=roomCleanHTML()}
  else if(activePanel==='yard'){html=yardPanelHTML()}
- else if(activePanel==='settings'){html=`<p><b>Прото-Тип α 0.8.0</b> — локальний браузерний прототип.</p><div class="control"><label>Ім’я острова</label><input class="field" id="islandLabel" value="Мій маленький острів" disabled></div><div class="control"><label>🏠 Основна кімната (відкривається під час запуску гри)</label><select class="field" id="startRoom">${[['Кімната пета',0],['Спальня',1],['Вітальня',2]].map(([name,n])=>`<option value="${n}" ${state.startRoom===n?'selected':''} ${state.level<ROOM_LEVELS[n]?'disabled':''}>${name}${state.level<ROOM_LEVELS[n]?' (закрито)':''}</option>`).join('')}</select></div><div class="control"><label>🎨 Оформлення поточної кімнати</label><p class="note">Перейди в потрібну кімнату, щоб змінити її шпалери й підлогу.</p><label>Шпалери</label><select class="field" id="wallChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Неонові','Лавандові','Космічні','Графітові'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].wall===i?'selected':''}>${n}</option>`).join('')}</select><label>Підлога</label><select class="field" id="floorChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Класична','Паркет','Плитка','Темна'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].floor===i?'selected':''}>${n}</option>`).join('')}</select></div><div class="footer-actions"><button class="secondary" data-act="collectFurniture">Прибрати всі меблі в інвентар (${state.placed.length+state.homePlaced.length})</button><button class="secondary" data-act="exportSave">Експорт збереження</button><button class="secondary" data-act="importSave">Імпорт збереження</button><button class="secondary" data-act="reset">Нова гра</button></div><p class="note">Прогрес автоматично зберігається в цьому браузері (localStorage). Між браузерами та пристроями синхронізації немає. Для резервної копії використовуй експорт. Заробляй монети в розділі «Ігри».</p><textarea id="saveText" class="field" placeholder="Тут з’явиться резервна копія, або встав її для імпорту" rows="4"></textarea>`}
+ else if(activePanel==='settings'){html=`<p><b>Прото-Тип α 1.4.5</b> — налаштування гри.
+</p><div class="control"><label>🧹 Графічна пам'ять</label><p class="note">Видаляє лише тимчасові Canvas-копії кольорів персонажів і шари магазинів. Оригінальні PNG, монети, токени й прогрес залишаються.</p><button class="secondary" type="button" data-act="clearGraphicsCache">Очистити зайві графічні копії</button><small id="graphicsCacheStatus" class="note"></small></div><div class="control"><label>Ім’я острова</label><input class="field" id="islandLabel" value="Мій маленький острів" disabled></div><div class="control"><label>🏠 Основна кімната (відкривається під час запуску гри)</label><select class="field" id="startRoom">${[['Кімната пета',0],['Спальня',1],['Вітальня',2]].map(([name,n])=>`<option value="${n}" ${state.startRoom===n?'selected':''} ${state.level<ROOM_LEVELS[n]?'disabled':''}>${name}${state.level<ROOM_LEVELS[n]?' (закрито)':''}</option>`).join('')}</select></div><div class="control"><label>🎨 Оформлення поточної кімнати</label><p class="note">Перейди в потрібну кімнату, щоб змінити її шпалери й підлогу.</p><label>Шпалери</label><select class="field" id="wallChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Неонові','Лавандові','Космічні','Графітові'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].wall===i?'selected':''}>${n}</option>`).join('')}</select><label>Підлога</label><select class="field" id="floorChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Класична','Паркет','Плитка','Темна'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].floor===i?'selected':''}>${n}</option>`).join('')}</select></div><div class="footer-actions"><button class="secondary" data-act="collectFurniture">Прибрати всі меблі в інвентар (${state.placed.length+state.homePlaced.length})</button><button class="secondary" data-act="exportSave">Експорт збереження</button><button class="secondary" data-act="importSave">Імпорт збереження</button><button class="secondary" data-act="reset">Нова гра</button></div><p class="note">Прогрес автоматично зберігається в цьому браузері (localStorage). Між браузерами та пристроями синхронізації немає. Для резервної копії використовуй експорт. Заробляй монети в розділі «Ігри».</p><textarea id="saveText" class="field" placeholder="Тут з’явиться резервна копія, або встав її для імпорту" rows="4"></textarea>`}
  body.innerHTML=html;if(activePanel==='editor'){drawPreview();drawFaceChoices()}}
 function drawPreview(){let c=document.getElementById('preview');if(!c)return;let g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);pen=g;g.save();g.translate(c.width/2,c.height*.91);g.scale(2.0,2.0);puppet(g,0,0,1,false);g.restore();pen=ctx}
 function drawFaceChoices(){
@@ -1699,6 +1721,14 @@ body.addEventListener('click',async e=>{let b=e.target.closest('[data-act]');if(
  if(act==='editorConfirm'){if(activePanel!=='editor')return;state.appearance.body=state.appearance.fur;save();editorOriginal={...state.appearance};toast('Колір і зовнішність підтверджено');return}
  if(act==='editorCancel'){if(activePanel!=='editor')return;discardEditorChanges();editorOriginal={...state.appearance};showPanel();toast('Попередній колір відновлено');return}
  if(act==='faceShop'){if(activePanel==='editor')discardEditorChanges();shopRoom='makeup';openPanel('shop');return}
+ if(act==='clearGraphicsCache'){
+  const {count,megabytes}=clearRedundantGraphicsCache();
+  const message=count?`Очищено ${count} тимчасових копій (орієнтовно ${megabytes.toFixed(1)} МБ буферів).`:'Зайвих графічних копій зараз немає.';
+  const status=document.getElementById('graphicsCacheStatus');
+  if(status)status.textContent=message;
+  toast(message);
+  return;
+ }
  if(act==='saveAvatar'){let url=document.getElementById('avatarInput')?.value.trim()||'';if(url&&!/^https:\/\/[^\s<>"']{1,1790}$/.test(url)){toast('Потрібне коректне HTTPS-посилання');return}state.avatar=url;save();showPanel();toast('Аватарку збережено');return}
  if(act==='clearAvatar'){state.avatar='';save();showPanel();return}
  if(act==='npcInteract'){doInteraction(v);return}
