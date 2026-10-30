@@ -1136,7 +1136,10 @@ function renderAuthoredNose(g,id){
  // Усі вихідні PNG мають свою композицію на полотні; обрізаємо лише прозорість.
  const crop=sprite.crop||{x:0,y:0,w,h};
  const ratio=crop.w/crop.h;
- const width= Math.min(21,Math.max(9,ratio*16)),height=width/Math.max(ratio,.001);
+ const baseWidth=Math.min(21,Math.max(9,ratio*16));
+ // Shark nostrils only: reduce to a small nose detail, leaving nostril.png unchanged.
+ const width=id==='nose_shark'?baseWidth*.45:baseWidth;
+ const height=width/Math.max(ratio,.001);
  g.drawImage(img,crop.x,crop.y,crop.w,crop.h,-width/2,10-height/2,width,height);
  return true;
 }
