@@ -1131,7 +1131,8 @@ function loadTiredEyes(force=false){
   tiredEyesLoading=false;
   tiredEyesReady=tiredEyesImg.naturalWidth>0&&tiredEyesImg.naturalHeight>0;
   tiredEyesFailed=!tiredEyesReady;
-  tiredEyesRenderImg=tiredEyesReady?makeTiredEyesCrop(tiredEyesImg):null;
+  // Не обрізаємо 512×512: координати всіх рис обличчя задані на цілому полотні.
+  tiredEyesRenderImg=tiredEyesReady?tiredEyesImg:null;
   refreshTiredEyesViews();
  };
  tiredEyesImg.onerror=()=>{
@@ -1161,13 +1162,12 @@ function makeTiredEyesCrop(img){
   return out;
  }catch(_){return img}
 }
-function renderTiredEyes(g){
+function renderTiredEyes(g,hx=39,hy=39){
  if(!tiredEyesReady)return false;
- const image=tiredEyesRenderImg||tiredEyesImg;
- const ratio=image.width/image.height||1;
- // Draw only the authored eyes on the center of the face, preserving PNG's shape.
- const width=55,height=Math.min(31,width/Math.max(.1,ratio));
- g.drawImage(image,-width/2,-7-height/2,width,height);
+ // Оригінал 512×512 є цілою картою обличчя. Розміщуємо все полотно
+ // поверх голови: жодного кропу, зміщення або окремого масштабування очей.
+ const side=Math.max(hx*2,hy*2);
+ g.drawImage(tiredEyesImg,-side/2,-side/2-2,side,side);
  return true;
 }
 // Спрайти ротів створюються один раз і малюються в оригінальних пропорціях.
@@ -1289,22 +1289,14 @@ for(const [id,filename] of [['nose_shark','sharknostril.png'],['nose_nostril','n
  img.onerror=()=>{item.ready=false;console.error('Не завантажено ніс:',img.src)};
  img.src='/hoomanchat/assets/'+filename;
 }
-function renderAuthoredNose(g,id){
+function renderAuthoredNose(g,id,hx=39,hy=39){
  const sprite=noseSprites[id];if(!sprite||!sprite.ready)return false;
  const img=sprite.img,w=img.naturalWidth,h=img.naturalHeight;
  if(!w||!h)return false;
- // Усі вихідні PNG мають свою композицію на полотні; обрізаємо лише прозорість.
- const crop=sprite.crop||{x:0,y:0,w,h};
- const ratio=crop.w/crop.h;
- const baseWidth=Math.min(21,Math.max(9,ratio*16));
- let width=baseWidth,centerY=10;
- if(id==='nose_shark'){
-  // Акулячі ніздрі: менші і трохи вище, щоб не виглядали як чорні плями біля рота.
-  width=Math.max(7.5,baseWidth*.36);
-  centerY=4.5;
- }
- const height=width/Math.max(ratio,.001);
- g.drawImage(img,crop.x,crop.y,crop.w,crop.h,-width/2,centerY-height/2,width,height);
+ // Носи намальовані на 512×512 разом із позицією на голові.
+ // Не обрізати прозорі поля: інакше ніздрі стають гігантськими або з'їжджають.
+ const side=Math.max(hx*2,hy*2);
+ g.drawImage(img,-side/2,-side/2-2,side,side);
  return true;
 }
 function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
@@ -1396,7 +1388,7 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  // Until then, keep the face visible instead of drawing an eyeless character.
  if(eq.eyes==='eyes_tired'){
   // Тільки авторський PNG. НІЯКИХ геометричних очей у цьому режимі.
-  renderTiredEyes(g);
+  renderTiredEyes(g,hx,hy);
  }else if(eq.eyes==='eyes_sleepy'||blink){line(-22,-3,-8,-3,eye,3.2);line(8,-3,22,-3,eye,3.2)}
  else{
   ellipse(-15,-3,eq.eyes==='eyes_star'?8.5:6.2,eq.eyes==='eyes_star'?10:8.8,eye);
@@ -1404,7 +1396,7 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
   ellipse(-13,-7,2.2,2.6,'white');ellipse(17,-7,2.2,2.6,'white');
   if(eq.eyes==='eyes_star'){g.fillStyle='#fff';g.font='9px sans-serif';g.fillText('✦',-18,2);g.fillText('✦',12,2)}
  }
- if(Object.prototype.hasOwnProperty.call(noseSprites,eq.nose)){renderAuthoredNose(g,eq.nose)}
+ if(Object.prototype.hasOwnProperty.call(noseSprites,eq.nose)){renderAuthoredNose(g,eq.nose,hx,hy)}
  else if(eq.nose==='nose_heart'){g.fillStyle='#ca809a';g.font='12px system-ui';g.textAlign='center';g.fillText('♥',0,12)}
  else{g.beginPath();g.moveTo(-4,8);g.lineTo(4,8);g.lineTo(0,12);g.closePath();g.fillStyle='#a7838d';g.fill()}
  if(Object.prototype.hasOwnProperty.call(mouthSprites,eq.mouth)){
