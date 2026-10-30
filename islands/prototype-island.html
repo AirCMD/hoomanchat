@@ -827,7 +827,7 @@ function drawNPCHead(n,species,coat,accent){
   for(const side of [-1,1]){ellipse(side*15,-2,5.4,7.4,eye);ellipse(side*14,-5,1.8,2.6,'#ffffff')}
  }
  const npcNoseMap={yuki_foxy:'nose_animal_bl',dreaming_romance:'nose_animal_blk',night_fox:'nose_animal_blk',wolf_fang:'nose_animal_blk',soft_static:'nose_animal_pn',water_blue:'nose_shark'};
- const npcMouthMap={alter_core:'anilipsnude',dreaming_romance:'catmouth',night_fox:'catmouth',akira_bakeneko:'funmouth',soft_static:'catmouth',wolf_fang:'catmouth'};
+ const npcMouthMap={alter_core:'anilipsnude',dreaming_romance:'catmouth',night_fox:'catmouth',akira_bakeneko:'funmouth',soft_static:'catmouth',wolf_fang:'catmouth',yuki_foxy:'catmouth'};
  const npcNoseId=npcNoseMap[n.id]||null;
  if(species==='fox'||species==='wolf'||species==='cat'||species==='weasel'){
   ellipse(0,15,23,12,dark?'#454450':'#f4e8e2');
@@ -839,10 +839,10 @@ function drawNPCHead(n,species,coat,accent){
   renderAuthoredNose(ctx,'nose_shark');renderAuthoredMouth(ctx,'sharkgrip',npcHx,npcHy)
  }else if(npcNoseId){
   renderAuthoredNose(ctx,npcNoseId,npcHx,npcHy);
-  if(npcMouthMap[n.id])renderAuthoredMouth(ctx,npcMouthMap[n.id],npcHx,npcHy);
+  if(npcMouthMap[n.id]){ctx.save();if(n.id==='alter_core')ctx.translate(0,17);if(n.id==='akira_bakeneko'){ctx.translate(0,16);ctx.scale(1.15,1.15)}renderAuthoredMouth(ctx,npcMouthMap[n.id],npcHx,npcHy);ctx.restore();}
   else{ctx.beginPath();ctx.arc(0,16,5,0,Math.PI);ctx.strokeStyle=dark?'#d8d5e0':'#66505d';ctx.lineWidth=2;ctx.stroke()}
  }else{
-  if(npcMouthMap[n.id])renderAuthoredMouth(ctx,npcMouthMap[n.id],npcHx,npcHy);
+  if(npcMouthMap[n.id]){ctx.save();if(n.id==='alter_core')ctx.translate(0,17);if(n.id==='akira_bakeneko'){ctx.translate(0,16);ctx.scale(1.15,1.15)}renderAuthoredMouth(ctx,npcMouthMap[n.id],npcHx,npcHy);ctx.restore();}
   else{ctx.beginPath();ctx.arc(0,16,5,0,Math.PI);ctx.strokeStyle=dark?'#d8d5e0':'#66505d';ctx.lineWidth=2;ctx.stroke()}
  }
  if(n.id==='la_cyber'){ctx.strokeStyle='#27eee8';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-37,-3);ctx.lineTo(-25,13);ctx.moveTo(37,-3);ctx.lineTo(25,13);ctx.stroke()}
