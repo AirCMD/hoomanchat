@@ -617,7 +617,15 @@ function toast(message){let el=document.createElement('div');el.className='toast
 const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d');let pen=ctx;let W=0,H=0,dpr=1,walkTarget=null,placing=null,lastTime=0,clock=0;
 const pet={x:0,y:0,dir:1,step:0};let action='idle',actionUntil=0,nextAction=7,actionSeed=0;let particles=[];const scenery=[];
 function rand(seed){let n=Math.sin(seed*12.9898+78.233)*43758.5453123;return n-Math.floor(n)}
-function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0)}window.addEventListener('resize',resize);
+function resize(){
+ W=innerWidth;H=innerHeight;
+ // Менше RAM/GPU на HiDPI та 4K, координати гри залишаються CSS-пікселями.
+ dpr=Math.min(devicePixelRatio||1,1.5,1920/Math.max(1,W),1080/Math.max(1,H));
+ const pw=Math.max(1,Math.round(W*dpr)),ph=Math.max(1,Math.round(H*dpr));
+ if(canvas.width!==pw)canvas.width=pw;
+ if(canvas.height!==ph)canvas.height=ph;
+ ctx.setTransform(pw/Math.max(1,W),0,0,ph/Math.max(1,H),0,0);
+}window.addEventListener('resize',resize);
 function world(){return{cx:W*.5,cy:H*.49,rx:Math.min(W*.48,570),ry:Math.min(H*.34,260)}}
 function onIsland(x,y){const q=world();return((x-q.cx)/q.rx)**2+((y-q.cy)/q.ry)**2<.83}
 function posForWorld(u,v){const q=world();return{x:q.cx+u*q.rx,y:q.cy+v*q.ry}}
@@ -777,7 +785,7 @@ const handReady={left:false,right:false};
 function loadCustomHand(side,path){
  const img=customHands[side];
  let fallback=false;
- img.onload=()=>{handReady[side]=img.naturalWidth>0;handTintCache[side].clear();drawPreviewIfOpen()};
+ img.onload=()=>{handReady[side]=img.naturalWidth>0;clearTintCache(handTintCache[side]);drawPreviewIfOpen()};
  img.onerror=()=>{if(!fallback){fallback=true;img.src=handEmbedded[side]}else handReady[side]=false};
  img.src=path;
 }
@@ -786,13 +794,30 @@ loadCustomHand('left','assets/handl.png');
 loadCustomHand('right','assets/handr.png');
 // Cache tinted hands. Preserve the source PNG alpha, its shadows and highlights.
 // Each NPC passes its own coat shade; the player passes the torso color.
+// Один обмежений LRU для Canvas-копій PNG. Canvas зберігається у RAM/GPU,
+// а не в HTTP-кеші браузера; обмеження захищає слабкі пристрої.
+function tintCacheGet(cache,key){
+ if(!cache.has(key))return null;
+ const hit=cache.get(key);cache.delete(key);cache.set(key,hit);
+ return hit;
+}
+function clearTintCache(cache){
+ for(const c of cache.values()){if(c){c.width=0;c.height=0}}
+ cache.clear();
+}
+function tintCachePut(cache,key,value,limit){
+ if(cache.has(key))cache.delete(key);
+ cache.set(key,value);
+ while(cache.size>limit){const oldest=cache.keys().next().value;const old=cache.get(oldest);cache.delete(oldest);if(old&&old!==value){old.width=0;old.height=0}}
+}
+const TINT_CACHE_LIMIT={hand:8,leg:8,head:8,ear:8};
 const handTintCache={left:new Map(),right:new Map()};
 function tintHand(side,color){
  const img=customHands[side];
  if(!handReady[side])return null;
  const cache=handTintCache[side];
  const key=String(color).trim().toLowerCase();
- if(cache.has(key))return cache.get(key);
+ {const hit=tintCacheGet(cache,key);if(hit)return hit;}
  const canvas=document.createElement('canvas');
  canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
  const c=canvas.getContext('2d',{willReadFrequently:true});
@@ -815,8 +840,7 @@ function tintHand(side,color){
  }
  c.putImageData(pixels,0,0);
  // Keep a bounded cache even if the color picker produces hundreds of colors.
- if(cache.size>=48)cache.delete(cache.keys().next().value);
- cache.set(key,canvas);
+ tintCachePut(cache,key,canvas,TINT_CACHE_LIMIT.hand);
  return canvas;
 }
 function renderHand(g,side,color){
@@ -837,7 +861,7 @@ const legReady={left:false,right:false};
 function loadCustomLeg(side,path){
  const img=customLegs[side];
  let fallback=false;
- img.onload=()=>{legReady[side]=img.naturalWidth>0;legTintCache[side].clear();drawPreviewIfOpen()};
+ img.onload=()=>{legReady[side]=img.naturalWidth>0;clearTintCache(legTintCache[side]);drawPreviewIfOpen()};
  img.onerror=()=>{if(!fallback){fallback=true;img.src=legEmbedded[side]}else legReady[side]=false};
  img.src=path;
 }
@@ -849,7 +873,7 @@ function tintLeg(side,color){
  if(!legReady[side])return null;
  const cache=legTintCache[side];
  const key=String(color).trim().toLowerCase();
- if(cache.has(key))return cache.get(key);
+ {const hit=tintCacheGet(cache,key);if(hit)return hit;}
  const canvas=document.createElement('canvas');
  canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
  const c=canvas.getContext('2d',{willReadFrequently:true});
@@ -869,8 +893,7 @@ function tintLeg(side,color){
   d[i+2]=Math.round(rgb[2]*intensity);
  }
  c.putImageData(pixels,0,0);
- if(cache.size>=48)cache.delete(cache.keys().next().value);
- cache.set(key,canvas);
+ tintCachePut(cache,key,canvas,TINT_CACHE_LIMIT.leg);
  return canvas;
 }
 function renderLeg(g,side,color){
@@ -909,7 +932,7 @@ const headTintCache={round:new Map(),wide:new Map(),pointy:new Map()};
 function loadCustomHead(kind,path){
  const img=customHeads[kind];
  let fallback=false;
- img.onload=()=>{headReady[kind]=img.naturalWidth>0;headTintCache[kind].clear();if(typeof shopSceneCache!=='undefined')shopSceneCache=null;drawPreviewIfOpen()};
+ img.onload=()=>{headReady[kind]=img.naturalWidth>0;clearTintCache(headTintCache[kind]);if(typeof shopSceneCache!=='undefined')shopSceneCache=null;drawPreviewIfOpen()};
  img.onerror=()=>{if(!fallback){fallback=true;img.src=headEmbedded[kind]}else headReady[kind]=false};
  img.src=path;
 }
@@ -921,7 +944,7 @@ function tintHead(kind,color){
  if(!headReady[kind])return null;
  const cache=headTintCache[kind];
  const key=String(color).trim().toLowerCase();
- if(cache.has(key))return cache.get(key);
+ {const hit=tintCacheGet(cache,key);if(hit)return hit;}
  const canvas=document.createElement('canvas');
  canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
  const c=canvas.getContext('2d',{willReadFrequently:true});
@@ -941,8 +964,7 @@ function tintHead(kind,color){
   d[i+2]=Math.round(rgb[2]*intensity);
  }
  c.putImageData(pixels,0,0);
- if(cache.size>=32)cache.delete(cache.keys().next().value);
- cache.set(key,canvas);
+ tintCachePut(cache,key,canvas,TINT_CACHE_LIMIT.head);
  return canvas;
 }
 function renderHeadBase(g,kind,color){
@@ -966,7 +988,7 @@ const earPairTintCache={ears_soft:new Map(),ears_tall:new Map(),ears_sharp:new M
 function loadCustomEarPair(kind,path){
  const img=customEarPairs[kind];
  let fallback=false;
- img.onload=()=>{earPairReady[kind]=img.naturalWidth>0;earPairTintCache[kind].clear();drawPreviewIfOpen()};
+ img.onload=()=>{earPairReady[kind]=img.naturalWidth>0;clearTintCache(earPairTintCache[kind]);drawPreviewIfOpen()};
  img.onerror=()=>{if(!fallback){fallback=true;img.src=earEmbedded[kind]}else earPairReady[kind]=false};
  img.src=path;
 }
@@ -978,7 +1000,7 @@ function tintEarPair(kind,color){
  if(!earPairReady[kind])return null;
  const cache=earPairTintCache[kind];
  const key=String(color).trim().toLowerCase();
- if(cache.has(key))return cache.get(key);
+ {const hit=tintCacheGet(cache,key);if(hit)return hit;}
  const canvas=document.createElement('canvas');
  canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
  const c=canvas.getContext('2d',{willReadFrequently:true});
@@ -996,8 +1018,7 @@ function tintEarPair(kind,color){
   d[i+2]=Math.round(rgb[2]*intensity);
  }
  c.putImageData(pixels,0,0);
- if(cache.size>=24)cache.delete(cache.keys().next().value);
- cache.set(key,canvas);
+ tintCachePut(cache,key,canvas,TINT_CACHE_LIMIT.ear);
  return canvas;
 }
 function renderCustomEarPair(g,kind,color){
@@ -1311,7 +1332,7 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
 let pendingFurniture=null;
 function useFurniture(id){const n=state.needs;let msg='';if(id==='bed'){n.sleep=Math.min(100,n.sleep+45);action='sleep';msg='Пет відпочиває у ліжку 💤'}else if(id==='bath'||id==='shower'){n.dirt=Math.min(100,n.dirt+48);action='jump';msg='Пет купається 🫧'}else if(id==='tv'||id==='toy'){n.boredom=Math.min(100,n.boredom+42);action='dance';msg='Пет розважається 🎲'}else if(id==='auto_fridge'){n.hunger=Math.min(100,n.hunger+50);action='wave';msg='Пет перекусив 🥗'}else if(id==='vacuum'){cleanRoom();action='wave';return}else if(id==='chair'){action='idle';msg='Пет відпочиває у кріслі'}else{action='wave';msg='Пет розглядає предмет'}actionUntil=clock+3.5;nextAction=actionUntil+4;save();if(msg)toast(msg);earnXP(3)}
 function maybeAction(){if(walkTarget||clock<nextAction||clock<actionUntil)return;const choices=['wave','jump','dance','spin'];action=choices[Math.floor(Math.random()*choices.length)];actionUntil=clock+(action==='dance'?2.3:action==='spin'?1.5:1.7);nextAction=actionUntil+5+Math.random()*9}
-function render(t){clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.05);lastTime=t;clock+=dt;if(activePanel==='shop'){updateDustLayer();paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}requestAnimationFrame(render);return}tickNeeds(dt);npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}const scale=Math.max(.69,Math.min(1.1,W/650));puppet(ctx,p.x,p.y,scale);if(placing){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}requestAnimationFrame(render)}
+function render(t){if(document.hidden){lastTime=t;requestAnimationFrame(render);return}clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.05);lastTime=t;clock+=dt;if(activePanel==='shop'){updateDustLayer();paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}requestAnimationFrame(render);return}tickNeeds(dt);npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}const scale=Math.max(.69,Math.min(1.1,W/650));puppet(ctx,p.x,p.y,scale);if(placing){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}requestAnimationFrame(render)}
 function placedHit(x,y){if(state.location!=='home'||state.room>2)return -1;for(let i=state.homePlaced.length-1;i>=0;i--){const p=state.homePlaced[i];if((p.room??0)!==state.room)continue;if(ITEMS[p.id]?.ceiling){if(Math.abs(p.x*W-x)<55&&y>=H*.035&&y<=H*.37)return i}else if(Math.abs(p.x*W-x)<46&&Math.abs(p.y*H-y+22)<52)return i}return -1}
 // Перетягування меблів дозволене лише у відкритому інвентарі меблів.
 function dragFurniturePosition(e){
@@ -1424,7 +1445,18 @@ function renderFriendDock(){if(!friendDock)return;const safe=esc;if(friendDockMo
 friendDockEl.addEventListener('click',async e=>{const b=e.target.closest('[data-dock]');if(!b)return;const a=b.dataset.dock;if(a==='close'){toggleFriends(false);selectedNPC=null;friendDockMode='list'}else if(a==='back'){friendDockMode='list';renderFriendDock()}else if(a==='npc'){selectedNPC=NPCS.find(n=>n.id===b.dataset.npc)||null;friendDockMode='detail';renderFriendDock()}else if(a==='visit'&&selectedNPC){visitingNPC=selectedNPC;npcRoom=0;ensureNpcDust(visitingNPC);state.location='npc';state.npcVisits[visitingNPC.id]=(state.npcVisits[selectedNPC.id]||0)+1;pet.x=pet.y=0;walkTarget=null;placing=null;save();updateLocationUI();toggleFriends(false);if(!interactionUsedToday(visitingNPC)){toast('Ти в гостях у '+visitingNPC.name+' · обери дію для XP');openPanel('interaction')}}else if(a==='gift'&&selectedNPC){toggleFriends(false);openPanel('npcGift')}else if(a==='interact'&&selectedNPC){const target=selectedNPC;toggleFriends(false);if(state.location!=='npc'||visitingNPC?.id!==target.id){toast('Спочатку натисни «Відвідати», щоб взаємодіяти з цим другом')}else if(interactionUsedToday(visitingNPC)){updateVisitDailyNotice();toast('Ви вже привіталися сьогодні')}else openPanel('interaction')}else if(a==='add'){toggleFriends(false);openPanel('friendAdd')}else if(a==='real'){let f=state.friends[+b.dataset.index];if(f){toggleFriends(false);openPanel('post');toast('Подарунковий код для '+f.name+' можна передати вручну')}}else if(a==='copy'){if(!state.friendId){state.friendId='PROTO-'+Math.random().toString(36).slice(2,10).toUpperCase();save()}try{await navigator.clipboard.writeText(state.friendId);toast('Код скопійовано')}catch{toast(state.friendId)}}});
 function openPanel(id){if(activePanel==='editor'&&id!=='editor')discardEditorChanges();if(id==='editor'&&activePanel!=='editor'){editorOriginal={...state.appearance};editorTab='appearance';if(tiredEyesFailed)loadTiredEyes(true)}if(id==='interaction'&&(state.location!=='npc'||!visitingNPC||interactionUsedToday(visitingNPC))){updateVisitDailyNotice();if(state.location!=='npc'||!visitingNPC)toast('Спочатку відвідай друга');return}if(id==='inventory'||id==='wardrobe'){openItemDock(id);return}if(id==='friends'){closeItemDock();closePanel();friendDockMode='list';toggleFriends(true);return}if(id==='games'){closePanel();showGamesMenu();return}if(id==='shop'&&activePanel!=='shop'&&shopRoom!=='makeup'){shopRoom=null;resetShopWalker()}if(id==='home'){if(state.location==='npc'){setLocation('home')}else setLocation(state.location==='home'?'island':'home');return}activePanel=id;overlay.classList.add('open');overlay.classList.toggle('editor-full',id==='editor');overlay.classList.toggle('shop-full',id==='shop');document.querySelectorAll('#toolbar button').forEach(b=>b.classList.toggle('active',b.dataset.open===id));showPanel()}
 function discardEditorChanges(){if(editorOriginal){state.appearance={...editorOriginal};editorOriginal=null}}
-function closePanel(){if(activePanel==='editor')discardEditorChanges();overlay.classList.remove('open');overlay.classList.remove('editor-full');overlay.classList.remove('shop-full');shopRoom=null;document.querySelectorAll('#toolbar button').forEach(b=>b.classList.remove('active'));activePanel=''}
+function closePanel(){
+ if(activePanel==='editor')discardEditorChanges();
+ if(activePanel==='shop'){
+  // Відпускаємо шар продавця / прилавка та посилання на DOM-магазину.
+  if(shopSceneCache){
+   for(const k of ['sellerLayer','counterLayer']){const c=shopSceneCache[k];if(c){c.width=0;c.height=0}}
+   shopSceneCache=null;
+  }
+  shopRenderLast=0;shopRenderAccum=0;shopHoldDir=0;
+ }
+ overlay.classList.remove('open');overlay.classList.remove('editor-full');overlay.classList.remove('shop-full');shopRoom=null;document.querySelectorAll('#toolbar button').forEach(b=>b.classList.remove('active'));activePanel=''
+}
 document.querySelectorAll('#toolbar button').forEach(b=>b.addEventListener('click',()=>openPanel(b.dataset.open)));document.getElementById('closePanel').onclick=closePanel;overlay.addEventListener('pointerdown',e=>{if(e.target===overlay)closePanel()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
 const esc=s=>safeStr(s,150).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 function tabs(options,selected,action){return `<div class="tabs">${options.map(o=>`<button class="tab ${selected===o[0]?'active':''}" data-act="${action}" data-val="${o[0]}">${o[1]}</button>`).join('')}</div>`}
@@ -1480,7 +1512,7 @@ let otherShopTab='lights';let shopPage=0;let shopHoldDir=0;let shopNextTurn=0;co
 let shopCamera=0,shopCameraTarget=0,shopWalkerX=310,shopWalkTarget=null,shopWalkPhase=0,shopWalkDir=1,shopWorldWidth=2200;
 let shopRenderLast=0,shopRenderAccum=0,shopSceneCache=null,shopLastProgress=-1,shopLastNav=-1;
 // Перерахунок геометрії тільки при реальному зміненні розміру вікна.
-window.addEventListener('resize',()=>{shopSceneCache=null;shopRenderAccum=1;});
+window.addEventListener('resize',()=>{if(shopSceneCache){for(const k of ['sellerLayer','counterLayer']){const c=shopSceneCache[k];if(c){c.width=0;c.height=0}}}shopSceneCache=null;shopRenderAccum=1;});
 function shopCacheFor(stage,world,c){const width=stage.clientWidth,height=stage.clientHeight;if(shopSceneCache&&shopSceneCache.stage===stage&&shopSceneCache.width===width&&shopSceneCache.height===height)return shopSceneCache;if(!shopSceneCache||shopSceneCache.stage!==stage||shopSceneCache.width!==width||shopSceneCache.height!==height){const count=shopStock().length,spacing=Math.max(190,Math.min(300,width*.25)),total=Math.max(width*2.15,430+count*spacing+540);shopSceneCache={stage,world,c,width,height,metrics:{width,height,spacing,total,maxCamera:Math.max(0,total-width)},ctx:c.getContext('2d',{alpha:true})};world.style.width=width+'px'}return shopSceneCache}
 
 const shopSeller={head:'round',fur:'#c7a3bc',body:'#ad8eae',eyeColor:'#53416b',name:'Продавець',equipped:{eyes:'eyes_tired',ears:'ears_soft'}};
