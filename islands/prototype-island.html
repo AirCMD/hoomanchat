@@ -807,14 +807,14 @@ function drawNPCHead(n,species,coat,accent){
  if(n.id==='dreaming_romance'){ctx.strokeStyle='#d9d5ac';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,-23,8,.65,Math.PI*1.5);ctx.stroke()}
  const eye=n.id==='wolf_fang'?'#f4d84f':n.id==='yuki_foxy'?'#64cafa':n.id==='akira_bakeneko'?'#6bbcee':n.id==='la_cyber'?'#39e7e7':n.id==='water_blue'?'#102d48':'#27293a';
  for(const side of [-1,1]){ellipse(side*15,-2,5.4,7.4,eye);ellipse(side*14,-5,1.8,2.6,'#ffffff')}
- const npcNoseMap={yuki_foxy:'nose_animal_bl',dreaming_romance:'nose_animal_blk',night_fox:'nose_animal_blk',wolf_fang:'nose_animal_blk',water_blue:'nose_shark'};
+ const npcNoseMap={yuki_foxy:'nose_animal_bl',dreaming_romance:'nose_animal_blk',night_fox:'nose_animal_blk',wolf_fang:'nose_animal_blk',soft_static:'nose_animal_pn',water_blue:'nose_shark'};
  const npcNoseId=npcNoseMap[n.id]||null;
  if(species==='fox'||species==='wolf'||species==='cat'||species==='weasel'){
   ellipse(0,15,23,12,dark?'#454450':'#f4e8e2');
   if(!npcNoseId){ctx.beginPath();ctx.moveTo(-5,10);ctx.lineTo(5,10);ctx.lineTo(0,15);ctx.closePath();ctx.fillStyle=n.id==='yuki_foxy'?'#57b7e3':'#554859';ctx.fill();}
  }else if(species==='shark'){
   ellipse(0,15,23,10,'#dceaf0');if(n.id!=='water_blue'){ctx.beginPath();ctx.moveTo(-14,12);ctx.lineTo(14,12);ctx.strokeStyle='#315369';ctx.lineWidth=2;ctx.stroke()}
- }else{ellipse(0,11,3,2,'#684c55')}
+ }else if(!npcNoseId){ellipse(0,11,3,2,'#684c55')}
  if(n.id==='water_blue'){
   renderAuthoredNose(ctx,'nose_shark');renderAuthoredMouth(ctx,'sharkgrip',npcHx,npcHy)
  }else if(npcNoseId){
