@@ -790,7 +790,7 @@ function drawNPCHead(n,species,coat,accent){
  }else if(species==='shark'){
   ellipse(0,15,23,10,'#dceaf0');if(n.id!=='water_blue'){ctx.beginPath();ctx.moveTo(-14,12);ctx.lineTo(14,12);ctx.strokeStyle='#315369';ctx.lineWidth=2;ctx.stroke()}
  }else{ellipse(0,11,3,2,'#684c55')}
- if(n.id==='water_blue'){renderAuthoredNose(ctx,'nose_shark');renderAuthoredMouth(ctx,'sharkgrip')}else{ctx.beginPath();ctx.arc(0,16,5,0,Math.PI);ctx.strokeStyle=dark?'#d8d5e0':'#66505d';ctx.lineWidth=2;ctx.stroke()}
+ if(n.id==='water_blue'){renderAuthoredNose(ctx,'nose_shark');renderAuthoredMouth(ctx,'sharkgrip',npcHx,npcHy)}else{ctx.beginPath();ctx.arc(0,16,5,0,Math.PI);ctx.strokeStyle=dark?'#d8d5e0':'#66505d';ctx.lineWidth=2;ctx.stroke()}
  if(n.id==='la_cyber'){ctx.strokeStyle='#27eee8';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(-37,-3);ctx.lineTo(-25,13);ctx.moveTo(37,-3);ctx.lineTo(25,13);ctx.stroke()}
  if(n.id==='water_blue'){for(const side of [-1,1]){ctx.beginPath();ctx.moveTo(side*33,4);ctx.lineTo(side*48,-6);ctx.lineTo(side*35,20);ctx.fillStyle=face;ctx.fill()}}
  ctx.restore();
@@ -1170,26 +1170,13 @@ function renderTiredEyes(g,hx=39,hy=39){
  g.drawImage(tiredEyesImg,-side/2,-side/2-2,side,side);
  return true;
 }
-// Спрайти ротів створюються один раз і малюються в оригінальних пропорціях.
+// Спрайти ротів створюються один раз.
 const mouthSprites={};
 for(const name of [...Object.keys(MOUTH_PNG),'sharkgrip']){
  const img=new Image();
- const item={img,ready:false,crop:null};mouthSprites[name]=item;
+ const item={img,ready:false};mouthSprites[name]=item;
  img.onload=()=>{
   item.ready=img.naturalWidth>0;
-  if(item.ready){
-   // Read only the author's PNG: transparent edges do not count as visible pixels.
-   try{
-    const cv=document.createElement('canvas');cv.width=img.naturalWidth;cv.height=img.naturalHeight;
-    const c=cv.getContext('2d',{willReadFrequently:true});c.drawImage(img,0,0);
-    const rgba=c.getImageData(0,0,cv.width,cv.height).data;
-    let left=cv.width,top=cv.height,right=-1,bottom=-1;
-    for(let y=0;y<cv.height;y++)for(let x=0;x<cv.width;x++){
-     if(rgba[(y*cv.width+x)*4+3]>12){left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y)}
-    }
-    if(right>=left)item.crop={x:left,y:top,w:right-left+1,h:bottom-top+1};
-   }catch(error){console.warn('Не вдалося прочитати прозорість PNG рота',name,error)}
-  }
   if(name==='sharkgrip')console.info('Рот sharkgrin.png завантажено:',img.currentSrc,'розмір:',img.naturalWidth,img.naturalHeight);
   if(typeof drawPreviewIfOpen==='function')drawPreviewIfOpen();
   if(typeof activePanel!=='undefined'&&activePanel==='editor'&&typeof drawFaceChoices==='function')drawFaceChoices();
@@ -1198,19 +1185,14 @@ for(const name of [...Object.keys(MOUTH_PNG),'sharkgrip']){
  // Absolute repository root, never relative to the /islands/ page.
  img.src=MOUTH_PNG[name]||assetCandidates('sharkgrin.png')[0];
 }
-function renderAuthoredMouth(g,name){
+function renderAuthoredMouth(g,name,hx=39,hy=36){
  const sprite=mouthSprites[name];if(!sprite||!sprite.ready)return false;
  const img=sprite.img,sw=img.naturalWidth,sh=img.naturalHeight;
  if(!sw||!sh)return false;
- if(sprite.crop){
-  const cr=sprite.crop,k=.36*512/sw;
-  // Maintain author-defined mouth size and placement from 512x512 PNG artboard.
-  g.drawImage(img,cr.x,cr.y,cr.w,cr.h,(cr.x-sw/2)*k,19+(cr.y-sh*350/512)*k,cr.w*k,cr.h*k);
- }else{
-  // If alpha read is unavailable, draw the original PNG, NOT a geometric substitute.
-  const k=.36*512/sw;
-  g.drawImage(img,-sw*k/2,19-sh*350/512*k,sw*k,sh*k);
- }
+ // Авторські PNG-роти накладаються як повне полотно 512×512,
+ // без кропу та без окремого "довільного" масштабування рота.
+ const side=Math.max(hx*2,hy*2);
+ g.drawImage(img,-side/2,-side/2-2,side,side);
  return true;
 }
 
@@ -1400,7 +1382,7 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  else if(eq.nose==='nose_heart'){g.fillStyle='#ca809a';g.font='12px system-ui';g.textAlign='center';g.fillText('♥',0,12)}
  else{g.beginPath();g.moveTo(-4,8);g.lineTo(4,8);g.lineTo(0,12);g.closePath();g.fillStyle='#a7838d';g.fill()}
  if(Object.prototype.hasOwnProperty.call(mouthSprites,eq.mouth)){
-  renderAuthoredMouth(g,eq.mouth);
+  renderAuthoredMouth(g,eq.mouth,hx,hy);
  }else{
   g.strokeStyle='#73616d';g.lineWidth=2.1;g.lineCap='round';g.beginPath();
   if(eq.mouth==='mouth_cat'){g.moveTo(0,12);g.lineTo(0,18);g.moveTo(-10,17);g.quadraticCurveTo(-5,26,0,18);g.quadraticCurveTo(5,26,10,17)}
