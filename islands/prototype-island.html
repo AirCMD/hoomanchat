@@ -237,6 +237,8 @@
 .shop-subbar{display:flex;gap:6px;overflow-x:auto;flex:0 0 auto;padding:5px 12px;background:#fff2e8e8}
 .shop-subbar button{flex:0 0 auto;border:1px solid #d2aab2;background:#fffaf4;color:#62475c;border-radius:9px;padding:7px 12px;font-size:12px;font-weight:800}
 .shop-subbar button.selected{background:#f6c8d7;border-color:#b97b94}
+.shop-wig-subbar{background:#f5e5f9;min-height:43px}
+.shop-wig-subbar button.selected{background:#d9b6ee;border-color:#a580c4}
 .shop-room-stage{flex:1;position:relative;isolation:isolate;overflow:hidden;width:100%;min-height:0;height:auto;margin:0;max-width:none;border:0;border-radius:0;box-shadow:none;background:#78697b;touch-action:pan-y}
 .shop-room-world{position:absolute;left:0;top:0;bottom:0;will-change:transform;background:linear-gradient(180deg,#655774 0%,#7c698c 60%,#b98fa2 60%,#b98fa2 100%);pointer-events:none}
 .shop-room-world .shop-room-wall{inset:0 0 37%;background:repeating-linear-gradient(90deg,#ffffff13 0 78px,#00000015 80px 84px),linear-gradient(155deg,color-mix(in srgb,var(--shop-accent) 24%,#716384),#575075);border-bottom:14px solid #f0c9c7}
@@ -376,7 +378,7 @@ const ASSETS_ROOT='/hoomanchat/assets/';
 const ITEMS={
  apple:{name:'Яблуко',emoji:'🍎',category:'food',price:20},cake:{name:'Тістечко',emoji:'🧁',category:'food',price:45},tea:{name:'Чай',emoji:'🧋',category:'food',price:25},
  chair:{name:'Крісло',emoji:'🪑',category:'furniture',price:170},lamp:{name:'Лампа',emoji:'💡',category:'furniture',price:130},plant:{name:'Квітка',emoji:'🪴',category:'furniture',price:95},bed:{name:'Ліжко',emoji:'🛏️',category:'furniture',price:340},bath:{name:'Ванна',emoji:'🛁',category:'furniture',price:290},shower:{name:'Душ',emoji:'🚿',category:'furniture',price:260},tv:{name:'Телевізор',emoji:'📺',category:'furniture',price:380},fridge:{name:'Звичайний холодильник',emoji:'🧊',category:'furniture',price:330},auto_fridge:{name:'Розумний холодильник',emoji:'🥗',category:'furniture',price:1100},toy:{name:'Іграшка пета',emoji:'🧸',category:'furniture',price:130},vacuum:{name:'Звичайний пилосос',emoji:'🧹',category:'furniture',price:290},robot_vacuum:{name:'Робот-пилосос',emoji:'🤖',category:'furniture',price:940},medicine:{name:'Ліки для пета',emoji:'💊',category:'food',price:155},
- wig_pink:{name:'Рожева перука',emoji:'👩‍🎤',category:'wig',price:280},wig_blue:{name:'Синя перука',emoji:'🩵',category:'wig',price:300},dress:{name:'Сукня',emoji:'👗',category:'clothes',price:280},shirt:{name:'Світшот',emoji:'👕',category:'clothes',price:220},
+ wig_pink:{name:'Рожева перука',emoji:'👩‍🎤',category:'wig',price:280},wig_blue:{name:'Синя перука',emoji:'🩵',category:'wig',price:300},hair_shkrek1:{name:'Волосся 1',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:2,image:'/hoomanchat/assets/shkrekhair1.png'},hair_shkeksp2:{name:'Волосся SP 2',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:7,premium:true,image:'/hoomanchat/assets/shkekhairsp2.png'},hair_shkeksp1:{name:'Волосся SP 1',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:7,premium:true,image:'/hoomanchat/assets/shkekhairsp1.png'},hair_shkrek3:{name:'Волосся 3',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:2,image:'/hoomanchat/assets/shkrekhair3.png'},hair_shkrek2:{name:'Волосся 2',emoji:'💇',category:'wig',slot:'wig',currency:'tokens',price:2,image:'/hoomanchat/assets/shkrekhair2.png'},dress:{name:'Сукня',emoji:'👗',category:'clothes',price:280},shirt:{name:'Світшот',emoji:'👕',category:'clothes',price:220},
  tail_fox:{name:'Лисячий хвіст',emoji:'🦊',category:'accessory',slot:'tail',price:240},tail_cat:{name:'Котячий хвіст',emoji:'🐈',category:'accessory',slot:'tail',price:180},bow:{name:'Бантик',emoji:'🎀',category:'accessory',slot:'bow',price:115},
  eyes_star:{name:'Зоряні очі',emoji:'✨',category:'face',slot:'eyes',price:185},eyes_sleepy:{name:'Мрійливі очі',emoji:'😌',category:'face',slot:'eyes',price:135},eyes_tired:{name:'Втомлені очі',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/tiredeyes.png'},nose_heart:{name:'Носик-серце',emoji:'💗',category:'face',slot:'nose',price:110},nose_shark:{name:'Акулячий ніс',emoji:'👃',category:'face',slot:'nose',price:150,image:'/hoomanchat/assets/sharknostril.png'},nose_nostril:{name:'Ніс',emoji:'👃',category:'face',slot:'nose',price:0,image:'/hoomanchat/assets/nostril.png'},
  sharkmouth:{name:'Акулячий рот',emoji:'👄',category:'face',slot:'mouth',price:0,image:MOUTH_PNG.sharkmouth},
@@ -515,6 +517,14 @@ function dustStore(){
 }
 function seededDust(i,salt){const t=Math.sin((i+1)*142.91+salt*13.47)*45231.712;return t-Math.floor(t)}
 function dustPoint(i,salt,room){return {id:i,room,x:.13+seededDust(i*2,salt)*.73,y:.68+seededDust(i*2+1,salt)*.19,done:false};}
+// One new home dust particle every 96 minutes, scheduled by the device's local clock.
+const HOME_DUST_PER_DAY=15;
+const HOME_DUST_INTERVAL_MS=24*60*60*1000/HOME_DUST_PER_DAY;
+function startOfLocalDayMs(){const now=new Date();return new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime()}
+function homeDustAvailable(p,now=Date.now()){return p.id>=0&&p.id<HOME_DUST_PER_DAY&&now>=startOfLocalDayMs()+p.id*HOME_DUST_INTERVAL_MS}
+function pendingHomeDust(now=Date.now()){return ensureHomeDust().filter(p=>!p.done&&homeDustAvailable(p,now))}
+function syncHomeCleanliness(now=Date.now()){const count=pendingHomeDust(now).length;const next=Math.max(10,100-count*6);const changed=Math.abs((state.roomCleanliness??0)-next)>.001;state.roomCleanliness=next;state.roomDirtAt=now;return changed}
+
 function unlockedHomeRooms(){return [0,1,2].filter(r=>state.level>=ROOM_LEVELS[r]);}
 function ensureHomeDust(){
  const d=dustStore();
@@ -535,7 +545,7 @@ function ensureNpcDust(n){
 function visibleDust(){
  // Денні пилинки не зникають через відсоток чистоти чи зміну кімнати.
  // Прибираються вони лише після кліку або роботи пилососа.
- if(state.location==='home'&&state.room<3)return ensureHomeDust().filter(p=>p.room===state.room&&!p.done);
+ if(state.location==='home'&&state.room<3)return pendingHomeDust().filter(p=>p.room===state.room);
  if(state.location==='npc'&&visitingNPC)return ensureNpcDust(visitingNPC).filter(p=>p.room===npcRoom&&!p.done);
  return [];
 }
@@ -571,12 +581,12 @@ function cleanDust(p,owner='home'){
  p.done=true;
  const home=owner==='home',coins=home?15:5;
  state.coins+=coins;
- if(home)state.roomCleanliness=Math.min(100,state.roomCleanliness+3);
+ if(home)syncHomeCleanliness();
  earnXP(5);save();updateRoomCleanUI();
  return true;
 }
 function cleanDustRoom(owner,room,robot=false){
- const source=owner==='home'?ensureHomeDust():ensureNpcDust(visitingNPC);
+ const source=owner==='home'?pendingHomeDust():ensureNpcDust(visitingNPC);
  const subset=source.filter(p=>p.room===room&&!p.done);
  let count=0;
  for(const p of subset){if(cleanDust(p,owner))count++}
@@ -589,7 +599,7 @@ let lastRobotDustCheck=0;
 function robotDustTick(){
  if(Date.now()-lastRobotDustCheck<12000)return;lastRobotDustCheck=Date.now();
  if(state.location!=='home')return;
- const source=ensureHomeDust();
+ const source=pendingHomeDust();
  for(let room=0;room<3;room++){
   if(state.level<ROOM_LEVELS[room]||!placedInRoom('robot_vacuum',room))continue;
   const p=source.find(p=>p.room===room&&!p.done);
@@ -742,7 +752,8 @@ function lampPicture(id){
 function roomLightEnabled(room){return state.roomLights?.[room]!==false}
 function drawCeilingLamp(id,x,room,selected=false){
  const pic=lampPicture(id),on=roomLightEnabled(room),s=Math.max(.65,Math.min(1.25,W/700));
- const top=H*.035,bottom=H*.34;
+ // Всі сім ламп мають квадратні PNG: зберігаємо співвідношення 1:1.
+ const size=105*s,top=H*.035-5,bottom=top+size;
  ctx.save();
  // Зображення ціле, включно з дротом. Не підміняємо авторський PNG геометрією.
  if(on){
@@ -751,11 +762,9 @@ function drawCeilingLamp(id,x,room,selected=false){
   ctx.fillStyle=glow;ctx.beginPath();ctx.arc(x,bottom,H*.34,0,Math.PI*2);ctx.fill();
  }
  if(pic?.ready){
-  const h=(bottom-top)*s,w=h*(pic.image.naturalWidth/pic.image.naturalHeight);
-  const maxw=105*s,drawW=Math.min(w,maxw);
-  ctx.drawImage(pic.image,x-drawW/2,top,drawW,h);
+  ctx.drawImage(pic.image,x-size/2,top,size,size);
  }
- if(selected){ctx.strokeStyle='#83ffff';ctx.setLineDash([5,4]);ctx.strokeRect(x-50,top,100,bottom-top);ctx.setLineDash([])}
+ if(selected){ctx.strokeStyle='#83ffff';ctx.setLineDash([5,4]);ctx.strokeRect(x-size/2,top,size,size);ctx.setLineDash([])}
  ctx.restore();
 }
 function drawFurniture(id,x,y,s=1){ctx.save();ctx.translate(x,y);ctx.scale(s,s);ellipse(0,12,26,7,'#567c6970');if(id==='vacuum'){line(-9,-10,10,-43,'#c6ecff',5);line(-19,-8,14,-8,'#172942',10);ellipse(-3,-7,17,9,'#4dd6df');}else if(id==='robot_vacuum'){ellipse(0,-8,31,17,'#1b293b');ellipse(0,-11,27,14,'#67dce2');ellipse(0,-12,7,5,'#142e4b');}else if(id==='bath'||id==='shower'){drawRounded(-33,-33,66,47,12,id==='bath'?'#bcecff':'#8ddbe2');drawRounded(-26,-25,52,30,8,'#f0fbfe');line(18,-37,18,-51,'#e5f8ff',5)}else if(id==='tv'){drawRounded(-35,-48,70,45,7,'#11182b');drawRounded(-29,-42,58,33,4,'#3c9fd3');line(0,-3,0,13,'#a5a8bf',5)}else if(id==='fridge'||id==='auto_fridge'){drawRounded(-25,-58,50,77,8,id==='auto_fridge'?'#85d7da':'#c4cbd6');line(-10,-22,18,-22,'#74869a',2);drawRounded(11,-14,3,19,2,'#edfaff')}else if(id==='toy'){ellipse(0,-15,20,22,'#eac3ac');ellipse(-14,-37,9,10,'#eac3ac');ellipse(14,-37,9,10,'#eac3ac')}else if(id==='chair'){drawRounded(-24,-36,48,34,10,'#f4bba7');drawRounded(-29,-10,58,21,6,'#d39495');line(-18,8,-18,19,'#856f72',5);line(18,8,18,19,'#856f72',5)}else if(id==='plant'){drawRounded(-13,-7,26,27,5,'#c4887b');ellipse(0,-23,17,26,'#5aa675');ellipse(-13,-31,13,17,'#77c780');ellipse(14,-33,12,17,'#82c887')}else if(id==='lamp'){line(0,-50,0,10,'#938c9b',5);ctx.beginPath();ctx.moveTo(-21,-51);ctx.lineTo(21,-51);ctx.lineTo(12,-20);ctx.lineTo(-12,-20);ctx.fillStyle='#ffefb4';ctx.fill();ellipse(0,12,19,5,'#938c9b')}else if(id==='bed'){drawRounded(-39,-11,78,28,10,'#d5b6dc');drawRounded(-39,-28,78,23,12,'#f5d4e2');drawRounded(-32,-23,28,16,6,'#fff9f1')}ctx.restore()}
@@ -1107,6 +1116,50 @@ function renderAuthoredMouth(g,name){
  }
  return true;
 }
+
+// Авторське PNG-волосся / перуки з assets у корені репозиторію.
+const wigPngFiles={
+ hair_shkrek1:'shkrekhair1.png',
+ hair_shkeksp2:'shkekhairsp2.png',
+ hair_shkeksp1:'shkekhairsp1.png',
+ hair_shkrek3:'shkrekhair3.png',
+ hair_shkrek2:'shkrekhair2.png'
+};
+const wigSprites={};
+for(const [id,filename] of Object.entries(wigPngFiles)){
+ const img=new Image();const item={img,ready:false,crop:null};wigSprites[id]=item;
+ img.onload=()=>{
+  item.ready=img.naturalWidth>0;
+  if(item.ready){
+   try{
+    const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;
+    const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(img,0,0);
+    const pixels=g.getImageData(0,0,c.width,c.height).data;
+    let l=c.width,t=c.height,r=-1,b=-1;
+    for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++)if(pixels[(y*c.width+x)*4+3]>12){l=Math.min(l,x);t=Math.min(t,y);r=Math.max(r,x);b=Math.max(b,y)}
+    if(r>=l)item.crop={x:l,y:t,w:r-l+1,h:b-t+1};
+   }catch(err){console.warn('Волосся PNG: неможливо визначити прозорі поля',filename,err)}
+  }
+  if(typeof drawPreviewIfOpen==='function')drawPreviewIfOpen();
+  if(typeof activePanel!=='undefined'&&activePanel==='editor'&&typeof drawFaceChoices==='function')drawFaceChoices();
+ };
+ img.onerror=()=>{item.ready=false;console.error('Не завантажено волосся:',img.src)};
+ img.src='/hoomanchat/assets/'+filename;
+}
+function renderAuthoredWig(g,id,hx,hy){
+ const sprite=wigSprites[id];if(!sprite||!sprite.ready)return false;
+ const img=sprite.img,w=img.naturalWidth,h=img.naturalHeight;
+ if(!w||!h)return false;
+ const crop=sprite.crop||{x:0,y:0,w,h};
+ const targetW=(hx*2.28);
+ const scale=targetW/crop.w;
+ const targetH=crop.h*scale;
+ const dx=-targetW/2;
+ const dy=-hy-12;
+ g.drawImage(img,crop.x,crop.y,crop.w,crop.h,dx,dy,targetW,targetH);
+ return true;
+}
+
 // Два авторські PNG-носи: чіткий абсолютний шлях до assets у корені репозиторію.
 const noseSprites={};
 for(const [id,filename] of [['nose_shark','sharknostril.png'],['nose_nostril','nostril.png']]){
@@ -1214,9 +1267,11 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  }
 
  if(eq.wig){
-  g.fillStyle=eq.wig==='wig_blue'?'#9bd0e9':'#e8a9c7';
-  g.beginPath();g.ellipse(0,-21,hx+2,hy*.5,0,Math.PI,Math.PI*2);g.fill();
-  g.fillRect(-hx+1,-18,10,23);g.fillRect(hx-11,-18,10,23);
+  if(!renderAuthoredWig(g,eq.wig,hx,hy)){
+   g.fillStyle=eq.wig==='wig_blue'?'#9bd0e9':'#e8a9c7';
+   g.beginPath();g.ellipse(0,-21,hx+2,hy*.5,0,Math.PI,Math.PI*2);g.fill();
+   g.fillRect(-hx+1,-18,10,23);g.fillRect(hx-11,-18,10,23);
+  }
  }
 
  let eye=a.eyeColor||'#4b406c';
@@ -1394,11 +1449,27 @@ const SHOP_STOCK={
  bedroom:['bed','chair','plant','tv','toy'],
  kitchen:['fridge','auto_fridge'],
  bathroom:['bath','shower','vacuum','robot_vacuum'],
- clothes:['dress','shirt','wig_pink','wig_blue'],
+ clothes:['dress','shirt','wig_pink','wig_blue','hair_shkrek1','hair_shkeksp2','hair_shkeksp1','hair_shkrek3','hair_shkrek2'],
  accessories:['tail_fox','tail_cat','bow'],
  makeup:['eyes_star','eyes_sleepy','eyes_tired','nose_heart','nose_shark','nose_nostril','mouth_cat','sharkmouth','animalmouth','catmouth','smilemouth','funmouth','apathymouth','smouth','mou3','sharkgrip','brows_bold','ears_bunny','blush','freckles','stars','shadow'],
  other:[]
 };
+// Дворівнева навігація магазину одягу. Усі нові shkrek/shkek перуки — «Даркі».
+const CLOTHES_SHOP_TABS=[
+ {id:'dresses',name:'Сукні',stock:['dress']},
+ {id:'suits',name:'Костюми',stock:[]},
+ {id:'outer',name:'Верхній одяг',stock:['shirt']},
+ {id:'lower',name:'Нижній одяг',stock:[]},
+ {id:'wigs',name:'Перуки',stock:[]}
+];
+const WIG_SHOP_TABS=[
+ {id:'dark',name:'Даркі',stock:['hair_shkrek1','hair_shkeksp2','hair_shkeksp1','hair_shkrek3','hair_shkrek2']},
+ {id:'pastel',name:'Пастель',stock:[]},
+ {id:'classic',name:'Класичні',stock:['wig_pink','wig_blue']},
+ {id:'ufo',name:'НЛО',stock:[]},
+ {id:'anime',name:'Аніме',stock:[]}
+];
+let clothesShopTab='dresses',wigShopTab='dark';
 const OTHER_SHOP_TABS=[
  {id:'windows',name:'Вікна',symbol:'🪟',stock:[]},
  {id:'doors',name:'Двері',symbol:'🚪',stock:[]},
@@ -1414,7 +1485,7 @@ function shopCacheFor(stage,world,c){const width=stage.clientWidth,height=stage.
 
 const shopSeller={head:'round',fur:'#c7a3bc',body:'#ad8eae',eyeColor:'#53416b',name:'Продавець',equipped:{eyes:'eyes_tired',ears:'ears_soft'}};
 function resetShopWalker(){shopCamera=0;shopCameraTarget=0;shopWalkerX=330;shopWalkTarget=null;shopWalkPhase=0;shopWalkDir=1;shopHoldDir=0;shopRenderLast=0;shopRenderAccum=0;shopSceneCache=null;shopLastProgress=-1;shopLastNav=-1;if(tiredEyesFailed)loadTiredEyes(true)}
-function shopStock(){const r=SHOP_ROOMS.find(r=>r.id===shopRoom);if(!r)return [];const tab=OTHER_SHOP_TABS.find(t=>t.id===otherShopTab);return (r.id==='other'?(tab?.stock||[]):(SHOP_STOCK[r.id]||[])).filter(id=>ITEMS[id])}
+function shopStock(){const r=SHOP_ROOMS.find(r=>r.id===shopRoom);if(!r)return [];const tab=OTHER_SHOP_TABS.find(t=>t.id===otherShopTab);let stock=r.id==='other'?(tab?.stock||[]):(SHOP_STOCK[r.id]||[]);if(r.id==='clothes'){const category=CLOTHES_SHOP_TABS.find(t=>t.id===clothesShopTab)||CLOTHES_SHOP_TABS[0];stock=category.id==='wigs'?(WIG_SHOP_TABS.find(t=>t.id===wigShopTab)||WIG_SHOP_TABS[0]).stock:category.stock}return stock.filter(id=>ITEMS[id])}
 function shopMetrics(){const stage=document.getElementById('shopStage');const width=stage?.clientWidth||window.innerWidth;const height=stage?.clientHeight||window.innerHeight;
  const count=shopStock().length;const spacing=Math.max(190,Math.min(300,width*.25));const total=Math.max(width*2.15,430+count*spacing+540);
  return {width,height,spacing,total,maxCamera:Math.max(0,total-width)}}
@@ -1528,8 +1599,8 @@ function shopHTML(){
  const items=shopStock(),m=shopMetrics();
  const displays=items.map((id,i)=>{const it=ITEMS[id],n=state.owned[id]||0,x=340+i*m.spacing;return `<article class="shop-wall-product" data-world-x="${x}" style="left:${x}px;width:${m.spacing-22}px"><span class="shop-product-pic">${it.image?`<img src="${it.image}" alt="${esc(it.name)}" loading="lazy" onerror="this.style.visibility='hidden'" style="max-width:100%;height:clamp(45px,10vh,92px);object-fit:contain">`:it.emoji}</span><strong>${esc(it.name)}${it.premium?' ✦ Преміум':''}</strong><small>У тебе: ${n}</small><button data-act="buy" data-id="${id}" ${walletValue(id)<it.price?'disabled':''}>${currencyHTML(id)} ${it.price} · Купити</button></article>`}).join('');
  const top=`<header class="shop-topbar"><button class="shop-all" data-act="shopBack">☷ Магазини</button><nav class="shop-switcher" aria-label="Перемкнути магазин">${SHOP_ROOMS.map(t=>`<button data-act="enterShop" data-val="${t.id}" class="${r.id===t.id?'selected':''}">${t.symbol} ${t.name}</button>`).join('')}</nav><span class="wallet">${COIN_HTML} ${state.coins} &nbsp; ${TOKEN_HTML} ${state.tokens}</span></header>`;
- const sub=r.id==='other'?`<nav class="shop-subbar">${OTHER_SHOP_TABS.map(t=>`<button class="${t.id===otherShopTab?'selected':''}" data-act="otherShopTab" data-val="${t.id}">${t.symbol} ${t.name}</button>`).join('')}</nav>`:'';
- return `<div class="shop-screen">${top}${sub}<section id="shopStage" class="shop-room-stage" style="--shop-accent:${r.accent}" aria-label="Крамниця ${r.name}. Стрілки зсувають камеру, натисни на підлогу, щоб ходити."><div id="shopWorld" class="shop-room-world" style="width:${m.width}px"><div class="shop-room-wall"></div><div class="shop-room-floor"></div><div class="shop-shop-window" style="left:38px"></div><div class="shop-room-heading">${r.symbol} ${r.id==='other'?otherTab.name:r.name}</div><div class="shop-wall-items">${displays||'<div class="shop-wall-empty">Нові товари з’являться тут ✨</div>'}</div></div><canvas id="shopCast" aria-label="Пет і продавець"></canvas><button class="shop-nav shop-nav-left" data-shop-arrow="-1" type="button" aria-label="Рух камери ліворуч">❮</button><button class="shop-nav shop-nav-right" data-shop-arrow="1" type="button" aria-label="Рух камери праворуч">❯</button><div class="shop-room-hint">Торкнися підлоги, щоб пройти · <span id="shopPosition">0% кімнати</span></div><button class="shop-home-btn" type="button" data-act="shopHome">🏠 Додому</button></section></div>`;
+ const sub=r.id==='other'?`<nav class="shop-subbar">${OTHER_SHOP_TABS.map(t=>`<button class="${t.id===otherShopTab?'selected':''}" data-act="otherShopTab" data-val="${t.id}">${t.symbol} ${t.name}</button>`).join('')}</nav>`:r.id==='clothes'?`<nav class="shop-subbar" aria-label="Категорії одягу">${CLOTHES_SHOP_TABS.map(t=>`<button class="${t.id===clothesShopTab?'selected':''}" data-act="clothesShopTab" data-val="${t.id}">${t.name}</button>`).join('')}</nav>${clothesShopTab==='wigs'?`<nav class="shop-subbar shop-wig-subbar" aria-label="Категорії перук">${WIG_SHOP_TABS.map(t=>`<button class="${t.id===wigShopTab?'selected':''}" data-act="wigShopTab" data-val="${t.id}">${t.name}</button>`).join('')}</nav>`:''}`:'';
+ return `<div class="shop-screen">${top}${sub}<section id="shopStage" class="shop-room-stage" style="--shop-accent:${r.accent}" aria-label="Крамниця ${r.name}. Стрілки зсувають камеру, натисни на підлогу, щоб ходити."><div id="shopWorld" class="shop-room-world" style="width:${m.width}px"><div class="shop-room-wall"></div><div class="shop-room-floor"></div><div class="shop-shop-window" style="left:38px"></div><div class="shop-room-heading">${r.symbol} ${r.id==='other'?otherTab.name:r.id==='clothes'?(clothesShopTab==='wigs'?'Перуки · '+(WIG_SHOP_TABS.find(t=>t.id===wigShopTab)?.name||'Даркі'):(CLOTHES_SHOP_TABS.find(t=>t.id===clothesShopTab)?.name||'Сукні')):r.name}</div><div class="shop-wall-items">${displays||'<div class="shop-wall-empty">Нові товари з’являться тут ✨</div>'}</div></div><canvas id="shopCast" aria-label="Пет і продавець"></canvas><button class="shop-nav shop-nav-left" data-shop-arrow="-1" type="button" aria-label="Рух камери ліворуч">❮</button><button class="shop-nav shop-nav-right" data-shop-arrow="1" type="button" aria-label="Рух камери праворуч">❯</button><div class="shop-room-hint">Торкнися підлоги, щоб пройти · <span id="shopPosition">0% кімнати</span></div><button class="shop-home-btn" type="button" data-act="shopHome">🏠 Додому</button></section></div>`;
 }
 function showPanel(){let labels={editor:'🎨 Редактор персонажа',shop:'🏪 Магазин',inventory:'🎒 Інвентар предметів',wardrobe:'👗 Гардероб',post:'💌 Пошта острова',friends:'👥 Друзі',friendAdd:'＋ Друзі',npcGift:'🎁 Подарунок NPC',settings:'⚙️ Меню гри',needs:'💗 Потреби пета',yard:'🪐 Ферма комах',profile:'👤 Мій профіль',interaction:'💬 Взаємодія з другом',roomClean:'🧹 Прибирання кімнати'};title.textContent=labels[activePanel]||'Меню';let html='';
  if(activePanel==='profile'){html=profileHTML()}
@@ -1603,7 +1674,7 @@ body.addEventListener('click',async e=>{let b=e.target.closest('[data-act]');if(
  if(act==='copyFriendCode'){try{await navigator.clipboard.writeText(state.friendId);toast('Код друга скопійовано')}catch{toast('Скопіюй код вручну')}return}
  if(act==='addFriend'){let name=safeStr(document.getElementById('friendName')?.value.trim(),32),code=safeStr(document.getElementById('friendCode')?.value.trim().toUpperCase(),48);if(!name||!/^PROTO-[A-Z0-9]{8}$/.test(code)){toast('Вкажи ім’я та правильний код PROTO-XXXXXXXX');return}if(code===state.friendId||state.friends.some(f=>f.code===code)){toast('Такий контакт уже є або це твій код');return}if(state.friends.length>=80){toast('Список друзів заповнений');return}state.friends.push({name,code});save();showPanel();toast('Друга додано до книги!');return}
  if(act==='removeFriend'){let i=Number(b.dataset.index);if(Number.isInteger(i)&&i>=0&&i<state.friends.length){state.friends.splice(i,1);save();showPanel()}return}
- if(act==='enterShop'){if(!SHOP_ROOMS.some(r=>r.id===v))return;shopRoom=v;shopPage=0;resetShopWalker();if(v==='other')otherShopTab='lights';showPanel();return}if(act==='otherShopTab'){if(!OTHER_SHOP_TABS.some(t=>t.id===v))return;otherShopTab=v;shopPage=0;resetShopWalker();showPanel();return}if(act==='shopHome'){shopHoldDir=0;closePanel();setLocation('home');return}if(act==='shopBack'){shopRoom=null;shopHoldDir=0;shopPage=0;showPanel();return}if(act==='shopTab'){shopCategory=v;showPanel();return}if(act==='invTab'){invCategory=v;showPanel();return}if(act==='wardTab'){wardrobeCategory=v;showPanel();return}if(act==='faceWardrobe'){openPanel('editor');return}
+ if(act==='enterShop'){if(!SHOP_ROOMS.some(r=>r.id===v))return;shopRoom=v;shopPage=0;resetShopWalker();if(v==='other')otherShopTab='lights';if(v==='clothes'){clothesShopTab='dresses';wigShopTab='dark'}showPanel();return}if(act==='otherShopTab'){if(!OTHER_SHOP_TABS.some(t=>t.id===v))return;otherShopTab=v;shopPage=0;resetShopWalker();showPanel();return}if(act==='clothesShopTab'){if(shopRoom!=='clothes'||!CLOTHES_SHOP_TABS.some(t=>t.id===v))return;clothesShopTab=v;if(v==='wigs')wigShopTab='dark';shopPage=0;resetShopWalker();showPanel();return}if(act==='wigShopTab'){if(shopRoom!=='clothes'||clothesShopTab!=='wigs'||!WIG_SHOP_TABS.some(t=>t.id===v))return;wigShopTab=v;shopPage=0;resetShopWalker();showPanel();return}if(act==='shopHome'){shopHoldDir=0;closePanel();setLocation('home');return}if(act==='shopBack'){shopRoom=null;shopHoldDir=0;shopPage=0;showPanel();return}if(act==='shopTab'){shopCategory=v;showPanel();return}if(act==='invTab'){invCategory=v;showPanel();return}if(act==='wardTab'){wardrobeCategory=v;showPanel();return}if(act==='faceWardrobe'){openPanel('editor');return}
  if(act==='buy'){let it=ITEMS[id];if(!it)return;const wallet=itemCurrency(id);if((state[wallet]||0)<it.price){toast(wallet==='tokens'?'Недостатньо токенів':'Недостатньо монет');return}state[wallet]-=it.price;state.owned[id]=(state.owned[id]||0)+1;save();toast(`Придбано: ${it.name}`);showPanel();return}
  if(act==='eat'){if(!state.owned[id])return;state.owned[id]--;if(id==='medicine'){state.needs.health=Math.min(100,state.needs.health+45);toast('Пет почувається краще 💊')}else{state.needs.hunger=Math.min(100,state.needs.hunger+(id==='cake'?45:30));state.needs.boredom=Math.min(100,state.needs.boredom+4);toast('Пет поїв! 🍎')}save();showPanel();return}
  if(act==='sell'){const it=ITEMS[id];if(!it||it.currency==='tokens'||!state.owned[id]||Object.values(state.equipped).includes(id))return;state.owned[id]--;state.coins+=Math.floor(it.price*.5);save();toast('Продано: '+it.name);showPanel();return}
@@ -1673,9 +1744,9 @@ document.getElementById('needsOpen').onclick=()=>openPanel('needs');document.get
 document.getElementById('yardOpen').onclick=()=>{if(state.level<ROOM_LEVELS[3]){toast('🔒 Двір відкриється на рівні '+ROOM_LEVELS[3]);return}if(state.location!=='home')setLocation('home');roomSwitch(3)};
 function hasPlaced(id){return state.homePlaced.some(p=>p.id===id)}
 function placedInRoom(id,room){return state.homePlaced.some(p=>p.id===id&&(p.room===room||(p.room===undefined&&room===0)))}
-function tickRoomDirt(){let now=Date.now();let seconds=Math.max(0,Math.min(8*3600,(now-(state.roomDirtAt||now))/1000));if(seconds<1)return;state.roomDirtAt=now;const hasRobot=state.homePlaced.some(p=>p.id==='robot_vacuum');const rate=hasRobot?0.028:-0.007;state.roomCleanliness=clamp(state.roomCleanliness+seconds*rate);updateRoomCleanUI();}
-function cleanRoom(){if(state.location!=='home'||state.room===3){toast('Прибирати можна лише у власній кімнаті');return;}const i=state.room;if(!placedInRoom('vacuum',i)){toast('Постав звичайний пилосос у цій кімнаті');return;}cleanDustRoom('home',i);state.roomCleanliness=Math.min(100,state.roomCleanliness+65);save();updateRoomCleanUI();toast('Будинок прибрано! 🧹');earnXP(6);}
-function roomCleanHTML(){if(state.location!=='home'||state.room===3)return '<p>Повернися у свою кімнату.</p>';let d=Math.round(state.roomCleanliness);return `<p class="note">Чистота спільна для всіх кімнат будинку. Пил накопичується з часом, навіть поки гра закрита (до 8 годин).</p><div class="needrow ${d<=30?'danger':''}"><b>🧹 Чистота будинку</b><div class="needbar"><i style="width:${d}%"></i></div><strong>${d}%</strong></div><div class="footer-actions"><button class="primary" data-act="cleanRoom" ${placedInRoom('vacuum',state.room)?'':'disabled'}>🧹 Прибрати вручну</button></div><p class="note">Звичайний пилосос підвищує спільну чистоту будинку на 65 відсоткових пунктів за натисканням. Робот-пилосос у будь-якій домашній кімнаті підтримує чистоту всього будинку. Пил у кожній кімнаті залишається окремим для прибирання та винагород.</p>`;}
+function tickRoomDirt(){const changed=syncHomeCleanliness();if(changed){dustLastLayout='';updateDustLayer();debounceSave()}updateRoomCleanUI();}
+function cleanRoom(){if(state.location!=='home'||state.room===3){toast('Прибирати можна лише у власній кімнаті');return;}const i=state.room;if(!placedInRoom('vacuum',i)){toast('Постав звичайний пилосос у цій кімнаті');return;}cleanDustRoom('home',i);syncHomeCleanliness();save();updateRoomCleanUI();toast('Будинок прибрано! 🧹');earnXP(6);}
+function roomCleanHTML(){if(state.location!=='home'||state.room===3)return '<p>Повернися у свою кімнату.</p>';let d=Math.round(state.roomCleanliness);return `<p class="note">Чистота спільна для всіх кімнат будинку. Пил з’являється поступово за реальним локальним часом: 15 пилинок на добу (по одній кожні 96 хвилин). Чистота падає тільки тоді, коли з’являється новий пил.</p><div class="needrow ${d<=30?'danger':''}"><b>🧹 Чистота будинку</b><div class="needbar"><i style="width:${d}%"></i></div><strong>${d}%</strong></div><div class="footer-actions"><button class="primary" data-act="cleanRoom" ${placedInRoom('vacuum',state.room)?'':'disabled'}>🧹 Прибрати вручну</button></div><p class="note">Звичайний пилосос прибирає весь наявний пил у поточній кімнаті. Кожна пилинка знижує спільну чистоту на 6 пунктів; прибирання відновлює їх. Робот-пилосос прибирає пилинки у своїй кімнаті. Максимум 15 пилинок на день у всьому будинку.</p>`;}
 function tickNeeds(dt){if(!state.needs)return;needAccumulator+=dt;if(needAccumulator<1)return;tickRoomDirt();let elapsed=needAccumulator;needAccumulator=0;const n=state.needs;const now=Date.now();const offline=Math.max(0,Math.min(8*3600,(now-(state.needsAt||now))/1000-elapsed));elapsed+=offline;state.needsAt=now;
  n.dirt=clamp(n.dirt-elapsed*.007);n.hunger=clamp(n.hunger-elapsed*.012);n.sleep=clamp(n.sleep-elapsed*.009);n.boredom=clamp(n.boredom-elapsed*.013);
  if(hasPlaced('auto_fridge')&&n.hunger<=30){n.hunger=clamp(n.hunger+50);if(offline<2)toast('Розумний холодильник нагодував пета 🥗')}
@@ -1697,7 +1768,7 @@ function sellBug(type){const bug=BUGS[type];if(!bug||!state.bugs[type])return;st
 function yardPanelHTML(){const plot=state.bugPlots[selectedPlot],ready=plotReady(plot);return `<p class="note">Космічний двір: вирощуй комах у шести капсулах. Час росту йде за годинником пристрою, навіть коли гру закрито.</p><div class="yardGrid">${state.bugPlots.map((p,i)=>`<button class="yardPlot ${selectedPlot===i?'active':''}" data-act="plotSelect" data-val="${i}">Капсула ${i+1}<br>${p?(BUGS[p.type]?.emoji||'🐛')+' '+(plotReady(p)?'Готово':Math.max(1,Math.ceil((p.readyAt-Date.now())/1000))+' с'):'✦ Порожня'}</button>`).join('')}</div><h3>Капсула ${selectedPlot+1}</h3>${plot?`<p>${BUGS[plot.type]?.name||'Комаха'} · ${ready?'Можна забирати':'Ще росте'}</p><button class="primary" data-act="harvestBug" ${ready?'':'disabled'}>📦 Зібрати комаху</button>`:`<div class="grid">${Object.entries(BUGS).map(([id,b])=>`<div class="item"><span class="emoji">${b.emoji}</span><b>${b.name}</b><small>Ріст: ${b.grow} с</small><button data-act="plantBug" data-val="${id}" ${state.coins<b.seed?'disabled':''}>Виростити · ${b.seed} <img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="монети"></button></div>`).join('')}</div>`}<h3>Зібрані комахи · продаж</h3><div class="grid">${Object.entries(BUGS).map(([id,b])=>`<div class="item"><span class="emoji">${b.emoji}</span><b>${b.name}</b><small>×${state.bugs[id]||0}</small><button data-act="sellBug" data-val="${id}" ${(state.bugs[id]||0)<1?'disabled':''}>Продати +${b.price} <img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="монети"></button></div>`).join('')}</div>`}
 body.addEventListener('click',e=>{const b=e.target.closest('[data-act="plotSelect"]');if(!b)return;selectedPlot=Number(b.dataset.val);showPanel()});
 
-load();dustStore();ensureHomeDust();tickRoomDirt();state.location='home';state.room=state.level>=ROOM_LEVELS[state.startRoom]?state.startRoom:0;document.getElementById('profileButton').onclick=()=>openPanel('profile');resize();updateHUD();updateLocationUI();requestAnimationFrame(render);
+load();dustStore();ensureHomeDust();syncHomeCleanliness();save();state.location='home';state.room=state.level>=ROOM_LEVELS[state.startRoom]?state.startRoom:0;document.getElementById('profileButton').onclick=()=>openPanel('profile');resize();updateHUD();updateLocationUI();requestAnimationFrame(render);
 window.addEventListener('pagehide',save);
 </script>
 </body>
