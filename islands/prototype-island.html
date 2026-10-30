@@ -385,7 +385,7 @@ const ITEMS={
  apathymouth:{name:'Байдужий рот',emoji:'👄',category:'face',slot:'mouth',price:0,image:MOUTH_PNG.apathymouth},
  smouth:{name:'Маленький рот',emoji:'👄',category:'face',slot:'mouth',price:0,image:MOUTH_PNG.smouth},
  mou3:{name:'3',emoji:'👄',category:'face',slot:'mouth',price:0,image:MOUTH_PNG.mou3},
- sharkgrip:{name:'Акуляча хватка',emoji:'👄',category:'face',slot:'mouth',price:2,currency:'tokens',premium:true,image:'/hoomanchat/assets/sharkgrip.png'},
+ sharkgrip:{name:'Акуляча хватка',emoji:'👄',category:'face',slot:'mouth',price:2,currency:'tokens',premium:true,image:assetCandidates('sharkgrin.png')[0]},
  mouth_cat:{name:'Котяча усмішка',emoji:'😺',category:'face',slot:'mouth',price:125},brows_bold:{name:'Виразні брови',emoji:'〰️',category:'face',slot:'brows',price:90},ears_bunny:{name:'Кролячі вуха',emoji:'🐰',category:'face',slot:'ears',price:240},ears_soft:{name:'М’які вушка',emoji:'👂',category:'face',slot:'ears',price:0,image:'/hoomanchat/assets/ears_soft.png'},ears_tall:{name:'Високі вушка',emoji:'👂',category:'face',slot:'ears',price:0,image:'/hoomanchat/assets/ears_tall.png'},ears_sharp:{name:'Гострі вушка',emoji:'👂',category:'face',slot:'ears',price:0,image:'/hoomanchat/assets/ears_sharp.png'},blush:{name:'Рум’янець',emoji:'🌸',category:'face',slot:'cosmetic1',price:85},freckles:{name:'Веснянки',emoji:'🟤',category:'face',slot:'cosmetic1',price:85},stars:{name:'Зірочки на щоках',emoji:'🌟',category:'face',slot:'cosmetic2',price:125},shadow:{name:'Тіні для очей',emoji:'💜',category:'face',slot:'cosmetic2',price:140}
 };
 // Підвісні авторські лампи; ціни і назви задав автор гри.
@@ -1070,27 +1070,40 @@ for(const name of [...Object.keys(MOUTH_PNG),'sharkgrip']){
  img.onload=()=>{
   item.ready=img.naturalWidth>0;
   if(item.ready){
-   // Обрізати тільки прозоре поле; не масштабувати всі роти до однакового розміру.
-   const cv=document.createElement('canvas');cv.width=img.naturalWidth;cv.height=img.naturalHeight;
-   const c=cv.getContext('2d',{willReadFrequently:true});c.drawImage(img,0,0);
-   const rgba=c.getImageData(0,0,cv.width,cv.height).data;
-   let left=cv.width,top=cv.height,right=-1,bottom=-1;
-   for(let y=0;y<cv.height;y++)for(let x=0;x<cv.width;x++){
-    if(rgba[(y*cv.width+x)*4+3]>12){left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y)}
-   }
-   if(right>=left)item.crop={x:left,y:top,w:right-left+1,h:bottom-top+1};
+   // Read only the author's PNG: transparent edges do not count as visible pixels.
+   try{
+    const cv=document.createElement('canvas');cv.width=img.naturalWidth;cv.height=img.naturalHeight;
+    const c=cv.getContext('2d',{willReadFrequently:true});c.drawImage(img,0,0);
+    const rgba=c.getImageData(0,0,cv.width,cv.height).data;
+    let left=cv.width,top=cv.height,right=-1,bottom=-1;
+    for(let y=0;y<cv.height;y++)for(let x=0;x<cv.width;x++){
+     if(rgba[(y*cv.width+x)*4+3]>12){left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y)}
+    }
+    if(right>=left)item.crop={x:left,y:top,w:right-left+1,h:bottom-top+1};
+   }catch(error){console.warn('Не вдалося прочитати прозорість PNG рота',name,error)}
   }
+  if(name==='sharkgrip')console.info('Рот sharkgrin.png завантажено:',img.currentSrc,'розмір:',img.naturalWidth,img.naturalHeight);
   if(typeof drawPreviewIfOpen==='function')drawPreviewIfOpen();
   if(typeof activePanel!=='undefined'&&activePanel==='editor'&&typeof drawFaceChoices==='function')drawFaceChoices();
  };
- img.src=MOUTH_PNG[name]||'/hoomanchat/assets/sharkgrip.png';
+ img.onerror=()=>{item.ready=false;console.error('Помилка завантаження PNG рота:',name,img.src)};
+ // Absolute repository root, never relative to the /islands/ page.
+ img.src=MOUTH_PNG[name]||assetCandidates('sharkgrin.png')[0];
 }
 function renderAuthoredMouth(g,name){
- const sprite=mouthSprites[name];if(!sprite||!sprite.ready||!sprite.crop)return;
- const cr=sprite.crop,k=.36*512/(sprite.img.naturalWidth||512);
- // У файлах рот намальований навколо (256,350) на аркуші 512×512.
- // Спільний масштаб зберігає різницю між маленькими й великими ротами.
- g.drawImage(sprite.img,cr.x,cr.y,cr.w,cr.h,(cr.x-(sprite.img.naturalWidth||512)/2)*k,19+(cr.y-(sprite.img.naturalHeight||512)*350/512)*k,cr.w*k,cr.h*k);
+ const sprite=mouthSprites[name];if(!sprite||!sprite.ready)return false;
+ const img=sprite.img,sw=img.naturalWidth,sh=img.naturalHeight;
+ if(!sw||!sh)return false;
+ if(sprite.crop){
+  const cr=sprite.crop,k=.36*512/sw;
+  // Maintain author-defined mouth size and placement from 512x512 PNG artboard.
+  g.drawImage(img,cr.x,cr.y,cr.w,cr.h,(cr.x-sw/2)*k,19+(cr.y-sh*350/512)*k,cr.w*k,cr.h*k);
+ }else{
+  // If alpha read is unavailable, draw the original PNG, NOT a geometric substitute.
+  const k=.36*512/sw;
+  g.drawImage(img,-sw*k/2,19-sh*350/512*k,sw*k,sh*k);
+ }
+ return true;
 }
 function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  let a=appearanceOverride||state.appearance,fur=a.fur||'#f0eff1',body=appearanceOverride?(a.body||fur):fur;let eq=appearanceOverride?{...(a.equipped||{})}:(state.equipped||{});
