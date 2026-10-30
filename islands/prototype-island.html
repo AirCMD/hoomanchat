@@ -427,14 +427,14 @@ function getFaceTransform(slot,appearance=state.appearance){
  return {scale:clamp(raw.scale,.5,1.8,1),x:clamp(raw.x,-25,25,0),y:clamp(raw.y,-25,25,0)};
 }
 function setFaceTransform(slot,next){
- if(!['nose','mouth'].includes(slot))return;
+ if(!['eyes','nose','mouth'].includes(slot))return;
  const a=state.appearance;
  const t=getFaceTransform(slot,{faceTransforms:{[slot]:next}});
  a.faceTransforms={...(a.faceTransforms||{}),[slot]:{scale:Math.round(t.scale*100)/100,x:Math.round(t.x*10)/10,y:Math.round(t.y*10)/10}};
 }
 function faceTransformHTML(slot){
  const v=getFaceTransform(slot);
- return `<section class="editor-face-adjust" aria-label="Положення та розмір ${slot==='nose'?'носа':'рота'}"><strong>Розмір і положення ${slot==='nose'?'носа':'рота'}</strong><div class="face-adjust-row"><button type="button" data-act="faceAdjust" data-kind="scale" data-step="-0.05" aria-label="Зменшити">−</button><output id="faceScaleLabel">${Math.round(v.scale*100)}%</output><button type="button" data-act="faceAdjust" data-kind="scale" data-step="0.05" aria-label="Збільшити">+</button></div><div class="face-adjust-move"><button type="button" data-act="faceAdjust" data-kind="y" data-step="-1" aria-label="Вище">↑</button><div><button type="button" data-act="faceAdjust" data-kind="x" data-step="-1" aria-label="Ліворуч">←</button><button type="button" data-act="faceReset" aria-label="Скинути налаштування">↺</button><button type="button" data-act="faceAdjust" data-kind="x" data-step="1" aria-label="Праворуч">→</button></div><button type="button" data-act="faceAdjust" data-kind="y" data-step="1" aria-label="Нижче">↓</button></div><small>Стрілки: 1 піксель. Також можна перетягувати деталь на великому прев’ю. ↺ повертає стандартні розмір і положення.</small></section>`;
+ return `<section class="editor-face-adjust" aria-label="Положення та розмір ${slot==='eyes'?'очей':slot==='nose'?'носа':'рота'}"><strong>Розмір і положення ${slot==='eyes'?'очей':slot==='nose'?'носа':'рота'}</strong><div class="face-adjust-row"><button type="button" data-act="faceAdjust" data-kind="scale" data-step="-0.05" aria-label="Зменшити">−</button><output id="faceScaleLabel">${Math.round(v.scale*100)}%</output><button type="button" data-act="faceAdjust" data-kind="scale" data-step="0.05" aria-label="Збільшити">+</button></div><div class="face-adjust-move"><button type="button" data-act="faceAdjust" data-kind="y" data-step="-1" aria-label="Вище">↑</button><div><button type="button" data-act="faceAdjust" data-kind="x" data-step="-1" aria-label="Ліворуч">←</button><button type="button" data-act="faceReset" aria-label="Скинути налаштування">↺</button><button type="button" data-act="faceAdjust" data-kind="x" data-step="1" aria-label="Праворуч">→</button></div><button type="button" data-act="faceAdjust" data-kind="y" data-step="1" aria-label="Нижче">↓</button></div><small>Стрілки: 1 піксель. Також можна перетягувати деталь на великому прев’ю. ↺ повертає стандартні розмір і положення.</small></section>`;
 }
 const faceSlots=['eyes','nose','mouth','brows','ears','cosmetic1','cosmetic2'];
 const faceNames={eyes:'Очі',nose:'Ніс',mouth:'Рот',brows:'Брови',ears:'Вуха',cosmetic1:'Косметика 1',cosmetic2:'Косметика 2'};
@@ -672,7 +672,7 @@ function getPetPos(){return (state.location==='home'||state.location==='npc'||st
 let sharedHouse=null,sharedRoom=0;
 function ownRoomSnapshot(){
  const rooms=[0,1,2].filter(i=>state.level>=ROOM_LEVELS[i]);
- return {v:1,name:String(state.appearance.name||'Друг').slice(0,24),appearance:{head:state.appearance.head,fur:state.appearance.fur,body:state.appearance.body,eyeColor:state.appearance.eyeColor,faceTransforms:{nose:getFaceTransform('nose'),mouth:getFaceTransform('mouth')}},equipped:Object.fromEntries(Object.entries(state.equipped||{}).filter(([k,v])=>typeof v==='string'&&ITEMS[v])),rooms:rooms.map(i=>({id:i,wall:state.roomDecor[i]?.wall||0,floor:state.roomDecor[i]?.floor||0,lights:state.roomLights?.[i]!==false,items:state.homePlaced.filter(p=>(p.room??0)===i&&ITEMS[p.id]?.category==='furniture').slice(0,90).map(p=>({id:p.id,x:+p.x.toFixed(4),y:+p.y.toFixed(4),rotation:p.rotation||0}))}))};
+ return {v:1,name:String(state.appearance.name||'Друг').slice(0,24),appearance:{head:state.appearance.head,fur:state.appearance.fur,body:state.appearance.body,eyeColor:state.appearance.eyeColor,faceTransforms:{eyes:getFaceTransform('eyes'),nose:getFaceTransform('nose'),mouth:getFaceTransform('mouth')}},equipped:Object.fromEntries(Object.entries(state.equipped||{}).filter(([k,v])=>typeof v==='string'&&ITEMS[v])),rooms:rooms.map(i=>({id:i,wall:state.roomDecor[i]?.wall||0,floor:state.roomDecor[i]?.floor||0,lights:state.roomLights?.[i]!==false,items:state.homePlaced.filter(p=>(p.room??0)===i&&ITEMS[p.id]?.category==='furniture').slice(0,90).map(p=>({id:p.id,x:+p.x.toFixed(4),y:+p.y.toFixed(4),rotation:p.rotation||0}))}))};
 }
 function makeRoomCode(){return 'PTR1-'+b64encode(JSON.stringify(ownRoomSnapshot()))}
 function checkRoomSnapshot(o){
@@ -683,7 +683,7 @@ function checkRoomSnapshot(o){
   return {id:r.id,wall:Math.floor(num(r.wall,0,3)),floor:Math.floor(num(r.floor,0,3)),lights:r.lights!==false,items:r.items.filter(p=>p&&ITEMS[p.id]?.category==='furniture').map(p=>({id:p.id,x:num(p.x,.03,.97),y:num(p.y,.05,.95),rotation:Math.floor(num(p.rotation,0,3)),room:r.id}))};
  });
  const a=o.appearance||{},eq=o.equipped||{};
- return {name:String(o.name||'Друг').slice(0,24),rooms,appearance:{head:['round','wide','pointy','geo_round','geo_wide','geo_pointy'].includes(a.head)?a.head:'round',fur:/^#[a-f0-9]{6}$/i.test(a.fur)?a.fur:'#f0eff1',body:/^#[a-f0-9]{6}$/i.test(a.body)?a.body:'#f0eff1',eyeColor:/^#[a-f0-9]{6}$/i.test(a.eyeColor)?a.eyeColor:'#4b406c',faceTransforms:{nose:getFaceTransform('nose',a),mouth:getFaceTransform('mouth',a)},equipped:Object.fromEntries(Object.entries(eq).filter(([k,v])=>['eyes','nose','mouth','brows','ears','wig','outfit','cosmetic1','cosmetic2','bow','tail'].includes(k)&&typeof v==='string'&&ITEMS[v]))}};
+ return {name:String(o.name||'Друг').slice(0,24),rooms,appearance:{head:['round','wide','pointy','geo_round','geo_wide','geo_pointy'].includes(a.head)?a.head:'round',fur:/^#[a-f0-9]{6}$/i.test(a.fur)?a.fur:'#f0eff1',body:/^#[a-f0-9]{6}$/i.test(a.body)?a.body:'#f0eff1',eyeColor:/^#[a-f0-9]{6}$/i.test(a.eyeColor)?a.eyeColor:'#4b406c',faceTransforms:{eyes:getFaceTransform('eyes',a),nose:getFaceTransform('nose',a),mouth:getFaceTransform('mouth',a)},equipped:Object.fromEntries(Object.entries(eq).filter(([k,v])=>['eyes','nose','mouth','brows','ears','wig','outfit','cosmetic1','cosmetic2','bow','tail'].includes(k)&&typeof v==='string'&&ITEMS[v]))}};
 }
 function openSharedHouse(code){
  const raw=String(code||'').trim();const v=raw.includes('#room=')?raw.split('#room=')[1]:raw;
@@ -1135,69 +1135,67 @@ const EYE_PNG={
  eyes_basic_drbr:'basiceyesdrbr.png',
  eyes_basic_bl:'basiceyesbl.png'
 };
+// Ліниве завантаження: не тримаємо усі PNG-очі в декодованій пам'яті при старті.
 const eyeSprites={};
-for(const [id,file] of Object.entries(EYE_PNG)){
+let eyeRefreshScheduled=false;
+function scheduleEyeRefresh(){
+ if(eyeRefreshScheduled)return;
+ eyeRefreshScheduled=true;
+ requestAnimationFrame(()=>{
+  eyeRefreshScheduled=false;
+  if(typeof shopSceneCache!=='undefined')shopSceneCache=null;
+  if(typeof shopRenderAccum!=='undefined')shopRenderAccum=1;
+  if(typeof activePanel!=='undefined'&&activePanel==='editor'){
+   if(typeof drawPreview==='function')drawPreview();
+   if(typeof drawFaceChoices==='function')drawFaceChoices();
+  }
+ });
+}
+function ensureEyeSprite(id){
+ if(!EYE_PNG[id])return null;
+ let item=eyeSprites[id];
+ if(item)return item;
  const img=new Image();
- const item={img,ready:false,error:false};
+ item={img,ready:false,error:false,loading:true};
  eyeSprites[id]=item;
  img.onload=()=>{
-  item.ready=img.naturalWidth>0&&img.naturalHeight>0; item.error=!item.ready;
-  if(id==='eyes_tired'){tiredEyesReady=item.ready;tiredEyesFailed=!item.ready;tiredEyesRenderImg=item.ready?img:null;}
-  if(typeof drawPreviewIfOpen==='function')drawPreviewIfOpen();
-  if(typeof activePanel!=='undefined'&&activePanel==='editor'&&typeof drawFaceChoices==='function')drawFaceChoices();
-  if(typeof refreshTiredEyesViews==='function'&&id==='eyes_tired')refreshTiredEyesViews();
+  item.loading=false;
+  item.ready=img.naturalWidth>0&&img.naturalHeight>0;
+  item.error=!item.ready;
+  if(id==='eyes_tired'){
+   tiredEyesReady=item.ready;tiredEyesFailed=item.error;
+   tiredEyesRenderImg=item.ready?img:null;
+  }
+  scheduleEyeRefresh();
  };
  img.onerror=()=>{
-  item.ready=false; item.error=true;
-  if(id==='eyes_tired'){tiredEyesReady=false;tiredEyesFailed=true;tiredEyesRenderImg=null; if(typeof refreshTiredEyesViews==='function')refreshTiredEyesViews();}
+  item.loading=false;item.ready=false;item.error=true;
+  if(id==='eyes_tired'){tiredEyesReady=false;tiredEyesFailed=true;tiredEyesRenderImg=null}
   console.error('Не завантажено PNG очей:',id,img.src);
+  scheduleEyeRefresh();
  };
- img.src=assetCandidates(file)[0];
+ img.src=assetCandidates(EYE_PNG[id])[0];
+ return item;
 }
 function renderPngEyes(g,id,hx=39,hy=39){
- const sprite=eyeSprites[id]; if(!sprite||!sprite.ready)return false;
+ const sprite=ensureEyeSprite(id);
+ if(!sprite||!sprite.ready)return false;
  const side=Math.max(hx*2,hy*2);
  g.drawImage(sprite.img,-side/2,-side/2-2,side,side);
  return true;
 }
-// Єдиним джерелом PNG-очей є авторські файли в assets/.
-// Ніяких геометричних замінників для вибраних PNG-очей.
-let tiredEyesReady=!!eyeSprites.eyes_tired?.ready,tiredEyesFailed=false,tiredEyesLoading=false;
-let tiredEyesAttempt=0;let tiredEyesRenderImg=null;
-function refreshTiredEyesViews(){
- shopSceneCache=null;
- shopRenderAccum=1;
- if(typeof drawPreviewIfOpen==='function')drawPreviewIfOpen();
- if(typeof activePanel!=='undefined'&&activePanel==='editor'){
-  if(typeof drawPreview==='function')drawPreview();
-  if(typeof drawFaceChoices==='function')drawFaceChoices();
-  const status=document.getElementById('tiredEyesStatus');
-  if(status)status.textContent=tiredEyesFailed?'Файл assets/tiredeyes.png не завантажився. Перевір назву та регістр літер у папці assets/.':'';
- }
-}
+// Втомлені очі й інші PNG використовують один завантажувач і один Image на файл.
+let tiredEyesReady=false,tiredEyesFailed=false,tiredEyesLoading=false;
+let tiredEyesAttempt=0,tiredEyesRenderImg=null;
+function refreshTiredEyesViews(){scheduleEyeRefresh()}
 function loadTiredEyes(force=false){
- const item=eyeSprites.eyes_tired;
- if(!item)return;
- if(item.ready&&!force){tiredEyesReady=true;tiredEyesFailed=false;tiredEyesRenderImg=item.img;refreshTiredEyesViews();return}
- tiredEyesLoading=true;tiredEyesFailed=false;++tiredEyesAttempt;
- item.ready=false;item.error=false;
- item.img.onload=()=>{
-  item.ready=item.img.naturalWidth>0&&item.img.naturalHeight>0;
-  tiredEyesLoading=false;tiredEyesReady=item.ready;tiredEyesFailed=!item.ready;tiredEyesRenderImg=item.ready?item.img:null;
-  refreshTiredEyesViews();
- };
- item.img.onerror=()=>{
-  item.ready=false;item.error=true;tiredEyesLoading=false;tiredEyesReady=false;tiredEyesFailed=true;tiredEyesRenderImg=null;
-  console.error('Не завантажено оригінальний assets/tiredeyes.png');
-  refreshTiredEyesViews();
- };
- item.img.src=assetCandidates('tiredeyes.png')[0]+(force?'?reload='+Date.now():'');
+ if(force&&eyeSprites.eyes_tired?.error)delete eyeSprites.eyes_tired;
+ ensureEyeSprite('eyes_tired');
 }
+// Продавець завжди носить tired eyes: це єдиний обов'язковий PNG при старті.
 loadTiredEyes();
 function makeTiredEyesCrop(img){return img}
-function renderTiredEyes(g,hx=39,hy=39){
- return renderPngEyes(g,'eyes_tired',hx,hy);
-}
+function renderTiredEyes(g,hx=39,hy=39){return renderPngEyes(g,'eyes_tired',hx,hy)}
 // Спрайти ротів створюються один раз.
 const mouthSprites={};
 for(const name of [...Object.keys(MOUTH_PNG),'sharkgrip']){
@@ -1396,19 +1394,25 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  const blink=animated&&Math.sin(clock*.68)>0.996;
  // PNG eyes replace the default eyes only after the actual file has loaded.
  // Until then, keep the face visible instead of drawing an eyeless character.
- if(eq.eyes==='eyes_tired'){
-  // Тільки авторський PNG. НІЯКИХ геометричних очей у цьому режимі.
-  renderTiredEyes(g,hx,hy);
- }else if(EYE_PNG[eq.eyes]){
-  if(!renderPngEyes(g,eq.eyes,hx,hy)){
-   ellipse(-15,-3,6.2,8.8,eye); ellipse(15,-3,6.2,8.8,eye); ellipse(-13,-7,2.2,2.6,'white'); ellipse(17,-7,2.2,2.6,'white');
-  }
- }else if(eq.eyes==='eyes_sleepy'||blink){line(-22,-3,-8,-3,eye,3.2);line(8,-3,22,-3,eye,3.2)}
+ if(EYE_PNG[eq.eyes]){
+  const eyeTransform=getFaceTransform('eyes',a);
+  g.save();g.translate(eyeTransform.x,eyeTransform.y);g.scale(eyeTransform.scale,eyeTransform.scale);
+  renderPngEyes(g,eq.eyes,hx,hy);
+  g.restore();
+ }else if(eq.eyes==='eyes_sleepy'||blink){
+  const eyeTransform=getFaceTransform('eyes',a);
+  g.save();g.translate(eyeTransform.x,eyeTransform.y);g.scale(eyeTransform.scale,eyeTransform.scale);
+  line(-22,-3,-8,-3,eye,3.2);line(8,-3,22,-3,eye,3.2);
+  g.restore();
+ }
  else{
+  const eyeTransform=getFaceTransform('eyes',a);
+  g.save();g.translate(eyeTransform.x,eyeTransform.y);g.scale(eyeTransform.scale,eyeTransform.scale);
   ellipse(-15,-3,eq.eyes==='eyes_star'?8.5:6.2,eq.eyes==='eyes_star'?10:8.8,eye);
   ellipse(15,-3,eq.eyes==='eyes_star'?8.5:6.2,eq.eyes==='eyes_star'?10:8.8,eye);
   ellipse(-13,-7,2.2,2.6,'white');ellipse(17,-7,2.2,2.6,'white');
   if(eq.eyes==='eyes_star'){g.fillStyle='#fff';g.font='9px sans-serif';g.fillText('✦',-18,2);g.fillText('✦',12,2)}
+  g.restore();
  }
  const noseTransform=getFaceTransform('nose',a);
  g.save();g.translate(noseTransform.x,noseTransform.y);g.scale(noseTransform.scale,noseTransform.scale);
@@ -1794,7 +1798,7 @@ function showPanel(){let labels={roomShare:'🏠 Поділитися будин
    const slot=editorTab, selected=state.equipped[slot]||'';
    const available=Object.keys(ITEMS).filter(id=>ITEMS[id].category==='face'&&slotFor(id)===slot&&(state.owned[id]||0)>0);
    const options=['',...available];
-   content=`<section class="editor-section"><h3>◈ ${faceNames[slot]}</h3><p class="editor-hint">Натисни на зображення, щоб приміряти деталь. Куплені предмети показуються тут, а перуки й одяг залишаються в гардеробі.</p>${slot==='eyes'?`<p class="editor-hint" id="tiredEyesStatus">${tiredEyesFailed?'Файл assets/tiredeyes.png не завантажився. Перевір назву та регістр літер у папці assets/.':''}</p>`:''}<div class="editor-face-cards">${options.map((id,i)=>`<button type="button" class="face-choice ${selected===id?'selected':''}" data-act="editorFaceChoose" data-val="${id}" data-slot="${slot}" aria-pressed="${selected===id}"><canvas width="150" height="120" data-face-preview="${slot}" data-item="${id}"></canvas><span>${id?esc(ITEMS[id].name):'Базовий вигляд'}</span><small>${selected===id?'✓ Обрано':'Приміряти'}</small></button>`).join('')}</div>${['nose','mouth'].includes(slot)?faceTransformHTML(slot):''}<div class="footer-actions" style="margin-top:16px"><button class="primary" data-act="faceShop" data-val="${slot}">＋ Перейти в магазин деталей</button></div></section>`;
+   content=`<section class="editor-section"><h3>◈ ${faceNames[slot]}</h3><p class="editor-hint">Натисни на зображення, щоб приміряти деталь. Куплені предмети показуються тут, а перуки й одяг залишаються в гардеробі.</p>${slot==='eyes'?`<p class="editor-hint" id="tiredEyesStatus">${tiredEyesFailed?'Файл assets/tiredeyes.png не завантажився. Перевір назву та регістр літер у папці assets/.':''}</p>`:''}<div class="editor-face-cards">${options.map((id,i)=>`<button type="button" class="face-choice ${selected===id?'selected':''}" data-act="editorFaceChoose" data-val="${id}" data-slot="${slot}" aria-pressed="${selected===id}"><canvas width="150" height="120" data-face-preview="${slot}" data-item="${id}"></canvas><span>${id?esc(ITEMS[id].name):'Базовий вигляд'}</span><small>${selected===id?'✓ Обрано':'Приміряти'}</small></button>`).join('')}</div>${['eyes','nose','mouth'].includes(slot)?faceTransformHTML(slot):''}<div class="footer-actions" style="margin-top:16px"><button class="primary" data-act="faceShop" data-val="${slot}">＋ Перейти в магазин деталей</button></div></section>`;
   }
   html=`<div class="editor-shell"><div class="editor-preview-side"><div class="editor-preview"><canvas class="preview" id="preview" class="preview ${['nose','mouth'].includes(editorTab)?'face-drag-enabled':''}" width="400" height="460"></canvas><small>Твій персонаж · попередній перегляд</small></div><div class="editor-preview-note">Зміни зовнішності видно одразу</div></div><div class="editor-workspace">${nav}${content}</div></div>`;
  }
@@ -1837,7 +1841,7 @@ function drawFaceChoices(){
 }
 let faceDrag=null;
 body.addEventListener('pointerdown',e=>{
- if(activePanel!=='editor'||!['nose','mouth'].includes(editorTab)||e.target.id!=='preview')return;
+ if(activePanel!=='editor'||!['eyes','nose','mouth'].includes(editorTab)||e.target.id!=='preview')return;
  const canvas=e.target,rect=canvas.getBoundingClientRect();
  faceDrag={id:e.pointerId,slot:editorTab,startX:e.clientX,startY:e.clientY,base:getFaceTransform(editorTab),factor:canvas.width/Math.max(1,rect.width)/2};
  canvas.setPointerCapture(e.pointerId);e.preventDefault();
@@ -1868,7 +1872,7 @@ body.addEventListener('click',async e=>{let b=e.target.closest('[data-act]');if(
  if(act==='openRoomImport'){openPanel('roomImport');return}
  if(act==='editorTab'){if(activePanel!=='editor')return;const next=v;if(next==='appearance'||faceSlots.includes(next)){editorTab=next;if(next==='eyes'&&tiredEyesFailed)loadTiredEyes(true);showPanel()}return}
  if(act==='faceAdjust'||act==='faceReset'){
-  if(activePanel!=='editor'||!['nose','mouth'].includes(editorTab))return;
+  if(activePanel!=='editor'||!['eyes','nose','mouth'].includes(editorTab))return;
   const slot=editorTab;
   const old=getFaceTransform(slot);
   if(act==='faceReset')setFaceTransform(slot,FACE_TRANSFORM_DEFAULT);
@@ -1886,6 +1890,7 @@ body.addEventListener('click',async e=>{let b=e.target.closest('[data-act]');if(
   if(!faceSlots.includes(slot))return;
   if(choice&&(!(state.owned[choice]>0)||ITEMS[choice]?.category!=='face'||slotFor(choice)!==slot))return;
   if(choice)state.equipped[slot]=choice;else delete state.equipped[slot];
+  if(slot==='eyes'&&EYE_PNG[choice])ensureEyeSprite(choice);
   // Записуємо придбану деталь окремо від незатвердженого кольору.
   if(editorOriginal){const draft=state.appearance;state.appearance={...editorOriginal};save();state.appearance=draft}else save();
   showPanel();return;
