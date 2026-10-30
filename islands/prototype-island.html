@@ -314,7 +314,7 @@
 .shop-room-world{width:100%;will-change:auto;transform:none!important;contain:layout style paint;}
 .shop-room-world .shop-room-wall{background-position-x:calc(-1 * var(--shop-camera,0px));}
 .shop-room-world .shop-room-floor,.shop-room-world .shop-room-floor::after{background-position-x:calc(-1 * var(--shop-camera,0px));}
-.shop-room-world .shop-wall-product{will-change:auto;content-visibility:visible;contain:layout style paint;}
+.shop-room-world .shop-wall-product{will-change:auto;content-visibility:visible;contain:layout style paint;backface-visibility:hidden;}
 .shop-room-world .shop-room-heading{transform:none;}
 #shopCast{will-change:contents;}
 </style>
@@ -442,6 +442,8 @@ function shopAssetError(img,path){
  if(i<urls.length){img.dataset.assetIndex=String(i+1);img.src=urls[i];return}
  img.onerror=null;img.style.display='none';img.parentElement.dataset.missing='Зображення недоступне: '+path;
 }
+const DUST_PNG_STORAGE='proto_typ_dust_png';
+function savedDustPNG(){try{return localStorage.getItem(DUST_PNG_STORAGE)||''}catch{return ''}}
 const dustImg=new Image();let dustImgReady=false,dustCrop=null;
 let dustLoadFailed=false,dustRetryAfter=0;
 dustImg.onload=()=>{
@@ -466,6 +468,12 @@ function tryLoadDust(force=false){
  if(!force && Date.now()<dustRetryAfter)return;
  dustLoadFailed=false;
  dustRetryAfter=Date.now()+15000;
+ const local=savedDustPNG();
+ if(local.startsWith('data:image/png;base64,')){
+  dustImg.onerror=()=>{try{localStorage.removeItem(DUST_PNG_STORAGE)}catch{}dustRetryAfter=0;tryLoadDust(true)};
+  dustImg.src=local;
+  return;
+ }
  loadAssetWithFallback(dustImg,'assets/dust.png',()=>{
   dustImgReady=false;dustLoadFailed=true;dustRetryAfter=Date.now()+15000;
  });
@@ -535,7 +543,7 @@ function cleanDustRoom(owner,room,robot=false){
  if(count)toast((robot?'🤖':'🧹')+' Прибрано '+count+' пилинок · +'+count*(owner==='home'?15:5)+' 🪙 · +'+count*5+' XP');
  return count;
 }
-function dustHit(x,y){return (dustImgReady?visibleDust():[]).find(p=>Math.hypot(x-p.x*W,y-p.y*H)<Math.max(38,Math.min(W*.07,58)));}
+function dustHit(x,y){return visibleDust().find(p=>Math.hypot(x-p.x*W,y-p.y*H)<Math.max(38,Math.min(W*.07,58)));}
 // Robot earns rewards only once per dust particle; no infinite repeat.
 let lastRobotDustCheck=0;
 function robotDustTick(){
@@ -852,7 +860,7 @@ const headTintCache={round:new Map(),wide:new Map(),pointy:new Map()};
 function loadCustomHead(kind,path){
  const img=customHeads[kind];
  let fallback=false;
- img.onload=()=>{headReady[kind]=img.naturalWidth>0;headTintCache[kind].clear();drawPreviewIfOpen()};
+ img.onload=()=>{headReady[kind]=img.naturalWidth>0;headTintCache[kind].clear();if(typeof shopSceneCache!=='undefined')shopSceneCache=null;drawPreviewIfOpen()};
  img.onerror=()=>{if(!fallback){fallback=true;img.src=headEmbedded[kind]}else headReady[kind]=false};
  img.src=path;
 }
@@ -952,20 +960,35 @@ function renderCustomEarPair(g,kind,color){
  return true;
 }
 
-// Готове PNG з втомленими очима. Якщо файл є у assets/, він з'являється як безкоштовний варіант очей.
+// Авторські очі: зображення, а не намальована заміна.
+// Завантаження по всіх дозволених шляхах assets/, без підміни іншим спрайтом.
 const tiredEyesImg=new Image();
 let tiredEyesReady=false;
 let tiredEyesFailed=false;
 function loadTiredEyes(){
- tiredEyesImg.onload=()=>{tiredEyesReady=tiredEyesImg.naturalWidth>0;tiredEyesFailed=!tiredEyesReady;drawPreviewIfOpen()};
- tiredEyesImg.onerror=()=>{tiredEyesReady=false;tiredEyesFailed=true};
- tiredEyesImg.src='assets/tiredeyes.png';
+ tiredEyesImg.onload=()=>{
+  tiredEyesReady=tiredEyesImg.naturalWidth>0;
+  tiredEyesFailed=!tiredEyesReady;
+  // Продавець кешується як спрайт: після появи PNG кеш ОБОВ'ЯЗКОВО оновити.
+  shopSceneCache=null;
+  shopRenderAccum=1;
+  drawPreviewIfOpen();
+  if(typeof drawFaceChoices==='function' && activePanel==='editor')drawFaceChoices();
+ };
+ tiredEyesImg.onerror=null;
+ loadAssetWithFallback(tiredEyesImg,'assets/tiredeyes.png',()=>{
+  tiredEyesReady=false;tiredEyesFailed=true;
+  shopSceneCache=null;
+  shopRenderAccum=1;
+ });
 }
 loadTiredEyes();
 function renderTiredEyes(g){
  if(!tiredEyesReady)return false;
- const size=78;
- g.drawImage(tiredEyesImg,-size/2,-size/2-4,size,size);
+ // Зображення підготовлене на тому самому квадратному полотні, що і голови.
+ // Розміщуємо його відносно центру голови без дублювання базових очей.
+ const size=100;
+ g.drawImage(tiredEyesImg,-size/2,-size/2,size,size);
  return true;
 }
 function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
@@ -1051,7 +1074,7 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  if(eq.cosmetic1==='freckles'){for(let side of [-1,1])for(let j=0;j<3;j++)ellipse(side*(20+j*2.8),7+j%2*3.5,1.4,1.4,'#aa817c')}
  if(eq.cosmetic2==='stars'){g.fillStyle='#ebbc48';g.font='12px sans-serif';g.fillText('✦',-32,0);g.fillText('✦',25,0)}
  const blink=animated&&Math.sin(clock*.68)>0.996;
- if(eq.eyes==='eyes_tired' && !blink){
+ if(eq.eyes==='eyes_tired'){
   renderTiredEyes(g);
  }else if(eq.eyes==='eyes_sleepy'||blink){line(-22,-3,-8,-3,eye,3.2);line(8,-3,22,-3,eye,3.2)}
  else{
@@ -1184,7 +1207,7 @@ function toggleFriends(open=true){friendDock=open;toolbar.classList.toggle('hidd
 function renderFriendDock(){if(!friendDock)return;const safe=esc;if(friendDockMode==='detail'&&selectedNPC){let n=selectedNPC;friendDockEl.innerHTML=`<div class="dock-side"><button data-dock="back">❮ Друзі</button><button data-dock="close">✕ Закрити</button></div><div class="npc-detail"><img src="${n.avatar}" alt=""><div><strong>${safe(n.name)}</strong><small>${safe(n.desc)} · ⭐ Рівень ${npcLevel(n)} · 🏠 ${npcRoomCount(n)} кімн.</small><div class="npc-actions"><button data-dock="visit">🏠 Відвідати</button><button data-dock="gift">🎁 Подарувати</button><button data-dock="interact">💬 Дії</button></div></div></div>`;return}
  friendDockMode='list';let cards=NPCS.map(n=>`<button class="npc-button" data-dock="npc" data-npc="${n.id}"><img src="${n.avatar}" loading="lazy" alt=""><span>${safe(n.name)}</span></button>`).join('');cards+=state.friends.map((f,i)=>`<button class="npc-button" data-dock="real" data-index="${i}"><span style="font-size:29px">👤</span><span>${safe(f.name)}</span></button>`).join('');friendDockEl.innerHTML=`<div class="dock-side"><button data-dock="close">✕ Закрити</button><button data-dock="copy">🔗 Мій код</button></div><div id="friendScroller">${cards}</div><button class="dock-add" data-dock="add">＋ Друзі</button>`}
 friendDockEl.addEventListener('click',async e=>{const b=e.target.closest('[data-dock]');if(!b)return;const a=b.dataset.dock;if(a==='close'){toggleFriends(false);selectedNPC=null;friendDockMode='list'}else if(a==='back'){friendDockMode='list';renderFriendDock()}else if(a==='npc'){selectedNPC=NPCS.find(n=>n.id===b.dataset.npc)||null;friendDockMode='detail';renderFriendDock()}else if(a==='visit'&&selectedNPC){visitingNPC=selectedNPC;npcRoom=0;ensureNpcDust(visitingNPC);state.location='npc';state.npcVisits[visitingNPC.id]=(state.npcVisits[selectedNPC.id]||0)+1;pet.x=pet.y=0;walkTarget=null;placing=null;save();updateLocationUI();toggleFriends(false);if(!interactionUsedToday(visitingNPC)){toast('Ти в гостях у '+visitingNPC.name+' · обери дію для XP');openPanel('interaction')}}else if(a==='gift'&&selectedNPC){toggleFriends(false);openPanel('npcGift')}else if(a==='interact'&&selectedNPC){const target=selectedNPC;toggleFriends(false);if(state.location!=='npc'||visitingNPC?.id!==target.id){toast('Спочатку натисни «Відвідати», щоб взаємодіяти з цим другом')}else if(interactionUsedToday(visitingNPC)){updateVisitDailyNotice();toast('Ви вже привіталися сьогодні')}else openPanel('interaction')}else if(a==='add'){toggleFriends(false);openPanel('friendAdd')}else if(a==='real'){let f=state.friends[+b.dataset.index];if(f){toggleFriends(false);openPanel('post');toast('Подарунковий код для '+f.name+' можна передати вручну')}}else if(a==='copy'){if(!state.friendId){state.friendId='PROTO-'+Math.random().toString(36).slice(2,10).toUpperCase();save()}try{await navigator.clipboard.writeText(state.friendId);toast('Код скопійовано')}catch{toast(state.friendId)}}});
-function openPanel(id){if(activePanel==='editor'&&id!=='editor')discardEditorChanges();if(id==='editor'&&activePanel!=='editor'){editorOriginal={...state.appearance};editorTab='appearance'}if(id==='interaction'&&(state.location!=='npc'||!visitingNPC||interactionUsedToday(visitingNPC))){updateVisitDailyNotice();if(state.location!=='npc'||!visitingNPC)toast('Спочатку відвідай друга');return}if(id==='inventory'||id==='wardrobe'){openItemDock(id);return}if(id==='friends'){closeItemDock();closePanel();friendDockMode='list';toggleFriends(true);return}if(id==='games'){closePanel();showGamesMenu();return}if(id==='shop'&&activePanel!=='shop'&&shopRoom!=='makeup'){shopRoom=null;resetShopWalker()}if(id==='home'){if(state.location==='npc'){setLocation('home')}else setLocation(state.location==='home'?'island':'home');return}activePanel=id;overlay.classList.add('open');overlay.classList.toggle('editor-full',id==='editor');overlay.classList.toggle('shop-full',id==='shop');document.querySelectorAll('#toolbar button').forEach(b=>b.classList.toggle('active',b.dataset.open===id));showPanel()}
+function openPanel(id){if(activePanel==='editor'&&id!=='editor')discardEditorChanges();if(id==='editor'&&activePanel!=='editor'){editorOriginal={...state.appearance};editorTab='appearance';if(tiredEyesFailed)loadTiredEyes()}if(id==='interaction'&&(state.location!=='npc'||!visitingNPC||interactionUsedToday(visitingNPC))){updateVisitDailyNotice();if(state.location!=='npc'||!visitingNPC)toast('Спочатку відвідай друга');return}if(id==='inventory'||id==='wardrobe'){openItemDock(id);return}if(id==='friends'){closeItemDock();closePanel();friendDockMode='list';toggleFriends(true);return}if(id==='games'){closePanel();showGamesMenu();return}if(id==='shop'&&activePanel!=='shop'&&shopRoom!=='makeup'){shopRoom=null;resetShopWalker()}if(id==='home'){if(state.location==='npc'){setLocation('home')}else setLocation(state.location==='home'?'island':'home');return}activePanel=id;overlay.classList.add('open');overlay.classList.toggle('editor-full',id==='editor');overlay.classList.toggle('shop-full',id==='shop');document.querySelectorAll('#toolbar button').forEach(b=>b.classList.toggle('active',b.dataset.open===id));showPanel()}
 function discardEditorChanges(){if(editorOriginal){state.appearance={...editorOriginal};editorOriginal=null}}
 function closePanel(){if(activePanel==='editor')discardEditorChanges();overlay.classList.remove('open');overlay.classList.remove('editor-full');overlay.classList.remove('shop-full');shopRoom=null;document.querySelectorAll('#toolbar button').forEach(b=>b.classList.remove('active'));activePanel=''}
 document.querySelectorAll('#toolbar button').forEach(b=>b.addEventListener('click',()=>openPanel(b.dataset.open)));document.getElementById('closePanel').onclick=closePanel;overlay.addEventListener('pointerdown',e=>{if(e.target===overlay)closePanel()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
@@ -1235,6 +1258,27 @@ function shopStock(){const r=SHOP_ROOMS.find(r=>r.id===shopRoom);if(!r)return []
 function shopMetrics(){const stage=document.getElementById('shopStage');const width=stage?.clientWidth||window.innerWidth;const height=stage?.clientHeight||window.innerHeight;
  const count=shopStock().length;const spacing=Math.max(190,Math.min(300,width*.25));const total=Math.max(width*2.15,430+count*spacing+540);
  return {width,height,spacing,total,maxCamera:Math.max(0,total-width)}}
+
+// Static shop sprites: rasterize seller and counter only on entering a store / resize.
+// Camera scroll reuses two small canvases instead of rebuilding these complex figures each frame.
+function shopSellerLayers(cache){
+ if(cache.sellerLayer&&cache.counterLayer)return cache;
+ const m=cache.metrics,scale=Math.max(.72,Math.min(1.06,m.height/540));
+ const w=340,h=Math.ceil(m.height),make=()=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c};
+ const seller=make(),counter=make(),sg=seller.getContext('2d'),cg=counter.getContext('2d');
+ const oldPen=pen;pen=sg;
+ try{
+  const counterY=m.height*.745;
+  puppet(sg,175,counterY+35*scale,scale,false,shopSeller);
+ }finally{pen=oldPen}
+ const x=75,y=m.height*.745,ch=m.height*.17;
+ cg.fillStyle='#805e77';cg.beginPath();cg.roundRect(x-5,y-6,230,ch+12,12);cg.fill();
+ const grad=cg.createLinearGradient(x,0,x+220,0);grad.addColorStop(0,'#a57691');grad.addColorStop(.5,'#ddb7a5');grad.addColorStop(1,'#ae7890');
+ cg.fillStyle=grad;cg.fillRect(x,y,220,ch);cg.fillStyle='#fbe2cc';cg.fillRect(x-4,y-8,228,13);
+ cg.fillStyle='#fff9e7';cg.font='bold 15px system-ui';cg.textAlign='center';cg.fillText('✦ PROTO SHOP ✦',x+110,y+ch*.6);
+ cache.sellerLayer=seller;cache.counterLayer=counter;
+ return cache;
+}
 function shopPaintNow(dt,drawCharacters=true){
  if(activePanel!=='shop'||!shopRoom)return;
  const stage=document.getElementById('shopStage'),world=document.getElementById('shopWorld'),c=document.getElementById('shopCast');if(!stage||!world||!c)return;
@@ -1283,21 +1327,12 @@ function shopPaintNow(dt,drawCharacters=true){
  pen=g;
  try{
   const scale=Math.max(.72,Math.min(1.06,m.height/540));const floorY=m.height*.89;
-  // Both puppets share the exact same height and sprite rendering.
-  // Продавець стоїть за прилавком на задній площині кімнати.
-  // Його зріст і масштаб ТІ САМІ, що у гравця, але лінія ніг
-  // розташована вище через перспективу. Голова та руки не ховаються за стійкою.
-  const counterX=75-shopCamera,counterY=m.height*.745,counterH=m.height*.17;
-  const sellerX=175-shopCamera;
-  const sellerFloorY=counterY+35*scale;
-  if(sellerX>-180&&sellerX<m.width+180){g.save();g.translate(0,Math.sin(clock*1.9)*1.9);puppet(g,sellerX,sellerFloorY,scale,false,shopSeller);g.restore()}
-  // Прилавок малюємо ПІСЛЯ продавця, але ПЕРЕД його нижньою частиною.
-  if(counterX+220>0&&counterX<m.width){
-   g.fillStyle='#805e77';g.beginPath();g.roundRect(counterX-5,counterY-6,230,counterH+12,12);g.fill();
-   const gradient=g.createLinearGradient(counterX,0,counterX+220,0);gradient.addColorStop(0,'#a57691');gradient.addColorStop(.5,'#ddb7a5');gradient.addColorStop(1,'#ae7890');
-   g.fillStyle=gradient;g.fillRect(counterX,counterY,220,counterH);
-   g.fillStyle='#fbe2cc';g.fillRect(counterX-4,counterY-8,228,13);
-   g.fillStyle='#fff9e7';g.font='bold 15px system-ui';g.textAlign='center';g.fillText('✦ PROTO SHOP ✦',counterX+110,counterY+counterH*.6);
+  // Seller and counter are pre-rendered once, including all PNG layers and their tint.
+  shopSellerLayers(cached);
+  const cachedX=-shopCamera;
+  if(cachedX+340>=-10&&cachedX<m.width+10){
+   g.drawImage(cached.sellerLayer,cachedX,Math.sin(clock*1.9)*1.6);
+   g.drawImage(cached.counterLayer,cachedX,0);
   }
   pet.step=shopWalkPhase;pet.dir=shopWalkDir;walkTarget=walking?{x:0,y:0}:null;
   const playerX=shopWalkerX-shopCamera;
@@ -1313,7 +1348,7 @@ function paintShopCharacters(){
  shopRenderAccum+=elapsed;
  // Огляд і ходьба: частота дисплея (типово 60 FPS). Промальовування: до 30 FPS.
  const moving=Math.abs(shopCameraTarget-shopCamera)>.4||shopWalkTarget!==null;
- const interval=moving?1/30:1/15;
+ const interval=moving?1/24:1/10;
  const shouldDraw=shopRenderAccum>=interval;
  if(shouldDraw)shopRenderAccum=0;
  shopPaintNow(elapsed,shouldDraw);
@@ -1356,7 +1391,7 @@ function showPanel(){let labels={editor:'🎨 Редактор персонаж�
  else if(activePanel==='needs'){html=needsPanelHTML()}
  else if(activePanel==='roomClean'){html=roomCleanHTML()}
  else if(activePanel==='yard'){html=yardPanelHTML()}
- else if(activePanel==='settings'){html=`<div class="control"><label>Папка assets на GitHub Pages (для окремо відкритого HTML)</label><input class="field" id="assetBaseInput" placeholder="https://example.github.io/game/assets/" value="${esc(configuredAssetBase())}"><button class="primary" data-act="saveAssetBase">Зберегти адресу зображень</button><p class="note">Не потрібно, якщо HTML і assets/ лежать поруч. Якщо запускаєш index.html окремо, встав повну HTTPS-адресу саме до assets/ у своєму GitHub Pages.</p></div><p><b>Прото-Тип α 0.8.0</b> — локальний браузерний прототип.</p><div class="control"><label>Ім’я острова</label><input class="field" id="islandLabel" value="Мій маленький острів" disabled></div><div class="control"><label>🏠 Основна кімната (відкривається під час запуску гри)</label><select class="field" id="startRoom">${[['Кімната пета',0],['Спальня',1],['Вітальня',2]].map(([name,n])=>`<option value="${n}" ${state.startRoom===n?'selected':''} ${state.level<ROOM_LEVELS[n]?'disabled':''}>${name}${state.level<ROOM_LEVELS[n]?' (закрито)':''}</option>`).join('')}</select></div><div class="control"><label>🎨 Оформлення поточної кімнати</label><p class="note">Перейди в потрібну кімнату, щоб змінити її шпалери й підлогу.</p><label>Шпалери</label><select class="field" id="wallChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Неонові','Лавандові','Космічні','Графітові'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].wall===i?'selected':''}>${n}</option>`).join('')}</select><label>Підлога</label><select class="field" id="floorChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Класична','Паркет','Плитка','Темна'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].floor===i?'selected':''}>${n}</option>`).join('')}</select></div><div class="footer-actions"><button class="secondary" data-act="collectFurniture">Прибрати всі меблі в інвентар (${state.placed.length+state.homePlaced.length})</button><button class="secondary" data-act="exportSave">Експорт збереження</button><button class="secondary" data-act="importSave">Імпорт збереження</button><button class="secondary" data-act="reset">Нова гра</button></div><p class="note">Прогрес автоматично зберігається в цьому браузері (localStorage). Між браузерами та пристроями синхронізації немає. Для резервної копії використовуй експорт. Заробляй монети в розділі «Ігри».</p><textarea id="saveText" class="field" placeholder="Тут з’явиться резервна копія, або встав її для імпорту" rows="4"></textarea>`}
+ else if(activePanel==='settings'){html=`<div class="control"><label>🧹 Зображення пилу dust.png</label><input class="field" id="dustPngInput" type="file" accept="image/png,.png"><p class="note">Якщо браузер не знаходить dust.png у GitHub assets/, вибери свій оригінальний dust.png тут один раз. Зображення збережеться локально в цьому браузері, без зміни малюнка. Поточний стан: ${dustImgReady?'PNG завантажено':'PNG не завантажено'}.</p></div><div class="control"><label>Папка assets на GitHub Pages (для окремо відкритого HTML)</label><input class="field" id="assetBaseInput" placeholder="https://example.github.io/game/assets/" value="${esc(configuredAssetBase())}"><button class="primary" data-act="saveAssetBase">Зберегти адресу зображень</button><p class="note">Не потрібно, якщо HTML і assets/ лежать поруч. Якщо запускаєш index.html окремо, встав повну HTTPS-адресу саме до assets/ у своєму GitHub Pages.</p></div><p><b>Прото-Тип α 0.8.0</b> — локальний браузерний прототип.</p><div class="control"><label>Ім’я острова</label><input class="field" id="islandLabel" value="Мій маленький острів" disabled></div><div class="control"><label>🏠 Основна кімната (відкривається під час запуску гри)</label><select class="field" id="startRoom">${[['Кімната пета',0],['Спальня',1],['Вітальня',2]].map(([name,n])=>`<option value="${n}" ${state.startRoom===n?'selected':''} ${state.level<ROOM_LEVELS[n]?'disabled':''}>${name}${state.level<ROOM_LEVELS[n]?' (закрито)':''}</option>`).join('')}</select></div><div class="control"><label>🎨 Оформлення поточної кімнати</label><p class="note">Перейди в потрібну кімнату, щоб змінити її шпалери й підлогу.</p><label>Шпалери</label><select class="field" id="wallChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Неонові','Лавандові','Космічні','Графітові'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].wall===i?'selected':''}>${n}</option>`).join('')}</select><label>Підлога</label><select class="field" id="floorChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Класична','Паркет','Плитка','Темна'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].floor===i?'selected':''}>${n}</option>`).join('')}</select></div><div class="footer-actions"><button class="secondary" data-act="collectFurniture">Прибрати всі меблі в інвентар (${state.placed.length+state.homePlaced.length})</button><button class="secondary" data-act="exportSave">Експорт збереження</button><button class="secondary" data-act="importSave">Імпорт збереження</button><button class="secondary" data-act="reset">Нова гра</button></div><p class="note">Прогрес автоматично зберігається в цьому браузері (localStorage). Між браузерами та пристроями синхронізації немає. Для резервної копії використовуй експорт. Заробляй монети в розділі «Ігри».</p><textarea id="saveText" class="field" placeholder="Тут з’явиться резервна копія, або встав її для імпорту" rows="4"></textarea>`}
  body.innerHTML=html;if(activePanel==='editor'){drawPreview();drawFaceChoices()}}
 function drawPreview(){let c=document.getElementById('preview');if(!c)return;let g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);pen=g;g.save();g.translate(c.width/2,c.height*.91);g.scale(2.0,2.0);puppet(g,0,0,1,false);g.restore();pen=ctx}
 function drawFaceChoices(){
@@ -1374,7 +1409,15 @@ function drawFaceChoices(){
  }finally{state.equipped=original;pen=ctx}
 }
 body.addEventListener('input',e=>{let a=state.appearance;if(e.target.id==='furColor'){a.fur=e.target.value;a.body=e.target.value;}if(e.target.id==='eyeColor')a.eyeColor=e.target.value;if(e.target.id==='petName')a.name=safeStr(e.target.value,24);if(e.target.id==='headShape')a.head=e.target.value;if(activePanel==='editor')drawPreview();else debounceSave()});
-body.addEventListener('change',e=>{if(e.target.matches('[data-face-slot]')){const slot=e.target.dataset.faceSlot,id=e.target.value;if(!faceSlots.includes(slot))return;if(id&&(!(state.owned[id]>0)||ITEMS[id]?.category!=='face'||slotFor(id)!==slot))return;if(id)state.equipped[slot]=id;else delete state.equipped[slot];if(editorOriginal){const draft=state.appearance;state.appearance={...editorOriginal};save();state.appearance=draft}else save();drawPreview();return}if(e.target.id==='startRoom'){const r=Number(e.target.value);if(r>=0&&r<3&&state.level>=ROOM_LEVELS[r]){state.startRoom=r;save();toast('Основну кімнату збережено')}}if(['wallChoice','floorChoice'].includes(e.target.id)&&state.location==='home'&&state.room<3){state.roomDecor[state.room][e.target.id==='wallChoice'?'wall':'floor']=Number(e.target.value);save();toast('Оформлення кімнати змінено')}if(e.target.id==='headShape'){state.appearance.head=e.target.value;drawPreview()}});
+body.addEventListener('change',e=>{if(e.target.id==='dustPngInput'){
+ const file=e.target.files?.[0];if(!file)return;
+ if(file.type!=='image/png' && !/\.png$/i.test(file.name)){toast('Обери саме PNG-файл');return}
+ if(file.size>1800000){toast('PNG більший за 1,8 МБ: використай файл у assets/ або оптимізуй PNG');return}
+ const reader=new FileReader();reader.onload=()=>{
+  try{localStorage.setItem(DUST_PNG_STORAGE,String(reader.result));dustImgReady=false;dustRetryAfter=0;tryLoadDust(true);toast('Твій dust.png підключено й збережено локально')}
+  catch(err){toast('Немає місця в локальному сховищі для PNG')}
+ };reader.readAsDataURL(file);return;
+ }if(e.target.matches('[data-face-slot]')){const slot=e.target.dataset.faceSlot,id=e.target.value;if(!faceSlots.includes(slot))return;if(id&&(!(state.owned[id]>0)||ITEMS[id]?.category!=='face'||slotFor(id)!==slot))return;if(id)state.equipped[slot]=id;else delete state.equipped[slot];if(editorOriginal){const draft=state.appearance;state.appearance={...editorOriginal};save();state.appearance=draft}else save();drawPreview();return}if(e.target.id==='startRoom'){const r=Number(e.target.value);if(r>=0&&r<3&&state.level>=ROOM_LEVELS[r]){state.startRoom=r;save();toast('Основну кімнату збережено')}}if(['wallChoice','floorChoice'].includes(e.target.id)&&state.location==='home'&&state.room<3){state.roomDecor[state.room][e.target.id==='wallChoice'?'wall':'floor']=Number(e.target.value);save();toast('Оформлення кімнати змінено')}if(e.target.id==='headShape'){state.appearance.head=e.target.value;drawPreview()}});
 const slotFor=id=>ITEMS[id]?.slot||({wig_pink:'wig',wig_blue:'wig',dress:'outfit',shirt:'outfit'}[id]);
 function b64encode(s){const bytes=new TextEncoder().encode(s);let result='';for(let i=0;i<bytes.length;i++)result+=String.fromCharCode(bytes[i]);return btoa(result).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function b64decode(s){let raw=atob(s.replace(/-/g,'+').replace(/_/g,'/'));return new TextDecoder().decode(Uint8Array.from(raw,c=>c.charCodeAt(0)))}
