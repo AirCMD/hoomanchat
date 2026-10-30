@@ -331,7 +331,7 @@
 .shop-room-stage .shop-nav,.shop-room-stage .shop-home-btn{box-shadow:none!important;}
 #shopCast{will-change:auto!important;}
 /* Окремий шар пилу над Canvas: не стирається при перемальовуванні кімнати. */
-#dustLayer{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;contain:layout style paint}
+#dustLayer{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden;contain:layout style paint}
 #dustLayer .dust-sprite{position:absolute;display:block;width:90px;height:78px;object-fit:fill;transform:translate(-50%,-50%);pointer-events:auto;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-drag:none;filter:drop-shadow(0 2px 2px #0003)}
 </style>
 </head>
@@ -474,7 +474,7 @@ function dustStore(){
  if(!state.dustDaily||typeof state.dustDaily!=='object')state.dustDaily={day:'',home:[],npcs:{}};
  const d=state.dustDaily;
  if(d.day!==localDay()){
-  d.day=localDay();d.home=[];d.npcs={};
+  d.day=localDay();d.home=[];d.homeInitialized=false;d.npcs={};
  }
  if(!Array.isArray(d.home))d.home=[];
  if(!d.npcs||typeof d.npcs!=='object')d.npcs={};
@@ -485,7 +485,7 @@ function dustPoint(i,salt,room){return {id:i,room,x:.13+seededDust(i*2,salt)*.73
 function unlockedHomeRooms(){return [0,1,2].filter(r=>state.level>=ROOM_LEVELS[r]);}
 function ensureHomeDust(){
  const d=dustStore();
- if(!d.home.length){const rooms=unlockedHomeRooms();d.home=Array.from({length:15},(_,i)=>dustPoint(i,911,rooms[i%rooms.length]));save();}
+ if(!d.home.length && !d.homeInitialized){const rooms=unlockedHomeRooms();d.home=Array.from({length:15},(_,i)=>dustPoint(i,911,rooms[i%rooms.length]));d.homeInitialized=true;save();}
  // Never spawn dust in locked rooms if a save was imported from a higher level.
  const unlocked=unlockedHomeRooms();
  d.home.forEach(p=>{if(!unlocked.includes(p.room))p.room=unlocked[p.id%unlocked.length]});
@@ -511,17 +511,17 @@ const dustLayer=document.getElementById('dustLayer');
 function updateDustLayer(){
  if(!dustLayer)return;
  const roomVisible=activePanel!=='shop' && (state.location==='home'&&state.room<3 || state.location==='npc'&&!!visitingNPC);
- const dust=roomVisible&&dustImgReady?visibleDust():[];
- const key=roomVisible+'|'+dustImgReady+'|'+dustLayerVersion+'|'+W+'|'+H+'|'+(state.location==='npc'?visitingNPC?.id+'-'+npcRoom:state.room)+'|'+dust.map(p=>p.id+':'+p.room+':'+p.done).join(',');
+ const dust=roomVisible?visibleDust():[];
+ const key=roomVisible+'|'+dustLayerVersion+'|'+W+'|'+H+'|'+(state.location==='npc'?visitingNPC?.id+'-'+npcRoom:state.room)+'|'+dust.map(p=>p.id+':'+p.room+':'+p.done).join(',');
  if(key===dustLastLayout)return;
  dustLastLayout=key;
  dustLayer.replaceChildren();
- if(!dust.length||!dustDisplaySrc)return;
+ if(!dust.length)return;
  for(const p of dust){
   const img=document.createElement('img');
-  img.className='dust-sprite';img.alt='Пил';img.draggable=false;img.src=dustDisplaySrc;
+  img.className='dust-sprite';img.alt='Пил';img.draggable=false;img.src=dustImgReady&&dustDisplaySrc?dustDisplaySrc:new URL('assets/dust.png',document.baseURI).href;
   const scale=1.45+seededDust(p.id,29)*.65;
-  const ratio=dustCrop?dustCrop.w/Math.max(1,dustCrop.h):1.3;
+  const ratio=1.3;
   const width=65*scale;
   img.style.width=width+'px';img.style.height=Math.min(70*scale,width/Math.max(.2,ratio))+'px';
   img.style.left=(p.x*100)+'%';img.style.top=(p.y*100)+'%';
@@ -531,7 +531,6 @@ function updateDustLayer(){
  }
 }
 function drawDust(){
- if(!dustImgReady&&dustLoadFailed)tryLoadDust();
  updateDustLayer();
 }
 function cleanDust(p,owner='home'){
@@ -972,7 +971,7 @@ function renderCustomEarPair(g,kind,color){
 // Ніяких геометричних замінників, emoji чи підмін чужими спрайтами.
 const tiredEyesImg=new Image();
 let tiredEyesReady=false,tiredEyesFailed=false,tiredEyesLoading=false;
-let tiredEyesAttempt=0;
+let tiredEyesAttempt=0;let tiredEyesRenderImg=null;
 function refreshTiredEyesViews(){
  shopSceneCache=null;
  shopRenderAccum=1;
@@ -993,6 +992,7 @@ function loadTiredEyes(force=false){
   tiredEyesLoading=false;
   tiredEyesReady=tiredEyesImg.naturalWidth>0&&tiredEyesImg.naturalHeight>0;
   tiredEyesFailed=!tiredEyesReady;
+  tiredEyesRenderImg=tiredEyesReady?makeTiredEyesCrop(tiredEyesImg):null;
   refreshTiredEyesViews();
  };
  tiredEyesImg.onerror=()=>{
@@ -1002,13 +1002,33 @@ function loadTiredEyes(force=false){
   refreshTiredEyesViews();
  };
  // Повторне відкриття редактора або магазину обходить закешований браузером 404.
- tiredEyesImg.src='assets/tiredeyes.png'+(force?'?reload='+Date.now():'');
+ tiredEyesImg.src=new URL('assets/tiredeyes.png'+(force?'?reload='+Date.now():''),document.baseURI).href;
 }
 loadTiredEyes();
+function makeTiredEyesCrop(img){
+ // Remove empty transparent margins from the supplied picture, without drawing or substituting any features.
+ try{
+  const w=img.naturalWidth,h=img.naturalHeight;
+  const c=document.createElement('canvas');c.width=w;c.height=h;
+  const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(img,0,0);
+  const pixels=g.getImageData(0,0,w,h).data;
+  let l=w,t=h,r=-1,b=-1;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++)if(pixels[(y*w+x)*4+3]>12){l=Math.min(l,x);t=Math.min(t,y);r=Math.max(r,x);b=Math.max(b,y)}
+  if(r<l)return img;
+  const margin=Math.max(1,Math.round(Math.max(r-l+1,b-t+1)*.04));
+  l=Math.max(0,l-margin);t=Math.max(0,t-margin);r=Math.min(w-1,r+margin);b=Math.min(h-1,b+margin);
+  const out=document.createElement('canvas');out.width=r-l+1;out.height=b-t+1;
+  out.getContext('2d').drawImage(img,l,t,out.width,out.height,0,0,out.width,out.height);
+  return out;
+ }catch(_){return img}
+}
 function renderTiredEyes(g){
  if(!tiredEyesReady)return false;
- const size=100;
- g.drawImage(tiredEyesImg,-size/2,-size/2,size,size);
+ const image=tiredEyesRenderImg||tiredEyesImg;
+ const ratio=image.width/image.height||1;
+ // Draw only the authored eyes on the center of the face, preserving PNG's shape.
+ const width=55,height=Math.min(31,width/Math.max(.1,ratio));
+ g.drawImage(image,-width/2,-7-height/2,width,height);
  return true;
 }
 function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
