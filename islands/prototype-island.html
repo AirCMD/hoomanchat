@@ -392,6 +392,10 @@ const ITEMS={
  smouth:{name:'Маленький рот',emoji:'👄',category:'face',slot:'mouth',price:0,image:MOUTH_PNG.smouth},
  mou3:{name:'3',emoji:'👄',category:'face',slot:'mouth',price:0,image:MOUTH_PNG.mou3},
  sharkgrip:{name:'Акуляча хватка',emoji:'👄',category:'face',slot:'mouth',price:2,currency:'tokens',premium:true,image:ASSETS_ROOT+'sharkgrin.png'},
+ freckles_png_3:{name:'Веснянки 3',emoji:'✦',category:'face',slot:'cosmetic1',price:0,image:'/hoomanchat/assets/weckles3.png'},
+ freckles_png_2:{name:'Веснянки 2',emoji:'✦',category:'face',slot:'cosmetic1',price:0,image:'/hoomanchat/assets/wreckles2.png'},
+ freckles_png_1:{name:'Веснянки 1',emoji:'✦',category:'face',slot:'cosmetic1',price:0,image:'/hoomanchat/assets/weckles1.png'},
+ freckles_png_4:{name:'Веснянки 4',emoji:'✦',category:'face',slot:'cosmetic1',price:0,image:'/hoomanchat/assets/wreckles4.png'},
  mouth_cat:{name:'Котяча усмішка',emoji:'😺',category:'face',slot:'mouth',price:125},brows_bold:{name:'Виразні брови',emoji:'〰️',category:'face',slot:'brows',price:90},ears_bunny:{name:'Кролячі вуха',emoji:'🐰',category:'face',slot:'ears',price:240},ears_soft:{name:'М’які вушка',emoji:'👂',category:'face',slot:'ears',price:0,image:'/hoomanchat/assets/ears_soft.png'},ears_tall:{name:'Високі вушка',emoji:'👂',category:'face',slot:'ears',price:0,image:'/hoomanchat/assets/ears_tall.png'},ears_sharp:{name:'Гострі вушка',emoji:'👂',category:'face',slot:'ears',price:0,image:'/hoomanchat/assets/ears_sharp.png'},blush:{name:'Рум’янець',emoji:'🌸',category:'face',slot:'cosmetic1',price:85},freckles:{name:'Веснянки',emoji:'🟤',category:'face',slot:'cosmetic1',price:85},stars:{name:'Зірочки на щоках',emoji:'🌟',category:'face',slot:'cosmetic2',price:125},shadow:{name:'Тіні для очей',emoji:'💜',category:'face',slot:'cosmetic2',price:140}
 };
 // Підвісні авторські лампи; ціни і назви задав автор гри.
@@ -440,7 +444,7 @@ const faceSlots=['eyes','nose','mouth','brows','ears','cosmetic1','cosmetic2'];
 const faceNames={eyes:'Очі',nose:'Ніс',mouth:'Рот',brows:'Брови',ears:'Вуха',cosmetic1:'Косметика 1',cosmetic2:'Косметика 2'};
 const NEED_DEFAULT={dirt:88,hunger:82,sleep:90,boredom:85,health:100};
 const BUGS={fly:{name:'Муха',emoji:'🪰',price:35,grow:75,seed:15},gnat:{name:'Мошка',emoji:'🦟',price:55,grow:115,seed:24},mosquito:{name:'Комар',emoji:'🦟',price:85,grow:170,seed:38},starlight:{name:'Зоряний жук',emoji:'✨',price:155,grow:260,seed:66}};
-const defaults=()=>({needs:{...NEED_DEFAULT},needsAt:Date.now(),room:0,startRoom:0,roomDecor:[{wall:0,floor:0},{wall:1,floor:1},{wall:2,floor:2}],roomCleanliness:88,roomLights:[true,true,true],needsScale:2,roomDirtAt:Date.now(),dustDaily:{day:"",home:[],npcs:{}},bugs:{},bugPlots:[null,null,null,null,null,null],coins:1000,tokens:0,appearance:{head:'round',fur:'#f0eff1',body:'#f0eff1',eyeColor:'#4b406c',name:'Прото'},owned:{apple:3,cake:1,chair:1,plant:1,ears_soft:1,ears_tall:1,ears_sharp:1,eyes_tired:1,eyes_basic_yel:1,eyes_basic_gry:1,eyes_basic_lbr:1,eyes_basic_drbr:1,eyes_basic_bl:1,nose_nostril:1,sharkmouth:1,animalmouth:1,catmouth:1,smilemouth:1,funmouth:1,apathymouth:1,smouth:1,mou3:1},equipped:{},placed:[],giftHistory:[],giftSent:[],happiness:80,location:'island',homePlaced:[{id:'window_day',x:.31,y:.29,room:0},{id:'window_day',x:.64,y:.29,room:0}],windowsInitialized:true,friends:[],friendId:null,npcGifts:{},npcVisits:{},xp:0,level:1,levelRewards:[],dailyInteractions:{},avatar:""});
+const defaults=()=>({needs:{...NEED_DEFAULT},needsAt:Date.now(),room:0,startRoom:0,roomDecor:[{wall:0,floor:0},{wall:1,floor:1},{wall:2,floor:2}],roomCleanliness:88,roomLights:[true,true,true],needsScale:2,roomDirtAt:Date.now(),dustDaily:{day:"",home:[],npcs:{}},bugs:{},bugPlots:[null,null,null,null,null,null],coins:1000,tokens:0,appearance:{head:'round',fur:'#f0eff1',body:'#f0eff1',eyeColor:'#4b406c',name:'Прото'},owned:{apple:3,cake:1,chair:1,plant:1,ears_soft:1,ears_tall:1,ears_sharp:1,eyes_tired:1,eyes_basic_yel:1,eyes_basic_gry:1,eyes_basic_lbr:1,eyes_basic_drbr:1,eyes_basic_bl:1,freckles_png_3:1,freckles_png_2:1,freckles_png_1:1,freckles_png_4:1,nose_nostril:1,sharkmouth:1,animalmouth:1,catmouth:1,smilemouth:1,funmouth:1,apathymouth:1,smouth:1,mou3:1},equipped:{},placed:[],giftHistory:[],giftSent:[],happiness:80,location:'island',homePlaced:[{id:'window_day',x:.31,y:.29,room:0},{id:'window_day',x:.64,y:.29,room:0}],windowsInitialized:true,friends:[],friendId:null,npcGifts:{},npcVisits:{},xp:0,level:1,levelRewards:[],dailyInteractions:{},avatar:""});
 let state=defaults();
 const safeStr=(v,n=80)=>String(v??'').replace(/[<>]/g,'').slice(0,n);
 function load(){try{let s=JSON.parse(localStorage.getItem(STORAGE)||'null');if(!s||typeof s!=='object')return;state={...defaults(),...s,windowsInitialized:s.windowsInitialized===true,tokens:Number.isFinite(Number(s.tokens))?Math.max(0,Math.floor(Number(s.tokens))):0,needs:{...NEED_DEFAULT,...s.needs},bugs:s.bugs&&typeof s.bugs==='object'?s.bugs:{},bugPlots:Array.isArray(s.bugPlots)?s.bugPlots.slice(0,6):[null,null,null,null,null,null],room:Number.isInteger(s.room)&&s.room>=0&&s.room<=3?s.room:0,startRoom:Number.isInteger(s.startRoom)&&s.startRoom>=0&&s.startRoom<=2?s.startRoom:0,roomDecor:Array.from({length:3},(_,i)=>({wall:Math.max(0,Math.min(3,Number(s.roomDecor?.[i]?.wall) || 0)),floor:Math.max(0,Math.min(3,Number(s.roomDecor?.[i]?.floor) || 0))})),roomCleanliness:(Number.isFinite(Number(s.roomCleanliness))&&s.roomCleanliness!==undefined&&s.roomCleanliness!==null)?Math.max(0,Math.min(100,Number(s.roomCleanliness))):(()=>{const legacy=Array.isArray(s.roomDirt)?s.roomDirt:[88,91,93];const values=legacy.slice(0,3).map(v=>Math.max(0,Math.min(100,Number(v)||0)));const average=values.length?values.reduce((a,b)=>a+b,0)/values.length:88;return s.needsScale===2?average:100-average})(),roomDirtAt:Number.isFinite(s.roomDirtAt)?s.roomDirtAt:Date.now(),roomLights:Array.from({length:3},(_,i)=>s.roomLights?.[i]!==false),dustDaily:s.dustDaily&&typeof s.dustDaily==="object"?s.dustDaily:{day:"",home:[],npcs:{}},appearance:{...defaults().appearance,...s.appearance},owned:{...defaults().owned,...s.owned},equipped:s.equipped||{},placed:Array.isArray(s.placed)?s.placed.slice(0,150):[],giftHistory:Array.isArray(s.giftHistory)?s.giftHistory.slice(-200):[],giftSent:Array.isArray(s.giftSent)?s.giftSent.slice(-200):[],location:s.location==='home'?'home':'island',homePlaced:Array.isArray(s.homePlaced)?s.homePlaced.slice(0,100):[],friends:Array.isArray(s.friends)?s.friends.slice(0,80):[],friendId:typeof s.friendId==='string'?s.friendId:null,npcGifts:s.npcGifts&&typeof s.npcGifts==='object'?s.npcGifts:{},npcVisits:s.npcVisits&&typeof s.npcVisits==='object'?s.npcVisits:{},xp:Number.isFinite(s.xp)?Math.max(0,Math.floor(s.xp)):0,level:Number.isInteger(s.level)?Math.max(1,Math.min(300,s.level)):1,levelRewards:Array.isArray(s.levelRewards)?s.levelRewards:[],dailyInteractions:s.dailyInteractions&&typeof s.dailyInteractions==='object'?s.dailyInteractions:{},avatar:typeof s.avatar==='string'?s.avatar.slice(0,1800):""};
@@ -1124,6 +1128,30 @@ function renderCustomEarPair(g,kind,color){
  return true;
 }
 
+// Авторські PNG-веснянки: один Image на файл, без Canvas-копій.
+const FRECKLE_PNG={freckles_png_3:'weckles3.png',freckles_png_2:'wreckles2.png',freckles_png_1:'weckles1.png',freckles_png_4:'wreckles4.png'};
+const freckleSprites={};
+function renderPngFreckles(g,id,hx,hy){
+ const filename=FRECKLE_PNG[id];if(!filename)return false;
+ let item=freckleSprites[id];
+ if(!item){
+  const img=new Image();item={img,ready:false};freckleSprites[id]=item;
+  img.onload=()=>{
+   item.ready=!!img.naturalWidth;
+   if(typeof drawPreviewIfOpen==='function')drawPreviewIfOpen();
+   if(typeof activePanel!=='undefined'&&activePanel==='editor'){
+    if(typeof drawPreview==='function')drawPreview();
+    if(typeof drawFaceChoices==='function')drawFaceChoices();
+   }
+  };
+  img.onerror=()=>{item.ready=false;console.warn('Не завантажено PNG веснянок:',filename)};
+  img.src='/hoomanchat/assets/'+filename;
+ }
+ if(!item.ready)return false;
+ const side=Math.max(hx*2,hy*2);
+ g.drawImage(item.img,-side/2,-side/2-2,side,side);
+ return true;
+}
 const EYE_PNG={
  eyes_tired:'tiredeyes.png',
  eyes_basic_rd:'basiceyesrd.png',
@@ -1390,6 +1418,7 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  if(eq.brows==='brows_bold'){line(-24,-17,-10,-19,'#695969',3.2);line(10,-19,24,-17,'#695969',3.2)}
  if(eq.cosmetic1==='blush'){ellipse(-25,10,11,6,'#e8a0b0a9');ellipse(25,10,11,6,'#e8a0b0a9')}
  if(eq.cosmetic1==='freckles'){for(let side of [-1,1])for(let j=0;j<3;j++)ellipse(side*(20+j*2.8),7+j%2*3.5,1.4,1.4,'#aa817c')}
+ if(FRECKLE_PNG[eq.cosmetic1])renderPngFreckles(g,eq.cosmetic1,hx,hy);
  if(eq.cosmetic2==='stars'){g.fillStyle='#ebbc48';g.font='12px sans-serif';g.fillText('✦',-32,0);g.fillText('✦',25,0)}
  const blink=animated&&Math.sin(clock*.68)>0.996;
  // PNG eyes replace the default eyes only after the actual file has loaded.
@@ -1631,7 +1660,7 @@ const SHOP_STOCK={
  bathroom:['bath','shower','vacuum','robot_vacuum'],
  clothes:['dress','shirt','wig_pink','wig_blue','hair_shkrek1','hair_shkeksp2','hair_shkeksp1','hair_shkrek3','hair_shkrek2'],
  accessories:['tail_fox','tail_cat','bow'],
- makeup:['eyes_star','eyes_sleepy','eyes_tired','eyes_basic_rd','eyes_basic_ghl','eyes_basic_yel','eyes_basic_pn','eyes_basic_gry','eyes_basic_lbr','eyes_basic_drbr','eyes_basic_bl','nose_heart','nose_shark','nose_nostril','mouth_cat','sharkmouth','animalmouth','catmouth','smilemouth','funmouth','apathymouth','smouth','mou3','sharkgrip','brows_bold','ears_bunny','blush','freckles','stars','shadow'],
+ makeup:['eyes_star','eyes_sleepy','eyes_tired','eyes_basic_rd','eyes_basic_ghl','eyes_basic_yel','eyes_basic_pn','eyes_basic_gry','eyes_basic_lbr','eyes_basic_drbr','eyes_basic_bl','nose_heart','nose_shark','nose_nostril','mouth_cat','sharkmouth','animalmouth','catmouth','smilemouth','funmouth','apathymouth','smouth','mou3','sharkgrip','brows_bold','ears_bunny','blush','freckles_png_3','freckles_png_2','freckles_png_1','freckles_png_4','freckles','stars','shadow'],
  other:[]
 };
 // Дворівнева навігація магазину одягу. Усі нові shkrek/shkek перуки — «Даркі».
