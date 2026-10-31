@@ -974,6 +974,7 @@ function drawNPCFigure(n,x,y,size=1){
  const [coat,accent,species]=NPC_COSTUMES[n.id]||['#44536a','#a3d7f5','human'];
  const img=NPC_IMAGES[n.id],npcWalking=Math.abs(npcMotion.target-npcMotion.x)>2,walkPhase=npcMotion.step,walk=npcWalking?Math.sin(walkPhase)*.23:0,bounce=npcWalking?Math.abs(Math.sin(walkPhase))*1.5:Math.sin(clock*2.4+n.name.length)*.6;
  const z=Math.max(.72,Math.min(1.24,size));
+ const npcIdle=idlePose(clock+(n.name.length*.21),!npcWalking);
  ctx.save();const fx=interactionFX&&interactionFX.npc===n.id&&performance.now()/1000<interactionFX.until?interactionFX:null;ctx.translate(x,y-30+bounce+(fx&&fx.type==='dance'?Math.sin(clock*14)*9:fx&&fx.type==='hug'?-Math.abs(Math.sin(clock*11))*16:0));if(fx&&fx.type==='dance')ctx.rotate(Math.sin(clock*9)*.11);ctx.scale(z,z);
  ellipse(0,84,36,9,'#12203977');
  // Хвіст та вуха є частинами однієї 2D-фігури, не просто аватаркою у кімнаті.
@@ -984,18 +985,18 @@ function drawNPCFigure(n,x,y,size=1){
  ctx.save();
  // Задня рука: під тулубом, щоб плече не перекривало костюм.
  ctx.save();
- ctx.translate(BUILDER_POSE.upperL.x,BUILDER_POSE.upperL.y);
- const npcRearShoulder=npcWalking?-Math.sin(walkPhase)*.18:Math.sin(clock*1.1)*.035;
+ ctx.translate(BUILDER_POSE.upperL.x+npcIdle.upperLX,BUILDER_POSE.upperL.y);
+ const npcRearShoulder=npcWalking?-Math.sin(walkPhase)*.18:npcIdle.upperLRot;
  renderSegmentedArm(ctx,'left',shadeColor(coat,.86),npcRearShoulder,.0+Math.cos(walkPhase)*.025);
  ctx.restore();
  // Передня рука: над тулубом; плече винесене до його краю.
  ctx.save();
- ctx.translate(BUILDER_POSE.upperR.x,BUILDER_POSE.upperR.y);
- const npcFrontShoulder=npcWalking?Math.sin(walkPhase)*.18:Math.sin(clock*.9)*.04;
+ ctx.translate(BUILDER_POSE.upperR.x+npcIdle.upperRX,BUILDER_POSE.upperR.y);
+ const npcFrontShoulder=npcWalking?Math.sin(walkPhase)*.18:npcIdle.upperRRot;
  renderSegmentedArm(ctx,'right',coat,npcFrontShoulder,.0-Math.sin(walkPhase)*.025);
  ctx.restore();
  ctx.restore();
- ctx.save();ctx.translate(BUILDER_POSE.torso.x,BUILDER_POSE.torso.y);ctx.rotate(BUILDER_POSE.torso.rot*Math.PI/180);ctx.scale(BUILDER_POSE.torso.scale/100,BUILDER_POSE.torso.scale/100);
+ ctx.save();ctx.translate(BUILDER_POSE.torso.x+npcIdle.torsoX,BUILDER_POSE.torso.y+npcIdle.torsoY);ctx.rotate(BUILDER_POSE.torso.rot*Math.PI/180+npcIdle.torsoRot);ctx.scale(BUILDER_POSE.torso.scale/100*npcIdle.torsoScale,BUILDER_POSE.torso.scale/100*npcIdle.torsoScale);
  // Тулуб і костюм мають ті самі координати й масштаб, що й у гравця.
  if(!renderBody(ctx,coat,'npc')){
   drawRounded(-27,-75,54,55,20,shadeColor(coat,.94));
@@ -1005,7 +1006,7 @@ function drawNPCFigure(n,x,y,size=1){
  ctx.restore(); // завершуємо шар тулуба
  ctx.save();
  // drawNPCHead internally translates by -120, so compensate here.
- ctx.translate(BUILDER_POSE.head.x,BUILDER_POSE.head.y+120);
+ ctx.translate(BUILDER_POSE.head.x+npcIdle.headX,BUILDER_POSE.head.y+120+npcIdle.headY);ctx.rotate(npcIdle.headRot);
  // Початковий розмір голови NPC без масштабування з білдера.
  // Голова NPC намальована окремо. Аватар НЕ використовується як текстура голови.
  drawNPCHead(n,species,coat,accent);
@@ -1686,10 +1687,21 @@ function renderAuthoredNose(g,id,hx=39,hy=39){
  g.drawImage(img,-side/2,-side/2-2,side,side);
  return true;
 }
+// Idle-анімація з білдера: цикл 3.2 с, дихання + плавне похитування.
+// Руки залишаються ієрархією плече → лікоть → передпліччя; жодних незалежних зміщень кистей.
+const IDLE_DURATION=3.2;
+function idlePose(time,enabled=true){
+ if(!enabled)return {breath:0,sway:0,headSway:0,torsoY:0,torsoX:0,torsoRot:0,torsoScale:1,headX:0,headY:0,headRot:0,upperLX:0,upperRX:0,upperLRot:0,upperRRot:0};
+ const phase=(time%IDLE_DURATION)/IDLE_DURATION*Math.PI*2;
+ const breath=(1-Math.cos(phase))/2;
+ const sway=Math.sin(phase),headSway=Math.sin(phase-.22);
+ return {breath,sway,headSway,torsoY:-2.1*breath,torsoX:sway,torsoRot:1.05*sway*Math.PI/180,torsoScale:1+.015*breath,headX:1.5*headSway,headY:-2.6*breath,headRot:-.85*sway*Math.PI/180,upperLX:sway,upperRX:sway,upperLRot:(-1.1*breath+1.25*sway)*Math.PI/180,upperRRot:(1.1*breath+1.25*sway)*Math.PI/180};
+}
 function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  let a=appearanceOverride||state.appearance,fur=a.fur||'#f0eff1',body=appearanceOverride?(a.body||fur):fur;let eq=appearanceOverride?{...(a.equipped||{})}:(state.equipped||{});
  let moving=animated&&!appearanceOverride&&!!walkTarget;let phase=pet.step;let pulse=animated?(moving?-Math.abs(Math.sin(phase))*1.5:Math.sin(clock*2)*1.2):0;
- let performing=animated&&action!=='idle'&&clock<actionUntil;
+ let performing=animated&&action==='jump'&&clock<actionUntil;
+ const idle=idlePose(clock,animated&&!moving&&!performing);
  const walk=moving?Math.sin(phase)*.23:Math.sin(clock*1.1)*.03;
  g.save();
  g.translate(x,y-30+pulse+(performing&&action==='jump'?-Math.abs(Math.sin(clock*12))*27:performing&&action==='dance'?Math.sin(clock*10)*8:0));
@@ -1711,22 +1723,22 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  g.save();
  // rear arm — двосегментна рука: плече + передпліччя/кисть.
  g.save();
- g.translate(BUILDER_POSE.upperL.x,BUILDER_POSE.upperL.y);
- const rearShoulder=performing?(action==='wave'?-0.42:Math.sin(clock*12)*.45):(moving?-Math.sin(phase)*.10:Math.sin(clock*1.1)*.025);
- const rearElbow=performing?(action==='wave'?.30:.12+Math.sin(clock*12)*.08):.0+Math.cos(phase)*.025;
+ g.translate(BUILDER_POSE.upperL.x+idle.upperLX,BUILDER_POSE.upperL.y);
+ const rearShoulder=moving?-Math.sin(phase)*.10:idle.upperLRot;
+ const rearElbow=moving?Math.cos(phase)*.025:0;
  renderSegmentedArm(g,'left',shadeColor(body,.86),rearShoulder,rearElbow);
  g.restore();
 
  // front arm — двосегментна рука з окремим ліктем.
  g.save();
- g.translate(BUILDER_POSE.upperR.x,BUILDER_POSE.upperR.y);
- const frontShoulder=performing?(action==='wave'?Math.sin(clock*16)*.42-2.02:Math.sin(clock*12)*.5):(moving?Math.sin(phase)*.10:Math.sin(clock*.9)*.025);
- const frontElbow=performing?(action==='wave'?.55:.14+Math.sin(clock*12)*.09):.0-Math.sin(phase)*.025;
+ g.translate(BUILDER_POSE.upperR.x+idle.upperRX,BUILDER_POSE.upperR.y);
+ const frontShoulder=moving?Math.sin(phase)*.10:idle.upperRRot;
+ const frontElbow=moving?-Math.sin(phase)*.025:0;
  renderSegmentedArm(g,'right',body,frontShoulder,frontElbow);
  g.restore();
 
  g.restore();
- g.save();g.translate(BUILDER_POSE.torso.x,BUILDER_POSE.torso.y);g.rotate(BUILDER_POSE.torso.rot*Math.PI/180);g.scale(BUILDER_POSE.torso.scale/100,BUILDER_POSE.torso.scale/100);
+ g.save();g.translate(BUILDER_POSE.torso.x+idle.torsoX,BUILDER_POSE.torso.y+idle.torsoY);g.rotate(BUILDER_POSE.torso.rot*Math.PI/180+idle.torsoRot);g.scale(BUILDER_POSE.torso.scale/100*idle.torsoScale,BUILDER_POSE.torso.scale/100*idle.torsoScale);
  // torso
  if(!renderBody(g,body,'player')){
   drawRounded(-27,-75,54,55,20,shadeColor(body,.94));
@@ -1745,10 +1757,10 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  g.save(); // голова у кореневих координатах
  // head and face, aligned like NPC
  g.save();
- g.translate(BUILDER_POSE.head.x,BUILDER_POSE.head.y+getHeadVertical(a));
+ g.translate(BUILDER_POSE.head.x+idle.headX,BUILDER_POSE.head.y+getHeadVertical(a)+idle.headY);
  // Вся голова як один вузол: форма, вуха, волосся, очі, ніс, рот та косметика.
  // Масштаб не змінює положення тулуба й не змінює висоту голови.
- g.rotate(Math.sin(clock*1.3)*.02);
+ g.rotate(idle.headRot);
  g.scale(getHeadScale(a),getHeadScale(a));
  const headKind=['round','wide','pointy','geo_round','geo_wide','geo_pointy'].includes(a.head)?a.head:'round';
  let hx=['wide','geo_wide'].includes(headKind)?42:['pointy','geo_pointy'].includes(headKind)?36:39;
@@ -1832,8 +1844,8 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  g.restore(); // увесь персонаж
 }
 let pendingFurniture=null;
-function useFurniture(id){const n=state.needs;let msg='';if(id==='bed'){n.sleep=Math.min(100,n.sleep+45);action='sleep';msg='Пет відпочиває у ліжку 💤'}else if(id==='bath'||id==='shower'){n.dirt=Math.min(100,n.dirt+48);action='jump';msg='Пет купається 🫧'}else if(id==='tv'||id==='toy'){n.boredom=Math.min(100,n.boredom+42);action='dance';msg='Пет розважається 🎲'}else if(id==='auto_fridge'){n.hunger=Math.min(100,n.hunger+50);action='wave';msg='Пет перекусив 🥗'}else if(id==='vacuum'){cleanRoom();action='wave';return}else if(id==='chair'){action='idle';msg='Пет відпочиває у кріслі'}else{action='wave';msg='Пет розглядає предмет'}actionUntil=clock+3.5;nextAction=actionUntil+4;save();if(msg)toast(msg);earnXP(3)}
-function maybeAction(){if(walkTarget||clock<nextAction||clock<actionUntil)return;const choices=['wave','jump','dance','spin'];action=choices[Math.floor(Math.random()*choices.length)];actionUntil=clock+(action==='dance'?2.3:action==='spin'?1.5:1.7);nextAction=actionUntil+5+Math.random()*9}
+function useFurniture(id){const n=state.needs;let msg='';if(id==='bed'){n.sleep=Math.min(100,n.sleep+45);action='sleep';msg='Пет відпочиває у ліжку 💤'}else if(id==='bath'||id==='shower'){n.dirt=Math.min(100,n.dirt+48);action='jump';msg='Пет купається 🫧'}else if(id==='tv'||id==='toy'){n.boredom=Math.min(100,n.boredom+42);action='dance';msg='Пет розважається 🎲'}else if(id==='auto_fridge'){n.hunger=Math.min(100,n.hunger+50);action='idle';msg='Пет перекусив 🥗'}else if(id==='vacuum'){cleanRoom();action='idle';return}else if(id==='chair'){action='idle';msg='Пет відпочиває у кріслі'}else{action='idle';msg='Пет розглядає предмет'}actionUntil=clock+3.5;nextAction=actionUntil+4;save();if(msg)toast(msg);earnXP(3)}
+function maybeAction(){/* Жодних випадкових махань чи почісувань: лише новий idle. */}
 function scheduleRender(){if(!document.hidden&&!mainFrameId)mainFrameId=requestAnimationFrame(render)}
 function render(t){
  mainFrameId=0;
