@@ -964,17 +964,19 @@ function drawNPCFigure(n,x,y,size=1){
  const img=NPC_IMAGES[n.id],npcWalking=Math.abs(npcMotion.target-npcMotion.x)>2,walkPhase=npcMotion.step,walk=npcWalking?Math.sin(walkPhase)*.23:0,bounce=npcWalking?Math.abs(Math.sin(walkPhase))*1.5:Math.sin(clock*2.4+n.name.length)*.6;
  const z=Math.max(.72,Math.min(1.24,size));
  ctx.save();const fx=interactionFX&&interactionFX.npc===n.id&&performance.now()/1000<interactionFX.until?interactionFX:null;ctx.translate(x,y-30+bounce+(fx&&fx.type==='dance'?Math.sin(clock*14)*9:fx&&fx.type==='hug'?-Math.abs(Math.sin(clock*11))*16:0));if(fx&&fx.type==='dance')ctx.rotate(Math.sin(clock*9)*.11);ctx.scale(z,z);
- ellipse(0,30,36,9,'#12203977');
+ ellipse(0,84,36,9,'#12203977');
  // Хвіст та вуха є частинами однієї 2D-фігури, не просто аватаркою у кімнаті.
  if(['cat','fox','wolf','weasel'].includes(species)){ctx.beginPath();ctx.moveTo(23,-45);ctx.bezierCurveTo(69,-61,71,-14,49,-20);ctx.strokeStyle=species==='fox'?'#d99d70':coat;ctx.lineWidth=13;ctx.lineCap='round';ctx.stroke()}
  if(species==='shark'){ctx.beginPath();ctx.moveTo(0,-96);ctx.lineTo(13,-116);ctx.lineTo(24,-91);ctx.closePath();ctx.fillStyle='#6cb7d9';ctx.fill()}
  // Ноги, тулуб і авторські PNG-руки анімуються незалежно для всіх NPC.
  drawWalkingLegs(ctx,coat,walkPhase,npcWalking);
+ ctx.save();ctx.translate(0,-36); // Верхня частина NPC на 36 px вище відносно ніг.
  if(!renderBody(ctx,coat,'npc')){drawRounded(-27,-75,54,55,20,coat);drawRounded(-15,-65,30,34,11,accent);}else{drawRounded(-11,-63,22,24,10,accent);}
  renderAuthoredOutfit(ctx,'starter_suit','npc');
  for(const side of [-1,1]){ctx.save();ctx.translate(side*25,-68);ctx.rotate(side*(.12+walk));renderHand(ctx,side===1?'left':'right',coat);ctx.restore()}
  // Голова NPC намальована окремо. Аватар НЕ використовується як текстура голови.
  drawNPCHead(n,species,coat,accent);
+ ctx.restore();
  // персонаж повинен бути добре помітним у кімнаті
  drawRounded(-54,9,108,21,7,'#0e203bdc');ctx.fillStyle='#e8ffff';ctx.font='bold 12px system-ui';ctx.textAlign='center';ctx.fillText(n.name,0,24,103);
  if(fx){ctx.font='22px system-ui';ctx.textAlign='center';ctx.fillText(fx.type==='hug'?'💞':fx.type==='dance'?'🎵':fx.type==='play'?'✨':'👋',0,-155)}ctx.restore();
@@ -1143,7 +1145,7 @@ function tintLeg(side,color){
 function renderLeg(g,side,color){
  const tinted=tintLeg(side,color);
  if(tinted){
-  const height=128,width=height*186/754;
+  const height=144,width=height*186/754;
   g.drawImage(tinted,-width/2,-1,width,height);
  }else{
   line(0,0,0,23,shadeColor(color,.84),12);ellipse(0,23,10,5,color);
@@ -1152,15 +1154,16 @@ function renderLeg(g,side,color){
 // Спільна анімація ходьби: чергування ніг, підйом носка й перекриття тазом.
 // PNG ніг ніколи не змінюються: зсувається лише їхня локальна позиція.
 function drawWalkingLegs(g,color,phase,moving){
+ // Ноги завжди малюються ПОЗАДУ тулуба та костюма.
+ // Ноги зберігають масштаб 144 px, посадку опущено ще на 7 px.
+ // Вони залишаються позаду тулуба та костюма.
  for(const side of [-1,1]){
   const stride=moving?Math.sin(phase+(side===-1?0:Math.PI)):0;
   const lift=moving?Math.max(0,stride)*5:0;
   g.save();
-  // Нові довші ноги сідають глибше під тулуб із уже намальованою шиєю/тазом.
-  // Стопа лишається біля рівня підлоги, а верх ноги перекривається базою тіла.
-  g.translate(side*10+stride*4,-74-lift);
+  g.translate(side*21+stride*4,-52-lift);
   g.rotate(stride*.17);
-  renderLeg(g,side===-1?'right':'left',color);
+  renderLeg(g,side===-1?'left':'right',color);
   g.restore();
  }
 }
@@ -1625,7 +1628,7 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  g.translate(x,y-30+pulse+(performing&&action==='jump'?-Math.abs(Math.sin(clock*12))*27:performing&&action==='dance'?Math.sin(clock*10)*8:0));
  if(performing&&action==='spin')g.scale(Math.cos(clock*9)*scale,scale);else g.scale(scale*(animated?pet.dir:1),scale);
  if(performing&&action==='dance')g.rotate(Math.sin(clock*8)*.11);
- ellipse(0,30,36,9,'#40665f40');
+ ellipse(0,84,36,9,'#40665f40');
 
  // tail behind body
  if(eq.tail){
@@ -1638,6 +1641,7 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
 
  // Legs are drawn before the torso, so their upper sections tuck naturally underneath.
  drawWalkingLegs(g,body,phase,moving);
+ g.save();g.translate(0,-36); // Тулуб, костюм, руки і вся голова на 36 px вище відносно ніг.
 
  // rear arm
  g.save();
@@ -1657,6 +1661,8 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
   g.fillStyle='#b890cc';g.fill();
  }
  else if(eq.outfit==='shirt')drawRounded(-27,-80,54,37,13,'#8dbdd1');
+
+ // Стегна сховані під тазом, ноги не дублюються поверх костюма.
 
  // front arm
  g.save();
@@ -1746,8 +1752,9 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  }
  g.restore();
  if(eq.bow){ellipse(-28,-19,10,7,'#e58eb5');ellipse(-15,-19,10,7,'#e58eb5');ellipse(-21.5,-19,4,4,'#a96f9c')}
- g.restore();
- g.restore();
+ g.restore(); // обличчя
+ g.restore(); // зсув тулуба, рук і голови
+ g.restore(); // увесь персонаж
 }
 let pendingFurniture=null;
 function useFurniture(id){const n=state.needs;let msg='';if(id==='bed'){n.sleep=Math.min(100,n.sleep+45);action='sleep';msg='Пет відпочиває у ліжку 💤'}else if(id==='bath'||id==='shower'){n.dirt=Math.min(100,n.dirt+48);action='jump';msg='Пет купається 🫧'}else if(id==='tv'||id==='toy'){n.boredom=Math.min(100,n.boredom+42);action='dance';msg='Пет розважається 🎲'}else if(id==='auto_fridge'){n.hunger=Math.min(100,n.hunger+50);action='wave';msg='Пет перекусив 🥗'}else if(id==='vacuum'){cleanRoom();action='wave';return}else if(id==='chair'){action='idle';msg='Пет відпочиває у кріслі'}else{action='wave';msg='Пет розглядає предмет'}actionUntil=clock+3.5;nextAction=actionUntil+4;save();if(msg)toast(msg);earnXP(3)}
@@ -2173,7 +2180,7 @@ function showPanel(){let labels={roomShare:'🏠 Поділитися будин
  else if(activePanel==='settings'){html=`<p><b>Прото-Тип α 1.4.8</b> — налаштування гри.
 </p><div class="control"><label>⚡ Оптимізація</label><label style="display:flex;gap:9px;align-items:center"><input type="checkbox" id="resourceSaver" ${resourceSaver?'checked':''}> Економія ресурсів (DPR 1 та адаптивні кадри)</label><button class="secondary" type="button" data-act="refreshResourceDiagnostics">Оновити діагностику</button><p class="note" id="resourceDiagnostics"></p></div><div class="control"><label>🧹 Графічна пам'ять</label><p class="note">Видаляє лише тимчасові Canvas-копії кольорів персонажів і шари магазинів. Оригінальні PNG, монети, токени й прогрес залишаються.</p><button class="secondary" type="button" data-act="clearGraphicsCache">Очистити зайві графічні копії</button><small id="graphicsCacheStatus" class="note"></small></div><div class="control"><label>Ім’я острова</label><input class="field" id="islandLabel" value="Мій маленький острів" disabled></div><div class="control"><label>🏠 Основна кімната (відкривається під час запуску гри)</label><select class="field" id="startRoom">${[['Кімната пета',0],['Спальня',1],['Вітальня',2]].map(([name,n])=>`<option value="${n}" ${state.startRoom===n?'selected':''} ${state.level<ROOM_LEVELS[n]?'disabled':''}>${name}${state.level<ROOM_LEVELS[n]?' (закрито)':''}</option>`).join('')}</select></div><div class="control"><label>🎨 Оформлення поточної кімнати</label><p class="note">Перейди в потрібну кімнату, щоб змінити її шпалери й підлогу.</p><label>Шпалери</label><select class="field" id="wallChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${roomWallpaperOptions().map(opt=>`<option value="${esc(opt.id)}" ${wallChoiceValue(state.roomDecor[Math.min(state.room,2)].wall)===String(opt.id)?'selected':''}>${esc(opt.name)}</option>`).join('')}</select><label>Підлога</label><select class="field" id="floorChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Класична','Паркет','Плитка','Темна'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].floor===i?'selected':''}>${n}</option>`).join('')}</select></div><div class="footer-actions"><button class="secondary" data-act="collectFurniture">Прибрати всі меблі в інвентар (${state.placed.length+state.homePlaced.length})</button><button class="secondary" data-act="exportSave">Експорт збереження</button><button class="secondary" data-act="importSave">Імпорт збереження</button><button class="secondary" data-act="reset">Нова гра</button></div><p class="note">Прогрес автоматично зберігається в цьому браузері (localStorage). Між браузерами та пристроями синхронізації немає. Для резервної копії використовуй експорт. Заробляй монети в розділі «Ігри».</p><textarea id="saveText" class="field" placeholder="Тут з’явиться резервна копія, або встав її для імпорту" rows="4"></textarea>`}
  body.innerHTML=html;if(activePanel==='editor'){drawPreview();drawFaceChoices()}}
-function drawPreview(){let c=document.getElementById('preview');if(!c)return;let g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);pen=g;g.save();g.translate(c.width/2,c.height*.91);g.scale(2.0,2.0);puppet(g,0,0,1,false);g.restore();pen=ctx}
+function drawPreview(){let c=document.getElementById('preview');if(!c)return;let g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);pen=g;g.save();g.translate(c.width/2,c.height*.66);g.scale(1.35,1.35);puppet(g,0,0,1,false);g.restore();pen=ctx}
 let facePreviewObserver=null;
 function paintOneFacePreview(c){
  if(activePanel!=='editor'||!c.isConnected)return;
@@ -2201,7 +2208,7 @@ let faceDrag=null;
 body.addEventListener('pointerdown',e=>{
  if(activePanel!=='editor'||!['eyes','nose','mouth'].includes(editorTab)||e.target.id!=='preview')return;
  const canvas=e.target,rect=canvas.getBoundingClientRect();
- faceDrag={id:e.pointerId,slot:editorTab,startX:e.clientX,startY:e.clientY,base:getFaceTransform(editorTab),factor:canvas.width/Math.max(1,rect.width)/2};
+ faceDrag={id:e.pointerId,slot:editorTab,startX:e.clientX,startY:e.clientY,base:getFaceTransform(editorTab),factor:canvas.width/Math.max(1,rect.width)/1.35};
  canvas.setPointerCapture(e.pointerId);e.preventDefault();
 });
 body.addEventListener('pointermove',e=>{
