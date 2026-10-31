@@ -2177,7 +2177,7 @@ function showPanel(){let labels={roomShare:'🏠 Поділитися будин
  else if(activePanel==='needs'){html=needsPanelHTML()}
  else if(activePanel==='roomClean'){html=roomCleanHTML()}
  else if(activePanel==='yard'){html=yardPanelHTML()}
- else if(activePanel==='settings'){html=`<p><b>Прото-Тип α 1.4.8</b> — налаштування гри.
+ else if(activePanel==='settings'){html=`<p><b>Прото-Тип α 1.9.9a</b> — налаштування гри.
 </p><div class="control"><label>⚡ Оптимізація</label><label style="display:flex;gap:9px;align-items:center"><input type="checkbox" id="resourceSaver" ${resourceSaver?'checked':''}> Економія ресурсів (DPR 1 та адаптивні кадри)</label><button class="secondary" type="button" data-act="refreshResourceDiagnostics">Оновити діагностику</button><p class="note" id="resourceDiagnostics"></p></div><div class="control"><label>🧹 Графічна пам'ять</label><p class="note">Видаляє лише тимчасові Canvas-копії кольорів персонажів і шари магазинів. Оригінальні PNG, монети, токени й прогрес залишаються.</p><button class="secondary" type="button" data-act="clearGraphicsCache">Очистити зайві графічні копії</button><small id="graphicsCacheStatus" class="note"></small></div><div class="control"><label>Ім’я острова</label><input class="field" id="islandLabel" value="Мій маленький острів" disabled></div><div class="control"><label>🏠 Основна кімната (відкривається під час запуску гри)</label><select class="field" id="startRoom">${[['Кімната пета',0],['Спальня',1],['Вітальня',2]].map(([name,n])=>`<option value="${n}" ${state.startRoom===n?'selected':''} ${state.level<ROOM_LEVELS[n]?'disabled':''}>${name}${state.level<ROOM_LEVELS[n]?' (закрито)':''}</option>`).join('')}</select></div><div class="control"><label>🎨 Оформлення поточної кімнати</label><p class="note">Перейди в потрібну кімнату, щоб змінити її шпалери й підлогу.</p><label>Шпалери</label><select class="field" id="wallChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${roomWallpaperOptions().map(opt=>`<option value="${esc(opt.id)}" ${wallChoiceValue(state.roomDecor[Math.min(state.room,2)].wall)===String(opt.id)?'selected':''}>${esc(opt.name)}</option>`).join('')}</select><label>Підлога</label><select class="field" id="floorChoice" ${state.location!=='home'||state.room>2?'disabled':''}>${['Класична','Паркет','Плитка','Темна'].map((n,i)=>`<option value="${i}" ${state.roomDecor[Math.min(state.room,2)].floor===i?'selected':''}>${n}</option>`).join('')}</select></div><div class="footer-actions"><button class="secondary" data-act="collectFurniture">Прибрати всі меблі в інвентар (${state.placed.length+state.homePlaced.length})</button><button class="secondary" data-act="exportSave">Експорт збереження</button><button class="secondary" data-act="importSave">Імпорт збереження</button><button class="secondary" data-act="reset">Нова гра</button></div><p class="note">Прогрес автоматично зберігається в цьому браузері (localStorage). Між браузерами та пристроями синхронізації немає. Для резервної копії використовуй експорт. Заробляй монети в розділі «Ігри».</p><textarea id="saveText" class="field" placeholder="Тут з’явиться резервна копія, або встав її для імпорту" rows="4"></textarea>`}
  body.innerHTML=html;if(activePanel==='editor'){drawPreview();drawFaceChoices()}}
 function drawPreview(){let c=document.getElementById('preview');if(!c)return;let g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);pen=g;g.save();g.translate(c.width/2,c.height*.66);g.scale(1.35,1.35);puppet(g,0,0,1,false);g.restore();pen=ctx}
@@ -2188,9 +2188,22 @@ function paintOneFacePreview(c){
  try{
   const slot=c.dataset.facePreview,id=c.dataset.item,g=c.getContext('2d');if(!g)return;
   g.clearRect(0,0,c.width,c.height);
+  g.fillStyle='#f8fbff';
+  g.fillRect(0,0,c.width,c.height);
   state.equipped={...original};
   if(id)state.equipped[slot]=id;else delete state.equipped[slot];
-  pen=g;g.save();g.beginPath();g.rect(0,0,c.width,c.height);g.clip();g.translate(c.width/2,153);g.scale(1.05,1.05);puppet(g,0,0,1,false);g.restore();
+  pen=g;
+  g.save();
+  g.beginPath();
+  g.rect(0,0,c.width,c.height);
+  g.clip();
+  // Маленькі рендери у вкладках обличчя мають показувати лише голову і деталь,
+  // а не тулуб. Після зміни пропорцій персонажа старий зсув лишав тіло в кадрі.
+  // Піднімаємо персонажа значно вище і трохи збільшуємо масштаб саме для head-shot preview.
+  g.translate(c.width/2,244);
+  g.scale(1.1,1.1);
+  puppet(g,0,0,1,false);
+  g.restore();
  }finally{state.equipped=original;pen=ctx}
 }
 function drawFaceChoices(){
