@@ -976,10 +976,25 @@ function drawNPCFigure(n,x,y,size=1){
  if(species==='shark'){ctx.beginPath();ctx.moveTo(0,-96);ctx.lineTo(13,-116);ctx.lineTo(24,-91);ctx.closePath();ctx.fillStyle='#6cb7d9';ctx.fill()}
  // Ноги, тулуб і авторські PNG-руки анімуються незалежно для всіх NPC.
  drawWalkingLegs(ctx,coat,walkPhase,npcWalking);
- ctx.save();ctx.translate(0,-36); // Верхня частина NPC на 36 px вище відносно ніг.
- if(!renderBody(ctx,coat,'npc')){drawRounded(-27,-75,54,55,20,coat);drawRounded(-15,-65,30,34,11,accent);}else{drawRounded(-11,-63,22,24,10,accent);}
+ ctx.save();ctx.translate(0,-36); // Та сама висота верху, що й у гравця.
+ // Задня рука: під тулубом, щоб плече не перекривало костюм.
+ ctx.save();
+ ctx.translate(31,-69);
+ ctx.rotate(npcWalking?-Math.sin(walkPhase)*.22:Math.sin(clock*1.1)*.04);
+ renderHand(ctx,'left',shadeColor(coat,.86));
+ ctx.restore();
+ // Тулуб і костюм мають ті самі координати й масштаб, що й у гравця.
+ if(!renderBody(ctx,coat,'npc')){
+  drawRounded(-27,-75,54,55,20,shadeColor(coat,.94));
+  drawRounded(-15,-65,30,34,11,shadeColor(coat,1.04));
+ }
  renderAuthoredOutfit(ctx,'starter_suit','npc');
- for(const side of [-1,1]){ctx.save();ctx.translate(side*25,-68);ctx.rotate(side*(.12+walk));renderHand(ctx,side===1?'left':'right',coat);ctx.restore()}
+ // Передня рука: над тулубом; плече винесене до його краю.
+ ctx.save();
+ ctx.translate(-31,-69);
+ ctx.rotate(npcWalking?Math.sin(walkPhase)*.22:Math.sin(clock*.9)*.05);
+ renderHand(ctx,'right',coat);
+ ctx.restore();
  // Голова NPC намальована окремо. Аватар НЕ використовується як текстура голови.
  drawNPCHead(n,species,coat,accent);
  ctx.restore();
