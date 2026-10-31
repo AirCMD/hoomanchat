@@ -1399,15 +1399,22 @@ for(const [part,source] of Object.entries(BROWN_SHORTS_PNG)){
  img.src=source;
 }
 function renderBrownShortsLeg(g,side){
- const entry=brownShortsSprites[side];if(!entry?.ready)return;
+ const entry=brownShortsSprites[side==='left'?'right':'left'];if(!entry?.ready)return;
  // PNG рукавів шортів мають ту саму канву 186×754, що й ноги.
  const height=144,width=height*186/754;
  g.drawImage(entry.img,-width/2,-1,width,height);
 }
 function renderBrownShortsWaist(g){
- const entry=brownShortsSprites.body;if(!entry?.ready||!entry.crop)return;
- const crop=entry.crop,w=67,h=w*crop.h/crop.w;
- g.drawImage(entry.img,crop.x,crop.y,crop.w,crop.h,-w/2,-43,w,h);
+ // PNG 512×512 позиційно збігається з PNG тулуба. Малюємо ВСЮ канву,
+ // а не обрізаємо видимий пояс і не масштабуємо його окремо.
+ const entry=brownShortsSprites.body;
+ if(!entry?.ready)return;
+ const bodyFrame=bodyCrop||{x:0,y:0,w:customBody.naturalWidth||512,h:customBody.naturalHeight||512};
+ const factor=109/bodyFrame.h;
+ const targetW=bodyFrame.w*factor;
+ const originX=-targetW/2-bodyFrame.x*factor;
+ const originY=-101-bodyFrame.y*factor;
+ g.drawImage(entry.img,originX,originY,512*factor,512*factor);
 }
 function renderLeg(g,side,color,bottomId=null){
  const tinted=tintLeg(side,color);
@@ -1995,13 +2002,14 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null,closedForSle
   drawRounded(-27,-75,54,55,20,shadeColor(body,.94));
   drawRounded(-15,-65,30,34,11,shadeColor(body,1.04));
  }
+ // Шорти на тулубі: поверх тіла, але під светром та іншим верхнім одягом.
+ if(eq.bottom==='brown_shorts')renderBrownShortsWaist(g);
  if(eq.outfit&&renderAuthoredOutfit(g,eq.outfit,'player')){}
  else if(eq.outfit==='dress'){
   g.beginPath();g.moveTo(-21,-78);g.lineTo(21,-78);g.lineTo(36,-31);g.lineTo(-36,-31);g.closePath();
   g.fillStyle='#b890cc';g.fill();
  }
  else if(eq.outfit==='shirt')drawRounded(-27,-80,54,37,13,'#8dbdd1');
- if(eq.bottom==='brown_shorts')renderBrownShortsWaist(g);
 
  // Стегна сховані під тазом, ноги не дублюються поверх костюма.
 
