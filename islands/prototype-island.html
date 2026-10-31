@@ -350,13 +350,13 @@
 .page-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin:10px auto;padding:7px;flex-wrap:wrap;color:inherit}.page-nav button{padding:7px 15px;border-radius:9px;border:1px solid #a6b2c6;background:#f0f4fa;color:#273e59;font-weight:700;cursor:pointer}.page-nav button:disabled{opacity:.35;cursor:default}.page-nav span{font-size:13px;font-weight:700}
 
 /* α2.2.5 · Єдина кнопка housepic замість вертикального списку кімнат */
-#roomSwitcher.house-map-trigger{position:fixed;right:9px;top:33%;z-index:4;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:72px;height:82px;padding:7px 5px;border-radius:13px;border:2px solid #3be6f0;background:linear-gradient(150deg,#102c4aeF,#08162fdF);box-shadow:0 0 17px #07daef45;color:#dfffff;cursor:pointer;touch-action:manipulation}
+#roomSwitcher.house-map-trigger{position:fixed;right:9px;top:33%;z-index:4;display:none;align-items:center;justify-content:center;width:76px;height:76px;min-width:0;min-height:0;padding:0;margin:0;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;filter:none;clip-path:none;color:inherit;cursor:pointer;touch-action:manipulation;appearance:none;-webkit-appearance:none;overflow:visible}
 #roomSwitcher.house-map-trigger.show{display:flex}
-#roomSwitcher.house-map-trigger img{display:block;width:53px;height:53px;object-fit:contain;image-rendering:auto}
+#roomSwitcher.house-map-trigger img{display:block;width:100%;height:100%;object-fit:contain;image-rendering:auto;pointer-events:none}
 #roomSwitcher .house-map-fallback{display:none;font-size:35px;line-height:1.1}
-#roomSwitcher .house-map-caption{font-size:10px;line-height:1.15;font-weight:850}
-#roomSwitcher.house-map-trigger:focus-visible{outline:3px solid #fff;outline-offset:2px}
-@media(max-width:600px){#roomSwitcher.house-map-trigger{right:4px;top:40%;width:62px;height:71px}#roomSwitcher.house-map-trigger img{width:43px;height:43px}#roomSwitcher .house-map-caption{font-size:9px}}
+#roomSwitcher .house-map-caption{display:none}
+#roomSwitcher.house-map-trigger:focus-visible{outline:2px solid #fff;outline-offset:3px}
+@media(max-width:600px){#roomSwitcher.house-map-trigger{right:4px;top:40%;width:66px;height:66px}#roomSwitcher.house-map-trigger img{width:100%;height:100%}}
 .room-map-intro{font-size:13px;color:#586881;line-height:1.6;margin:0 0 15px}
 .room-map-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .room-map-tile{position:relative;min-height:160px;border-radius:17px;padding:15px 12px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;text-align:left;border:2px solid #a8c9de;background:linear-gradient(145deg,#e8faff,#e7e1fa);color:#25435d;cursor:pointer;transition:transform .12s,border-color .12s}
@@ -370,11 +370,33 @@
 .room-map-tile small{font-size:12px;line-height:1.35}
 .room-map-tile .room-map-state{position:absolute;top:9px;right:9px;font-size:11px;border-radius:8px;padding:4px 6px;background:#ffffffbd;font-weight:800}
 @media(max-width:480px){.room-map-grid{gap:8px}.room-map-tile{min-height:145px;padding:9px}.room-map-tile strong{font-size:13px}.room-map-tile .room-map-icon{font-size:29px}}
+
+/* α2.2.7 — centered cyberpunk room selector; transparent hand-drawn house button */
+#overlay.room-map-modal{align-items:center;justify-content:center;padding:16px;background:#030b1dcc;backdrop-filter:blur(5px)}
+#overlay.room-map-modal .panel{width:min(560px,100%);max-width:560px;max-height:min(78dvh,580px);padding:0;background:linear-gradient(145deg,#142642,#101b32 67%,#201838);border:1px solid #38dce6;border-radius:13px;color:#d9faff;box-shadow:0 0 0 1px #a851dd33,0 0 35px #23cfe34a,inset 0 1px #ffffff19;gap:0}
+#overlay.room-map-modal .panel-head{padding:15px 18px;background:linear-gradient(90deg,#0a1a30,#1c2141);border-bottom:1px solid #41d3e8;box-shadow:0 3px 15px #13c4e42b}
+#overlay.room-map-modal .panel-head h2{color:#bdfaff;font-size:18px;letter-spacing:.4px;text-shadow:0 0 10px #41dce966}
+#overlay.room-map-modal .close{background:#192c4c;color:#e0faff;border:1px solid #48a8c6;border-radius:7px}
+#overlay.room-map-modal .panel-body{padding:15px 17px 20px;overflow-y:auto}
+#overlay.room-map-modal .room-map-intro{font-size:12px;color:#99bdcb;margin:0 0 13px;line-height:1.4}
+#overlay.room-map-modal .room-map-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#overlay.room-map-modal .room-map-tile{min-height:87px;padding:12px 10px;display:grid;grid-template-columns:32px minmax(0,1fr);grid-template-rows:auto auto;column-gap:9px;row-gap:3px;align-content:center;align-items:center;justify-content:stretch;border-radius:7px;border:1px solid #32bfd1;background:linear-gradient(135deg,#1a3954,#1c2443);color:#d9faff;box-shadow:inset 0 1px #ffffff16,0 0 10px #0cdce31b;text-align:left;clip-path:none}
+#overlay.room-map-modal .room-map-tile:hover:not(:disabled){transform:translateY(-1px);border-color:#e08aff;background:linear-gradient(135deg,#254f68,#33264f)}
+#overlay.room-map-modal .room-map-tile.current{border-color:#71f4e5;background:linear-gradient(135deg,#175060,#23445e)}
+#overlay.room-map-modal .room-map-tile.yard{border-color:#8d79db;background:linear-gradient(135deg,#28355c,#312747)}
+#overlay.room-map-modal .room-map-tile:disabled{opacity:.63;cursor:not-allowed;border-color:#465873;background:#161e32;color:#8ca7bc}
+#overlay.room-map-modal .room-map-tile .room-map-icon{grid-row:1/3;grid-column:1;font-size:27px;line-height:1;text-align:center}
+#overlay.room-map-modal .room-map-tile strong{grid-column:2;grid-row:1;font-size:13px;line-height:1.15;padding-right:0}
+#overlay.room-map-modal .room-map-tile small{grid-column:2;grid-row:2;font-size:10px;color:#a2bfd0;line-height:1.3}
+#overlay.room-map-modal .room-map-tile .room-map-state{position:static;grid-column:2;grid-row:3;background:transparent;border:0;color:#68f0e5;font-size:10px;padding:0;font-weight:750}
+#overlay.room-map-modal .room-map-tile:disabled .room-map-state{color:#a9a9c4}
+@media(max-width:420px){#overlay.room-map-modal .panel-body{padding:12px}#overlay.room-map-modal .room-map-grid{gap:7px}#overlay.room-map-modal .room-map-tile{grid-template-columns:25px minmax(0,1fr);column-gap:5px;padding:9px 6px;min-height:92px}#overlay.room-map-modal .room-map-tile .room-map-icon{font-size:22px}#overlay.room-map-modal .room-map-tile strong{font-size:12px}#overlay.room-map-modal .room-map-tile small{font-size:9px}}
+
 </style>
 </head>
 <body>
-<button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span><span class="house-map-caption">Кімнати</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.2.1</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
+<button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.2.6</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
 <div id="visitIdentity" aria-label="Персонаж, якого відвідуєш"><img id="visitAvatar" alt=""><div class="visitText"><small>🏡 У гостях</small><strong id="visitNickname"></strong></div></div>
 <div id="visitDailyNotice" role="status" aria-live="polite" hidden>Ви вже привіталися сьогодні</div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
@@ -2239,7 +2261,7 @@ function renderFriendDock(){if(!friendDock)return;const safe=esc;if(friendDockMo
  friendDockEl.innerHTML=`<div class="dock-side"><button data-dock="close">✕ Закрити</button><button data-dock="copy">🔗 Мій код</button></div><div id="friendScroller">${cards}</div>${nav}<button class="dock-add" data-dock="add">＋ Друзі</button>`}
 
 friendDockEl.addEventListener('click',async e=>{const b=e.target.closest('[data-dock]');if(!b)return;const a=b.dataset.dock;if(a==='friend-page'){const n=Number(b.dataset.page);if(Number.isInteger(n)&&n>=0){friendPage=n;renderFriendDock()}return}if(a==='share-room'){toggleFriends(false);openPanel('roomShare');return}else if(a==='import-room'){toggleFriends(false);openPanel('roomImport');return}else if(a==='close'){toggleFriends(false);selectedNPC=null;friendDockMode='list'}else if(a==='back'){friendDockMode='list';renderFriendDock()}else if(a==='npc'){selectedNPC=NPCS.find(n=>n.id===b.dataset.npc)||null;friendDockMode='detail';renderFriendDock()}else if(a==='visit'&&selectedNPC){visitingNPC=selectedNPC;npcRoom=0;ensureNpcDust(visitingNPC);state.location='npc';state.npcVisits[visitingNPC.id]=(state.npcVisits[selectedNPC.id]||0)+1;pet.x=pet.y=0;walkTarget=null;placing=null;save();updateLocationUI();toggleFriends(false);if(!interactionUsedToday(visitingNPC)){toast('Ти в гостях у '+visitingNPC.name+' · обери дію для XP');openPanel('interaction')}}else if(a==='gift'&&selectedNPC){toggleFriends(false);openPanel('npcGift')}else if(a==='interact'&&selectedNPC){const target=selectedNPC;toggleFriends(false);if(state.location!=='npc'||visitingNPC?.id!==target.id){toast('Спочатку натисни «Відвідати», щоб взаємодіяти з цим другом')}else if(interactionUsedToday(visitingNPC)){updateVisitDailyNotice();toast('Ви вже привіталися сьогодні')}else openPanel('interaction')}else if(a==='add'){toggleFriends(false);openPanel('friendAdd')}else if(a==='real'){let f=state.friends[+b.dataset.index];if(f){toggleFriends(false);openPanel('post');toast('Подарунковий код для '+f.name+' можна передати вручну')}}else if(a==='copy'){if(!state.friendId){state.friendId='PROTO-'+Math.random().toString(36).slice(2,10).toUpperCase();save()}try{await navigator.clipboard.writeText(state.friendId);toast('Код скопійовано')}catch{toast(state.friendId)}}});
-function openPanel(id){if(activePanel==='editor'&&id!=='editor')discardEditorChanges();if(id==='editor'&&activePanel!=='editor'){editorOriginal={...state.appearance};editorTab='appearance';if(tiredEyesFailed)loadTiredEyes(true)}if(id==='interaction'&&(state.location!=='npc'||!visitingNPC||interactionUsedToday(visitingNPC))){updateVisitDailyNotice();if(state.location!=='npc'||!visitingNPC)toast('Спочатку відвідай друга');return}if(id==='inventory'||id==='wardrobe'){openItemDock(id);return}if(id==='friends'){closeItemDock();closePanel();friendDockMode='list';toggleFriends(true);return}if(id==='games'){closePanel();showGamesMenu();return}if(id==='shop'&&activePanel!=='shop'&&shopRoom!=='makeup'){shopRoom=null;resetShopWalker()}if(id==='home'){if(state.location==='npc'||state.location==='shared'){setLocation('home')}else setLocation(state.location==='home'?'island':'home');return}activePanel=id;overlay.classList.add('open');overlay.classList.toggle('editor-full',id==='editor');overlay.classList.toggle('shop-full',id==='shop');document.querySelectorAll('#toolbar button').forEach(b=>b.classList.toggle('active',b.dataset.open===id));showPanel()}
+function openPanel(id){if(activePanel==='editor'&&id!=='editor')discardEditorChanges();if(id==='editor'&&activePanel!=='editor'){editorOriginal={...state.appearance};editorTab='appearance';if(tiredEyesFailed)loadTiredEyes(true)}if(id==='interaction'&&(state.location!=='npc'||!visitingNPC||interactionUsedToday(visitingNPC))){updateVisitDailyNotice();if(state.location!=='npc'||!visitingNPC)toast('Спочатку відвідай друга');return}if(id==='inventory'||id==='wardrobe'){openItemDock(id);return}if(id==='friends'){closeItemDock();closePanel();friendDockMode='list';toggleFriends(true);return}if(id==='games'){closePanel();showGamesMenu();return}if(id==='shop'&&activePanel!=='shop'&&shopRoom!=='makeup'){shopRoom=null;resetShopWalker()}if(id==='home'){if(state.location==='npc'||state.location==='shared'){setLocation('home')}else setLocation(state.location==='home'?'island':'home');return}activePanel=id;overlay.classList.add('open');overlay.classList.toggle('editor-full',id==='editor');overlay.classList.toggle('shop-full',id==='shop');overlay.classList.toggle('room-map-modal',id==='roomMap');document.querySelectorAll('#toolbar button').forEach(b=>b.classList.toggle('active',b.dataset.open===id));showPanel()}
 function discardEditorChanges(){if(editorOriginal){state.appearance={...editorOriginal};editorOriginal=null}}
 
 // Очищення лише похідних графічних копій. Джерельні PNG та збереження не зачіпаємо.
@@ -2274,7 +2296,7 @@ function closePanel(){
   }
   shopRenderLast=0;shopRenderAccum=0;shopHoldDir=0;
  }
- overlay.classList.remove('open');overlay.classList.remove('editor-full');overlay.classList.remove('shop-full');shopRoom=null;document.querySelectorAll('#toolbar button').forEach(b=>b.classList.remove('active'));activePanel='';
+ overlay.classList.remove('open');overlay.classList.remove('editor-full');overlay.classList.remove('shop-full');overlay.classList.remove('room-map-modal');shopRoom=null;document.querySelectorAll('#toolbar button').forEach(b=>b.classList.remove('active'));activePanel='';
  // Скидаємо приховані картки та canvas-прев'ю, залишаючи делеговані події на body.
  body.replaceChildren();
 }
@@ -2479,7 +2501,7 @@ function roomMapHTML(){
   {id:2,name:'Вітальня',emoji:'🪴',desc:'Місце для зустрічей'},
   {id:3,name:'Космічне подвір’я',emoji:'🪐',desc:'Ферма для вирощування комах'}
  ];
- return `<p class="room-map-intro">Обери приміщення. Зачинені кімнати показують рівень відкриття. Подвір’я для вирощування комах розташоване окремо.</p><div class="room-map-grid">${cards.map(card=>{
+ return `<p class="room-map-intro">Обери кімнату. Заблоковані приміщення відкриваються за рівнем.</p><div class="room-map-grid">${cards.map(card=>{
   const i=card.id;
   if(!isHome&&i===3)return '';
   const available=isHome?state.level>=ROOM_LEVELS[i]:isNPC?i<npcRoomCount(visitingNPC):!!sharedHouse?.rooms?.some(r=>r.id===i);
