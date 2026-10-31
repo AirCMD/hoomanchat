@@ -963,8 +963,8 @@ function drawNPCFigure(n,x,y,size=1){
  const [coat,accent,species]=NPC_COSTUMES[n.id]||['#44536a','#a3d7f5','human'];
  const img=NPC_IMAGES[n.id],npcWalking=Math.abs(npcMotion.target-npcMotion.x)>2,walkPhase=npcMotion.step,walk=npcWalking?Math.sin(walkPhase)*.23:0,bounce=npcWalking?Math.abs(Math.sin(walkPhase))*1.5:Math.sin(clock*2.4+n.name.length)*.6;
  const z=Math.max(.72,Math.min(1.24,size));
- ctx.save();const fx=interactionFX&&interactionFX.npc===n.id&&performance.now()/1000<interactionFX.until?interactionFX:null;ctx.translate(x,y+bounce+(fx&&fx.type==='dance'?Math.sin(clock*14)*9:fx&&fx.type==='hug'?-Math.abs(Math.sin(clock*11))*16:0));if(fx&&fx.type==='dance')ctx.rotate(Math.sin(clock*9)*.11);ctx.scale(z,z);
- ellipse(0,0,36,9,'#12203977');
+ ctx.save();const fx=interactionFX&&interactionFX.npc===n.id&&performance.now()/1000<interactionFX.until?interactionFX:null;ctx.translate(x,y-30+bounce+(fx&&fx.type==='dance'?Math.sin(clock*14)*9:fx&&fx.type==='hug'?-Math.abs(Math.sin(clock*11))*16:0));if(fx&&fx.type==='dance')ctx.rotate(Math.sin(clock*9)*.11);ctx.scale(z,z);
+ ellipse(0,30,36,9,'#12203977');
  // Хвіст та вуха є частинами однієї 2D-фігури, не просто аватаркою у кімнаті.
  if(['cat','fox','wolf','weasel'].includes(species)){ctx.beginPath();ctx.moveTo(23,-45);ctx.bezierCurveTo(69,-61,71,-14,49,-20);ctx.strokeStyle=species==='fox'?'#d99d70':coat;ctx.lineWidth=13;ctx.lineCap='round';ctx.stroke()}
  if(species==='shark'){ctx.beginPath();ctx.moveTo(0,-96);ctx.lineTo(13,-116);ctx.lineTo(24,-91);ctx.closePath();ctx.fillStyle='#6cb7d9';ctx.fill()}
@@ -1109,8 +1109,8 @@ function loadCustomLeg(side,path){
  img.onerror=()=>{if(!fallback){fallback=true;img.src=legEmbedded[side]}else legReady[side]=false};
  img.src=path;
 }
-loadCustomLeg('left','assets/legl.png');
-loadCustomLeg('right','assets/legr.png');
+loadCustomLeg('left',legEmbedded.left);
+loadCustomLeg('right',legEmbedded.right);
 const legTintCache={left:new Map(),right:new Map()};
 function tintLeg(side,color){
  const img=customLegs[side];
@@ -1143,7 +1143,7 @@ function tintLeg(side,color){
 function renderLeg(g,side,color){
  const tinted=tintLeg(side,color);
  if(tinted){
-  const height=86,width=height*186/754;
+  const height=112,width=height*186/754;
   g.drawImage(tinted,-width/2,-1,width,height);
  }else{
   line(0,0,0,23,shadeColor(color,.84),12);ellipse(0,23,10,5,color);
@@ -1158,7 +1158,7 @@ function drawWalkingLegs(g,color,phase,moving){
   g.save();
   // Нові довші ноги сідають глибше під тулуб із уже намальованою шиєю/тазом.
   // Стопа лишається біля рівня підлоги, а верх ноги перекривається базою тіла.
-  g.translate(side*10+stride*4,-71-lift);
+  g.translate(side*10+stride*4,-66-lift);
   g.rotate(stride*.17);
   renderLeg(g,side===-1?'right':'left',color);
   g.restore();
@@ -1575,7 +1575,7 @@ function renderAuthoredOutfit(g,id,mode='player'){
  const sprite=ensureOutfitSprite(id);
  if(!sprite||!sprite.ready||!sprite.crop)return false;
  const crop=sprite.crop;
- const targetW=mode==='npc'?72:76;
+ const targetW=mode==='npc'?60:60;
  const scale=targetW/crop.w;
  const targetH=crop.h*scale;
  const dx=-targetW/2;
@@ -1622,10 +1622,10 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null){
  let performing=animated&&action!=='idle'&&clock<actionUntil;
  const walk=moving?Math.sin(phase)*.23:Math.sin(clock*1.1)*.03;
  g.save();
- g.translate(x,y+pulse+(performing&&action==='jump'?-Math.abs(Math.sin(clock*12))*27:performing&&action==='dance'?Math.sin(clock*10)*8:0));
+ g.translate(x,y-30+pulse+(performing&&action==='jump'?-Math.abs(Math.sin(clock*12))*27:performing&&action==='dance'?Math.sin(clock*10)*8:0));
  if(performing&&action==='spin')g.scale(Math.cos(clock*9)*scale,scale);else g.scale(scale*(animated?pet.dir:1),scale);
  if(performing&&action==='dance')g.rotate(Math.sin(clock*8)*.11);
- ellipse(0,0,36,9,'#40665f40');
+ ellipse(0,30,36,9,'#40665f40');
 
  // tail behind body
  if(eq.tail){
