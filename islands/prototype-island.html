@@ -1143,7 +1143,7 @@ function tintLeg(side,color){
 function renderLeg(g,side,color){
  const tinted=tintLeg(side,color);
  if(tinted){
-  const height=112,width=height*186/754;
+  const height=128,width=height*186/754;
   g.drawImage(tinted,-width/2,-1,width,height);
  }else{
   line(0,0,0,23,shadeColor(color,.84),12);ellipse(0,23,10,5,color);
@@ -1158,7 +1158,7 @@ function drawWalkingLegs(g,color,phase,moving){
   g.save();
   // Нові довші ноги сідають глибше під тулуб із уже намальованою шиєю/тазом.
   // Стопа лишається біля рівня підлоги, а верх ноги перекривається базою тіла.
-  g.translate(side*10+stride*4,-66-lift);
+  g.translate(side*10+stride*4,-74-lift);
   g.rotate(stride*.17);
   renderLeg(g,side===-1?'right':'left',color);
   g.restore();
