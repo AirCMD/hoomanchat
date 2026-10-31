@@ -880,6 +880,8 @@ function drawHome(){if(state.location==='home'&&state.room===3){drawYard();retur
   ctx.strokeStyle='#e6b7e844';ctx.lineWidth=2;for(let i=0;i<12;i++){let a=i/11;line(W/2,H*.59,a*W,H,'#ffd9fd35',1)}for(let i=1;i<5;i++){let y=H*.59+(H*.41)*(i/5)**1.4;line(0,y,W,y,'#ffd9fd35',1)}
   if(state.location==='home'&&state.roomDecor[state.room]?.floor===1){for(let x=-W;x<W*2;x+=60)line(x,H*.59,x+W*.36,H,'#f2d3a230',2)}
   if(state.location==='home'&&state.roomDecor[state.room]?.floor===2){for(let x=0;x<W;x+=75)line(x,H*.59,x,H,'#b3e4ef30',1)}
+  // Сітка відображається лише під час меблевого редагування; поверх декору та під меблями.
+  drawFurnitureGrid();
   // Авторські настінні вікна розміщуються як звичайні предмети.
   // doorway, interactive for a walk
   drawRounded(W*.81,H*.30,W*.15,H*.35,9,'#1c2e4b');drawRounded(W*.824,H*.32,W*.122,H*.31,6,'#4c8d9c');line(W*.839,H*.43,W*.919,H*.43,'#b2fffc',2);ellipse(W*.932,H*.51,4,4,'#ffdc7a');
@@ -1653,10 +1655,10 @@ function dragFurniturePosition(e){
  const dx=e.clientX-dragPlaced.startX,dy=e.clientY-dragPlaced.startY;
  if(!dragPlaced.moved&&Math.hypot(dx,dy)<7)return;
  dragPlaced.moved=true;
- if(ITEMS[p.id]?.wall){p.x=Math.max(.09,Math.min(.91,(e.clientX-dragPlaced.offsetX)/W));p.y=Math.max(.14,Math.min(.49,(e.clientY-dragPlaced.offsetY)/H));return;}
- if(ITEMS[p.id]?.ceiling){p.x=Math.max(.08,Math.min(.92,(e.clientX-dragPlaced.offsetX)/W));p.y=lampVertical({y:(e.clientY-dragPlaced.offsetY)/H});return;}
+ if(ITEMS[p.id]?.wall){p.x=Math.max(.09,Math.min(.91,furnitureGridSnap(e.clientX-dragPlaced.offsetX)/W));p.y=Math.max(.14,Math.min(.49,furnitureGridSnap(e.clientY-dragPlaced.offsetY)/H));return;}
+ if(ITEMS[p.id]?.ceiling){p.x=Math.max(.08,Math.min(.92,furnitureGridSnap(e.clientX-dragPlaced.offsetX)/W));p.y=lampVertical({y:furnitureGridSnap(e.clientY-dragPlaced.offsetY)/H});return;}
  const point=clampHomePoint(e.clientX-dragPlaced.offsetX,e.clientY-dragPlaced.offsetY);
- p.x=point.x/W;p.y=point.y/H;
+ p.x=Math.max(0,Math.min(1,furnitureGridSnap(point.x)/W));p.y=Math.max(0,Math.min(1,furnitureGridSnap(point.y)/H));
 }
 canvas.addEventListener('pointermove',e=>{if(dragPlaced&&e.pointerId===dragPlaced.pointerId)dragFurniturePosition(e)});
 function finishFurnitureDrag(e){
@@ -1705,19 +1707,37 @@ canvas.addEventListener('pointerdown',e=>{
  if((state.location==='home'||state.location==='npc')&&state.room!==3&&isDoor(x,y)){setLocation('island');return}
  if(state.location==='island'&&isHouse(x,y)&&!placing){setLocation('home');return}
  if(placing&&ITEMS[placing]?.wall&&state.location==='home'&&state.room<3){
-  state.homePlaced.push({id:placing,x:Math.max(.09,Math.min(.91,x/W)),y:Math.max(.14,Math.min(.49,y/H)),room:state.room});
+  state.homePlaced.push({id:placing,x:Math.max(.09,Math.min(.91,furnitureGridSnap(x)/W)),y:Math.max(.14,Math.min(.49,furnitureGridSnap(y)/H)),room:state.room});
   state.owned[placing]=Math.max(0,(state.owned[placing]||0)-1);placing=null;save();toast('Вікно встановлено на стіні');return;
  }
- if(placing&&ITEMS[placing]?.ceiling&&state.location==='home'&&state.room<3){state.homePlaced.push({id:placing,x:Math.max(.08,Math.min(.92,x/W)),y:.20,room:state.room});state.owned[placing]=Math.max(0,(state.owned[placing]||0)-1);placing=null;save();toast('Лампу підвішено до стелі!');return}
+ if(placing&&ITEMS[placing]?.ceiling&&state.location==='home'&&state.room<3){state.homePlaced.push({id:placing,x:Math.max(.08,Math.min(.92,furnitureGridSnap(x)/W)),y:.20,room:state.room});state.owned[placing]=Math.max(0,(state.owned[placing]||0)-1);placing=null;save();toast('Лампу підвішено до стелі!');return}
  if(placing&&(state.location==='npc'||state.location==='shared')){toast('Не можна переставляти меблі в чужому домі');return}
  if((state.location==='home'||state.location==='npc'||state.location==='shared')?!onHomeFloor(x,y):!onIsland(x,y)){toast(state.location==='home'?'Обери місце на підлозі 🏠':'Обери місце на острові 🌿');return}
- if(placing){const pt=(state.location==='home'||state.location==='npc')?{id:placing,x:x/W,y:y/H}:{id:placing,x:(x-q.cx)/q.rx,y:(y-q.cy)/q.ry};pt.room=state.location==='home'?state.room:0;(state.location==='home'?state.homePlaced:state.placed).push(pt);state.owned[placing]=Math.max(0,(state.owned[placing]||0)-1);placing=null;save();toast('Меблі розміщено!');return}
+ if(placing){const pt=(state.location==='home'||state.location==='npc')?{id:placing,x:furnitureGridSnap(x)/W,y:furnitureGridSnap(y)/H}:{id:placing,x:(x-q.cx)/q.rx,y:(y-q.cy)/q.ry};pt.room=state.location==='home'?state.room:0;(state.location==='home'?state.homePlaced:state.placed).push(pt);state.owned[placing]=Math.max(0,(state.owned[placing]||0)-1);placing=null;save();toast('Меблі розміщено!');return}
  walkTarget=(state.location==='home'||state.location==='npc'||state.location==='shared')?clampHomePoint(x,y):{x,y};
 });
 const overlay=document.getElementById('overlay'),body=document.getElementById('panelBody'),title=document.getElementById('panelTitle');let editorOriginal=null;let editorTab='appearance';let activePanel='',shopCategory='all',shopRoom=null,invCategory='all',wardrobeCategory='all';
 const toolbar=document.getElementById('toolbar'),friendDockEl=document.getElementById('friendDock');
 const itemDockEl=document.getElementById('itemDock');
 let itemDockType=null,itemDockSelection=null,selectedPlaced=null,dragPlaced=null;
+// Сітка розстановки: один перемикач для всіх кімнат, не змінює збережені позиції.
+const FURNITURE_GRID_STEP=32;
+let furnitureGridEnabled=false;
+try{furnitureGridEnabled=localStorage.getItem('proto-typ-furniture-grid')==='1'}catch{}
+function furnitureGridSnap(v){return furnitureGridEnabled?Math.round(v/FURNITURE_GRID_STEP)*FURNITURE_GRID_STEP:v}
+function furnitureGridButton(){return itemDockType==='inventory'&&state.location==='home'&&state.room<3?`<button data-itemdock="grid" aria-pressed="${furnitureGridEnabled}" title="Сітка та прив’язка предметів до ліній">${furnitureGridEnabled?'▦ Сітка: увімк.':'▤ Сітка: вимк.'}</button>`:''}
+function drawFurnitureGrid(){
+ if(!furnitureGridEnabled||itemDockType!=='inventory'||state.location!=='home'||state.room>2)return;
+ const step=FURNITURE_GRID_STEP;
+ ctx.save();ctx.lineWidth=1;ctx.strokeStyle='#ffffff75';ctx.beginPath();
+ for(let x=step;x<W;x+=step){const px=Math.round(x)+.5;ctx.moveTo(px,0);ctx.lineTo(px,H)}
+ for(let y=step;y<H;y+=step){const py=Math.round(y)+.5;ctx.moveTo(0,py);ctx.lineTo(W,py)}
+ ctx.stroke();ctx.strokeStyle='#18243c55';ctx.beginPath();
+ for(let x=step*4;x<W;x+=step*4){ctx.moveTo(x+.5,0);ctx.lineTo(x+.5,H)}
+ for(let y=step*4;y<H;y+=step*4){ctx.moveTo(0,y+.5);ctx.lineTo(W,y+.5)}
+ ctx.stroke();ctx.restore();
+}
+
 const PAGE_SIZE=10;
 let editorPage=0,dockPage=0,friendPage=0,inventoryPage=0,wardrobePage=0;
 function pageSlice(items,page){return items.slice(Math.max(0,page)*PAGE_SIZE,(Math.max(0,page)+1)*PAGE_SIZE)}
@@ -1727,10 +1747,10 @@ function closeItemDock(){itemDockType=null;dockPage=0;itemDockSelection=null;sel
 function openItemDock(type){dockPage=0;if(friendDock)toggleFriends(false);closePanel();itemDockType=type;itemDockSelection=null;selectedPlaced=null;itemDockEl.classList.add('show');toolbar.classList.add('hidden');renderItemDock()}
 function renderItemDock(){if(!itemDockType)return;const type=itemDockType,category=type==='inventory'?invCategory:wardrobeCategory;
  if(type==='inventory'&&selectedPlaced){const item=state.homePlaced[selectedPlaced.index];if(!item||state.location!=='home'||selectedPlaced.room!==state.room){selectedPlaced=null}else{
-   const it=ITEMS[item.id];const header=`<div class="dock-side"><button data-itemdock="close">✕ Закрити</button><button data-itemdock="list">❮ Назад</button></div>`;
+   const it=ITEMS[item.id];const header=`<div class="dock-side"><button data-itemdock="close">✕ Закрити</button>${furnitureGridButton()}<button data-itemdock="list">❮ Назад</button></div>`;
    itemDockEl.innerHTML=header+`<div class="selected-item"><span class="big-emoji">${it?.emoji||'🪑'}</span><div><strong>${esc(it?.name||'Меблі')}</strong><small>Розміщено в кімнаті ${state.room+1} · ${it?.wall?'Перетягни вікно по стіні':'Перетягни предмет на підлозі'}</small><div class="item-actions"><button data-itemdock="lock">${item.locked?'🔓 Розблокувати':'🔒 Заблокувати'}</button><button data-itemdock="move" ${item.locked?'disabled':''}>✋ Пересунути</button><button data-itemdock="smaller" ${item.locked?'disabled':''}>− Менше</button><span style="align-self:center">${Math.round(furnitureScale(item)*100)}%</span><button data-itemdock="larger" ${item.locked?'disabled':''}>＋ Більше</button><button data-itemdock="mirror" ${item.locked?'disabled':''}>⇆ Дзеркало</button><button data-itemdock="rotate" ${item.locked?'disabled':''}>↻ Повернути</button>${it?.ceiling?`<button data-itemdock="up" ${item.locked?'disabled':''}>↑ Лампу вище</button><button data-itemdock="down" ${item.locked?'disabled':''}>↓ Лампу нижче</button>`:''}<button data-itemdock="pick" ${item.locked?'disabled':''}>🎒 Забрати</button></div></div></div>`;return;
  }}
- const header=`<div class="dock-side"><button data-itemdock="close">✕ Закрити</button><button data-itemdock="list">${type==='inventory'?'🎒 Інвентар':'👗 Гардероб'}</button></div>`;
+ const header=`<div class="dock-side"><button data-itemdock="close">✕ Закрити</button>${furnitureGridButton()}<button data-itemdock="list">${type==='inventory'?'🎒 Інвентар':'👗 Гардероб'}</button></div>`;
  if(itemDockSelection&&ITEMS[itemDockSelection]&&(state.owned[itemDockSelection]||0)>0){const id=itemDockSelection,it=ITEMS[id],count=state.owned[id],equipped=Object.values(state.equipped).includes(id);
  const action=it.category==='food'?'eat':it.category==='furniture'?'place':'equip';const actionText=action==='eat'?'🍎 З’їсти':action==='place'?'🏠 Розмістити':equipped?'Зняти':'Одягнути';
  itemDockEl.innerHTML=header+`<div class="selected-item"><span class="big-emoji">${it.image?`<img src="${it.image}" style="max-width:70px;max-height:70px;object-fit:contain" alt="">`:it.emoji}</span><div><strong>${esc(it.name)}</strong><small>У наявності: ${count}</small><div class="item-actions"><button data-itemdock="use" data-id="${id}">${actionText}</button>${it.currency==='tokens'?'':`<button data-itemdock="sell" data-id="${id}" ${equipped?'disabled':''}>Продати +${Math.floor(it.price*.5)} ${COIN_HTML}</button>`}</div></div></div><button data-itemdock="list">❮ Назад</button>`;return}
@@ -1749,6 +1769,7 @@ function renderItemDock(){if(!itemDockType)return;const type=itemDockType,catego
 }
 itemDockEl.addEventListener('click',e=>{const btn=e.target.closest('[data-itemdock]');if(!btn)return;const act=btn.dataset.itemdock,id=btn.dataset.id;
  if(act==='close'){closeItemDock();return}
+ if(act==='grid'&&itemDockType==='inventory'){furnitureGridEnabled=!furnitureGridEnabled;try{localStorage.setItem('proto-typ-furniture-grid',furnitureGridEnabled?'1':'0')}catch{}renderItemDock();toast(furnitureGridEnabled?'Сітку та прив’язку увімкнено':'Сітку та прив’язку вимкнено');return}
  if(act==='list'){selectedPlaced=null;itemDockSelection=null;renderItemDock();return}
  if(act==='page'){const n=Number(btn.dataset.page);if(Number.isInteger(n)){dockPage=Math.max(0,n);renderItemDock()}return}
  if(act==='category'){dockPage=0;selectedPlaced=null;if(itemDockType==='inventory')invCategory=btn.dataset.category;else wardrobeCategory=btn.dataset.category;itemDockSelection=null;renderItemDock();return}
