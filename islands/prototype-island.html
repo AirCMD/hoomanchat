@@ -495,6 +495,8 @@ const wallpaperImageCache=new Map();
 function getWallpaperImage(wall){
  if(!wall?.file)return null;
  if(wallpaperImageCache.has(wall.id))return wallpaperImageCache.get(wall.id);
+ // Only the currently visible wallpaper stays decoded: prevent 11 full-size bitmaps staying in RAM.
+ for(const [key,previous] of wallpaperImageCache){if(key!==wall.id){previous.onload=null;previous.onerror=null;previous.removeAttribute('src');wallpaperImageCache.delete(key)}}
  const img=new Image();
  wallpaperImageCache.set(wall.id,img);
  img.onload=()=>{if(typeof scheduleRender==='function')scheduleRender();};
@@ -777,7 +779,7 @@ function getPetPos(){return (state.location==='home'||state.location==='npc'||st
 let sharedHouse=null,sharedRoom=0;
 function ownRoomSnapshot(){
  const rooms=[0,1,2].filter(i=>state.level>=ROOM_LEVELS[i]);
- return {v:1,name:String(state.appearance.name||'Друг').slice(0,24),appearance:{head:state.appearance.head,fur:state.appearance.fur,body:state.appearance.body,eyeColor:state.appearance.eyeColor,faceTransforms:{eyes:getFaceTransform('eyes'),nose:getFaceTransform('nose'),mouth:getFaceTransform('mouth')}},equipped:Object.fromEntries(Object.entries(state.equipped||{}).filter(([k,v])=>typeof v==='string'&&ITEMS[v])),rooms:rooms.map(i=>({id:i,wall:state.roomDecor[i]?.wall||0,floor:state.roomDecor[i]?.floor||0,lights:state.roomLights?.[i]!==false,items:state.homePlaced.filter(p=>(p.room??0)===i&&ITEMS[p.id]?.category==='furniture').slice(0,90).map(p=>({id:p.id,x:+p.x.toFixed(4),y:+p.y.toFixed(4),rotation:p.rotation||0}))}))};
+ return {v:1,name:String(state.appearance.name||'Друг').slice(0,24),appearance:{head:state.appearance.head,fur:state.appearance.fur,body:state.appearance.body,eyeColor:state.appearance.eyeColor,faceTransforms:{eyes:getFaceTransform('eyes'),nose:getFaceTransform('nose'),mouth:getFaceTransform('mouth')}},equipped:Object.fromEntries(Object.entries(state.equipped||{}).filter(([k,v])=>typeof v==='string'&&ITEMS[v])),rooms:rooms.map(i=>({id:i,wall:state.roomDecor[i]?.wall||0,floor:state.roomDecor[i]?.floor||0,lights:state.roomLights?.[i]!==false,items:state.homePlaced.filter(p=>(p.room??0)===i&&ITEMS[p.id]?.category==='furniture').slice(0,90).map(p=>({id:p.id,x:+p.x.toFixed(4),y:+p.y.toFixed(4),rotation:p.rotation||0,scale:furnitureScale(p),mirror:p.mirror===true,locked:p.locked===true}))}))};
 }
 function makeRoomCode(){return 'PTR1-'+b64encode(JSON.stringify(ownRoomSnapshot()))}
 function checkRoomSnapshot(o){
@@ -785,7 +787,7 @@ function checkRoomSnapshot(o){
  const rooms=o.rooms.map(r=>{
   if(!Number.isInteger(r.id)||r.id<0||r.id>2||!Array.isArray(r.items)||r.items.length>90)throw Error('Некоректні меблі');
   const num=(n,min,max)=>Number.isFinite(+n)?Math.min(max,Math.max(min,+n)):min;
-  return {id:r.id,wall:normalizeWallDecor(r.wall),floor:Math.floor(num(r.floor,0,3)),lights:r.lights!==false,items:r.items.filter(p=>p&&ITEMS[p.id]?.category==='furniture').map(p=>({id:p.id,x:num(p.x,.03,.97),y:num(p.y,.05,.95),rotation:Math.floor(num(p.rotation,0,3)),room:r.id}))};
+  return {id:r.id,wall:normalizeWallDecor(r.wall),floor:Math.floor(num(r.floor,0,3)),lights:r.lights!==false,items:r.items.filter(p=>p&&ITEMS[p.id]?.category==='furniture').map(p=>({id:p.id,x:num(p.x,.03,.97),y:num(p.y,.05,.95),rotation:Math.floor(num(p.rotation,0,3)),scale:num(p.scale??1,.45,2.5),mirror:p.mirror===true,locked:p.locked===true,room:r.id}))};
  });
  const a=o.appearance||{},eq=o.equipped||{};
  return {name:String(o.name||'Друг').slice(0,24),rooms,appearance:{head:['round','wide','pointy','geo_round','geo_wide','geo_pointy'].includes(a.head)?a.head:'round',fur:/^#[a-f0-9]{6}$/i.test(a.fur)?a.fur:'#f0eff1',body:/^#[a-f0-9]{6}$/i.test(a.body)?a.body:'#f0eff1',eyeColor:/^#[a-f0-9]{6}$/i.test(a.eyeColor)?a.eyeColor:'#4b406c',faceTransforms:{eyes:getFaceTransform('eyes',a),nose:getFaceTransform('nose',a),mouth:getFaceTransform('mouth',a)},equipped:Object.fromEntries(Object.entries(eq).filter(([k,v])=>['eyes','nose','mouth','brows','ears','wig','outfit','cosmetic1','cosmetic2','bow','tail'].includes(k)&&typeof v==='string'&&ITEMS[v]))}};
@@ -883,7 +885,7 @@ function drawHome(){if(state.location==='home'&&state.room===3){drawYard();retur
   drawRounded(W*.81,H*.30,W*.15,H*.35,9,'#1c2e4b');drawRounded(W*.824,H*.32,W*.122,H*.31,6,'#4c8d9c');line(W*.839,H*.43,W*.919,H*.43,'#b2fffc',2);ellipse(W*.932,H*.51,4,4,'#ffdc7a');
   ctx.fillStyle='#ebffff';ctx.font='bold 12px system-ui';ctx.textAlign='center';ctx.fillText('НА ОСТРІВ ↗',W*.885,H*.275);
   // У кімнаті залишаються лише предмети, які розмістив гравець.
-  for(let i=0;i<(state.location==='home'?state.homePlaced.length:0);i++){let p=state.homePlaced[i];if(p.room!==undefined&&p.room!==state.room)continue;(function(){ctx.save();ctx.translate(p.x*W,p.y*H);ctx.scale(p.rotation%2?-1:1,1);if(ITEMS[p.id]?.wall){ctx.restore();drawWallWindow(p.id,p.x*W,p.y*H);ctx.save()}else if(ITEMS[p.id]?.ceiling){ctx.restore();drawCeilingLamp(p.id,p.x*W,state.room,itemDockType==='inventory'&&selectedPlaced?.index===i);ctx.save()}else drawFurniture(p.id,0,0,Math.max(.65,Math.min(1.25,W/700)));ctx.restore()})();if(itemDockType==='inventory'&&selectedPlaced?.index===i&&selectedPlaced?.room===state.room){ctx.save();ctx.strokeStyle='#6cffff';ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.strokeRect(p.x*W-(ITEMS[p.id]?.wall?75:43),p.y*H-(ITEMS[p.id]?.wall?75:68),ITEMS[p.id]?.wall?150:86,ITEMS[p.id]?.wall?150:90);ctx.restore()}}
+  for(let i=0;i<(state.location==='home'?state.homePlaced.length:0);i++){let p=state.homePlaced[i];if(p.room!==undefined&&p.room!==state.room)continue;(function(){ctx.save();ctx.translate(p.x*W,p.y*H);ctx.scale(furnitureMirror(p)*(p.rotation%2?-1:1),1);if(ITEMS[p.id]?.wall){ctx.restore();ctx.save();ctx.translate(p.x*W,p.y*H);ctx.scale(furnitureMirror(p)*furnitureScale(p),furnitureScale(p));drawWallWindow(p.id,0,0);ctx.restore();ctx.save()}else if(ITEMS[p.id]?.ceiling){ctx.restore();drawCeilingLamp(p.id,p.x*W,state.room,itemDockType==='inventory'&&selectedPlaced?.index===i,p.y,furnitureScale(p),p.mirror===true);ctx.save()}else drawFurniture(p.id,0,0,Math.max(.65,Math.min(1.25,W/700))*furnitureScale(p));ctx.restore()})();if(itemDockType==='inventory'&&selectedPlaced?.index===i&&selectedPlaced?.room===state.room){ctx.save();ctx.strokeStyle='#6cffff';ctx.lineWidth=2;ctx.setLineDash([5,4]);ctx.strokeRect(p.x*W-(ITEMS[p.id]?.wall?75:43)*furnitureScale(p),ITEMS[p.id]?.ceiling?(H*.035-5+(lampVertical(p)-.20)*H):p.y*H-(ITEMS[p.id]?.wall?75:68)*furnitureScale(p),(ITEMS[p.id]?.wall?150:86)*furnitureScale(p),(ITEMS[p.id]?.wall?150:90)*furnitureScale(p));ctx.restore()}}
   ctx.fillStyle='#fff6';ctx.font='12px system-ui';ctx.textAlign='left';ctx.fillText(state.location==='npc'?'У гостях · кімната '+(npcRoom+1)+' · рівень '+npcLevel(visitingNPC):(['Моя кімната','Спальня','Вітальня'][state.room]||'Мій простір'),20,H*.19)
 }
 /* NPC мають власні стилізовані голови; аватари використовуються виключно в UI друзів. */
@@ -988,10 +990,13 @@ function lampPicture(id){
  return lampPictures[id];
 }
 function roomLightEnabled(room){return state.roomLights?.[room]!==false}
-function drawCeilingLamp(id,x,room,selected=false){
+function furnitureScale(p){return Math.max(.45,Math.min(2.5,Number(p?.scale)||1))}
+function furnitureMirror(p){return p?.mirror===true?-1:1}
+function lampVertical(p){return Math.max(.02,Math.min(.38,Number(p?.y)||.20))}
+function drawCeilingLamp(id,x,room,selected=false,y=.20,scale=1,mirror=false){
  const pic=lampPicture(id),on=roomLightEnabled(room),s=Math.max(.65,Math.min(1.25,W/700));
  // Всі сім ламп мають квадратні PNG: зберігаємо співвідношення 1:1.
- const size=105*s,top=H*.035-5,bottom=top+size;
+ const size=105*s*scale,top=H*.035-5+(lampVertical({y})-.20)*H,bottom=top+size;
  ctx.save();
  // Зображення ціле, включно з дротом. Не підміняємо авторський PNG геометрією.
  if(on){
@@ -1000,7 +1005,7 @@ function drawCeilingLamp(id,x,room,selected=false){
   ctx.fillStyle=glow;ctx.beginPath();ctx.arc(x,bottom,H*.34,0,Math.PI*2);ctx.fill();
  }
  if(pic?.ready){
-  ctx.drawImage(pic.image,x-size/2,top,size,size);
+  ctx.save();ctx.translate(x,0);ctx.scale(mirror?-1:1,1);ctx.drawImage(pic.image,-size/2,top,size,size);ctx.restore();
  }
  if(selected){ctx.strokeStyle='#83ffff';ctx.setLineDash([5,4]);ctx.strokeRect(x-size/2,top,size,size);ctx.setLineDash([])}
  ctx.restore();
@@ -1640,16 +1645,16 @@ function render(t){
  if(!perfStats.lastSample)perfStats.lastSample=t;
  if(t-perfStats.lastSample>=1000){perfStats.fps=perfStats.frames*1000/(t-perfStats.lastSample);perfStats.frames=0;perfStats.lastSample=t;refreshPerfStatus()}
  clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.15);lastTime=t;clock+=dt;if(activePanel==='shop'){updateDustLayer();paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender();return}tickNeeds(dt);npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='shared')drawSharedHouse();else if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'||state.location==='shared'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}const scale=Math.max(.69,Math.min(1.1,W/650));puppet(ctx,p.x,p.y,scale);if(placing&&!ITEMS[placing]?.wall){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender()}
-function placedHit(x,y){if(state.location!=='home'||state.room>2)return -1;for(let i=state.homePlaced.length-1;i>=0;i--){const p=state.homePlaced[i];if((p.room??0)!==state.room)continue;if(ITEMS[p.id]?.wall){if(Math.abs(p.x*W-x)<78&&Math.abs(p.y*H-y)<78)return i}else if(ITEMS[p.id]?.ceiling){if(Math.abs(p.x*W-x)<55&&y>=H*.035&&y<=H*.37)return i}else if(Math.abs(p.x*W-x)<46&&Math.abs(p.y*H-y+22)<52)return i}return -1}
+function placedHit(x,y){if(state.location!=='home'||state.room>2)return -1;for(let i=state.homePlaced.length-1;i>=0;i--){const p=state.homePlaced[i];if((p.room??0)!==state.room)continue;const scale=furnitureScale(p);if(ITEMS[p.id]?.wall){if(Math.abs(p.x*W-x)<78*scale&&Math.abs(p.y*H-y)<78*scale)return i}else if(ITEMS[p.id]?.ceiling){const size=105*Math.max(.65,Math.min(1.25,W/700))*scale,top=H*.035-5+(lampVertical(p)-.20)*H;if(Math.abs(p.x*W-x)<size/2+8&&y>=top-8&&y<=top+size+8)return i}else if(Math.abs(p.x*W-x)<46*scale&&Math.abs(p.y*H-y+22*scale)<52*scale)return i}return -1}
 // Перетягування меблів дозволене лише у відкритому інвентарі меблів.
 function dragFurniturePosition(e){
  if(!dragPlaced||itemDockType!=='inventory')return;
- const p=state.homePlaced[dragPlaced.index];if(!p)return;
+ const p=state.homePlaced[dragPlaced.index];if(!p||p.locked)return;
  const dx=e.clientX-dragPlaced.startX,dy=e.clientY-dragPlaced.startY;
  if(!dragPlaced.moved&&Math.hypot(dx,dy)<7)return;
  dragPlaced.moved=true;
  if(ITEMS[p.id]?.wall){p.x=Math.max(.09,Math.min(.91,(e.clientX-dragPlaced.offsetX)/W));p.y=Math.max(.14,Math.min(.49,(e.clientY-dragPlaced.offsetY)/H));return;}
- if(ITEMS[p.id]?.ceiling){p.x=Math.max(.08,Math.min(.92,(e.clientX-dragPlaced.offsetX)/W));return;}
+ if(ITEMS[p.id]?.ceiling){p.x=Math.max(.08,Math.min(.92,(e.clientX-dragPlaced.offsetX)/W));p.y=lampVertical({y:(e.clientY-dragPlaced.offsetY)/H});return;}
  const point=clampHomePoint(e.clientX-dragPlaced.offsetX,e.clientY-dragPlaced.offsetY);
  p.x=point.x/W;p.y=point.y/H;
 }
@@ -1678,6 +1683,7 @@ canvas.addEventListener('pointerdown',e=>{
   const found=placedHit(x,y);
   if(found>=0){
    const p=state.homePlaced[found];
+   if(p.locked){selectedPlaced={index:found,room:state.room};itemDockSelection=null;renderItemDock();toast('Предмет заблоковано. Розблокуй його в інвентарі');return;}
    dragPlaced={index:found,pointerId:e.pointerId,startX:x,startY:y,offsetX:x-p.x*W,offsetY:y-p.y*H,moved:false};
    walkTarget=null;
    if(itemDockType==='inventory'){selectedPlaced={index:found,room:state.room};itemDockSelection=null;renderItemDock()}
@@ -1722,7 +1728,7 @@ function openItemDock(type){dockPage=0;if(friendDock)toggleFriends(false);closeP
 function renderItemDock(){if(!itemDockType)return;const type=itemDockType,category=type==='inventory'?invCategory:wardrobeCategory;
  if(type==='inventory'&&selectedPlaced){const item=state.homePlaced[selectedPlaced.index];if(!item||state.location!=='home'||selectedPlaced.room!==state.room){selectedPlaced=null}else{
    const it=ITEMS[item.id];const header=`<div class="dock-side"><button data-itemdock="close">✕ Закрити</button><button data-itemdock="list">❮ Назад</button></div>`;
-   itemDockEl.innerHTML=header+`<div class="selected-item"><span class="big-emoji">${it?.emoji||'🪑'}</span><div><strong>${esc(it?.name||'Меблі')}</strong><small>Розміщено в кімнаті ${state.room+1} · ${it?.wall?'Перетягни вікно по стіні':'Перетягни предмет на підлозі'}</small><div class="item-actions"><button data-itemdock="move">✋ Пересунути</button><button data-itemdock="rotate">↻ Повернути</button><button data-itemdock="pick">🎒 Забрати</button></div></div></div>`;return;
+   itemDockEl.innerHTML=header+`<div class="selected-item"><span class="big-emoji">${it?.emoji||'🪑'}</span><div><strong>${esc(it?.name||'Меблі')}</strong><small>Розміщено в кімнаті ${state.room+1} · ${it?.wall?'Перетягни вікно по стіні':'Перетягни предмет на підлозі'}</small><div class="item-actions"><button data-itemdock="lock">${item.locked?'🔓 Розблокувати':'🔒 Заблокувати'}</button><button data-itemdock="move" ${item.locked?'disabled':''}>✋ Пересунути</button><button data-itemdock="smaller" ${item.locked?'disabled':''}>− Менше</button><span style="align-self:center">${Math.round(furnitureScale(item)*100)}%</span><button data-itemdock="larger" ${item.locked?'disabled':''}>＋ Більше</button><button data-itemdock="mirror" ${item.locked?'disabled':''}>⇆ Дзеркало</button><button data-itemdock="rotate" ${item.locked?'disabled':''}>↻ Повернути</button>${it?.ceiling?`<button data-itemdock="up" ${item.locked?'disabled':''}>↑ Лампу вище</button><button data-itemdock="down" ${item.locked?'disabled':''}>↓ Лампу нижче</button>`:''}<button data-itemdock="pick" ${item.locked?'disabled':''}>🎒 Забрати</button></div></div></div>`;return;
  }}
  const header=`<div class="dock-side"><button data-itemdock="close">✕ Закрити</button><button data-itemdock="list">${type==='inventory'?'🎒 Інвентар':'👗 Гардероб'}</button></div>`;
  if(itemDockSelection&&ITEMS[itemDockSelection]&&(state.owned[itemDockSelection]||0)>0){const id=itemDockSelection,it=ITEMS[id],count=state.owned[id],equipped=Object.values(state.equipped).includes(id);
@@ -1735,7 +1741,7 @@ function renderItemDock(){if(!itemDockType)return;const type=itemDockType,catego
  const tileRefs=[...placedItems.map(o=>({placed:o})),...visible.map(id=>({id}))];
  const total=tileRefs.length;dockPage=Math.min(dockPage,Math.max(0,Math.ceil(total/PAGE_SIZE)-1));
  const tiles=pageSlice(tileRefs,dockPage).map(ref=>{
-  if(ref.placed){const o=ref.placed;return `<button class="item-tile" data-itemdock="placed" data-index="${o.index}"><span class="item-emoji">${ITEMS[o.id]?.emoji||'🪑'}</span><span class="item-name">${esc(ITEMS[o.id]?.name||'Предмет')}</span><span class="item-count">На підлозі</span></button>`}
+  if(ref.placed){const o=ref.placed;return `<button class="item-tile" data-itemdock="placed" data-index="${o.index}"><span class="item-emoji">${ITEMS[o.id]?.emoji||'🪑'}</span><span class="item-name">${esc(ITEMS[o.id]?.name||'Предмет')}</span><span class="item-count">${o.locked?'🔒 Заблоковано':ITEMS[o.id]?.ceiling?'На стелі':'У кімнаті'}</span></button>`}
   const id=ref.id;return `<button class="item-tile" data-itemdock="select" data-id="${id}"><span class="item-emoji">${ITEMS[id].image?`<img loading="lazy" src="${ITEMS[id].image}" alt="" style="max-width:44px;max-height:58px;object-fit:contain">`:ITEMS[id].emoji}</span><span class="item-name">${esc(ITEMS[id].name)}</span><span class="item-count">×${state.owned[id]}</span></button>`;
  }).join('')||'<span class="empty-text">Тут поки порожньо</span>';
  const pages=Math.ceil(total/PAGE_SIZE),navigation=pages>1?`<nav class="page-nav"><button data-itemdock="page" data-page="${dockPage-1}" ${dockPage===0?'disabled':''}>◀</button><span>${dockPage+1} / ${pages}</span><button data-itemdock="page" data-page="${dockPage+1}" ${dockPage>=pages-1?'disabled':''}>▶</button></nav>`:'';
@@ -1748,7 +1754,13 @@ itemDockEl.addEventListener('click',e=>{const btn=e.target.closest('[data-itemdo
  if(act==='category'){dockPage=0;selectedPlaced=null;if(itemDockType==='inventory')invCategory=btn.dataset.category;else wardrobeCategory=btn.dataset.category;itemDockSelection=null;renderItemDock();return}
  if(act==='placed'){selectedPlaced={index:Number(btn.dataset.index),room:state.room};itemDockSelection=null;renderItemDock();return}
  if(act==='select'){selectedPlaced=null;itemDockSelection=id;renderItemDock();return}
- if(['move','rotate','pick'].includes(act)&&selectedPlaced){const index=selectedPlaced.index,p=state.homePlaced[index];if(!p)return;
+ if(['move','rotate','pick','lock','smaller','larger','mirror','up','down'].includes(act)&&selectedPlaced){const index=selectedPlaced.index,p=state.homePlaced[index];if(!p)return;
+ if(act==='lock'){p.locked=!p.locked;save();renderItemDock();toast(p.locked?'Предмет заблоковано':'Предмет розблоковано');return}
+ if(p.locked){toast('Спочатку розблокуй предмет');return}
+ if(act==='smaller'||act==='larger'){p.scale=Math.round(Math.max(.45,Math.min(2.5,furnitureScale(p)+(act==='larger'?.1:-.1)))*100)/100;save();renderItemDock();return}
+ if(act==='mirror'){p.mirror=!p.mirror;save();renderItemDock();return}
+ if((act==='up'||act==='down')&&ITEMS[p.id]?.ceiling){p.y=lampVertical({y:lampVertical(p)+(act==='down'?.025:-.025)});save();renderItemDock();return}
+
  if(act==='pick'){state.owned[p.id]=(state.owned[p.id]||0)+1;state.homePlaced.splice(index,1);selectedPlaced=null;save();renderItemDock();toast('Предмет повернено до інвентарю');return}
  if(act==='rotate'){p.rotation=((p.rotation||0)+1)%4;save();toast('Предмет повернуто');return}
  if(act==='move'){toast(ITEMS[p.id]?.wall?'Перетягни вікно по стіні пальцем або мишею':'Перетягни виділений предмет пальцем або мишею');return}}
@@ -1784,6 +1796,7 @@ function clearRedundantGraphicsCache(){
   }
   clearTintCache(cache);
  }
+ for(const im of wallpaperImageCache.values()){im.onload=null;im.onerror=null;im.removeAttribute('src')}wallpaperImageCache.clear();
  if(shopSceneCache){
   for(const key of ['sellerLayer','counterLayer']){
    const canvas=shopSceneCache[key];
