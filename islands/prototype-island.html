@@ -1381,7 +1381,7 @@ function renderSegmentedArm(g,side,color,upperAngle=0,lowerAngle=0,innerId=null,
  g.save();
  g.rotate(upperAngle+(side==='left'?BUILDER_POSE.upperL.rot:BUILDER_POSE.upperR.rot)*Math.PI/180);
  renderArmPart(g,m.upperKey,color,m.upperHeight,m.upperPivotX,m.upperPivotY);
- if(innerId==='cardigan')renderCardiganSleeve(g,m.upperKey,m.upperHeight,m.upperPivotX,m.upperPivotY);
+ if(innerId==='cardigan')renderCardiganSleeve(g,side==='left'?'upperRight':'upperLeft',m.upperHeight,m.upperPivotX,m.upperPivotY);
  if(outfitId==='stisweater')renderSweaterSleeve(g,m.upperKey,m.upperHeight,m.upperPivotX,m.upperPivotY);
  if(outfitId==='dufflecoat')renderDufflecoatSleeve(g,side==='left'?'upperRight':'upperLeft',m.upperHeight,m.upperPivotX,m.upperPivotY);
  g.translate(m.elbowX,m.elbowY);
