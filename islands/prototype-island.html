@@ -530,6 +530,14 @@
 .profile-rewards .level-currency-rewards{background:#152944;border:1px solid #315571;border-radius:14px;padding:12px}.profile-rewards .level-currency-rewards h3{margin:0 0 10px;color:#e9ffff}.profile-rewards .note{color:#c0d3de}.profile-rewards .friend-line{background:#1c3452;border:1px solid #395e7c;border-radius:9px;padding:8px;margin:4px 0;color:#f0fbff}.profile-rewards .editor-section{background:#213a58;border:1px solid #385d7b;border-radius:10px;padding:10px}.profile-rewards .level-currency-rewards button{max-width:100%}
 @media(max-width:460px){#overlay.profile-modal{padding:8px}#overlay.profile-modal .panel{height:calc(100dvh - 16px);max-height:calc(100dvh - 16px);padding:11px}.profile-hero{gap:10px;padding:11px}.profile-avatar-wrap{width:78px;height:78px;flex-basis:78px}.profile-avatar-link-row{flex-wrap:wrap}.profile-url-field{flex-basis:100%}.profile-small-button{flex:1}}
 
+
+/* α 2.3.56: stable, compact level-reward pagination. */
+.profile-level-pages{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:nowrap;min-height:37px;margin:12px 0 8px}
+.profile-level-pages button{min-width:32px;height:30px;padding:3px 7px;border:1px solid #4694a8;border-radius:6px;background:#173c58;color:#e9faff;cursor:pointer}
+.profile-level-pages button:disabled{opacity:.35;cursor:default}
+.profile-level-pages span{min-width:155px;text-align:center;font-size:12px;color:#d6faff;white-space:nowrap}
+.profile-level-rows{display:grid;grid-template-columns:1fr;gap:7px;min-height:0}
+@media(max-width:460px){.profile-level-pages{gap:3px}.profile-level-pages button{min-width:25px;padding:2px 4px}.profile-level-pages span{min-width:118px;font-size:10px}}
 </style>
 <style>
 .organizer-controls,.organizer-move,.organizer-path{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:4px 10px;color:#effaff}
@@ -614,20 +622,24 @@ body:has(#itemDock.show) #roomSwitcher{display:none!important}
 #itemDock .dock-top-actions>button{height:28px!important;min-width:34px!important;padding:3px 8px!important;font-size:12px!important;clip-path:none!important;border-radius:5px!important;white-space:nowrap}
 #itemDock .dock-top-actions .dock-search{height:28px;align-self:auto;flex:0 0 34px;width:34px}
 #itemDock .dock-top-actions .dock-search>button{height:28px;min-height:28px}
-#itemDock .dock-tabline{grid-column:1/-1;grid-row:2;display:flex;align-items:center;gap:12px;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+#itemDock .dock-tabline{grid-column:1/-1;grid-row:2;display:flex;align-items:center;gap:10px;min-width:0;overflow:hidden}
 #itemDock .dock-view-tabs{display:flex;gap:4px;align-items:center;flex:none}
 #itemDock .dock-tabline button{height:27px;min-height:27px;padding:3px 9px;white-space:nowrap;clip-path:none;border-radius:5px;font-size:11px;flex-shrink:0}
 #itemDock .dock-view-tabs button.chosen{background:#28627b;border-color:#8dffff;color:#fff}
-#itemDock .dock-tabline .dock-cats{display:flex;flex-wrap:nowrap;max-width:none;gap:4px;align-items:center;min-width:max-content;max-height:28px;flex:none}
+#itemDock .dock-tabline .dock-cats{display:flex;flex-wrap:nowrap;max-width:none;gap:4px;align-items:center;min-width:0;max-height:28px;flex:1 1 auto;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
 #itemDock .dock-tabline .dock-cats button{height:27px;min-height:27px;padding:3px 9px;font-size:11px;flex-shrink:0}
-#itemDock .dock-tabline .dock-back-folder{margin-left:auto}
+#itemDock .dock-folder-tools{margin-left:auto;display:flex;align-items:center;gap:6px;flex:none;min-width:0}
+#itemDock .dock-folder-chip{display:flex;align-items:center;gap:4px;min-width:0;max-width:180px;background:#173c58;border:1px solid #4694a8;border-radius:5px;color:#e9faff;padding:1px 5px;height:27px;box-sizing:border-box}
+#itemDock .dock-folder-chip .folder-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;line-height:1}
+#itemDock .dock-folder-chip button{height:21px;min-height:21px;min-width:23px;padding:1px 5px;font-size:11px;border-radius:4px;clip-path:none}
+#itemDock .dock-tabline .dock-back-folder{margin-left:0}
 #itemDock.show:has(.dock-topline) .item-strip{grid-column:1/-1;grid-row:3!important;align-self:stretch!important;min-width:0;height:100%!important;min-height:0!important;max-height:none!important;overflow-x:auto;overflow-y:hidden;align-items:center}
 #itemDock.show:has(.dock-topline) .item-tile{box-sizing:border-box;height:98px!important;min-height:98px!important;max-height:98px!important;flex:0 0 98px;width:98px;overflow:hidden}
 #itemDock.show:has(.dock-topline) .item-tile.organizer-folder{height:98px!important;min-height:98px!important;max-height:98px!important;flex:0 0 92px;width:92px}
 #itemDock.show:has(.dock-topline) .page-nav{grid-column:1/-1!important;grid-row:4!important;justify-self:center;align-self:stretch!important;display:flex!important;flex-direction:row!important;gap:10px;align-items:center;width:auto!important;height:27px!important;min-height:27px!important;max-height:27px!important;margin:0!important;padding:0!important}
 #itemDock.show:has(.dock-topline) .page-nav button{width:32px;height:26px;min-height:26px;padding:1px 7px;clip-path:none;border-radius:4px}
 #itemDock.show:has(.dock-topline) .page-nav span{min-width:38px;text-align:center;font-size:11px;white-space:nowrap}
-#itemDock.show:has(.dock-topline) .organizer-path{position:absolute;right:10px;top:auto;bottom:113px;max-width:190px;z-index:2;height:25px;padding:1px 5px}
+#itemDock.show:has(.dock-topline) .organizer-path{display:none!important}
 #itemDock.show:has(.dock-topline) .organizer-move{bottom:calc(100% + 4px)}
 @media(max-width:680px){
  #itemDock.show:has(.dock-topline){height:184px!important;min-height:184px!important;max-height:184px!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:32px 30px minmax(0,1fr) 24px!important;gap:3px!important;padding:5px 6px!important}
@@ -635,6 +647,10 @@ body:has(#itemDock.show) #roomSwitcher{display:none!important}
  #itemDock .dock-top-actions>button{font-size:10px!important;min-width:29px!important;padding:2px 4px!important}
  #itemDock .dock-tabline{gap:6px}
  #itemDock .dock-tabline button,#itemDock .dock-tabline .dock-cats button{font-size:10px;padding:2px 6px}
+ #itemDock .dock-folder-tools{gap:4px}
+ #itemDock .dock-folder-chip{max-width:128px;height:24px;padding:1px 4px}
+ #itemDock .dock-folder-chip .folder-name{font-size:10px}
+ #itemDock .dock-folder-chip button{height:18px;min-height:18px;min-width:20px;padding:1px 4px;font-size:10px}
  #itemDock.show:has(.dock-topline) .item-tile{height:80px!important;min-height:80px!important;max-height:80px!important;flex-basis:75px;width:75px}
  #itemDock.show:has(.dock-topline) .item-tile.organizer-folder{height:80px!important;min-height:80px!important;max-height:80px!important;flex-basis:72px;width:72px}
 }
@@ -642,7 +658,7 @@ body:has(#itemDock.show) #roomSwitcher{display:none!important}
 </head>
 <body>
 <button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.54</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.56</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
 <div id="visitIdentity" aria-label="Персонаж, якого відвідуєш"><img id="visitAvatar" alt=""><div class="visitText"><small>🏡 У гостях</small><strong id="visitNickname"></strong></div></div>
 <div id="visitDailyNotice" role="status" aria-live="polite" hidden>Ви вже привіталися сьогодні</div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
@@ -1011,18 +1027,40 @@ function claimCurrencyRewards(levels){
  state.coins+=coins;state.tokens+=tokens;
  state.currencyLevelRewards=[...new Set([...(state.currencyLevelRewards||[]),...targets])].sort((a,b)=>a-b);
  save();
- if(activePanel==='profile')showPanel();
+ if(activePanel==='profile'&&!refreshCurrencyRewards())showPanel();
  toast(`🎁 Отримано за ${targets.length} рівн.: ${coins} монет${tokens?' і '+tokens+' токенів':''}`);
 }
+const LEVEL_REWARD_PAGE_SIZE=15;
+let levelRewardPage=0;
 function currencyRewardsHTML(){
- const pending=unclaimedCurrencyLevels();const pendingSet=new Set(pending);
- const earned=pending.reduce((sum,n)=>{const r=currencyRewardForLevel(n);sum.coins+=r.coins;sum.tokens+=r.tokens;return sum},{coins:0,tokens:0});
- const visible=[...new Set([2,3,4,5,6,7,8,9,10,11,...pending.slice(-12),...Array.from({length:5},(_,i)=>Math.min(MAX_LEVEL,Math.max(12,state.level)+i))])].filter(n=>n<=MAX_LEVEL).sort((a,b)=>a-b);
+ const total=MAX_LEVEL-1;
+ const pages=Math.ceil(total/LEVEL_REWARD_PAGE_SIZE);
+ levelRewardPage=Math.max(0,Math.min(pages-1,levelRewardPage));
+ const start=2+levelRewardPage*LEVEL_REWARD_PAGE_SIZE;
+ const end=Math.min(MAX_LEVEL,start+LEVEL_REWARD_PAGE_SIZE-1);
+ const claimedLevels=new Set(Array.isArray(state.currencyLevelRewards)?state.currencyLevelRewards:[]);
+ let pendingCount=0,coins=0,tokens=0;
+ for(let n=2;n<=Math.min(state.level,MAX_LEVEL);n++){
+  if(claimedLevels.has(n))continue;
+  const reward=currencyRewardForLevel(n);
+  pendingCount++;coins+=reward.coins;tokens+=reward.tokens;
+ }
+ const rows=[];
+ for(let n=start;n<=end;n++){
+  const r=currencyRewardForLevel(n),reached=n<=state.level,claimed=claimedLevels.has(n)&&reached;
+  rows.push(`<div class="friend-line"><span><b>Рівень ${n}</b><small style="display:block">${r.coins} монет${r.tokens?' + '+r.tokens+' токенів':''}</small></span>${claimed?'<span>✅ Отримано</span>':reached?`<button class="secondary" data-act="claimLevelCurrency" data-value="${n}">Забрати</button>`:'<span>🔒</span>'}</div>`);
+ }
  return `<section class="level-currency-rewards"><h3>🎁 Нагороди за рівні</h3>
  <p class="note">2–4: по 150 монет · 5–10: по 250 · 11–19: по 500 · з 20-го кожні 10 рівнів сума збільшується на 250. Кожен 5-й рівень додатково дає 5 токенів. Нагороди отримуються один раз.</p>
- <div class="editor-section"><strong>${pending.length?'Очікують: '+pending.length+' рівнів':'Усі доступні нагороди отримано'}</strong><p>До отримання: <b>${earned.coins} монет${earned.tokens?' + '+earned.tokens+' токенів':''}</b></p>
- <button class="primary" data-act="claimAllLevelCurrency" ${pending.length?'':'disabled'}>🎁 Забрати всі доступні нагороди</button></div>
- <div style="display:grid;gap:7px;margin-top:12px">${visible.map(n=>{const r=currencyRewardForLevel(n);const reached=n<=state.level,claimed=!pendingSet.has(n)&&reached;return `<div class="friend-line"><span><b>Рівень ${n}</b><small style="display:block">${r.coins} монет${r.tokens?' + '+r.tokens+' токенів':''}</small></span>${claimed?'<span>✅ Отримано</span>':reached?`<button class="secondary" data-act="claimLevelCurrency" data-value="${n}">Забрати</button>`:'<span>🔒</span>'}</div>`}).join('')}</div></section>`;
+ <div class="editor-section"><strong>${pendingCount?'Очікують: '+pendingCount+' рівнів':'Усі доступні нагороди отримано'}</strong><p>До отримання: <b>${coins} монет${tokens?' + '+tokens+' токенів':''}</b></p>
+ <button class="primary" data-act="claimAllLevelCurrency" ${pendingCount?'':'disabled'}>🎁 Забрати всі доступні нагороди</button></div>
+ <nav class="profile-level-pages" aria-label="Сторінки нагород"><button data-act="levelRewardPage" data-value="0" ${levelRewardPage===0?'disabled':''} title="Перша сторінка">«</button><button data-act="levelRewardPage" data-value="${levelRewardPage-1}" ${levelRewardPage===0?'disabled':''} title="Попередня">❮</button><span>Рівні ${start}–${end} · ${levelRewardPage+1} / ${pages}</span><button data-act="levelRewardPage" data-value="${levelRewardPage+1}" ${levelRewardPage===pages-1?'disabled':''} title="Наступна">❯</button><button data-act="levelRewardPage" data-value="${pages-1}" ${levelRewardPage===pages-1?'disabled':''} title="Остання сторінка">»</button></nav>
+ <div class="profile-level-rows">${rows.join('')}</div></section>`;
+}
+function refreshCurrencyRewards(){
+ const section=document.querySelector('#overlay.profile-modal .profile-rewards');
+ if(section){section.innerHTML=currencyRewardsHTML();return true}
+ return false;
 }
 function earnXP(amount){if(!Number.isFinite(amount)||amount<=0)return;state.xp=Math.max(0,Math.floor(state.xp||0))+Math.floor(amount);let notes=[];while(state.level<MAX_LEVEL&&state.xp>=xpForLevel(state.level)){state.xp-=xpForLevel(state.level);state.level++;notes.push('Рівень '+state.level);notes.push('🎁 Нагорода в профілі');if(ROOM_LEVELS.includes(state.level))notes.push('🔓 Нова кімната!')}if(state.level>=MAX_LEVEL)state.xp=0;save();if(notes.length){updateRoomUI();toast(notes.join(' · '));}}
 function avatarSource(){const a=state.avatar||'';return /^(https:\/\/[^\s<>"']+|data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+)$/.test(a)?a:''}
@@ -3015,9 +3053,9 @@ function renderItemDock(){if(!itemDockType)return;itemDockEl.classList.toggle('s
  const move=organizerMoveId&&state.owned[organizerMoveId]>0?`<div class="organizer-move"><span>Перенести: ${esc(ITEMS[organizerMoveId].name)}</span><button data-itemdock="move-to" data-folder="">📃 Загальний список</button>${data.folders.map(f=>`<button data-itemdock="move-to" data-folder="${esc(f.id)}">📁 ${esc(f.name)}</button>`).join('')}<button data-itemdock="cancel-move">Скасувати</button></div>`:'';
  const dockTitle=type==='inventory'?'🎒 Інвентар':'👗 Гардероб';
  const dockHeader=`<div class="dock-topline"><div class="dock-heading">${dockTitle}</div><div class="dock-top-actions">${searchControls}<button type="button" data-itemdock="new-folder" title="Нова папка" aria-label="Нова папка">📁＋</button><button type="button" data-itemdock="sort-folders" title="Сортувати папки за назвою" aria-label="Сортувати папки">↕ АЯ</button><button type="button" data-itemdock="close" title="Закрити" aria-label="Закрити">✕</button></div></div>`;
- const dockTabs=`<div class="dock-tabline"><div class="dock-view-tabs"><button class="${type==='inventory'?'chosen':''}" data-itemdock="switch-view" data-view="inventory">🎒 Інвентар</button><button class="${type==='wardrobe'?'chosen':''}" data-itemdock="switch-view" data-view="wardrobe">👗 Гардероб</button></div>${cats}${organizerFolder?`<button type="button" class="dock-back-folder" data-itemdock="folder-root" data-drop-folder="" title="До загального списку">↩ Усе</button>`:''}</div>`;
- const dockFolderInfo=organizerFolder?`<div class="organizer-path">📂 ${esc(data.folders.find(f=>f.id===organizerFolder)?.name||'Папка')} <button data-itemdock="rename-folder" data-folder="${esc(organizerFolder)}">✎</button></div>`:'';
- itemDockEl.innerHTML=dockHeader+dockTabs+dockFolderInfo+move+`<div class="item-strip" data-drop-folder="${organizerFolder||''}">${tiles}</div>${navigation}`;
+ const folderTools=organizerFolder?`<div class="dock-folder-tools"><div class="dock-folder-chip" title="${esc(data.folders.find(f=>f.id===organizerFolder)?.name||'Папка')}"><span class="folder-name">📂 ${esc(data.folders.find(f=>f.id===organizerFolder)?.name||'Папка')}</span><button type="button" data-itemdock="rename-folder" data-folder="${esc(organizerFolder)}" title="Перейменувати папку" aria-label="Перейменувати папку">✎</button></div><button type="button" class="dock-back-folder" data-itemdock="folder-root" data-drop-folder="" title="До загального списку">↩ Усе</button></div>`:'';
+ const dockTabs=`<div class="dock-tabline"><div class="dock-view-tabs"><button class="${type==='inventory'?'chosen':''}" data-itemdock="switch-view" data-view="inventory">🎒 Інвентар</button><button class="${type==='wardrobe'?'chosen':''}" data-itemdock="switch-view" data-view="wardrobe">👗 Гардероб</button></div>${cats}${folderTools}</div>`;
+ itemDockEl.innerHTML=dockHeader+dockTabs+move+`<div class="item-strip" data-drop-folder="${organizerFolder||''}">${tiles}</div>${navigation}`;
 }
 // Плаваюча назва предмета поза панеллю: не змінює її висоту.
 const dockTooltip=document.createElement('div');dockTooltip.className='dock-hover-tooltip';dockTooltip.hidden=true;document.body.appendChild(dockTooltip);
@@ -3575,7 +3613,8 @@ body.addEventListener('click',async e=>{let b=e.target.closest('[data-act]');if(
   toast(message);
   return;
  }
- if(act==='claimAllLevelCurrency'){claimCurrencyRewards(unclaimedCurrencyLevels());return}
+ if(act==='levelRewardPage'){const next=Number(v);if(Number.isInteger(next)&&next>=0&&next<Math.ceil((MAX_LEVEL-1)/LEVEL_REWARD_PAGE_SIZE)){levelRewardPage=next;refreshCurrencyRewards()}return}
+  if(act==='claimAllLevelCurrency'){claimCurrencyRewards(unclaimedCurrencyLevels());return}
  if(act==='claimLevelCurrency'){claimCurrencyRewards([Number(v)]);return}
  if(act==='toggleAvatarUrl'){profileAvatarUrlVisible=!profileAvatarUrlVisible;const field=document.getElementById('avatarInput');if(field)field.type=profileAvatarUrlVisible?'text':'password';const btn=document.querySelector('[data-act="toggleAvatarUrl"]');if(btn){btn.textContent=profileAvatarUrlVisible?'🙈 Приховати':'👁 Показати';btn.setAttribute('aria-pressed',String(profileAvatarUrlVisible));btn.setAttribute('aria-label',profileAvatarUrlVisible?'Приховати посилання на аватарку':'Показати посилання на аватарку')}return}
  if(act==='saveAvatar'){let url=document.getElementById('avatarInput')?.value.trim()||'';if(url&&!/^https:\/\/[^\s<>"']{1,1790}$/.test(url)){toast('Потрібне коректне HTTPS-посилання');return}state.avatar=url;save();showPanel();toast('Аватарку збережено');return}
