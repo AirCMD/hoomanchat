@@ -445,7 +445,7 @@
 </head>
 <body>
 <button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.30</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.32</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
 <div id="visitIdentity" aria-label="Персонаж, якого відвідуєш"><img id="visitAvatar" alt=""><div class="visitText"><small>🏡 У гостях</small><strong id="visitNickname"></strong></div></div>
 <div id="visitDailyNotice" role="status" aria-live="polite" hidden>Ви вже привіталися сьогодні</div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
@@ -1601,8 +1601,8 @@ for(const [part,source] of Object.entries(BLACK_PANTS_TYPE2_PNG)){
  img.onload=()=>{blackPants2Sprites[part].ready=!!img.naturalWidth;if(typeof drawPreviewIfOpen==='function')drawPreviewIfOpen()};
  img.src=source;
 }
-function renderBlackPantsLegFromSprites(g,side,sprites){
- const entry=sprites[side==='left'?'right':'left'];if(!entry?.ready)return;
+function renderBlackPantsLegFromSprites(g,side,sprites,swap=false){
+ const entry=sprites[swap?side:(side==='left'?'right':'left')];if(!entry?.ready)return;
  const height=144,width=height*186/754;
  g.drawImage(entry.img,-width/2,-1,width,height);
 }
@@ -1617,7 +1617,7 @@ function renderBlackPantsWaistFromSprites(g,sprites){
  g.drawImage(entry.img,originX,originY,512*factor,512*factor);
 }
 function renderBlackPants1Leg(g,side){renderBlackPantsLegFromSprites(g,side,blackPants1Sprites)}
-function renderBlackPants2Leg(g,side){renderBlackPantsLegFromSprites(g,side,blackPants2Sprites)}
+function renderBlackPants2Leg(g,side){renderBlackPantsLegFromSprites(g,side,blackPants2Sprites,true)}
 function renderBlackPants1Waist(g){renderBlackPantsWaistFromSprites(g,blackPants1Sprites)}
 function renderBlackPants2Waist(g){renderBlackPantsWaistFromSprites(g,blackPants2Sprites)}
 
@@ -1627,7 +1627,7 @@ for(const [part,source] of Object.entries(BROWN_PANTS_PNG)){
  img.onload=()=>{brownPantsSprites[part].ready=!!img.naturalWidth;if(typeof drawPreviewIfOpen==='function')drawPreviewIfOpen()};
  img.src=source;
 }
-function renderBrownPantsLeg(g,side){renderBlackPantsLegFromSprites(g,side,brownPantsSprites)}
+function renderBrownPantsLeg(g,side){renderBlackPantsLegFromSprites(g,side,brownPantsSprites,true)}
 function renderBrownPantsWaist(g){renderBlackPantsWaistFromSprites(g,brownPantsSprites)}
 function renderLeg(g,side,color,bottomId=null,shoesId=null){
  const tinted=tintLeg(side,color);
@@ -1635,11 +1635,12 @@ function renderLeg(g,side,color,bottomId=null,shoesId=null){
   const height=144,width=height*186/754;
   g.drawImage(tinted,-width/2,-1,width,height);
   if(bottomId==='brown_shorts')renderBrownShortsLeg(g,side);
+  // Взуття під довгими штанинами; шорти зберігають попередню поведінку.
+  if(shoesId==='black_sneakers')renderSneaker(g,side);
+  if(shoesId==='beige_boots')renderBeigeBoot(g,side);
   if(bottomId==='black_pants_1')renderBlackPants1Leg(g,side);
   if(bottomId==='black_pants_2')renderBlackPants2Leg(g,side);
   if(bottomId==='brown_pants')renderBrownPantsLeg(g,side);
-  if(shoesId==='black_sneakers')renderSneaker(g,side);
-  if(shoesId==='beige_boots')renderBeigeBoot(g,side);
  }else{
   line(0,0,0,23,shadeColor(color,.84),12);ellipse(0,23,10,5,color);
  }
