@@ -531,7 +531,7 @@
 @media(max-width:460px){#overlay.profile-modal{padding:8px}#overlay.profile-modal .panel{height:calc(100dvh - 16px);max-height:calc(100dvh - 16px);padding:11px}.profile-hero{gap:10px;padding:11px}.profile-avatar-wrap{width:78px;height:78px;flex-basis:78px}.profile-avatar-link-row{flex-wrap:wrap}.profile-url-field{flex-basis:100%}.profile-small-button{flex:1}}
 
 
-/* α 2.3.59: stable, compact level-reward pagination. */
+/* α 2.3.72: stable, compact level-reward pagination. */
 .profile-level-pages{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:nowrap;min-height:37px;margin:12px 0 8px}
 .profile-level-pages button{min-width:32px;height:30px;padding:3px 7px;border:1px solid #4694a8;border-radius:6px;background:#173c58;color:#e9faff;cursor:pointer}
 .profile-level-pages button:disabled{opacity:.35;cursor:default}
@@ -539,7 +539,7 @@
 .profile-level-rows{display:grid;grid-template-columns:1fr;gap:7px;min-height:0}
 @media(max-width:460px){.profile-level-pages{gap:3px}.profile-level-pages button{min-width:25px;padding:2px 4px}.profile-level-pages span{min-width:118px;font-size:10px}}
 
-/* α 2.3.59: four orbital destinations and offscreen scene preparation */
+/* α 2.3.72: four orbital destinations and offscreen scene preparation */
 .islands-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:900px;margin:0 auto}
 .island-destination{background:#122239;border:1px solid #43b8d2;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;color:#e4fbff}
 .island-destination .island-art{height:110px;border-radius:8px;overflow:hidden;background:#111a31;position:relative}
@@ -693,7 +693,7 @@ body:has(#itemDock.show) #roomSwitcher{display:none!important}
 </head>
 <body>
 <button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.59</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.72</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
 <div id="visitIdentity" aria-label="Персонаж, якого відвідуєш"><img id="visitAvatar" alt=""><div class="visitText"><small>🏡 У гостях</small><strong id="visitNickname"></strong></div></div>
 <div id="visitDailyNotice" role="status" aria-live="polite" hidden>Ви вже привіталися сьогодні</div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
@@ -821,7 +821,7 @@ const ITEMS={
  underwear_sky:{name:'Білизна · блакитна',emoji:'🩱',category:'clothes',slot:'underwear',price:100,image:UNDERWEAR_SKY_PNG},
  underwear_ocean:{name:'Білизна · синя',emoji:'🩱',category:'clothes',slot:'underwear',price:100,image:UNDERWEAR_OCEAN_PNG},
  underwear_white:{name:'Білизна · біла',emoji:'🩱',category:'clothes',slot:'underwear',price:100,image:UNDERWEAR_WHITE_PNG},
- tail_fox:{name:'Лисячий хвіст',emoji:'🦊',category:'accessory',slot:'tail',price:240},tail_cat:{name:'Котячий хвіст',emoji:'🐈',category:'accessory',slot:'tail',price:180},bow:{name:'Бантик',emoji:'🎀',category:'accessory',slot:'bow',price:115},
+ tail_fox:{name:'Лисячий хвіст',emoji:'🦊',category:'accessory',slot:'tail',price:240},tail_cat:{name:'Котячий хвіст',emoji:'🐈',category:'accessory',slot:'tail',price:180},tamachi:{name:'Тамачі',emoji:'🎮',category:'accessory',slot:'held',price:250,image:ASSETS_ROOT+'tamagotchi.png'},bow:{name:'Бантик',emoji:'🎀',category:'accessory',slot:'bow',price:115},
  eyes_star:{name:'Зоряні очі',emoji:'✨',category:'face',slot:'eyes',price:185},eyes_sleepy:{name:'Мрійливі очі',emoji:'😌',category:'face',slot:'eyes',price:135},eyes_tired:{name:'Втомлені очі',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/tiredeyes.png'},eyes_basic_rd:{name:'Базові червоні очі',emoji:'👁️',category:'face',slot:'eyes',price:850,image:'/hoomanchat/assets/basiceyesrd.png'},eyes_basic_ghl:{name:'Очі гуля',emoji:'👁️',category:'face',slot:'eyes',currency:'tokens',price:5,premium:true,image:'/hoomanchat/assets/basiceyesghl.png'},eyes_basic_yel:{name:'Базові жовті очі',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/basiceyesyel.png'},eyes_basic_pn:{name:'Базові рожеві очі',emoji:'👁️',category:'face',slot:'eyes',price:850,image:'/hoomanchat/assets/basiceyespn.png'},eyes_basic_gry:{name:'Базові сірі очі',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/basiceyesgry.png'},eyes_basic_lbr:{name:'Базові світло-карі очі',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/basiceyeslbr.png'},eyes_basic_drbr:{name:'Базові темно-карі очі',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/basiceyesdrbr.png'},eyes_basic_bl:{name:'Базові блакитні очі',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/basiceyesbl.png'},eyes_basic_gree:{name:'Базові зелені очі',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/basiceyesgree.png'},eyes_akira:{name:'Очі Акіри',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/akiraeyes.png'},eyes_akira_grey:{name:'Очі Акіри сірі',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/akiraeyesgrey.png'},eyes_akira_green:{name:'Очі Акіри зелені',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/akiraeyesgreen.png'},eyes_akira_br:{name:'Очі Акіри карі',emoji:'👁️',category:'face',slot:'eyes',price:0,image:'/hoomanchat/assets/akiraeyesbr.png'},  eyes_big_blue:{name:'Великі очі · Блакитні',emoji:'👁️',category:'face',slot:'eyes',price:0,premium:true,image:BIGEYES_PNG.eyes_big_blue},
   eyes_big_green:{name:'Великі очі · Зелені',emoji:'👁️',category:'face',slot:'eyes',price:0,premium:true,image:BIGEYES_PNG.eyes_big_green},
   eyes_big_yellow:{name:'Великі очі · Жовті',emoji:'👁️',category:'face',slot:'eyes',price:0,premium:true,image:BIGEYES_PNG.eyes_big_yellow},
@@ -1472,7 +1472,7 @@ const NPC_SKIN_COLORS={
 function npcSkinColor(id){return NPC_SKIN_COLORS[id]||'#d5c4ce'}
 function drawNPCHead(n,species,coat,accent,closedForSleep=false){
  ctx.save();ctx.translate(0,-120);
- if(n.id==='akira_bakeneko'){ctx.translate(0,-7);ctx.scale(.89,.89)}
+ if(n.id==='akira_bakeneko'){ctx.translate(0,1);ctx.scale(.72,.72)}
  const dark=['dreaming_romance','wolf_fang'].includes(n.id);
  const face=npcSkinColor(n.id);
  const npcWig=NPC_WIGS[n.id]||null;
@@ -1572,7 +1572,7 @@ function drawNPCFigure(n,x,y,size=1,closedForSleep=false){
   ctx.translate(BUILDER_POSE.head.x+npcIdle.headX,BUILDER_POSE.head.y+120+npcIdle.headY);
   ctx.rotate(npcIdle.headRot);
   ctx.translate(0,-120);
-  if(n.id==='akira_bakeneko'){ctx.translate(0,-7);ctx.scale(.89,.89)}
+  if(n.id==='akira_bakeneko'){ctx.translate(0,1);ctx.scale(.72,.72)}
   const npcBackHx=species==='fox'?41:39,npcBackHy=species==='human'?40:36;
   renderAuthoredBackWig(ctx,NPC_WIGS[n.id],npcBackHx,npcBackHy);
   ctx.restore();
@@ -1818,7 +1818,12 @@ const segmentedArmMetrics={
  left:{upperKey:'upperLeft',lowerKey:'lowerRight',upperHeight:53,lowerHeight:65,upperPivotX:.24,upperPivotY:.025,lowerPivotX:.80,lowerPivotY:.025,elbowX:BUILDER_POSE.lowerL.x,elbowY:BUILDER_POSE.lowerL.y},
  right:{upperKey:'upperRight',lowerKey:'lowerLeft',upperHeight:53,lowerHeight:65,upperPivotX:.76,upperPivotY:.025,lowerPivotX:.18,lowerPivotY:.025,elbowX:BUILDER_POSE.lowerR.x,elbowY:BUILDER_POSE.lowerR.y}
 };
-function renderSegmentedArm(g,side,color,upperAngle=0,lowerAngle=0,innerId=null,outfitId=null){
+// PNG з репозиторію GitHub Pages; не вбудовуємо дублікат у HTML.
+const tamachiSprite=new Image();
+tamachiSprite.src=ASSETS_ROOT+'tamagotchi.png';
+tamachiSprite.onload=()=>{if(typeof scheduleRender==='function')scheduleRender();};
+tamachiSprite.onerror=()=>console.warn('Тамачі: не знайдено /hoomanchat/assets/tamagotchi.png');
+function renderSegmentedArm(g,side,color,upperAngle=0,lowerAngle=0,innerId=null,outfitId=null,heldId=null,animatedHold=false){
  const m=segmentedArmMetrics[side];
  g.save();
  g.rotate(upperAngle+(side==='left'?BUILDER_POSE.upperL.rot:BUILDER_POSE.upperR.rot)*Math.PI/180);
@@ -1832,12 +1837,60 @@ function renderSegmentedArm(g,side,color,upperAngle=0,lowerAngle=0,innerId=null,
  if(innerId==='cardigan')renderCardiganSleeve(g,m.lowerKey,m.lowerHeight,m.lowerPivotX,m.lowerPivotY);
  if(outfitId==='stisweater')renderSweaterSleeve(g,m.lowerKey==='lowerLeft'?'lowerRight':'lowerLeft',m.lowerHeight,m.lowerPivotX,m.lowerPivotY);
  if(outfitId==='dufflecoat')renderDufflecoatSleeve(g,m.lowerKey,m.lowerHeight,m.lowerPivotX,m.lowerPivotY);
+ // Тамачі прив'язаний до кисті передньої руки та успадковує повороти плеча й ліктя.
+ if(side==='right'&&heldId==='tamachi'&&tamachiSprite.complete&&tamachiSprite.naturalWidth){
+  g.save();
+  g.translate(0,48);
+  // Компенсуємо згин ліктя, щоб екран Тамачі був спрямований до обличчя.
+  g.rotate(-lowerAngle*.66+(animatedHold?Math.sin(clock*1.6)*.025:0));
+  g.drawImage(tamachiSprite,-12,-15,24,28);
+  g.restore();
+ }
  g.restore();
 }
 function renderHand(g,side,color){
  renderSegmentedArm(g,side,color,0,0);
 }
-
+// Окремий ієрархічний ріг для Тамачі. Ніяких змін координат базових рук.
+// Поворот плеча успадковується ліктем, кистю та аксесуаром.
+function renderTamachiHoldingArm(g,color,innerId,outfitId,t){
+ // Незалежна від ходьби ієрархія: плече → лікоть → кисть → Тамачі.
+ // Для upperRight PNG: на y=8 плече має x≈72, на y=230 лікоть x≈20.
+ // Для lowerLeft PNG: на y=8 лікоть має x≈129, на y=260 кисть x≈44.
+ // Ці точки відповідають фактичним НЕПРОЗОРИМ частинам зображень.
+ const m=segmentedArmMetrics.right;
+ const upperH=m.upperHeight,lowerH=m.lowerHeight;
+ const upperW=upperH*98/240,lowerW=lowerH*163/319;
+ const pulse=Math.sin(t*1.7);
+ const shoulderAngle=.09+.018*pulse;
+ const elbowAngle=-2.03+.025*Math.sin(t*1.7+.6);
+ g.save();
+ g.translate(BUILDER_POSE.upperR.x,BUILDER_POSE.upperR.y);
+ g.rotate(shoulderAngle);
+ // Верхня частина руки не відривається від плечового суглоба.
+ renderArmPart(g,m.upperKey,color,upperH,72/98,8/240);
+ if(innerId==='cardigan')renderCardiganSleeve(g,'upperLeft',upperH,72/98,8/240);
+ if(outfitId==='stisweater')renderSweaterSleeve(g,m.upperKey,upperH,72/98,8/240);
+ if(outfitId==='dufflecoat')renderDufflecoatSleeve(g,'upperLeft',upperH,72/98,8/240);
+ // Дочірній вузол у кінці PNG верхньої руки.
+ g.translate((20-72)/98*upperW,(230-8)/240*upperH);
+ g.rotate(elbowAngle);
+ renderArmPart(g,m.lowerKey,color,lowerH,129/163,8/319);
+ if(innerId==='cardigan')renderCardiganSleeve(g,m.lowerKey,lowerH,129/163,8/319);
+ if(outfitId==='stisweater')renderSweaterSleeve(g,'lowerRight',lowerH,129/163,8/319);
+ if(outfitId==='dufflecoat')renderDufflecoatSleeve(g,m.lowerKey,lowerH,129/163,8/319);
+ // Дочірній вузол кисті, біля її фактичного центру.
+ g.translate((44-129)/163*lowerW,(260-8)/319*lowerH);
+ g.rotate(-shoulderAngle-elbowAngle+.014*pulse);
+ if(tamachiSprite.complete&&tamachiSprite.naturalWidth){
+  g.drawImage(tamachiSprite,-11,-24,22,26);
+ }else{
+  g.fillStyle='#e5b9db';g.strokeStyle='#5a3c70';g.lineWidth=1.5;
+  g.beginPath();g.roundRect(-9,-22,18,23,6);g.fill();g.stroke();
+  g.fillStyle='#6b597e';g.fillRect(-5,-17,10,9);
+ }
+ g.restore();
+}
 
 // Авторські PNG-ноги 186x754. Зовнішні assets/ мають пріоритет,
 // вбудована копія гарантує зображення навіть при запуску лише index.html.
@@ -2640,6 +2693,15 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null,closedForSle
  let moving=animated&&!appearanceOverride&&!!walkTarget;let phase=pet.step;let pulse=animated?(moving?-Math.abs(Math.sin(phase))*1.5:Math.sin(clock*2)*1.2):0;
  let performing=animated&&action==='jump'&&clock<actionUntil;
  const idle=idlePose(clock,animated&&!moving&&!performing);
+ // Тамачі: періодично нахиляємо всю голову разом з очима та перукою.
+ // М'який цикл з паузою; базовий idlePose й анімація рук не змінюються.
+ if(eq.held==='tamachi'&&animated&&!moving&&!performing){
+  const headCycle=9.2;
+  const step=(clock%headCycle)/headCycle;
+  const ease=v=>v*v*(3-2*v);
+  const inOut=step<.12?ease(step/.12):step<.29?1:step<.42?1-ease((step-.29)/.13):0;
+  idle.headRot+=.085*inOut;
+ }
  const walk=moving?Math.sin(phase)*.23:Math.sin(clock*1.1)*.03;
  g.save();
  g.translate(x,y-30+pulse+(performing&&action==='jump'?-Math.abs(Math.sin(clock*12))*27:performing&&action==='dance'?Math.sin(clock*10)*8:0));
@@ -2667,12 +2729,12 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null,closedForSle
  renderSegmentedArm(g,'left',shadeColor(body,.86),rearShoulder,rearElbow,eq.inner,eq.outfit);
  g.restore();
 
- // front arm — двосегментна рука з окремим ліктем.
+ // Передня рука: вихідна анімація плеча та ліктя для ВСІХ предметів.
  g.save();
  g.translate(BUILDER_POSE.upperR.x+idle.upperRX,BUILDER_POSE.upperR.y);
  const frontShoulder=moving?Math.sin(phase)*.10:idle.upperRRot;
  const frontElbow=moving?-Math.sin(phase)*.025:0;
- renderSegmentedArm(g,'right',body,frontShoulder,frontElbow,eq.inner,eq.outfit);
+ if(eq.held!=='tamachi')renderSegmentedArm(g,'right',body,frontShoulder,frontElbow,eq.inner,eq.outfit,eq.held,animated);
  g.restore();
 
  g.restore();
@@ -2709,6 +2771,8 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null,closedForSle
  // Стегна сховані під тазом, ноги не дублюються поверх костюма.
 
  g.restore(); // завершуємо шар тулуба
+ // Лише при Тамачі передня рука попереду тулуба; звичайні руки залишаються незмінними.
+ if(eq.held==='tamachi')renderTamachiHoldingArm(g,body,eq.inner,eq.outfit,clock);
  g.save(); // голова у кореневих координатах
  // head and face, aligned like NPC
  g.save();
@@ -3260,7 +3324,7 @@ const SHOP_STOCK={
  kitchen:['fridge','auto_fridge'],
  bathroom:['bath','shower','vacuum','robot_vacuum'],
  clothes:['dress','shirt','stisweater','cardigan','underwear_charcoal','underwear_lavender','underwear_pink','underwear_coral','underwear_beige','underwear_lime','underwear_green','underwear_sky','underwear_ocean','underwear_white','wig_pink','wig_blue','hair_akira','hair_shkrek1','hair_shkeksp2','hair_shkeksp1','hair_shkrek3','hair_shkrek2','hair_tousled_gold','hair_tousled_gray','hair_tousled_pink','hair_tousled_lavender','hair_tousled_blue','hair_tousled_green','hair_tousled_orange'],
- accessories:['tail_fox','tail_cat','bow'],
+ accessories:['tail_fox','tail_cat','bow','tamachi'],
  makeup:['eyes_star','eyes_sleepy','eyes_tired','eyes_basic_rd','eyes_basic_ghl','eyes_basic_yel','eyes_basic_pn','eyes_basic_gry','eyes_basic_lbr','eyes_basic_drbr','eyes_basic_bl','eyes_basic_gree','eyes_akira','eyes_akira_grey','eyes_akira_green','eyes_akira_br','bigeyes_pack','nose_heart','nose_shark','nose_nostril','nose_animal_blk','nose_animal_bl','nose_animal_pn','nose_animesmall','nose_animeguy','mouth_cat','sharkmouth','animalmouth','catmouth','smilemouth','funmouth','apathymouth','smouth','mou3','sedmouth','anilips','shy_pack','sharkgrip','brows_bold','brows_classic_blonde','brows_thin_small','brows_classic_black','brows_classic_brown','ears_rabbit_big','blush','freckles_png_3','freckles_png_2','freckles_png_1','freckles_png_4','freckles','stars','shadow','eyeshad'],
  other:[]
 };
