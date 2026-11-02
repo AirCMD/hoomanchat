@@ -445,7 +445,7 @@
 </head>
 <body>
 <button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.36</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.38</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
 <div id="visitIdentity" aria-label="Персонаж, якого відвідуєш"><img id="visitAvatar" alt=""><div class="visitText"><small>🏡 У гостях</small><strong id="visitNickname"></strong></div></div>
 <div id="visitDailyNotice" role="status" aria-live="polite" hidden>Ви вже привіталися сьогодні</div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
@@ -1163,11 +1163,25 @@ function drawHome(){if(state.location==='home'&&state.room===3){drawYard();retur
 /* NPC мають власні стилізовані голови; аватари використовуються виключно в UI друзів. */
 const NPC_PANTS={akira_bakeneko:'black_pants_2',night_fox:'brown_pants',yoyo_tchi:'black_pants_1'};
 const NPC_COSTUMES={alter_core:['#252636','#ae4e8d','human'],dreaming_romance:['#252535','#a49ada','cat'],la_cyber:['#193547','#16d8d4','human'],night_fox:['#b66c3d','#f3b169','fox'],akira_bakeneko:['#212b38','#808b9a','human'],soft_static:['#d6cbd8','#b7a8d5','rabbit'],water_blue:['#397c9d','#70d6f2','shark'],wolf_fang:['#252b39','#e8c04d','wolf'],yuki_foxy:['#dce8f2','#79c9ee','fox'],yoyo_tchi:['#ca403d','#62a878','weasel']};
+// Єдине джерело кольору шкіри/хутра NPC для голови, тулуба, рук і ніг.
+const NPC_SKIN_COLORS={
+ alter_core:'#d5c4ce',
+ dreaming_romance:'#252735',
+ la_cyber:'#785447',
+ night_fox:'#d78b51',
+ akira_bakeneko:'#efc5a7',
+ soft_static:'#e4dce9',
+ water_blue:'#579bbd',
+ wolf_fang:'#252735',
+ yuki_foxy:'#f1f3f7',
+ yoyo_tchi:'#e3c6a0'
+};
+function npcSkinColor(id){return NPC_SKIN_COLORS[id]||'#d5c4ce'}
 function drawNPCHead(n,species,coat,accent,closedForSleep=false){
  ctx.save();ctx.translate(0,-120);
- if(n.id==='akira_bakeneko'){ctx.translate(0,-6);ctx.scale(.92,.92)}
+ if(n.id==='akira_bakeneko'){ctx.translate(0,-7);ctx.scale(.89,.89)}
  const dark=['dreaming_romance','wolf_fang'].includes(n.id);
- const face=n.id==='akira_bakeneko'?'#efc5a7':n.id==='la_cyber'?'#785447':n.id==='yuki_foxy'?'#f1f3f7':n.id==='soft_static'?'#e4dce9':dark?'#252735':n.id==='night_fox'?'#d78b51':n.id==='water_blue'?'#579bbd':n.id==='yoyo_tchi'?'#e3c6a0':'#d5c4ce';
+ const face=npcSkinColor(n.id);
  // Авторські вуха цих NPC, за головою та під зачіскою.
  const npcEarKind=({la_cyber:'ears_soft',akira_bakeneko:'ears_soft',alter_core:'ears_tall',soft_static:'ears_rabbit_big'})[n.id];
  if(npcEarKind)renderCustomEarPair(ctx,npcEarKind,face);
@@ -1230,6 +1244,7 @@ function drawNPCHead(n,species,coat,accent,closedForSleep=false){
 }
 function drawNPCFigure(n,x,y,size=1,closedForSleep=false){
  const [coat,accent,species]=NPC_COSTUMES[n.id]||['#44536a','#a3d7f5','human'];
+ const skin=npcSkinColor(n.id);
  const img=NPC_IMAGES[n.id],npcWalking=Math.hypot(npcMotion.target-npcMotion.x,npcMotion.targetY-npcMotion.y)>2,walkPhase=npcMotion.step,walk=npcWalking?Math.sin(walkPhase)*.23:0,bounce=npcWalking?Math.abs(Math.sin(walkPhase))*1.5:Math.sin(clock*2.4+n.name.length)*.6;
  const z=Math.max(.72,Math.min(1.24,size));
  const npcIdle=idlePose(clock+(n.name.length*.21),!npcWalking);
@@ -1239,26 +1254,26 @@ function drawNPCFigure(n,x,y,size=1,closedForSleep=false){
  if(['cat','fox','wolf','weasel'].includes(species)){ctx.beginPath();ctx.moveTo(23,-45);ctx.bezierCurveTo(69,-61,71,-14,49,-20);ctx.strokeStyle=species==='fox'?'#d99d70':coat;ctx.lineWidth=13;ctx.lineCap='round';ctx.stroke()}
  if(species==='shark'){ctx.beginPath();ctx.moveTo(0,-96);ctx.lineTo(13,-116);ctx.lineTo(24,-91);ctx.closePath();ctx.fillStyle='#6cb7d9';ctx.fill()}
  // Поза NPC відповідає позі в білдері.
- drawWalkingLegs(ctx,coat,walkPhase,npcWalking,NPC_PANTS[n.id]||null);
+ drawWalkingLegs(ctx,skin,walkPhase,npcWalking,NPC_PANTS[n.id]||null);
  ctx.save();
  // Задня рука: під тулубом, щоб плече не перекривало костюм.
  ctx.save();
  ctx.translate(BUILDER_POSE.upperL.x+npcIdle.upperLX,BUILDER_POSE.upperL.y);
  const npcRearShoulder=npcWalking?-Math.sin(walkPhase)*.18:npcIdle.upperLRot;
- renderSegmentedArm(ctx,'left',shadeColor(coat,.86),npcRearShoulder,.0+Math.cos(walkPhase)*.025);
+ renderSegmentedArm(ctx,'left',shadeColor(skin,.86),npcRearShoulder,.0+Math.cos(walkPhase)*.025);
  ctx.restore();
  // Передня рука: над тулубом; плече винесене до його краю.
  ctx.save();
  ctx.translate(BUILDER_POSE.upperR.x+npcIdle.upperRX,BUILDER_POSE.upperR.y);
  const npcFrontShoulder=npcWalking?Math.sin(walkPhase)*.18:npcIdle.upperRRot;
- renderSegmentedArm(ctx,'right',coat,npcFrontShoulder,.0-Math.sin(walkPhase)*.025);
+ renderSegmentedArm(ctx,'right',skin,npcFrontShoulder,.0-Math.sin(walkPhase)*.025);
  ctx.restore();
  ctx.restore();
  ctx.save();ctx.translate(BUILDER_POSE.torso.x+npcIdle.torsoX,BUILDER_POSE.torso.y+npcIdle.torsoY);ctx.rotate(BUILDER_POSE.torso.rot*Math.PI/180+npcIdle.torsoRot);ctx.scale(BUILDER_POSE.torso.scale/100*npcIdle.torsoScale,BUILDER_POSE.torso.scale/100*npcIdle.torsoScale);
  // Тулуб і костюм мають ті самі координати й масштаб, що й у гравця.
- if(!renderBody(ctx,coat,'player')){
-  drawRounded(-27,-75,54,55,20,shadeColor(coat,.94));
-  drawRounded(-15,-65,30,34,11,shadeColor(coat,1.04));
+ if(!renderBody(ctx,skin,'player')){
+  drawRounded(-27,-75,54,55,20,shadeColor(skin,.94));
+  drawRounded(-15,-65,30,34,11,shadeColor(skin,1.04));
  }
  // Той самий порядок шарів і ті самі точки, що в puppet() гравця:
  // ноги / штанини → руки → тулуб → пояс штанів → верхній костюм → голова.
