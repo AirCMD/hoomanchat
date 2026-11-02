@@ -423,11 +423,25 @@
 #overlay.room-map-modal .room-map-edit.active{font-size:12px;background:#155966;color:#efffff;border-color:#8cfff4;box-shadow:0 0 13px #44e4cf55}
 #overlay.room-map-modal .room-map-slots .room-map-tile.room-map-start{border-color:#ffd480;box-shadow:inset 0 0 12px #ffdc773a,0 0 0 1px #e7bb5d;color:#fff5ca}
 
+
+/* Примірка до купівлі: тимчасове екіпірування без змін у збереженні. */
+#shopTryOnOverlay{position:fixed;inset:0;background:#151020bd;z-index:10050;display:none;align-items:center;justify-content:center;padding:16px}
+#shopTryOnOverlay.open{display:flex}
+.shop-try-card{background:#fff7ec;color:#44364c;border:4px solid #b995bc;border-radius:18px;max-width:460px;width:100%;box-shadow:0 18px 55px #0008;padding:15px;max-height:94dvh;overflow:auto;text-align:center}
+.shop-try-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.shop-try-head h3{margin:0;font-size:18px}
+.shop-try-head button,.shop-try-actions button{padding:10px 15px;cursor:pointer;border-radius:9px;border:2px solid #9f729c;background:#f4dcef;color:#453047;font-weight:750}
+#shopTryOnCanvas{background:radial-gradient(ellipse at center,#f8f0ff,#ddd3f0);border:2px solid #d7c8dd;border-radius:13px;width:min(100%,350px);height:350px;display:block;margin:12px auto}
+.shop-try-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.shop-try-actions button.primary{background:#e7b4df}
+.shop-try-actions button:disabled{opacity:.45;cursor:default}
+.shop-product-actions{display:flex;gap:4px;flex-direction:column;width:100%}
+.shop-product-actions .shop-try-button{background:#e9d2f4}
 </style>
 </head>
 <body>
 <button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.2.9</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.19</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
 <div id="visitIdentity" aria-label="Персонаж, якого відвідуєш"><img id="visitAvatar" alt=""><div class="visitText"><small>🏡 У гостях</small><strong id="visitNickname"></strong></div></div>
 <div id="visitDailyNotice" role="status" aria-live="polite" hidden>Ви вже привіталися сьогодні</div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
@@ -439,6 +453,7 @@
 <div id="overlay"><section class="panel" role="dialog" aria-modal="true" aria-labelledby="panelTitle"><div class="panel-head"><h2 id="panelTitle">Меню</h2><button class="close" id="closePanel" aria-label="Закрити">✕</button></div><div class="panel-body" id="panelBody"></div></section></div>
 <div id="minigameOverlay" aria-hidden="true"><div class="minigameWindow" role="dialog" aria-label="Мініігри" aria-modal="true"><div class="mgHead"><strong id="mgTitle">🎮 Ігри</strong><button id="mgClose" aria-label="Закрити">✕</button></div><div id="mgContent"></div></div></div>
 <div id="toastContainer" aria-live="polite"></div>
+<div id="shopTryOnOverlay" role="dialog" aria-modal="true" aria-labelledby="shopTryOnName" aria-hidden="true"><div class="shop-try-card"><div class="shop-try-head"><h3 id="shopTryOnName">Примірка</h3><button type="button" data-try-close aria-label="Закрити примірку">✕</button></div><canvas id="shopTryOnCanvas" width="350" height="350" aria-label="Попередній вигляд персонажа"></canvas><div id="shopTryOnInfo"></div><div class="shop-try-actions"><button type="button" data-try-close>Повернутися</button><button type="button" class="primary" id="shopTryOnBuy">Купити</button></div></div></div>
 <script>
 'use strict';
 /* Прото-Тип: самодостатня HTML5 Canvas-гра. Без бібліотек, серверів та зовнішніх файлів. */
@@ -1987,6 +2002,7 @@ function ensureOutfitSprite(id){
    }catch(err){console.warn('Костюм PNG: неможливо визначити прозорі поля',id,err)}
   }
   if(typeof drawPreviewIfOpen==='function')drawPreviewIfOpen();
+  if(typeof paintShopTryOn==='function'&&shopTryOnId===id)paintShopTryOn();
   if(typeof scheduleRender==='function')scheduleRender();
   if(typeof shopSceneCache!=='undefined'&&shopSceneCache){for(const k of ['sellerLayer','counterLayer']){const c=shopSceneCache[k];if(c){c.width=0;c.height=0}}shopSceneCache=null;}
  };
@@ -2091,8 +2107,8 @@ function idlePose(time,enabled=true){
  const sway=Math.sin(phase),headSway=Math.sin(phase-.22);
  return {breath,sway,headSway,torsoY:-2.1*breath,torsoX:sway,torsoRot:1.05*sway*Math.PI/180,torsoScale:1+.015*breath,headX:1.5*headSway,headY:-2.6*breath,headRot:-.85*sway*Math.PI/180,upperLX:sway,upperRX:sway,upperLRot:(-1.1*breath+1.25*sway)*Math.PI/180,upperRRot:(1.1*breath+1.25*sway)*Math.PI/180};
 }
-function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null,closedForSleep=false){
- let a=appearanceOverride||state.appearance,fur=a.fur||'#f0eff1',body=appearanceOverride?(a.body||fur):fur;let eq=appearanceOverride?{...(a.equipped||{})}:(state.equipped||{});
+function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null,closedForSleep=false,previewEquipment=null){
+ let a=appearanceOverride||state.appearance,fur=a.fur||'#f0eff1',body=appearanceOverride?(a.body||fur):fur;let eq=previewEquipment|| (appearanceOverride?{...(a.equipped||{})}:(state.equipped||{}));
  let moving=animated&&!appearanceOverride&&!!walkTarget;let phase=pet.step;let pulse=animated?(moving?-Math.abs(Math.sin(phase))*1.5:Math.sin(clock*2)*1.2):0;
  let performing=animated&&action==='jump'&&clock<actionUntil;
  const idle=idlePose(clock,animated&&!moving&&!performing);
@@ -2769,7 +2785,7 @@ function shopHTML(){
  if(!shopRoom){return `<div class="shop-landing-head"><h2>✦ Торговельна вуличка ✦</h2><p>Обери магазин, щоб зайти всередину</p></div><div class="shop-choices">${SHOP_ROOMS.map(r=>`<button class="shop-choice" style="--shop-accent:${r.accent}" data-act="enterShop" data-val="${r.id}"><span class="symbol">${r.symbol}</span><strong>${r.name}</strong><small>${r.desc}</small></button>`).join('')}</div>`}
  const r=SHOP_ROOMS.find(r=>r.id===shopRoom)||SHOP_ROOMS[0],otherTab=OTHER_SHOP_TABS.find(t=>t.id===otherShopTab)||OTHER_SHOP_TABS[0];
  const allItems=shopStock();shopPage=Math.min(shopPage,Math.max(0,Math.ceil(allItems.length/PAGE_SIZE)-1));const items=pageSlice(allItems,shopPage),m=shopMetrics();
- const displays=items.map((id,i)=>{const x=340+i*m.spacing;if(id===SHOP_WALLPAPER_PREVIEW_ID&&r.id==='other'&&otherShopTab==='wallpapers')return wallpaperCardHTML(x,m.spacing-22);const it=ITEMS[id],n=state.owned[id]||0,ownedBundle=it.category==='bundle'&&n>0,disabled=ownedBundle||walletValue(id)<it.price;return `<article class="shop-wall-product" data-world-x="${x}" style="left:${x}px;width:${m.spacing-22}px"><span class="shop-product-pic">${it.image?`<img src="${it.image}" alt="${esc(it.name)}" loading="lazy" onerror="this.style.visibility='hidden'" style="max-width:100%;height:clamp(45px,10vh,92px);object-fit:contain">`:it.emoji}</span><strong>${esc(it.name)}${it.premium?' ✦ Преміум':''}</strong><small>У тебе: ${n}</small><button data-act="buy" data-id="${id}" ${disabled?'disabled':''}>${ownedBundle?'Куплено':`${currencyHTML(id)} ${it.price} · Купити`}</button></article>`}).join('');
+ const displays=items.map((id,i)=>{const x=340+i*m.spacing;if(id===SHOP_WALLPAPER_PREVIEW_ID&&r.id==='other'&&otherShopTab==='wallpapers')return wallpaperCardHTML(x,m.spacing-22);const it=ITEMS[id],n=state.owned[id]||0,ownedBundle=it.category==='bundle'&&n>0,disabled=ownedBundle||walletValue(id)<it.price;return `<article class="shop-wall-product" data-world-x="${x}" style="left:${x}px;width:${m.spacing-22}px"><span class="shop-product-pic">${it.image?`<img src="${it.image}" alt="${esc(it.name)}" loading="lazy" decoding="async" onerror="this.style.visibility='hidden'" style="max-width:100%;height:clamp(45px,10vh,92px);object-fit:contain">`:it.emoji}</span><strong>${esc(it.name)}${it.premium?' ✦ Преміум':''}</strong><small>У тебе: ${n}</small><div class="shop-product-actions">${slotFor(id)?`<button type="button" class="shop-try-button" data-try-item="${id}">👁 Приміряти</button>`:''}<button data-act="buy" data-id="${id}" ${disabled?'disabled':''}>${ownedBundle?'Куплено':`${currencyHTML(id)} ${it.price} · Купити`}</button></div></article>`}).join('');
  const top=`<header class="shop-topbar"><button class="shop-all" data-act="shopBack">☷ Магазини</button><nav class="shop-switcher" aria-label="Перемкнути магазин">${SHOP_ROOMS.map(t=>`<button data-act="enterShop" data-val="${t.id}" class="${r.id===t.id?'selected':''}">${t.symbol} ${t.name}</button>`).join('')}</nav><span class="wallet">${COIN_HTML} ${state.coins} &nbsp; ${TOKEN_HTML} ${state.tokens}</span></header>`;
  const sub=r.id==='other'?`<nav class="shop-subbar">${OTHER_SHOP_TABS.map(t=>`<button class="${t.id===otherShopTab?'selected':''}" data-act="otherShopTab" data-val="${t.id}">${t.symbol} ${t.name}</button>`).join('')}</nav>`:r.id==='clothes'?`<nav class="shop-subbar" aria-label="Категорії одягу">${CLOTHES_SHOP_TABS.map(t=>`<button class="${t.id===clothesShopTab?'selected':''}" data-act="clothesShopTab" data-val="${t.id}">${t.name}</button>`).join('')}</nav>${clothesShopTab==='wigs'?`<nav class="shop-subbar shop-wig-subbar" aria-label="Категорії перук">${WIG_SHOP_TABS.map(t=>`<button class="${t.id===wigShopTab?'selected':''}" data-act="wigShopTab" data-val="${t.id}">${t.name}</button>`).join('')}</nav>`:''}</nav>`:r.id==='makeup'?`<nav class="shop-subbar" aria-label="Категорії макіяжу">${MAKEUP_SHOP_TABS.map(t=>`<button class="${t.id===makeupShopTab?'selected':''}" data-act="makeupShopTab" data-val="${t.id}">${t.symbol} ${t.name}</button>`).join('')}</nav>`:'';
  return `<div class="shop-screen">${top}${sub}${pageNav(shopPage,allItems.length,'shopListPage')}<section id="shopStage" class="shop-room-stage" style="--shop-accent:${r.accent}" aria-label="Крамниця ${r.name}. Стрілки зсувають камеру, натисни на підлогу, щоб ходити."><div id="shopWorld" class="shop-room-world" style="width:${m.width}px"><div class="shop-room-wall"></div><div class="shop-room-floor"></div><div class="shop-shop-window" style="left:38px"></div><div class="shop-room-heading">${r.symbol} ${r.id==='other'?otherTab.name:r.id==='clothes'?(clothesShopTab==='wigs'?'Перуки · '+(WIG_SHOP_TABS.find(t=>t.id===wigShopTab)?.name||'Даркі'):(CLOTHES_SHOP_TABS.find(t=>t.id===clothesShopTab)?.name||'Сукні')):r.name}</div><div class="shop-wall-items">${displays||'<div class="shop-wall-empty">Нові товари з’являться тут ✨</div>'}</div></div><canvas id="shopCast" aria-label="Пет і продавець"></canvas><button class="shop-nav shop-nav-left" data-shop-arrow="-1" type="button" aria-label="Рух камери ліворуч">❮</button><button class="shop-nav shop-nav-right" data-shop-arrow="1" type="button" aria-label="Рух камери праворуч">❯</button><div class="shop-room-hint">Торкнися підлоги, щоб пройти · <span id="shopPosition">0% кімнати</span></div><button class="shop-home-btn" type="button" data-act="shopHome">🏠 Додому</button></section></div>`;
@@ -2901,6 +2917,50 @@ body.addEventListener('change',e=>{if(e.target.id==='resourceSaver'){
 const slotFor=id=>ITEMS[id]?.slot||({wig_pink:'wig',wig_blue:'wig',dress:'outfit',shirt:'outfit'}[id]);
 function b64encode(s){const bytes=new TextEncoder().encode(s);let result='';for(let i=0;i<bytes.length;i++)result+=String.fromCharCode(bytes[i]);return btoa(result).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
 function b64decode(s){let raw=atob(s.replace(/-/g,'+').replace(/_/g,'/'));return new TextDecoder().decode(Uint8Array.from(raw,c=>c.charCodeAt(0)))}
+// Попередня примірка без списання монет / локального save().
+let shopTryOnId=null;
+const tryOnOverlay=document.getElementById('shopTryOnOverlay');
+function paintShopTryOn(){
+ if(!shopTryOnId||!tryOnOverlay.classList.contains('open'))return;
+ const item=ITEMS[shopTryOnId],slot=slotFor(shopTryOnId);
+ if(!item||!slot)return;
+ const canvas=document.getElementById('shopTryOnCanvas'),cg=canvas.getContext('2d');
+ cg.clearRect(0,0,canvas.width,canvas.height);
+ const equipped={...state.equipped,[slot]:shopTryOnId};
+ cg.save();cg.translate(canvas.width/2,canvas.height*.76);cg.scale(1.18,1.18);
+ const originalPen=pen;
+ try{pen=cg;puppet(cg,0,0,1,false,null,false,equipped)}finally{pen=originalPen;cg.restore()}
+ const owned=state.owned[shopTryOnId]||0;
+ document.getElementById('shopTryOnInfo').textContent=`${item.name} · ${item.price} ${itemCurrency(shopTryOnId)==='tokens'?'токенів':'монет'} · У тебе: ${owned}`;
+ const buy=document.getElementById('shopTryOnBuy');
+ buy.disabled=item.category==='bundle'?(owned>0||walletValue(shopTryOnId)<item.price):walletValue(shopTryOnId)<item.price;
+ buy.textContent=buy.disabled&&walletValue(shopTryOnId)<item.price?'Недостатньо коштів':`Купити · ${item.price}`;
+}
+function closeShopTryOn(){shopTryOnId=null;tryOnOverlay.classList.remove('open');tryOnOverlay.setAttribute('aria-hidden','true');const c=document.getElementById('shopTryOnCanvas');c.getContext('2d').clearRect(0,0,c.width,c.height)}
+function openShopTryOn(id){
+ if(activePanel!=='shop'||!ITEMS[id]||!slotFor(id))return;
+ shopTryOnId=id;document.getElementById('shopTryOnName').textContent=ITEMS[id].name;
+ tryOnOverlay.classList.add('open');tryOnOverlay.setAttribute('aria-hidden','false');paintShopTryOn();
+ document.querySelector('[data-try-close]')?.focus();
+}
+// Перехоплення виключно дій примірки; решта магазину працює як раніше.
+document.addEventListener('click',event=>{
+ const trigger=event.target.closest('[data-try-item]');
+ if(trigger){event.preventDefault();event.stopPropagation();openShopTryOn(trigger.dataset.tryItem);return}
+ if(event.target.closest('[data-try-close]')||(event.target===tryOnOverlay)){
+  event.preventDefault();event.stopPropagation();closeShopTryOn();return;
+ }
+ if(event.target.closest('#shopTryOnBuy')){
+  event.preventDefault();event.stopPropagation();
+  const id=shopTryOnId;if(!id)return;
+  const item=ITEMS[id];if(!item||walletValue(id)<item.price)return;
+  closeShopTryOn();
+  // Використовуємо наявний валідований обробник покупки.
+  const original=document.querySelector(`.shop-wall-product [data-act="buy"][data-id="${id}"]`);
+  if(original&&!original.disabled)original.click();
+ }
+},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&shopTryOnId){closeShopTryOn();e.stopPropagation()}},true);
 body.addEventListener('click',async e=>{let b=e.target.closest('[data-act]');if(!b)return;let act=b.dataset.act,id=b.dataset.id,v=b.dataset.val;
  if(act==='copyRoomCode'||act==='copyRoomLink'){const code=makeRoomCode();const value=act==='copyRoomCode'?code:location.href.split('#')[0]+'#room='+code;try{await navigator.clipboard.writeText(value);toast('Скопійовано')}catch{toast('Скопіюй код вручну з поля')}return}if(act==='visitSharedHouse'){try{openSharedHouse(document.getElementById('roomImportCode')?.value||'')}catch(err){toast('Не вдалося прочитати кімнату: '+err.message)}return}if(act==='openRoomShare'){openPanel('roomShare');return}
  if(act==='openRoomImport'){openPanel('roomImport');return}
@@ -3062,7 +3122,7 @@ document.addEventListener('visibilitychange',()=>{
  if(document.hidden){if(mainFrameId)cancelAnimationFrame(mainFrameId);mainFrameId=0;if(miniFrame)cancelAnimationFrame(miniFrame);miniFrame=0}
  else{lastTime=performance.now();renderLastPaint=0;miniLast=performance.now();if(mini&&!mini.ended&&!miniFrame)miniFrame=requestAnimationFrame(miniTick);scheduleRender();updateDustLayer()}
 });
-window.addEventListener('pagehide',()=>{if(mainFrameId)cancelAnimationFrame(mainFrameId);mainFrameId=0;save()});
+window.addEventListener('pagehide',()=>{if(mainFrameId)cancelAnimationFrame(mainFrameId);mainFrameId=0;closeShopTryOn();clearRedundantGraphicsCache();save()});
 
 // Посилання з #room= відкриває знімок кімнати після запуску гри.
 window.addEventListener('load',()=>{if(location.hash.startsWith('#room=')&&location.hash.length<24010){try{openSharedHouse(location.hash.slice(6))}catch(error){console.warn('Код будинку не відкрито',error);toast('Не вдалося відкрити код будинку')}}});
