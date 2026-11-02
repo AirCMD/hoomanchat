@@ -531,7 +531,7 @@
 @media(max-width:460px){#overlay.profile-modal{padding:8px}#overlay.profile-modal .panel{height:calc(100dvh - 16px);max-height:calc(100dvh - 16px);padding:11px}.profile-hero{gap:10px;padding:11px}.profile-avatar-wrap{width:78px;height:78px;flex-basis:78px}.profile-avatar-link-row{flex-wrap:wrap}.profile-url-field{flex-basis:100%}.profile-small-button{flex:1}}
 
 
-/* α 2.3.76: stable, compact level-reward pagination. */
+/* α 2.3.77: stable, compact level-reward pagination. */
 .profile-level-pages{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:nowrap;min-height:37px;margin:12px 0 8px}
 .profile-level-pages button{min-width:32px;height:30px;padding:3px 7px;border:1px solid #4694a8;border-radius:6px;background:#173c58;color:#e9faff;cursor:pointer}
 .profile-level-pages button:disabled{opacity:.35;cursor:default}
@@ -539,7 +539,7 @@
 .profile-level-rows{display:grid;grid-template-columns:1fr;gap:7px;min-height:0}
 @media(max-width:460px){.profile-level-pages{gap:3px}.profile-level-pages button{min-width:25px;padding:2px 4px}.profile-level-pages span{min-width:118px;font-size:10px}}
 
-/* α 2.3.76: four orbital destinations and offscreen scene preparation */
+/* α 2.3.77: four orbital destinations and offscreen scene preparation */
 .islands-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:900px;margin:0 auto}
 .island-destination{background:#122239;border:1px solid #43b8d2;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;color:#e4fbff}
 .island-destination .island-art{height:110px;border-radius:8px;overflow:hidden;background:#111a31;position:relative}
@@ -693,7 +693,7 @@ body:has(#itemDock.show) #roomSwitcher{display:none!important}
 </head>
 <body>
 <button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.76</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.77</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
 <div id="visitIdentity" aria-label="Персонаж, якого відвідуєш"><img id="visitAvatar" alt=""><div class="visitText"><small>🏡 У гостях</small><strong id="visitNickname"></strong></div></div>
 <div id="visitDailyNotice" role="status" aria-live="polite" hidden>Ви вже привіталися сьогодні</div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
@@ -2353,6 +2353,11 @@ function scheduleEyeRefresh(){
   if(typeof activePanel!=='undefined'&&activePanel==='editor'){
    if(typeof drawPreview==='function')drawPreview();
    if(typeof drawFaceChoices==='function')drawFaceChoices();
+  }
+  // PNG обличчя завантажуються асинхронно: перемалювати відкриту примірочну,
+  // інакше перший перегляд нового рота залишається порожнім.
+  if(typeof shopTryOnId!=='undefined'&&shopTryOnId&&typeof paintShopTryOn==='function'){
+   paintShopTryOn();
   }
  });
 }
