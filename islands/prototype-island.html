@@ -445,7 +445,7 @@
 </head>
 <body>
 <button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.33</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.34</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
 <div id="visitIdentity" aria-label="Персонаж, якого відвідуєш"><img id="visitAvatar" alt=""><div class="visitText"><small>🏡 У гостях</small><strong id="visitNickname"></strong></div></div>
 <div id="visitDailyNotice" role="status" aria-live="polite" hidden>Ви вже привіталися сьогодні</div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
@@ -1255,15 +1255,14 @@ function drawNPCFigure(n,x,y,size=1,closedForSleep=false){
  ctx.restore();
  ctx.save();ctx.translate(BUILDER_POSE.torso.x+npcIdle.torsoX,BUILDER_POSE.torso.y+npcIdle.torsoY);ctx.rotate(BUILDER_POSE.torso.rot*Math.PI/180+npcIdle.torsoRot);ctx.scale(BUILDER_POSE.torso.scale/100*npcIdle.torsoScale,BUILDER_POSE.torso.scale/100*npcIdle.torsoScale);
  // Тулуб і костюм мають ті самі координати й масштаб, що й у гравця.
- if(!renderBody(ctx,coat,'npc')){
+ if(!renderBody(ctx,coat,'player')){
   drawRounded(-27,-75,54,55,20,shadeColor(coat,.94));
   drawRounded(-15,-65,30,34,11,shadeColor(coat,1.04));
  }
- renderAuthoredOutfit(ctx,'starter_suit','npc');
- // Пояс штанів поверх базового костюма NPC, щоб його не закривало вбрання.
- if(NPC_PANTS[n.id]==='black_pants_1')renderBlackPants1Waist(ctx);
- if(NPC_PANTS[n.id]==='black_pants_2')renderBlackPants2Waist(ctx);
- if(NPC_PANTS[n.id]==='brown_pants')renderBrownPantsWaist(ctx);
+ // Той самий порядок шарів і ті самі точки, що в puppet() гравця:
+ // ноги / штанини → руки → тулуб → пояс штанів → верхній костюм → голова.
+ renderEquippedPantsWaist(ctx,NPC_PANTS[n.id]);
+ renderAuthoredOutfit(ctx,'starter_suit','player');
  ctx.restore(); // завершуємо шар тулуба
  ctx.save();
  // drawNPCHead internally translates by -120, so compensate here.
@@ -1634,6 +1633,12 @@ for(const [part,source] of Object.entries(BROWN_PANTS_PNG)){
 }
 function renderBrownPantsLeg(g,side){renderBlackPantsLegFromSprites(g,side,brownPantsSprites,true)}
 function renderBrownPantsWaist(g){renderBlackPantsWaistFromSprites(g,brownPantsSprites)}
+function renderEquippedPantsWaist(g,bottomId){
+ if(bottomId==='brown_shorts')renderBrownShortsWaist(g);
+ else if(bottomId==='black_pants_1')renderBlackPants1Waist(g);
+ else if(bottomId==='black_pants_2')renderBlackPants2Waist(g);
+ else if(bottomId==='brown_pants')renderBrownPantsWaist(g);
+}
 function renderLeg(g,side,color,bottomId=null,shoesId=null){
  const tinted=tintLeg(side,color);
  if(tinted){
@@ -2252,10 +2257,7 @@ function puppet(g,x,y,scale=1,animated=true,appearanceOverride=null,closedForSle
  // Нижній шар одягу: білизна поверх тіла, але під шортами, штанами, кардиганом і верхнім одягом.
  if(eq.underwear&&renderAuthoredOutfit(g,eq.underwear,'player')){}
  // Нижній одяг на тулубі: поверх тіла, але під кардиганом та іншим верхнім одягом.
- if(eq.bottom==='brown_shorts')renderBrownShortsWaist(g);
- if(eq.bottom==='black_pants_1')renderBlackPants1Waist(g);
- if(eq.bottom==='black_pants_2')renderBlackPants2Waist(g);
- if(eq.bottom==='brown_pants')renderBrownPantsWaist(g);
+ renderEquippedPantsWaist(g,eq.bottom);
  if(eq.inner&&renderAuthoredOutfit(g,eq.inner,'player')){}
  if(eq.outfit&&renderAuthoredOutfit(g,eq.outfit,'player')){}
  else if(eq.outfit==='dress'){
