@@ -531,7 +531,7 @@
 @media(max-width:460px){#overlay.profile-modal{padding:8px}#overlay.profile-modal .panel{height:calc(100dvh - 16px);max-height:calc(100dvh - 16px);padding:11px}.profile-hero{gap:10px;padding:11px}.profile-avatar-wrap{width:78px;height:78px;flex-basis:78px}.profile-avatar-link-row{flex-wrap:wrap}.profile-url-field{flex-basis:100%}.profile-small-button{flex:1}}
 
 
-/* α 2.3.58: stable, compact level-reward pagination. */
+/* α 2.3.59: stable, compact level-reward pagination. */
 .profile-level-pages{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:nowrap;min-height:37px;margin:12px 0 8px}
 .profile-level-pages button{min-width:32px;height:30px;padding:3px 7px;border:1px solid #4694a8;border-radius:6px;background:#173c58;color:#e9faff;cursor:pointer}
 .profile-level-pages button:disabled{opacity:.35;cursor:default}
@@ -539,7 +539,7 @@
 .profile-level-rows{display:grid;grid-template-columns:1fr;gap:7px;min-height:0}
 @media(max-width:460px){.profile-level-pages{gap:3px}.profile-level-pages button{min-width:25px;padding:2px 4px}.profile-level-pages span{min-width:118px;font-size:10px}}
 
-/* α 2.3.58: four orbital destinations and offscreen scene preparation */
+/* α 2.3.59: four orbital destinations and offscreen scene preparation */
 .islands-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:900px;margin:0 auto}
 .island-destination{background:#122239;border:1px solid #43b8d2;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;color:#e4fbff}
 .island-destination .island-art{height:110px;border-radius:8px;overflow:hidden;background:#111a31;position:relative}
@@ -668,10 +668,32 @@ body:has(#itemDock.show) #roomSwitcher{display:none!important}
  #itemDock.show:has(.dock-topline) .item-tile.organizer-folder{height:80px!important;min-height:80px!important;max-height:80px!important;flex-basis:72px;width:72px}
 }
 </style>
+<style id="space-npc-ui-2359">
+/* Central floating cyberpunk windows for space navigation, vitals and hygiene. */
+#overlay.space-center-modal{align-items:center;justify-content:center;padding:clamp(10px,3vh,28px);box-sizing:border-box;background:rgba(2,8,23,.76);backdrop-filter:blur(5px)}
+#overlay.space-center-modal>.panel{width:min(760px,100%);max-height:min(85dvh,740px);min-height:0;padding:16px 18px;box-sizing:border-box;background:linear-gradient(155deg,#102944 0%,#111c36 58%,#211b3b 100%);color:#e8fbff;border:1px solid #44c9e1;border-radius:15px;box-shadow:0 0 0 1px #9971ec32,0 18px 60px #000b,0 0 32px #26dcf72b;gap:12px}
+#overlay.space-center-modal .panel-head{padding-bottom:8px;border-bottom:1px solid #44c9e14b;flex-shrink:0}
+#overlay.space-center-modal .panel-head h2{font-size:18px;letter-spacing:.025em;color:#d4fcff}
+#overlay.space-center-modal #panelBody{min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-color:#3789a5 #11273d}
+#overlay.space-center-modal .islands-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#overlay.space-center-modal .island-destination{min-width:0;background:linear-gradient(150deg,#10253f,#172843);border:1px solid #387d9c;border-radius:10px;padding:11px;box-sizing:border-box;color:#e8faff;box-shadow:inset 0 1px #83eaff14}
+#overlay.space-center-modal .island-destination h3{font-size:14px;margin:7px 0 4px}
+#overlay.space-center-modal .island-destination p{font-size:12px;line-height:1.4;color:#afcada;min-height:32px;margin:0 0 9px}
+#overlay.space-center-modal .island-destination button{background:#15445f;border:1px solid #55cbdd;color:#eaffff;border-radius:7px;padding:7px 10px;cursor:pointer}
+#overlay.space-center-modal .island-destination button:hover{background:#21647e}
+#overlay.space-center-modal .needrow{background:#112b43;border:1px solid #2d7891;border-radius:8px;padding:9px 12px;margin:7px 0;box-sizing:border-box;display:grid;grid-template-columns:minmax(110px,1fr) minmax(70px,2fr) 52px;align-items:center;gap:10px;min-height:46px}
+#overlay.space-center-modal .needbar{min-width:0}
+#overlay.space-center-modal .footer-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+#overlay.space-center-modal .footer-actions button{border:1px solid #46c3d7;border-radius:7px;background:#194764;color:#ecffff;padding:8px 10px;cursor:pointer}
+#overlay.space-center-modal .note{color:#aacee0;line-height:1.5;font-size:12px}
+.space-npc-dialog{position:fixed;z-index:6;left:50%;top:14%;transform:translateX(-50%);max-width:min(520px,92vw);padding:10px 15px;border:1px solid #68dbec;border-radius:10px;background:#0c2039ed;color:#f0feff;box-shadow:0 6px 25px #0008;text-align:center;font-size:14px;line-height:1.45;pointer-events:none}
+.space-npc-dialog[hidden]{display:none!important}
+@media(max-width:620px){#overlay.space-center-modal>.panel{padding:11px;max-height:90dvh}#overlay.space-center-modal .islands-grid{grid-template-columns:1fr}#overlay.space-center-modal .needrow{grid-template-columns:90px minmax(60px,1fr) 42px;padding:7px;gap:7px}#overlay.space-center-modal .needrow b{font-size:11px}}
+</style>
 </head>
 <body>
 <button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.58</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.59</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
 <div id="visitIdentity" aria-label="Персонаж, якого відвідуєш"><img id="visitAvatar" alt=""><div class="visitText"><small>🏡 У гостях</small><strong id="visitNickname"></strong></div></div>
 <div id="visitDailyNotice" role="status" aria-live="polite" hidden>Ви вже привіталися сьогодні</div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
@@ -1341,7 +1363,7 @@ function drawSharedHouse(){
  // Зовнішність власника береться лише з коду, без доступу до його збереження.
  puppet(ctx,W*.70,H*.81,Math.max(.70,Math.min(1.08,W/650)),false,sharedHouse.appearance);
 }
-function setLocation(where){if(where==='home'){currentSpaceDestination=null;spaceScene=null}if(sleepScene)wakeBedSleep(true);if(state.location==='shared'){sharedHouse=null;sharedRoom=0}if(state.room>0&&!canEnterHomeSpace(state.room))state.room=0;if(where!== 'home'&&where!=='island')return;selectedNPC=null;visitingNPC=null;state.location=where;if(where==='home')state.room=isHomeRoomUnlocked(state.startRoom)?state.startRoom:0;updateRoomUI();pet.x=where==='home'?0:.0;pet.y=where==='home'?0:.2;walkTarget=null;placing=null;action='idle';save();updateLocationUI();toast(where==='home'?'Ти вдома! Натискай на підлогу, щоб рухатися 🏠':'Час прогулянки! 🌿')}
+function setLocation(where){if(where==='home'){currentSpaceDestination=null;if(spaceScene){spaceScene.width=0;spaceScene.height=0}spaceScene=null;spaceNPCSlots=[];if(spaceTalkNode)spaceTalkNode.hidden=true}if(sleepScene)wakeBedSleep(true);if(state.location==='shared'){sharedHouse=null;sharedRoom=0}if(state.room>0&&!canEnterHomeSpace(state.room))state.room=0;if(where!== 'home'&&where!=='island')return;selectedNPC=null;visitingNPC=null;state.location=where;if(where==='home')state.room=isHomeRoomUnlocked(state.startRoom)?state.startRoom:0;updateRoomUI();pet.x=where==='home'?0:.0;pet.y=where==='home'?0:.2;walkTarget=null;placing=null;action='idle';save();updateLocationUI();toast(where==='home'?'Ти вдома! Натискай на підлогу, щоб рухатися 🏠':'Час прогулянки! 🌿')}
 function updateLocationUI(){updateVisitDailyNotice();updateRoomUI();updateRoomCleanUI();const badge=document.getElementById('visitIdentity');const showVisitor=state.location==='npc'&&!!visitingNPC;badge.classList.toggle('visible',showVisitor);if(showVisitor){document.getElementById('visitAvatar').src=visitingNPC.avatar;document.getElementById('visitNickname').textContent=visitingNPC.name;}else{document.getElementById('visitAvatar').removeAttribute('src');document.getElementById('visitNickname').textContent='';}document.getElementById('locationTitle').textContent=state.location==='shared'?'🏡 Гості: '+sharedHouse?.name:state.location==='npc'?'🏡 У гостях у '+(visitingNPC?.name||'друга'):state.location==='home'?(state.room===3?'🪐 Космічний двір':'🏠 '+(['Кімната пета','Спальня','Вітальня'][state.room]||'Кімната '+roomDisplayNumber(state.room))):'🏝️ Твій маленький острів';document.getElementById('hint').textContent=state.location==='shared'?'Ти в гостях. Меблі друга змінювати не можна':state.location==='npc'?'Гостюєш у друга. Натисни «Дім», щоб повернутися':state.location==='home'?(state.room===3?'Натисни на капсулу для вирощування комах':'Натискай на підлогу. Двері ведуть на острів'):'Натискай на острів або будиночок';document.getElementById('homeButtonLabel').textContent=state.location==='home'?'Гуляти':(state.location==='npc'||state.location==='shared')?'Додому':'Дім'}
 // Межі ходьби визначаються реальною лінією стику стіни й підлоги (H * .59).
 // Координата персонажа відповідає точці під ногами, а не його голові.
@@ -2919,7 +2941,7 @@ function render(t){
  perfStats.frames++;
  if(!perfStats.lastSample)perfStats.lastSample=t;
  if(t-perfStats.lastSample>=1000){perfStats.fps=perfStats.frames*1000/(t-perfStats.lastSample);perfStats.frames=0;perfStats.lastSample=t;refreshPerfStatus()}
- clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.15);lastTime=t;clock+=dt;if(activePanel==='shop'){updateDustLayer();paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender();return}tickNeeds(dt);updateNPCBedSleep();if(npcBedSleep.phase==='awake')npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='shared')drawSharedHouse();else if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'||state.location==='shared'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}updateBedSleep();const scale=Math.max(.69,Math.min(1.1,W/650));if(sleepScene&&sleepScene.phase!=='approach')drawSleepingPet(ctx,p.x,p.y,scale);else puppet(ctx,p.x,p.y,scale);if(placing&&!ITEMS[placing]?.wall){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender()}
+ clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.15);lastTime=t;clock+=dt;if(activePanel==='shop'){updateDustLayer();paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender();return}tickNeeds(dt);updateNPCBedSleep();if(npcBedSleep.phase==='awake')npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='shared')drawSharedHouse();else if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();drawStationNPCs();if(spaceTalkNode&&!spaceTalkNode.hidden&&performance.now()>spaceTalkUntil)spaceTalkNode.hidden=true;robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'||state.location==='shared'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}updateBedSleep();const scale=Math.max(.69,Math.min(1.1,W/650));if(sleepScene&&sleepScene.phase!=='approach')drawSleepingPet(ctx,p.x,p.y,scale);else puppet(ctx,p.x,p.y,scale);if(placing&&!ITEMS[placing]?.wall){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender()}
 function placedHit(x,y){if(state.location!=='home'||state.room===3)return -1;for(let i=state.homePlaced.length-1;i>=0;i--){const p=state.homePlaced[i];if((p.room??0)!==state.room)continue;const scale=furnitureScale(p);if(ITEMS[p.id]?.wall){if(Math.abs(p.x*W-x)<78*scale&&Math.abs(p.y*H-y)<78*scale)return i}else if(ITEMS[p.id]?.ceiling){const size=105*Math.max(.65,Math.min(1.25,W/700))*scale,top=H*.035-5+(lampVertical(p)-.20)*H;if(Math.abs(p.x*W-x)<size/2+8&&y>=top-8&&y<=top+size+8)return i}else if(Math.abs(p.x*W-x)<46*scale&&Math.abs(p.y*H-y+22*scale)<52*scale)return i}return -1}
 // Перетягування меблів дозволене лише у відкритому інвентарі меблів.
 function dragFurniturePosition(e){
@@ -2951,6 +2973,7 @@ canvas.addEventListener('pointercancel',e=>{if(dragPlaced&&e.pointerId===dragPla
 canvas.addEventListener('pointerdown',e=>{
  if(document.getElementById('overlay').classList.contains('open'))return;
  const q=world(),x=e.clientX,y=e.clientY;
+ if(stationNPCClick(x,y))return;
  const hitDust=dustHit(x,y);
  if(hitDust){const home=state.location==='home';if(cleanDust(hitDust,home?'home':'npc'))toast('✨ Пил прибрано · +'+(home?15:5)+' <img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="монети"> · +5 XP');return;}
  // Переміщення меблів тільки у відкритому інвентарі.
@@ -3173,7 +3196,7 @@ function renderFriendDock(){if(!friendDock)return;const safe=esc;if(friendDockMo
  friendDockEl.innerHTML=`<div class="dock-side"><button data-dock="close">✕ Закрити</button><button data-dock="copy">🔗 Мій код</button></div><div id="friendScroller">${cards}</div>${nav}<button class="dock-add" data-dock="add">＋ Друзі</button>`}
 
 friendDockEl.addEventListener('click',async e=>{const b=e.target.closest('[data-dock]');if(!b)return;const a=b.dataset.dock;if(a==='friend-page'){const n=Number(b.dataset.page);if(Number.isInteger(n)&&n>=0){friendPage=n;renderFriendDock()}return}if(a==='share-room'){toggleFriends(false);openPanel('roomShare');return}else if(a==='import-room'){toggleFriends(false);openPanel('roomImport');return}else if(a==='close'){toggleFriends(false);selectedNPC=null;friendDockMode='list'}else if(a==='back'){friendDockMode='list';renderFriendDock()}else if(a==='npc'){selectedNPC=NPCS.find(n=>n.id===b.dataset.npc)||null;friendDockMode='detail';renderFriendDock()}else if(a==='claim-daily'&&selectedNPC){claimNpcDailyReward(selectedNPC);renderFriendDock()}else if(a==='visit'&&selectedNPC){visitingNPC=selectedNPC;npcRoom=0;ensureNpcDust(visitingNPC);state.location='npc';state.npcVisits[visitingNPC.id]=(state.npcVisits[selectedNPC.id]||0)+1;pet.x=pet.y=0;walkTarget=null;placing=null;save();updateLocationUI();toggleFriends(false);const gotGift= !npcRewardReceivedToday(visitingNPC)&&claimNpcDailyReward(visitingNPC);if(!interactionUsedToday(visitingNPC)){toast('Ти в гостях у '+visitingNPC.name+' · обери дію для XP');openPanel('interaction')}}else if(a==='gift'&&selectedNPC){toggleFriends(false);openPanel('npcGift')}else if(a==='interact'&&selectedNPC){const target=selectedNPC;toggleFriends(false);if(state.location!=='npc'||visitingNPC?.id!==target.id){toast('Спочатку натисни «Відвідати», щоб взаємодіяти з цим другом')}else if(interactionUsedToday(visitingNPC)){updateVisitDailyNotice();toast('Ви вже привіталися сьогодні')}else openPanel('interaction')}else if(a==='add'){toggleFriends(false);openPanel('friendAdd')}else if(a==='real'){let f=state.friends[+b.dataset.index];if(f){toggleFriends(false);openPanel('post');toast('Подарунковий код для '+f.name+' можна передати вручну')}}else if(a==='copy'){if(!state.friendId){state.friendId='PROTO-'+Math.random().toString(36).slice(2,10).toUpperCase();save()}try{await navigator.clipboard.writeText(state.friendId);toast('Код скопійовано')}catch{toast(state.friendId)}}});
-function openPanel(id){if(activePanel==='editor'&&id!=='editor')discardEditorChanges();if(id==='editor'&&activePanel!=='editor'){editorOriginal={...state.appearance};editorTab='appearance';if(tiredEyesFailed)loadTiredEyes(true)}if(id==='interaction'&&(state.location!=='npc'||!visitingNPC||interactionUsedToday(visitingNPC))){updateVisitDailyNotice();if(state.location!=='npc'||!visitingNPC)toast('Спочатку відвідай друга');return}if(id==='inventory'||id==='wardrobe'){openItemDock(id);return}if(id==='friends'){closeItemDock();closePanel();friendDockMode='list';toggleFriends(true);return}if(id==='games'){closePanel();showGamesMenu();return}if(id==='shop'&&activePanel!=='shop'&&shopRoom!=='makeup'){shopRoom=null;resetShopWalker()}if(id==='home'){if(state.location==='npc'||state.location==='shared'){setLocation('home')}else setLocation(state.location==='home'?'island':'home');return}activePanel=id;overlay.classList.add('open');overlay.classList.toggle('editor-full',id==='editor');overlay.classList.toggle('shop-full',id==='shop');overlay.classList.toggle('room-map-modal',id==='roomMap');overlay.classList.toggle('profile-modal',id==='profile');if(id==='profile')profileAvatarUrlVisible=false;document.querySelectorAll('#toolbar button').forEach(b=>b.classList.toggle('active',b.dataset.open===id));showPanel()}
+function openPanel(id){if(activePanel==='editor'&&id!=='editor')discardEditorChanges();if(id==='editor'&&activePanel!=='editor'){editorOriginal={...state.appearance};editorTab='appearance';if(tiredEyesFailed)loadTiredEyes(true)}if(id==='interaction'&&(state.location!=='npc'||!visitingNPC||interactionUsedToday(visitingNPC))){updateVisitDailyNotice();if(state.location!=='npc'||!visitingNPC)toast('Спочатку відвідай друга');return}if(id==='inventory'||id==='wardrobe'){openItemDock(id);return}if(id==='friends'){closeItemDock();closePanel();friendDockMode='list';toggleFriends(true);return}if(id==='games'){closePanel();showGamesMenu();return}if(id==='shop'&&activePanel!=='shop'&&shopRoom!=='makeup'){shopRoom=null;resetShopWalker()}if(id==='home'){if(state.location==='npc'||state.location==='shared'){setLocation('home')}else setLocation(state.location==='home'?'island':'home');return}activePanel=id;overlay.classList.add('open');overlay.classList.toggle('editor-full',id==='editor');overlay.classList.toggle('shop-full',id==='shop');overlay.classList.toggle('room-map-modal',id==='roomMap');overlay.classList.toggle('profile-modal',id==='profile');overlay.classList.toggle('space-center-modal',['islands','needs','roomClean'].includes(id));if(id==='profile')profileAvatarUrlVisible=false;document.querySelectorAll('#toolbar button').forEach(b=>b.classList.toggle('active',b.dataset.open===id));showPanel()}
 function discardEditorChanges(){if(editorOriginal){state.appearance={...editorOriginal};editorOriginal=null}}
 
 // Очищення лише похідних графічних копій. Джерельні PNG та збереження не зачіпаємо.
@@ -3197,7 +3220,7 @@ function clearRedundantGraphicsCache(){
  }
  return {count,megabytes:bytes/1048576};
 }
-function closePanel(){
+function closePanel(){if(activePanel==='islands')clearSpacePreviewCache();
  if(activePanel==='editor')discardEditorChanges();
  if(facePreviewObserver){facePreviewObserver.disconnect();facePreviewObserver=null}
  if(activePanel==='shop'){
@@ -3208,7 +3231,7 @@ function closePanel(){
   }
   shopRenderLast=0;shopRenderAccum=0;shopHoldDir=0;
  }
- overlay.classList.remove('open');overlay.classList.remove('editor-full');overlay.classList.remove('shop-full');overlay.classList.remove('room-map-modal');overlay.classList.remove('profile-modal');shopRoom=null;document.querySelectorAll('#toolbar button').forEach(b=>b.classList.remove('active'));activePanel='';
+ overlay.classList.remove('open','space-center-modal');overlay.classList.remove('editor-full');overlay.classList.remove('shop-full');overlay.classList.remove('room-map-modal');overlay.classList.remove('profile-modal');shopRoom=null;document.querySelectorAll('#toolbar button').forEach(b=>b.classList.remove('active'));activePanel='';
  // Скидаємо приховані картки та canvas-прев'ю, залишаючи делеговані події на body.
  body.replaceChildren();
 }
@@ -3472,8 +3495,60 @@ function drawSpaceSceneStage(g,w,h,place,stage){
  }
 }
 function makeSpaceScene(id,w,h){let c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');for(let i=0;i<4;i++)drawSpaceSceneStage(g,w,h,id,i);return c}
-function islandsPanelHTML(){return `<div class="islands-grid">${SPACE_DESTINATIONS.map(p=>`<article class="island-destination"><div class="island-art" data-space-preview="${p.id}"></div><h3>${p.symbol} ${p.name}</h3><p>${p.description}</p><button type="button" data-act="space-teleport" data-val="${p.id}" ${teleportBusy?'disabled':''}>✦ Телепортація</button></article>`).join('')}</div><p class="note">Чотири станції доступні для прогулянок. Нові активності можна додати пізніше.</p>`}
-function fillSpacePreviews(){document.querySelectorAll('[data-space-preview]').forEach(el=>{const c=makeSpaceScene(el.dataset.spacePreview,360,160);el.replaceChildren(c)})}
+// Lightweight station NPC roster: deterministic per station/day, no extra image textures.
+const SPACE_CHAT_KEY=STORAGE+'-station-gifts-v1';
+let spaceGiftLedger={day:'',npc:{}},spaceNPCSlots=[],spaceTalkNode=null,spaceTalkUntil=0;
+try{const old=JSON.parse(localStorage.getItem(SPACE_CHAT_KEY)||'null');if(old&&typeof old==='object'){spaceGiftLedger={day:String(old.day||''),npc:old.npc&&typeof old.npc==='object'?old.npc:{}}}}catch{}
+const SPACE_DIALOGUE={
+ orbital:['Справжні зірки краще за будь-який монітор.','Тут навіть тиша має власну орбіту.','Вид на планету сьогодні особливо гарний.'],
+ garden:['Не чіпай ці рослини, вони трохи образливі.','У космосі теж можна виростити сад.','Тут росте дещо дивне. Мені подобається.'],
+ lunar:['Тут так тихо, що чути власні думки.','Місячний пил потрапляє абсолютно всюди.','Зробимо вигляд, що це наша таємна база.'],
+ neon:['Неонове світло тут ніколи не вимикають.','Це місце схоже на сон старого комп’ютера.','Станція гарна, але підозріло блимає.']
+};
+function spaceLocalDay(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function stationNPCs(place){if(!place)return [];const ix=Math.max(0,SPACE_DESTINATIONS.findIndex(p=>p.id===place));return [0,1,2].map((k)=>NPCS[(ix*3+k)%NPCS.length]).filter(Boolean)}
+function drawStationNPCs(){
+ if(state.location!=='island'||!currentSpaceDestination||!spaceScene){spaceNPCSlots=[];return}
+ const members=stationNPCs(currentSpaceDestination);spaceNPCSlots=[];
+ const sc=Math.max(.54,Math.min(.9,W/900));
+ members.forEach((n,i)=>{const x=W*(.26+i*.25),y=H*(.72+(i%2)*.055);spaceNPCSlots.push({id:n.id,x,y,r:Math.max(48,59*sc)});drawNPCFigure(n,x,y,sc)});
+}
+function spaceNPCDialogue(n){
+ const lines=SPACE_DIALOGUE[currentSpaceDestination]||SPACE_DIALOGUE.orbital;
+ const seed=Date.now()+n.name.length;
+ return lines[Math.floor(seed/1700)%lines.length];
+}
+function talkToStationNPC(id){
+ const n=NPCS.find(n=>n.id===id);if(!n||!currentSpaceDestination)return;
+ const today=spaceLocalDay();if(spaceGiftLedger.day!==today){spaceGiftLedger={day:today,npc:{}}}
+ let reward='';
+ // One gift per NPC per local calendar day, including across all four stations.
+ if(!spaceGiftLedger.npc[id]){
+   spaceGiftLedger.npc[id]=1;
+   const roll=Math.random();
+   if(roll<.008){state.tokens=(Number(state.tokens)||0)+1;reward='🎟️ +1 токен (рідкісний подарунок)'}
+   else if(roll<.50){const amount=5+Math.floor(Math.random()*11);state.coins=(Number(state.coins)||0)+amount;reward=`🪙 +${amount} монет`}
+   else {const foods=['apple','cake','tea'].filter(x=>ITEMS[x]);const item=foods[Math.floor(Math.random()*foods.length)];if(item){state.owned[item]=(state.owned[item]||0)+1;reward='🍎 '+ITEMS[item].name}}
+   try{localStorage.setItem(SPACE_CHAT_KEY,JSON.stringify(spaceGiftLedger))}catch(e){console.warn('Station gift persistence unavailable',e)}
+   save();
+ }
+ const line=spaceNPCDialogue(n);
+ if(!spaceTalkNode){spaceTalkNode=document.createElement('div');spaceTalkNode.className='space-npc-dialog';spaceTalkNode.hidden=true;document.body.appendChild(spaceTalkNode)}
+ spaceTalkNode.textContent=n.name+': «'+line+'»'+(reward?'  ·  🎁 '+reward:'  ·  🎁 Подарунок уже отримано сьогодні');
+ spaceTalkNode.hidden=false;spaceTalkUntil=performance.now()+4300;
+}
+function stationNPCClick(x,y){
+ if(state.location!=='island'||!currentSpaceDestination)return false;
+ // Vertical hit region matches the drawn full-height NPC (anchored at feet).
+ for(const slot of [...spaceNPCSlots].reverse()){
+  if(Math.abs(x-slot.x)<=Math.max(45,slot.r)&&y>=slot.y-210&&y<=slot.y+32){talkToStationNPC(slot.id);return true}
+ }
+ return false;
+}
+const spacePreviewCache=new Map();
+function clearSpacePreviewCache(){for(const c of spacePreviewCache.values()){c.width=0;c.height=0}spacePreviewCache.clear()}
+function islandsPanelHTML(){return `<div class="islands-grid">${SPACE_DESTINATIONS.map(p=>`<article class="island-destination"><div class="island-art" data-space-preview="${p.id}"></div><h3>${p.symbol} ${p.name}</h3><p>${p.description}</p><button type="button" data-act="space-teleport" data-val="${p.id}" ${teleportBusy?'disabled':''}>✦ Телепортація</button></article>`).join('')}</div><p class="note">На станціях можна зустріти друзів: натискай на NPC, щоб поговорити. Один подарунок на добу від кожного, токени трапляються дуже рідко.</p>`}
+function fillSpacePreviews(){document.querySelectorAll('[data-space-preview]').forEach(el=>{const id=el.dataset.spacePreview;let c=spacePreviewCache.get(id);if(!c){c=makeSpaceScene(id,360,160);spacePreviewCache.set(id,c)}el.replaceChildren(c)})}
 // Original short teleport tone, synthesized in-browser. No external audio files.
 function playSpaceTeleportSound(){
  try{
@@ -3505,7 +3580,7 @@ async function teleportSpace(id){if(teleportBusy||!SPACE_DESTINATIONS.some(p=>p.
  document.getElementById('islandLoadingTitle').textContent='🪐 '+SPACE_DESTINATIONS.find(p=>p.id===id).name;load.classList.add('visible');fill.style.width='0%';
  playSpaceTeleportSound();
  const started=performance.now();const minDuration=2350;
- try{const c=document.createElement('canvas');c.width=Math.max(640,Math.min(1600,Math.ceil(W)));c.height=Math.max(360,Math.min(900,Math.ceil(H)));const g=c.getContext('2d');if(!g)throw Error('Canvas unavailable');
+ try{const c=document.createElement('canvas');c.width=Math.max(640,Math.min(1280,Math.ceil(W)));c.height=Math.max(360,Math.min(720,Math.ceil(H)));const g=c.getContext('2d');if(!g)throw Error('Canvas unavailable');
   const steps=['Створення зоряного неба','Підготовка платформи','Завантаження станції','Фіналізація локації'];
   for(let i=0;i<4;i++){
    status.textContent=steps[i];
@@ -3517,7 +3592,7 @@ async function teleportSpace(id){if(teleportBusy||!SPACE_DESTINATIONS.some(p=>p.
    if(remaining)await new Promise(resolve=>setTimeout(resolve,remaining));
    fill.style.width=((i+1)*25)+'%';
   }
-  await new Promise(resolve=>requestAnimationFrame(resolve));spaceScene=c;currentSpaceDestination=id;closeItemDock();closePanel();setLocation('island');status.textContent='Станція готова';
+  await new Promise(resolve=>requestAnimationFrame(resolve));if(spaceScene&&spaceScene!==c){spaceScene.width=0;spaceScene.height=0}spaceScene=c;currentSpaceDestination=id;closeItemDock();closePanel();setLocation('island');status.textContent='Станція готова';
  }catch(err){console.error('Teleport error',err);toast('Не вдалося підготувати станцію')}
  finally{load.classList.remove('visible');teleportBusy=false}
 }
