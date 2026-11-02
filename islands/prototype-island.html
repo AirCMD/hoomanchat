@@ -445,7 +445,7 @@
 </head>
 <body>
 <button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.34</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.35</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
 <div id="visitIdentity" aria-label="Персонаж, якого відвідуєш"><img id="visitAvatar" alt=""><div class="visitText"><small>🏡 У гостях</small><strong id="visitNickname"></strong></div></div>
 <div id="visitDailyNotice" role="status" aria-live="polite" hidden>Ви вже привіталися сьогодні</div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
@@ -1229,7 +1229,7 @@ function drawNPCHead(n,species,coat,accent,closedForSleep=false){
 }
 function drawNPCFigure(n,x,y,size=1,closedForSleep=false){
  const [coat,accent,species]=NPC_COSTUMES[n.id]||['#44536a','#a3d7f5','human'];
- const img=NPC_IMAGES[n.id],npcWalking=Math.abs(npcMotion.target-npcMotion.x)>2,walkPhase=npcMotion.step,walk=npcWalking?Math.sin(walkPhase)*.23:0,bounce=npcWalking?Math.abs(Math.sin(walkPhase))*1.5:Math.sin(clock*2.4+n.name.length)*.6;
+ const img=NPC_IMAGES[n.id],npcWalking=Math.hypot(npcMotion.target-npcMotion.x,npcMotion.targetY-npcMotion.y)>2,walkPhase=npcMotion.step,walk=npcWalking?Math.sin(walkPhase)*.23:0,bounce=npcWalking?Math.abs(Math.sin(walkPhase))*1.5:Math.sin(clock*2.4+n.name.length)*.6;
  const z=Math.max(.72,Math.min(1.24,size));
  const npcIdle=idlePose(clock+(n.name.length*.21),!npcWalking);
  ctx.save();const fx=interactionFX&&interactionFX.npc===n.id&&performance.now()/1000<interactionFX.until?interactionFX:null;ctx.translate(x,y-30+bounce+(fx&&fx.type==='dance'?Math.sin(clock*14)*9:fx&&fx.type==='hug'?-Math.abs(Math.sin(clock*11))*16:0));if(fx&&fx.type==='dance')ctx.rotate(Math.sin(clock*9)*.11);ctx.scale(z,z);
@@ -1275,16 +1275,48 @@ function drawNPCFigure(n,x,y,size=1,closedForSleep=false){
  if(!closedForSleep){drawRounded(-54,9,108,21,7,'#0e203bdc');ctx.fillStyle='#e8ffff';ctx.font='bold 12px system-ui';ctx.textAlign='center';ctx.fillText(n.name,0,24,103);}
  if(fx){ctx.font='22px system-ui';ctx.textAlign='center';ctx.fillText(fx.type==='hug'?'💞':fx.type==='dance'?'🎵':fx.type==='play'?'✨':'👋',0,-155)}ctx.restore();
 }
-const npcMotion={x:0,target:0,at:0,dir:1,step:0};
-function npcWalkTick(dt){if(state.location!=='npc'&&!visitor)return;if(clock>npcMotion.at){npcMotion.target=(Math.random()-.5)*Math.min(W*.32,230);npcMotion.at=clock+2+Math.random()*4}let diff=npcMotion.target-npcMotion.x,n=Math.sign(diff)*Math.min(Math.abs(diff),dt*48);npcMotion.x+=n;if(Math.abs(n)>.001)npcMotion.step+=Math.abs(n)*.22;if(Math.abs(diff)>2)npcMotion.dir=Math.sign(diff)}
+// NPC переміщуються по площі підлоги, а не лише горизонтально.
+const npcMotion={x:0,y:.81,target:0,targetY:.81,at:0,dir:1,step:0};
+function npcWalkTick(dt){
+ if(state.location!=='npc'&&!visitor)return;
+ const visiting=state.location==='npc';
+ const centerX=visiting?.63:.67;
+ const centerY=visiting?.81:.82;
+ // Межі кімнати: не заходити за стіни чи нижню панель.
+ const left=W*.19,right=W*.86,top=.69,bottom=.87;
+ if(clock>npcMotion.at){
+  const targetX=left+Math.random()*(right-left);
+  npcMotion.target=targetX-W*centerX;
+  npcMotion.targetY=top+Math.random()*(bottom-top);
+  npcMotion.at=clock+3+Math.random()*3;
+ }
+ const dx=npcMotion.target-npcMotion.x;
+ const dy=(npcMotion.targetY-npcMotion.y)*H;
+ const dist=Math.hypot(dx,dy);
+ if(dist>1){
+  const travel=Math.min(dist,dt*46);
+  npcMotion.x+=dx/dist*travel;
+  npcMotion.y+=dy/dist*travel/H;
+  npcMotion.step+=travel*.22;
+  if(Math.abs(dx)>1)npcMotion.dir=Math.sign(dx);
+ }
+ npcMotion.x=Math.max(left-W*centerX,Math.min(right-W*centerX,npcMotion.x));
+ npcMotion.y=Math.max(top,Math.min(bottom,npcMotion.y));
+}
 function drawNPCVisit(){
+ const walking=Math.hypot(npcMotion.target-npcMotion.x,(npcMotion.targetY-npcMotion.y)*H)>3;
+ const bob=walking?Math.sin(clock*5)*2:0;
+ // Персонаж трохи зменшується, коли відходить углиб кімнати.
+ const depthScale=.89+(npcMotion.y-.69)/(.87-.69)*.18;
  if(state.location==='npc'&&visitingNPC){
   const sc=Math.max(.85,Math.min(1.25,W/570));
   if(npcBedSleep.phase!=='awake')drawSleepingNPC(visitingNPC,W*.73,H*.82,sc);
-  else drawNPCFigure(visitingNPC,W*.63+npcMotion.x,H*.81+Math.sin(clock*5)*((Math.abs(npcMotion.target-npcMotion.x)>3)?2:0),sc);
+  else drawNPCFigure(visitingNPC,W*.63+npcMotion.x,H*npcMotion.y+bob,sc*depthScale);
   return;
  }
- if(state.location==='home'&&visitor){drawNPCFigure(visitor,W*.67+npcMotion.x,H*.82,Math.max(.72,Math.min(1,W/620)))}
+ if(state.location==='home'&&visitor){
+  drawNPCFigure(visitor,W*.67+npcMotion.x,H*npcMotion.y+bob,Math.max(.72,Math.min(1,W/620))*depthScale);
+ }
 }
 function updateVisitor(){if(state.location!=='home'||visitingNPC)return;if(visitor&&clock>visitor.until){toast(visitor.name+' пішов/пішла додому');visitor=null;nextVisitorAt=clock+35+Math.random()*45}if(!visitor&&clock>nextVisitorAt){const n=NPCS[Math.floor(Math.random()*NPCS.length)];visitor={...n,until:clock+18};toast('До тебе завітав '+n.name+'! 👋')}}
 // Підвісне освітлення. До появи настінного вимикача світло ввімкнене за замовчуванням.
@@ -2462,7 +2494,7 @@ function resetNPCBedSleep(){npcBedSleep.npcId=null;npcBedSleep.phase='awake';npc
 function updateNPCBedSleep(){
  if(state.location!=='npc'||!visitingNPC){if(npcBedSleep.npcId!==null)resetNPCBedSleep();return;}
  if(npcBedSleep.npcId!==visitingNPC.id){resetNPCBedSleep();npcBedSleep.npcId=visitingNPC.id;}
- if(npcBedSleep.phase==='awake'&&clock>=npcBedSleep.nextAt){npcBedSleep.phase='lying';npcBedSleep.start=clock;npcMotion.target=npcMotion.x;}
+ if(npcBedSleep.phase==='awake'&&clock>=npcBedSleep.nextAt){npcBedSleep.phase='lying';npcBedSleep.start=clock;npcMotion.target=npcMotion.x;npcMotion.targetY=npcMotion.y;}
  else if(npcBedSleep.phase==='lying'&&clock-npcBedSleep.start>=SLEEP_ENTER){npcBedSleep.phase='sleeping';npcBedSleep.start=clock;}
  else if(npcBedSleep.phase==='sleeping'&&clock-npcBedSleep.start>=8){npcBedSleep.phase='rising';npcBedSleep.start=clock;}
  else if(npcBedSleep.phase==='rising'&&clock-npcBedSleep.start>=SLEEP_EXIT){npcBedSleep.phase='awake';npcBedSleep.nextAt=clock+26+Math.random()*26;}
