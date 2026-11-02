@@ -445,7 +445,7 @@
 </head>
 <body>
 <button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.35</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.36</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
 <div id="visitIdentity" aria-label="Персонаж, якого відвідуєш"><img id="visitAvatar" alt=""><div class="visitText"><small>🏡 У гостях</small><strong id="visitNickname"></strong></div></div>
 <div id="visitDailyNotice" role="status" aria-live="polite" hidden>Ви вже привіталися сьогодні</div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
@@ -1165,6 +1165,7 @@ const NPC_PANTS={akira_bakeneko:'black_pants_2',night_fox:'brown_pants',yoyo_tch
 const NPC_COSTUMES={alter_core:['#252636','#ae4e8d','human'],dreaming_romance:['#252535','#a49ada','cat'],la_cyber:['#193547','#16d8d4','human'],night_fox:['#b66c3d','#f3b169','fox'],akira_bakeneko:['#212b38','#808b9a','human'],soft_static:['#d6cbd8','#b7a8d5','rabbit'],water_blue:['#397c9d','#70d6f2','shark'],wolf_fang:['#252b39','#e8c04d','wolf'],yuki_foxy:['#dce8f2','#79c9ee','fox'],yoyo_tchi:['#ca403d','#62a878','weasel']};
 function drawNPCHead(n,species,coat,accent,closedForSleep=false){
  ctx.save();ctx.translate(0,-120);
+ if(n.id==='akira_bakeneko'){ctx.translate(0,-6);ctx.scale(.92,.92)}
  const dark=['dreaming_romance','wolf_fang'].includes(n.id);
  const face=n.id==='akira_bakeneko'?'#efc5a7':n.id==='la_cyber'?'#785447':n.id==='yuki_foxy'?'#f1f3f7':n.id==='soft_static'?'#e4dce9':dark?'#252735':n.id==='night_fox'?'#d78b51':n.id==='water_blue'?'#579bbd':n.id==='yoyo_tchi'?'#e3c6a0':'#d5c4ce';
  // Авторські вуха цих NPC, за головою та під зачіскою.
@@ -1192,7 +1193,7 @@ function drawNPCHead(n,species,coat,accent,closedForSleep=false){
   const eye=n.id==='wolf_fang'?'#f4d84f':n.id==='yuki_foxy'?'#64cafa':n.id==='akira_bakeneko'?'#6bbcee':n.id==='la_cyber'?'#39e7e7':n.id==='water_blue'?'#102d48':'#27293a';
   for(const side of [-1,1]){ellipse(side*15,-2,5.4,7.4,eye);ellipse(side*14,-5,1.8,2.6,'#ffffff')}
  }
- const npcNoseMap={yuki_foxy:'nose_animal_bl',dreaming_romance:'nose_animal_blk',night_fox:'nose_animal_blk',wolf_fang:'nose_animal_blk',soft_static:'nose_animal_pn',water_blue:'nose_shark'};
+ const npcNoseMap={akira_bakeneko:'nose_animeguy',yuki_foxy:'nose_animal_bl',dreaming_romance:'nose_animal_blk',night_fox:'nose_animal_blk',wolf_fang:'nose_animal_blk',soft_static:'nose_animal_pn',water_blue:'nose_shark'};
  const npcMouthMap={alter_core:'anilipsnude',dreaming_romance:'catmouth',night_fox:'catmouth',akira_bakeneko:'funmouth',soft_static:'catmouth',wolf_fang:'catmouth',yuki_foxy:'catmouth'};
  const npcNoseId=npcNoseMap[n.id]||null;
  if(species==='fox'||species==='wolf'||species==='cat'||species==='weasel'){
