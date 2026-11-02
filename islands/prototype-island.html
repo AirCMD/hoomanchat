@@ -577,6 +577,47 @@
  #itemDock:has(.organizer-path) .organizer-controls{right:41%;}
  #itemDock .page-nav{flex-basis:75px;width:75px;}
 }
+
+/* α 2.3.52: Fixed four-zone dock layout. No visual jumps on pagination. */
+body:has(#itemDock.show) #roomSwitcher{display:none!important}
+#itemDock.show:has(.dock-topline){
+ box-sizing:border-box!important;display:grid!important;
+ grid-template-columns:minmax(0,1fr) 94px!important;
+ grid-template-rows:35px 34px minmax(0,1fr) 27px!important;
+ gap:4px 10px!important;padding:7px 12px 8px!important;
+ height:206px!important;min-height:206px!important;max-height:206px!important;
+ align-items:stretch!important;overflow:visible!important;
+}
+#itemDock .dock-topline{grid-column:1/-1;grid-row:1;display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;min-height:0}
+#itemDock .dock-heading{font-weight:800;font-size:13px;white-space:nowrap;flex-shrink:0}
+#itemDock .dock-top-actions{display:flex;gap:5px;align-items:center;justify-content:flex-end;min-width:0}
+#itemDock .dock-top-actions>button{height:28px!important;min-width:34px!important;padding:3px 8px!important;font-size:12px!important;clip-path:none!important;border-radius:5px!important;white-space:nowrap}
+#itemDock .dock-top-actions .dock-search{height:28px;align-self:auto;flex:0 0 34px;width:34px}
+#itemDock .dock-top-actions .dock-search>button{height:28px;min-height:28px}
+#itemDock .dock-tabline{grid-column:1/-1;grid-row:2;display:flex;align-items:center;gap:12px;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+#itemDock .dock-view-tabs{display:flex;gap:4px;align-items:center;flex:none}
+#itemDock .dock-tabline button{height:27px;min-height:27px;padding:3px 9px;white-space:nowrap;clip-path:none;border-radius:5px;font-size:11px;flex-shrink:0}
+#itemDock .dock-view-tabs button.chosen{background:#28627b;border-color:#8dffff;color:#fff}
+#itemDock .dock-tabline .dock-cats{display:flex;flex-wrap:nowrap;max-width:none;gap:4px;align-items:center;min-width:max-content;max-height:28px;flex:none}
+#itemDock .dock-tabline .dock-cats button{height:27px;min-height:27px;padding:3px 9px;font-size:11px;flex-shrink:0}
+#itemDock .dock-tabline .dock-back-folder{margin-left:auto}
+#itemDock.show:has(.dock-topline) .item-strip{grid-column:1/-1;grid-row:3!important;align-self:stretch!important;min-width:0;height:100%!important;min-height:0!important;max-height:none!important;overflow-x:auto;overflow-y:hidden;align-items:center}
+#itemDock.show:has(.dock-topline) .item-tile{box-sizing:border-box;height:98px!important;min-height:98px!important;max-height:98px!important;flex:0 0 98px;width:98px;overflow:hidden}
+#itemDock.show:has(.dock-topline) .item-tile.organizer-folder{height:98px!important;min-height:98px!important;max-height:98px!important;flex:0 0 92px;width:92px}
+#itemDock.show:has(.dock-topline) .page-nav{grid-column:1/-1!important;grid-row:4!important;justify-self:center;align-self:stretch!important;display:flex!important;flex-direction:row!important;gap:10px;align-items:center;width:auto!important;height:27px!important;min-height:27px!important;max-height:27px!important;margin:0!important;padding:0!important}
+#itemDock.show:has(.dock-topline) .page-nav button{width:32px;height:26px;min-height:26px;padding:1px 7px;clip-path:none;border-radius:4px}
+#itemDock.show:has(.dock-topline) .page-nav span{min-width:38px;text-align:center;font-size:11px;white-space:nowrap}
+#itemDock.show:has(.dock-topline) .organizer-path{position:absolute;right:10px;top:auto;bottom:113px;max-width:190px;z-index:2;height:25px;padding:1px 5px}
+#itemDock.show:has(.dock-topline) .organizer-move{bottom:calc(100% + 4px)}
+@media(max-width:680px){
+ #itemDock.show:has(.dock-topline){height:184px!important;min-height:184px!important;max-height:184px!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:32px 30px minmax(0,1fr) 24px!important;gap:3px!important;padding:5px 6px!important}
+ #itemDock .dock-topline .dock-heading{font-size:11px}
+ #itemDock .dock-top-actions>button{font-size:10px!important;min-width:29px!important;padding:2px 4px!important}
+ #itemDock .dock-tabline{gap:6px}
+ #itemDock .dock-tabline button,#itemDock .dock-tabline .dock-cats button{font-size:10px;padding:2px 6px}
+ #itemDock.show:has(.dock-topline) .item-tile{height:80px!important;min-height:80px!important;max-height:80px!important;flex-basis:75px;width:75px}
+ #itemDock.show:has(.dock-topline) .item-tile.organizer-folder{height:80px!important;min-height:80px!important;max-height:80px!important;flex-basis:72px;width:72px}
+}
 </style>
 </head>
 <body>
@@ -2932,7 +2973,11 @@ function renderItemDock(){if(!itemDockType)return;itemDockEl.classList.toggle('s
  }).join('')||'<span class="empty-text">Тут поки порожньо</span>';
  const pages=Math.max(1,Math.ceil(total/PAGE_SIZE)),navigation=`<nav class="page-nav"><button data-itemdock="page" data-page="${dockPage-1}" ${dockPage===0?'disabled':''}>◀</button><span>${dockPage+1} / ${pages}</span><button data-itemdock="page" data-page="${dockPage+1}" ${dockPage>=pages-1?'disabled':''}>▶</button></nav>`;
  const move=organizerMoveId&&state.owned[organizerMoveId]>0?`<div class="organizer-move"><span>Перенести: ${esc(ITEMS[organizerMoveId].name)}</span><button data-itemdock="move-to" data-folder="">📃 Загальний список</button>${data.folders.map(f=>`<button data-itemdock="move-to" data-folder="${esc(f.id)}">📁 ${esc(f.name)}</button>`).join('')}<button data-itemdock="cancel-move">Скасувати</button></div>`:'';
- itemDockEl.innerHTML=header+cats+searchControls+organizerFoldersUI(type)+(organizerFolder?`<div class="organizer-path">📂 ${esc(data.folders.find(f=>f.id===organizerFolder)?.name||'Папка')} <button data-itemdock="rename-folder" data-folder="${esc(organizerFolder)}">✎</button></div>`:'')+move+`<div class="item-strip" data-drop-folder="${organizerFolder||''}">${tiles}</div>${navigation}`;
+ const dockTitle=type==='inventory'?'🎒 Інвентар':'👗 Гардероб';
+ const dockHeader=`<div class="dock-topline"><div class="dock-heading">${dockTitle}</div><div class="dock-top-actions">${searchControls}<button type="button" data-itemdock="new-folder" title="Нова папка" aria-label="Нова папка">📁＋</button><button type="button" data-itemdock="sort-folders" title="Сортувати папки за назвою" aria-label="Сортувати папки">↕ АЯ</button><button type="button" data-itemdock="close" title="Закрити" aria-label="Закрити">✕</button></div></div>`;
+ const dockTabs=`<div class="dock-tabline"><div class="dock-view-tabs"><button class="${type==='inventory'?'chosen':''}" data-itemdock="switch-view" data-view="inventory">🎒 Інвентар</button><button class="${type==='wardrobe'?'chosen':''}" data-itemdock="switch-view" data-view="wardrobe">👗 Гардероб</button></div>${cats}${organizerFolder?`<button type="button" class="dock-back-folder" data-itemdock="folder-root" data-drop-folder="" title="До загального списку">↩ Усе</button>`:''}</div>`;
+ const dockFolderInfo=organizerFolder?`<div class="organizer-path">📂 ${esc(data.folders.find(f=>f.id===organizerFolder)?.name||'Папка')} <button data-itemdock="rename-folder" data-folder="${esc(organizerFolder)}">✎</button></div>`:'';
+ itemDockEl.innerHTML=dockHeader+dockTabs+dockFolderInfo+move+`<div class="item-strip" data-drop-folder="${organizerFolder||''}">${tiles}</div>${navigation}`;
 }
 // Плаваюча назва предмета поза панеллю: не змінює її висоту.
 const dockTooltip=document.createElement('div');dockTooltip.className='dock-hover-tooltip';dockTooltip.hidden=true;document.body.appendChild(dockTooltip);
@@ -2959,6 +3004,7 @@ itemDockEl.addEventListener('input',e=>{
  if(field){field.focus();try{field.setSelectionRange(cursor,cursor)}catch{}}
 });
 itemDockEl.addEventListener('click',e=>{const btn=e.target.closest('[data-itemdock]');if(!btn)return;const act=btn.dataset.itemdock,id=btn.dataset.id;
+ if(act==='switch-view'){if(btn.dataset.view==='inventory'||btn.dataset.view==='wardrobe'){openItemDock(btn.dataset.view)}return;}
  if(act==='toggle-search'){
   dockSearchOpen=!dockSearchOpen;
   itemDockEl.classList.toggle('search-open',dockSearchOpen);
