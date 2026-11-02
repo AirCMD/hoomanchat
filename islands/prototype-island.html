@@ -445,7 +445,7 @@
 </head>
 <body>
 <button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.40</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.45</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
 <div id="visitIdentity" aria-label="Персонаж, якого відвідуєш"><img id="visitAvatar" alt=""><div class="visitText"><small>🏡 У гостях</small><strong id="visitNickname"></strong></div></div>
 <div id="visitDailyNotice" role="status" aria-live="polite" hidden>Ви вже привіталися сьогодні</div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
@@ -1275,8 +1275,12 @@ function drawNPCFigure(n,x,y,size=1,closedForSleep=false){
  // Заднє волосся NPC — окремим шаром за шиєю та тулубом.
  if(NPC_WIGS[n.id]){
   ctx.save();
-  ctx.translate(BUILDER_POSE.head.x+npcIdle.headX,BUILDER_POSE.head.y+npcIdle.headY);
+  // Точно повторюємо трансформацію drawNPCHead:
+  // зовнішній head pivot -> поворот -> внутрішній зсув -120.
+  // Інакше заднє волосся відстає від голови під час її нахилу.
+  ctx.translate(BUILDER_POSE.head.x+npcIdle.headX,BUILDER_POSE.head.y+120+npcIdle.headY);
   ctx.rotate(npcIdle.headRot);
+  ctx.translate(0,-120);
   if(n.id==='akira_bakeneko'){ctx.translate(0,-7);ctx.scale(.89,.89)}
   const npcBackHx=species==='fox'?41:39,npcBackHy=species==='human'?40:36;
   renderAuthoredBackWig(ctx,NPC_WIGS[n.id],npcBackHx,npcBackHy);
@@ -2142,7 +2146,7 @@ for(const [id,filename] of Object.entries(wigPngFiles)){
  img.src=(typeof filename==='string' && (filename.startsWith('data:')||filename.startsWith('blob:'))) ? filename : '/hoomanchat/assets/'+filename;
 }
 const AUTHORED_WIG_LAYOUT={
- hair_akira:{scale:2.44,dy:-25},
+ hair_akira:{scale:2.44,dy:-13},
  hair_grad_copper:{scale:2.58,dy:-28},
  hair_grad_green:{scale:2.58,dy:-28},
  hair_grad_magenta:{scale:2.58,dy:-28},
@@ -2153,7 +2157,7 @@ const AUTHORED_WIG_LAYOUT={
  hair_grad_beige:{scale:2.58,dy:-28}
 };
 const AUTHORED_BACK_WIG_LAYOUT={
- hair_akira:{scale:2.34,dy:-26}
+ hair_akira:{scale:2.10,dy:-10}
 };
 function renderAuthoredBackWig(g,id,hx,hy){
  const sprite=wigBackSprites[id];if(!sprite||!sprite.ready)return false;
