@@ -442,7 +442,7 @@
 .shop-product-actions{display:flex;gap:4px;flex-direction:column;width:100%}
 .shop-product-actions .shop-try-button{background:#e9d2f4}
 
-/* α 2.3.50: dock geometry is immutable during pagination and folder navigation. */
+/* α 2.3.51: dock geometry is immutable during pagination and folder navigation. */
 #itemDock.show:has(.organizer-controls){
  height:158px!important;min-height:158px!important;max-height:158px!important;
  display:grid!important;grid-template-columns:max-content minmax(100px,220px) minmax(0,1fr) 94px;
@@ -501,6 +501,15 @@
  #itemDock:has(.organizer-controls) .page-nav button{width:19px!important;}
 }
 
+
+/* Пошук: фіксоване місце в панелі, без зміни її геометрії. */
+#itemDock .dock-search{position:relative;flex:0 0 33px;width:33px;height:30px;align-self:center;overflow:visible}
+#itemDock .dock-search>button{position:relative;width:32px;height:29px;min-height:29px;padding:2px;font-size:15px;clip-path:none;border-radius:5px;z-index:2}
+#itemDock .dock-search-input{display:none;position:absolute;z-index:4;right:36px;top:0;width:min(220px,44vw);height:30px;box-sizing:border-box;border:1px solid #4be5e5;border-radius:6px;background:#0c1c33;color:#e6ffff;padding:3px 9px;font:12px system-ui;outline-offset:1px;box-shadow:0 5px 16px #0008}
+#itemDock.search-open .dock-search-input{display:block}
+.dock-hover-tooltip{position:fixed;z-index:100000;pointer-events:none;max-width:min(300px,80vw);padding:7px 10px;border:1px solid #5ce6ea;border-radius:6px;background:#0b1e33f5;color:#e9ffff;box-shadow:0 4px 16px #0008;font:12px system-ui;white-space:normal}
+.dock-hover-tooltip[hidden]{display:none!important}
+
 </style>
 <style>
 .organizer-controls,.organizer-move,.organizer-path{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:4px 10px;color:#effaff}
@@ -512,7 +521,7 @@
 .organizer-folder button:focus-visible,.organizer-controls button:focus-visible{outline:2px solid #fff}
 .organizer-move{background:#214663}
 
-/* α 2.3.50: Компактний органайзер без стрибків панелі під час навігації. */
+/* α 2.3.51: Компактний органайзер без стрибків панелі під час навігації. */
 #itemDock.show:has(.organizer-controls){
  height:158px;min-height:158px;max-height:158px;
  align-items:flex-end;padding-top:39px;overflow:visible;
@@ -572,7 +581,7 @@
 </head>
 <body>
 <button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.50</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.51</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
 <div id="visitIdentity" aria-label="Персонаж, якого відвідуєш"><img id="visitAvatar" alt=""><div class="visitText"><small>🏡 У гостях</small><strong id="visitNickname"></strong></div></div>
 <div id="visitDailyNotice" role="status" aria-live="polite" hidden>Ви вже привіталися сьогодні</div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
@@ -2852,6 +2861,8 @@ const overlay=document.getElementById('overlay'),body=document.getElementById('p
 const toolbar=document.getElementById('toolbar'),friendDockEl=document.getElementById('friendDock');
 const itemDockEl=document.getElementById('itemDock');
 let itemDockType=null,itemDockSelection=null,selectedPlaced=null,dragPlaced=null;
+const dockSearchText={inventory:'',wardrobe:''};
+let dockSearchOpen=false;
 // Сітка розстановки: один перемикач для всіх кімнат, не змінює збережені позиції.
 const FURNITURE_GRID_STEP=32;
 let furnitureGridEnabled=false;
@@ -2890,8 +2901,8 @@ function pageSlice(items,page){return items.slice(Math.max(0,page)*PAGE_SIZE,(Ma
 function pageNav(page,total,action){const pages=Math.ceil(total/PAGE_SIZE);if(pages<=1)return '';const current=Math.max(0,Math.min(pages-1,page));return `<nav class="page-nav" aria-label="Сторінки"><button data-act="${action}" data-val="${current-1}" ${current===0?'disabled':''}>◀</button><span>Сторінка ${current+1} / ${pages}</span><button data-act="${action}" data-val="${current+1}" ${current+1>=pages?'disabled':''}>▶</button></nav>`}
 const itemDockCategories={inventory:[['all','Усе'],['food','Їжа'],['furniture','Меблі']],wardrobe:[['all','Усе'],['clothes','Одяг'],['wig','Перуки'],['accessory','Аксесуари']]};
 function closeItemDock(){organizerFolder=null;organizerMoveId=null;itemDockType=null;dockPage=0;itemDockSelection=null;selectedPlaced=null;dragPlaced=null;itemDockEl.classList.remove('show');toolbar.classList.remove('hidden')}
-function openItemDock(type){organizerFolder=null;organizerMoveId=null;dockPage=0;if(friendDock)toggleFriends(false);closePanel();itemDockType=type;itemDockSelection=null;selectedPlaced=null;itemDockEl.classList.add('show');toolbar.classList.add('hidden');renderItemDock()}
-function renderItemDock(){if(!itemDockType)return;const type=itemDockType,category=type==='inventory'?invCategory:wardrobeCategory;
+function openItemDock(type){organizerFolder=null;organizerMoveId=null;dockSearchOpen=false;dockPage=0;if(friendDock)toggleFriends(false);closePanel();itemDockType=type;itemDockSelection=null;selectedPlaced=null;itemDockEl.classList.add('show');toolbar.classList.add('hidden');renderItemDock()}
+function renderItemDock(){if(!itemDockType)return;itemDockEl.classList.toggle('search-open',dockSearchOpen);const type=itemDockType,category=type==='inventory'?invCategory:wardrobeCategory;
  if(type==='inventory'&&selectedPlaced){const item=state.homePlaced[selectedPlaced.index];if(!item||state.location!=='home'||selectedPlaced.room!==state.room){selectedPlaced=null}else{
    const it=ITEMS[item.id];const header=`<div class="dock-side"><button data-itemdock="close">✕ Закрити</button>${furnitureGridButton()}<button data-itemdock="list">❮ Назад</button></div>`;
    itemDockEl.innerHTML=header+`<div class="selected-item"><span class="big-emoji">${it?.emoji||'🪑'}</span><div><strong>${esc(it?.name||'Меблі')}</strong><small>Розміщено в кімнаті ${state.room+1} · ${it?.wall?'Перетягни вікно по стіні':'Перетягни предмет на підлозі'}</small><div class="item-actions"><button data-itemdock="lock">${item.locked?'🔓 Розблокувати':'🔒 Заблокувати'}</button><button data-itemdock="move" ${item.locked?'disabled':''}>✋ Пересунути</button><button data-itemdock="smaller" ${item.locked?'disabled':''}>− Менше</button><span style="align-self:center">${Math.round(furnitureScale(item)*100)}%</span><button data-itemdock="larger" ${item.locked?'disabled':''}>＋ Більше</button><button data-itemdock="mirror" ${item.locked?'disabled':''}>⇆ Дзеркало</button><button data-itemdock="rotate" ${item.locked?'disabled':''}>↻ Повернути</button>${it?.ceiling?`<button data-itemdock="up" ${item.locked?'disabled':''}>↑ Лампу вище</button><button data-itemdock="down" ${item.locked?'disabled':''}>↓ Лампу нижче</button>`:''}<button data-itemdock="pick" ${item.locked?'disabled':''}>🎒 Забрати</button></div></div></div>`;return;
@@ -2902,26 +2913,59 @@ function renderItemDock(){if(!itemDockType)return;const type=itemDockType,catego
  itemDockEl.innerHTML=header+`<div class="selected-item"><span class="big-emoji">${it.image?`<img src="${it.image}" style="max-width:70px;max-height:70px;object-fit:contain" alt="">`:it.emoji}</span><div><strong>${esc(it.name)}</strong><small>У наявності: ${count}</small><div class="item-actions"><button data-itemdock="use" data-id="${id}">${actionText}</button><button data-itemdock="choose-move" data-id="${id}">📁 До папки</button>${it.currency==='tokens'?'':`<button data-itemdock="sell" data-id="${id}" ${equipped?'disabled':''}>Продати +${Math.floor(it.price*.5)} ${COIN_HTML}</button>`}</div></div></div><button data-itemdock="list">❮ Назад</button>`;return}
  itemDockSelection=null;
  const cats=`<div class="dock-cats">${itemDockCategories[type].map(([id,name])=>`<button class="${category===id?'chosen':''}" data-itemdock="category" data-category="${id}">${name}</button>`).join('')}</div>`;
+ const query=(dockSearchText[type]||'').trim().toLocaleLowerCase('uk');
+ const searchControls=`<div class="dock-search"><button type="button" data-itemdock="toggle-search" title="Пошук предметів за назвою" aria-label="Пошук предметів">🔎</button><input class="dock-search-input" type="search" placeholder="Знайти предмет..." aria-label="Пошук за назвою" value="${esc(dockSearchText[type]||'')}" ${dockSearchOpen?'':'tabindex="-1"'}></div>`;
  const data=organizerEntry(type);
  if(organizerFolder&&!organizerHasFolder(type,organizerFolder))organizerFolder=null;
  const owned=Object.keys(ITEMS).filter(id=>(state.owned[id]||0)>0&&(type==='inventory'?['food','furniture'].includes(ITEMS[id].category):['clothes','wig','accessory'].includes(ITEMS[id].category)));
- const visible=owned.filter(id=>(category==='all'||ITEMS[id].category===category)&&(data.moves[id]||'')===(organizerFolder||''));
+ const visible=owned.filter(id=>(category==='all'||ITEMS[id].category===category)&&(query?ITEMS[id].name.toLocaleLowerCase('uk').includes(query):(data.moves[id]||'')===(organizerFolder||'')));
  // Спочатку користувацький порядок, потім назви.
  visible.sort((a,b)=>{const ia=data.order.indexOf(a),ib=data.order.indexOf(b);if(ia!==-1||ib!==-1)return (ia<0?1e6:ia)-(ib<0?1e6:ib);return ITEMS[a].name.localeCompare(ITEMS[b].name,'uk')});
- const folderRefs=!organizerFolder?data.folders.map(f=>({folder:f})):[];
- const placedItems=type==='inventory'&&state.location==='home'&&state.room!==3?state.homePlaced.map((o,i)=>({...o,index:i})).filter(o=>(o.room??0)===state.room):[];
+ const folderRefs=(!organizerFolder&&!query)?data.folders.map(f=>({folder:f})):[];
+ const placedItems=type==='inventory'&&state.location==='home'&&state.room!==3?state.homePlaced.map((o,i)=>({...o,index:i})).filter(o=>(o.room??0)===state.room&&(!query||(ITEMS[o.id]?.name||'').toLocaleLowerCase('uk').includes(query))):[];
  const tileRefs=[...folderRefs,...placedItems.map(o=>({placed:o})),...visible.map(id=>({id}))];
  const total=tileRefs.length;dockPage=Math.min(dockPage,Math.max(0,Math.ceil(total/PAGE_SIZE)-1));
  const tiles=pageSlice(tileRefs,dockPage).map(ref=>{
-  if(ref.folder){const f=ref.folder,count=owned.filter(id=>data.moves[id]===f.id).length;return `<div class="item-tile organizer-folder" data-drop-folder="${esc(f.id)}"><button type="button" data-itemdock="open-folder" data-folder="${esc(f.id)}">📁 ${esc(f.name)} <small>(${count})</small></button><button type="button" data-itemdock="rename-folder" data-folder="${esc(f.id)}" title="Перейменувати">✎</button><button type="button" data-itemdock="delete-folder" data-folder="${esc(f.id)}" title="Розформувати папку">×</button></div>`}
-  if(ref.placed){const o=ref.placed;return `<button class="item-tile" data-itemdock="placed" data-index="${o.index}"><span class="item-emoji">${ITEMS[o.id]?.emoji||'🪑'}</span><span class="item-name">${esc(ITEMS[o.id]?.name||'Предмет')}</span><span class="item-count">${o.locked?'🔒 Заблоковано':ITEMS[o.id]?.ceiling?'На стелі':'У кімнаті'}</span></button>`}
-  const id=ref.id;return `<button draggable="true" class="item-tile" data-drag-item="${id}" data-itemdock="select" data-id="${id}"><span class="item-emoji">${ITEMS[id].image?`<img loading="lazy" src="${ITEMS[id].image}" alt="" style="max-width:44px;max-height:58px;object-fit:contain">`:ITEMS[id].emoji}</span><span class="item-name">${esc(ITEMS[id].name)}</span><span class="item-count">×${state.owned[id]}</span></button>`;
+  if(ref.folder){const f=ref.folder,count=owned.filter(id=>data.moves[id]===f.id).length;return `<div class="item-tile organizer-folder" title="${esc(f.name)}" data-tooltip="${esc(f.name)}" data-drop-folder="${esc(f.id)}"><button type="button" data-itemdock="open-folder" data-folder="${esc(f.id)}">📁 ${esc(f.name)} <small>(${count})</small></button><button type="button" data-itemdock="rename-folder" data-folder="${esc(f.id)}" title="Перейменувати">✎</button><button type="button" data-itemdock="delete-folder" data-folder="${esc(f.id)}" title="Розформувати папку">×</button></div>`}
+  if(ref.placed){const o=ref.placed;return `<button class="item-tile" title="${esc(ITEMS[o.id]?.name||'Предмет')}" data-tooltip="${esc(ITEMS[o.id]?.name||'Предмет')}" data-itemdock="placed" data-index="${o.index}"><span class="item-emoji">${ITEMS[o.id]?.emoji||'🪑'}</span><span class="item-name">${esc(ITEMS[o.id]?.name||'Предмет')}</span><span class="item-count">${o.locked?'🔒 Заблоковано':ITEMS[o.id]?.ceiling?'На стелі':'У кімнаті'}</span></button>`}
+  const id=ref.id;return `<button draggable="true" class="item-tile" title="${esc(ITEMS[id].name)}" data-tooltip="${esc(ITEMS[id].name)}" data-drag-item="${id}" data-itemdock="select" data-id="${id}"><span class="item-emoji">${ITEMS[id].image?`<img loading="lazy" src="${ITEMS[id].image}" alt="" style="max-width:44px;max-height:58px;object-fit:contain">`:ITEMS[id].emoji}</span><span class="item-name">${esc(ITEMS[id].name)}</span><span class="item-count">×${state.owned[id]}</span></button>`;
  }).join('')||'<span class="empty-text">Тут поки порожньо</span>';
  const pages=Math.max(1,Math.ceil(total/PAGE_SIZE)),navigation=`<nav class="page-nav"><button data-itemdock="page" data-page="${dockPage-1}" ${dockPage===0?'disabled':''}>◀</button><span>${dockPage+1} / ${pages}</span><button data-itemdock="page" data-page="${dockPage+1}" ${dockPage>=pages-1?'disabled':''}>▶</button></nav>`;
  const move=organizerMoveId&&state.owned[organizerMoveId]>0?`<div class="organizer-move"><span>Перенести: ${esc(ITEMS[organizerMoveId].name)}</span><button data-itemdock="move-to" data-folder="">📃 Загальний список</button>${data.folders.map(f=>`<button data-itemdock="move-to" data-folder="${esc(f.id)}">📁 ${esc(f.name)}</button>`).join('')}<button data-itemdock="cancel-move">Скасувати</button></div>`:'';
- itemDockEl.innerHTML=header+cats+organizerFoldersUI(type)+(organizerFolder?`<div class="organizer-path">📂 ${esc(data.folders.find(f=>f.id===organizerFolder)?.name||'Папка')} <button data-itemdock="rename-folder" data-folder="${esc(organizerFolder)}">✎</button></div>`:'')+move+`<div class="item-strip" data-drop-folder="${organizerFolder||''}">${tiles}</div>${navigation}`;
+ itemDockEl.innerHTML=header+cats+searchControls+organizerFoldersUI(type)+(organizerFolder?`<div class="organizer-path">📂 ${esc(data.folders.find(f=>f.id===organizerFolder)?.name||'Папка')} <button data-itemdock="rename-folder" data-folder="${esc(organizerFolder)}">✎</button></div>`:'')+move+`<div class="item-strip" data-drop-folder="${organizerFolder||''}">${tiles}</div>${navigation}`;
 }
+// Плаваюча назва предмета поза панеллю: не змінює її висоту.
+const dockTooltip=document.createElement('div');dockTooltip.className='dock-hover-tooltip';dockTooltip.hidden=true;document.body.appendChild(dockTooltip);
+let hoveredDockTile=null;
+function hideDockTooltip(){dockTooltip.hidden=true;hoveredDockTile=null}
+itemDockEl.addEventListener('pointerover',e=>{
+ const tile=e.target.closest('[data-tooltip]');if(!tile||e.pointerType==='touch')return;
+ hoveredDockTile=tile;dockTooltip.textContent=tile.dataset.tooltip;dockTooltip.hidden=false;
+});
+itemDockEl.addEventListener('pointermove',e=>{
+ if(!hoveredDockTile||dockTooltip.hidden)return;
+ dockTooltip.style.left=Math.max(8,Math.min(innerWidth-dockTooltip.offsetWidth-8,e.clientX+12))+'px';
+ dockTooltip.style.top=Math.max(8,e.clientY-dockTooltip.offsetHeight-18)+'px';
+});
+itemDockEl.addEventListener('pointerout',e=>{if(hoveredDockTile&&!hoveredDockTile.contains(e.relatedTarget))hideDockTooltip()});
+itemDockEl.addEventListener('focusin',e=>{const tile=e.target.closest('[data-tooltip]');if(tile){hoveredDockTile=tile;dockTooltip.textContent=tile.dataset.tooltip;dockTooltip.hidden=false;const r=tile.getBoundingClientRect();dockTooltip.style.left=Math.max(8,Math.min(innerWidth-220,r.left))+'px';dockTooltip.style.top=Math.max(8,r.top-38)+'px'}});
+itemDockEl.addEventListener('focusout',hideDockTooltip);
+itemDockEl.addEventListener('input',e=>{
+ if(!e.target.matches('.dock-search-input')||!itemDockType)return;
+ const value=e.target.value.slice(0,90);dockSearchText[itemDockType]=value;dockPage=0;
+ const cursor=e.target.selectionStart;
+ renderItemDock();
+ const field=itemDockEl.querySelector('.dock-search-input');
+ if(field){field.focus();try{field.setSelectionRange(cursor,cursor)}catch{}}
+});
 itemDockEl.addEventListener('click',e=>{const btn=e.target.closest('[data-itemdock]');if(!btn)return;const act=btn.dataset.itemdock,id=btn.dataset.id;
+ if(act==='toggle-search'){
+  dockSearchOpen=!dockSearchOpen;
+  itemDockEl.classList.toggle('search-open',dockSearchOpen);
+  if(!dockSearchOpen){dockSearchText[itemDockType]='';dockPage=0;renderItemDock()}
+  else{const field=itemDockEl.querySelector('.dock-search-input');if(field)field.focus()}
+  return;
+ }
  if(act==='new-folder'){
   const name=prompt('Назва нової папки:','Нова папка');if(name===null)return;const trimmed=name.trim().slice(0,35);if(!trimmed)return;
   const data=organizerEntry(itemDockType);data.folders.push({id:'f'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name:trimmed});saveOrganizer();dockPage=0;renderItemDock();return;
