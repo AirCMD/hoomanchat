@@ -1763,15 +1763,15 @@ function drawNPCFigure(n,x,y,size=1,closedForSleep=false,seated=false){
  const img=NPC_IMAGES[n.id],npcWalking=!seated&&Math.hypot(npcMotion.target-npcMotion.x,(npcMotion.targetY-npcMotion.y)*H)>3,walkPhase=npcMotion.step,walk=npcWalking?Math.sin(walkPhase)*.23:0,bounce=seated?Math.sin(clock*1.8)*.35:npcWalking?Math.abs(Math.sin(walkPhase))*1.5:Math.sin(clock*2.4+n.name.length)*.6;
  const z=Math.max(.72,Math.min(1.24,size));
  const npcIdle=idlePose(clock+(n.name.length*.21),!npcWalking);
- ctx.save();const fx=interactionFX&&interactionFX.npc===n.id&&performance.now()/1000<interactionFX.until?interactionFX:null;ctx.translate(x,y-30+bounce+(fx&&fx.type==='dance'?Math.sin(clock*14)*9:fx&&fx.type==='hug'?-Math.abs(Math.sin(clock*11))*16:0));if(fx&&fx.type==='dance')ctx.rotate(Math.sin(clock*9)*.11);ctx.scale(z,z);
+ ctx.save();const fx=interactionFX&&interactionFX.npc===n.id&&performance.now()/1000<interactionFX.until?interactionFX:null;const seatedDrop=seated?10:0;ctx.translate(x,y-30+seatedDrop+bounce+(fx&&fx.type==='dance'?Math.sin(clock*14)*9:fx&&fx.type==='hug'?-Math.abs(Math.sin(clock*11))*16:0));if(fx&&fx.type==='dance')ctx.rotate(Math.sin(clock*9)*.11);ctx.scale(z,z);
  ellipse(0,84,36,9,'#12203977');
  // Хвіст та вуха є частинами однієї 2D-фігури, не просто аватаркою у кімнаті.
  if(['cat','fox','wolf','weasel'].includes(species)){ctx.beginPath();ctx.moveTo(23,-45);ctx.bezierCurveTo(69,-61,71,-14,49,-20);ctx.strokeStyle=species==='fox'?'#d99d70':coat;ctx.lineWidth=13;ctx.lineCap='round';ctx.stroke()}
  if(species==='shark'){ctx.beginPath();ctx.moveTo(0,-96);ctx.lineTo(13,-116);ctx.lineTo(24,-91);ctx.closePath();ctx.fillStyle='#6cb7d9';ctx.fill()}
  // Поза NPC відповідає позі в білдері.
  if(seated){
-  // Згинаємо ноги за допомогою локального масштабу, не міняючи анімацію ходьби інших NPC.
-  ctx.save();ctx.translate(0,-29);ctx.scale(1,.64);
+  // Згинаємо ноги м'якше, щоб поза сидіння виглядала природніше.
+  ctx.save();ctx.translate(0,-24);ctx.scale(1,.76);
   drawWalkingLegs(ctx,skin,0,false,NPC_PANTS[n.id]||null);
   ctx.restore();
  }else drawWalkingLegs(ctx,skin,walkPhase,npcWalking,NPC_PANTS[n.id]||null);
@@ -4343,4 +4343,3 @@ window.addEventListener('load',()=>{if(location.hash.startsWith('#room=')&&locat
 </script>
 </body>
 </html>
-
