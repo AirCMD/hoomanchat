@@ -1659,6 +1659,9 @@ function drawHome(){if(state.location==='home'&&state.room===3){drawYard();retur
   // doorway, interactive for a walk
   drawRounded(W*.81,H*.30,W*.15,H*.35,9,'#1c2e4b');drawRounded(W*.824,H*.32,W*.122,H*.31,6,'#4c8d9c');line(W*.839,H*.43,W*.919,H*.43,'#b2fffc',2);ellipse(W*.932,H*.51,4,4,'#ffdc7a');
   ctx.fillStyle='#ebffff';ctx.font='bold 12px system-ui';ctx.textAlign='center';ctx.fillText('НА ОСТРІВ ↗',W*.885,H*.275);
+  // Крісло Акіри в першій кімнаті, ліворуч, на місці з прикладу.
+  // Масштаб пропорційний ширині сцени (зображення займає ~18% екрану).
+  if(akiraHasChair())drawFurniture('armchair_plaid_dark',akiraChairX(),akiraChairY(),akiraChairScale());
   // Спальне місце NPC: основа ліжка за персонажем. Передня ковдра малюється після нього.
   if(state.location==='npc'){drawFurniture('bed',W*.73,H*.82,Math.max(.85,Math.min(1.25,W/570)));}
   // У кімнаті залишаються лише предмети, які розмістив гравець.
@@ -1752,12 +1755,12 @@ function drawNPCHead(n,species,coat,accent,closedForSleep=false){
  if(n.id==='water_blue'){for(const side of [-1,1]){ctx.beginPath();ctx.moveTo(side*33,4);ctx.lineTo(side*48,-6);ctx.lineTo(side*35,20);ctx.fillStyle=face;ctx.fill()}}
  ctx.restore();
 }
-function drawNPCFigure(n,x,y,size=1,closedForSleep=false){
+function drawNPCFigure(n,x,y,size=1,closedForSleep=false,seated=false){
  const [coat,accent,species]=NPC_COSTUMES[n.id]||['#44536a','#a3d7f5','human'];
  const skin=npcSkinColor(n.id);
  const npcOutfit=NPC_OUTFITS[n.id]||'starter_suit';
  const npcInner=NPC_INNERS[n.id]||null;
- const img=NPC_IMAGES[n.id],npcWalking=Math.hypot(npcMotion.target-npcMotion.x,npcMotion.targetY-npcMotion.y)>2,walkPhase=npcMotion.step,walk=npcWalking?Math.sin(walkPhase)*.23:0,bounce=npcWalking?Math.abs(Math.sin(walkPhase))*1.5:Math.sin(clock*2.4+n.name.length)*.6;
+ const img=NPC_IMAGES[n.id],npcWalking=!seated&&Math.hypot(npcMotion.target-npcMotion.x,(npcMotion.targetY-npcMotion.y)*H)>3,walkPhase=npcMotion.step,walk=npcWalking?Math.sin(walkPhase)*.23:0,bounce=seated?Math.sin(clock*1.8)*.35:npcWalking?Math.abs(Math.sin(walkPhase))*1.5:Math.sin(clock*2.4+n.name.length)*.6;
  const z=Math.max(.72,Math.min(1.24,size));
  const npcIdle=idlePose(clock+(n.name.length*.21),!npcWalking);
  ctx.save();const fx=interactionFX&&interactionFX.npc===n.id&&performance.now()/1000<interactionFX.until?interactionFX:null;ctx.translate(x,y-30+bounce+(fx&&fx.type==='dance'?Math.sin(clock*14)*9:fx&&fx.type==='hug'?-Math.abs(Math.sin(clock*11))*16:0));if(fx&&fx.type==='dance')ctx.rotate(Math.sin(clock*9)*.11);ctx.scale(z,z);
@@ -1766,7 +1769,12 @@ function drawNPCFigure(n,x,y,size=1,closedForSleep=false){
  if(['cat','fox','wolf','weasel'].includes(species)){ctx.beginPath();ctx.moveTo(23,-45);ctx.bezierCurveTo(69,-61,71,-14,49,-20);ctx.strokeStyle=species==='fox'?'#d99d70':coat;ctx.lineWidth=13;ctx.lineCap='round';ctx.stroke()}
  if(species==='shark'){ctx.beginPath();ctx.moveTo(0,-96);ctx.lineTo(13,-116);ctx.lineTo(24,-91);ctx.closePath();ctx.fillStyle='#6cb7d9';ctx.fill()}
  // Поза NPC відповідає позі в білдері.
- drawWalkingLegs(ctx,skin,walkPhase,npcWalking,NPC_PANTS[n.id]||null);
+ if(seated){
+  // Згинаємо ноги за допомогою локального масштабу, не міняючи анімацію ходьби інших NPC.
+  ctx.save();ctx.translate(0,-29);ctx.scale(1,.64);
+  drawWalkingLegs(ctx,skin,0,false,NPC_PANTS[n.id]||null);
+  ctx.restore();
+ }else drawWalkingLegs(ctx,skin,walkPhase,npcWalking,NPC_PANTS[n.id]||null);
  ctx.save();
  // Задня рука: під тулубом, щоб плече не перекривало костюм.
  ctx.save();
@@ -1815,8 +1823,41 @@ function drawNPCFigure(n,x,y,size=1,closedForSleep=false){
  drawNPCHead(n,species,coat,accent,closedForSleep);
  ctx.restore();
  // персонаж повинен бути добре помітним у кімнаті
- if(!closedForSleep){drawRounded(-54,9,108,21,7,'#0e203bdc');ctx.fillStyle='#e8ffff';ctx.font='bold 12px system-ui';ctx.textAlign='center';ctx.fillText(n.name,0,24,103);}
+ if(!closedForSleep&&!seated){drawRounded(-54,9,108,21,7,'#0e203bdc');ctx.fillStyle='#e8ffff';ctx.font='bold 12px system-ui';ctx.textAlign='center';ctx.fillText(n.name,0,24,103);}
  if(fx){ctx.font='22px system-ui';ctx.textAlign='center';ctx.fillText(fx.type==='hug'?'💞':fx.type==='dance'?'🎵':fx.type==='play'?'✨':'👋',0,-155)}ctx.restore();
+}
+// Особисте крісло Акіри у кімнаті №1 під час візиту.
+// Воно є частиною інтер'єру NPC, а не покупкою гравця.
+function akiraHasChair(){return state.location==='npc'&&visitingNPC?.id==='akira_bakeneko'&&npcRoom===0}
+function akiraChairX(){return W*.102}
+function akiraChairY(){return H*.79}
+function akiraChairScale(){return Math.max(.62,Math.min(3.35,W*.176/104))}
+const akiraChairSit={phase:'idle',nextAt:0,until:0,active:false};
+function updateAkiraChairSit(){
+ if(!akiraHasChair()){
+  if(akiraChairSit.active){akiraChairSit.phase='idle';akiraChairSit.nextAt=0;akiraChairSit.active=false;}
+  return;
+ }
+ if(!akiraChairSit.active){akiraChairSit.active=true;akiraChairSit.phase='idle';akiraChairSit.nextAt=clock+8+Math.random()*7;}
+ // Не сидіти одночасно у кріслі та в ліжку.
+ if(npcBedSleep.phase!=='awake'){
+  akiraChairSit.phase='idle';akiraChairSit.nextAt=clock+16+Math.random()*8;
+  return;
+ }
+ if(akiraChairSit.phase==='idle'&&clock>=akiraChairSit.nextAt){
+  akiraChairSit.phase='approach';npcMotion.at=clock+999;
+ }
+ if(akiraChairSit.phase==='approach'){
+  const dx=(akiraChairX()-W*.63)-npcMotion.x;
+  const dy=(.755-npcMotion.y)*H;
+  if(Math.hypot(dx,dy)<7){
+   akiraChairSit.phase='seated';akiraChairSit.until=clock+8+Math.random()*8;
+   npcMotion.x=akiraChairX()-W*.63;npcMotion.y=.755;
+  }
+ }else if(akiraChairSit.phase==='seated'&&clock>=akiraChairSit.until){
+  akiraChairSit.phase='idle';akiraChairSit.nextAt=clock+26+Math.random()*23;
+  npcMotion.at=clock+.3;
+ }
 }
 // NPC переміщуються по площі підлоги, а не лише горизонтально.
 const npcMotion={x:0,y:.81,target:0,targetY:.81,at:0,dir:1,step:0};
@@ -1825,9 +1866,14 @@ function npcWalkTick(dt){
  const visiting=state.location==='npc';
  const centerX=visiting?.63:.67;
  const centerY=visiting?.81:.82;
- // Межі кімнати: не заходити за стіни чи нижню панель.
- const left=W*.19,right=W*.86,top=.69,bottom=.87;
- if(clock>npcMotion.at){
+ // Акіра може підійти до крісла біля лівої стіни.
+ const left=W*(akiraHasChair()?.102:.19),right=W*.86,top=.69,bottom=.87;
+ if(akiraHasChair()&&(akiraChairSit.phase==='approach'||akiraChairSit.phase==='seated')){
+  npcMotion.target=akiraChairX()-W*centerX;
+  npcMotion.targetY=.755;
+  npcMotion.at=clock+999;
+  if(akiraChairSit.phase==='seated')return;
+ }else if(clock>npcMotion.at){
   const targetX=left+Math.random()*(right-left);
   npcMotion.target=targetX-W*centerX;
   npcMotion.targetY=top+Math.random()*(bottom-top);
@@ -1837,7 +1883,7 @@ function npcWalkTick(dt){
  const dy=(npcMotion.targetY-npcMotion.y)*H;
  const dist=Math.hypot(dx,dy);
  if(dist>1){
-  const travel=Math.min(dist,dt*46);
+  const travel=Math.min(dist,dt*(akiraHasChair()&&akiraChairSit.phase==='approach'?115:46));
   npcMotion.x+=dx/dist*travel;
   npcMotion.y+=dy/dist*travel/H;
   npcMotion.step+=travel*.22;
@@ -1854,7 +1900,10 @@ function drawNPCVisit(){
  if(state.location==='npc'&&visitingNPC){
   const sc=Math.max(.85,Math.min(1.25,W/570));
   if(npcBedSleep.phase!=='awake')drawSleepingNPC(visitingNPC,W*.73,H*.82,sc);
-  else drawNPCFigure(visitingNPC,W*.63+npcMotion.x,H*npcMotion.y+bob,sc*depthScale);
+  else if(akiraHasChair()&&akiraChairSit.phase==='seated'){
+   // Посадка на подушку крісла, фігура окремо від ходячої анімації.
+   drawNPCFigure(visitingNPC,akiraChairX(),akiraChairY()-64,sc*.90,false,true);
+  }else drawNPCFigure(visitingNPC,W*.63+npcMotion.x,H*npcMotion.y+bob,sc*depthScale);
   return;
  }
  if(state.location==='home'&&visitor){
@@ -3251,7 +3300,7 @@ function resetNPCBedSleep(){npcBedSleep.npcId=null;npcBedSleep.phase='awake';npc
 function updateNPCBedSleep(){
  if(state.location!=='npc'||!visitingNPC){if(npcBedSleep.npcId!==null)resetNPCBedSleep();return;}
  if(npcBedSleep.npcId!==visitingNPC.id){resetNPCBedSleep();npcBedSleep.npcId=visitingNPC.id;}
- if(npcBedSleep.phase==='awake'&&clock>=npcBedSleep.nextAt){npcBedSleep.phase='lying';npcBedSleep.start=clock;npcMotion.target=npcMotion.x;npcMotion.targetY=npcMotion.y;}
+ if(npcBedSleep.phase==='awake'&&clock>=npcBedSleep.nextAt&&!(akiraHasChair()&&['approach','seated'].includes(akiraChairSit.phase))){npcBedSleep.phase='lying';npcBedSleep.start=clock;npcMotion.target=npcMotion.x;npcMotion.targetY=npcMotion.y;}
  else if(npcBedSleep.phase==='lying'&&clock-npcBedSleep.start>=SLEEP_ENTER){npcBedSleep.phase='sleeping';npcBedSleep.start=clock;}
  else if(npcBedSleep.phase==='sleeping'&&clock-npcBedSleep.start>=8){npcBedSleep.phase='rising';npcBedSleep.start=clock;}
  else if(npcBedSleep.phase==='rising'&&clock-npcBedSleep.start>=SLEEP_EXIT){npcBedSleep.phase='awake';npcBedSleep.nextAt=clock+26+Math.random()*26;}
@@ -3295,7 +3344,7 @@ function render(t){
  perfStats.frames++;
  if(!perfStats.lastSample)perfStats.lastSample=t;
  if(t-perfStats.lastSample>=1000){perfStats.fps=perfStats.frames*1000/(t-perfStats.lastSample);perfStats.frames=0;perfStats.lastSample=t;refreshPerfStatus()}
- clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.15);lastTime=t;clock+=dt;if(activePanel==='shop'){updateDustLayer();paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender();return}tickNeeds(dt);updateNPCBedSleep();if(npcBedSleep.phase==='awake')npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='shared')drawSharedHouse();else if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();drawStationNPCs();if(spaceTalkNode&&!spaceTalkNode.hidden&&performance.now()>spaceTalkUntil)spaceTalkNode.hidden=true;robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'||state.location==='shared'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}updateBedSleep();const scale=Math.max(.69,Math.min(1.1,W/650));if(sleepScene&&sleepScene.phase!=='approach')drawSleepingPet(ctx,p.x,p.y,scale);else puppet(ctx,p.x,p.y,scale);if(placing&&!ITEMS[placing]?.wall){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender()}
+ clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.15);lastTime=t;clock+=dt;if(activePanel==='shop'){updateDustLayer();paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender();return}tickNeeds(dt);updateNPCBedSleep();updateAkiraChairSit();if(npcBedSleep.phase==='awake')npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='shared')drawSharedHouse();else if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();drawStationNPCs();if(spaceTalkNode&&!spaceTalkNode.hidden&&performance.now()>spaceTalkUntil)spaceTalkNode.hidden=true;robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'||state.location==='shared'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}updateBedSleep();const scale=Math.max(.69,Math.min(1.1,W/650));if(sleepScene&&sleepScene.phase!=='approach')drawSleepingPet(ctx,p.x,p.y,scale);else puppet(ctx,p.x,p.y,scale);if(placing&&!ITEMS[placing]?.wall){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender()}
 function placedHit(x,y){if(state.location!=='home'||state.room===3)return -1;for(let i=state.homePlaced.length-1;i>=0;i--){const p=state.homePlaced[i];if((p.room??0)!==state.room)continue;const scale=furnitureScale(p);if(ITEMS[p.id]?.wall){if(Math.abs(p.x*W-x)<78*scale&&Math.abs(p.y*H-y)<78*scale)return i}else if(ITEMS[p.id]?.ceiling){const size=105*Math.max(.65,Math.min(1.25,W/700))*scale,top=H*.035-5+(lampVertical(p)-.20)*H;if(Math.abs(p.x*W-x)<size/2+8&&y>=top-8&&y<=top+size+8)return i}else if(Math.abs(p.x*W-x)<46*scale&&Math.abs(p.y*H-y+22*scale)<52*scale)return i}return -1}
 // Перетягування меблів дозволене лише у відкритому інвентарі меблів.
 function dragFurniturePosition(e){
@@ -4294,3 +4343,4 @@ window.addEventListener('load',()=>{if(location.hash.startsWith('#room=')&&locat
 </script>
 </body>
 </html>
+
