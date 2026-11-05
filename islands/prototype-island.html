@@ -1885,6 +1885,7 @@ function npcSkinColor(id){return NPC_SKIN_COLORS[id]||'#d5c4ce'}
 function drawNPCHead(n,species,coat,accent,closedForSleep=false){
  ctx.save();ctx.translate(0,-120);
  if(n.id==='akira_bakeneko'){ctx.translate(0,1);ctx.scale(.72,.72)}
+ if(n.id==='alter_core'){ctx.translate(0,5);ctx.scale(.6,.6)}
  const dark=['dreaming_romance','wolf_fang'].includes(n.id);
  const face=npcSkinColor(n.id);
  const npcWig=NPC_WIGS[n.id]||null;
@@ -1925,7 +1926,7 @@ function drawNPCHead(n,species,coat,accent,closedForSleep=false){
  if(n.id==='water_blue'){
   renderAuthoredNose(ctx,'nose_shark');renderAuthoredMouth(ctx,'sharkgrip',npcHx,npcHy)
  }else if(npcNoseId){
-  renderAuthoredNose(ctx,npcNoseId,npcHx,npcHy);
+  ctx.save();if(n.id==='alter_core')ctx.translate(0,7);renderAuthoredNose(ctx,npcNoseId,npcHx,npcHy);ctx.restore();
   if(npcMouthMap[n.id]){ctx.save();if(n.id==='alter_core')ctx.translate(0,10);if(n.id==='akira_bakeneko'){ctx.translate(0,6);ctx.scale(1.15,1.15)}renderAuthoredMouth(ctx,npcMouthMap[n.id],npcHx,npcHy);ctx.restore();}
   else{ctx.beginPath();ctx.arc(0,16,5,0,Math.PI);ctx.strokeStyle=dark?'#d8d5e0':'#66505d';ctx.lineWidth=2;ctx.stroke()}
  }else{
