@@ -1566,7 +1566,25 @@ function resize(){
  ctx.setTransform(pw/Math.max(1,W),0,0,ph/Math.max(1,H),0,0);
 }window.addEventListener('resize',resize);
 function world(){return{cx:W*.5,cy:H*.49,rx:Math.min(W*.48,570),ry:Math.min(H*.34,260)}}
-function onIsland(x,y){const q=world();return((x-q.cx)/q.rx)**2+((y-q.cy)/q.ry)**2<.83}
+function spaceWalkBounds(){
+ // На космічній станції підлога починається на 71% висоти сцени.
+ const left=Math.min(W*.47,Math.max(24,W*.045)),right=W-left;
+ const top=H*.755,bottom=H*.92;
+ return {left,right,top,bottom};
+}
+function clampSpaceFloorPoint(x,y){
+ const b=spaceWalkBounds();
+ return {x:Math.max(b.left,Math.min(b.right,x)),y:Math.max(b.top,Math.min(b.bottom,y))};
+}
+function onIsland(x,y){
+ if(currentSpaceDestination&&spaceScene){const b=spaceWalkBounds();return x>=b.left&&x<=b.right&&y>=b.top&&y<=b.bottom;}
+ const q=world();return((x-q.cx)/q.rx)**2+((y-q.cy)/q.ry)**2<.83;
+}
+function clampPetToSpaceFloor(){
+ if(state.location!=='island'||!currentSpaceDestination||!spaceScene)return;
+ const p=getPetPos(),point=clampSpaceFloorPoint(p.x,p.y),q=world();
+ pet.x=(point.x-q.cx)/q.rx;pet.y=(point.y-q.cy)/q.ry;
+}
 function posForWorld(u,v){const q=world();return{x:q.cx+u*q.rx,y:q.cy+v*q.ry}}
 function getPetPos(){return (state.location==='home'||state.location==='npc'||state.location==='shared')?{x:W/2+pet.x*Math.min(W*.33,310),y:H*.70+pet.y*Math.min(H*.24,125)}:posForWorld(pet.x,pet.y)}
 // Відвідування реальних друзів через знімок будинку. Ніколи не записуємо чужі дані в state.
@@ -1608,7 +1626,7 @@ function drawSharedHouse(){
  // Зовнішність власника береться лише з коду, без доступу до його збереження.
  puppet(ctx,W*.70,H*.81,Math.max(.70,Math.min(1.08,W/650)),false,sharedHouse.appearance);
 }
-function setLocation(where){if(where==='home'){currentSpaceDestination=null;if(spaceScene){spaceScene.width=0;spaceScene.height=0}spaceScene=null;spaceNPCSlots=[];if(spaceTalkNode)spaceTalkNode.hidden=true}if(sleepScene)wakeBedSleep(true);if(state.location==='shared'){sharedHouse=null;sharedRoom=0}if(state.room>0&&!canEnterHomeSpace(state.room))state.room=0;if(where!== 'home'&&where!=='island')return;selectedNPC=null;visitingNPC=null;state.location=where;if(where==='home')state.room=isHomeRoomUnlocked(state.startRoom)?state.startRoom:0;updateRoomUI();pet.x=where==='home'?0:.0;pet.y=where==='home'?0:.2;walkTarget=null;placing=null;action='idle';save();updateLocationUI();toast(where==='home'?'Ти вдома! Натискай на підлогу, щоб рухатися 🏠':'Час прогулянки! 🌿')}
+function setLocation(where){if(where==='home'){currentSpaceDestination=null;if(spaceScene){spaceScene.width=0;spaceScene.height=0}spaceScene=null;spaceNPCSlots=[];if(spaceTalkNode)spaceTalkNode.hidden=true}if(sleepScene)wakeBedSleep(true);if(state.location==='shared'){sharedHouse=null;sharedRoom=0}if(state.room>0&&!canEnterHomeSpace(state.room))state.room=0;if(where!== 'home'&&where!=='island')return;selectedNPC=null;visitingNPC=null;state.location=where;if(where==='home')state.room=isHomeRoomUnlocked(state.startRoom)?state.startRoom:0;updateRoomUI();pet.x=where==='home'?0:.0;pet.y=where==='home'?0:(currentSpaceDestination&&spaceScene?((H*.82-world().cy)/world().ry):.2);walkTarget=null;placing=null;action='idle';save();updateLocationUI();toast(where==='home'?'Ти вдома! Натискай на підлогу, щоб рухатися 🏠':'Час прогулянки! 🌿')}
 function updateLocationUI(){updateVisitDailyNotice();updateRoomUI();updateRoomCleanUI();const badge=document.getElementById('visitIdentity');const showVisitor=state.location==='npc'&&!!visitingNPC;badge.classList.toggle('visible',showVisitor);if(showVisitor){document.getElementById('visitAvatar').src=visitingNPC.avatar;document.getElementById('visitNickname').textContent=visitingNPC.name;}else{document.getElementById('visitAvatar').removeAttribute('src');document.getElementById('visitNickname').textContent='';}document.getElementById('locationTitle').textContent=state.location==='shared'?'🏡 Гості: '+sharedHouse?.name:state.location==='npc'?'🏡 У гостях у '+(visitingNPC?.name||'друга'):state.location==='home'?(state.room===3?'🪐 Космічний двір':'🏠 '+homeRoomLabel(state.room)):'🏝️ Твій маленький острів';document.getElementById('hint').textContent=state.location==='shared'?'Ти в гостях. Меблі друга змінювати не можна':state.location==='npc'?'Гостюєш у друга. Натисни «Дім», щоб повернутися':state.location==='home'?(state.room===3?'Натисни на капсулу для вирощування комах':'Натискай на підлогу. Двері ведуть на острів'):'Натискай на острів або будиночок';document.getElementById('homeButtonLabel').textContent=state.location==='home'?'Гуляти':(state.location==='npc'||state.location==='shared')?'Додому':'Дім'}
 // Межі ходьби визначаються реальною лінією стику стіни й підлоги (H * .59).
 // Координата персонажа відповідає точці під ногами, а не його голові.
@@ -1953,23 +1971,27 @@ function npcWalkTick(dt){
  npcMotion.x=Math.max(left-W*centerX,Math.min(right-W*centerX,npcMotion.x));
  npcMotion.y=Math.max(top,Math.min(bottom,npcMotion.y));
 }
-function drawNPCVisit(){
+function npcVisitActor(){
  const walking=Math.hypot(npcMotion.target-npcMotion.x,(npcMotion.targetY-npcMotion.y)*H)>3;
  const bob=walking?Math.sin(clock*5)*2:0;
- // Персонаж трохи зменшується, коли відходить углиб кімнати.
  const depthScale=.89+(npcMotion.y-.69)/(.87-.69)*.18;
  if(state.location==='npc'&&visitingNPC){
   const sc=Math.max(.85,Math.min(1.25,W/570));
-  if(npcBedSleep.phase!=='awake')drawSleepingNPC(visitingNPC,W*.73,H*.82,sc);
-  else if(akiraHasChair()&&akiraChairSit.phase==='seated'){
-   // Посадка на подушку персонального крісла, фігура окремо від ходячої анімації.
-   drawNPCFigure(visitingNPC,akiraChairX(),akiraChairY()-akiraChairSitOffset(),sc*akiraChairSitScale(),false,true);
-  }else drawNPCFigure(visitingNPC,W*.63+npcMotion.x,H*npcMotion.y+bob,sc*depthScale);
-  return;
+  if(npcBedSleep.phase!=='awake'){
+   return {y:H*.82,draw:()=>drawSleepingNPC(visitingNPC,W*.73,H*.82,sc)};
+  }
+  if(akiraHasChair()&&akiraChairSit.phase==='seated'){
+   const x=akiraChairX(),y=akiraChairY()-akiraChairSitOffset();
+   return {y:akiraChairY(),draw:()=>drawNPCFigure(visitingNPC,x,y,sc*akiraChairSitScale(),false,true)};
+  }
+  const x=W*.63+npcMotion.x,y=H*npcMotion.y+bob;
+  return {y,draw:()=>drawNPCFigure(visitingNPC,x,y,sc*depthScale)};
  }
  if(state.location==='home'&&visitor){
-  drawNPCFigure(visitor,W*.67+npcMotion.x,H*npcMotion.y+bob,Math.max(.72,Math.min(1,W/620))*depthScale);
+  const x=W*.67+npcMotion.x,y=H*npcMotion.y+bob;
+  return {y,draw:()=>drawNPCFigure(visitor,x,y,Math.max(.72,Math.min(1,W/620))*depthScale)};
  }
+ return null;
 }
 function updateVisitor(){if(state.location!=='home'||visitingNPC)return;if(visitor&&clock>visitor.until){toast(visitor.name+' пішов/пішла додому');visitor=null;nextVisitorAt=clock+35+Math.random()*45}if(!visitor&&clock>nextVisitorAt){const n=NPCS[Math.floor(Math.random()*NPCS.length)];visitor={...n,until:clock+18};toast('До тебе завітав '+n.name+'! 👋')}}
 // Підвісне освітлення. До появи настінного вимикача світло ввімкнене за замовчуванням.
@@ -3413,7 +3435,6 @@ function scheduleRender(){if(!document.hidden&&!mainFrameId)mainFrameId=requestA
 function render(t){
  mainFrameId=0;
  if(document.hidden)return;
- // Модальна аркада малює свою сцену. Не витрачаємо CPU на гру позаду.
  if(mgOverlay.classList.contains('visible')){lastTime=t;renderLastPaint=t;scheduleRender();return}
  const movingNow=!!(walkTarget||shopHoldDir||action!=='idle');
  const targetFPS=resourceSaver?(movingNow?30:12):(movingNow?45:(activePanel?15:24));
@@ -3422,7 +3443,51 @@ function render(t){
  perfStats.frames++;
  if(!perfStats.lastSample)perfStats.lastSample=t;
  if(t-perfStats.lastSample>=1000){perfStats.fps=perfStats.frames*1000/(t-perfStats.lastSample);perfStats.frames=0;perfStats.lastSample=t;refreshPerfStatus()}
- clampPetToRoom();let dt=Math.min((t-lastTime)/1000||0,.15);lastTime=t;clock+=dt;if(activePanel==='shop'){updateDustLayer();paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender();return}tickNeeds(dt);updateNPCBedSleep();updateAkiraChairSit();if(npcBedSleep.phase==='awake')npcWalkTick(dt);ctx.clearRect(0,0,W,H);if(state.location==='shared')drawSharedHouse();else if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();updateVisitor();drawDust();drawNPCVisit();drawStationNPCs();if(spaceTalkNode&&!spaceTalkNode.hidden&&performance.now()>spaceTalkUntil)spaceTalkNode.hidden=true;robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';let p=getPetPos();if(walkTarget){let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}else{let speed=120,travel=Math.min(d,speed*dt);if(state.location==='home'||state.location==='npc'||state.location==='shared'){const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125)}else{pet.x+=(dx/d)*travel/q.rx;pet.y+=(dy/d)*travel/q.ry;}pet.dir=dx<0?-1:1;pet.step+=dt*11}}updateBedSleep();const scale=Math.max(.69,Math.min(1.1,W/650));if(sleepScene&&sleepScene.phase!=='approach')drawSleepingPet(ctx,p.x,p.y,scale);else puppet(ctx,p.x,p.y,scale);if(placing&&!ITEMS[placing]?.wall){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender()}
+ clampPetToRoom();clampPetToSpaceFloor();
+ let dt=Math.min((t-lastTime)/1000||0,.15);lastTime=t;clock+=dt;
+ if(activePanel==='shop'){updateDustLayer();paintShopCharacters();if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}scheduleRender();return}
+ tickNeeds(dt);updateNPCBedSleep();updateAkiraChairSit();if(npcBedSleep.phase==='awake')npcWalkTick(dt);
+ updateVisitor();robotDustTick();maybeAction();if(clock>=actionUntil)action='idle';
+ // Спершу оновлюємо рух, потім малюємо кадр із новими координатами.
+ let p=getPetPos();
+ if(walkTarget){
+  let dx=walkTarget.x-p.x,dy=walkTarget.y-p.y,d=Math.hypot(dx,dy),q=world();
+  if(d<3){walkTarget=null;if(pendingFurniture){const item=pendingFurniture;pendingFurniture=null;useFurniture(item)}}
+  else{
+   const travel=Math.min(d,120*dt);
+   if(state.location==='home'||state.location==='npc'||state.location==='shared'){
+    const next=clampHomePoint(p.x+(dx/d)*travel,p.y+(dy/d)*travel);
+    pet.x=(next.x-W/2)/Math.min(W*.33,310);pet.y=(next.y-H*.70)/Math.min(H*.24,125);
+   }else{
+    const rawX=p.x+(dx/d)*travel,rawY=p.y+(dy/d)*travel;
+    const next=(currentSpaceDestination&&spaceScene)?clampSpaceFloorPoint(rawX,rawY):{x:rawX,y:rawY};
+    pet.x=(next.x-q.cx)/q.rx;pet.y=(next.y-q.cy)/q.ry;
+   }
+   pet.dir=dx<0?-1:1;pet.step+=dt*11;
+  }
+ }
+ clampPetToSpaceFloor();p=getPetPos();
+ updateBedSleep();
+ ctx.clearRect(0,0,W,H);
+ if(state.location==='shared')drawSharedHouse();else if(state.location==='home'||state.location==='npc')drawHome();else drawScenery();
+ drawDust();
+ const scale=Math.max(.69,Math.min(1.1,W/650));
+ const player={y:p.y,draw:()=>{
+  if(sleepScene&&sleepScene.phase!=='approach')drawSleepingPet(ctx,p.x,p.y,scale);
+  else puppet(ctx,p.x,p.y,scale);
+ }};
+ const actors=[player],visitActor=npcVisitActor();
+ if(visitActor)actors.push(visitActor);
+ actors.push(...stationNPCActors());
+ // Менше Y означає далі від глядача; ближні персонажі малюються останніми.
+ actors.sort((a,b)=>a.y-b.y);
+ for(const actor of actors)actor.draw();
+ if(spaceTalkNode&&!spaceTalkNode.hidden&&performance.now()>spaceTalkUntil)spaceTalkNode.hidden=true;
+ if(placing&&!ITEMS[placing]?.wall){ctx.save();ctx.globalAlpha=.7;drawFurniture(placing,p.x+85,p.y-22);ctx.restore()}
+ paintShopCharacters();
+ if(shopHoldDir&&clock>=shopNextTurn){if(!stepShopPage(shopHoldDir))shopHoldDir=0;shopNextTurn=clock+.12}
+ scheduleRender();
+}
 function placedHit(x,y){if(state.location!=='home'||state.room===3)return -1;for(let i=state.homePlaced.length-1;i>=0;i--){const p=state.homePlaced[i];if((p.room??0)!==state.room)continue;const scale=furnitureScale(p);if(ITEMS[p.id]?.wall){if(Math.abs(p.x*W-x)<78*scale&&Math.abs(p.y*H-y)<78*scale)return i}else if(ITEMS[p.id]?.ceiling){const size=105*Math.max(.65,Math.min(1.25,W/700))*scale,top=H*.035-5+(lampVertical(p)-.20)*H;if(Math.abs(p.x*W-x)<size/2+8&&y>=top-8&&y<=top+size+8)return i}else if(Math.abs(p.x*W-x)<46*scale&&Math.abs(p.y*H-y+22*scale)<52*scale)return i}return -1}
 // Перетягування меблів дозволене лише у відкритому інвентарі меблів.
 function dragFurniturePosition(e){
@@ -3993,11 +4058,16 @@ const SPACE_DIALOGUE={
 };
 function spaceLocalDay(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function stationNPCs(place){if(!place)return [];const ix=Math.max(0,SPACE_DESTINATIONS.findIndex(p=>p.id===place));return [0,1,2].map((k)=>NPCS[(ix*3+k)%NPCS.length]).filter(Boolean)}
-function drawStationNPCs(){
- if(state.location!=='island'||!currentSpaceDestination||!spaceScene){spaceNPCSlots=[];return}
- const members=stationNPCs(currentSpaceDestination);spaceNPCSlots=[];
+function stationNPCActors(){
+ if(state.location!=='island'||!currentSpaceDestination||!spaceScene){spaceNPCSlots=[];return []}
+ const members=stationNPCs(currentSpaceDestination),actors=[];spaceNPCSlots=[];
  const sc=Math.max(.54,Math.min(.9,W/900));
- members.forEach((n,i)=>{const x=W*(.26+i*.25),y=H*(.72+(i%2)*.055);spaceNPCSlots.push({id:n.id,x,y,r:Math.max(48,59*sc)});drawNPCFigure(n,x,y,sc)});
+ members.forEach((n,i)=>{
+  const x=W*(.26+i*.25),y=H*(.72+(i%2)*.055);
+  spaceNPCSlots.push({id:n.id,x,y,r:Math.max(48,59*sc)});
+  actors.push({y,draw:()=>drawNPCFigure(n,x,y,sc)});
+ });
+ return actors;
 }
 function spaceNPCDialogue(n){
  const lines=SPACE_DIALOGUE[currentSpaceDestination]||SPACE_DIALOGUE.orbital;
