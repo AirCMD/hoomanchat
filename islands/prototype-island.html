@@ -1276,12 +1276,6 @@ function checkerArmchairCarouselCardHTML(x,width){
 }
 
 
-const MESH_CAROUSEL_CONFIG={
- classic:{label:'Звичайні',ids:MESH_SHOP_TABS[0].stock},
- neon:{label:'Неонові',ids:MESH_SHOP_TABS[1].stock},
- pastel:{label:'Пастельні',ids:MESH_SHOP_TABS[2].stock},
- rainbow:{label:'Веселкові',ids:['legmesh_rainbow_vivid','legmesh_rainbow_soft']}
-};
 const meshCarouselPosition={classic:0,neon:0,pastel:0,rainbow:0};
 function meshCarouselCardHTML(x,width,group){
  const config=MESH_CAROUSEL_CONFIG[group];if(!config)return '';
@@ -3999,6 +3993,12 @@ const MESH_SHOP_TABS=[
  {id:'neon',name:'Неонові',stock:["legmesh_neon_green", "legmesh_neon_orange", "legmesh_neon_yellow"]},
  {id:'pastel',name:'Пастельні',stock:["legmesh_pastel_pink", "legmesh_pastel_purple", "legmesh_pastel_red"]}
 ];
+const MESH_CAROUSEL_CONFIG={
+ classic:{label:'Звичайні',ids:MESH_SHOP_TABS[0].stock},
+ neon:{label:'Неонові',ids:MESH_SHOP_TABS[1].stock},
+ pastel:{label:'Пастельні',ids:MESH_SHOP_TABS[2].stock},
+ rainbow:{label:'Веселкові',ids:['legmesh_rainbow_vivid','legmesh_rainbow_soft']}
+};
 let clothesShopTab='dresses',wigShopTab='dark';
 const OTHER_SHOP_TABS=[
  {id:'windows',name:'Вікна',symbol:'🪟',stock:['window_night','window_dawn','window_day']},
