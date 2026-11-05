@@ -788,12 +788,85 @@ body:has(#itemDock.show) #roomSwitcher{display:none!important}
 }
 
 </style>
+
+<style>
+/* α 2.3.112 | Екрани телефона: доступні кнопки, однакові пропорції сцени. */
+#game{image-rendering:auto;}
+@media(max-width:950px){
+ /* Каталог не втрачає кнопки поза межами вікна. */
+ #overlay.shop-full .panel,#overlay.shop-full .panel-body,
+ #overlay.shop-full .shop-screen{min-width:0;max-width:100%;}
+ #overlay.shop-full .shop-topbar{height:auto;min-height:0;gap:6px;padding:6px 8px;}
+ #overlay.shop-full .shop-switcher{min-width:0;scrollbar-width:thin;overscroll-behavior-x:contain;}
+ #overlay.shop-full .shop-switcher button,
+ #overlay.shop-full .shop-subbar button{flex-shrink:0;min-height:38px;height:auto;line-height:1.12;
+   font-size:12px;padding:7px 11px;touch-action:manipulation;}
+ #overlay.shop-full .shop-subbar{min-height:47px;max-height:51px;flex:0 0 auto;
+   overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;overscroll-behavior-x:contain;}
+ #overlay.shop-full .shop-list-controls{min-height:39px;gap:7px;padding:4px 7px;font-size:11px;}
+ #overlay.shop-full .shop-list-controls button{min-height:33px;height:33px;padding:4px 9px;font-size:12px;}
+ #overlay.shop-full .shop-wall-product .shop-product-actions{gap:5px;}
+ #overlay.shop-full .shop-room-world .shop-wall-product .shop-product-actions button,
+ #overlay.shop-full .shop-room-world .shop-jacket-carousel .shop-product-actions button{
+   min-height:36px;max-height:none;height:36px;flex:0 0 36px;
+   white-space:normal;overflow-wrap:anywhere;line-height:1.12;font-size:11px;
+   padding:4px 5px;touch-action:manipulation;
+ }
+ #overlay.shop-full .shop-room-world .shop-wall-product strong{font-size:clamp(11px,2.4vw,14px);
+   line-height:1.18;overflow-wrap:anywhere;hyphens:auto;}
+ #overlay.shop-full .shop-room-world .shop-wall-product small{display:block!important;font-size:10px;}
+ #overlay.shop-full .shop-nav{min-width:42px;width:42px;height:65px;touch-action:none;}
+ #overlay.shop-full .shop-home-btn{min-height:41px;padding:8px 12px;}
+ #itemDock .item-actions button,#friendDock button{min-height:32px;}
+}
+@media(max-width:950px) and (orientation:portrait){
+ /* Персонажі і товарні картки не повинні сплющуватися на вузькому дисплеї. */
+ #overlay.shop-full .shop-room-world .shop-wall-items{top:8%;height:53%;}
+ #overlay.shop-full .shop-wall-product .shop-product-pic img{max-height:min(11vh,75px)!important;}
+ #overlay.shop-full .shop-topbar .shop-all,
+ #overlay.shop-full .shop-topbar .wallet{min-height:37px;height:auto;padding:6px 9px;font-size:11px;}
+ #overlay.shop-full .shop-room-world .shop-wall-product{padding:6px;border-width:3px;}
+ #overlay.shop-full .shop-list-controls{flex-wrap:wrap;row-gap:3px;}
+}
+@media(max-width:950px) and (orientation:landscape) and (max-height:550px){
+ /* Низькі телефони: компактна шапка, але кнопки не менші за 30 px. */
+ #overlay.shop-full .shop-topbar{flex-wrap:nowrap;gap:5px;padding:3px 6px;height:42px;min-height:42px;}
+ #overlay.shop-full .shop-switcher{order:0;flex:1 1 auto;max-width:none;}
+ #overlay.shop-full .shop-topbar .shop-all,
+ #overlay.shop-full .shop-topbar .wallet,
+ #overlay.shop-full .shop-switcher button{height:34px;min-height:34px;padding:5px 7px;font-size:10px;}
+ #overlay.shop-full .shop-subbar{height:38px;min-height:38px;max-height:38px;padding:2px 6px;}
+ #overlay.shop-full .shop-subbar button{height:33px;min-height:33px;font-size:11px;padding:5px 8px;}
+ #overlay.shop-full .shop-list-controls{min-height:34px;padding:2px 5px;gap:5px;}
+ #overlay.shop-full .shop-list-controls button{height:30px;min-height:30px;padding:3px 7px;font-size:11px;}
+ #overlay.shop-full .shop-room-world .shop-wall-items{top:3%;height:79%;}
+ #overlay.shop-full .shop-room-world .shop-wall-product{gap:1px;padding:3px 5px;border-width:2px;}
+ #overlay.shop-full .shop-room-world .shop-wall-product strong{font-size:11px;line-height:1.05;}
+ #overlay.shop-full .shop-room-world .shop-wall-product small{display:none!important;}
+ #overlay.shop-full .shop-room-world .shop-wall-product .shop-product-actions button,
+ #overlay.shop-full .shop-room-world .shop-jacket-carousel .shop-product-actions button{
+   height:31px;min-height:31px;flex-basis:31px;padding:2px 4px;font-size:10px;
+ }
+ #overlay.shop-full .shop-room-world .shop-wall-product .shop-product-pic img{max-height:36px!important;}
+ #overlay.shop-full .shop-wallpaper-nav{margin-bottom:0;gap:3px;}
+ #overlay.shop-full .shop-wallpaper-arrow{height:43px;flex-basis:29px;}
+ #overlay.shop-full .shop-wallpaper-preview,#overlay.shop-full .shop-jacket-preview{height:43px;max-height:43px;}
+ #overlay.shop-full .shop-home-btn{height:35px;min-height:35px;padding:5px 9px;font-size:11px;}
+ #overlay.shop-full .shop-nav{width:42px;height:53px;}
+}
+@media(max-width:400px) and (orientation:portrait){
+ #overlay.shop-full .shop-page-size span{display:none;}
+ #overlay.shop-full .shop-topbar{row-gap:3px;}
+ #overlay.shop-full .shop-switcher{width:100%;}
+ #overlay.shop-full .shop-room-world .shop-wall-product .shop-product-actions button{font-size:10px;}
+}
+</style>
 </head>
 <body>
 <button id="mobileOrientationButton" type="button" aria-label="Увімкнути горизонтальний повноекранний режим" title="Горизонтальна гра">⤢ Повернути екран</button><div id="mobileOrientationHint" role="status" aria-live="polite">↻ Поверни телефон горизонтально для повного інтерфейсу</div>
 
 <button id="roomSwitcher" class="house-map-trigger" type="button" aria-label="Відкрити карту кімнат" title="Карта кімнат"><img src="/hoomanchat/assets/housepic.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="house-map-fallback" aria-hidden="true">🏠</span></button><div id="needsStrip"><button id="needsOpen" title="Потреби пета">💗 Потреби</button><button id="roomCleanButton" title="Чистота поточної кімнати" style="display:none">🧹 Бруд: 0%</button><button id="yardOpen" title="Космічний двір">🪐 Двір</button></div><canvas id="game" aria-label="Острів і персонаж. Натисніть на землю для пересування"></canvas><div id="dustLayer" aria-label="Пил у кімнаті"></div>
-<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.106</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
+<header id="header"><div class="pill">🌿 ПРОТО-ТИП <small>α 2.3.112</small></div><button id="profileButton" class="pill profile-badge" title="Профіль персонажа">👤 <span id="profileLevel">Рівень 1</span><span class="profile-progress"><i id="profileProgress"></i></span></button><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/coin.png" alt="Монети"><span id="coins">0</span></div><div class="pill money"><img class="currency-icon" src="/hoomanchat/assets/token.png" alt="Токени"><span id="tokens">0</span></div></header>
 <div id="visitIdentity" aria-label="Персонаж, якого відвідуєш"><img id="visitAvatar" alt=""><div class="visitText"><small>🏡 У гостях</small><strong id="visitNickname"></strong></div></div>
 <div id="visitDailyNotice" role="status" aria-live="polite" hidden>Ви вже привіталися сьогодні</div>
 <div class="hint" id="hint">Натискай на острів, щоб гуляти</div><div class="island-title" id="locationTitle">🏝️ Твій маленький острів</div>
@@ -1684,7 +1757,7 @@ function rand(seed){let n=Math.sin(seed*12.9898+78.233)*43758.5453123;return n-M
 function resize(){
  W=innerWidth;H=innerHeight;
  // Менше RAM/GPU на HiDPI та 4K, координати гри залишаються CSS-пікселями.
- dpr=Math.min(devicePixelRatio||1,resourceSaver?1:1.5,1920/Math.max(1,W),1080/Math.max(1,H));
+ dpr=Math.min(devicePixelRatio||1,resourceSaver?1:(matchMedia('(pointer:coarse)').matches?2:1.5),1920/Math.max(1,W),1080/Math.max(1,H));
  const pw=Math.max(1,Math.round(W*dpr)),ph=Math.max(1,Math.round(H*dpr));
  if(canvas.width!==pw)canvas.width=pw;
  if(canvas.height!==ph)canvas.height=ph;
@@ -1766,7 +1839,15 @@ function drawRounded(x,y,w,h,r,color){pen.fillStyle=color;pen.beginPath();pen.ro
 function ellipse(x,y,rx,ry,color){pen.beginPath();pen.ellipse(x,y,rx,ry,0,0,Math.PI*2);pen.fillStyle=color;pen.fill()}
 function line(x1,y1,x2,y2,color,width){pen.beginPath();pen.moveTo(x1,y1);pen.lineTo(x2,y2);pen.strokeStyle=color;pen.lineWidth=width;pen.lineCap='round';pen.stroke()}
 function drawCloud(x,y,s=1){ctx.globalAlpha=.73;ellipse(x,y,42*s,15*s,'#fff');ellipse(x-24*s,y+3*s,27*s,12*s,'#fff');ellipse(x+27*s,y+4*s,30*s,12*s,'#fff');ctx.globalAlpha=1}
-function drawScenery(){if(currentSpaceDestination&&spaceScene){ctx.drawImage(spaceScene,0,0,W,H);return}let q=world();let bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#c6eef4');bg.addColorStop(1,'#a8d7ee');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+function drawScenery(){if(currentSpaceDestination&&spaceScene){
+ // Never distort authored 16:9 scenes on tall/narrow mobile screens.
+ // Cover the playable viewport with a centered crop rather than stretching the PNG.
+ const iw=spaceScene.naturalWidth||spaceScene.width,ih=spaceScene.naturalHeight||spaceScene.height;
+ if(iw>0&&ih>0){
+  const k=Math.max(W/iw,H/ih),dw=iw*k,dh=ih*k;
+  ctx.drawImage(spaceScene,(W-dw)/2,(H-dh)/2,dw,dh);
+ }else ctx.drawImage(spaceScene,0,0,W,H);
+ return}let q=world();let bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#c6eef4');bg.addColorStop(1,'#a8d7ee');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
  for(let i=0;i<15;i++){let x=(rand(i+9)*W+clock*(i%2?2:-2))%(W+160);if(x<0)x+=W+160;drawCloud(x-70,40+rand(i+29)*H*.43,rand(i+8)*.45+.5)}
  for(let i=0;i<26;i++){let x=rand(i+100)*W,y=rand(i+270)*H;ellipse(x+Math.sin(clock*.55+i)*5,y,16,3,'#ffffff35')}
  ellipse(q.cx,q.cy+20,q.rx*1.02,q.ry*1.05,'#609e8a');ellipse(q.cx,q.cy+9,q.rx,q.ry,'#efe4b3');ellipse(q.cx,q.cy-2,q.rx*.94,q.ry*.89,'#a4dba0');ellipse(q.cx,q.cy-14,q.rx*.87,q.ry*.76,'#bce8a7');
@@ -4092,7 +4173,7 @@ function shopPaintNow(dt,drawCharacters=true){
  if(navStatus!==shopLastNav){shopLastNav=navStatus;const back=stage.querySelector('[data-shop-arrow="-1"]'),next=stage.querySelector('[data-shop-arrow="1"]');if(back)back.disabled=!!(navStatus&1);if(next)next.disabled=!!(navStatus&2)}
  if(!drawCharacters)return;
  // Bound the game-character overlay to ~900x560 pixels even on HiDPI / 4K screens.
- const pixelRatio=Math.min(window.devicePixelRatio||1,1,960/m.width,600/m.height);
+ const pixelRatio=Math.min(window.devicePixelRatio||1,matchMedia('(pointer:coarse)').matches?1.5:1,1280/m.width,750/m.height);
  const pw=Math.max(1,Math.round(m.width*pixelRatio)),ph=Math.max(1,Math.round(m.height*pixelRatio));
  if(c.width!==pw||c.height!==ph){c.width=pw;c.height=ph}
  const g=cached.ctx;if(!g)return;g.setTransform(pw/m.width,0,0,ph/m.height,0,0);g.clearRect(0,0,m.width,m.height);
