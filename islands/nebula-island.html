@@ -53,6 +53,7 @@ const ACCESS_CODE = 'Jane842'; // UI gate ONLY. Not secure authentication on pub
 const BUILTIN_TRACKS = [
   // {type:'youtube',url:'https://www.youtube.com/watch?v=YOUR_VIDEO_ID',title:'Назва',artist:'Виконавець'},
   // {type:'url',url:'https://example.com/authorized-track.mp3',title:'Назва',artist:'Виконавець'}
+  {type:'youtube',url:'https://www.youtube.com/watch?v=pJMs6cNp5so',title:'Bloody Mary',artist:'Lady Gaga'},
 ];
 const $=id=>document.getElementById(id);
 const audio=$('audio');let tracks=[],current=-1,backend='invidious',yt=null,ytReady=false,ytWanted=false,playing=false,repeat='off',shuffle=false,shuffleBag=[],history=[],rate=1,volume=80,muted=false,loadingToken=0,seekHeld=false,currentMode='none';
